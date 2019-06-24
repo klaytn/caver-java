@@ -1,0 +1,1 @@
+[{"constant":true,"inputs":[],"name":"getInterfaceId","outputs":[{"name":"","type":"bytes4"}],"payable":false,"stateMutability":"pure","type":"function"}]

@@ -1,0 +1,21 @@
+{
+  "tcID":"INT-VTM-005",
+  "tcName":"WrongFrom",
+  "test":[
+    {
+      "tx":{
+        "type":"VALUE_TRANSFER_MEMO",
+        "to":"0x18fd72128ae95d0c72dc1301db27371cb22cd005",
+        "value":"0x10",
+        "gas":100000,
+        "data":"",
+        "privateKey": "0xa142a9ffb3b596d4bdf74648cdd713f29f82477a55d92f39ecd731e4382ed35a"
+      },
+      "expected":{
+        "status":false,
+        "errorString":"invalid transaction v, r, s values of the sender"
+      }
+    }
+  ]
+}
+

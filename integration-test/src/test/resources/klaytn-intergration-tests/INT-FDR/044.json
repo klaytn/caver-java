@@ -1,0 +1,20 @@
+{
+  "tcID":"INT-FDR-044",
+  "tcName":"(Cancel) SenderTxHash",
+  "test":[
+    {
+      "tx":{
+        "type":"FEE_DELEGATED_CANCEL_WITH_RATIO",
+        "gas":100000,
+        "feeRatio": 80
+      },
+      "expected":{
+        "status":true,
+        "receipt": {
+          "status": true,
+          "checkSenderTxHash": true
+        }
+      }
+    }
+  ]
+}

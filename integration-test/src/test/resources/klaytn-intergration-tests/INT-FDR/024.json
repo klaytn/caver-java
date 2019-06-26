@@ -1,0 +1,34 @@
+{
+  "tcID": "INT-FDR-024",
+  "tcName": "(Cancel) InsufficientBalanceFeePayer",
+  "test": [
+    {
+      "tx": {
+        "type": "ACCOUNT_CREATION",
+        "to": "random",
+        "value": "0x1",
+        "gas": 1000000,
+        "accountKey": {
+          "key": {},
+          "keyType": 1
+        }
+      },
+      "expected": {
+        "status": true
+      }
+    },
+    {
+      "tx": {
+        "type": "FEE_DELEGATED_CANCEL_WITH_RATIO",
+        "feePayer": "random",
+        "feePayerPrivateKey": "random.privateKey",
+        "gas": 100000,
+        "feeRatio": 20
+      },
+      "expected": {
+        "status": false,
+        "errorString": "insufficient funds of the fee payer for gas * price"
+      }
+    }
+  ]
+}

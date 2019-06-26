@@ -1,0 +1,19 @@
+{
+  "tcID":"INT-VT-009",
+  "tcName":"LowGasLimit",
+  "test":[
+    {
+      "tx":{
+        "type":"VALUE_TRANSFER",
+        "to":"0x18fd72128ae95d0c72dc1301db27371cb22cd009",
+        "value":"0",
+        "gas":10000
+      },
+      "expected":{
+        "status":false,
+        "errorString":"intrinsic gas too low"
+      }
+    }
+  ]
+}
+

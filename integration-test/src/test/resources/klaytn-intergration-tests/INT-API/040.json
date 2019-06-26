@@ -1,0 +1,12 @@
+{
+  "tcID": "INT-API-041",
+  "tcName": "klay_gasPriceAt",
+  "test": [
+    {
+      "api": {
+        "method": "klay_gasPriceAt",
+        "params": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "tcID":"INT-LEGACY-012",
+  "tcName":"ToEQFrom",
+  "test":[
+    {
+      "tx":{
+        "type":"LEGACY",
+        "to":"env.sender",
+        "value":"10",
+        "gas":100000,
+        "data":""
+      },
+      "expected":{
+        "status":true
+      }
+    }
+  ]
+}
+

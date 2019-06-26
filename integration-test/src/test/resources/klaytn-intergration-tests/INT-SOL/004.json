@@ -1,0 +1,30 @@
+{
+  "tcID":"INT-SOL-004",
+  "tcName":"ERC20.transfer.notEnoughBalance",
+  "deploy":{
+    "ERC20Mock":{
+      "file":"contracts/mocks/ERC20Mock.sol",
+      "constructorParams":["env.sender", "100"]
+    }
+  },
+  "test":[
+    {
+      "send":{
+        "from":"env.sender",
+        "to":"ERC20Mock",
+        "gas":100000,
+        "method":"transfer",
+        "params":["0x18fd72128ae95d0c72dc1301db27371cb22cd0ad", "101"]
+      },
+      "expected":{
+        "status":true,
+        "receipt": {
+          "status":false,
+          "txError":"0x9"
+        }
+      }
+    }
+  ]
+}
+
+

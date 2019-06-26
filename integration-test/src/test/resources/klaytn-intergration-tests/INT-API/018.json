@@ -1,0 +1,12 @@
+{
+  "tcID":"INT-API-018",
+  "tcName":"klay_getBlockWithConsensusInfoByNumber_RPC",
+  "test":[
+    {
+      "api":{
+        "method":"klay_getBlockWithConsensusInfoByNumber",
+        "params":["0x0"]
+      }
+    }
+  ]
+}

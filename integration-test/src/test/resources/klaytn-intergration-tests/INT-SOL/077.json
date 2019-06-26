@@ -1,0 +1,103 @@
+{
+  "tcID":"INT-SOL-077",
+  "tcName":"ERC721.safeTransferFrom.owner.toZero",
+  "deploy":{
+    "ERC721Mock":{
+      "file":"contracts/mocks/ERC721Mock.sol",
+      "constructorParams":[]
+    }
+  },
+  "test":[
+    {
+      "tx":{
+        "from":"env.sender",
+        "type":"LEGACY",
+        "to":"randomMinter",
+        "value":"1000000000000000000",
+        "gas":100000,
+        "data":""
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "tx":{
+        "from":"env.sender",
+        "type":"LEGACY",
+        "to":"randomOwner",
+        "value":"1000000000000000000",
+        "gas":100000,
+        "data":""
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "send":{
+        "from":"randomMinter",
+        "to":"ERC721Mock",
+        "gas":100000,
+        "method":"mint",
+        "params":["randomOwner", "1"]
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "send":{
+        "from":"randomMinter",
+        "to":"ERC721Mock",
+        "gas":100000,
+        "method":"mint",
+        "params":["randomOwner", "2"]
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "send":{
+        "from":"randomOwner",
+        "to":"ERC721Mock",
+        "gas":100000,
+        "method":"approve",
+        "params":["randomApproved", "1"]
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "send":{
+        "from":"randomOwner",
+        "to":"ERC721Mock",
+        "gas":100000,
+        "method":"setApprovalForAll",
+        "params":["randomOperator", true]
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "send":{
+        "from":"randomOwner",
+        "to":"ERC721Mock",
+        "gas":100000,
+        "method":"safeTransferFrom(address,address,uint256,bytes)",
+        "params":["randomOwner", "0x0000000000000000000000000000000000000000", "1", "0x42"]
+      },
+      "expected":{
+        "status":true,
+        "receipt": {
+          "status":false,
+          "txError":"0x9"
+        }
+      }
+    }
+  ]
+}
+

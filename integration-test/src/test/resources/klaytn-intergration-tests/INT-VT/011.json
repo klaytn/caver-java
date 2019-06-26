@@ -1,0 +1,19 @@
+{
+  "tcID":"INT-VT-011",
+  "tcName":"ToPrecompiledContract",
+  "test":[
+    {
+      "tx":{
+        "type":"VALUE_TRANSFER",
+        "to":"0x0000000000000000000000000000000000000011",
+        "value":"10",
+        "gas":100000
+      },
+      "expected":{
+        "status":false,
+        "errorString":"the address is reserved for pre-compiled contracts"
+      }
+    }
+  ]
+}
+

@@ -1,0 +1,99 @@
+{
+  "tcID":"INT-ACCUP-005",
+  "tcName":"WeightedMultisig(3-of-4)",
+  "test":[
+    {
+      "tx": {
+        "type": "ACCOUNT_CREATION",
+        "to": "random",
+        "value": "0x100000000000000",
+        "gas": 1000000,
+        "accountKey": {
+          "key": {
+            "x": "0x248258416b25a0c06bb1b3f3278121ea5fa1ba0bcb0bef6ed86bc25d60bebe3c",
+            "y": "0x64ce04d1eff1463d6c93e2d7a3109e54cc49b25df76ee61cd4a3b5d8f0ed3c2c"
+          },
+          "keyType": 2
+        }
+      },
+      "expected": {
+        "status": true
+      }
+    },
+    {
+      "tx": {
+        "type": "ACCOUNT_UPDATE",
+        "from": "random",
+        "gas": 1000000,
+        "accountKey": {
+          "keyType": 4,
+          "key": {
+            "threshold": 2,
+            "keys": [
+              {
+                "weight": 1,
+                "key": {
+                  "x": "0xae6b72d7ce2c11520ac00cbd1c4da216171a96eae1ae3a0a1f979a554c9063ae",
+                  "y": "0x79ddf38c8717030512f3ca6f304408a3beb51519b918b8d62a55ff4a8c165fea"
+                }
+              },
+              {
+                "weight": 1,
+                "key": {
+                  "x": "0xd4256fc43f42b3313b7204e42a82893a8d9b562f6c9b39456ee989339949c67c",
+                  "y": "0xfc5e78e71b26f5a93b5bec454e4d63947576ffd23b4df624579ff4eb67a2a29b"
+                }
+              },
+              {
+                "weight": 1,
+                "key": {
+                  "x": "0xd653eae5f0e9cd6bfe4c3929f4c4f28c94f3bd183eafafee2d73db38a020d9d8",
+                  "y": "0xe974e859b5be80755dedaebe937ac49800cbac483ca304179050a177e9ca0270"
+                }
+              }
+            ]
+          }
+        },
+        "privateKey": "0x46b3e45a392b3c63774c388f69cbde7afff10eb9b03973baffdc8f77dde6f371"
+      },
+      "expected": {
+        "status": true
+      }
+    },
+    {
+      "api":{
+        "method":"klay_getAccountKey",
+        "params":["random", "latest"]
+      },
+      "expected": {
+        "keyType": 4,
+        "key": {
+          "threshold": 2,
+          "keys": [
+            {
+              "weight": 1,
+              "key": {
+                "x": "0xae6b72d7ce2c11520ac00cbd1c4da216171a96eae1ae3a0a1f979a554c9063ae",
+                "y": "0x79ddf38c8717030512f3ca6f304408a3beb51519b918b8d62a55ff4a8c165fea"
+              }
+            },
+            {
+              "weight": 1,
+              "key": {
+                "x": "0xd4256fc43f42b3313b7204e42a82893a8d9b562f6c9b39456ee989339949c67c",
+                "y": "0xfc5e78e71b26f5a93b5bec454e4d63947576ffd23b4df624579ff4eb67a2a29b"
+              }
+            },
+            {
+              "weight": 1,
+              "key": {
+                "x": "0xd653eae5f0e9cd6bfe4c3929f4c4f28c94f3bd183eafafee2d73db38a020d9d8",
+                "y": "0xe974e859b5be80755dedaebe937ac49800cbac483ca304179050a177e9ca0270"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

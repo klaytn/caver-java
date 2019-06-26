@@ -1,0 +1,12 @@
+{
+  "tcID": "INT-API-042",
+  "tcName": "klay_isSenderTxHashIndexingEnabled",
+  "test": [
+    {
+      "api": {
+        "method": "klay_isSenderTxHashIndexingEnabled",
+        "params": []
+      }
+    }
+  ]
+}

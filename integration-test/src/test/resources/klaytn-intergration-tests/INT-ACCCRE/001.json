@@ -1,0 +1,23 @@
+{
+  "tcID":"INT-ACCCRE-001",
+  "tcName":"NilKey",
+  "test":[
+    {
+      "tx":{
+        "type":"ACCOUNT_CREATION",
+        "to": "random",
+        "value":"0x10",
+        "gas":100000,
+        "accountKey": {
+          "key" : {},
+          "keyType" : 0
+        }
+      },
+      "expected":{
+        "status":false,
+        "errorStringJs":"Missing key information with ACCOUNT_CREATION transaction",
+        "errorString":"AccountKeyNil cannot be initialized to an account"
+      }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "tcID":"INT-API-002",
+  "tcName":"klay_accounts_RPC",
+  "test":[
+    {
+      "api":{
+        "method":"klay_accounts",
+        "params":[]
+      }
+    }
+  ]
+}

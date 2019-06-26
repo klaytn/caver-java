@@ -1,0 +1,55 @@
+{
+  "tcID":"INT-SOL-044",
+  "tcName":"ERC20._burnFrom.70.exceedInitlalSupply",
+  "deploy":{
+    "ERC20Mock":{
+      "file":"contracts/mocks/ERC20Mock.sol",
+      "constructorParams":["env.sender", "100"]
+    }
+  },
+  "test":[
+    {
+      "tx":{
+        "from":"env.sender",
+        "type":"LEGACY",
+        "to":"randomAcc1",
+        "value":"1000000000000000000",
+        "gas":100000,
+        "data":""
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "send":{
+        "from":"env.sender",
+        "to":"ERC20Mock",
+        "gas":100000,
+        "method":"approve",
+        "params":["randomAcc1", "70"]
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "send":{
+        "from":"randomAcc1",
+        "to":"ERC20Mock",
+        "gas":100000,
+        "method":"burnFrom",
+        "params":["env.sender", "101"]
+      },
+      "expected":{
+        "status":true,
+        "receipt":{
+          "status":false,
+          "txError":"0x9"
+        }
+      }
+    }
+  ]
+}
+
+

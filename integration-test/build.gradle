@@ -1,0 +1,8 @@
+description 'caver-java integration test'
+
+dependencies {
+    compile project(':core')
+}
+
+test.enabled = project.hasProperty('integration-tests') ?
+        project.getProperty('integration-tests') : false

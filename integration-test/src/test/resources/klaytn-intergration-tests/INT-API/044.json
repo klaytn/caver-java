@@ -1,0 +1,13 @@
+{
+  "tcID": "INT-API-044",
+  "tcName": "klay_rewardbase",
+  "test": [
+    {
+      "api": {
+        "method": "klay_rewardbase",
+        "params": []
+      },
+      "errorString": "rewardbase must be explicitly specified"
+    }
+  ]
+}

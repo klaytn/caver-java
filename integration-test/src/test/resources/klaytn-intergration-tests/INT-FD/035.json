@@ -1,0 +1,35 @@
+{
+  "tcID": "INT-FD-035",
+  "tcName": "(ValueTransfer) InsufficientBalanceSender",
+  "test": [
+    {
+      "tx": {
+        "type": "ACCOUNT_CREATION",
+        "to": "random",
+        "value": "0x1",
+        "gas": 1000000,
+        "accountKey": {
+          "key": {},
+          "keyType": 1
+        }
+      },
+      "expected": {
+        "status": true
+      }
+    },
+    {
+      "tx": {
+        "type": "FEE_DELEGATED_VALUE_TRANSFER",
+        "from": "random",
+        "privateKey": "random.privateKey",
+        "to": "0x07a9e7eb0c07997a5c25fa0ba77ebaaa9fb4e72e",
+        "value": "0x10000000",
+        "gas": 100000
+      },
+      "expected": {
+        "status": false,
+        "errorString": "insufficient funds of the sender for value "
+      }
+    }
+  ]
+}

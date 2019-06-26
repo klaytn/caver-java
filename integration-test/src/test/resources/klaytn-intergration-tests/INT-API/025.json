@@ -1,0 +1,12 @@
+{
+  "tcID":"INT-API-025",
+  "tcName":"klay_mining_RPC",
+  "test":[
+    {
+      "api":{
+        "method":"klay_mining",
+        "params":[]
+      }
+    }
+  ]
+}

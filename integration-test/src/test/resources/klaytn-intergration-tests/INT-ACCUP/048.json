@@ -1,0 +1,20 @@
+{
+  "tcID":"INT-ACCUP-048",
+  "tcName":"LowGasLimit",
+  "test":[
+    {
+      "tx": {
+        "type": "ACCOUNT_UPDATE",
+        "gas": 1000,
+        "accountKey": {
+          "key" : {},
+          "keyType" : 3
+        }
+      },
+      "expected": {
+        "status": false,
+        "errorString":"intrinsic gas too low"
+      }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "tcID": "INT-ACCCRE-031",
+  "tcName": "RoleBasedKeyMultisigTooShort2",
+  "test": [
+    {
+      "tx": {
+        "type": "ACCOUNT_CREATION",
+        "to": "random",
+        "value": "0x10",
+        "gas": 1000000,
+        "accountKey": {
+          "key": [
+            {
+              "keyType": 4,
+              "key": {
+                "threshold": 2
+              }
+            },
+            {
+              "keyType": 4,
+              "key": {
+                "threshold": 2
+              }
+            }
+          ],
+          "keyType": 5
+        }
+      },
+      "expected": {
+        "status": false,
+        "errorString": "length is zero"
+      }
+    }
+  ]
+}

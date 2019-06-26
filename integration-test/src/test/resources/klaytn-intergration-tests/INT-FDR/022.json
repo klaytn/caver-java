@@ -1,0 +1,38 @@
+{
+  "tcID": "INT-FDR-022",
+  "tcName": "(SmartContractDeploy) InsufficientBalanceFeePayer",
+  "test": [
+    {
+      "tx": {
+        "type": "ACCOUNT_CREATION",
+        "to": "random",
+        "value": "0x1",
+        "gas": 1000000,
+        "accountKey": {
+          "key": {},
+          "keyType": 1
+        }
+      },
+      "expected": {
+        "status": true
+      }
+    },
+    {
+      "tx": {
+        "type": "FEE_DELEGATED_SMART_CONTRACT_DEPLOY_WITH_RATIO",
+        "to":"random",
+        "gas": 1000000,
+        "codeFormat": 0,
+        "value":"0x0",
+        "feePayer": "random",
+        "feePayerPrivateKey": "random.privateKey",
+        "data": "",
+        "feeRatio": 20
+      },
+      "expected":{
+        "status": false,
+        "errorString": "insufficient funds of the fee payer for gas * price"
+      }
+    }
+  ]
+}

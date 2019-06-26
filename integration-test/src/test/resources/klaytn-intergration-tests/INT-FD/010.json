@@ -1,0 +1,23 @@
+{
+  "tcID": "INT-FD-010",
+  "tcName": "(SmartContractDeploy) EmptySignature",
+  "test": [
+    {
+      "tx": {
+        "type": "FEE_DELEGATED_SMART_CONTRACT_DEPLOY",
+        "to":"random",
+        "gas": 1000000,
+        "codeFormat": 0,
+        "value":"0x0",
+        "payerV": "",
+        "payerR": "",
+        "payerS": "",
+        "data": ""
+      },
+      "expected":{
+        "status": false,
+        "errorString": "invalid fee payer"
+      }
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "tcID": "INT-SIGVALI-011",
+  "tcName": "ValueTransfer.RoleAccountUpdateKey",
+  "test": [
+    {
+      "tx": {
+        "type": "ACCOUNT_CREATION",
+        "to": "random",
+        "value": "0x9000000000000",
+        "gas": 100000,
+        "accountKey": {
+          "key": [
+            {
+              "key": {
+                "x": "0x00f5e3671f948349004d342012d36a45fcadba29518c2ea052bb2c60811c742d",
+                "y": "0x9d6e63aaf69d0f18aacf4389152a56f241df3a2161611249370fa58df2911ceb"
+              },
+              "keyType": 2
+            },
+            {
+              "key": {
+                "x": "0x7ca8413c2b2cbe66b7f3f3c7c7b1c713df8380753af830ff73b1a4c676d176d1",
+                "y": "0x0537b3c1980fff9c6474e2684e65a9c04970492721ac0201e87a45e50dc7577c"
+              },
+              "keyType": 2
+            },
+            {
+              "key": {
+                "x": "0x5d08ec3082c34748f52355a6299ef3eb9b9f7faadd0a7c28615af79cd900ee01",
+                "y": "0xc4ad19611425e626e3745415e1b6fb7393cfcd49db1c6cc3f3bafa4122c1ea72"
+              },
+              "keyType": 2
+            }
+          ],
+          "keyType": 5
+        }
+      },
+      "expected": {
+        "status": true
+      }
+    },
+    {
+      "tx": {
+        "type": "VALUE_TRANSFER",
+        "from": "random",
+        "privateKey": "0x0e9cee0cf961bc99f84a981ecaa5b42e05f6003b67ab5ce99536b6f36d12fdac",
+        "to": "0x18fd72128ae95d0c72dc1301db27371cb22cd004",
+        "value": "0x1",
+        "gas": 100000
+      },
+      "expected": {
+        "status": false,
+        "errorString": "invalid transaction v, r, s values of the sender"
+      }
+    }
+  ]
+}

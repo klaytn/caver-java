@@ -1,0 +1,26 @@
+{
+    "tcID": "INT-ACCCRE-067",
+    "tcName": "ToPrecompiledContract",
+    "test": [
+      {
+        "tx": {
+          "type": "ACCOUNT_CREATION",
+          "to": "0x0000000000000000000000000000000000000300",
+          "value": "0x1",
+          "gas":100000,
+          "accountKey": {
+            "key": {
+              "x": "0x230037a99462acd829f317d0ce5c8e2321ac2951de1c1b1a18f9af5cff66f0d7",
+              "y": "0x18a7fb1b9012d2ac87bc291cbf1b3b2339356f1ce7669ae68405389be7f8b3b6"
+            },
+            "keyType": 2
+          }
+        },
+        "expected": {
+          "status": false,
+          "errorString":"the address is reserved for pre-compiled contracts"
+        }
+      }
+    ]
+  }
+  

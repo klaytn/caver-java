@@ -1,0 +1,26 @@
+{
+  "tcID":"INT-SOL-002",
+  "tcName":"ERC20.balanceOf.token",
+  "deploy":{
+    "ERC20Mock":{
+      "file":"contracts/mocks/ERC20Mock.sol",
+      "constructorParams":["env.sender", "100"]
+    }
+  },
+  "test":[
+    {
+      "call":{
+        "from":"env.sender",
+        "to":"ERC20Mock",
+        "method":"balanceOf",
+        "params":["env.sender"]
+      },
+      "expected":{
+        "status":true,
+        "returns":"100"
+      }
+    }
+  ]
+}
+
+

@@ -1,0 +1,21 @@
+{
+  "tcID": "INT-FDR-012",
+  "tcName": "(Cancel) EmptySignature",
+  "test": [
+    {
+      "tx": {
+        "type": "FEE_DELEGATED_CANCEL_WITH_RATIO",
+        "feePayerPrivateKey": "0x5209849b4e44e0ef58cd1cab0129d3520d3381ad9c85a1f3cbe91b2d301a5716",
+        "payerV": "",
+        "payerR": "",
+        "payerS": "",
+        "gas": 100000,
+        "feeRatio": 20
+      },
+      "expected": {
+        "status": false,
+        "errorString": "invalid fee payer"
+      }
+    }
+  ]
+}

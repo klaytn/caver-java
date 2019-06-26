@@ -1,0 +1,31 @@
+{
+  "tcID":"INT-VT-008",
+  "tcName":"LowNonce",
+  "test":[
+    {
+      "tx":{
+        "type":"VALUE_TRANSFER",
+        "to":"0x18fd72128ae95d0c72dc1301db27371cb22cd008",
+        "value":"0",
+        "gas":100000
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "tx":{
+        "type":"VALUE_TRANSFER",
+        "to":"0x18fd72128ae95d0c72dc1301db27371cb22cd008",
+        "value":"0",
+        "gas":100000,
+        "nonce":0
+      },
+      "expected":{
+        "status":false,
+        "errorString":"nonce too low"
+      }
+    }
+  ]
+}
+

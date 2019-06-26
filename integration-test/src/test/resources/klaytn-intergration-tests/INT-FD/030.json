@@ -1,0 +1,18 @@
+{
+  "tcID": "INT-FD-030",
+  "tcName": "(Cancel) SufficientBalanceOfFeePayer",
+  "test": [
+    {
+      "tx": {
+        "type": "FEE_DELEGATED_CANCEL",
+        "gas": 100000
+      },
+      "expected": {
+        "status": true,
+        "receipt": {
+          "status": true
+        }
+      }
+    }
+  ]
+}

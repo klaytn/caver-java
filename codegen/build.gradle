@@ -1,0 +1,7 @@
+description 'caverj project code generators'
+
+dependencies {
+    compile "com.squareup:javapoet:$javapoetVersion"
+    compile "info.picocli:picocli:$picocliVersion"
+    compile project(':core')
+}

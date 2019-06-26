@@ -1,0 +1,16 @@
+{
+  "tcID":"INT-CANCEL-007",
+  "tcName":"LowGasLimit",
+  "test":[
+    {
+      "tx":{
+        "type":"CANCEL",
+        "gas":10000
+      },
+      "expected":{
+        "status":false,
+        "errorString":"intrinsic gas too low"
+      }
+    }
+  ]
+}

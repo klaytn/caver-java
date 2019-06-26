@@ -1,0 +1,45 @@
+{
+  "tcID": "INT-FD-032",
+  "tcName": "(ValueTransferMemo) ExactBalanceOfSender",
+  "test": [
+    {
+      "tx": {
+        "type": "ACCOUNT_CREATION",
+        "to": "random",
+        "value": "0x1",
+        "gas": 1000000,
+        "accountKey": {
+          "key": {},
+          "keyType": 1
+        }
+      },
+      "expected": {
+        "status": true
+      }
+    },
+    {
+      "tx": {
+        "type": "FEE_DELEGATED_VALUE_TRANSFER_MEMO",
+        "from": "random",
+        "privateKey": "random.privateKey",
+        "to": "0xcab3a427f4f87cfc99d653149aa7f1cbbb9c316d",
+        "data": "",
+        "value": "0x1",
+        "gas": 100000
+      },
+      "expected": {
+        "status": true,
+        "receipt": {
+          "status": true
+        }
+      }
+    },
+    {
+      "api":{
+        "method":"klay_getBalance",
+        "params":["random", "latest"]
+      },
+      "expected": "0x0"
+    }
+  ]
+}

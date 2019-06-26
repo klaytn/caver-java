@@ -1,0 +1,55 @@
+{
+  "tcID":"INT-SOL-023",
+  "tcName":"ERC20.decreaseAllowance.Large",
+  "deploy":{
+    "ERC20Mock":{
+      "file":"contracts/mocks/ERC20Mock.sol",
+      "constructorParams":["env.sender", "100"]
+    }
+  },
+  "test":[
+    {
+      "tx":{
+        "from":"env.sender",
+        "type":"LEGACY",
+        "to":"randomAcc1",
+        "value":"1000000000000000000",
+        "gas":100000,
+        "data":""
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "send":{
+        "from":"env.sender",
+        "to":"ERC20Mock",
+        "gas":100000,
+        "method":"approve",
+        "params":["randomAcc1", "100"]
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "send":{
+        "from":"env.sender",
+        "to":"ERC20Mock",
+        "gas":100000,
+        "method":"decreaseAllowance",
+        "params":["randomAcc1", "101"]
+      },
+      "expected":{
+        "status":true,
+        "receipt": {
+          "status":false,
+          "txError":"0x9"
+        }
+      }
+    }
+  ]
+}
+
+

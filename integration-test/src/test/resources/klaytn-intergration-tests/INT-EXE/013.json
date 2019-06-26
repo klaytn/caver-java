@@ -1,0 +1,20 @@
+{
+  "tcID": "INT-EXE-013",
+  "tcName": "ToNonExist",
+  "test": [
+    {
+      "tx": {
+        "type": "SMART_CONTRACT_EXECUTION",
+        "to": "random",
+        "value": "0x0",
+        "gas": 10000000,
+        "data": "0xd14e62b8000000000000000000000000000000000000000000000000000000000000001b"
+      },
+      "expected": {
+        "status": false,
+        "errorString": "not a program account (e.g., an account having code and storage)"
+      }
+    }
+  ]
+}
+

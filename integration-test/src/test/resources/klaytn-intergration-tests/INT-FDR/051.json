@@ -1,0 +1,19 @@
+{
+  "tcID":"INT-FDR-051",
+  "tcName":"(ValueTransfer) HighFeeRatio",
+  "test":[
+    {
+      "tx":{
+        "type":"FEE_DELEGATED_VALUE_TRANSFER_WITH_RATIO",
+        "to":"random",
+        "value":"0x1",
+        "gas":100000,
+        "feeRatio": 100
+      },
+      "expected":{
+        "status":false,
+        "errorString":"fee ratio is out of range [1, 99]"
+      }
+    }
+  ]
+}

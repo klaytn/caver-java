@@ -1,0 +1,43 @@
+{
+  "tcID":"INT-SOL-029",
+  "tcName":"ERC20.increaseAllowance.toZero",
+  "deploy":{
+    "ERC20Mock":{
+      "file":"contracts/mocks/ERC20Mock.sol",
+      "constructorParams":["env.sender", "100"]
+    }
+  },
+  "test":[
+    {
+      "tx":{
+        "from":"env.sender",
+        "type":"LEGACY",
+        "to":"randomAcc1",
+        "value":"1000000000000000000",
+        "gas":100000,
+        "data":""
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "send":{
+        "from":"env.sender",
+        "to":"ERC20Mock",
+        "gas":100000,
+        "method":"increaseAllowance",
+        "params":["0x0000000000000000000000000000000000000000", "100"]
+      },
+      "expected":{
+        "status":true,
+        "receipt":{
+          "status":false,
+          "txError":"0x9"
+        }
+      }
+    }
+  ]
+}
+
+

@@ -1,0 +1,96 @@
+{
+  "tcID":"INT-ACCUP-039",
+  "tcName":"RoleBasedKeyRolebased3",
+  "test":[
+    {
+      "tx": {
+        "type": "ACCOUNT_CREATION",
+        "to": "random",
+        "value": "0x100000000000000",
+        "gas": 1000000,
+        "accountKey": {
+          "key": [
+            {
+              "key": {
+                "x": "0x819659d4f08e08d4bd97c6ce5ed2c2eb914201a5b3731eb9d208128df24b97dd",
+                "y": "0x1824267ab9e55f5a3fb1030f0299fa73fc0037305d5b1d90100e2131af41c010"
+              },
+              "keyType": 2
+            },
+            {
+              "key": {
+                "x": "0xa18f05a46003df6dbec8af8027227d16e6143f6f6be9ce8dd42ccc5317a14e34",
+                "y": "0xd978ef11d1f850c3a4a77a2967ca0ccdce4ebae5b8e0a37488f796b97591f2c3"
+              },
+              "keyType": 2
+            },
+            {
+              "key": {
+                "x": "0x95c920eb2571dff37baecdbbee32897e6e448c6725c5ab73569cc6f659684307",
+                "y": "0xef7839023c48acf710ad322356c12b7c5b7f475515ba7d5834f41a993f42b8f9"
+              },
+              "keyType": 2
+            }
+          ],
+          "keyType": 5
+        }
+      },
+      "expected": {
+        "status": true
+      }
+    },
+    {
+      "tx": {
+        "type": "ACCOUNT_UPDATE",
+        "from": "random",
+        "gas": 1000000,
+        "accountKey": {
+          "key": [
+            {
+              "key": [
+                {
+                  "key": {
+                    "x": "0x819659d4f08e08d4bd97c6ce5ed2c2eb914201a5b3731eb9d208128df24b97dd",
+                    "y": "0x1824267ab9e55f5a3fb1030f0299fa73fc0037305d5b1d90100e2131af41c010"
+                  },
+                  "keyType": 2
+                }
+              ],
+              "keyType": 5
+            },
+            {
+              "key": [
+                {
+                  "key": {
+                    "x": "0x819659d4f08e08d4bd97c6ce5ed2c2eb914201a5b3731eb9d208128df24b97dd",
+                    "y": "0x1824267ab9e55f5a3fb1030f0299fa73fc0037305d5b1d90100e2131af41c010"
+                  },
+                  "keyType": 2
+                }
+              ],
+              "keyType": 5
+            },
+            {
+              "key": [
+                {
+                  "key": {
+                    "x": "0x819659d4f08e08d4bd97c6ce5ed2c2eb914201a5b3731eb9d208128df24b97dd",
+                    "y": "0x1824267ab9e55f5a3fb1030f0299fa73fc0037305d5b1d90100e2131af41c010"
+                  },
+                  "keyType": 2
+                }
+              ],
+              "keyType": 5
+            }
+          ],
+          "keyType": 5
+        },
+        "privateKey": "0x0c5f6794206d110f31a22e05c32093dd1daaa27b0ada8b0ed4d7236bf289f9b8"
+      },
+      "expected": {
+        "status": false,
+        "errorString": "nested composite type"
+      }
+    }
+  ]
+}

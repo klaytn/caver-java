@@ -1,0 +1,12 @@
+{
+  "tcID":"INT-API-020",
+  "tcName":"klay_getCommitteeSize_RPC",
+  "test":[
+    {
+      "api":{
+        "method":"klay_getCommitteeSize",
+        "params":["latest"]
+      }
+    }
+  ]
+}

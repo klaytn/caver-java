@@ -1,0 +1,23 @@
+{
+  "tcID":"INT-LEGACY-010",
+  "tcName":"To0",
+  "test":[
+    {
+      "tx":{
+        "type":"LEGACY",
+        "to":"0x0000000000000000000000000000000000000000",
+        "value":"10",
+        "gas":100000,
+        "data":""
+      },
+      "expected":{
+        "status":true,
+        "receipt": {
+          "status": false,
+          "txError": "0x9"
+        }
+      }
+    }
+  ]
+}
+

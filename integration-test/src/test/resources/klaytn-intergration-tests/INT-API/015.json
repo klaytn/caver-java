@@ -1,0 +1,12 @@
+{
+  "tcID":"INT-API-015",
+  "tcName":"klay_getBlockTransactionCountByNumber_RPC",
+  "test":[
+    {
+      "api":{
+        "method":"klay_getBlockTransactionCountByNumber",
+        "params":["0x0"]
+      }
+    }
+  ]
+}

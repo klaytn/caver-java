@@ -1,0 +1,19 @@
+{
+  "tcID":"INT-VTM-016",
+  "tcName":"ToEQFrom",
+  "test":[
+    {
+      "tx":{
+        "type":"VALUE_TRANSFER_MEMO",
+        "to":"env.sender",
+        "value":"10",
+        "gas":100000,
+        "data":""
+      },
+      "expected":{
+        "status":true
+      }
+    }
+  ]
+}
+

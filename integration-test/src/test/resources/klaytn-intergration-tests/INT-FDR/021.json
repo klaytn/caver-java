@@ -1,0 +1,41 @@
+{
+  "tcID": "INT-FDR-021",
+  "tcName": "(AccountUpdate) InsufficientBalanceFeePayer",
+  "test": [
+    {
+      "tx": {
+        "type": "ACCOUNT_CREATION",
+        "to": "random",
+        "value": "0x1",
+        "gas": 1000000,
+        "accountKey": {
+          "key": {},
+          "keyType": 1
+        }
+      },
+      "expected": {
+        "status": true
+      }
+    },
+    {
+      "tx": {
+        "type": "FEE_DELEGATED_ACCOUNT_UPDATE_WITH_RATIO",
+        "gas": 1000000,
+        "accountKey": {
+          "key" : {
+            "x": "0x59174be2872a3bd58d1634b1917068f69a10a6ad682776916e7d7ea40587f7c9",
+            "y": "0x88c2b8e75940e6a34615e7079bf46bcb2c3a2432db4928cff8d23d38a572107c"
+          },
+          "keyType" : 2
+        },
+        "feePayer": "random",
+        "feePayerPrivateKey": "random.privateKey",
+        "feeRatio": 20
+      },
+      "expected": {
+        "status": false,
+        "errorString": "insufficient funds of the fee payer for gas * price"
+      }
+    }
+  ]
+}

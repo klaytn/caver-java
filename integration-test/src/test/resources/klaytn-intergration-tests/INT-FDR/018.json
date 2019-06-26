@@ -1,0 +1,27 @@
+{
+  "tcID":"INT-FDR-018",
+  "tcName":"LowNonce",
+  "test":[
+    {
+      "tx":{
+        "type":"CANCEL",
+        "gas":100000
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "tx":{
+        "type":"FEE_DELEGATED_CANCEL_WITH_RATIO",
+        "nonce":0,
+        "gas":100000,
+        "feeRatio": 20
+      },
+      "expected":{
+        "status":false,
+        "errorString": "nonce too low"
+      }
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "tcID": "INT-ACCCRE-034",
+  "tcName": "RoleBasedKeyMultisigTooLong1",
+  "test": [
+    {
+      "tx": {
+        "type": "ACCOUNT_CREATION",
+        "to": "random",
+        "value": "0x10",
+        "gas": 1000000,
+        "accountKey": {
+          "key": [
+            {
+              "keyType": 4,
+              "key": {
+                "threshold": 4,
+                "keys": [
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0xae6b72d7ce2c11520ac00cbd1c4da216171a96eae1ae3a0a1f979a554c9063ae",
+                      "y": "0x79ddf38c8717030512f3ca6f304408a3beb51519b918b8d62a55ff4a8c165fea"
+                    }
+                  },
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0xd4256fc43f42b3313b7204e42a82893a8d9b562f6c9b39456ee989339949c67c",
+                      "y": "0xfc5e78e71b26f5a93b5bec454e4d63947576ffd23b4df624579ff4eb67a2a29b"
+                    }
+                  },
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0xd653eae5f0e9cd6bfe4c3929f4c4f28c94f3bd183eafafee2d73db38a020d9d8",
+                      "y": "0xe974e859b5be80755dedaebe937ac49800cbac483ca304179050a177e9ca0270"
+                    }
+                  },
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0x5d76ef11ff10c83a06bca476fc49363c05172abef1de2b8291e0983a524e442c",
+                      "y": "0xca3bc70d444383636fd579bb342c5ea7f9477f22c72b42e8b1f8bb4a843e30d6"
+                    }
+                  },
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0x7f6a3cb569664d29f308dbcf820849aa098dc2f616651e63a23e9bf9d74ccd49",
+                      "y": "0xa342afa7080a75b77c079c2b349911169d9e5923f847b64a6ae495db1a20dfc4"
+                    }
+                  },
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0xc88942041aeaf1dc8ac2d1c01f5d1d2f17850379fb636d35972467de58e10ed7",
+                      "y": "0xbbf4384348732e0d2fa9def07da2ebfe4f5986b5e887406750fcbc04147fea72"
+                    }
+                  },
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0x6b819e20213418d0afcb6d6a1cd0aa0bca5a6384f59cfd6f82bd5bea3a64a294",
+                      "y": "0xfc075564c343bfbde626509a147c0885144607f04a35efd2975eeb774df9d830"
+                    }
+                  },
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0xec62e50a5ee919b2cd7d36110e2b5c16b575cbe2f974c5ce435b7a3a85fceab1",
+                      "y": "0xac393cd7912edaa2f2304c1c52c5e0f4aecf6b3eb65f68a793ebcd305ee13053"
+                    }
+                  },
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0x47a004f43c47a949eddba86cd680fc1b26b3cfdc68979de8de106f7642051467",
+                      "y": "0x792f4cfa20a07ea8a34813cf3b42a8cf8d5c6c38ddc61bf7898f0c8f31e98505"
+                    }
+                  },
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0x997cf118d91ceca5e6b95d2767a87b6162edb7145f3a549aac49a05d2ddae5aa",
+                      "y": "0x77b06828a17ddac43cc8f680ebe37d81e5c84444d588d397880df5c222593d17"
+                    }
+                  },
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0xddb606299ae2da50564e6ff114612a188cf3117fbdc0668981e530a5adba1632",
+                      "y": "0x75018a20e17223411f20c032fc9c56480a995dc634929acef90c596b34d32666"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "keyType": 5
+        }
+      },
+      "expected": {
+        "status": false,
+        "errorString": "the number of keys exceeds the limit"
+      }
+    }
+  ]
+}

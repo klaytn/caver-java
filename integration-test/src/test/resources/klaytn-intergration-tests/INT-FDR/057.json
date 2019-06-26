@@ -1,0 +1,18 @@
+{
+  "tcID":"INT-FDR-057",
+  "tcName":"(ValueTransfer) ValidFeeRatio",
+  "test":[
+    {
+      "tx":{
+        "type":"FEE_DELEGATED_VALUE_TRANSFER_WITH_RATIO",
+        "to":"random",
+        "value":"0x1",
+        "gas":100000,
+        "feeRatio": 80
+      },
+      "expected":{
+        "status":true
+      }
+    }
+  ]
+}

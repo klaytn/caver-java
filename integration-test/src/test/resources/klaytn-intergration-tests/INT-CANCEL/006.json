@@ -1,0 +1,26 @@
+{
+  "tcID":"INT-CANCEL-006",
+  "tcName":"LowNonce",
+  "test":[
+    {
+      "tx":{
+        "type":"CANCEL",
+        "gas":100000
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "tx":{
+        "type":"CANCEL",
+        "nonce":0,
+        "gas":100000
+      },
+      "expected":{
+        "status":false,
+        "errorString": "nonce too low"
+      }
+    }
+  ]
+}

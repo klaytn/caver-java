@@ -1,0 +1,31 @@
+{
+  "tcID":"INT-API-004",
+  "tcName":"klay_getAccountKey_RPC",
+  "test":[
+    {
+      "tx": {
+        "type": "ACCOUNT_CREATION",
+        "to": "random",
+        "value": "0x1",
+        "gas": 1000000,
+        "accountKey": {
+          "key": {},
+          "keyType": 1
+        }
+      },
+      "expected": {
+        "status": true
+      }
+    },
+    {
+      "api":{
+        "method":"klay_getAccountKey",
+        "params":["random", "latest"]
+      },
+      "expected": {
+        "keyType": 1,
+        "key": {}
+      }
+    }
+  ]
+}

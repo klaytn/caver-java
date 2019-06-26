@@ -1,0 +1,19 @@
+{
+  "tcID":"INT-VTM-012",
+  "tcName":"MemoSize0",
+  "test":[
+    {
+      "tx":{
+        "type":"VALUE_TRANSFER_MEMO",
+        "to":"0x18fd72128ae95d0c72dc1301db27371cb22cd004",
+        "value":"0",
+        "gas":100000,
+        "data":""
+      },
+      "expected":{
+        "status":true
+      }
+    }
+  ]
+}
+

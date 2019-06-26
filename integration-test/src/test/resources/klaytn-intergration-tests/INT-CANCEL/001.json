@@ -1,0 +1,17 @@
+{
+  "tcID":"INT-CANCEL-001",
+  "tcName":"WrongChainId",
+  "test":[
+    {
+      "tx":{
+        "type":"CANCEL",
+        "gas":100000,
+        "chainId":1234
+      },
+      "expected":{
+        "status":false,
+        "errorString":"invalid chain id"
+      }
+    }
+  ]
+}

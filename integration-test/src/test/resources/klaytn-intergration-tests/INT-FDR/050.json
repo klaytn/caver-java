@@ -1,0 +1,17 @@
+{
+  "tcID":"INT-FDR-050",
+  "tcName":"(Cancel) LowFeeRatio",
+  "test":[
+    {
+      "tx":{
+        "type":"FEE_DELEGATED_CANCEL_WITH_RATIO",
+        "gas":100000,
+        "feeRatio": 0
+      },
+      "expected":{
+        "status":false,
+        "errorString":"fee ratio is out of range [1, 99]"
+      }
+    }
+  ]
+}

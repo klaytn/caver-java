@@ -1,0 +1,24 @@
+{
+  "tcID": "INT-ACCCRE-017",
+  "tcName": "RoleBasedKeyPublic0",
+  "test": [
+    {
+      "tx": {
+        "type": "ACCOUNT_CREATION",
+        "to": "random",
+        "value": "0x10",
+        "gas": 100000,
+        "accountKey": {
+          "key": [
+          ],
+          "keyType": 5
+        }
+      },
+      "expected": {
+        "status": false,
+        "errorStringJs":"Missing key information with ACCOUNT_CREATION transaction",
+        "errorString": "length is zero"
+      }
+    }
+  ]
+}

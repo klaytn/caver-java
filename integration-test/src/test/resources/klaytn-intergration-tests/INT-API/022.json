@@ -1,0 +1,12 @@
+{
+  "tcID":"INT-API-022",
+  "tcName":"klay_getCouncilSize_RPC",
+  "test":[
+    {
+      "api":{
+        "method":"klay_getCouncilSize",
+        "params":["latest"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+description 'caverj project core'
+
+dependencies {
+    compile "org.web3j:core:$web3jVersion"
+}
+

@@ -1,0 +1,26 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "5.0.0"
+    id "application"
+}
+
+description 'caver-java project console'
+
+dependencies {
+    compile project(':codegen')
+    runtime "org.slf4j:slf4j-nop:$slf4jVersion"  // prevent logging of the library to the console
+}
+
+mainClassName = 'com.klaytn.caver.console.Runner'
+applicationName = 'caver-java'
+
+project.afterEvaluate {
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                artifact source: shadowDistZip, extension: 'zip'
+                artifact source: shadowDistTar, extension: 'tar'
+            }
+        }
+
+    }
+}

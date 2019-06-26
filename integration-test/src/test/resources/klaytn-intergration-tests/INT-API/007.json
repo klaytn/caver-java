@@ -1,0 +1,41 @@
+{
+  "tcID":"INT-API-007",
+  "tcName":"klay_getTransactionCount_RPC",
+  "test":[
+    {
+      "tx": {
+        "type": "ACCOUNT_CREATION",
+        "to": "random",
+        "value": "0x2000000000000",
+        "gas": 1000000,
+        "accountKey": {
+          "key": {},
+          "keyType": 1
+        }
+      },
+      "expected": {
+        "status": true
+      }
+    },
+    {
+      "tx":{
+        "type":"VALUE_TRANSFER",
+        "from": "random",
+        "privateKey": "random.privateKey",
+        "to":"0xc278901c802e1ce870fdaee913edc318b5f9ebc8",
+        "value":"0x1",
+        "gas":21000
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "api":{
+        "method":"klay_getTransactionCount",
+        "params":["random", "latest"]
+      },
+      "expected": "0x1"
+    }
+  ]
+}

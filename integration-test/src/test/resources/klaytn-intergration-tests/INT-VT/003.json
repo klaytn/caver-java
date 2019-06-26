@@ -1,0 +1,20 @@
+{
+  "tcID":"INT-VT-003",
+  "tcName":"WrongGasPrice",
+  "test":[
+    {
+      "tx":{
+        "type":"VALUE_TRANSFER",
+        "to":"0x1234567890123456789012345678901234567803",
+        "value":"0x10",
+        "gas":100000,
+        "gasPrice":"0x25"
+      },
+      "expected":{
+        "status":false,
+        "errorString":"invalid unit price"
+      }
+    }
+  ]
+}
+

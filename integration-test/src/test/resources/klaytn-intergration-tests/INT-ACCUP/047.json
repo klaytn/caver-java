@@ -1,0 +1,56 @@
+{
+  "tcID":"INT-ACCUP-047",
+  "tcName":"LowNonce",
+  "test":[
+    {
+      "tx": {
+        "type": "ACCOUNT_CREATION",
+        "to": "random",
+        "value": "0x100000000000000",
+        "gas": 1000000,
+        "accountKey": {
+          "key": {
+            "x": "0xdf431e89398af90473fbf6944f9a0911778ec806cf6f2ed8cfdf97ef72bdf8af",
+            "y": "0x7432d05b34fbc765ee6d18dce3584eeee9d71743b87fddac31287b3b063bfcfc"
+          },
+          "keyType": 2
+        }
+      },
+      "expected": {
+        "status": true
+      }
+    },
+    {
+      "tx": {
+        "type": "ACCOUNT_UPDATE",
+        "from": "random",
+        "gas": 1000000,
+        "accountKey": {
+          "key" : {},
+          "keyType" : 1
+        },
+        "privateKey": "0x2b83f57b25e259ec68c210aff13591c458011e367a649964c0bded5f347a6ef2"
+      },
+      "expected": {
+        "status":true
+      }
+    },
+    {
+      "tx": {
+        "type": "ACCOUNT_UPDATE",
+        "from": "random",
+        "gas": 1000000,
+        "accountKey": {
+          "key" : {},
+          "keyType" : 3
+        },
+        "nonce": 0,
+        "privateKey": "random.privateKey"
+      },
+      "expected": {
+        "status": false,
+        "errorString": "nonce too low"
+      }
+    }
+  ]
+}

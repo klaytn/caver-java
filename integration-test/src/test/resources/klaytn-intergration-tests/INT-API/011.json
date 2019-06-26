@@ -1,0 +1,12 @@
+{
+  "tcID":"INT-API-011",
+  "tcName":"klay_blocknumber_RPC",
+  "test":[
+    {
+      "api":{
+        "method":"klay_blockNumber",
+        "params":[]
+      }
+    }
+  ]
+}

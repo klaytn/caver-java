@@ -1,0 +1,25 @@
+{
+  "tcID":"INT-SOL-001",
+  "tcName":"ERC20.totalsupply",
+  "deploy":{
+    "ERC20Mock":{
+      "file":"contracts/mocks/ERC20Mock.sol",
+      "constructorParams":["env.sender", "100"]
+    }
+  },
+  "test":[
+    {
+      "call":{
+        "from":"env.sender",
+        "to":"ERC20Mock",
+        "method":"totalSupply",
+        "params":[]
+      },
+      "expected":{
+        "status":true,
+        "returns":"100"
+      }
+    }
+  ]
+}
+

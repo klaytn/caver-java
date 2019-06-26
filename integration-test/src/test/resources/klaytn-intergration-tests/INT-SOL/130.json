@@ -1,0 +1,82 @@
+{
+  "tcID":"INT-SOL-130",
+  "tcName":"ERC721.burn.checkLog",
+  "deploy":{
+    "ERC721Mock":{
+      "file":"contracts/mocks/ERC721Mock.sol",
+      "constructorParams":[]
+    }
+  },
+  "test":[
+    {
+      "tx":{
+        "from":"env.sender",
+        "type":"LEGACY",
+        "to":"randomMinter",
+        "value":"1000000000000000000",
+        "gas":100000,
+        "data":""
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "send":{
+        "from":"randomMinter",
+        "to":"ERC721Mock",
+        "gas":100000,
+        "method":"mint",
+        "params":["randomOwner", "5042"]
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "send":{
+        "from":"randomMinter",
+        "to":"ERC721Mock",
+        "gas":100000,
+        "method":"burn(uint256)",
+        "params":["5042"]
+      },
+      "expected":{
+        "status":true,
+        "events": {
+          "Transfer": {
+            "from":"randomOwner",
+            "to":"0x0000000000000000000000000000000000000000",
+            "tokenId":"5042"
+          }
+        }
+      }
+    },
+    {
+      "call":{
+        "from":"env.sender",
+        "to":"ERC721Mock",
+        "method":"balanceOf",
+        "params":["randomOwner"]
+      },
+      "expected":{
+        "status":true,
+        "returns":"0"
+      }
+    },
+    {
+      "call":{
+        "from":"env.sender",
+        "to":"ERC721Mock",
+        "method":"ownerOf",
+        "params":["5042"]
+      },
+      "expected":{
+        "status":false,
+        "returns":"evm: execution reverted",
+        "errorStringJava": "Empty value (0x) returned from contract"
+      }
+    }
+  ]
+}
+

@@ -1,0 +1,112 @@
+{
+  "tcID": "INT-ACCCRE-025",
+  "tcName": "RoleBasedKeyMultisig4",
+  "skipJs":true,
+  "test": [
+    {
+      "tx": {
+        "type": "ACCOUNT_CREATION",
+        "to": "random",
+        "value": "0x10",
+        "gas": 1000000,
+        "accountKey": {
+          "key": [
+            {
+              "keyType": 4,
+              "key": {
+                "threshold": 2,
+                "keys": [
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0xae6b72d7ce2c11520ac00cbd1c4da216171a96eae1ae3a0a1f979a554c9063ae",
+                      "y": "0x79ddf38c8717030512f3ca6f304408a3beb51519b918b8d62a55ff4a8c165fea"
+                    }
+                  },
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0xd4256fc43f42b3313b7204e42a82893a8d9b562f6c9b39456ee989339949c67c",
+                      "y": "0xfc5e78e71b26f5a93b5bec454e4d63947576ffd23b4df624579ff4eb67a2a29b"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "keyType": 4,
+              "key": {
+                "threshold": 2,
+                "keys": [
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0x04d41e077770900fbfae72303b0a91b49b27f59220e3e440560e974ec233178b",
+                      "y": "0xf8606d095d83fff157fc359379055951ae33137a0ed410c6ca6e0741f6919c80"
+                    }
+                  },
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0x26646e93cab7e18e9867ba8bc4fe9953d1501852afff0c7becfc0395c5aec019",
+                      "y": "0x0956c9bf3d0aecf71807e3f11777f689a56fef1fa1eff67991b140b72152a45e"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "keyType": 4,
+              "key": {
+                "threshold": 2,
+                "keys": [
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0xb7cd677d0ec0b4d391abcbe05fd29897f652eeefd36b4ba15505a5993e35a88f",
+                      "y": "0x6dbac9eeebd874daf73e54272928444927642e856bcd346f0115ea0e07089240"
+                    }
+                  },
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0x58e96bedab016ce2a369059bdd61224e0691bc3149242b8185aa53c69833bb73",
+                      "y": "0xfcdf545b92df1bbaad97373c02cfaef5825b526150553b921e5ee0d4c38296b1"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "keyType": 4,
+              "key": {
+                "threshold": 2,
+                "keys": [
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0x7d581a269a52f674574910b39ce2f2a4e7a9c8da2665e44c70b4f82b97eba807",
+                      "y": "0x17aa907589b55a7c7501d95f3b5a3a37839971dbef763c11af77394da7d6d4b0"
+                    }
+                  },
+                  {
+                    "weight": 1,
+                    "key": {
+                      "x": "0x59172c701fa5d12cca86dd1e09121d27ee474c19ad99e86bf773c4d471ce4e52",
+                      "y": "0xfd57143d32e23c20ea1188c11844b8b87f445bbe6f2d957211693fac90aacada"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "keyType": 5
+        }
+      },
+      "expected": {
+        "status": false,
+        "errorString": "length too long"
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "tcID":"INT-LEGACY-011",
+  "tcName":"ToPrecompiledContract",
+  "test":[
+    {
+      "tx":{
+        "type":"LEGACY",
+        "to":"0x0000000000000000000000000000000000000011",
+        "value":"10",
+        "gas":100000,
+        "data":""
+      },
+      "expected":{
+        "status":false,
+        "errorString":"the address is reserved for pre-compiled contracts"
+      }
+    }
+  ]
+}
+

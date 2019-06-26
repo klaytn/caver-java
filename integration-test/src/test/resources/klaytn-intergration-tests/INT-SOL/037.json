@@ -1,0 +1,51 @@
+{
+  "tcID":"INT-SOL-037",
+  "tcName":"ERC20._burn.100.balanceOf",
+  "deploy":{
+    "ERC20Mock":{
+      "file":"contracts/mocks/ERC20Mock.sol",
+      "constructorParams":["env.sender", "100"]
+    }
+  },
+  "test":[
+    {
+      "tx":{
+        "from":"env.sender",
+        "type":"LEGACY",
+        "to":"randomAcc1",
+        "value":"1000000000000000000",
+        "gas":100000,
+        "data":""
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "send":{
+        "from":"env.sender",
+        "to":"ERC20Mock",
+        "gas":100000,
+        "method":"burn",
+        "params":["env.sender", "100"]
+      },
+      "expected":{
+        "status":true
+      }
+    },
+    {
+      "call":{
+        "from":"env.sender",
+        "to":"ERC20Mock",
+        "method":"balanceOf",
+        "params":["env.sender"]
+      },
+      "expected":{
+        "status":true,
+        "returns":"0"
+      }
+    }
+  ]
+}
+
+

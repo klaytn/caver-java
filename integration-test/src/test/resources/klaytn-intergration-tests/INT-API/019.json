@@ -1,0 +1,12 @@
+{
+  "tcID":"INT-API-019",
+  "tcName":"klay_getCommittee_RPC",
+  "test":[
+    {
+      "api":{
+        "method":"klay_getCommittee",
+        "params":["latest"]
+      }
+    }
+  ]
+}

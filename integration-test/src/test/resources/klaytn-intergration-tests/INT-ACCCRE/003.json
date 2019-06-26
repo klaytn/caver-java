@@ -1,0 +1,31 @@
+{
+  "tcID": "INT-ACCCRE-003",
+  "tcName": "LegacyKey",
+  "test": [
+    {
+      "tx": {
+        "type": "ACCOUNT_CREATION",
+        "to": "random",
+        "value": "0x10",
+        "gas": 100000,
+        "accountKey": {
+          "key": {},
+          "keyType": 1
+        }
+      },
+      "expected": {
+        "status": true
+      }
+    },
+    {
+      "api":{
+        "method":"klay_getAccountKey",
+        "params":["random", "latest"]
+      },
+      "expected": {
+        "key":{},
+        "keyType":1
+      }
+    }
+  ]
+}

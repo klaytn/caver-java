@@ -1,0 +1,18 @@
+{
+  "tcID":"INT-VT-013",
+  "tcName":"ToEQFrom",
+  "test":[
+    {
+      "tx":{
+        "type":"VALUE_TRANSFER",
+        "to":"env.sender",
+        "value":"10",
+        "gas":100000
+      },
+      "expected":{
+        "status":true
+      }
+    }
+  ]
+}
+

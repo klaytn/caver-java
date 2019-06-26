@@ -1,0 +1,20 @@
+{
+  "tcID":"INT-VT-002",
+  "tcName":"WrongSignature",
+  "test":[
+    {
+      "tx":{
+        "type":"VALUE_TRANSFER",
+        "to":"0x18fd72128ae95d0c72dc1301db27371cb22cd002",
+        "value":"0x10",
+        "gas":100000,
+        "privateKey":"2fa38851e4b88c1c4e7ccbc8131c75523edb574442c206c8bd8fb7f8042fe255",
+        "v":"0x1234"
+      },
+      "expected":{
+        "status":false,
+        "errorString":"invalid chain id"
+      }
+    }
+  ]
+}

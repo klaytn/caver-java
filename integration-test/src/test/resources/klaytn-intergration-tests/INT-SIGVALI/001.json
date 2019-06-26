@@ -1,0 +1,37 @@
+{
+  "tcID": "INT-SIGVALI-001",
+  "tcName": "ValueTransfer.LegacyKey",
+  "test": [
+    {
+      "tx": {
+        "type": "ACCOUNT_CREATION",
+        "to": "random",
+        "value": "0x9000000000000",
+        "gas": 100000,
+        "accountKey": {
+          "key": {},
+          "keyType": 1
+        }
+      },
+      "expected": {
+        "status": true
+      }
+    },
+    {
+      "tx": {
+        "type": "VALUE_TRANSFER",
+        "from": "random",
+        "privateKey": "random.privateKey",
+        "to": "0x18fd72128ae95d0c72dc1301db27371cb22cd004",
+        "value": "0x1",
+        "gas": 100000
+      },
+      "expected": {
+        "status": true,
+        "receipt":{
+          "status":true
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "tcID": "INT-ACCCRE-014",
+  "tcName": "RoleBasedKeyPublic1",
+  "test": [
+    {
+      "tx": {
+        "type": "ACCOUNT_CREATION",
+        "to": "random",
+        "value": "0x10",
+        "gas": 100000,
+        "accountKey": {
+          "key": [
+            {
+              "key": {
+                "x": "0x819659d4f08e08d4bd97c6ce5ed2c2eb914201a5b3731eb9d208128df24b97dd",
+                "y": "0x1824267ab9e55f5a3fb1030f0299fa73fc0037305d5b1d90100e2131af41c010"
+              },
+              "keyType": 2
+            }
+          ],
+          "keyType": 5
+        }
+      },
+      "expected": {
+        "status": true
+      }
+    },
+    {
+      "api":{
+        "method":"klay_getAccountKey",
+        "params":["random", "latest"]
+      },
+      "expected": {
+        "key": [
+          {
+            "key": {
+              "x": "0x819659d4f08e08d4bd97c6ce5ed2c2eb914201a5b3731eb9d208128df24b97dd",
+              "y": "0x1824267ab9e55f5a3fb1030f0299fa73fc0037305d5b1d90100e2131af41c010"
+            },
+            "keyType": 2
+          }
+        ],
+        "keyType":5
+      }
+    }
+  ]
+}

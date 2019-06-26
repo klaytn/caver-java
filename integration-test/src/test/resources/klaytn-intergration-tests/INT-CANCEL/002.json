@@ -1,0 +1,17 @@
+{
+  "tcID":"INT-CANCEL-002",
+  "tcName":"WrongSignature",
+  "test":[
+    {
+      "tx":{
+        "type":"CANCEL",
+        "gas":100000,
+        "v":"0x1234"
+      },
+      "expected":{
+        "status":false,
+        "errorString":"invalid chain id"
+      }
+    }
+  ]
+}

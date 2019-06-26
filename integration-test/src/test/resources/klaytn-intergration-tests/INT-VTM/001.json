@@ -1,0 +1,20 @@
+{
+  "tcID":"INT-VTM-001",
+  "tcName":"WrongChainId",
+  "test":[
+    {
+      "tx":{
+        "type":"VALUE_TRANSFER_MEMO",
+        "to":"0x1234567890123456789012345678901234567890",
+        "value":"0x10",
+        "gas":100000,
+        "chainId":1234,
+        "data":""
+      },
+      "expected":{
+        "status":false,
+        "errorString":"invalid chain id"
+      }
+    }
+  ]
+}

@@ -39,7 +39,7 @@ import java.util.stream.Stream;
 
 public class TestGenerator {
     public static final String JSON_POSTFIX = ".json";
-    public static final String KLAYTN_INTERGRATION_TESTS = "klaytn-intergration-tests";
+    public static final String KLAYTN_INTEGRATION_TESTS = "klaytn-integration-tests";
     public static final String ENV_FILE = "env.template" + JSON_POSTFIX;
 
     private ObjectMapper objectMapper
@@ -55,7 +55,7 @@ public class TestGenerator {
 
     private Env readEnv(File envFile) throws Exception {
         if (envFile == null) {
-            URL envUrl = getClass().getClassLoader().getResource(KLAYTN_INTERGRATION_TESTS + File.separator + ENV_FILE);
+            URL envUrl = getClass().getClassLoader().getResource(KLAYTN_INTEGRATION_TESTS + File.separator + ENV_FILE);
             return objectMapper.readValue(envUrl, Env.class);
         }
         return objectMapper.readValue(envFile, Env.class);
@@ -168,7 +168,7 @@ public class TestGenerator {
         }
 
         public TestGenerator build() throws Exception {
-            URL url = getClass().getClassLoader().getResource(KLAYTN_INTERGRATION_TESTS + File.separator + dirName);
+            URL url = getClass().getClassLoader().getResource(KLAYTN_INTEGRATION_TESTS + File.separator + dirName);
             File dir = new File(url.toURI());
             Stream<File> fileStream = Arrays.stream(Objects.requireNonNull(dir.listFiles()))
                     .filter(file -> file.getName().endsWith(JSON_POSTFIX));

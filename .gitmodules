@@ -1,0 +1,3 @@
+[submodule "integration-test/src/test/resources/klaytn-integration-tests"]
+	path = integration-test/src/test/resources/klaytn-integration-tests
+	url = https://github.com/ground-x/klaytn-integration-tests.git

@@ -72,7 +72,7 @@ public class FastTransactionManagerIT extends Scenario {
                 })
                 .build();
 
-        ValueTransfer valueTransfer = new ValueTransfer(caver, transactionManager);
+        ValueTransfer valueTransfer = ValueTransfer.create(caver, transactionManager);
 
         for (int i = 0; i < COUNT; i++) {
             CompletableFuture<KlayTransactionReceipt.TransactionReceipt> transactionReceiptFuture = createTransaction(valueTransfer).sendAsync();
@@ -126,7 +126,7 @@ public class FastTransactionManagerIT extends Scenario {
                 .setTransactionReceiptProcessor(queuingTransactionReceiptProcessor)
                 .build();
 
-        ValueTransfer valueTransfer = new ValueTransfer(caver, transactionManager);
+        ValueTransfer valueTransfer = ValueTransfer.create(caver, transactionManager);
 
         for (int i = 0; i < COUNT; i++) {
             KlayTransactionReceipt.TransactionReceipt transactionReceipt = createTransaction(valueTransfer).send();

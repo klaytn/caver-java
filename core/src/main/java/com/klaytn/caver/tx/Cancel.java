@@ -29,30 +29,23 @@ import com.klaytn.caver.tx.model.CancelTransaction;
 import org.web3j.protocol.core.RemoteCall;
 
 public class Cancel extends ManagedTransaction {
-    public Cancel(Caver caver, TransactionManager transactionManager) {
+
+    private Cancel(Caver caver, TransactionManager transactionManager) {
         super(caver, transactionManager);
     }
 
-
-    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendCancelTransaction(
-            Caver caver, KlayCredentials credentials, CancelTransaction transaction) {
-
-        return Cancel.sendCancelTransaction(caver, credentials, transaction, null);
-    }
-
-    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendCancelTransaction(
-            Caver caver, KlayCredentials credentials, CancelTransaction transaction, ErrorHandler errorHandler) {
-
-        TransactionManager transactionManager = new TransactionManager.Builder(caver, credentials)
-                .setErrorHandler(errorHandler)
-                .build();
-
-        return new RemoteCall<>(() ->
-                new Cancel(caver, transactionManager).send(transaction));
-    }
-
-
     public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendCancelTransaction(CancelTransaction transaction) {
         return new RemoteCall<>(() -> send(transaction));
+    }
+
+    public static Cancel create(Caver caver, TransactionManager transactionManager) {
+        return new Cancel(caver, transactionManager);
+    }
+
+    public static Cancel create(Caver caver, KlayCredentials klayCredentials) {
+        TransactionManager transactionManager = new TransactionManager.Builder(caver, klayCredentials)
+                .build();
+
+        return Cancel.create(caver, transactionManager);
     }
 }

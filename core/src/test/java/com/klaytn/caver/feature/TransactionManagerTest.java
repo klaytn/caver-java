@@ -68,7 +68,8 @@ public class TransactionManagerTest {
     @Test
     public void testAccountUpdate() throws Exception {
         KlayCredentials credentials = KlayCredentials.create(Keys.createEcKeyPair());
-        ValueTransfer.sendFunds(caver, BRANDON, credentials.getAddress(), BigDecimal.valueOf(0.2), Convert.Unit.KLAY, GAS_LIMIT).send();
+        ValueTransfer.create(caver, BRANDON)
+                .sendFunds(BRANDON.getAddress(), credentials.getAddress(), BigDecimal.valueOf(0.2), Convert.Unit.KLAY, GAS_LIMIT).send();
         TransactionManager updateTransactionManager = new TransactionManager.Builder(caver, credentials)
                 .setTransactionReceiptProcessor(new PollingTransactionReceiptProcessor(caver, 1000, 15))
                 .build();

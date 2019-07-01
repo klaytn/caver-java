@@ -28,6 +28,7 @@ import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.AccountUpdateTransaction;
 import com.klaytn.caver.tx.model.SmartContractDeployTransaction;
 import com.klaytn.caver.tx.model.SmartContractExecutionTransaction;
+import com.klaytn.caver.utils.ChainId;
 import com.klaytn.caver.utils.CodeFormat;
 import com.klaytn.caver.utils.Convert;
 import com.klaytn.caver.wallet.WalletManager;
@@ -218,4 +219,14 @@ public class ManagedTransactionTest {
         assertEquals("0x1", receipt.getStatus());
     }
 
+    @Test
+    public void testValueTransferChainId() throws Exception {
+        TransactionManager transactionManager = new TransactionManager.Builder(caver, LUMAN)
+                .setChaindId(ChainId.BAOBAB_TESTNET)
+                .build();
+
+        ValueTransfer valueTransfer = ValueTransfer.create(caver, transactionManager);
+        KlayTransactionReceipt.TransactionReceipt transactionReceipt = valueTransfer.sendFunds(LUMAN.getAddress(), BRANDON.getAddress(), BigDecimal.ONE, Convert.Unit.PEB, GAS_LIMIT).send();
+        assertEquals("0x1", transactionReceipt.getStatus());
+    }
 }

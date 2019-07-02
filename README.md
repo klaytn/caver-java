@@ -38,9 +38,10 @@ When you send transactions, `caver-java` provides easy-to-use wrapper classes. H
 ```java
 Caver caver = Caver.build(<endpoint>);
 KlayCredentials credentials = KlayWalletUtils.loadCredentials(<password>, <walletfilePath>);
-KlayTransactionReceipt.TransactionReceipt transactionReceipt = ValueTransfer.create(caver, credentials).sendFunds(
+int chainId = ChainId.BAOBAB_TESTNET; // ChainId.BAOBAB_TESTNET = 1001
+KlayTransactionReceipt.TransactionReceipt transactionReceipt = ValueTransfer.create(caver, credentials, chainId).sendFunds(
             <fromAddress>, <toAddress>, <value>, <valueUnit>, <gasLimit>
-            ).send();
+        ).send();
 ```
 `<valueUnit>` means a unit of value that is used in Klaytn. It is defined as an enum type. Examples of possible values are as below.
 

@@ -334,23 +334,6 @@ public class SmartContract extends ManagedTransaction {
         return new RemoteCall<>(() -> executeTransaction(function, weiValue));
     }
 
-    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendExecutionTransaction(
-            Caver caver, KlayCredentials credentials, SmartContractExecutionTransaction transaction) {
-
-        return SmartContract.sendExecutionTransaction(caver, credentials, transaction, null);
-    }
-
-    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendExecutionTransaction(
-            Caver caver, KlayCredentials credentials, SmartContractExecutionTransaction transaction, ErrorHandler errorHandler) {
-
-        TransactionManager transactionManager = new TransactionManager.Builder(caver, credentials)
-                .setErrorHandler(errorHandler)
-                .build();
-
-        return new RemoteCall<>(() ->
-                new SmartContract(caver, transactionManager).send(transaction));
-    }
-
     public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendExecutionTransaction(SmartContractExecutionTransaction transaction) {
         return new RemoteCall<>(() -> send(transaction));
     }

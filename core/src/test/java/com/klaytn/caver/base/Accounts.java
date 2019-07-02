@@ -16,7 +16,19 @@
 
 package com.klaytn.caver.base;
 
+import com.klaytn.caver.Caver;
 import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.tx.manager.TransactionManager;
+import com.klaytn.caver.tx.model.ValueTransferTransaction;
+import com.klaytn.caver.utils.Convert;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static com.klaytn.caver.base.LocalValues.KLAY_PROVIDER;
+import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 
 public class Accounts {
 
@@ -35,4 +47,28 @@ public class Accounts {
     public static final KlayCredentials FEE_PAYER = KlayCredentials.create(
             "0x1e558ea00698990d875cb69d3c8f9a234fe8eab5c6bd898488d851669289e178"
     );
+
+    static {
+        List<KlayCredentials> testCredentials = new ArrayList<>(Arrays.asList(LUMAN, WAYNE, BRANDON, FEE_PAYER));
+        fillUpKlay(testCredentials);
+    }
+
+    private static void fillUpKlay(List<KlayCredentials> testCredentials) {
+        Caver caver = Caver.build(Caver.DEFAULT_URL);
+        TransactionManager transactionManager
+                = new TransactionManager.Builder(caver, KLAY_PROVIDER).setChaindId(LOCAL_CHAIN_ID).build();
+        for (KlayCredentials testCredential : testCredentials) {
+            feedToEach(transactionManager, testCredential);
+        }
+    }
+
+    private static void feedToEach(TransactionManager transactionManager, KlayCredentials testCredential) {
+        ValueTransferTransaction valueTransferTransaction = ValueTransferTransaction.create(
+                KLAY_PROVIDER.getAddress(),
+                testCredential.getAddress(),
+                Convert.toPeb("100", Convert.Unit.KLAY).toBigInteger(),
+                BigInteger.valueOf(4_300_000)
+        );
+        transactionManager.executeTransaction(valueTransferTransaction);
+    }
 }

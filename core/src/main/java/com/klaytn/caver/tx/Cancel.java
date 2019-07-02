@@ -42,8 +42,9 @@ public class Cancel extends ManagedTransaction {
         return new Cancel(caver, transactionManager);
     }
 
-    public static Cancel create(Caver caver, KlayCredentials klayCredentials) {
+    public static Cancel create(Caver caver, KlayCredentials klayCredentials, int chainId) {
         TransactionManager transactionManager = new TransactionManager.Builder(caver, klayCredentials)
+                .setChaindId(chainId)
                 .build();
 
         return Cancel.create(caver, transactionManager);

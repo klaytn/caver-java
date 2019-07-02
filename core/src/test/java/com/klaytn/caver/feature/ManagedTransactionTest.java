@@ -123,7 +123,7 @@ public class ManagedTransactionTest {
     public void testAccountUpdate() throws Exception {
         KlayCredentials credentials = KlayCredentials.create(Keys.createEcKeyPair());
 
-        ValueTransfer.create(caver, BRANDON).sendFunds(
+        ValueTransfer.create(caver, BRANDON, ChainId.BAOBAB_TESTNET).sendFunds(
                 BRANDON.getAddress(),
                 credentials.getAddress(),
                 BigDecimal.valueOf(0.2),
@@ -140,7 +140,7 @@ public class ManagedTransactionTest {
     public void testUpdateFlow() throws Exception {
         KlayCredentials credentials = KlayCredentials.create(Keys.createEcKeyPair());
 
-        ValueTransfer.create(caver, BRANDON).sendFunds(
+        ValueTransfer.create(caver, BRANDON, ChainId.BAOBAB_TESTNET).sendFunds(
                 BRANDON.getAddress(),
                 credentials.getAddress(),
                 BigDecimal.valueOf(0.2),
@@ -159,7 +159,7 @@ public class ManagedTransactionTest {
     public void testUpdateFuture() throws Exception {
         KlayCredentials credentials = KlayCredentials.create(Keys.createEcKeyPair());
 
-        ValueTransfer.create(caver, BRANDON).sendFunds(
+        ValueTransfer.create(caver, BRANDON, ChainId.BAOBAB_TESTNET).sendFunds(
                 BRANDON.getAddress(),
                 credentials.getAddress(),
                 BigDecimal.valueOf(0.2),

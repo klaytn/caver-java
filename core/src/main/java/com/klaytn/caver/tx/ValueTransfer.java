@@ -70,8 +70,9 @@ public class ValueTransfer extends ManagedTransaction {
         return new ValueTransfer(caver, transactionManager);
     }
 
-    public static ValueTransfer create(Caver caver, KlayCredentials klayCredentials) {
+    public static ValueTransfer create(Caver caver, KlayCredentials klayCredentials, int chainId) {
         TransactionManager transactionManager = new TransactionManager.Builder(caver, klayCredentials)
+                .setChaindId(chainId)
                 .build();
 
         return ValueTransfer.create(caver, transactionManager);

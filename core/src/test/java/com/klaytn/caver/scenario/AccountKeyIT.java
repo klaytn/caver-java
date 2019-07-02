@@ -44,7 +44,7 @@ public class AccountKeyIT extends Scenario {
     @Test
     public void AccountKeyRolebased() throws Exception {
         KlayCredentials credentials = KlayCredentials.create(Keys.createEcKeyPair());
-        ValueTransfer.create(caver, BRANDON).sendFunds(
+        ValueTransfer.create(caver, BRANDON, BAOBAB_CHAIN_ID).sendFunds(
                 BRANDON.getAddress(),
                 credentials.getAddress(),
                 BigDecimal.valueOf(0.2),
@@ -56,7 +56,7 @@ public class AccountKeyIT extends Scenario {
                 credentials.getAddress(),
                 createRolebased(),
                 GAS_LIMIT);
-        KlayTransactionReceipt.TransactionReceipt receipt = Account.create(caver, credentials)
+        KlayTransactionReceipt.TransactionReceipt receipt = Account.create(caver, credentials, BAOBAB_CHAIN_ID)
                 .sendUpdateTransaction(accountUpdateTransaction)
                 .send();
         assertEquals("0x1", receipt.getStatus());

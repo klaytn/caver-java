@@ -48,7 +48,7 @@ public class FeePayerManagerIT extends Scenario {
                 new File(KlayWalletUtils.getBaobabKeyDirectory())
         );
         KlayCredentials credentials = KlayWalletUtils.loadCredentials(PASSWORD, keystoreFilePath);
-        ValueTransfer.create(caver, BRANDON).sendFunds(
+        ValueTransfer.create(caver, BRANDON, BAOBAB_CHAIN_ID).sendFunds(
                 BRANDON.getAddress(),
                 credentials.getAddress(),
                 BigDecimal.valueOf(0.1),

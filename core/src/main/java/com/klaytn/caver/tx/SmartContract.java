@@ -26,7 +26,6 @@ import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.Bytes;
 import com.klaytn.caver.methods.response.KlayLogs;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
-import com.klaytn.caver.tx.manager.ErrorHandler;
 import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.SmartContractDeployTransaction;
 import com.klaytn.caver.tx.model.SmartContractExecutionTransaction;
@@ -71,7 +70,7 @@ public class SmartContract extends ManagedTransaction {
     protected Map<String, String> deployedAddresses;
     protected DefaultBlockParameter defaultBlockParameter = DefaultBlockParameterName.LATEST;
 
-    public SmartContract(Caver caver, TransactionManager transactionManager) {
+    private SmartContract(Caver caver, TransactionManager transactionManager) {
         super(caver, transactionManager);
     }
 
@@ -110,6 +109,26 @@ public class SmartContract extends ManagedTransaction {
                         .setChaindId(chainId)
                         .build(),
                 gasProvider);
+    }
+
+    public static SmartContract create(Caver caver, TransactionManager transactionManager) {
+        return new SmartContract(caver, transactionManager);
+    }
+
+    public static SmartContract create(Caver caver, KlayCredentials klayCredentials, int chainId) {
+        TransactionManager transactionManager = new TransactionManager.Builder(caver, klayCredentials)
+                .setChaindId(chainId)
+                .build();
+
+        return SmartContract.create(caver, transactionManager);
+    }
+
+    public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendDeployTransaction(SmartContractDeployTransaction transaction) {
+        return new RemoteCall<>(() -> send(transaction));
+    }
+
+    public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendExecutionTransaction(SmartContractExecutionTransaction transaction) {
+        return new RemoteCall<>(() -> send(transaction));
     }
 
     public void setContractAddress(String contractAddress) {
@@ -334,10 +353,6 @@ public class SmartContract extends ManagedTransaction {
         return new RemoteCall<>(() -> executeTransaction(function, weiValue));
     }
 
-    public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendExecutionTransaction(SmartContractExecutionTransaction transaction) {
-        return new RemoteCall<>(() -> send(transaction));
-    }
-
     private static <T extends SmartContract> T create(
             T contract, String binary, String encodedConstructor, BigInteger value)
             throws IOException, TransactionException {
@@ -402,27 +417,6 @@ public class SmartContract extends ManagedTransaction {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendDeployTransaction(
-            Caver caver, KlayCredentials credentials, SmartContractDeployTransaction transaction) {
-
-        return SmartContract.sendDeployTransaction(caver, credentials, transaction, null);
-    }
-
-    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendDeployTransaction(
-            Caver caver, KlayCredentials credentials, SmartContractDeployTransaction transaction, ErrorHandler errorHandler) {
-
-        TransactionManager transactionManager = new TransactionManager.Builder(caver, credentials)
-                .setErrorHandler(errorHandler)
-                .build();
-
-        return new RemoteCall<>(() ->
-                new SmartContract(caver, transactionManager).send(transaction));
-    }
-
-    public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendDeployTransaction(SmartContractDeployTransaction transaction) {
-        return new RemoteCall<>(() -> send(transaction));
     }
 
     public static <T extends SmartContract> RemoteCall<T> deployRemoteCall(

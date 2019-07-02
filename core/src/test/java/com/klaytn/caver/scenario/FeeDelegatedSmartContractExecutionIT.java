@@ -21,6 +21,7 @@ import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.Bytes;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.tx.SmartContract;
+import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.KlayRawTransaction;
 import com.klaytn.caver.tx.model.SmartContractDeployTransaction;
 import com.klaytn.caver.tx.type.TxTypeFeeDelegatedSmartContractExecution;
@@ -34,6 +35,7 @@ import java.math.BigInteger;
 
 import static com.klaytn.caver.base.Accounts.BRANDON;
 import static com.klaytn.caver.base.Accounts.FEE_PAYER;
+import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
@@ -52,7 +54,7 @@ public class FeeDelegatedSmartContractExecutionIT extends Scenario {
                 TxTypeFeeDelegatedSmartContractExecution.decodeFromRawTransaction(senderRawTransaction.getValueAsString());
         assertEquals(BRANDON.getAddress(), payerTransaction.getFrom());
 
-        KlayRawTransaction payerRawTransaction = new FeePayer(FEE_PAYER, BAOBAB_CHAIN_ID).sign(payerTransaction);
+        KlayRawTransaction payerRawTransaction = new FeePayer(FEE_PAYER, LOCAL_CHAIN_ID).sign(payerTransaction);
         KlayTransactionReceipt.TransactionReceipt receipt = sendTxAndGetReceipt(payerRawTransaction.getValueAsString());
         assertTrue(deployedContract.equalsIgnoreCase(receipt.getTo()));
 
@@ -83,11 +85,13 @@ public class FeeDelegatedSmartContractExecutionIT extends Scenario {
                 BRANDON.getAddress(),
                 getPayLoad()
         );
-        return senderTransaction.sign(BRANDON, BAOBAB_CHAIN_ID);
+        return senderTransaction.sign(BRANDON, LOCAL_CHAIN_ID);
     }
 
     private String getDeployedContract() throws Exception {
-        KlayTransactionReceipt.TransactionReceipt receipt = SmartContract.sendDeployTransaction(caver, BRANDON, SmartContractDeployTransaction.create(
+        SmartContract smartContract = new SmartContract(
+                caver, new TransactionManager.Builder(caver, BRANDON).setChaindId(LOCAL_CHAIN_ID).build());
+        KlayTransactionReceipt.TransactionReceipt receipt = smartContract.sendDeployTransaction(SmartContractDeployTransaction.create(
                 BRANDON.getAddress(),
                 BigInteger.ZERO,
                 Numeric.hexStringToByteArray("0x60806040526000805560405160208061014b83398101806040528101908080519060200190929190505050806000819055505061010a806100416000396000f3006080604052600436106053576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd14605857806342cbb15c146080578063d14e62b81460a8575b600080fd5b348015606357600080fd5b50606a60c6565b6040518082815260200191505060405180910390f35b348015608b57600080fd5b50609260cc565b6040518082815260200191505060405180910390f35b60c46004803603810190808035906020019092919050505060d4565b005b60005481565b600043905090565b80600081905550505600a165627a7a72305820d9f890da4e30bac256db19aacc47a7025c902da590bd8ebab1fe5425f3670df000290000000000000000000000000000000000000000000000000000000000000001"),

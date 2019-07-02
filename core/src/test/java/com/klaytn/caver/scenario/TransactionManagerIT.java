@@ -26,6 +26,7 @@ import java.math.BigInteger;
 
 import static com.klaytn.caver.base.Accounts.BRANDON;
 import static com.klaytn.caver.base.Accounts.WAYNE;
+import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static junit.framework.TestCase.assertEquals;
 
 public class TransactionManagerIT extends Scenario {
@@ -36,8 +37,8 @@ public class TransactionManagerIT extends Scenario {
     public void testTransactionManager() throws Exception {
         TransactionManager transactionManager
                 = new TransactionManager.Builder(caver, BRANDON)
+                .setChaindId(LOCAL_CHAIN_ID)
                 /*
-                .setChaindId(0)
                 .setErrorHandler(new ErrorHandler() {
                     @Override
                     public void exception(Exception exception) {

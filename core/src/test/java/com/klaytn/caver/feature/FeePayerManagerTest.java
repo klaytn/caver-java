@@ -22,7 +22,6 @@ import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.tx.manager.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.tx.model.ValueTransferTransaction;
 import com.klaytn.caver.tx.type.TxType;
-import com.klaytn.caver.utils.ChainId;
 import com.klaytn.caver.utils.Convert;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +31,7 @@ import org.web3j.utils.Numeric;
 import java.math.BigInteger;
 
 import static com.klaytn.caver.base.Accounts.*;
+import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static org.junit.Assert.assertEquals;
 
 public class FeePayerManagerTest {
@@ -44,7 +44,7 @@ public class FeePayerManagerTest {
 
     @Before
     public void setUp() {
-        caver = Caver.build(Caver.BAOBAB_URL);
+        caver = Caver.build(Caver.DEFAULT_URL);
     }
 
     @Test
@@ -53,6 +53,7 @@ public class FeePayerManagerTest {
         FeePayerManager feePayerManager =
                 new FeePayerManager.Builder(caver, FEE_PAYER)
                         .setTransactionReceiptProcessor(new PollingTransactionReceiptProcessor(caver, 1000, 10))
+                        .setChainId(LOCAL_CHAIN_ID)
                         .build();
 
         KlayTransactionReceipt.TransactionReceipt transactionReceipt = feePayerManager.executeTransaction(rawTx);
@@ -70,7 +71,7 @@ public class FeePayerManagerTest {
                 .feeRatio(FEE_RATIO)
                 .buildFeeDelegated();
 
-        return tx.sign(LUMAN, ChainId.BAOBAB_TESTNET).getValueAsString();
+        return tx.sign(LUMAN, LOCAL_CHAIN_ID).getValueAsString();
     }
 
     BigInteger getNonce(String address) throws Exception {

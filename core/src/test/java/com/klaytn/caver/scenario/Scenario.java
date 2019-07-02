@@ -36,6 +36,7 @@ import org.web3j.tx.gas.StaticGasProvider;
 import java.math.BigInteger;
 import java.util.Optional;
 
+import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static junit.framework.TestCase.fail;
 
 /**
@@ -46,7 +47,6 @@ public class Scenario {
     static final BigInteger GAS_PRICE = Convert.toPeb("25", Convert.Unit.STON).toBigInteger();
     static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
     static final StaticGasProvider STATIC_GAS_PROVIDER = new StaticGasProvider(GAS_PRICE, GAS_LIMIT);
-    public static final int BAOBAB_CHAIN_ID = ChainId.BAOBAB_TESTNET;
 
     private static final String WALLET_PASSWORD = "";
 
@@ -62,7 +62,7 @@ public class Scenario {
 
     @Before
     public void setUp() {
-        this.caver = Caver.build(Caver.BAOBAB_URL);
+        this.caver = Caver.build(Caver.DEFAULT_URL);
     }
 
     BigInteger getNonce(String address) throws Exception {
@@ -72,11 +72,12 @@ public class Scenario {
     }
 
     String signTransaction(TxType tx, KlayCredentials credentials) {
-        return tx.sign(credentials, BAOBAB_CHAIN_ID).getValueAsString();
+        return tx.sign(credentials, LOCAL_CHAIN_ID).getValueAsString();
     }
 
     String signTransactionFromFeePayer(String senderRawTx, KlayCredentials feePayer) {
-        FeePayerManager feePayerManager = new FeePayerManager.Builder(this.caver, feePayer).build();
+        FeePayerManager feePayerManager = new FeePayerManager
+                .Builder(this.caver, feePayer).setChainId(LOCAL_CHAIN_ID).build();
         return feePayerManager.sign(senderRawTx).getValueAsString();
     }
 

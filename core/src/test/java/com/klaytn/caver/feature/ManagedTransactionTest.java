@@ -28,10 +28,8 @@ import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.AccountUpdateTransaction;
 import com.klaytn.caver.tx.model.SmartContractDeployTransaction;
 import com.klaytn.caver.tx.model.SmartContractExecutionTransaction;
-import com.klaytn.caver.utils.ChainId;
 import com.klaytn.caver.utils.CodeFormat;
 import com.klaytn.caver.utils.Convert;
-import com.klaytn.caver.wallet.WalletManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.web3j.crypto.Hash;
@@ -43,41 +41,38 @@ import java.math.BigInteger;
 import java.util.concurrent.ExecutionException;
 
 import static com.klaytn.caver.base.Accounts.*;
+import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static org.junit.Assert.assertEquals;
 
 public class ManagedTransactionTest {
+    private static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
+    private static final byte[] PAYLOAD = Numeric.hexStringToByteArray("0x60806040526000805534801561001457600080fd5b50610116806100246000396000f3006080604052600436106053576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd14605857806342cbb15c146080578063d14e62b81460a8575b600080fd5b348015606357600080fd5b50606a60d2565b6040518082815260200191505060405180910390f35b348015608b57600080fd5b50609260d8565b6040518082815260200191505060405180910390f35b34801560b357600080fd5b5060d06004803603810190808035906020019092919050505060e0565b005b60005481565b600043905090565b80600081905550505600a165627a7a7230582064856de85a2706463526593b08dd790054536042ef66d3204018e6790a2208d10029");
 
     private Caver caver;
-    private final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
     private TransactionManager transactionManager;
 
-    private SmartContractDeployTransaction smartContractDeployTransaction;
-    private SmartContractExecutionTransaction smartContractExecutionTransaction;
+    private SmartContractDeployTransaction smartContractDeployTransaction = SmartContractDeployTransaction
+            .create(LUMAN.getAddress(), BigInteger.ZERO, PAYLOAD, GAS_LIMIT, CodeFormat.EVM);
 
     @Before
-    public void setUp() throws Exception {
-        caver = Caver.build(Caver.BAOBAB_URL);
-
-        this.transactionManager = getTransactionManager(LUMAN);
-
-        byte[] payload = Numeric.hexStringToByteArray("0x60806040526000805534801561001457600080fd5b50610116806100246000396000f3006080604052600436106053576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd14605857806342cbb15c146080578063d14e62b81460a8575b600080fd5b348015606357600080fd5b50606a60d2565b6040518082815260200191505060405180910390f35b348015608b57600080fd5b50609260d8565b6040518082815260200191505060405180910390f35b34801560b357600080fd5b5060d06004803603810190808035906020019092919050505060e0565b005b60005481565b600043905090565b80600081905550505600a165627a7a7230582064856de85a2706463526593b08dd790054536042ef66d3204018e6790a2208d10029");
-        this.smartContractDeployTransaction = SmartContractDeployTransaction
-                .create(LUMAN.getAddress(), BigInteger.ZERO, payload, GAS_LIMIT, CodeFormat.EVM);
-
-        String deployedContract = "0xffadaa1345eaf8b7e5798ba7dfb7e9a6afa55eb1";
-        this.smartContractExecutionTransaction = SmartContractExecutionTransaction
-                .create(LUMAN.getAddress(), deployedContract, BigInteger.ZERO, getChangePayload(), GAS_LIMIT);
+    public void setUp() {
+        caver = Caver.build(Caver.DEFAULT_URL);
+        transactionManager = getTransactionManager(LUMAN);
     }
 
-    public TransactionManager getTransactionManager(KlayCredentials credentials) {
-        WalletManager walletManager = new WalletManager();
-        walletManager.add(credentials);
-        return transactionManager = new TransactionManager.Builder(caver, walletManager)
+    private TransactionManager getTransactionManager(KlayCredentials credentials) {
+        return transactionManager = new TransactionManager.Builder(caver, credentials)
                 .setTransactionReceiptProcessor(new PollingTransactionReceiptProcessor(caver, 1000, 15))
+                .setChaindId(LOCAL_CHAIN_ID)
                 .build();
     }
 
-    public AccountUpdateTransaction getAccountUpdateTransaction(KlayCredentials from, KlayCredentials to) {
+    private SmartContractExecutionTransaction getContractExecutionTransaction(String deployedContract) {
+        return SmartContractExecutionTransaction
+                .create(LUMAN.getAddress(), deployedContract, BigInteger.ZERO, getChangePayload(), GAS_LIMIT);
+    }
+
+    private AccountUpdateTransaction getAccountUpdateTransaction(KlayCredentials from, KlayCredentials to) {
         return AccountUpdateTransaction.create(
                 from.getAddress(),
                 AccountKeyPublic.create(to.getEcKeyPair().getPublicKey()),
@@ -85,14 +80,17 @@ public class ManagedTransactionTest {
         );
     }
 
+    private String getDeployedContract(SmartContract smartContract) throws Exception {
+        return smartContract.sendDeployTransaction(smartContractDeployTransaction)
+                .send()
+                .getContractAddress();
+    }
+
     private byte[] getChangePayload() {
         String setCommand = "setCount(uint256)";
         BigInteger replaceValue = BigInteger.valueOf(27);
         String payLoadNoCommand = Numeric.toHexStringNoPrefix(Numeric.toBytesPadded(replaceValue, 32));
-        String payLoad = new StringBuilder(Hash.sha3String(setCommand)
-                .substring(2, 10))
-                .append(payLoadNoCommand)
-                .toString();
+        String payLoad = Hash.sha3String(setCommand).substring(2, 10) + payLoadNoCommand;
         return Numeric.hexStringToByteArray(payLoad);
     }
 
@@ -123,7 +121,7 @@ public class ManagedTransactionTest {
     public void testAccountUpdate() throws Exception {
         KlayCredentials credentials = KlayCredentials.create(Keys.createEcKeyPair());
 
-        ValueTransfer.create(caver, BRANDON, ChainId.BAOBAB_TESTNET).sendFunds(
+        ValueTransfer.create(caver, BRANDON, LOCAL_CHAIN_ID).sendFunds(
                 BRANDON.getAddress(),
                 credentials.getAddress(),
                 BigDecimal.valueOf(0.2),
@@ -140,7 +138,7 @@ public class ManagedTransactionTest {
     public void testUpdateFlow() throws Exception {
         KlayCredentials credentials = KlayCredentials.create(Keys.createEcKeyPair());
 
-        ValueTransfer.create(caver, BRANDON, ChainId.BAOBAB_TESTNET).sendFunds(
+        ValueTransfer.create(caver, BRANDON, LOCAL_CHAIN_ID).sendFunds(
                 BRANDON.getAddress(),
                 credentials.getAddress(),
                 BigDecimal.valueOf(0.2),
@@ -159,7 +157,7 @@ public class ManagedTransactionTest {
     public void testUpdateFuture() throws Exception {
         KlayCredentials credentials = KlayCredentials.create(Keys.createEcKeyPair());
 
-        ValueTransfer.create(caver, BRANDON, ChainId.BAOBAB_TESTNET).sendFunds(
+        ValueTransfer.create(caver, BRANDON, LOCAL_CHAIN_ID).sendFunds(
                 BRANDON.getAddress(),
                 credentials.getAddress(),
                 BigDecimal.valueOf(0.2),
@@ -198,31 +196,35 @@ public class ManagedTransactionTest {
     @Test
     public void testSmartContractExecution() throws Exception {
         SmartContract smartContractExecution = new SmartContract(caver, transactionManager);
-        KlayTransactionReceipt.TransactionReceipt receipt = smartContractExecution.sendExecutionTransaction(smartContractExecutionTransaction).send();
+        String deployedContract = getDeployedContract(smartContractExecution);
+        KlayTransactionReceipt.TransactionReceipt receipt
+                = smartContractExecution.sendExecutionTransaction(getContractExecutionTransaction(deployedContract)).send();
         assertEquals("0x1", receipt.getStatus());
-        System.out.println(receipt.getErrorMessage());
     }
 
     @Test
-    public void testSmartContractExecutionFlow() {
+    public void testSmartContractExecutionFlow() throws Exception {
         SmartContract smartContractExecution = new SmartContract(caver, transactionManager);
-        smartContractExecution.sendExecutionTransaction(smartContractExecutionTransaction).flowable()
+        String deployedContract = getDeployedContract(smartContractExecution);
+        smartContractExecution.sendExecutionTransaction(getContractExecutionTransaction(deployedContract))
+                .flowable()
                 .test()
                 .assertSubscribed()
                 .assertValue(receipt -> receipt.getStatus().equals("0x1"));
     }
 
     @Test
-    public void testSmartContractExecutionFuture() throws ExecutionException, InterruptedException {
+    public void testSmartContractExecutionFuture() throws Exception {
         SmartContract smartContractExecution = new SmartContract(caver, transactionManager);
-        KlayTransactionReceipt.TransactionReceipt receipt = smartContractExecution.sendExecutionTransaction(smartContractExecutionTransaction).sendAsync().get();
+        String deployedContract = getDeployedContract(smartContractExecution);
+        KlayTransactionReceipt.TransactionReceipt receipt = smartContractExecution.sendExecutionTransaction(getContractExecutionTransaction(deployedContract)).sendAsync().get();
         assertEquals("0x1", receipt.getStatus());
     }
 
     @Test
     public void testValueTransferChainId() throws Exception {
         TransactionManager transactionManager = new TransactionManager.Builder(caver, LUMAN)
-                .setChaindId(ChainId.BAOBAB_TESTNET)
+                .setChaindId(LOCAL_CHAIN_ID)
                 .build();
 
         ValueTransfer valueTransfer = ValueTransfer.create(caver, transactionManager);

@@ -174,14 +174,14 @@ public class ManagedTransactionTest {
 
     @Test
     public void testSmartContractDeploy() throws Exception {
-        SmartContract smartContractDeploy = new SmartContract(caver, transactionManager);
+        SmartContract smartContractDeploy = SmartContract.create(caver, transactionManager);
         KlayTransactionReceipt.TransactionReceipt receipt = smartContractDeploy.sendDeployTransaction(smartContractDeployTransaction).send();
         assertEquals("0x1", receipt.getStatus());
     }
 
     @Test
     public void testSmartContractDeployFlow() {
-        SmartContract smartContractDeploy = new SmartContract(caver, transactionManager);
+        SmartContract smartContractDeploy = SmartContract.create(caver, transactionManager);
         smartContractDeploy.sendDeployTransaction(smartContractDeployTransaction).flowable()
                 .test()
                 .assertSubscribed()
@@ -190,14 +190,14 @@ public class ManagedTransactionTest {
 
     @Test
     public void testSmartContractDeployFuture() throws ExecutionException, InterruptedException {
-        SmartContract smartContractDeploy = new SmartContract(caver, transactionManager);
+        SmartContract smartContractDeploy = SmartContract.create(caver, transactionManager);
         KlayTransactionReceipt.TransactionReceipt receipt = smartContractDeploy.sendDeployTransaction(smartContractDeployTransaction).sendAsync().get();
         assertEquals("0x1", receipt.getStatus());
     }
 
     @Test
     public void testSmartContractExecution() throws Exception {
-        SmartContract smartContractExecution = new SmartContract(caver, transactionManager);
+        SmartContract smartContractExecution = SmartContract.create(caver, transactionManager);
         KlayTransactionReceipt.TransactionReceipt receipt = smartContractExecution.sendExecutionTransaction(smartContractExecutionTransaction).send();
         assertEquals("0x1", receipt.getStatus());
         System.out.println(receipt.getErrorMessage());
@@ -205,7 +205,7 @@ public class ManagedTransactionTest {
 
     @Test
     public void testSmartContractExecutionFlow() {
-        SmartContract smartContractExecution = new SmartContract(caver, transactionManager);
+        SmartContract smartContractExecution = SmartContract.create(caver, transactionManager);
         smartContractExecution.sendExecutionTransaction(smartContractExecutionTransaction).flowable()
                 .test()
                 .assertSubscribed()
@@ -214,7 +214,7 @@ public class ManagedTransactionTest {
 
     @Test
     public void testSmartContractExecutionFuture() throws ExecutionException, InterruptedException {
-        SmartContract smartContractExecution = new SmartContract(caver, transactionManager);
+        SmartContract smartContractExecution = SmartContract.create(caver, transactionManager);
         KlayTransactionReceipt.TransactionReceipt receipt = smartContractExecution.sendExecutionTransaction(smartContractExecutionTransaction).sendAsync().get();
         assertEquals("0x1", receipt.getStatus());
     }

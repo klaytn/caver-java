@@ -53,6 +53,7 @@ import java.util.Optional;
 import static com.klaytn.caver.base.Accounts.BRANDON;
 import static com.klaytn.caver.base.Accounts.LUMAN;
 import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
+import static com.klaytn.caver.base.LocalValues.LOCAL_NETWORK_ID;
 import static junit.framework.TestCase.*;
 
 public class RpcTest {
@@ -565,7 +566,7 @@ public class RpcTest {
     @Test
     public void testGetId() throws Exception {
         Bytes netVersion = caver.net().getNetworkId().send();
-        assertEquals(netVersion.getResult(), String.valueOf(2018));
+        assertEquals(netVersion.getResult(), String.valueOf(LOCAL_NETWORK_ID));
     }
 
     @Test

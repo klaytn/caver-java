@@ -172,14 +172,14 @@ public class ManagedTransactionTest {
 
     @Test
     public void testSmartContractDeploy() throws Exception {
-        SmartContract smartContractDeploy = new SmartContract(caver, transactionManager);
+        SmartContract smartContractDeploy = SmartContract.create(caver, transactionManager);
         KlayTransactionReceipt.TransactionReceipt receipt = smartContractDeploy.sendDeployTransaction(smartContractDeployTransaction).send();
         assertEquals("0x1", receipt.getStatus());
     }
 
     @Test
     public void testSmartContractDeployFlow() {
-        SmartContract smartContractDeploy = new SmartContract(caver, transactionManager);
+        SmartContract smartContractDeploy = SmartContract.create(caver, transactionManager);
         smartContractDeploy.sendDeployTransaction(smartContractDeployTransaction).flowable()
                 .test()
                 .assertSubscribed()
@@ -188,14 +188,14 @@ public class ManagedTransactionTest {
 
     @Test
     public void testSmartContractDeployFuture() throws ExecutionException, InterruptedException {
-        SmartContract smartContractDeploy = new SmartContract(caver, transactionManager);
+        SmartContract smartContractDeploy = SmartContract.create(caver, transactionManager);
         KlayTransactionReceipt.TransactionReceipt receipt = smartContractDeploy.sendDeployTransaction(smartContractDeployTransaction).sendAsync().get();
         assertEquals("0x1", receipt.getStatus());
     }
 
     @Test
     public void testSmartContractExecution() throws Exception {
-        SmartContract smartContractExecution = new SmartContract(caver, transactionManager);
+        SmartContract smartContractExecution = SmartContract.create(caver, transactionManager);
         String deployedContract = getDeployedContract(smartContractExecution);
         KlayTransactionReceipt.TransactionReceipt receipt
                 = smartContractExecution.sendExecutionTransaction(getContractExecutionTransaction(deployedContract)).send();
@@ -204,7 +204,7 @@ public class ManagedTransactionTest {
 
     @Test
     public void testSmartContractExecutionFlow() throws Exception {
-        SmartContract smartContractExecution = new SmartContract(caver, transactionManager);
+        SmartContract smartContractExecution = SmartContract.create(caver, transactionManager);
         String deployedContract = getDeployedContract(smartContractExecution);
         smartContractExecution.sendExecutionTransaction(getContractExecutionTransaction(deployedContract))
                 .flowable()
@@ -215,7 +215,7 @@ public class ManagedTransactionTest {
 
     @Test
     public void testSmartContractExecutionFuture() throws Exception {
-        SmartContract smartContractExecution = new SmartContract(caver, transactionManager);
+        SmartContract smartContractExecution = SmartContract.create(caver, transactionManager);
         String deployedContract = getDeployedContract(smartContractExecution);
         KlayTransactionReceipt.TransactionReceipt receipt = smartContractExecution.sendExecutionTransaction(getContractExecutionTransaction(deployedContract)).sendAsync().get();
         assertEquals("0x1", receipt.getStatus());

@@ -465,7 +465,7 @@ public class TransactionIT extends Scenario {
     }
 
     private String getDeployedContract() throws Exception {
-        SmartContract smartContract = new SmartContract(
+        SmartContract smartContract = SmartContract.create(
                 caver, new TransactionManager.Builder(caver, BRANDON).setChaindId(LOCAL_CHAIN_ID).build());
         KlayTransactionReceipt.TransactionReceipt receipt = smartContract.sendDeployTransaction(SmartContractDeployTransaction.create(
                 BRANDON.getAddress(),

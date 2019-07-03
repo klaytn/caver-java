@@ -40,7 +40,7 @@ public class FeePayerManagerTest {
     static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
     static final BigInteger FEE_RATIO = BigInteger.valueOf(30);
 
-    Caver caver;
+    private Caver caver;
 
     @Before
     public void setUp() {
@@ -50,11 +50,10 @@ public class FeePayerManagerTest {
     @Test
     public void testFeePayerManagerValueTransfer() throws Exception {
         String rawTx = getSenderRawTx();
-        FeePayerManager feePayerManager =
-                new FeePayerManager.Builder(caver, FEE_PAYER)
-                        .setTransactionReceiptProcessor(new PollingTransactionReceiptProcessor(caver, 1000, 10))
-                        .setChainId(LOCAL_CHAIN_ID)
-                        .build();
+        FeePayerManager feePayerManager = new FeePayerManager.Builder(caver, FEE_PAYER)
+                .setTransactionReceiptProcessor(new PollingTransactionReceiptProcessor(caver, 1000, 10))
+                .setChainId(LOCAL_CHAIN_ID)
+                .build();
 
         KlayTransactionReceipt.TransactionReceipt transactionReceipt = feePayerManager.executeTransaction(rawTx);
 
@@ -70,7 +69,6 @@ public class FeePayerManagerTest {
                 .nonce(getNonce(LUMAN.getAddress()))
                 .feeRatio(FEE_RATIO)
                 .buildFeeDelegated();
-
         return tx.sign(LUMAN, LOCAL_CHAIN_ID).getValueAsString();
     }
 
@@ -78,7 +76,6 @@ public class FeePayerManagerTest {
         BigInteger nonce = caver.klay().getTransactionCount(
                 address,
                 DefaultBlockParameterName.PENDING).sendAsync().get().getValue();
-
         return nonce;
     }
 }

@@ -26,7 +26,6 @@ import com.klaytn.caver.fee.FeePayerManager;
 import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.tx.type.TxType;
-import com.klaytn.caver.utils.ChainId;
 import com.klaytn.caver.utils.Convert;
 import org.junit.Before;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -88,20 +87,17 @@ public class Scenario {
 
     KlayTransactionReceipt.TransactionReceipt waitForTransactionReceipt(
             String transactionHash) throws Exception {
-
         Optional<KlayTransactionReceipt.TransactionReceipt> transactionReceiptOptional =
                 getTransactionReceipt(transactionHash, SLEEP_DURATION, ATTEMPTS);
 
         if (!transactionReceiptOptional.isPresent()) {
             fail("Transaction receipt not generated after " + ATTEMPTS + " attempts");
         }
-
         return transactionReceiptOptional.get();
     }
 
     private Optional<KlayTransactionReceipt.TransactionReceipt> getTransactionReceipt(
             String transactionHash, int sleepDuration, int attempts) throws Exception {
-
         Optional<KlayTransactionReceipt.TransactionReceipt> receiptOptional =
                 sendTransactionReceiptRequest(transactionHash);
         for (int i = 0; i < attempts; i++) {
@@ -112,7 +108,6 @@ public class Scenario {
                 break;
             }
         }
-
         return receiptOptional;
     }
 
@@ -120,7 +115,6 @@ public class Scenario {
             String transactionHash) throws Exception {
         Response<KlayTransactionReceipt.TransactionReceipt> transactionReceipt =
                 caver.klay().getTransactionReceipt(transactionHash).sendAsync().get();
-
         return Optional.ofNullable(transactionReceipt.getResult());
     }
 }

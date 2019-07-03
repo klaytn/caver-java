@@ -25,7 +25,6 @@ import com.klaytn.caver.tx.account.AccountKeyPublic;
 import com.klaytn.caver.tx.manager.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.*;
-import com.klaytn.caver.utils.ChainId;
 import com.klaytn.caver.utils.CodeFormat;
 import com.klaytn.caver.utils.Convert;
 import com.klaytn.caver.wallet.WalletManager;
@@ -160,10 +159,7 @@ public class TransactionManagerTest {
 
         BigInteger replaceValue = BigInteger.valueOf(changeValue);
         String payLoadNoCommand = Numeric.toHexStringNoPrefix(Numeric.toBytesPadded(replaceValue, 32));
-        String payLoad = new StringBuilder(Hash.sha3String(setCommand)
-                .substring(2, 10))
-                .append(payLoadNoCommand)
-                .toString();
+        String payLoad = Hash.sha3String(setCommand).substring(2, 10) + payLoadNoCommand;
         return Numeric.hexStringToByteArray(payLoad);
     }
 

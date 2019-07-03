@@ -24,7 +24,6 @@ import com.klaytn.caver.tx.SmartContract;
 import com.klaytn.caver.tx.model.KlayRawTransaction;
 import com.klaytn.caver.tx.model.SmartContractDeployTransaction;
 import com.klaytn.caver.tx.type.TxTypeFeeDelegatedSmartContractExecution;
-import com.klaytn.caver.utils.ChainId;
 import com.klaytn.caver.utils.CodeFormat;
 import org.junit.Test;
 import org.web3j.crypto.Hash;
@@ -75,8 +74,7 @@ public class FeeDelegatedSmartContractExecutionIT extends Scenario {
 
     private KlayRawTransaction getSenderRawTransaction(String deployedContract) throws Exception {
         BigInteger nonce = getNonce(BRANDON.getAddress());
-        TxTypeFeeDelegatedSmartContractExecution senderTransaction
-                = TxTypeFeeDelegatedSmartContractExecution.createTransaction(
+        TxTypeFeeDelegatedSmartContractExecution senderTransaction = TxTypeFeeDelegatedSmartContractExecution.createTransaction(
                 nonce,
                 GAS_PRICE,
                 GAS_LIMIT,
@@ -103,10 +101,9 @@ public class FeeDelegatedSmartContractExecutionIT extends Scenario {
     private byte[] getPayLoad() {
         BigInteger replaceValue = BigInteger.valueOf(CHANGE_VALUE);
         String payLoadNoCommand = Numeric.toHexString(Numeric.toBytesPadded(replaceValue, 32)).substring(2);
-        String payLoad = new StringBuilder(Hash.sha3String(SET_COMMAND)
-                .substring(2, 10))
-                .append(payLoadNoCommand)
-                .toString();
+        String payLoad = Hash.sha3String(SET_COMMAND)
+                .substring(2, 10) +
+                payLoadNoCommand;
         return Numeric.hexStringToByteArray(payLoad);
     }
 }

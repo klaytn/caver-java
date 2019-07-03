@@ -72,29 +72,29 @@ public class AccountKeyTest {
         AccountKeyWeightedMultiSig.WeightedPublicKey key0 = AccountKeyWeightedMultiSig.WeightedPublicKey.create(
                 BigInteger.valueOf(1),
                 AccountKeyPublic.create(
-                "0xc734b50ddb229be5e929fc4aa8080ae8240a802d23d3290e5e6156ce029b110e",
-                "0x61a443ac3ffff164d1fb3617875f07641014cf17af6b7dc38e429fe838763712"
+                        "0xc734b50ddb229be5e929fc4aa8080ae8240a802d23d3290e5e6156ce029b110e",
+                        "0x61a443ac3ffff164d1fb3617875f07641014cf17af6b7dc38e429fe838763712"
                 )
         );
         AccountKeyWeightedMultiSig.WeightedPublicKey key1 = AccountKeyWeightedMultiSig.WeightedPublicKey.create(
                 BigInteger.valueOf(1),
                 AccountKeyPublic.create(
-                "0x12d45f1cc56fbd6cd8fc877ab63b5092ac77db907a8a42c41dad3e98d7c64dfb",
-                "0x8ef355a8d524eb444eba507f236309ce08370debaa136cb91b2f445774bff842"
+                        "0x12d45f1cc56fbd6cd8fc877ab63b5092ac77db907a8a42c41dad3e98d7c64dfb",
+                        "0x8ef355a8d524eb444eba507f236309ce08370debaa136cb91b2f445774bff842"
                 )
         );
         AccountKeyWeightedMultiSig.WeightedPublicKey key2 = AccountKeyWeightedMultiSig.WeightedPublicKey.create(
                 BigInteger.valueOf(1),
                 AccountKeyPublic.create(
-                "0xea9a9f85065a00d7b9ffd3a8532a574035984587fd08107d8f4cbad6b786b0cd",
-                "0xb95ebb02d9397b4a8faceb58d485d612f0379a923ec0ddcf083378460a56acca"
+                        "0xea9a9f85065a00d7b9ffd3a8532a574035984587fd08107d8f4cbad6b786b0cd",
+                        "0xb95ebb02d9397b4a8faceb58d485d612f0379a923ec0ddcf083378460a56acca"
                 )
         );
         AccountKeyWeightedMultiSig.WeightedPublicKey key3 = AccountKeyWeightedMultiSig.WeightedPublicKey.create(
                 BigInteger.valueOf(1),
                 AccountKeyPublic.create(
-                "0x8551bc489d62fa2e6f767ba87fe93a62b679fca8ff3114eb5805e6487b51e8f6",
-                "0x4206aa84bc8955fcbfcc396854228aa63ebacd81b7311a31ab9d71d90b7ec3d7"
+                        "0x8551bc489d62fa2e6f767ba87fe93a62b679fca8ff3114eb5805e6487b51e8f6",
+                        "0x4206aa84bc8955fcbfcc396854228aa63ebacd81b7311a31ab9d71d90b7ec3d7"
                 )
         );
 
@@ -142,15 +142,15 @@ public class AccountKeyTest {
         AccountKeyWeightedMultiSig.WeightedPublicKey roleUpdateKey0 = AccountKeyWeightedMultiSig.WeightedPublicKey.create(
                 BigInteger.valueOf(1),
                 AccountKeyPublic.create(
-                "0xe4a01407460c1c03ac0c82fd84f303a699b210c0b054f4aff72ff7dcdf01512d",
-                "0x0a5735a23ce1654b14680054a993441eae7c261983a56f8e0da61280758b5919"
+                        "0xe4a01407460c1c03ac0c82fd84f303a699b210c0b054f4aff72ff7dcdf01512d",
+                        "0x0a5735a23ce1654b14680054a993441eae7c261983a56f8e0da61280758b5919"
                 )
         );
         AccountKeyWeightedMultiSig.WeightedPublicKey roleUpdateKey1 = AccountKeyWeightedMultiSig.WeightedPublicKey.create(
                 BigInteger.valueOf(1),
                 AccountKeyPublic.create(
-                "0x36f6355f5b532c3c1606f18fa2be7a16ae200c5159c8031dd25bfa389a4c9c06",
-                "0x6fdf9fc87a16ac359e66d9761445d5ccbb417fb7757a3f5209d713824596a50d"
+                        "0x36f6355f5b532c3c1606f18fa2be7a16ae200c5159c8031dd25bfa389a4c9c06",
+                        "0x6fdf9fc87a16ac359e66d9761445d5ccbb417fb7757a3f5209d713824596a50d"
                 )
         );
         List<AccountKeyWeightedMultiSig.WeightedPublicKey> weightedPublicKeys = new ArrayList<>();

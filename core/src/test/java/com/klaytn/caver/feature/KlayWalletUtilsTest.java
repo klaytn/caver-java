@@ -24,6 +24,7 @@ import org.web3j.utils.Numeric;
 import java.io.File;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
 
 public class KlayWalletUtilsTest {
 
@@ -35,6 +36,7 @@ public class KlayWalletUtilsTest {
         );
 
         KlayCredentials credentials = KlayWalletUtils.loadCredentials("password", keystoreFilePath);
+        assertNotNull(credentials);
 
         new File(keystoreFilePath).delete();
     }
@@ -47,6 +49,7 @@ public class KlayWalletUtilsTest {
         );
 
         KlayCredentials credentials = KlayWalletUtils.loadCredentials("password", keystoreFilePath);
+        assertNotNull(credentials);
 
         new File(keystoreFilePath).delete();
     }

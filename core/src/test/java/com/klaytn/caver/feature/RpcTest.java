@@ -17,36 +17,53 @@
 package com.klaytn.caver.feature;
 
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.crpyto.KlayCredentials;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.request.KlayFilter;
 import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.Boolean;
 import com.klaytn.caver.methods.response.*;
-import com.klaytn.caver.scenario.Scenario;
-import com.klaytn.caver.utils.ChainId;
+import com.klaytn.caver.tx.Account;
+import com.klaytn.caver.tx.SmartContract;
+import com.klaytn.caver.tx.ValueTransfer;
+import com.klaytn.caver.tx.account.AccountKeyPublic;
+import com.klaytn.caver.tx.manager.TransactionManager;
+import com.klaytn.caver.tx.model.AccountUpdateTransaction;
+import com.klaytn.caver.tx.model.SmartContractDeployTransaction;
+import com.klaytn.caver.utils.CodeFormat;
+import com.klaytn.caver.utils.Convert;
 import junit.framework.TestCase;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.Keys;
+import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.DefaultBlockParameterNumber;
 import org.web3j.protocol.core.Response;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
 import static com.klaytn.caver.base.Accounts.BRANDON;
 import static com.klaytn.caver.base.Accounts.LUMAN;
+import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
+import static com.klaytn.caver.base.LocalValues.LOCAL_NETWORK_ID;
 import static junit.framework.TestCase.*;
 
 public class RpcTest {
+    private static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
 
-    private Caver caver;
-    private TestBlock testBlock;
-    private String testTransactionHash;
+    private static Caver caver;
+    private static TestBlock testBlock;
+    private static String testTransactionHash;
+    private static KlayCredentials testCredentials;
+    private static String deployedContract;
 
     public static class TestBlock {
         int blockNumber;
@@ -60,14 +77,52 @@ public class RpcTest {
         }
     }
 
-    @Before
-    public void setUp() {
-        this.caver = Caver.build(Caver.BAOBAB_URL);
-        this.testBlock = new TestBlock(
-                36523,
-                "0x307b87383974dcf419436f0f30e1dd71945673282cda9b63e7de30361567a46e",
-                1);
-        this.testTransactionHash = "0x26ce172b055cc5adc26cc1350868c9fe4840729d4cc03b3f9f0a934eebdd0cec";
+    @BeforeClass
+    public static void setUp() throws Exception {
+        caver = Caver.build(Caver.DEFAULT_URL);
+        KlayTransactionReceipt.TransactionReceipt receipt = getTransactionReceipt();
+        testBlock = getTestBlock(receipt);
+        testTransactionHash = receipt.getTransactionHash();
+        updateTestCredentials();
+        deployedContract = getDeployedContract();
+    }
+
+    private static String getDeployedContract() throws Exception {
+        byte[] payload = Numeric.hexStringToByteArray("0x60806040526000805534801561001457600080fd5b50610116806100246000396000f3006080604052600436106053576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd14605857806342cbb15c146080578063d14e62b81460a8575b600080fd5b348015606357600080fd5b50606a60d2565b6040518082815260200191505060405180910390f35b348015608b57600080fd5b50609260d8565b6040518082815260200191505060405180910390f35b34801560b357600080fd5b5060d06004803603810190808035906020019092919050505060e0565b005b60005481565b600043905090565b80600081905550505600a165627a7a7230582064856de85a2706463526593b08dd790054536042ef66d3204018e6790a2208d10029");
+        SmartContract smartContract = SmartContract.create(caver, new TransactionManager.Builder(caver, BRANDON).setChaindId(LOCAL_CHAIN_ID).build());
+        KlayTransactionReceipt.TransactionReceipt receipt = smartContract.sendDeployTransaction(SmartContractDeployTransaction.create(
+                BRANDON.getAddress(), BigInteger.ZERO, payload, GAS_LIMIT, CodeFormat.EVM
+        )).send();
+        return receipt.getContractAddress();
+    }
+
+    private static void updateTestCredentials() throws Exception {
+        ECKeyPair keyPair = Keys.createEcKeyPair();
+        Account.create(caver, testCredentials, LOCAL_CHAIN_ID).sendUpdateTransaction(AccountUpdateTransaction.create(
+                testCredentials.getAddress(), AccountKeyPublic.create(keyPair.getPublicKey()), GAS_LIMIT
+        )).send();
+    }
+
+    private static TestBlock getTestBlock(KlayTransactionReceipt.TransactionReceipt receipt) throws IOException {
+        KlayBlock.Block block = caver.klay()
+                .getBlockByNumber(DefaultBlockParameter.valueOf(Numeric.decodeQuantity(receipt.getBlockNumber())), true)
+                .send().getBlock();
+
+        return new TestBlock(
+                Numeric.decodeQuantity(block.getNumber()).intValue(),
+                block.getHash(),
+                block.getTransactions().size());
+    }
+
+    private static KlayTransactionReceipt.TransactionReceipt getTransactionReceipt() throws Exception {
+        testCredentials = KlayCredentials.create(Keys.createEcKeyPair());
+        return sendValue();
+    }
+
+    private static KlayTransactionReceipt.TransactionReceipt sendValue() throws Exception {
+        return ValueTransfer.create(caver, BRANDON, LOCAL_CHAIN_ID)
+                .sendFunds(BRANDON.getAddress(), testCredentials.getAddress(), BigDecimal.ONE, Convert.Unit.KLAY, GAS_LIMIT)
+                .send();
     }
 
     @Test
@@ -87,16 +142,16 @@ public class RpcTest {
 
     @Test
     public void getAccount() throws IOException {
-        KlayAccount response = caver.klay().getAccount("0x1b24096b5a84d0f422faaa69f4de65d24329bd87", DefaultBlockParameterName.LATEST).send();
+        KlayAccount response = caver.klay().getAccount(BRANDON.getAddress(), DefaultBlockParameterName.LATEST).send();
         KlayAccount.Account account = response.getResult();
-        assertEquals(0x2, account.getAccType());
+        assertEquals(0x1, account.getAccType());
     }
 
     @Test
     public void getAccountKey() throws IOException {
-        KlayAccountKey response = caver.klay().getAccountKey("0x9300da845f40c25336e3fbaec88a1842f3029a95", DefaultBlockParameterName.LATEST).send();
+        KlayAccountKey response = caver.klay().getAccountKey(testCredentials.getAddress(), DefaultBlockParameterName.LATEST).send();
         KlayAccountKey.AccountKeyValue accountKey = response.getResult();
-        assertEquals(0x05, accountKey.getKeyType());
+        assertEquals(0x02, accountKey.getKeyType());
     }
 
     @Test
@@ -108,7 +163,7 @@ public class RpcTest {
 
     @Test
     public void testGetCode() throws Exception {
-        Response<String> response = caver.klay().getCode("0x9bf734fcacf0151d81f5d895898bf3afeb1b6e0b", DefaultBlockParameterName.LATEST).send();
+        Response<String> response = caver.klay().getCode(deployedContract, DefaultBlockParameterName.LATEST).send();
         String result = response.getResult();
         assertEquals("0x6080604052600436106053576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd14605857806342cbb15c146080578063d14e62b81460a8575b600080fd5b348015606357600080fd5b50606a60d2565b6040518082815260200191505060405180910390f35b348015608b57600080fd5b50609260d8565b6040518082815260200191505060405180910390f35b34801560b357600080fd5b5060d06004803603810190808035906020019092919050505060e0565b005b60005481565b600043905090565b80600081905550505600a165627a7a7230582064856de85a2706463526593b08dd790054536042ef66d3204018e6790a2208d10029",
                 result);
@@ -126,7 +181,7 @@ public class RpcTest {
     @Test
     public void testIsContractAccount() throws Exception {
         Boolean response = caver.klay().isContractAccount(
-                "0xd176364a6e4c0737efbee4c598835633de50f3f0", DefaultBlockParameterName.LATEST).send();
+                deployedContract, DefaultBlockParameterName.LATEST).send();
         java.lang.Boolean result = response.getResult();
         assertTrue(result);
     }
@@ -265,7 +320,7 @@ public class RpcTest {
     public void testCall() throws Exception {
         CallObject callObject = CallObject.createCallObject(
                 LUMAN.getAddress(),
-                "0xB18f35236a5296ccf2cc24EC67487E07C224b98E",
+                deployedContract,
                 new BigInteger("2dc6c0", 16),
                 new BigInteger("5d21dba00", 16),
                 new BigInteger("0", 16),
@@ -273,7 +328,7 @@ public class RpcTest {
         );
         Response<String> response = caver.klay().call(callObject, DefaultBlockParameterName.LATEST).send();
         String result = response.getResult();
-        assertEquals(27, Numeric.toBigInt(result).intValue());
+        assertEquals(0, Numeric.toBigInt(result).intValue());
     }
 
     @Test
@@ -378,7 +433,7 @@ public class RpcTest {
     public void testGetChainId() throws Exception {
         Quantity response = caver.klay().getChainID().send();
         BigInteger result = response.getValue();
-        assertEquals(BigInteger.valueOf(ChainId.BAOBAB_TESTNET), result);
+        assertEquals(BigInteger.valueOf(LOCAL_CHAIN_ID), result);
     }
 
     @Test
@@ -511,7 +566,7 @@ public class RpcTest {
     @Test
     public void testGetId() throws Exception {
         Bytes netVersion = caver.net().getNetworkId().send();
-        assertEquals(netVersion.getResult(), String.valueOf(Scenario.BAOBAB_CHAIN_ID));
+        assertEquals(netVersion.getResult(), String.valueOf(LOCAL_NETWORK_ID));
     }
 
     @Test

@@ -24,7 +24,6 @@ import com.klaytn.caver.tx.SmartContract;
 import com.klaytn.caver.tx.model.KlayRawTransaction;
 import com.klaytn.caver.tx.model.SmartContractDeployTransaction;
 import com.klaytn.caver.tx.type.TxTypeFeeDelegatedSmartContractExecution;
-import com.klaytn.caver.utils.ChainId;
 import com.klaytn.caver.utils.CodeFormat;
 import org.junit.Test;
 import org.web3j.crypto.Hash;
@@ -35,6 +34,7 @@ import java.math.BigInteger;
 
 import static com.klaytn.caver.base.Accounts.BRANDON;
 import static com.klaytn.caver.base.Accounts.FEE_PAYER;
+import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
@@ -53,7 +53,7 @@ public class FeeDelegatedSmartContractExecutionIT extends Scenario {
                 TxTypeFeeDelegatedSmartContractExecution.decodeFromRawTransaction(senderRawTransaction.getValueAsString());
         assertEquals(BRANDON.getAddress(), payerTransaction.getFrom());
 
-        KlayRawTransaction payerRawTransaction = new FeePayer(FEE_PAYER, BAOBAB_CHAIN_ID).sign(payerTransaction);
+        KlayRawTransaction payerRawTransaction = new FeePayer(FEE_PAYER, LOCAL_CHAIN_ID).sign(payerTransaction);
         KlayTransactionReceipt.TransactionReceipt receipt = sendTxAndGetReceipt(payerRawTransaction.getValueAsString());
         assertTrue(deployedContract.equalsIgnoreCase(receipt.getTo()));
 
@@ -74,8 +74,7 @@ public class FeeDelegatedSmartContractExecutionIT extends Scenario {
 
     private KlayRawTransaction getSenderRawTransaction(String deployedContract) throws Exception {
         BigInteger nonce = getNonce(BRANDON.getAddress());
-        TxTypeFeeDelegatedSmartContractExecution senderTransaction
-                = TxTypeFeeDelegatedSmartContractExecution.createTransaction(
+        TxTypeFeeDelegatedSmartContractExecution senderTransaction = TxTypeFeeDelegatedSmartContractExecution.createTransaction(
                 nonce,
                 GAS_PRICE,
                 GAS_LIMIT,
@@ -84,11 +83,11 @@ public class FeeDelegatedSmartContractExecutionIT extends Scenario {
                 BRANDON.getAddress(),
                 getPayLoad()
         );
-        return senderTransaction.sign(BRANDON, BAOBAB_CHAIN_ID);
+        return senderTransaction.sign(BRANDON, LOCAL_CHAIN_ID);
     }
 
     private String getDeployedContract() throws Exception {
-        KlayTransactionReceipt.TransactionReceipt receipt = SmartContract.create(caver, BRANDON, ChainId.BAOBAB_TESTNET)
+        KlayTransactionReceipt.TransactionReceipt receipt = SmartContract.create(caver, BRANDON, LOCAL_CHAIN_ID)
                 .sendDeployTransaction(SmartContractDeployTransaction.create(
                         BRANDON.getAddress(),
                         BigInteger.ZERO,
@@ -102,10 +101,9 @@ public class FeeDelegatedSmartContractExecutionIT extends Scenario {
     private byte[] getPayLoad() {
         BigInteger replaceValue = BigInteger.valueOf(CHANGE_VALUE);
         String payLoadNoCommand = Numeric.toHexString(Numeric.toBytesPadded(replaceValue, 32)).substring(2);
-        String payLoad = new StringBuilder(Hash.sha3String(SET_COMMAND)
-                .substring(2, 10))
-                .append(payLoadNoCommand)
-                .toString();
+        String payLoad = Hash.sha3String(SET_COMMAND)
+                .substring(2, 10) +
+                payLoadNoCommand;
         return Numeric.hexStringToByteArray(payLoad);
     }
 }

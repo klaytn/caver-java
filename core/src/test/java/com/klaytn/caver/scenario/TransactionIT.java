@@ -18,6 +18,9 @@ package com.klaytn.caver.scenario;
 
 import com.klaytn.caver.crpyto.KlayCredentials;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
+import com.klaytn.caver.tx.SmartContract;
+import com.klaytn.caver.tx.manager.TransactionManager;
+import com.klaytn.caver.tx.model.SmartContractDeployTransaction;
 import com.klaytn.caver.tx.type.*;
 import com.klaytn.caver.utils.CodeFormat;
 import com.klaytn.caver.utils.KlayTransactionUtils;
@@ -30,6 +33,7 @@ import java.math.BigInteger;
 import java.util.Random;
 
 import static com.klaytn.caver.base.Accounts.*;
+import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static junit.framework.TestCase.assertEquals;
 
 public class TransactionIT extends Scenario {
@@ -270,13 +274,13 @@ public class TransactionIT extends Scenario {
 
     @Test
     public void testTxTypeSmartContractExecution() throws Exception {
-        String DEPLOYED_CONTRACT = "0x1b24096b5a84d0f422faaa69f4de65d24329bd87";
+        String deployedContract = getDeployedContract();
 
         TxTypeSmartContractExecution tx = TxTypeSmartContractExecution.createTransaction(
                 getNonce(BRANDON.getAddress()),
                 GAS_PRICE,
                 GAS_LIMIT,
-                DEPLOYED_CONTRACT,
+                deployedContract,
                 BigInteger.ZERO,
                 BRANDON.getAddress(),
                 getPayLoad());
@@ -290,7 +294,7 @@ public class TransactionIT extends Scenario {
 
     @Test
     public void testTxTypeFeeDelegatedSmartContractExecution() throws Exception {
-        String DEPLOYED_CONTRACT = "0x1b24096b5a84d0f422faaa69f4de65d24329bd87";
+        String deployedContract = getDeployedContract();
 
         /**
          * Client Side
@@ -299,7 +303,7 @@ public class TransactionIT extends Scenario {
                 getNonce(BRANDON.getAddress()),
                 GAS_PRICE,
                 GAS_LIMIT,
-                DEPLOYED_CONTRACT,
+                deployedContract,
                 BigInteger.ZERO,
                 BRANDON.getAddress(),
                 getPayLoad());
@@ -330,7 +334,7 @@ public class TransactionIT extends Scenario {
 
     @Test
     public void testTxTypeFeeDelegatedSmartContractExecutionWithRatio() throws Exception {
-        String DEPLOYED_CONTRACT = "0x1b24096B5a84D0F422Faaa69F4dE65D24329bd87";
+        String deployedContract = getDeployedContract();
 
         /**
          * Client Side
@@ -339,13 +343,13 @@ public class TransactionIT extends Scenario {
                 getNonce(LUMAN.getAddress()),
                 GAS_PRICE,
                 GAS_LIMIT,
-                DEPLOYED_CONTRACT,
+                deployedContract,
                 BigInteger.ZERO,
                 LUMAN.getAddress(),
                 getPayLoad(),
                 BigInteger.valueOf(66));
 
-        String rawTx = tx.sign(LUMAN, BAOBAB_CHAIN_ID).getValueAsString();
+        String rawTx = tx.sign(LUMAN, LOCAL_CHAIN_ID).getValueAsString();
 
         /**
          * Payer Side
@@ -438,7 +442,7 @@ public class TransactionIT extends Scenario {
                 new BigInteger("174876e800", 16),
                 "");
 
-        String rawTx = tx.sign(from, BAOBAB_CHAIN_ID).getValueAsString();
+        String rawTx = tx.sign(from, LOCAL_CHAIN_ID).getValueAsString();
         caver.klay().sendSignedTransaction(rawTx).sendAsync().get();
     }
 
@@ -460,4 +464,16 @@ public class TransactionIT extends Scenario {
         assertEquals("0x1", transactionReceipt.getStatus());
     }
 
+    private String getDeployedContract() throws Exception {
+        SmartContract smartContract = SmartContract.create(
+                caver, new TransactionManager.Builder(caver, BRANDON).setChaindId(LOCAL_CHAIN_ID).build());
+        KlayTransactionReceipt.TransactionReceipt receipt = smartContract.sendDeployTransaction(SmartContractDeployTransaction.create(
+                BRANDON.getAddress(),
+                BigInteger.ZERO,
+                Numeric.hexStringToByteArray("0x60806040526000805560405160208061014b83398101806040528101908080519060200190929190505050806000819055505061010a806100416000396000f3006080604052600436106053576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd14605857806342cbb15c146080578063d14e62b81460a8575b600080fd5b348015606357600080fd5b50606a60c6565b6040518082815260200191505060405180910390f35b348015608b57600080fd5b50609260cc565b6040518082815260200191505060405180910390f35b60c46004803603810190808035906020019092919050505060d4565b005b60005481565b600043905090565b80600081905550505600a165627a7a72305820d9f890da4e30bac256db19aacc47a7025c902da590bd8ebab1fe5425f3670df000290000000000000000000000000000000000000000000000000000000000000001"),
+                GAS_LIMIT,
+                CodeFormat.EVM
+        )).send();
+        return receipt.getContractAddress();
+    }
 }

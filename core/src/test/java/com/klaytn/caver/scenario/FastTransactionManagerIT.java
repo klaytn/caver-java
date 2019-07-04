@@ -42,6 +42,7 @@ import java.util.concurrent.Future;
 
 import static com.klaytn.caver.base.Accounts.BRANDON;
 import static com.klaytn.caver.base.Accounts.LUMAN;
+import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -70,6 +71,7 @@ public class FastTransactionManagerIT extends Scenario {
                         log.error("error : {}", exception.getLocalizedMessage());
                     }
                 })
+                .setChaindId(LOCAL_CHAIN_ID)
                 .build();
 
         ValueTransfer valueTransfer = ValueTransfer.create(caver, transactionManager);
@@ -124,6 +126,7 @@ public class FastTransactionManagerIT extends Scenario {
         TransactionManager transactionManager = new TransactionManager.Builder(caver, BRANDON)
                 .setGetNonceProcessor(new FastGetNonceProcessor(caver))
                 .setTransactionReceiptProcessor(queuingTransactionReceiptProcessor)
+                .setChaindId(LOCAL_CHAIN_ID)
                 .build();
 
         ValueTransfer valueTransfer = ValueTransfer.create(caver, transactionManager);

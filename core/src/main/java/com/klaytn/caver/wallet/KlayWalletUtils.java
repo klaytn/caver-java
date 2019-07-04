@@ -49,7 +49,7 @@ public class KlayWalletUtils {
     private static final int PRIVATE_KEY_LENGTH_IN_HEX = ADDRESS_SIZE >> 2;
     private static final int PUBLIC_KEY_LENGTH_IN_HEX = PUBLIC_KEY_SIZE << 1;
 
-    public static final String CHECKSUM = "00";
+    public static final String CHECKSUM = "0x00";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final SecureRandom secureRandom = SecureRandomUtils.secureRandom();

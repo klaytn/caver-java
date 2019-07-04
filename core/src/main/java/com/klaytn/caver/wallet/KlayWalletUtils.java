@@ -213,7 +213,7 @@ public class KlayWalletUtils {
     private static void createDirectoryIfNotPresent(String defaultDirectory) {
         File file = new File(defaultDirectory);
         if (!file.exists()) {
-            if (!file.mkdir()) {
+            if (!file.mkdirs()) {
                 throw new RuntimeException(
                         String.format("Default key directory is not created", defaultDirectory));
             }

@@ -26,6 +26,7 @@ import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.Bytes;
 import com.klaytn.caver.methods.response.KlayLogs;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
+import com.klaytn.caver.tx.manager.ErrorHandler;
 import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.SmartContractDeployTransaction;
 import com.klaytn.caver.tx.model.SmartContractExecutionTransaction;
@@ -130,6 +131,65 @@ public class SmartContract extends ManagedTransaction {
     public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendExecutionTransaction(SmartContractExecutionTransaction transaction) {
         return new RemoteCall<>(() -> send(transaction));
     }
+
+    /**
+     * @deprecated  In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. the static methods were removed for extensibility. <br/>
+     *              {will be removed in next version} <br/>
+     *              use {@link #sendDeployTransaction(SmartContractDeployTransaction)} ()} instead like this:
+     */
+    @Deprecated
+    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendDeployTransaction(
+            Caver caver, KlayCredentials credentials, SmartContractDeployTransaction transaction) {
+
+        return SmartContract.sendDeployTransaction(caver, credentials, transaction, null);
+    }
+
+    /**
+     * @deprecated  In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. the static methods were removed for extensibility. <br/>
+     *              {will be removed in next version} <br/>
+     *              use {@link #sendDeployTransaction(SmartContractDeployTransaction)} ()} instead like this:
+     */
+    @Deprecated
+    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendDeployTransaction(
+            Caver caver, KlayCredentials credentials, SmartContractDeployTransaction transaction, ErrorHandler errorHandler) {
+
+        TransactionManager transactionManager = new TransactionManager.Builder(caver, credentials)
+                .setErrorHandler(errorHandler)
+                .build();
+
+        return new RemoteCall<>(() ->
+                new SmartContract(caver, transactionManager).send(transaction));
+    }
+
+    /**
+     * @deprecated  In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. the static methods were removed for extensibility. <br/>
+     *              {will be removed in next version} <br/>
+     *              use {@link #sendExecutionTransaction(SmartContractExecutionTransaction)} instead like this:
+     */
+    @Deprecated
+    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendExecutionTransaction(
+            Caver caver, KlayCredentials credentials, SmartContractExecutionTransaction transaction) {
+
+        return SmartContract.sendExecutionTransaction(caver, credentials, transaction, null);
+    }
+
+    /**
+     * @deprecated  In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. the static methods were removed for extensibility. <br/>
+     *              {will be removed in next version} <br/>
+     *              use {@link #sendExecutionTransaction(SmartContractExecutionTransaction)} instead like this:
+     */
+    @Deprecated
+    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendExecutionTransaction(
+            Caver caver, KlayCredentials credentials, SmartContractExecutionTransaction transaction, ErrorHandler errorHandler) {
+
+        TransactionManager transactionManager = new TransactionManager.Builder(caver, credentials)
+                .setErrorHandler(errorHandler)
+                .build();
+
+        return new RemoteCall<>(() ->
+                new SmartContract(caver, transactionManager).send(transaction));
+    }
+
 
     public void setContractAddress(String contractAddress) {
         this.contractAddress = contractAddress;

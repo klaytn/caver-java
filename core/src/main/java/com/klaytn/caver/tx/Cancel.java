@@ -51,8 +51,8 @@ public class Cancel extends ManagedTransaction {
     }
 
     /**
-     * @deprecated  In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. the static methods were removed for extensibility. <br/>
-     *              {will be removed in next version} <br/>
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. the static methods were removed for extensibility.</p>
+     *              <p>{will be removed in next version}</p>
      *              use {@link #sendCancelTransaction(CancelTransaction)} instead like this:
      */
     @Deprecated
@@ -63,8 +63,8 @@ public class Cancel extends ManagedTransaction {
     }
 
     /**
-     * @deprecated  In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. the static methods were removed for extensibility. <br/>
-     *              {will be removed in next version} <br/>
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. the static methods were removed for extensibility.</p>
+     *              <p>{will be removed in next version}</p>
      *              use {@link #sendCancelTransaction(CancelTransaction)} instead like this:
      */
     @Deprecated

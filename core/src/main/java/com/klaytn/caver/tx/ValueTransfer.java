@@ -80,8 +80,8 @@ public class ValueTransfer extends ManagedTransaction {
     }
 
     /**
-     * @deprecated  In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. the static methods were removed for extensibility. <br/>
-     *              {will be removed in next version} <br/>
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. the static methods were removed for extensibility.</p>
+     *              <p>{will be removed in next version}</p>
      *              use {@link #sendFunds(String, String, BigDecimal, Convert.Unit, BigInteger)} instead like this:
      */
     @Deprecated
@@ -92,8 +92,8 @@ public class ValueTransfer extends ManagedTransaction {
     }
 
     /**
-     * @deprecated  In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. the static methods were removed for extensibility. <br/>
-     *              {will be removed in next version} <br/>
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. the static methods were removed for extensibility.</p>
+     *              <p>{will be removed in next version}</p>
      *              use {@link #sendFunds(String, String, BigDecimal, Convert.Unit, BigInteger)} instead like this:
      */
     @Deprecated
@@ -109,8 +109,8 @@ public class ValueTransfer extends ManagedTransaction {
     }
 
     /**
-     * @deprecated  In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. the static methods were removed for extensibility. <br/>
-     *              {will be removed in next version} <br/>
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. the static methods were removed for extensibility.</p>
+     *              <p>{will be removed in next version}</p>
      *              use {@link #sendFunds(ValueTransferTransaction)} instead like this:
      */
     @Deprecated
@@ -121,8 +121,8 @@ public class ValueTransfer extends ManagedTransaction {
     }
 
     /**
-     * @deprecated  In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. the static methods were removed for extensibility. <br/>
-     *              {will be removed in next version} <br/>
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. the static methods were removed for extensibility.</p>
+     *              <p>{will be removed in next version}</p>
      *              use {@link #sendFunds(ValueTransferTransaction)} instead like this:
      */
     @Deprecated

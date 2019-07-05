@@ -49,4 +49,33 @@ public class Cancel extends ManagedTransaction {
 
         return Cancel.create(caver, transactionManager);
     }
+
+    /**
+     * @deprecated  In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. the static methods were removed for extensibility. <br/>
+     *              {will be removed in next version} <br/>
+     *              use {@link #sendCancelTransaction(CancelTransaction)} instead like this:
+     */
+    @Deprecated
+    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendCancelTransaction(
+            Caver caver, KlayCredentials credentials, CancelTransaction transaction) {
+
+        return Cancel.sendCancelTransaction(caver, credentials, transaction, null);
+    }
+
+    /**
+     * @deprecated  In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. the static methods were removed for extensibility. <br/>
+     *              {will be removed in next version} <br/>
+     *              use {@link #sendCancelTransaction(CancelTransaction)} instead like this:
+     */
+    @Deprecated
+    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendCancelTransaction(
+            Caver caver, KlayCredentials credentials, CancelTransaction transaction, ErrorHandler errorHandler) {
+
+        TransactionManager transactionManager = new TransactionManager.Builder(caver, credentials)
+                .setErrorHandler(errorHandler)
+                .build();
+
+        return new RemoteCall<>(() ->
+                new Cancel(caver, transactionManager).send(transaction));
+    }
 }

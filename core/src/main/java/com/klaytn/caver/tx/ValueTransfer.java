@@ -23,6 +23,7 @@ package com.klaytn.caver.tx;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.crpyto.KlayCredentials;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
+import com.klaytn.caver.tx.manager.ErrorHandler;
 import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.utils.Convert;
 import com.klaytn.caver.tx.model.ValueTransferTransaction;
@@ -77,4 +78,62 @@ public class ValueTransfer extends ManagedTransaction {
 
         return ValueTransfer.create(caver, transactionManager);
     }
+
+    /**
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendFunds(String, String, BigDecimal, Convert.Unit, BigInteger)} instead.
+     */
+    @Deprecated
+    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendFunds(
+            Caver caver, KlayCredentials credentials, String toAddress, BigDecimal value, Convert.Unit unit, BigInteger gasLimit) {
+
+        return ValueTransfer.sendFunds(caver, credentials, toAddress, value, unit, gasLimit, null);
+    }
+
+    /**
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendFunds(String, String, BigDecimal, Convert.Unit, BigInteger)} instead.
+     */
+    @Deprecated
+    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendFunds(
+            Caver caver, KlayCredentials credentials, String toAddress, BigDecimal value, Convert.Unit unit, BigInteger gasLimit, ErrorHandler errorHandler) {
+
+        TransactionManager transactionManager = new TransactionManager.Builder(caver, credentials)
+                .setErrorHandler(errorHandler)
+                .build();
+
+        return new RemoteCall<>(() ->
+                new ValueTransfer(caver, transactionManager).send(credentials.getAddress(), toAddress, value, unit, gasLimit));
+    }
+
+    /**
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendFunds(ValueTransferTransaction)} instead.
+     */
+    @Deprecated
+    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendFunds(
+            Caver caver, KlayCredentials credentials, ValueTransferTransaction transaction) {
+
+        return ValueTransfer.sendFunds(caver, credentials, transaction, null);
+    }
+
+    /**
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendFunds(ValueTransferTransaction)} instead.
+     */
+    @Deprecated
+    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendFunds(
+            Caver caver, KlayCredentials credentials, ValueTransferTransaction transaction, ErrorHandler errorHandler) {
+
+        TransactionManager transactionManager = new TransactionManager.Builder(caver, credentials)
+                .setErrorHandler(errorHandler)
+                .build();
+        return new RemoteCall<>(() ->
+                new ValueTransfer(caver, transactionManager).send(transaction));
+    }
+
 }

@@ -66,7 +66,7 @@ public class KlayCredentials {
     public static KlayCredentials createWithKlaytnWalletKey(String klaytnWalletKey) {
         klaytnWalletKey = Numeric.cleanHexPrefix(klaytnWalletKey);
         String privateKey = klaytnWalletKey.substring(0, 64);
-        String address = klaytnWalletKey.substring(66);
+        String address = klaytnWalletKey.substring(68);
         address = Numeric.prependHexPrefix(address);
         return create(privateKey, address);
     }
@@ -74,7 +74,7 @@ public class KlayCredentials {
     public String getKlaytnWalletKey() {
         return Numeric.toHexStringWithPrefixZeroPadded(getEcKeyPair().getPrivateKey(), 64)
                 + CHECKSUM
-                + Numeric.cleanHexPrefix(getAddress());
+                + getAddress();
     }
 
     @Override

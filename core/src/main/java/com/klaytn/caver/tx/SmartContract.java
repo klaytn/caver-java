@@ -71,7 +71,7 @@ public class SmartContract extends ManagedTransaction {
     protected Map<String, String> deployedAddresses;
     protected DefaultBlockParameter defaultBlockParameter = DefaultBlockParameterName.LATEST;
 
-    public SmartContract(Caver caver, TransactionManager transactionManager) {
+    private SmartContract(Caver caver, TransactionManager transactionManager) {
         super(caver, transactionManager);
     }
 
@@ -111,6 +111,85 @@ public class SmartContract extends ManagedTransaction {
                         .build(),
                 gasProvider);
     }
+
+    public static SmartContract create(Caver caver, TransactionManager transactionManager) {
+        return new SmartContract(caver, transactionManager);
+    }
+
+    public static SmartContract create(Caver caver, KlayCredentials klayCredentials, int chainId) {
+        TransactionManager transactionManager = new TransactionManager.Builder(caver, klayCredentials)
+                .setChaindId(chainId)
+                .build();
+
+        return SmartContract.create(caver, transactionManager);
+    }
+
+    public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendDeployTransaction(SmartContractDeployTransaction transaction) {
+        return new RemoteCall<>(() -> send(transaction));
+    }
+
+    public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendExecutionTransaction(SmartContractExecutionTransaction transaction) {
+        return new RemoteCall<>(() -> send(transaction));
+    }
+
+    /**
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendDeployTransaction(SmartContractDeployTransaction)} instead.
+     */
+    @Deprecated
+    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendDeployTransaction(
+            Caver caver, KlayCredentials credentials, SmartContractDeployTransaction transaction) {
+
+        return SmartContract.sendDeployTransaction(caver, credentials, transaction, null);
+    }
+
+    /**
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendDeployTransaction(SmartContractDeployTransaction)} instead.
+     */
+    @Deprecated
+    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendDeployTransaction(
+            Caver caver, KlayCredentials credentials, SmartContractDeployTransaction transaction, ErrorHandler errorHandler) {
+
+        TransactionManager transactionManager = new TransactionManager.Builder(caver, credentials)
+                .setErrorHandler(errorHandler)
+                .build();
+
+        return new RemoteCall<>(() ->
+                new SmartContract(caver, transactionManager).send(transaction));
+    }
+
+    /**
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendExecutionTransaction(SmartContractExecutionTransaction)} instead.
+     */
+    @Deprecated
+    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendExecutionTransaction(
+            Caver caver, KlayCredentials credentials, SmartContractExecutionTransaction transaction) {
+
+        return SmartContract.sendExecutionTransaction(caver, credentials, transaction, null);
+    }
+
+    /**
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendExecutionTransaction(SmartContractExecutionTransaction)} instead.
+     */
+    @Deprecated
+    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendExecutionTransaction(
+            Caver caver, KlayCredentials credentials, SmartContractExecutionTransaction transaction, ErrorHandler errorHandler) {
+
+        TransactionManager transactionManager = new TransactionManager.Builder(caver, credentials)
+                .setErrorHandler(errorHandler)
+                .build();
+
+        return new RemoteCall<>(() ->
+                new SmartContract(caver, transactionManager).send(transaction));
+    }
+
 
     public void setContractAddress(String contractAddress) {
         this.contractAddress = contractAddress;
@@ -334,27 +413,6 @@ public class SmartContract extends ManagedTransaction {
         return new RemoteCall<>(() -> executeTransaction(function, weiValue));
     }
 
-    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendExecutionTransaction(
-            Caver caver, KlayCredentials credentials, SmartContractExecutionTransaction transaction) {
-
-        return SmartContract.sendExecutionTransaction(caver, credentials, transaction, null);
-    }
-
-    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendExecutionTransaction(
-            Caver caver, KlayCredentials credentials, SmartContractExecutionTransaction transaction, ErrorHandler errorHandler) {
-
-        TransactionManager transactionManager = new TransactionManager.Builder(caver, credentials)
-                .setErrorHandler(errorHandler)
-                .build();
-
-        return new RemoteCall<>(() ->
-                new SmartContract(caver, transactionManager).send(transaction));
-    }
-
-    public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendExecutionTransaction(SmartContractExecutionTransaction transaction) {
-        return new RemoteCall<>(() -> send(transaction));
-    }
-
     private static <T extends SmartContract> T create(
             T contract, String binary, String encodedConstructor, BigInteger value)
             throws IOException, TransactionException {
@@ -419,27 +477,6 @@ public class SmartContract extends ManagedTransaction {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendDeployTransaction(
-            Caver caver, KlayCredentials credentials, SmartContractDeployTransaction transaction) {
-
-        return SmartContract.sendDeployTransaction(caver, credentials, transaction, null);
-    }
-
-    public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendDeployTransaction(
-            Caver caver, KlayCredentials credentials, SmartContractDeployTransaction transaction, ErrorHandler errorHandler) {
-
-        TransactionManager transactionManager = new TransactionManager.Builder(caver, credentials)
-                .setErrorHandler(errorHandler)
-                .build();
-
-        return new RemoteCall<>(() ->
-                new SmartContract(caver, transactionManager).send(transaction));
-    }
-
-    public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendDeployTransaction(SmartContractDeployTransaction transaction) {
-        return new RemoteCall<>(() -> send(transaction));
     }
 
     public static <T extends SmartContract> RemoteCall<T> deployRemoteCall(

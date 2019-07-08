@@ -29,28 +29,52 @@ import com.klaytn.caver.tx.model.AccountUpdateTransaction;
 import org.web3j.protocol.core.RemoteCall;
 
 public class Account extends ManagedTransaction {
-    public Account(Caver caver, TransactionManager transactionManager) {
+
+    private Account(Caver caver, TransactionManager transactionManager) {
         super(caver, transactionManager);
     }
 
+    public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendUpdateTransaction(AccountUpdateTransaction transaction) {
+        return new RemoteCall<>(() -> send(transaction));
+    }
+
+    public static Account create(Caver caver, TransactionManager transactionManager) {
+        return new Account(caver, transactionManager);
+    }
+
+    public static Account create(Caver caver, KlayCredentials klayCredentials, int chainId) {
+        TransactionManager transactionManager = new TransactionManager.Builder(caver, klayCredentials)
+                .setChaindId(chainId)
+                .build();
+
+        return Account.create(caver, transactionManager);
+    }
+
+    /**
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed. </p>
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendUpdateTransaction(AccountUpdateTransaction)} instead.
+     *
+     */
+    @Deprecated
     public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendUpdateTransaction(
             Caver caver, KlayCredentials credentials, AccountUpdateTransaction transaction) {
 
         return Account.sendUpdateTransaction(caver, credentials, transaction, null);
     }
 
+    /**
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendUpdateTransaction(AccountUpdateTransaction)} instead.
+     */
+    @Deprecated
     public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendUpdateTransaction(
             Caver caver, KlayCredentials credentials, AccountUpdateTransaction transaction, ErrorHandler errorHandler) {
-
         TransactionManager transactionManager = new TransactionManager.Builder(caver, credentials)
                 .setErrorHandler(errorHandler)
                 .build();
 
-        return new RemoteCall<>(() ->
-                new Account(caver, transactionManager).send(transaction));
-    }
-
-    public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendUpdateTransaction(AccountUpdateTransaction transaction) {
-        return new RemoteCall<>(() -> send(transaction));
+        return new RemoteCall<>(() -> new Account(caver, transactionManager).send(transaction));
     }
 }

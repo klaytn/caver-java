@@ -29,17 +29,45 @@ import com.klaytn.caver.tx.model.CancelTransaction;
 import org.web3j.protocol.core.RemoteCall;
 
 public class Cancel extends ManagedTransaction {
-    public Cancel(Caver caver, TransactionManager transactionManager) {
+
+    private Cancel(Caver caver, TransactionManager transactionManager) {
         super(caver, transactionManager);
     }
 
+    public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendCancelTransaction(CancelTransaction transaction) {
+        return new RemoteCall<>(() -> send(transaction));
+    }
 
+    public static Cancel create(Caver caver, TransactionManager transactionManager) {
+        return new Cancel(caver, transactionManager);
+    }
+
+    public static Cancel create(Caver caver, KlayCredentials klayCredentials, int chainId) {
+        TransactionManager transactionManager = new TransactionManager.Builder(caver, klayCredentials)
+                .setChaindId(chainId)
+                .build();
+
+        return Cancel.create(caver, transactionManager);
+    }
+
+    /**
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendCancelTransaction(CancelTransaction)} instead.
+     */
+    @Deprecated
     public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendCancelTransaction(
             Caver caver, KlayCredentials credentials, CancelTransaction transaction) {
 
         return Cancel.sendCancelTransaction(caver, credentials, transaction, null);
     }
 
+    /**
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendCancelTransaction(CancelTransaction)} instead.
+     */
+    @Deprecated
     public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendCancelTransaction(
             Caver caver, KlayCredentials credentials, CancelTransaction transaction, ErrorHandler errorHandler) {
 
@@ -49,10 +77,5 @@ public class Cancel extends ManagedTransaction {
 
         return new RemoteCall<>(() ->
                 new Cancel(caver, transactionManager).send(transaction));
-    }
-
-
-    public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendCancelTransaction(CancelTransaction transaction) {
-        return new RemoteCall<>(() -> send(transaction));
     }
 }

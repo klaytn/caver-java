@@ -26,7 +26,6 @@ import com.klaytn.caver.fee.FeePayerManager;
 import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.tx.type.TxType;
-import com.klaytn.caver.utils.ChainId;
 import com.klaytn.caver.utils.Convert;
 import org.junit.Before;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -36,6 +35,7 @@ import org.web3j.tx.gas.StaticGasProvider;
 import java.math.BigInteger;
 import java.util.Optional;
 
+import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static junit.framework.TestCase.fail;
 
 /**
@@ -46,7 +46,6 @@ public class Scenario {
     static final BigInteger GAS_PRICE = Convert.toPeb("25", Convert.Unit.STON).toBigInteger();
     static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
     static final StaticGasProvider STATIC_GAS_PROVIDER = new StaticGasProvider(GAS_PRICE, GAS_LIMIT);
-    public static final int BAOBAB_CHAIN_ID = ChainId.BAOBAB_TESTNET;
 
     private static final String WALLET_PASSWORD = "";
 
@@ -62,7 +61,7 @@ public class Scenario {
 
     @Before
     public void setUp() {
-        this.caver = Caver.build(Caver.BAOBAB_URL);
+        this.caver = Caver.build(Caver.DEFAULT_URL);
     }
 
     BigInteger getNonce(String address) throws Exception {
@@ -72,11 +71,12 @@ public class Scenario {
     }
 
     String signTransaction(TxType tx, KlayCredentials credentials) {
-        return tx.sign(credentials, BAOBAB_CHAIN_ID).getValueAsString();
+        return tx.sign(credentials, LOCAL_CHAIN_ID).getValueAsString();
     }
 
     String signTransactionFromFeePayer(String senderRawTx, KlayCredentials feePayer) {
-        FeePayerManager feePayerManager = new FeePayerManager.Builder(this.caver, feePayer).build();
+        FeePayerManager feePayerManager = new FeePayerManager
+                .Builder(this.caver, feePayer).setChainId(LOCAL_CHAIN_ID).build();
         return feePayerManager.sign(senderRawTx).getValueAsString();
     }
 
@@ -87,20 +87,17 @@ public class Scenario {
 
     KlayTransactionReceipt.TransactionReceipt waitForTransactionReceipt(
             String transactionHash) throws Exception {
-
         Optional<KlayTransactionReceipt.TransactionReceipt> transactionReceiptOptional =
                 getTransactionReceipt(transactionHash, SLEEP_DURATION, ATTEMPTS);
 
         if (!transactionReceiptOptional.isPresent()) {
             fail("Transaction receipt not generated after " + ATTEMPTS + " attempts");
         }
-
         return transactionReceiptOptional.get();
     }
 
     private Optional<KlayTransactionReceipt.TransactionReceipt> getTransactionReceipt(
             String transactionHash, int sleepDuration, int attempts) throws Exception {
-
         Optional<KlayTransactionReceipt.TransactionReceipt> receiptOptional =
                 sendTransactionReceiptRequest(transactionHash);
         for (int i = 0; i < attempts; i++) {
@@ -111,7 +108,6 @@ public class Scenario {
                 break;
             }
         }
-
         return receiptOptional;
     }
 
@@ -119,7 +115,6 @@ public class Scenario {
             String transactionHash) throws Exception {
         Response<KlayTransactionReceipt.TransactionReceipt> transactionReceipt =
                 caver.klay().getTransactionReceipt(transactionHash).sendAsync().get();
-
         return Optional.ofNullable(transactionReceipt.getResult());
     }
 }

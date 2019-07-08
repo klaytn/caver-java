@@ -24,6 +24,7 @@ import org.web3j.utils.Numeric;
 import java.io.File;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
 
 public class KlayWalletUtilsTest {
 
@@ -35,6 +36,7 @@ public class KlayWalletUtilsTest {
         );
 
         KlayCredentials credentials = KlayWalletUtils.loadCredentials("password", keystoreFilePath);
+        assertNotNull(credentials);
 
         new File(keystoreFilePath).delete();
     }
@@ -47,6 +49,7 @@ public class KlayWalletUtilsTest {
         );
 
         KlayCredentials credentials = KlayWalletUtils.loadCredentials("password", keystoreFilePath);
+        assertNotNull(credentials);
 
         new File(keystoreFilePath).delete();
     }
@@ -69,19 +72,29 @@ public class KlayWalletUtilsTest {
         KlayCredentials credentials = KlayCredentials.create(
                 "0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"
         );
-
-        assertEquals("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a",
+        assertEquals("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc30x000x2c8ad0ea2e0781db8b8c9242e07de3a5beabb71a",
                 credentials.getKlaytnWalletKey());
+
+        KlayCredentials credentials2 = KlayCredentials.create(
+                "0x600dfc414fe433881f6606c24955e4143df9d203ccb3e335efe970a4ad017d04"
+        );
+        assertEquals("0x600dfc414fe433881f6606c24955e4143df9d203ccb3e335efe970a4ad017d040x000xee135d0b57c7ff81b198763cfd7c43f03a5f7622",
+                credentials2.getKlaytnWalletKey());
     }
 
     @Test
     public void testLoadKlaytnWalletKeyNormal() {
-        KlayCredentials credentials = KlayWalletUtils.loadCredentials("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a");
-
+        KlayCredentials credentials = KlayWalletUtils.loadCredentials("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc30x000x2c8ad0ea2e0781db8b8c9242e07de3a5beabb71a");
         assertEquals("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3",
                 Numeric.toHexStringWithPrefix(credentials.getEcKeyPair().getPrivateKey()));
         assertEquals("0x2c8ad0ea2e0781db8b8c9242e07de3a5beabb71a",
                 credentials.getAddress());
+
+
+        KlayCredentials credentials2 = KlayWalletUtils.loadCredentials("0x600dfc414fe433881f6606c24955e4143df9d203ccb3e335efe970a4ad017d040x000xee135d0b57c7ff81b198763cfd7c43f03a5f7622");
+        assertEquals("0x600dfc414fe433881f6606c24955e4143df9d203ccb3e335efe970a4ad017d04",
+                Numeric.toHexStringWithPrefix(credentials2.getEcKeyPair().getPrivateKey()));
+        assertEquals("0xee135d0b57c7ff81b198763cfd7c43f03a5f7622", credentials2.getAddress());
     }
 
 }

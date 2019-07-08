@@ -34,6 +34,7 @@ import java.math.BigInteger;
 
 import static com.klaytn.caver.base.Accounts.BRANDON;
 import static com.klaytn.caver.base.Accounts.LUMAN;
+import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static org.junit.Assert.assertEquals;
 
 public class FeePayerManagerIT extends Scenario {
@@ -48,7 +49,12 @@ public class FeePayerManagerIT extends Scenario {
                 new File(KlayWalletUtils.getBaobabKeyDirectory())
         );
         KlayCredentials credentials = KlayWalletUtils.loadCredentials(PASSWORD, keystoreFilePath);
-        ValueTransfer.sendFunds(caver, BRANDON, credentials.getAddress(), BigDecimal.valueOf(0.1), Convert.Unit.KLAY, GAS_LIMIT).send();
+        ValueTransfer.create(caver, BRANDON, LOCAL_CHAIN_ID).sendFunds(
+                BRANDON.getAddress(),
+                credentials.getAddress(),
+                BigDecimal.valueOf(0.1),
+                Convert.Unit.KLAY, GAS_LIMIT
+        );
 
         SmartContractDeployTransaction smartContractDeploy = SmartContractDeployTransaction.create(
                 credentials.getAddress(),
@@ -57,10 +63,12 @@ public class FeePayerManagerIT extends Scenario {
                 GAS_LIMIT,
                 CodeFormat.EVM
         );
-        TransactionManager transactionManager = new TransactionManager.Builder(caver, credentials).build();
+        TransactionManager transactionManager = new TransactionManager
+                .Builder(caver, credentials).setChaindId(LOCAL_CHAIN_ID).build();
         String senderTx = transactionManager.sign(smartContractDeploy, true).getValueAsString();
 
-        FeePayerManager feePayerManager = new FeePayerManager.Builder(caver, LUMAN).build();
+        FeePayerManager feePayerManager = new FeePayerManager
+                .Builder(caver, LUMAN).setChainId(LOCAL_CHAIN_ID).build();
         KlayTransactionReceipt.TransactionReceipt transactionReceipt = feePayerManager.executeTransaction(senderTx);
 
         assertEquals(CONTRACT_INPUT_DATA, transactionReceipt.getInput());

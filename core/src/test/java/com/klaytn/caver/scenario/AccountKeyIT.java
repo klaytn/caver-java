@@ -35,6 +35,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 
 import static com.klaytn.caver.base.Accounts.BRANDON;
+import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static org.junit.Assert.assertEquals;
 
 public class AccountKeyIT extends Scenario {
@@ -44,14 +45,21 @@ public class AccountKeyIT extends Scenario {
     @Test
     public void AccountKeyRolebased() throws Exception {
         KlayCredentials credentials = KlayCredentials.create(Keys.createEcKeyPair());
-        ValueTransfer.sendFunds(caver, BRANDON, credentials.getAddress(), BigDecimal.valueOf(0.2), Convert.Unit.KLAY, GAS_LIMIT).send();
+        ValueTransfer.create(caver, BRANDON, LOCAL_CHAIN_ID).sendFunds(
+                BRANDON.getAddress(),
+                credentials.getAddress(),
+                BigDecimal.valueOf(0.2),
+                Convert.Unit.KLAY, GAS_LIMIT
+        ).send();
         setUpAccount();
 
         AccountUpdateTransaction accountUpdateTransaction = AccountUpdateTransaction.create(
                 credentials.getAddress(),
                 createRolebased(),
                 GAS_LIMIT);
-        KlayTransactionReceipt.TransactionReceipt receipt = Account.sendUpdateTransaction(caver, credentials, accountUpdateTransaction).send();
+        KlayTransactionReceipt.TransactionReceipt receipt = Account.create(caver, credentials, LOCAL_CHAIN_ID)
+                .sendUpdateTransaction(accountUpdateTransaction)
+                .send();
         assertEquals("0x1", receipt.getStatus());
     }
 

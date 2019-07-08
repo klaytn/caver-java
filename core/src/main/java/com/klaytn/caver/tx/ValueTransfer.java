@@ -37,7 +37,7 @@ public class ValueTransfer extends ManagedTransaction {
 
     public static final BigInteger GAS_LIMIT = BigInteger.valueOf(21000);
 
-    public ValueTransfer(Caver caver, TransactionManager transactionManager) {
+    private ValueTransfer(Caver caver, TransactionManager transactionManager) {
         super(caver, transactionManager);
     }
 
@@ -58,12 +58,45 @@ public class ValueTransfer extends ManagedTransaction {
         return send(transaction);
     }
 
+    public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendFunds(
+            String fromAddress, String toAddress, BigDecimal value, Convert.Unit unit, BigInteger gasLimit) {
+        return new RemoteCall<>(() -> send(fromAddress, toAddress, value, unit, gasLimit));
+    }
+
+    public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendFunds(ValueTransferTransaction transaction) {
+        return new RemoteCall<>(() -> send(transaction));
+    }
+
+    public static ValueTransfer create(Caver caver, TransactionManager transactionManager) {
+        return new ValueTransfer(caver, transactionManager);
+    }
+
+    public static ValueTransfer create(Caver caver, KlayCredentials klayCredentials, int chainId) {
+        TransactionManager transactionManager = new TransactionManager.Builder(caver, klayCredentials)
+                .setChaindId(chainId)
+                .build();
+
+        return ValueTransfer.create(caver, transactionManager);
+    }
+
+    /**
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendFunds(String, String, BigDecimal, Convert.Unit, BigInteger)} instead.
+     */
+    @Deprecated
     public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendFunds(
             Caver caver, KlayCredentials credentials, String toAddress, BigDecimal value, Convert.Unit unit, BigInteger gasLimit) {
 
         return ValueTransfer.sendFunds(caver, credentials, toAddress, value, unit, gasLimit, null);
     }
 
+    /**
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendFunds(String, String, BigDecimal, Convert.Unit, BigInteger)} instead.
+     */
+    @Deprecated
     public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendFunds(
             Caver caver, KlayCredentials credentials, String toAddress, BigDecimal value, Convert.Unit unit, BigInteger gasLimit, ErrorHandler errorHandler) {
 
@@ -75,29 +108,32 @@ public class ValueTransfer extends ManagedTransaction {
                 new ValueTransfer(caver, transactionManager).send(credentials.getAddress(), toAddress, value, unit, gasLimit));
     }
 
+    /**
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendFunds(ValueTransferTransaction)} instead.
+     */
+    @Deprecated
     public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendFunds(
             Caver caver, KlayCredentials credentials, ValueTransferTransaction transaction) {
 
         return ValueTransfer.sendFunds(caver, credentials, transaction, null);
     }
 
+    /**
+     * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendFunds(ValueTransferTransaction)} instead.
+     */
+    @Deprecated
     public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendFunds(
             Caver caver, KlayCredentials credentials, ValueTransferTransaction transaction, ErrorHandler errorHandler) {
 
         TransactionManager transactionManager = new TransactionManager.Builder(caver, credentials)
                 .setErrorHandler(errorHandler)
                 .build();
-
         return new RemoteCall<>(() ->
                 new ValueTransfer(caver, transactionManager).send(transaction));
     }
 
-    public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendFunds(
-            String fromAddress, String toAddress, BigDecimal value, Convert.Unit unit, BigInteger gasLimit) {
-        return new RemoteCall<>(() -> send(fromAddress, toAddress, value, unit, gasLimit));
-    }
-
-    public RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendFunds(ValueTransferTransaction transaction) {
-        return new RemoteCall<>(() -> send(transaction));
-    }
 }

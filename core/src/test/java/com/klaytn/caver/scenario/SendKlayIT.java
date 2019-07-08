@@ -31,6 +31,7 @@ import java.math.BigInteger;
 
 import static com.klaytn.caver.base.Accounts.LUMAN;
 import static com.klaytn.caver.base.Accounts.WAYNE;
+import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.core.Is.is;
@@ -91,7 +92,7 @@ public class SendKlayIT extends Scenario {
                 DefaultBlockParameterName.LATEST).sendAsync().get().getValue();
         assertTrue(balance.compareTo(Convert.toPeb("0.01", Convert.Unit.KLAY).toBigInteger()) > 0);
 
-        byte[] signedTransaction = tx.sign(LUMAN, BAOBAB_CHAIN_ID).getValue();
+        byte[] signedTransaction = tx.sign(LUMAN, LOCAL_CHAIN_ID).getValue();
         Bytes32 klaySendTransaction = caver.klay().sendSignedTransaction(Numeric.toHexString(signedTransaction)).sendAsync().get();
         String transactionHash = klaySendTransaction.getResult();
         assertFalse(transactionHash.isEmpty());

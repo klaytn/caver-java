@@ -66,15 +66,14 @@ public class KlayCredentials {
     public static KlayCredentials createWithKlaytnWalletKey(String klaytnWalletKey) {
         klaytnWalletKey = Numeric.cleanHexPrefix(klaytnWalletKey);
         String privateKey = klaytnWalletKey.substring(0, 64);
-        String address = klaytnWalletKey.substring(66);
-        address = Numeric.prependHexPrefix(address);
+        String address = klaytnWalletKey.substring(68);
         return create(privateKey, address);
     }
 
     public String getKlaytnWalletKey() {
         return Numeric.toHexStringWithPrefixZeroPadded(getEcKeyPair().getPrivateKey(), 64)
                 + CHECKSUM
-                + Numeric.cleanHexPrefix(getAddress());
+                + getAddress();
     }
 
     @Override

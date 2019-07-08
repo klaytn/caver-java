@@ -17,11 +17,14 @@
 package com.klaytn.caver.feature;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.klaytn.caver.methods.response.*;
+import com.klaytn.caver.methods.response.AccountEOA;
+import com.klaytn.caver.methods.response.AccountSmartContract;
+import com.klaytn.caver.methods.response.KlayAccount;
+import com.klaytn.caver.methods.response.KlayAccountKey;
 import com.klaytn.caver.tx.account.AccountKey;
+import com.klaytn.caver.tx.account.AccountKeyPublic;
 import com.klaytn.caver.tx.account.AccountKeyRoleBased;
 import com.klaytn.caver.tx.account.AccountKeyWeightedMultiSig;
-import com.klaytn.caver.tx.account.AccountKeyPublic;
 import org.junit.Test;
 import org.web3j.protocol.ObjectMapperFactory;
 
@@ -43,21 +46,21 @@ public class ResponseDeserializerTest {
 
         assertTrue(accountKeyRoleBased.getAccountKeys().get(0).getType().getValue() == 2);
         assertEquals("0x819659d4f08e08d4bd97c6ce5ed2c2eb914201a5b3731eb9d208128df24b97dd",
-                ((AccountKeyPublic)accountKeyRoleBased.getAccountKeys().get(0)).getX());
+                ((AccountKeyPublic) accountKeyRoleBased.getAccountKeys().get(0)).getX());
         assertEquals("0x1824267ab9e55f5a3fb1030f0299fa73fc0037305d5b1d90100e2131af41c010",
-                ((AccountKeyPublic)accountKeyRoleBased.getAccountKeys().get(0)).getY());
+                ((AccountKeyPublic) accountKeyRoleBased.getAccountKeys().get(0)).getY());
 
         assertTrue(accountKeyRoleBased.getAccountKeys().get(1).getType().getValue() == 2);
         assertEquals("0x73363604ca8776a2883b02046361b7eb6bd11f4fc10700ee51c525bcded134c1",
-                ((AccountKeyPublic)accountKeyRoleBased.getAccountKeys().get(1)).getX());
+                ((AccountKeyPublic) accountKeyRoleBased.getAccountKeys().get(1)).getX());
         assertEquals("0xfc3e3cb3f4f5b709df5a2075107bc73c8618440c08456bafc44ee6f27f9e6326",
-                ((AccountKeyPublic)accountKeyRoleBased.getAccountKeys().get(1)).getY());
+                ((AccountKeyPublic) accountKeyRoleBased.getAccountKeys().get(1)).getY());
 
         assertTrue(accountKeyRoleBased.getAccountKeys().get(2).getType().getValue() == 2);
         assertEquals("0x95c920eb2571dff37baecdbbee32897e6e448c6725c5ab73569cc6f659684307",
-                ((AccountKeyPublic)accountKeyRoleBased.getAccountKeys().get(2)).getX());
+                ((AccountKeyPublic) accountKeyRoleBased.getAccountKeys().get(2)).getX());
         assertEquals("0xef7839023c48acf710ad322356c12b7c5b7f475515ba7d5834f41a993f42b8f9",
-                ((AccountKeyPublic)accountKeyRoleBased.getAccountKeys().get(2)).getY());
+                ((AccountKeyPublic) accountKeyRoleBased.getAccountKeys().get(2)).getY());
         assertTrue(parsed.getResult().getKey().getType() == AccountKey.Type.ROLEBASED);
     }
 
@@ -67,7 +70,7 @@ public class ResponseDeserializerTest {
         KlayAccountKey parsed = objectMapper.readValue(response, KlayAccountKey.class);
         assertTrue(parsed.getResult().getKeyType() == 2);
 
-        AccountKeyPublic accountKeyPublic = (AccountKeyPublic)parsed.getResult().getKey();
+        AccountKeyPublic accountKeyPublic = (AccountKeyPublic) parsed.getResult().getKey();
         assertTrue(accountKeyPublic.getType() == AccountKey.Type.PUBLIC);
         assertEquals("0x230037a99462acd829f317d0ce5c8e2321ac2951de1c1b1a18f9af5cff66f0d7", accountKeyPublic.getX());
         assertEquals("0x18a7fb1b9012d2ac87bc291cbf1b3b2339356f1ce7669ae68405389be7f8b3b6", accountKeyPublic.getY());
@@ -95,7 +98,7 @@ public class ResponseDeserializerTest {
         KlayAccountKey parsed = objectMapper.readValue(response, KlayAccountKey.class);
         assertTrue(parsed.getResult().getKeyType() == 4);
 
-        AccountKeyWeightedMultiSig accountKeyPublic = (AccountKeyWeightedMultiSig)parsed.getResult().getKey();
+        AccountKeyWeightedMultiSig accountKeyPublic = (AccountKeyWeightedMultiSig) parsed.getResult().getKey();
         assertTrue(accountKeyPublic.getType() == AccountKey.Type.MULTISIG);
         assertEquals(BigInteger.valueOf(1), accountKeyPublic.getWeightedPublicKeys().get(0).getWeight());
         assertEquals("0xae6b72d7ce2c11520ac00cbd1c4da216171a96eae1ae3a0a1f979a554c9063ae",

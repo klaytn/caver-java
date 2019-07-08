@@ -81,8 +81,8 @@ public class ValueTransfer extends ManagedTransaction {
 
     /**
      * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
-     *              <p>This deprecated method can be used only for Baobab Testnet</p>
-     *              use {@link #sendFunds(String, String, BigDecimal, Convert.Unit, BigInteger)} instead like this:
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendFunds(String, String, BigDecimal, Convert.Unit, BigInteger)} instead.
      */
     @Deprecated
     public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendFunds(
@@ -93,8 +93,8 @@ public class ValueTransfer extends ManagedTransaction {
 
     /**
      * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
-     *              <p>This deprecated method can be used only for Baobab Testnet</p>
-     *              use {@link #sendFunds(String, String, BigDecimal, Convert.Unit, BigInteger)} instead like this:
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendFunds(String, String, BigDecimal, Convert.Unit, BigInteger)} instead.
      */
     @Deprecated
     public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendFunds(
@@ -110,8 +110,8 @@ public class ValueTransfer extends ManagedTransaction {
 
     /**
      * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
-     *              <p>This deprecated method can be used only for Baobab Testnet</p>
-     *              use {@link #sendFunds(ValueTransferTransaction)} instead like this:
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendFunds(ValueTransferTransaction)} instead.
      */
     @Deprecated
     public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendFunds(
@@ -122,8 +122,8 @@ public class ValueTransfer extends ManagedTransaction {
 
     /**
      * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
-     *              <p>This deprecated method can be used only for Baobab Testnet</p>
-     *              use {@link #sendFunds(ValueTransferTransaction)} instead like this:
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendFunds(ValueTransferTransaction)} instead.
      */
     @Deprecated
     public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendFunds(

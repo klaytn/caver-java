@@ -134,8 +134,8 @@ public class SmartContract extends ManagedTransaction {
 
     /**
      * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
-     *              <p>This deprecated method can be used only for Baobab Testnet</p>
-     *              use {@link #sendDeployTransaction(SmartContractDeployTransaction)} ()} instead like this:
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendDeployTransaction(SmartContractDeployTransaction)} instead.
      */
     @Deprecated
     public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendDeployTransaction(
@@ -146,8 +146,8 @@ public class SmartContract extends ManagedTransaction {
 
     /**
      * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
-     *              <p>This deprecated method can be used only for Baobab Testnet</p>
-     *              use {@link #sendDeployTransaction(SmartContractDeployTransaction)} ()} instead like this:
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendDeployTransaction(SmartContractDeployTransaction)} instead.
      */
     @Deprecated
     public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendDeployTransaction(
@@ -163,8 +163,8 @@ public class SmartContract extends ManagedTransaction {
 
     /**
      * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
-     *              <p>This deprecated method can be used only for Baobab Testnet</p>
-     *              use {@link #sendExecutionTransaction(SmartContractExecutionTransaction)} instead like this:
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendExecutionTransaction(SmartContractExecutionTransaction)} instead.
      */
     @Deprecated
     public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendExecutionTransaction(
@@ -175,8 +175,8 @@ public class SmartContract extends ManagedTransaction {
 
     /**
      * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
-     *              <p>This deprecated method can be used only for Baobab Testnet</p>
-     *              use {@link #sendExecutionTransaction(SmartContractExecutionTransaction)} instead like this:
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendExecutionTransaction(SmartContractExecutionTransaction)} instead.
      */
     @Deprecated
     public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendExecutionTransaction(

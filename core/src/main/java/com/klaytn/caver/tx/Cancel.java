@@ -52,8 +52,8 @@ public class Cancel extends ManagedTransaction {
 
     /**
      * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
-     *              <p>This deprecated method can be used only for Baobab Testnet</p>
-     *              use {@link #sendCancelTransaction(CancelTransaction)} instead like this:
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendCancelTransaction(CancelTransaction)} instead.
      */
     @Deprecated
     public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendCancelTransaction(
@@ -64,8 +64,8 @@ public class Cancel extends ManagedTransaction {
 
     /**
      * @deprecated  <p>In caver-java 1.0.0, we provided static methods to send transactions for `ValueTransfer`, `Account`, `Cancel`, and `SmartContract` classes. The static methods will be removed.</p>
-     *              <p>This deprecated method can be used only for Baobab Testnet</p>
-     *              use {@link #sendCancelTransaction(CancelTransaction)} instead like this:
+     *              <p>This deprecated method can be used only for Baobab Testnet.</p>
+     *              Use {@link #sendCancelTransaction(CancelTransaction)} instead.
      */
     @Deprecated
     public static RemoteCall<KlayTransactionReceipt.TransactionReceipt> sendCancelTransaction(

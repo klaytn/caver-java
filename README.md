@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/klaytn/caver-java/tree/master.svg?style=svg)](https://circleci.com/gh/klaytn/caver-java/tree/master)
+
 # caver-java: Caver Java Klaytn Dapp API
 
 caver-java is a lightweight, high modular, convenient Java and Android library to interact with clients (nodes) on the Klaytn network:

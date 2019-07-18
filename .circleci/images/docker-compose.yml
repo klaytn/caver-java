@@ -40,27 +40,6 @@ services:
       app_net:
         ipv4_address: 172.16.239.10
     restart: "no"
-  prometheus:
-    hostname: prometheus
-    image: prom/prometheus:v2.3.2
-    ports:
-      - 9090:9090
-    volumes:
-      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
-    networks:
-      app_net:
-        ipv4_address: 172.16.239.9
-    restart: "no"
-
-  grafana:
-    hostname: grafana
-    image: grafana/grafana:5.2.2
-    ports:
-      - 3000:3000
-    networks:
-      app_net:
-        ipv4_address: 172.16.239.8
-    restart: "no"
 
 networks:
   app_net:

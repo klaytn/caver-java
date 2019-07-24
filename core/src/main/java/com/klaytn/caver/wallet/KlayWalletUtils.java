@@ -23,7 +23,7 @@ package com.klaytn.caver.wallet;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.crypto.KlayCredentials;
 import org.web3j.crypto.*;
 import org.web3j.utils.Numeric;
 

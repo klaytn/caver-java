@@ -22,11 +22,10 @@ package com.klaytn.caver.fee;
 
 import com.klaytn.caver.tx.exception.PlatformErrorException;
 import com.klaytn.caver.tx.manager.ErrorHandler;
-import com.klaytn.caver.tx.manager.NoOpTransactionReceiptProcessor;
 import com.klaytn.caver.tx.manager.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.tx.manager.TransactionReceiptProcessor;
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.Callback;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;

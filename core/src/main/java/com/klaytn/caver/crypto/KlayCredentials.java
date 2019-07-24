@@ -18,7 +18,7 @@
  * Modified and improved for the caver-java development.
  */
 
-package com.klaytn.caver.crpyto;
+package com.klaytn.caver.crypto;
 
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;

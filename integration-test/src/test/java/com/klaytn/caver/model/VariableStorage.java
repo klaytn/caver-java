@@ -16,7 +16,7 @@
 
 package com.klaytn.caver.model;
 
-import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.crypto.KlayCredentials;
 import org.web3j.crypto.Keys;
 
 import java.util.*;

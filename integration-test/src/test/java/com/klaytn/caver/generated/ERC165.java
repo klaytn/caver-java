@@ -1,7 +1,7 @@
 package com.klaytn.caver.generated;
 
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.tx.SmartContract;
 import com.klaytn.caver.tx.manager.TransactionManager;
 import java.util.Arrays;

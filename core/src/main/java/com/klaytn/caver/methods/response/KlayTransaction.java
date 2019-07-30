@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.klaytn.caver.crpyto.KlaySignatureData;
+import com.klaytn.caver.crypto.KlaySignatureData;
 import org.web3j.protocol.core.Response;
 import org.web3j.utils.Numeric;
 

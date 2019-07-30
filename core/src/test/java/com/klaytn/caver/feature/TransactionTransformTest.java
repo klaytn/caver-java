@@ -16,7 +16,7 @@
 
 package com.klaytn.caver.feature;
 
-import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.tx.account.AccountKeyPublic;
 import com.klaytn.caver.tx.model.*;
 import com.klaytn.caver.tx.type.TxType;

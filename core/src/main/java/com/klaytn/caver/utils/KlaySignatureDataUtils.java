@@ -20,7 +20,7 @@
 
 package com.klaytn.caver.utils;
 
-import com.klaytn.caver.crpyto.KlaySignatureData;
+import com.klaytn.caver.crypto.KlaySignatureData;
 import org.web3j.crypto.Sign;
 
 import java.math.BigInteger;

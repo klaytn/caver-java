@@ -16,7 +16,7 @@
 
 package com.klaytn.caver.scenario;
 
-import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.tx.SmartContract;
 import com.klaytn.caver.tx.manager.TransactionManager;

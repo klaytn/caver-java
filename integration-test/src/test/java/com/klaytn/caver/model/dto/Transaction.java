@@ -17,7 +17,7 @@
 package com.klaytn.caver.model.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.methods.response.KlayAccountKey;
 import com.klaytn.caver.tx.account.AccountKey;
 import com.klaytn.caver.utils.Convert;

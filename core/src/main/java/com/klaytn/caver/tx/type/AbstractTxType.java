@@ -16,8 +16,8 @@
 
 package com.klaytn.caver.tx.type;
 
-import com.klaytn.caver.crpyto.KlayCredentials;
-import com.klaytn.caver.crpyto.KlaySignatureData;
+import com.klaytn.caver.crypto.KlayCredentials;
+import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.tx.exception.EmptyNonceException;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.KlaySignatureDataUtils;

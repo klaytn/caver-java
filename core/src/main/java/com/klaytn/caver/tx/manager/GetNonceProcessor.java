@@ -17,7 +17,7 @@
 package com.klaytn.caver.tx.manager;
 
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.methods.response.Quantity;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 

@@ -18,7 +18,7 @@ package com.klaytn.caver.model;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.model.dto.*;
 import com.klaytn.caver.model.executor.ApiExecutor;
 import com.klaytn.caver.model.executor.ContractExecutor;

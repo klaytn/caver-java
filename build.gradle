@@ -19,7 +19,7 @@ plugins {
 
 allprojects {
 
-    version '1.0.1-android'
+    version '1.0.2-android'
     group 'com.klaytn.caver'
     description 'caver-java project'
 
@@ -210,7 +210,7 @@ configure(subprojects.findAll { it.name != 'integration-test' }) {
                     passphrase = bintrayGpgPassphrase
                 }
                 mavenCentralSync {
-                    sync = true
+                    sync = false
                     user = ossrhUsername
                     password = ossrhPassword
                     close = '1'

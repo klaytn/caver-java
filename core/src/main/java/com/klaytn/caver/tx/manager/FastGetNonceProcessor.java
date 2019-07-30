@@ -17,7 +17,7 @@
 package com.klaytn.caver.tx.manager;
 
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.crypto.KlayCredentials;
 
 import java.io.IOException;
 import java.math.BigInteger;

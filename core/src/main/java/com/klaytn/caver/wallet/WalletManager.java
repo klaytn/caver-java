@@ -16,7 +16,7 @@
 
 package com.klaytn.caver.wallet;
 
-import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.wallet.exception.CredentialNotFoundException;
 
 import java.util.HashMap;

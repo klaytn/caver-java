@@ -15,8 +15,8 @@
  */
 package com.klaytn.caver.fee;
 
-import com.klaytn.caver.crpyto.KlayCredentials;
-import com.klaytn.caver.crpyto.KlaySignatureData;
+import com.klaytn.caver.crypto.KlayCredentials;
+import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.utils.KlaySignatureDataUtils;
 import com.klaytn.caver.tx.model.KlayRawTransaction;
 import com.klaytn.caver.tx.type.AbstractTxType;

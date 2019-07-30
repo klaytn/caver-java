@@ -21,7 +21,7 @@
 package com.klaytn.caver.tx;
 
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.Bytes;
 import com.klaytn.caver.methods.response.KlayLogs;

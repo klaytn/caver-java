@@ -16,7 +16,7 @@
 
 package com.klaytn.caver.tx.type;
 
-import com.klaytn.caver.crpyto.KlaySignatureData;
+import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.utils.KlayTransactionUtils;
 import org.web3j.rlp.RlpDecoder;
 import org.web3j.rlp.RlpList;

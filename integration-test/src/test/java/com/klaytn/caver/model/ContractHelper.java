@@ -18,7 +18,7 @@ package com.klaytn.caver.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.model.dto.Env;
 import com.klaytn.caver.model.dto.Transaction;
 import com.klaytn.caver.tx.gas.DefaultGasProvider;

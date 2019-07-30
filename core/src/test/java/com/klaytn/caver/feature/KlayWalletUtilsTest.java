@@ -16,7 +16,7 @@
 
 package com.klaytn.caver.feature;
 
-import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.wallet.KlayWalletUtils;
 import org.junit.Test;
 import org.web3j.utils.Numeric;

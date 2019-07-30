@@ -1,6 +1,6 @@
 package com.klaytn.caver.base;
 
-import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.crypto.KlayCredentials;
 
 public class LocalValues {
     public static final KlayCredentials KLAY_PROVIDER = KlayCredentials.create(

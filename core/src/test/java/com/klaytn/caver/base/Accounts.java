@@ -17,7 +17,7 @@
 package com.klaytn.caver.base;
 
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.ValueTransferTransaction;
 import com.klaytn.caver.utils.Convert;

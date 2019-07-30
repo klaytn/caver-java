@@ -16,7 +16,7 @@
 
 package com.klaytn.caver.tx.model;
 
-import com.klaytn.caver.crpyto.KlaySignatureData;
+import com.klaytn.caver.crypto.KlaySignatureData;
 import org.web3j.utils.Numeric;
 
 public class KlayRawTransaction {

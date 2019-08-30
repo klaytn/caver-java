@@ -20,7 +20,7 @@
 
 package com.klaytn.caver.methods.response;
 
-import com.klaytn.caver.crpyto.KlaySignatureData;
+import com.klaytn.caver.crypto.KlaySignatureData;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.response.NoOpProcessor;
 import org.web3j.tx.response.QueuingTransactionReceiptProcessor;

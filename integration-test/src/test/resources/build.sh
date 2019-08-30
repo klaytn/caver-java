@@ -15,7 +15,7 @@ finder(){
 
         solc --bin --abi --optimize --overwrite --allow-paths . $target -o ./abi/ > /dev/null
         echo "[$target] generating"
-        java -jar ../../../../console/build/libs/console-1.0.1.jar solidity generate \
+        java -jar ../../../../console/build/libs/console-1.0.2.jar solidity generate \
             -b "./abi/$filename".bin \
             -a "./abi/$filename".abi \
             -p com.klaytn.caver.generated \

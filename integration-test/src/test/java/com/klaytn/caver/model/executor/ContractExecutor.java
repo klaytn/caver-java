@@ -17,7 +17,7 @@
 package com.klaytn.caver.model.executor;
 
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.model.ContractHelper;
 import com.klaytn.caver.model.VariableStorage;
 import com.klaytn.caver.model.dto.Contract;

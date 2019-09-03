@@ -52,7 +52,7 @@ public class Scenario {
     private static final BigInteger ACCOUNT_UNLOCK_DURATION = BigInteger.valueOf(30);
 
     private static final int SLEEP_DURATION = 2000;
-    private static final int ATTEMPTS = 15;
+    private static final int ATTEMPTS = 20;
 
     Caver caver;
 

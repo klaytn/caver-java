@@ -54,7 +54,7 @@ jobs:
           command: |
             version=$(.circleci/version.sh)
             sed -i "s/version '.*'/version '${version}-android'/" build.gradle 
-            sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle 
+            sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '4.2.0-android'/" build.gradle 
             sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
 
             awk '/version '\''/' build.gradle

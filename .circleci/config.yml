@@ -160,7 +160,7 @@ jobs:
 
               echo "Publishing a major release! version=$version"
               #echo "./gradlew release"
-              echo "./gradlew uploadArchives"
+              ./gradlew bintrayUpload
 
 
   android_publish:
@@ -179,23 +179,39 @@ jobs:
 
               version=v$(.circleci/version.sh)
               echo "Publishing a major android release! version=$version"
-              echo "./gradlew uploadArchives"
+              ./gradlew bintrayUpload
 
   rc_publish:
     <<: *machine_ubuntu
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/circleci-caver-java
+      - *pull_klaytn_image
+      - *start_test_newwork
       - run:
-          name: "Publish RC major version"
+          name: "Publish RC version"
           command: |
-              version=$(.circleci/version.sh)
-              sed -i "s/version '.*'/version '$CIRCLE_TAG'/" build.gradle
+              sed -i "s/version '.*'/version '${CIRCLE_TAG:1}'/" build.gradle
 
               version=v$(.circleci/version.sh)
               echo "Publishing a major android release! version=$version"
-              echo "./gradlew uploadArchives"
+              ./gradlew release
+
+  rc_android_publish:
+    <<: *machine_ubuntu
+    steps:
+      - checkout
+      - *pull_klaytn_image
+      - *start_test_newwork
+      - run:
+          name: "Publish android version"
+          command: |
+              sed -i "s/version '.*'/version '${CIRCLE_TAG:1}-android'/" build.gradle
+              sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle 
+              sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
+
+              version=v$(.circleci/version.sh)
+              echo "Publishing a major android release! version=$version"
+              ./gradlew release
 
 workflows:
   version: 2
@@ -219,15 +235,6 @@ workflows:
             only: /^v[0-9]+\.[0-9]+\.[0-9]+/
           branches:
             ignore: /.*/
-
-    # - rc_publish:
-    #     requires:
-    #       - build
-    #     filters:
-    #       tags:
-    #         only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/
-    #       branches:
-    #         ignore: /.*/
 
   workflow_build_deploy_android:
     jobs:
@@ -259,9 +266,28 @@ workflows:
           branches:
             ignore: /.*/
 
+    # - rc_publish:
+    #     requires:
+    #       - tag_verify
+    #     filters:
+    #       tags:
+    #         only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/
+    #       branches:
+    #         ignore: /.*/
+
+    # - rc_android_publish:
+    #     requires:
+    #       - tag_verify
+    #     filters:
+    #       tags:
+    #         only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/
+    #       branches:
+    #         ignore: /.*/
+
     - release_PR:
         requires:
-          - tag_verify
+          - rc_publish
+          - rc_android_publish
         filters:
           tags:
             only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/

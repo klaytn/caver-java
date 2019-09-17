@@ -286,8 +286,9 @@ workflows:
 
     - release_PR:
         requires:
-          - rc_publish
-          - rc_android_publish
+          - tag_verify
+          # - rc_publish
+          # - rc_android_publish
         filters:
           tags:
             only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/

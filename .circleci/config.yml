@@ -12,20 +12,20 @@ machine_ubuntu: &machine_ubuntu
 
 pull_klaytn_image: &pull_klaytn_image
   run:
-    name: Pull and tag Klaytn image
+    name: "Pull and tag Klaytn image"
     command: |
           docker pull kjhman21/dev:v1.0.0
           docker image tag kjhman21/dev:v1.0.0 klaytn
 
 start_test_newwork: &start_test_newwork
   run:
-    name: Start test network  
+    name: "Start test network"  
     working_directory: .circleci/images
     command: docker-compose up -d
 
 build_test: &build_test
   run:
-    name: Build and test
+    name: "Build and test"
     command: |
         ./gradlew clean
         ./gradlew build --scan --debug
@@ -50,7 +50,7 @@ jobs:
       - *pull_klaytn_image
       - *start_test_newwork
       - run:
-          name: Change to Android version
+          name: "Change to Android version"
           command: |
             version=$(.circleci/version.sh)
             sed -i "s/version '.*'/version '${version}-android'/" build.gradle  
@@ -66,7 +66,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: verify tag and file verison match
+          name: "Verify tag and file verison match"
           command: |
             echo "tag version is " $CIRCLE_TAG
 
@@ -80,7 +80,7 @@ jobs:
               exit 1
             fi
 
-  rc_publish:
+  release_PR:
     <<: *defaults
     steps:
       - add_ssh_keys
@@ -131,7 +131,7 @@ jobs:
               git tag v$current_version
               git push origin v$current_version
       - run:
-          name: delete release branch
+          name: "Delete release branch"
           command: |
               #delete release branch. it trigger by merge title
               version=v$(.circleci/version.sh)
@@ -175,6 +175,21 @@ jobs:
               echo "Publishing a major android release! version=$version"
               echo "./gradlew uploadArchives"
 
+  rc_publish:
+    <<: *machine_ubuntu
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/circleci-caver-java
+      - run:
+          name: "Publish RC major version"
+          command: |
+              version=$(.circleci/version.sh)
+              sed -i "s/version '.*'/version '$CIRCLE_TAG'/" build.gradle
+
+              version=v$(.circleci/version.sh)
+              echo "Publishing a major android release! version=$version"
+              echo "./gradlew uploadArchives"
 
 workflows:
   version: 2
@@ -188,6 +203,8 @@ workflows:
             - master
           tags:
             only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+            #only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
+
 
     - major_publish:
         requires:
@@ -197,6 +214,15 @@ workflows:
             only: /^v[0-9]+\.[0-9]+\.[0-9]+/
           branches:
             ignore: /.*/
+
+    # - rc_publish:
+    #     requires:
+    #       - build
+    #     filters:
+    #       tags:
+    #         only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/
+    #       branches:
+    #         ignore: /.*/
 
   workflow_build_deploy_android:
     jobs:
@@ -208,6 +234,7 @@ workflows:
             - master
           tags: 
             only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+            #only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
 
     - android_publish:
         requires:
@@ -227,7 +254,7 @@ workflows:
           branches:
             ignore: /.*/
 
-    - rc_publish:
+    - release_PR:
         requires:
           - tag_verify
         filters:

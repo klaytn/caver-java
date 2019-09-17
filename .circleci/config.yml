@@ -266,29 +266,28 @@ workflows:
           branches:
             ignore: /.*/
 
-    # - rc_publish:
-    #     requires:
-    #       - tag_verify
-    #     filters:
-    #       tags:
-    #         only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/
-    #       branches:
-    #         ignore: /.*/
+    - rc_publish:
+        requires:
+          - tag_verify
+        filters:
+          tags:
+            only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/
+          branches:
+            ignore: /.*/
 
-    # - rc_android_publish:
-    #     requires:
-    #       - tag_verify
-    #     filters:
-    #       tags:
-    #         only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/
-    #       branches:
-    #         ignore: /.*/
+    - rc_android_publish:
+        requires:
+          - tag_verify
+        filters:
+          tags:
+            only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/
+          branches:
+            ignore: /.*/
 
     - release_PR:
         requires:
-          - tag_verify
-          # - rc_publish
-          # - rc_android_publish
+          - rc_publish
+          - rc_android_publish
         filters:
           tags:
             only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/

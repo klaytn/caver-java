@@ -161,7 +161,7 @@ jobs:
               version=v$(.circleci/version.sh)
 
               echo "Publishing a major release! version=$version"
-              echo "./gradlew release"
+              ./gradlew release
               #echo "./gradlew bintrayUpload"
 
 
@@ -183,7 +183,7 @@ jobs:
 
               version=v$(.circleci/version.sh)
               echo "Publishing a major android release! version=$version"
-              echo "./gradlew release"
+              ./gradlew release
               #echo "./gradlew bintrayUpload"
 
   rc_publish:
@@ -199,7 +199,7 @@ jobs:
 
               version=v$(.circleci/version.sh)
               echo "Publishing a major android release! version=$version"
-              echo "./gradlew release"
+              ./gradlew release
 
   rc_android_publish:
     <<: *machine_ubuntu
@@ -216,7 +216,7 @@ jobs:
 
               version=v$(.circleci/version.sh)
               echo "Publishing a major android release! version=$version"
-              echo "./gradlew release"
+              ./gradlew release
 
 workflows:
   version: 2

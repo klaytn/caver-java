@@ -180,7 +180,7 @@ jobs:
 
               echo "Publishing a major release! version=$version"
               #echo "./gradlew release"
-              echo "./gradlew bintrayUpload"
+              ./gradlew bintrayUpload
 
 
   android_publish:
@@ -191,15 +191,15 @@ jobs:
       - run:
           name: "Publish android version"
           command: |
-              version=$(.circleci/version.sh)
-              sed -i "s/version '.*'/version '${version}-android'/" build.gradle
-              sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle 
-              sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
+              # version=$(.circleci/version.sh)
+              # sed -i "s/version '.*'/version '${version}-android'/" build.gradle
+              # sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle 
+              # sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
 
               version=v$(.circleci/version.sh)
               echo "Publishing a major android release! version=$version"
               #echo "./gradlew release"
-              echo "./gradlew bintrayUpload"
+              ./gradlew bintrayUpload
 
 workflows:
   version: 2

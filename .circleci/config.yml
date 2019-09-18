@@ -1,53 +1,300 @@
 version: 2
+
+defaults: &defaults
+  working_directory: ~/circleci-caver-java
+  docker:
+    - image: circleci/openjdk:8-jdk-browsers
+
+machine_ubuntu: &machine_ubuntu
+  working_directory: ~/circleci-caver-java
+  machine:
+    image: ubuntu-1604:201903-01
+
+pull_klaytn_image: &pull_klaytn_image
+  run:
+    name: "Pull and tag Klaytn image"
+    command: |
+          docker pull kjhman21/dev:v1.0.0
+          docker image tag kjhman21/dev:v1.0.0 klaytn
+
+start_test_newwork: &start_test_newwork
+  run:
+    name: "Start test network"  
+    working_directory: .circleci/images
+    command: docker-compose up -d
+
+build_test: &build_test
+  run:
+    name: "Build and test"
+    command: |
+        ./gradlew clean
+        ./gradlew build --scan --debug
+
 jobs:
   build:
-    working_directory: ~/circleci-caver-java
-    machine:
-      image: ubuntu-1604:201903-01
+    <<: *machine_ubuntu
+    steps:
+      - checkout
+      - *pull_klaytn_image
+      - *start_test_newwork
+      - *build_test
+      - persist_to_workspace:
+          root: ~/circleci-caver-java
+          paths: 
+            - build
+
+  android_build:
+    <<: *machine_ubuntu
+    steps:
+      - checkout
+      - *pull_klaytn_image
+      - *start_test_newwork
+      - run:
+          name: "Change to Android version"
+          command: |
+            version=$(.circleci/version.sh)
+            sed -i "s/version '.*'/version '${version}-android'/" build.gradle 
+            sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '4.2.0-android'/" build.gradle 
+            sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
+
+            awk '/version '\''/' build.gradle
+            awk '/ext.web3jVersion = '\''/' build.gradle
+      - *build_test
+      - persist_to_workspace:
+          root: ~/circleci-caver-java
+          paths: 
+            - build
+
+  tag_verify:
+    <<: *defaults
     steps:
       - checkout
       - run:
-          name: Pull and tag Klaytn image
+          name: "Verify tag and file verison match"
           command: |
-            docker pull kjhman21/dev:v1.0.0
-            docker image tag kjhman21/dev:v1.0.0 klaytn
-      - run:
-          name: Start test network
-          working_directory: .circleci/images
-          command: docker-compose up -d
-      - run:
-          name: Build and test
-          command: |
-            ./gradlew clean
-            ./gradlew build --scan --debug
-  deploy:
-    working_directory: ~/circleci-caver-java
-    docker:
-      - image: circleci/openjdk:8-jdk-browsers
+            echo "tag version is " $CIRCLE_TAG
+
+            file_version=v$(.circleci/version.sh)
+            echo "file version is " $file_version
+
+            if [ $file_version == ${CIRCLE_TAG%-*} ]; then
+              echo "verification pass"
+            else
+              echo "It's not same version."
+              exit 1
+            fi
+
+  release_PR:
+    <<: *defaults
     steps:
+      - add_ssh_keys
       - checkout
       - run:
-          command: ./gradlew release
+          name: "Push to release branch"
+          command: |
+              echo "push to release branch: /release/${CIRCLE_TAG%-*}"
+              git checkout -b release/${CIRCLE_TAG%-*}
+              git push origin release/${CIRCLE_TAG%-*}
+      - run:
+          name: "Install hub" 
+          command: |
+              curl -sSLf https://github.com/github/hub/releases/download/v2.12.3/hub-linux-amd64-2.12.3.tgz | \
+                tar zxf - --strip-components=1 -C /tmp && \
+                sudo mv /tmp/bin/hub /usr/local/bin/hub
+              type hub
+      - run:
+          name: "Create pull request" 
+          command: |
+              version=$(hub pr list -s open -L 10 -f "%H%n")
+              echo $version
+
+              if [[ $version == *"release/${CIRCLE_TAG%-*}"* ]]; then
+                echo "PR already exist"
+              else
+                echo "hub pull-request -m "[Master] release/$CIRCLE_TAG QA Signoff" -b $CIRCLE_PROJECT_USERNAME:master -h $CIRCLE_PROJECT_USERNAME:${CIRCLE_TAG%-*}"
+                hub pull-request -b $CIRCLE_PROJECT_USERNAME:master -h $CIRCLE_PROJECT_USERNAME:release/${CIRCLE_TAG%-*} -r $GITHUB_reviewer -l circleci -F- <<EOF
+                [Master] release/${CIRCLE_TAG%-*} QA Sign-off
+
+                This PR is automatically created by CI to release a new official version of $CIRCLE_PROJECT_REPONAME.
+
+                When this PR is approved by QA team, a new version will be released.
+              EOF
+              fi
+
+  major_tagging:
+    <<: *defaults
+    steps:
+      - add_ssh_keys
+      - checkout
+      - run:
+          name: "Generate tag"
+          command: |
+              current_version=$(.circleci/version.sh)
+
+              echo "git tag v$current_version"
+              git tag v$current_version
+              git push origin v$current_version
+      - run:
+          name: "Delete release branch"
+          command: |
+              #delete release branch. it trigger by merge title
+              version=v$(.circleci/version.sh)
+
+              if [[ "release/v" = $(git log --oneline -1 | grep -o "release/v") ]]; then
+                echo "Delete branch release/$version"
+                git push origin --delete release/$version
+              else
+                echo "Need to delete branch manually"
+              fi  
+
+  major_publish:
+    <<: *machine_ubuntu
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/circleci-caver-java
+      - run:
+          name: "Publish major version"
+          command: |
+              version=v$(.circleci/version.sh)
+
+              echo "Publishing a major release! version=$version"
+              #echo "./gradlew release"
+              ./gradlew bintrayUpload
+
+
+  android_publish:
+    <<: *machine_ubuntu
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/circleci-caver-java
+      - run:
+          name: "Publish android version"
+          command: |
+              version=$(.circleci/version.sh)
+              sed -i "s/version '.*'/version '${version}-android'/" build.gradle
+              sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle 
+              sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
+
+              version=v$(.circleci/version.sh)
+              echo "Publishing a major android release! version=$version"
+              ./gradlew bintrayUpload
+
+  rc_publish:
+    <<: *machine_ubuntu
+    steps:
+      - checkout
+      - *pull_klaytn_image
+      - *start_test_newwork
+      - run:
+          name: "Publish RC version"
+          command: |
+              sed -i "s/version '.*'/version '${CIRCLE_TAG:1}'/" build.gradle
+
+              version=v$(.circleci/version.sh)
+              echo "Publishing a major android release! version=$version"
+              ./gradlew release
+
+  rc_android_publish:
+    <<: *machine_ubuntu
+    steps:
+      - checkout
+      - *pull_klaytn_image
+      - *start_test_newwork
+      - run:
+          name: "Publish android version"
+          command: |
+              sed -i "s/version '.*'/version '${CIRCLE_TAG:1}-android'/" build.gradle
+              sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle 
+              sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
+
+              version=v$(.circleci/version.sh)
+              echo "Publishing a major android release! version=$version"
+              ./gradlew release
+
 workflows:
   version: 2
-  caver-java-ci:
+  workflow_build_deploy:
     jobs:
-      - build:
-          filters:
-            tags:
-              only: /v.*/
-      - hold:
-          filters:
-            tags:
-              only: /v.*/
-            branches:
-              ignore: /.*/
-          type: approval
-          requires:
-            - build
-      - deploy:
-          filters:
-            tags:
-              only: /v.*/
-          requires:
-            - hold
+    - build:
+        filters:
+          branches:
+            ignore:
+            - /release\/.*/
+            - master
+          tags:
+            only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+            #only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
+
+    - major_publish:
+        requires:
+          - build
+        filters:
+          tags:
+            only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+          branches:
+            ignore: /.*/
+
+  workflow_build_deploy_android:
+    jobs:
+    - android_build:
+        filters:
+          branches:
+            ignore:
+            - /release\/.*/
+            - master
+          tags: 
+            only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+            #only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
+
+    - android_publish:
+        requires:
+          - android_build
+        filters:
+          tags: 
+            only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+          branches:
+            ignore: /.*/
+
+  workflow_rc:
+    jobs:
+    - tag_verify:
+        filters:
+          tags:
+            only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/
+          branches:
+            ignore: /.*/
+
+    - rc_publish:
+        requires:
+          - tag_verify
+        filters:
+          tags:
+            only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/
+          branches:
+            ignore: /.*/
+
+    - rc_android_publish:
+        requires:
+          - tag_verify
+        filters:
+          tags:
+            only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/
+          branches:
+            ignore: /.*/
+
+    - release_PR:
+        requires:
+          - rc_publish
+          - rc_android_publish
+        filters:
+          tags:
+            only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/
+          branches:
+            ignore: /.*/
+
+    - major_tagging:
+        filters:
+          branches:
+            only: master

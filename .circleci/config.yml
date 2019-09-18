@@ -226,7 +226,7 @@ workflows:
         filters:
           branches:
             only:
-              - dev
+              - develop
           #   ignore:
           #   - /release\/.*/
           #   - master
@@ -238,7 +238,7 @@ workflows:
         filters:
           branches:
             only:
-              - dev
+              - develop
           #   ignore:
           #   - /release\/.*/
           #   - master

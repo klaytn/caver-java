@@ -1,14 +1,19 @@
 version: 2
 
 defaults: &defaults
-  working_directory: ~/circleci-caver-java
+  working_directory: ~/circleci-caver-java-major
   docker:
     - image: circleci/openjdk:8-jdk-browsers
 
 machine_ubuntu: &machine_ubuntu
-  working_directory: ~/circleci-caver-java
+  working_directory: ~/circleci-caver-java-major
   machine:
     image: ubuntu-1604:201903-01
+
+android_machine_ubuntu: &android_machine_ubuntu
+  working_directory: ~/circleci-caver-java-android
+  machine:
+    image: ubuntu-1604:201903-01    
 
 pull_klaytn_image: &pull_klaytn_image
   run:
@@ -37,14 +42,22 @@ jobs:
       - checkout
       - *pull_klaytn_image
       - *start_test_newwork
+      - run:
+          name: "Check rc version"
+          command: |
+            if [ -z $CIRCLE_TAG ]; then
+              sed -i "s/version '.*'/version '${CIRCLE_TAG:1}'/" build.gradle
+            else
+              echo "this is not RC version"
+            fi
       - *build_test
       - persist_to_workspace:
-          root: ~/circleci-caver-java
+          root: ~/
           paths: 
-            - build
+            - circleci-caver-java-major/*
 
   android_build:
-    <<: *machine_ubuntu
+    <<: *android_machine_ubuntu
     steps:
       - checkout
       - *pull_klaytn_image
@@ -54,16 +67,24 @@ jobs:
           command: |
             version=$(.circleci/version.sh)
             sed -i "s/version '.*'/version '${version}-android'/" build.gradle 
-            sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '4.2.0-android'/" build.gradle 
+            sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle 
             sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
+
+            if [ -z $CIRCLE_TAG ]; then
+              sed -i "s/version '.*'/version '${CIRCLE_TAG:1}-android'/" build.gradle
+              sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle
+              sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
+            else
+              echo "this is not RC version"
+            fi
 
             awk '/version '\''/' build.gradle
             awk '/ext.web3jVersion = '\''/' build.gradle
       - *build_test
       - persist_to_workspace:
-          root: ~/circleci-caver-java
+          root: ~/
           paths: 
-            - build
+            - circleci-caver-java-android/*
 
   tag_verify:
     <<: *defaults
@@ -150,9 +171,8 @@ jobs:
   major_publish:
     <<: *machine_ubuntu
     steps:
-      - checkout
       - attach_workspace:
-          at: ~/circleci-caver-java
+          at: ~/
       - run:
           name: "Publish major version"
           command: |
@@ -164,54 +184,22 @@ jobs:
 
 
   android_publish:
-    <<: *machine_ubuntu
+    <<: *android_machine_ubuntu
     steps:
-      - checkout
       - attach_workspace:
-          at: ~/circleci-caver-java
+          at: ~/
       - run:
           name: "Publish android version"
           command: |
-              version=$(.circleci/version.sh)
-              sed -i "s/version '.*'/version '${version}-android'/" build.gradle
-              sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle 
-              sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
+              # version=$(.circleci/version.sh)
+              # sed -i "s/version '.*'/version '${version}-android'/" build.gradle
+              # sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle 
+              # sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
 
               version=v$(.circleci/version.sh)
               echo "Publishing a major android release! version=$version"
+              #echo "./gradlew release"
               ./gradlew bintrayUpload
-
-  rc_publish:
-    <<: *machine_ubuntu
-    steps:
-      - checkout
-      - *pull_klaytn_image
-      - *start_test_newwork
-      - run:
-          name: "Publish RC version"
-          command: |
-              sed -i "s/version '.*'/version '${CIRCLE_TAG:1}'/" build.gradle
-
-              version=v$(.circleci/version.sh)
-              echo "Publishing a major android release! version=$version"
-              ./gradlew release
-
-  rc_android_publish:
-    <<: *machine_ubuntu
-    steps:
-      - checkout
-      - *pull_klaytn_image
-      - *start_test_newwork
-      - run:
-          name: "Publish android version"
-          command: |
-              sed -i "s/version '.*'/version '${CIRCLE_TAG:1}-android'/" build.gradle
-              sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle 
-              sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
-
-              version=v$(.circleci/version.sh)
-              echo "Publishing a major android release! version=$version"
-              ./gradlew release
 
 workflows:
   version: 2
@@ -221,63 +209,23 @@ workflows:
         filters:
           branches:
             ignore:
-            - /release\/.*/
-            - master
+              - /release\/.*/
+              - master
           tags:
-            only: /^v[0-9]+\.[0-9]+\.[0-9]+/
-            #only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
+            #only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+            only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
 
-    - major_publish:
-        requires:
-          - build
-        filters:
-          tags:
-            only: /^v[0-9]+\.[0-9]+\.[0-9]+/
-          branches:
-            ignore: /.*/
-
-  workflow_build_deploy_android:
-    jobs:
     - android_build:
         filters:
           branches:
             ignore:
-            - /release\/.*/
-            - master
-          tags: 
-            only: /^v[0-9]+\.[0-9]+\.[0-9]+/
-            #only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
+              - /release\/.*/
+              - master
+          tags:
+            #only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+            only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
 
-    - android_publish:
-        requires:
-          - android_build
-        filters:
-          tags: 
-            only: /^v[0-9]+\.[0-9]+\.[0-9]+/
-          branches:
-            ignore: /.*/
-
-  workflow_rc:
-    jobs:
     - tag_verify:
-        filters:
-          tags:
-            only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/
-          branches:
-            ignore: /.*/
-
-    - rc_publish:
-        requires:
-          - tag_verify
-        filters:
-          tags:
-            only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/
-          branches:
-            ignore: /.*/
-
-    - rc_android_publish:
-        requires:
-          - tag_verify
         filters:
           tags:
             only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/
@@ -286,8 +234,8 @@ workflows:
 
     - release_PR:
         requires:
-          - rc_publish
-          - rc_android_publish
+          - major_publish
+          - android_publish
         filters:
           tags:
             only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/
@@ -297,4 +245,25 @@ workflows:
     - major_tagging:
         filters:
           branches:
-            only: master
+            only: master       
+          
+    - android_publish:
+        requires:
+          - android_build
+        filters:
+          tags: 
+            #only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+            only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
+          branches:
+            ignore: /.*/
+
+    - major_publish:
+        requires:
+          - build
+          - android_publish
+        filters:
+          tags:
+            #only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+            only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
+          branches:
+            ignore: /.*/               

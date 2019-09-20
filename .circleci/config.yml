@@ -202,25 +202,25 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      # - checkout
-      # - *pull_klaytn_image
-      # - *start_test_newwork
+      - checkout
+      - *pull_klaytn_image
+      - *start_test_newwork
       - run:
           name: "Publish android version"
           command: |
-              # version=$(.circleci/version.sh)
-              # sed -i "s/version '.*'/version '${version}-android'/" build.gradle
-              # sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle 
-              # sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
+              version=$(.circleci/version.sh)
+              sed -i "s/version '.*'/version '${version}-android'/" build.gradle
+              sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle 
+              sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
 
-              # if [ -z "$CIRCLE_TAG" ]; then
-              #   echo "this is not RC version"
-              # else
-              #   echo "trigger CIRCLE_TAG $CIRCLE_TAG"
-              #   sed -i "s/version '.*'/version '${CIRCLE_TAG:1}-android'/" build.gradle
-              #   sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle
-              #   sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
-              # fi              
+              if [ -z "$CIRCLE_TAG" ]; then
+                echo "this is not RC version"
+              else
+                echo "trigger CIRCLE_TAG $CIRCLE_TAG"
+                sed -i "s/version '.*'/version '${CIRCLE_TAG:1}-android'/" build.gradle
+                sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle
+                sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
+              fi              
 
               version=v$(.circleci/version.sh)
               echo "Publishing a major android release! version=$version"

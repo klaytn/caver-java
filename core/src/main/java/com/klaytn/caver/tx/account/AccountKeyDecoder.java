@@ -28,6 +28,7 @@ public class AccountKeyDecoder {
             put(AccountKey.Type.MULTISIG, AccountKeyWeightedMultiSig::decodeFromRlp);
             put(AccountKey.Type.FAIL, AccountKeyFail::decodeFromRlp);
             put(AccountKey.Type.LEGACY, AccountKeyLegacy::decodeFromRlp);
+            put(AccountKey.Type.ROLEBASED, AccountKeyRoleBased::decodeFromRlp);
         }
     };
 

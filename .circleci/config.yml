@@ -45,10 +45,11 @@ jobs:
       - run:
           name: "Check rc version"
           command: |
-            if [ -z $CIRCLE_TAG ]; then
-              sed -i "s/version '.*'/version '${CIRCLE_TAG:1}'/" build.gradle
-            else
+            if [ -z "$CIRCLE_TAG" ]; then
               echo "this is not RC version"
+            else
+              sed -i "s/version '.*'/version '${CIRCLE_TAG:1}'/" build.gradle
+              awk '/version '\''/' build.gradle
             fi
       - *build_test
       - persist_to_workspace:
@@ -180,10 +181,11 @@ jobs:
       - run:
           name: "Check rc version"
           command: |
-            if [ -z $CIRCLE_TAG ]; then
-              sed -i "s/version '.*'/version '${CIRCLE_TAG:1}'/" build.gradle
-            else
+            if [ -z "$CIRCLE_TAG" ]; then
               echo "this is not RC version"
+            else
+              sed -i "s/version '.*'/version '${CIRCLE_TAG:1}'/" build.gradle
+              awk '/version '\''/' build.gradle
             fi
       - run:
           name: "Publish major version"

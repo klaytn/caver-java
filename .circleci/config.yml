@@ -181,7 +181,7 @@ jobs:
 
               echo "Publishing a major release! version=$version"
               #echo "./gradlew release"
-              ./gradlew bintrayUpload
+              ./gradlew bintrayUpload --stacktrace --debug
 
 
   android_publish:
@@ -200,7 +200,7 @@ jobs:
               version=v$(.circleci/version.sh)
               echo "Publishing a major android release! version=$version"
               #echo "./gradlew release"
-              ./gradlew bintrayUpload
+              ./gradlew bintrayUpload --stacktrace --debug
 
 workflows:
   version: 2

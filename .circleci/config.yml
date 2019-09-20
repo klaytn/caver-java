@@ -70,12 +70,13 @@ jobs:
             sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle 
             sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
 
-            if [ -z $CIRCLE_TAG ]; then
-              sed -i "s/version '.*'/version '${CIRCLE_TAG:1}-android'/" build.gradle
-              sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle
-              sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
-            else
+            if [ -z "$CIRCLE_TAG" ]; then
               echo "this is not RC version"
+            else
+              echo "trigger CIRCLE_TAG $CIRCLE_TAG"
+              sed -i "s/version '.*'/version '${CIRCLE_TAG:1}-android'/" build.gradle
+              sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '${CIRCLE_TAG:1}-android'/" build.gradle
+              sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
             fi
 
             awk '/version '\''/' build.gradle

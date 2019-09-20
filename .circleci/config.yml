@@ -70,12 +70,13 @@ jobs:
             sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle 
             sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
 
-            if [ -z $CIRCLE_TAG ]; then
+            if [ -z "$CIRCLE_TAG" ]; then
+              echo "this is not RC version"
+            else
+              echo "trigger CIRCLE_TAG $CIRCLE_TAG"
               sed -i "s/version '.*'/version '${CIRCLE_TAG:1}-android'/" build.gradle
               sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle
               sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
-            else
-              echo "this is not RC version"
             fi
 
             awk '/version '\''/' build.gradle
@@ -171,35 +172,58 @@ jobs:
   major_publish:
     <<: *machine_ubuntu
     steps:
-      - attach_workspace:
-          at: ~/
+      # - attach_workspace:
+      #     at: ~/
+      - checkout
+      - *pull_klaytn_image
+      - *start_test_newwork
+      - run:
+          name: "Check rc version"
+          command: |
+            if [ -z $CIRCLE_TAG ]; then
+              sed -i "s/version '.*'/version '${CIRCLE_TAG:1}'/" build.gradle
+            else
+              echo "this is not RC version"
+            fi
       - run:
           name: "Publish major version"
           command: |
               version=v$(.circleci/version.sh)
 
               echo "Publishing a major release! version=$version"
-              #echo "./gradlew release"
-              ./gradlew bintrayUpload
+              ./gradlew release --stacktrace --debug
+              #./gradlew bintrayUpload --stacktrace --debug
 
 
   android_publish:
     <<: *android_machine_ubuntu
     steps:
-      - attach_workspace:
-          at: ~/
+      # - attach_workspace:
+      #     at: ~/
+      - checkout
+      - *pull_klaytn_image
+      - *start_test_newwork
       - run:
           name: "Publish android version"
           command: |
-              # version=$(.circleci/version.sh)
-              # sed -i "s/version '.*'/version '${version}-android'/" build.gradle
-              # sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle 
-              # sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
+              version=$(.circleci/version.sh)
+              sed -i "s/version '.*'/version '${version}-android'/" build.gradle
+              sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle 
+              sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
+
+              if [ -z "$CIRCLE_TAG" ]; then
+                echo "this is not RC version"
+              else
+                echo "trigger CIRCLE_TAG $CIRCLE_TAG"
+                sed -i "s/version '.*'/version '${CIRCLE_TAG:1}-android'/" build.gradle
+                sed -i "s/ext.web3jVersion = '.*'/ext.web3jVersion = '$web3j_version-android'/" build.gradle
+                sed -i "s/java.util.concurrent.CompletableFuture/java8.util.concurrent.CompletableFuture/" core/src/test/java/com/klaytn/caver/scenario/FastTransactionManagerIT.java
+              fi              
 
               version=v$(.circleci/version.sh)
               echo "Publishing a major android release! version=$version"
-              #echo "./gradlew release"
-              ./gradlew bintrayUpload
+              ./gradlew release --stacktrace --debug
+              #./gradlew bintrayUpload --stacktrace --debug
 
 workflows:
   version: 2
@@ -211,9 +235,9 @@ workflows:
             ignore:
               - /release\/.*/
               - master
-          tags:
-            #only: /^v[0-9]+\.[0-9]+\.[0-9]+/
-            only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
+          # tags:
+          #   only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+          #   only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
 
     - android_build:
         filters:
@@ -221,9 +245,9 @@ workflows:
             ignore:
               - /release\/.*/
               - master
-          tags:
-            #only: /^v[0-9]+\.[0-9]+\.[0-9]+/
-            only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
+          # tags:
+          #   only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+          #   only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
 
     - tag_verify:
         filters:
@@ -248,8 +272,8 @@ workflows:
             only: master       
           
     - android_publish:
-        requires:
-          - android_build
+        # requires:
+        #   - android_build
         filters:
           tags: 
             #only: /^v[0-9]+\.[0-9]+\.[0-9]+/
@@ -259,7 +283,7 @@ workflows:
 
     - major_publish:
         requires:
-          - build
+          # - build
           - android_publish
         filters:
           tags:

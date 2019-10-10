@@ -51,17 +51,8 @@ public class AccountKeyPublicUtils {
         compEnc[0] = (byte)(yBit ? 0x03 : 0x02);
         ECPoint ecPoint = CURVE.getCurve().decodePoint(compEnc);
         return AccountKeyPublic.create(
-                Numeric.prependHexPrefix(leftPaddingZeroTo64Length(ecPoint.getAffineXCoord().toString())),
-                Numeric.prependHexPrefix(leftPaddingZeroTo64Length(ecPoint.getAffineYCoord().toString()))
+                Numeric.prependHexPrefix(Numeric.toHexStringNoPrefixZeroPadded(ecPoint.getAffineXCoord().toBigInteger(),64)),
+                Numeric.prependHexPrefix(Numeric.toHexStringNoPrefixZeroPadded(ecPoint.getAffineYCoord().toBigInteger(),64))
         );
-    }
-
-    private static String leftPaddingZeroTo64Length(String org) {
-        StringBuffer sb = new StringBuffer(64);
-        for (int i = 0 ; i < 64 - org.length() ; i++) {
-            sb.append("0");
-        }
-
-        return sb.append(org).toString();
     }
 }

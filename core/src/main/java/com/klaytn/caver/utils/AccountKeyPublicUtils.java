@@ -51,7 +51,7 @@ public class AccountKeyPublicUtils {
         compEnc[0] = (byte)(yBit ? 0x03 : 0x02);
         ECPoint ecPoint = CURVE.getCurve().decodePoint(compEnc);
         return AccountKeyPublic.create(
-                Numeric.toHexStringWithPrefixZeroPadded(ecPoint.getAffineXCoord().toBigInteger(),64),
+                Numeric.toHexStringWithPrefixZeroPadded(ecPoint.getAffineXCoord().toBigInteger(), 64),
                 Numeric.toHexStringWithPrefixZeroPadded(ecPoint.getAffineYCoord().toBigInteger(),64)
         );
     }

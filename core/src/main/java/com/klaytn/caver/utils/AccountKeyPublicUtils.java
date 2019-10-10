@@ -52,7 +52,7 @@ public class AccountKeyPublicUtils {
         ECPoint ecPoint = CURVE.getCurve().decodePoint(compEnc);
         return AccountKeyPublic.create(
                 Numeric.toHexStringWithPrefixZeroPadded(ecPoint.getAffineXCoord().toBigInteger(), 64),
-                Numeric.toHexStringWithPrefixZeroPadded(ecPoint.getAffineYCoord().toBigInteger(),64)
+                Numeric.toHexStringWithPrefixZeroPadded(ecPoint.getAffineYCoord().toBigInteger(), 64)
         );
     }
 }

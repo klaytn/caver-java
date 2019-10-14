@@ -116,8 +116,8 @@ public abstract class AbstractTxType implements TxType {
     }
 
     protected void addSenderSignatureData(List<RlpType> signatureRlpTypeList) {
-        for (RlpType signiture : signatureRlpTypeList) {
-            RlpList vrs = (RlpList) signiture;
+        for (RlpType signature : signatureRlpTypeList) {
+            RlpList vrs = (RlpList) signature;
             byte[] v = ((RlpString) vrs.getValues().get(0)).getBytes();
             byte[] r = ((RlpString) vrs.getValues().get(1)).getBytes();
             byte[] s = ((RlpString) vrs.getValues().get(2)).getBytes();
@@ -127,8 +127,8 @@ public abstract class AbstractTxType implements TxType {
 
     public void addSignatureData(List<RlpType> values, int offset) {
         if (values.size() > offset) {
-            List<RlpType> senderSignitures = ((RlpList) (values.get(offset))).getValues();
-            addSenderSignatureData(senderSignitures);
+            List<RlpType> senderSignatures = ((RlpList) (values.get(offset))).getValues();
+            addSenderSignatureData(senderSignatures);
         }
     }
 

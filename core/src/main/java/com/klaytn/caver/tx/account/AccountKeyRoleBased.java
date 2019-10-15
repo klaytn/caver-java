@@ -108,4 +108,14 @@ public class AccountKeyRoleBased implements AccountKey {
         return Arrays.equals(toRlp(), that.toRlp());
     }
 
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        result.append("AccountKeyRoleBased : \n ");
+        result.append("RoleTransaction : \n " + getRoleTransaction().toString() + "\n ");
+        result.append("RoleUpdate : \n " + getRoleUpdate().toString() + "\n ");
+        result.append("RoleFeePayer : \n " + getRoleFeePayer().toString());
+
+        return result.toString();
+    }
 }

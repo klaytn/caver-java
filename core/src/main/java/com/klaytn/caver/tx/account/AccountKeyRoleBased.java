@@ -115,7 +115,6 @@ public class AccountKeyRoleBased implements AccountKey {
         result.append("RoleTransaction : \n " + getRoleTransaction().toString() + "\n ");
         result.append("RoleUpdate : \n " + getRoleUpdate().toString() + "\n ");
         result.append("RoleFeePayer : \n " + getRoleFeePayer().toString());
-
         return result.toString();
     }
 }

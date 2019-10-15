@@ -16,6 +16,10 @@
 
 package com.klaytn.caver.tx.type;
 
+import com.klaytn.caver.crypto.KlaySignatureData;
+import com.klaytn.caver.utils.KlayTransactionUtils;
+import org.web3j.rlp.RlpDecoder;
+import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
 import org.web3j.rlp.RlpType;
 import org.web3j.utils.Numeric;
@@ -59,6 +63,42 @@ public class TxTypeCancel extends AbstractTxType {
     @Override
     public TxType.Type getType() {
         return Type.CANCEL;
+    }
+
+    /**
+     * decode transaction hash from sender to reconstruct transaction with fee payer signature.
+     *
+     * @param rawTransaction signed transaction hash from sender
+     * @return TxTypeCancel decoded transaction
+     */
+    public static TxTypeCancel decodeFromRawTransaction(byte[] rawTransaction) {
+        // SenderTxHashRLP = type + encode([nonce, gasPrice, gas, from, txSignatures])
+        try {
+            byte[] rawTransactionExceptType = KlayTransactionUtils.getRawTransactionNoType(rawTransaction);
+
+            RlpList rlpList = RlpDecoder.decode(rawTransactionExceptType);
+            List<RlpType> values = ((RlpList) rlpList.getValues().get(0)).getValues();
+            BigInteger nonce = ((RlpString) values.get(0)).asPositiveBigInteger();
+            BigInteger gasPrice = ((RlpString) values.get(1)).asPositiveBigInteger();
+            BigInteger gasLimit = ((RlpString) values.get(2)).asPositiveBigInteger();
+            String from = ((RlpString) values.get(3)).asString();
+
+            TxTypeCancel tx
+                    = TxTypeCancel.createTransaction(nonce, gasPrice, gasLimit, from);
+
+            RlpList vrs = (RlpList) ((RlpList) (values.get(4))).getValues().get(0);
+            byte[] v = ((RlpString) vrs.getValues().get(0)).getBytes();
+            byte[] r = ((RlpString) vrs.getValues().get(1)).getBytes();
+            byte[] s = ((RlpString) vrs.getValues().get(2)).getBytes();
+            tx.setSenderSignatureData(new KlaySignatureData(v, r, s));
+            return tx;
+        } catch (Exception e) {
+            throw new RuntimeException("Incorrectly encoded tx.");
+        }
+    }
+
+    public static TxTypeCancel decodeFromRawTransaction(String rawTransaction) {
+        return decodeFromRawTransaction(Numeric.hexStringToByteArray(Numeric.cleanHexPrefix(rawTransaction)));
     }
 
 }

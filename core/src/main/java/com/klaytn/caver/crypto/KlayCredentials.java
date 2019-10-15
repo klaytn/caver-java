@@ -51,9 +51,8 @@ public class KlayCredentials {
     public ECKeyPair getEcKeyPair() {
         if (ecKeyPairForTransactionList != null && ecKeyPairForTransactionList.size() > 0) {
             return ecKeyPairForTransactionList.get(0);
-        } else {
-            throw new RuntimeException("Transaction key does not exist.");
         }
+        throw new RuntimeException("Transaction key does not exist.");
     }
 
     public List<ECKeyPair> getEcKeyPairsForTransactionList() throws NullPointerException {
@@ -113,9 +112,9 @@ public class KlayCredentials {
     }
 
     public static KlayCredentials create(ECKeyPair[] ecKeyPairsArrayForTransaction, ECKeyPair[] ecKeyPairsArrayForUpdate, ECKeyPair[] ecKeyPairsArrayForFee, String address) {
-        List<ECKeyPair> ecKeyPairsForTransaction = new ArrayList<>(Arrays.asList(ecKeyPairsArrayForTransaction));
-        List<ECKeyPair> ecKeyPairsForUpdate = new ArrayList<>(Arrays.asList(ecKeyPairsArrayForUpdate));
-        List<ECKeyPair> ecKeyPairsForForFee = new ArrayList<>(Arrays.asList(ecKeyPairsArrayForFee));
+        List<ECKeyPair> ecKeyPairsForTransaction = Arrays.asList(ecKeyPairsArrayForTransaction);
+        List<ECKeyPair> ecKeyPairsForUpdate = Arrays.asList(ecKeyPairsArrayForUpdate);
+        List<ECKeyPair> ecKeyPairsForForFee = Arrays.asList(ecKeyPairsArrayForFee);
 
         return create(ecKeyPairsForTransaction, ecKeyPairsForUpdate, ecKeyPairsForForFee, address);
     }

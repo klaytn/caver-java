@@ -92,7 +92,7 @@ public class AccountKeyPublic implements AccountKey {
     }
 
     public String getX() {
-        return Numeric.toHexStringWithPrefixZeroPadded(Numeric.toBigInt(this.x),64);
+        return Numeric.toHexStringWithPrefixZeroPadded(Numeric.toBigInt(this.x), 64);
     }
 
     public String getY() {

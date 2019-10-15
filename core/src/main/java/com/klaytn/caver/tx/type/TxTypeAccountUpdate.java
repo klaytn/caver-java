@@ -80,7 +80,7 @@ public class TxTypeAccountUpdate extends AbstractTxType {
     /**
      * decode transaction hash from sender to reconstruct transaction with fee payer signature.
      *
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeAccountUpdate decoded transaction
      */
     public static TxTypeAccountUpdate decodeFromRawTransaction(byte[] rawTransaction) {

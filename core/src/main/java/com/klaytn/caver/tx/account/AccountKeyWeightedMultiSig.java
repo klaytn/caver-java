@@ -153,9 +153,9 @@ public class AccountKeyWeightedMultiSig implements AccountKey {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
+        result.append("AccountKeyWeightedMultiSig : {\n");
         for (WeightedPublicKey weightedPublicKey : weightedPublicKeys) {
-            result.append("AccountKeyWeightedMultiSig : {");
-            result.append("Weight : " + weightedPublicKey.weight + " / ");
+            result.append("{Weight : " + weightedPublicKey.weight + " / ");
             result.append("PublicKey : " + weightedPublicKey.key.toString() + "}\n ");
         }
         result.append("}");

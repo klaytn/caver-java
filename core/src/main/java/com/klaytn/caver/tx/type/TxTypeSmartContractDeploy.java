@@ -96,7 +96,7 @@ public class TxTypeSmartContractDeploy extends AbstractTxType {
     /**
      * decode transaction hash from sender to reconstruct transaction with fee payer signature.
      *
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeSmartContractDeploy decoded transaction
      */
     public static TxTypeSmartContractDeploy decodeFromRawTransaction(byte[] rawTransaction) {
@@ -130,7 +130,7 @@ public class TxTypeSmartContractDeploy extends AbstractTxType {
     }
 
     /**
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeSmartContractDeploy decoded transaction
      */
     public static TxTypeSmartContractDeploy decodeFromRawTransaction(String rawTransaction) {

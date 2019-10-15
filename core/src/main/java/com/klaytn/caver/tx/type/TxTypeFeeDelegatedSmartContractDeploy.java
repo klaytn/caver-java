@@ -93,7 +93,7 @@ public class TxTypeFeeDelegatedSmartContractDeploy extends AbstractTxType implem
     /**
      * decode transaction hash from sender to reconstruct transaction with fee payer signature.
      *
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeFeeDelegatedSmartContractDeploy decoded transaction
      */
     public static TxTypeFeeDelegatedSmartContractDeploy decodeFromRawTransaction(byte[] rawTransaction) {
@@ -123,7 +123,7 @@ public class TxTypeFeeDelegatedSmartContractDeploy extends AbstractTxType implem
     }
 
     /**
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeFeeDelegatedSmartContractDeploy decoded transaction
      */
     public static TxTypeFeeDelegatedSmartContractDeploy decodeFromRawTransaction(String rawTransaction) {

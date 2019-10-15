@@ -86,6 +86,7 @@ public abstract class AbstractTxType implements TxType {
         this.senderSignatureDataSet = new HashSet<>();
     }
 
+  @Deprecated
     protected void setSenderSignatureData(KlaySignatureData signatureData) {
         addSenderSignatureData(signatureData);
     }

@@ -16,6 +16,10 @@
 
 package com.klaytn.caver.tx.type;
 
+import com.klaytn.caver.crypto.KlaySignatureData;
+import com.klaytn.caver.utils.KlayTransactionUtils;
+import org.web3j.rlp.RlpDecoder;
+import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
 import org.web3j.rlp.RlpType;
 import org.web3j.utils.Numeric;
@@ -41,6 +45,49 @@ public class TxTypeValueTransferMemo extends AbstractTxType {
     public static TxTypeValueTransferMemo createTransaction(
             BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to, BigInteger value, String from, byte[] payload) {
         return new TxTypeValueTransferMemo(nonce, gasPrice, gasLimit, to, value, from, payload);
+    }
+
+    /**
+     * decode transaction hash from sender to reconstruct transaction with fee payer signature.
+     *
+     * @param rawTransaction signed transaction hash from sender
+     * @return TxTypeValueTransferMemo decoded transaction
+     */
+    public static TxTypeValueTransferMemo decodeFromRawTransaction(byte[] rawTransaction) {
+        // TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, txSignatures])
+        try {
+            byte[] rawTransactionExceptType = KlayTransactionUtils.getRawTransactionNoType(rawTransaction);
+            RlpList rlpList = RlpDecoder.decode(rawTransactionExceptType);
+            List<RlpType> values = ((RlpList) rlpList.getValues().get(0)).getValues();
+
+            BigInteger nonce = ((RlpString) values.get(0)).asPositiveBigInteger();
+            BigInteger gasPrice = ((RlpString) values.get(1)).asPositiveBigInteger();
+            BigInteger gasLimit = ((RlpString) values.get(2)).asPositiveBigInteger();
+            String to = ((RlpString) values.get(3)).asString();
+            BigInteger value = ((RlpString) values.get(4)).asPositiveBigInteger();
+            String from = ((RlpString) values.get(5)).asString();
+            byte[] payload = ((RlpString) values.get(6)).getBytes();
+
+            TxTypeValueTransferMemo tx
+                    = TxTypeValueTransferMemo.createTransaction(nonce, gasPrice, gasLimit, to, value, from, payload);
+
+            RlpList vrs = (RlpList) ((RlpList) (values.get(7))).getValues().get(0);
+            byte[] v = ((RlpString) vrs.getValues().get(0)).getBytes();
+            byte[] r = ((RlpString) vrs.getValues().get(1)).getBytes();
+            byte[] s = ((RlpString) vrs.getValues().get(2)).getBytes();
+            tx.setSenderSignatureData(new KlaySignatureData(v, r, s));
+            return tx;
+        } catch (Exception e) {
+          throw new RuntimeException("Incorrectly encoded tx.");
+        }
+    }
+
+    /**
+     * @param rawTransaction signed transaction hash from sender
+     * @return TxTypeValueTransferMemo decoded transaction
+     */
+    public static TxTypeValueTransferMemo decodeFromRawTransaction(String rawTransaction) {
+        return decodeFromRawTransaction(Numeric.hexStringToByteArray(Numeric.cleanHexPrefix(rawTransaction)));
     }
 
     public byte[] getPayload() {

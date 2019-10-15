@@ -111,7 +111,7 @@ public class TxTypeAccountUpdate extends AbstractTxType {
     }
 
     /**
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeAccountUpdate decoded transaction
      */
     public static TxTypeAccountUpdate decodeFromRawTransaction(String rawTransaction) {

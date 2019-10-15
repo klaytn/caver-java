@@ -50,7 +50,7 @@ public class TxTypeValueTransferMemo extends AbstractTxType {
     /**
      * decode transaction hash from sender to reconstruct transaction with fee payer signature.
      *
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeValueTransferMemo decoded transaction
      */
     public static TxTypeValueTransferMemo decodeFromRawTransaction(byte[] rawTransaction) {
@@ -83,7 +83,7 @@ public class TxTypeValueTransferMemo extends AbstractTxType {
     }
 
     /**
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeValueTransferMemo decoded transaction
      */
     public static TxTypeValueTransferMemo decodeFromRawTransaction(String rawTransaction) {

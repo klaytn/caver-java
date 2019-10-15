@@ -57,7 +57,7 @@ public class Wallet {
     private static final int R = 8;
     private static final int DKLEN = 32;
 
-    private static final int CURRENT_VERSION = 301;
+    private static final int CURRENT_VERSION = 3;
 
     private static final String CIPHER = "aes-128-ctr";
     static final String AES_128_CTR = "pbkdf2";

@@ -70,7 +70,6 @@ public class TxTypeValueTransferMemo extends AbstractTxType {
 
             TxTypeValueTransferMemo tx
                     = TxTypeValueTransferMemo.createTransaction(nonce, gasPrice, gasLimit, to, value, from, payload);
-
             tx.addSignatureData(values, 7);
             return tx;
         } catch (Exception e) {

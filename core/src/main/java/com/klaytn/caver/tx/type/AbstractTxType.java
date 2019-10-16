@@ -105,7 +105,6 @@ public abstract class AbstractTxType implements TxType {
      * add the sender's signature data
      *
      * @param signatureData sender's signature data
-     * @return void
      */
     protected void addSenderSignatureData(KlaySignatureData signatureData) {
         senderSignatureDataSet.add(signatureData);
@@ -115,7 +114,6 @@ public abstract class AbstractTxType implements TxType {
      * add the sender's signature data
      *
      * @param senderSignatureDataSet sender's signature data set
-     * @return void
      */
     public void addSenderSignatureData(Set<KlaySignatureData> senderSignatureDataSet) {
         this.senderSignatureDataSet.addAll(senderSignatureDataSet);
@@ -125,7 +123,6 @@ public abstract class AbstractTxType implements TxType {
      * add the sender's signature data
      *
      * @param signatureRlpTypeList rlp encoded sender's signature data
-     * @return void
      */
     protected void addSenderSignatureData(List<RlpType> signatureRlpTypeList) {
         for (RlpType signature : signatureRlpTypeList) {
@@ -143,7 +140,6 @@ public abstract class AbstractTxType implements TxType {
      *
      * @param values rlp encoded rawTransaction
      * @param offset where sender's signature data begins
-     * @return void
      */
     public void addSignatureData(List<RlpType> values, int offset) {
         if (values.size() > offset) {
@@ -156,7 +152,6 @@ public abstract class AbstractTxType implements TxType {
      * add the sender's signature data
      *
      * @param txType txType from which to extract signature
-     * @return void
      */
     public void addSignatureData(AbstractTxType txType) {
         addSenderSignatureData(txType.getSenderSignatureDataSet());

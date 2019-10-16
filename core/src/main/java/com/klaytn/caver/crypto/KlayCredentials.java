@@ -36,45 +36,64 @@ public class KlayCredentials {
 
     private KlayCredentials(ECKeyPair ecKeyPair, String address) {
         this.ecKeyPairForTransactionList = Collections.unmodifiableList(Arrays.asList(ecKeyPair));
-        this.ecKeyPairForUpdateList = null;
-        this.ecKeyPairForFeeFeePayerList = null;
+        this.ecKeyPairForUpdateList = Collections.unmodifiableList(Collections.emptyList());
+        this.ecKeyPairForFeeFeePayerList = Collections.unmodifiableList(Collections.emptyList());
         this.address = address;
     }
 
     private KlayCredentials(List<ECKeyPair> ecKeyPairForTransaction, List<ECKeyPair> ecKeyPairForUpdate, List<ECKeyPair> ecKeyPairForFee, String address) {
-        this.ecKeyPairForTransactionList = (ecKeyPairForTransaction != null && ecKeyPairForTransaction.size() != 0) ? Collections.unmodifiableList(ecKeyPairForTransaction) : null;
-        this.ecKeyPairForUpdateList = (ecKeyPairForUpdate != null && ecKeyPairForUpdate.size() != 0) ? Collections.unmodifiableList(ecKeyPairForUpdate) : null;
-        this.ecKeyPairForFeeFeePayerList = (ecKeyPairForFee != null && ecKeyPairForFee.size() != 0) ? Collections.unmodifiableList(ecKeyPairForFee) : null;
+        this.ecKeyPairForTransactionList = (ecKeyPairForTransaction != null && ecKeyPairForTransaction.size() != 0) ? Collections.unmodifiableList(ecKeyPairForTransaction) : Collections.unmodifiableList(Collections.emptyList());;
+        this.ecKeyPairForUpdateList = (ecKeyPairForUpdate != null && ecKeyPairForUpdate.size() != 0) ? Collections.unmodifiableList(ecKeyPairForUpdate) : Collections.unmodifiableList(Collections.emptyList());
+        this.ecKeyPairForFeeFeePayerList = (ecKeyPairForFee != null && ecKeyPairForFee.size() != 0) ? Collections.unmodifiableList(ecKeyPairForFee) : Collections.unmodifiableList(Collections.emptyList());
         this.address = address;
     }
 
+    @Deprecated
     public ECKeyPair getEcKeyPair() {
-        if (ecKeyPairForTransactionList != null && ecKeyPairForTransactionList.size() > 0) {
+        if (ecKeyPairForTransactionList.size() > 0) {
             return ecKeyPairForTransactionList.get(0);
         }
         throw new RuntimeException("Transaction key does not exist.");
     }
 
-    public List<ECKeyPair> getEcKeyPairsForTransactionList() throws NullPointerException {
-        if (ecKeyPairForTransactionList != null) {
+    /**
+     * Returns keys for transaction signing
+     *
+     * @return List ECKeyPair List for transaction Signing
+     * @throws RuntimeException If there is no key for Transaction signing
+     */
+    public List<ECKeyPair> getEcKeyPairsForTransactionList() throws RuntimeException {
+        if (ecKeyPairForTransactionList.size() > 0) {
             return ecKeyPairForTransactionList;
         }
         throw new RuntimeException("Transaction key does not exist.");
     }
 
-    public List<ECKeyPair> getEcKeyPairsForUpdateList() throws NullPointerException {
-        if (ecKeyPairForUpdateList != null) {
+    /**
+     * Returns keys for update signing
+     *
+     * @return List ECKeyPair List for update Signing
+     * @throws RuntimeException If there is no key for update signing
+     */
+    public List<ECKeyPair> getEcKeyPairsForUpdateList() throws RuntimeException {
+        if (ecKeyPairForUpdateList.size() > 0) {
             return ecKeyPairForUpdateList;
-        } else if (ecKeyPairForTransactionList != null) {
+        } else if (ecKeyPairForTransactionList.size() > 0) {
             return ecKeyPairForTransactionList;
         }
         throw new RuntimeException("Update key does not exist.");
     }
 
-    public List<ECKeyPair> getEcKeyPairsForFeePayerList() throws NullPointerException {
-        if (ecKeyPairForFeeFeePayerList != null) {
+    /**
+     * Returns keys for fee payer signing
+     *
+     * @return List ECKeyPair List for fee payer Signing
+     * @throws RuntimeException If there is no key for fee payer signing
+     */
+    public List<ECKeyPair> getEcKeyPairsForFeePayerList() throws RuntimeException {
+        if (ecKeyPairForFeeFeePayerList.size() > 0) {
             return ecKeyPairForFeeFeePayerList;
-        } else if (ecKeyPairForTransactionList != null) {
+        } else if (ecKeyPairForTransactionList.size() > 0) {
             return ecKeyPairForTransactionList;
         }
         throw new RuntimeException("Fee key does not exist.");
@@ -84,65 +103,134 @@ public class KlayCredentials {
         return address;
     }
 
+    /**
+     * Static method for creating KlayCredentials instance
+     * Use address extracted from private key
+     *
+     * @param privateKey private key for transaction signing
+     * @return KlayCredentials
+     */
     public static KlayCredentials create(String privateKey) {
         ECKeyPair ecKeyPair = ECKeyPair.create(Numeric.toBigInt(privateKey));
         String address = Numeric.prependHexPrefix(Keys.getAddress(ecKeyPair));
         return create(ecKeyPair, address);
     }
 
+    /**
+     * Static method for creating KlayCredentials instance
+     * Use address extracted from private key
+     *
+     * @param ecKeyPair ecKeyPair for transaction signing
+     * @return KlayCredentials
+     */
     public static KlayCredentials create(ECKeyPair ecKeyPair) {
         String address = Numeric.prependHexPrefix(Keys.getAddress(ecKeyPair));
         return create(ecKeyPair, address);
     }
 
+    /**
+     * Static method for creating KlayCredentials instance
+     *
+     * @param privateKey private key for transaction signing
+     * @param address address of account
+     * @return KlayCredentials
+     */
     public static KlayCredentials create(String privateKey, String address) {
         return create(ECKeyPair.create(Numeric.toBigInt(privateKey)), address);
     }
 
+    /**
+     * Static method for creating KlayCredentials instance
+     *
+     * @param ecKeyPair ecKeyPair for transaction signing
+     * @param address address of account
+     * @return KlayCredentials
+     */
     public static KlayCredentials create(ECKeyPair ecKeyPair, String address) {
         return new KlayCredentials(ecKeyPair, address);
     }
 
+    /**
+     * Static method for creating KlayCredentials instance
+     *
+     * @param ecKeyPair ecKeyPair for transaction signing
+     * @param address address of account
+     * @return KlayCredentials
+     */
     public static KlayCredentials create(List<ECKeyPair> ecKeyPair, String address) {
         return new KlayCredentials(ecKeyPair, null, null, address);
     }
 
+    /**
+     * Static method for creating KlayCredentials instance
+     *
+     * @param ecKeyPairForTransaction ecKeyPair list for transaction signing
+     * @param ecKeyPairForUpdate ecKeyPair list for update signing
+     * @param ecKeyPairForFeePayer ecKeyPair list for fee payer signing
+     * @param address address of account
+     * @return KlayCredentials
+     */
     public static KlayCredentials create(List<ECKeyPair> ecKeyPairForTransaction, List<ECKeyPair> ecKeyPairForUpdate, List<ECKeyPair> ecKeyPairForFeePayer, String address) {
         return new KlayCredentials(ecKeyPairForTransaction, ecKeyPairForUpdate, ecKeyPairForFeePayer, address);
     }
 
-    public static KlayCredentials create(ECKeyPair[] ecKeyPairsArrayForTransaction, ECKeyPair[] ecKeyPairsArrayForUpdate, ECKeyPair[] ecKeyPairsArrayForFee, String address) {
+    /**
+     * Static method for creating KlayCredentials instance
+     *
+     * @param ecKeyPairsArrayForTransaction ecKeyPair array for transaction signing
+     * @param ecKeyPairsArrayForUpdate ecKeyPair array for update signing
+     * @param ecKeyPairArrayForFeePayer ecKeyPair array for fee payer signing
+     * @param address address of account
+     * @return KlayCredentials
+     */
+    public static KlayCredentials create(ECKeyPair[] ecKeyPairsArrayForTransaction, ECKeyPair[] ecKeyPairsArrayForUpdate, ECKeyPair[] ecKeyPairArrayForFeePayer, String address) {
         List<ECKeyPair> ecKeyPairsForTransaction = Arrays.asList(ecKeyPairsArrayForTransaction);
         List<ECKeyPair> ecKeyPairsForUpdate = Arrays.asList(ecKeyPairsArrayForUpdate);
-        List<ECKeyPair> ecKeyPairsForForFee = Arrays.asList(ecKeyPairsArrayForFee);
+        List<ECKeyPair> ecKeyPairsForForFee = Arrays.asList(ecKeyPairArrayForFeePayer);
 
         return create(ecKeyPairsForTransaction, ecKeyPairsForUpdate, ecKeyPairsForForFee, address);
     }
 
-    public static KlayCredentials create(String[] privateKeysForTransaction, String[] privateKeysForUpdate, String[] privateKeysForFee, String address) {
+    /**
+     * Static method for creating KlayCredentials instance
+     *
+     * @param privateKeyArrayForTransaction private key array for transaction signing
+     * @param privateKeyArrayForUpdate private key array for transaction signing
+     * @param privateKeyArrayForFee private key array for transaction signing
+     * @param address address of account
+     * @return KlayCredentials
+     */
+    public static KlayCredentials create(String[] privateKeyArrayForTransaction, String[] privateKeyArrayForUpdate, String[] privateKeyArrayForFee, String address) {
         List<ECKeyPair> ecKeyPairsForTransaction = new ArrayList<>();
         List<ECKeyPair> ecKeyPairsForUpdate = new ArrayList<>();
         List<ECKeyPair> ecKeyPairsForForFee = new ArrayList<>();
 
-        for (String privateKey : privateKeysForTransaction) {
+        for (String privateKey : privateKeyArrayForTransaction) {
             ecKeyPairsForTransaction.add(ECKeyPair.create(Numeric.toBigInt(privateKey)));
         }
 
-        for (String privateKey : privateKeysForUpdate) {
+        for (String privateKey : privateKeyArrayForUpdate) {
             ecKeyPairsForUpdate.add(ECKeyPair.create(Numeric.toBigInt(privateKey)));
         }
 
-        for (String privateKey : privateKeysForFee) {
+        for (String privateKey : privateKeyArrayForFee) {
             ecKeyPairsForForFee.add(ECKeyPair.create(Numeric.toBigInt(privateKey)));
         }
 
         return create(ecKeyPairsForTransaction, ecKeyPairsForUpdate, ecKeyPairsForForFee, address);
     }
 
-    public static KlayCredentials create(String[] privateKeysForTransaction, String address) {
+    /**
+     * Static method for creating KlayCredentials instance
+     *
+     * @param privateKeyArrayForTransaction private key array for transaction signing
+     * @param address address of account
+     * @return KlayCredentials
+     */
+    public static KlayCredentials create(String[] privateKeyArrayForTransaction, String address) {
         List<ECKeyPair> ecKeyPairsForTransaction = new ArrayList<>();
 
-        for (String privateKey : privateKeysForTransaction) {
+        for (String privateKey : privateKeyArrayForTransaction) {
             ecKeyPairsForTransaction.add(ECKeyPair.create(Numeric.toBigInt(privateKey)));
         }
 

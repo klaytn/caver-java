@@ -41,10 +41,10 @@ public class KlayCredentials {
         this.address = (address != null) ? address : "";
     }
 
-    private KlayCredentials(List<ECKeyPair> ecKeyPairForTransaction, List<ECKeyPair> ecKeyPairForUpdate, List<ECKeyPair> ecKeyPairForFee, String address) {
+    private KlayCredentials(List<ECKeyPair> ecKeyPairForTransaction, List<ECKeyPair> ecKeyPairForUpdate, List<ECKeyPair> ecKeyPairForFeePayer, String address) {
         this.ecKeyPairForTransactionList = (ecKeyPairForTransaction != null && ecKeyPairForTransaction.size() != 0) ? Collections.unmodifiableList(ecKeyPairForTransaction) : Collections.unmodifiableList(Collections.emptyList());;
         this.ecKeyPairForUpdateList = (ecKeyPairForUpdate != null && ecKeyPairForUpdate.size() != 0) ? Collections.unmodifiableList(ecKeyPairForUpdate) : Collections.unmodifiableList(Collections.emptyList());
-        this.ecKeyPairForFeeFeePayerList = (ecKeyPairForFeePayer != null && ecKeyPairForFeePayer.size() != 0) ? Collections.unmodifiableList(ecKeyPairForFee) : Collections.unmodifiableList(Collections.emptyList());
+        this.ecKeyPairForFeeFeePayerList = (ecKeyPairForFeePayer != null && ecKeyPairForFeePayer.size() != 0) ? Collections.unmodifiableList(ecKeyPairForFeePayer) : Collections.unmodifiableList(Collections.emptyList());
         this.address = (address != null) ? address : "";
     }
 

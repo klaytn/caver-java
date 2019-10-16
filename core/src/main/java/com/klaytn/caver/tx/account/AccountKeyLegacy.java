@@ -66,4 +66,9 @@ public class AccountKeyLegacy implements AccountKey {
         AccountKeyLegacy that = (AccountKeyLegacy) o;
         return Arrays.equals(toRlp(), that.toRlp());
     }
+
+    @Override
+    public String toString() {
+        return "AccountKeyLegacy : " + toRlp().toString();
+    }
 }

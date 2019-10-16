@@ -38,14 +38,14 @@ public class KlayCredentials {
         this.ecKeyPairForTransactionList = Collections.unmodifiableList(Arrays.asList(ecKeyPair));
         this.ecKeyPairForUpdateList = Collections.unmodifiableList(Collections.emptyList());
         this.ecKeyPairForFeeFeePayerList = Collections.unmodifiableList(Collections.emptyList());
-        this.address = address;
+        this.address = (address != null) ? address : "";
     }
 
     private KlayCredentials(List<ECKeyPair> ecKeyPairForTransaction, List<ECKeyPair> ecKeyPairForUpdate, List<ECKeyPair> ecKeyPairForFee, String address) {
         this.ecKeyPairForTransactionList = (ecKeyPairForTransaction != null && ecKeyPairForTransaction.size() != 0) ? Collections.unmodifiableList(ecKeyPairForTransaction) : Collections.unmodifiableList(Collections.emptyList());;
         this.ecKeyPairForUpdateList = (ecKeyPairForUpdate != null && ecKeyPairForUpdate.size() != 0) ? Collections.unmodifiableList(ecKeyPairForUpdate) : Collections.unmodifiableList(Collections.emptyList());
-        this.ecKeyPairForFeeFeePayerList = (ecKeyPairForFee != null && ecKeyPairForFee.size() != 0) ? Collections.unmodifiableList(ecKeyPairForFee) : Collections.unmodifiableList(Collections.emptyList());
-        this.address = address;
+        this.ecKeyPairForFeeFeePayerList = (ecKeyPairForFeePayer != null && ecKeyPairForFeePayer.size() != 0) ? Collections.unmodifiableList(ecKeyPairForFee) : Collections.unmodifiableList(Collections.emptyList());
+        this.address = (address != null) ? address : "";
     }
 
     @Deprecated
@@ -186,9 +186,9 @@ public class KlayCredentials {
     public static KlayCredentials create(ECKeyPair[] ecKeyPairsArrayForTransaction, ECKeyPair[] ecKeyPairsArrayForUpdate, ECKeyPair[] ecKeyPairArrayForFeePayer, String address) {
         List<ECKeyPair> ecKeyPairsForTransaction = Arrays.asList(ecKeyPairsArrayForTransaction);
         List<ECKeyPair> ecKeyPairsForUpdate = Arrays.asList(ecKeyPairsArrayForUpdate);
-        List<ECKeyPair> ecKeyPairsForForFee = Arrays.asList(ecKeyPairArrayForFeePayer);
+        List<ECKeyPair> ecKeyPairsForForFeePayer = Arrays.asList(ecKeyPairArrayForFeePayer);
 
-        return create(ecKeyPairsForTransaction, ecKeyPairsForUpdate, ecKeyPairsForForFee, address);
+        return create(ecKeyPairsForTransaction, ecKeyPairsForUpdate, ecKeyPairsForForFeePayer, address);
     }
 
     /**
@@ -196,14 +196,14 @@ public class KlayCredentials {
      *
      * @param privateKeyArrayForTransaction private key array for transaction signing
      * @param privateKeyArrayForUpdate private key array for transaction signing
-     * @param privateKeyArrayForFee private key array for transaction signing
+     * @param privateKeyArrayForFeePayer private key array for transaction signing
      * @param address address of account
      * @return KlayCredentials
      */
-    public static KlayCredentials create(String[] privateKeyArrayForTransaction, String[] privateKeyArrayForUpdate, String[] privateKeyArrayForFee, String address) {
+    public static KlayCredentials create(String[] privateKeyArrayForTransaction, String[] privateKeyArrayForUpdate, String[] privateKeyArrayForFeePayer, String address) {
         List<ECKeyPair> ecKeyPairsForTransaction = new ArrayList<>();
         List<ECKeyPair> ecKeyPairsForUpdate = new ArrayList<>();
-        List<ECKeyPair> ecKeyPairsForForFee = new ArrayList<>();
+        List<ECKeyPair> ecKeyPairsForForFeePayer = new ArrayList<>();
 
         for (String privateKey : privateKeyArrayForTransaction) {
             ecKeyPairsForTransaction.add(ECKeyPair.create(Numeric.toBigInt(privateKey)));
@@ -213,11 +213,11 @@ public class KlayCredentials {
             ecKeyPairsForUpdate.add(ECKeyPair.create(Numeric.toBigInt(privateKey)));
         }
 
-        for (String privateKey : privateKeyArrayForFee) {
-            ecKeyPairsForForFee.add(ECKeyPair.create(Numeric.toBigInt(privateKey)));
+        for (String privateKey : privateKeyArrayForFeePayer) {
+            ecKeyPairsForForFeePayer.add(ECKeyPair.create(Numeric.toBigInt(privateKey)));
         }
 
-        return create(ecKeyPairsForTransaction, ecKeyPairsForUpdate, ecKeyPairsForForFee, address);
+        return create(ecKeyPairsForTransaction, ecKeyPairsForUpdate, ecKeyPairsForForFeePayer, address);
     }
 
     /**
@@ -278,10 +278,10 @@ public class KlayCredentials {
 
     @Override
     public int hashCode() {
-        int transactionHashCode = ecKeyPairForTransactionList != null ? ecKeyPairForTransactionList.hashCode() : 0;
-        int updateHashCode = ecKeyPairForUpdateList != null ? ecKeyPairForUpdateList.hashCode() : 0;
-        int feeHashCode = ecKeyPairForUpdateList != null ? ecKeyPairForUpdateList.hashCode() : 0;
-        int addressHashCode = address != null ? address.hashCode() : 0;
+        int transactionHashCode = ecKeyPairForTransactionList.hashCode();
+        int updateHashCode = ecKeyPairForUpdateList.hashCode();
+        int feeHashCode = ecKeyPairForUpdateList.hashCode();
+        int addressHashCode = address.hashCode();
 
         int[] arrHashCode = {transactionHashCode, updateHashCode, feeHashCode,addressHashCode};
         int result = 0;

@@ -64,4 +64,9 @@ public class AccountKeyNil implements AccountKey {
         AccountKeyNil that = (AccountKeyNil) o;
         return Arrays.equals(toRlp(), that.toRlp());
     }
+
+    @Override
+    public String toString() {
+        return "AccountKeyNil";
+    }
 }

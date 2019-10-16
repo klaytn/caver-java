@@ -106,7 +106,7 @@ public class AccountKeyPublic implements AccountKey {
 
     @Override
     public String toString() {
-        return "x : " + getX() + " / y : " + getY();
+        return "AccountKeyPublic x : " + getX() + " / y : " + getY();
     }
 
     @Override

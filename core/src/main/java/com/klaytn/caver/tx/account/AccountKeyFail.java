@@ -61,4 +61,9 @@ public class AccountKeyFail implements AccountKey {
         AccountKeyFail that = (AccountKeyFail) o;
         return Arrays.equals(toRlp(), that.toRlp());
     }
+
+    @Override
+    public String toString() {
+        return "AccountKeyFail";
+    }
 }

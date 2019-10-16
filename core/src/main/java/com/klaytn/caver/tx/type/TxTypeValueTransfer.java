@@ -65,12 +65,7 @@ public class TxTypeValueTransfer extends AbstractTxType {
 
             TxTypeValueTransfer tx
                     = TxTypeValueTransfer.createTransaction(nonce, gasPrice, gasLimit, to, value, from);
-
-            RlpList vrs = (RlpList) ((RlpList) (values.get(6))).getValues().get(0);
-            byte[] v = ((RlpString) vrs.getValues().get(0)).getBytes();
-            byte[] r = ((RlpString) vrs.getValues().get(1)).getBytes();
-            byte[] s = ((RlpString) vrs.getValues().get(2)).getBytes();
-            tx.setSenderSignatureData(new KlaySignatureData(v, r, s));
+            tx.addSignatureData(values, 6);
             return tx;
         } catch (Exception e) {
             throw new RuntimeException("Incorrectly encoded tx.");

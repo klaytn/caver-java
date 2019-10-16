@@ -104,12 +104,7 @@ public class TxTypeSmartContractExecution extends AbstractTxType {
 
             TxTypeSmartContractExecution tx
                     = TxTypeSmartContractExecution.createTransaction(nonce, gasPrice, gasLimit, to, value, from, payload);
-
-            RlpList vrs = (RlpList) ((RlpList) (values.get(7))).getValues().get(0);
-            byte[] v = ((RlpString) vrs.getValues().get(0)).getBytes();
-            byte[] r = ((RlpString) vrs.getValues().get(1)).getBytes();
-            byte[] s = ((RlpString) vrs.getValues().get(2)).getBytes();
-            tx.setSenderSignatureData(new KlaySignatureData(v, r, s));
+            tx.addSignatureData(values, 7);
             return tx;
         } catch (Exception e) {
             throw new RuntimeException("Incorrectly encoded tx.");

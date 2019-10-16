@@ -86,18 +86,16 @@ public class TxTypeCancel extends AbstractTxType {
             TxTypeCancel tx
                     = TxTypeCancel.createTransaction(nonce, gasPrice, gasLimit, from);
 
-            RlpList vrs = (RlpList) ((RlpList) (values.get(4))).getValues().get(0);
-            byte[] v = ((RlpString) vrs.getValues().get(0)).getBytes();
-            byte[] r = ((RlpString) vrs.getValues().get(1)).getBytes();
-            byte[] s = ((RlpString) vrs.getValues().get(2)).getBytes();
-            tx.setSenderSignatureData(new KlaySignatureData(v, r, s));
+            tx.addSignatureData(values, 4);
+
             return tx;
         } catch (Exception e) {
             throw new RuntimeException("Incorrectly encoded tx.");
         }
     }
+
     /**
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeCancel decoded transaction
      */
     public static TxTypeCancel decodeFromRawTransaction(String rawTransaction) {

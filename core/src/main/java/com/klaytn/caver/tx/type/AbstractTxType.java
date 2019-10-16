@@ -160,7 +160,7 @@ public abstract class AbstractTxType implements TxType {
     /**
      * returns the sender's signature data set.
      *
-     * @return Set<KlaySignatureData> sender's signature data set
+     * @return Set set of sender's signature data
      */
     public Set<KlaySignatureData> getSenderSignatureDataSet() {
         return senderSignatureDataSet;

@@ -19,9 +19,9 @@ package com.klaytn.caver.tx.type;
 import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.tx.exception.EmptyNonceException;
+import com.klaytn.caver.tx.model.KlayRawTransaction;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.KlaySignatureDataUtils;
-import com.klaytn.caver.tx.model.KlayRawTransaction;
 import org.web3j.crypto.Sign;
 import org.web3j.rlp.RlpEncoder;
 import org.web3j.rlp.RlpList;
@@ -86,7 +86,7 @@ public abstract class AbstractTxType implements TxType {
         this.senderSignatureDataSet = new HashSet<>();
     }
 
-  @Deprecated
+    @Deprecated
     protected void setSenderSignatureData(KlaySignatureData signatureData) {
         addSenderSignatureData(signatureData);
     }
@@ -97,18 +97,36 @@ public abstract class AbstractTxType implements TxType {
         if (senderSignatureIterator.hasNext()) {
             return senderSignatureIterator.next();
         } else {
-            return null;
+            throw new RuntimeException("The use of `getSenderSignatureData()` is not recommended. Use `getSenderSignatureDataSet()` instead.\n");
         }
     }
 
+    /**
+     * add the sender's signature data
+     *
+     * @param signatureData sender's signature data
+     * @return void
+     */
     protected void addSenderSignatureData(KlaySignatureData signatureData) {
         senderSignatureDataSet.add(signatureData);
     }
 
+    /**
+     * add the sender's signature data
+     *
+     * @param senderSignatureDataSet sender's signature data set
+     * @return void
+     */
     public void addSenderSignatureData(Set<KlaySignatureData> senderSignatureDataSet) {
         this.senderSignatureDataSet.addAll(senderSignatureDataSet);
     }
 
+    /**
+     * add the sender's signature data
+     *
+     * @param signatureRlpTypeList rlp encoded sender's signature data
+     * @return void
+     */
     protected void addSenderSignatureData(List<RlpType> signatureRlpTypeList) {
         for (RlpType signature : signatureRlpTypeList) {
             List<RlpType> vrs = ((RlpList) signature).getValues();
@@ -120,6 +138,13 @@ public abstract class AbstractTxType implements TxType {
         }
     }
 
+    /**
+     * add the sender's signature data
+     *
+     * @param values rlp encoded rawTransaction
+     * @param offset where sender's signature data begins
+     * @return void
+     */
     public void addSignatureData(List<RlpType> values, int offset) {
         if (values.size() > offset) {
             List<RlpType> senderSignatures = ((RlpList) (values.get(offset))).getValues();
@@ -127,10 +152,21 @@ public abstract class AbstractTxType implements TxType {
         }
     }
 
+    /**
+     * add the sender's signature data
+     *
+     * @param txType txType from which to extract signature
+     * @return void
+     */
     public void addSignatureData(AbstractTxType txType) {
         addSenderSignatureData(txType.getSenderSignatureDataSet());
     }
 
+    /**
+     * returns the sender's signature data set.
+     *
+     * @return Set<KlaySignatureData> sender's signature data set
+     */
     public Set<KlaySignatureData> getSenderSignatureDataSet() {
         return senderSignatureDataSet;
     }
@@ -224,7 +260,7 @@ public abstract class AbstractTxType implements TxType {
         KlaySignatureData signatureData = getSignatureData(credentials, chainId);
         List<RlpType> rlpTypeList = new ArrayList<>(rlpValues());
         rlpTypeList.add(new RlpList(signatureData.toRlpList()));
-        if( this instanceof TxTypeFeeDelegate ) {
+        if (this instanceof TxTypeFeeDelegate) {
             rlpTypeList.add(RlpString.create("0"));
             rlpTypeList.add(new RlpList(KlaySignatureData.createKlaySignatureDataFromChainId(1).toRlpList()));
         }

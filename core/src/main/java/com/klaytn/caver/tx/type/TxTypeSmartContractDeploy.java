@@ -16,6 +16,10 @@
 
 package com.klaytn.caver.tx.type;
 
+import com.klaytn.caver.crypto.KlaySignatureData;
+import com.klaytn.caver.utils.KlayTransactionUtils;
+import org.web3j.rlp.RlpDecoder;
+import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
 import org.web3j.rlp.RlpType;
 import org.web3j.utils.Numeric;
@@ -87,5 +91,44 @@ public class TxTypeSmartContractDeploy extends AbstractTxType {
     @Override
     public Type getType() {
         return Type.SMART_CONTRACT_DEPLOY;
+    }
+
+    /**
+     * decode transaction hash from sender to reconstruct transaction with fee payer signature.
+     *
+     * @param rawTransaction RLP-encoded signed transaction from sender
+     * @return TxTypeSmartContractDeploy decoded transaction
+     */
+    public static TxTypeSmartContractDeploy decodeFromRawTransaction(byte[] rawTransaction) {
+        // TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, humanReadable, codeFormat, txSignatures])
+        try {
+            byte[] rawTransactionExceptType = KlayTransactionUtils.getRawTransactionNoType(rawTransaction);
+            RlpList rlpList = RlpDecoder.decode(rawTransactionExceptType);
+            List<RlpType> values = ((RlpList) rlpList.getValues().get(0)).getValues();
+
+            BigInteger nonce = ((RlpString) values.get(0)).asPositiveBigInteger();
+            BigInteger gasPrice = ((RlpString) values.get(1)).asPositiveBigInteger();
+            BigInteger gasLimit = ((RlpString) values.get(2)).asPositiveBigInteger();
+            //String to = ((RlpString) values.get(3)).asString();
+            BigInteger value = ((RlpString) values.get(4)).asPositiveBigInteger();
+            String from = ((RlpString) values.get(5)).asString();
+            byte[] payload = ((RlpString) values.get(6)).getBytes();
+            BigInteger codeFormat = ((RlpString) values.get(8)).asPositiveBigInteger();
+
+            TxTypeSmartContractDeploy tx
+                    = new TxTypeSmartContractDeploy(nonce, gasPrice, gasLimit, value, from, payload, codeFormat);
+            tx.addSignatureData(values, 9);
+            return tx;
+        } catch (Exception e) {
+            throw new RuntimeException("Incorrectly encoded tx.");
+        }
+    }
+
+    /**
+     * @param rawTransaction RLP-encoded signed transaction from sender
+     * @return TxTypeSmartContractDeploy decoded transaction
+     */
+    public static TxTypeSmartContractDeploy decodeFromRawTransaction(String rawTransaction) {
+        return decodeFromRawTransaction(Numeric.hexStringToByteArray(Numeric.cleanHexPrefix(rawTransaction)));
     }
 }

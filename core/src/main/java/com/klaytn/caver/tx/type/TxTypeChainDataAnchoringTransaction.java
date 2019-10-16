@@ -82,7 +82,7 @@ public class TxTypeChainDataAnchoringTransaction extends AbstractTxType {
     /**
      * decode transaction hash from sender to reconstruct transaction with fee payer signature.
      *
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeChainDataAnchoringTransaction decoded transaction
      */
     public static TxTypeChainDataAnchoringTransaction decodeFromRawTransaction(byte[] rawTransaction) {
@@ -109,7 +109,7 @@ public class TxTypeChainDataAnchoringTransaction extends AbstractTxType {
     }
 
     /**
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeChainDataAnchoringTransaction decoded transaction
      */
     public static TxTypeChainDataAnchoringTransaction decodeFromRawTransaction(String rawTransaction) {

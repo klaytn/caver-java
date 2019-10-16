@@ -96,9 +96,8 @@ public abstract class AbstractTxType implements TxType {
         Iterator<KlaySignatureData> senderSignatureIterator = senderSignatureDataSet.iterator();
         if (senderSignatureIterator.hasNext()) {
             return senderSignatureIterator.next();
-        } else {
-            throw new RuntimeException("The use of `getSenderSignatureData()` is not recommended. Use `getSenderSignatureDataSet()` instead.\n");
         }
+        throw new RuntimeException("The use of `getSenderSignatureData()` is not recommended. Use `getSenderSignatureDataSet()` instead.\n");
     }
 
     /**

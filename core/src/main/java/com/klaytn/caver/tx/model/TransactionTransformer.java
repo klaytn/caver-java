@@ -28,6 +28,7 @@ public abstract class TransactionTransformer<T extends TransactionTransformer> {
     private String from;
     private BigInteger gasPrice = Convert.toPeb("25", Convert.Unit.STON).toBigInteger();
     private BigInteger gasLimit;
+    protected boolean feeDelegate;
 
     public T from(String from) {
         this.from = from;
@@ -46,6 +47,11 @@ public abstract class TransactionTransformer<T extends TransactionTransformer> {
 
     public T gasLimit(BigInteger gasLimit) {
         this.gasLimit = gasLimit;
+        return (T) this;
+    }
+
+    public T feeDelegate() {
+        this.feeDelegate = true;
         return (T) this;
     }
 

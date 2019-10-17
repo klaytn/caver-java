@@ -31,7 +31,7 @@ import java.util.List;
  * TxTypeFeeDelegatedSmartContractExecutionWithRatio executes a smart contract with the given data.
  * The given ratio of the transaction fee is paid by the fee payer.
  */
-public class TxTypeFeeDelegatedSmartContractExecutionWithRatio extends AbstractTxType implements TxTypeFeeDelegate {
+public class TxTypeFeeDelegatedSmartContractExecutionWithRatio extends TxTypeFeeDelegate {
 
     /**
      * input data of the smart contract

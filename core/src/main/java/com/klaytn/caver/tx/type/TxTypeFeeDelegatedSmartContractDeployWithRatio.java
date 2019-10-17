@@ -31,7 +31,7 @@ import java.util.List;
  * TxTypeFeeDelegatedSmartContractDeployWithRatio deploys a smart contract.
  * The given ratio of the transaction fee is paid by the fee payer.
  */
-public class TxTypeFeeDelegatedSmartContractDeployWithRatio extends AbstractTxType implements TxTypeFeeDelegate {
+public class TxTypeFeeDelegatedSmartContractDeployWithRatio extends TxTypeFeeDelegate {
 
     /**
      * code of the newly deployed smart contract

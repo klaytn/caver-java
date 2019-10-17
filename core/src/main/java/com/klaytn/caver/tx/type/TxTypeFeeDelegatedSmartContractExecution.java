@@ -28,7 +28,7 @@ import java.util.List;
  * TxTypeFeeDelegatedSmartContractExecution executes a smart contract with the given data.
  * The fee is paid by the fee payer.
  */
-public class TxTypeFeeDelegatedSmartContractExecution extends AbstractTxType implements TxTypeFeeDelegate {
+public class TxTypeFeeDelegatedSmartContractExecution extends TxTypeFeeDelegate {
 
     /**
      * input data of the smart contract

@@ -31,7 +31,7 @@ import java.util.List;
  * TxTypeFeeDelegatedCancelWithRatio cancels the transaction with the same nonce in the txpool.
  * The given ratio of the transaction fee is paid by the fee payer.
  */
-public class TxTypeFeeDelegatedCancelWithRatio extends AbstractTxType implements TxTypeFeeDelegate {
+public class TxTypeFeeDelegatedCancelWithRatio extends TxTypeFeeDelegate {
 
     /**
      * Fee ratio of the fee payer. If it is 30, 30% of the fee will be paid by the fee payer.

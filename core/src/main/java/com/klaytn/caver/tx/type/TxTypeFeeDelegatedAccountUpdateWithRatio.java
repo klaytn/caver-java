@@ -33,7 +33,7 @@ import java.util.List;
  * TxTypeFeeDelegatedAccountUpdateWithRatio updates the key of the account.
  * The given ratio of the transaction fee is paid by the fee payer.
  */
-public class TxTypeFeeDelegatedAccountUpdateWithRatio extends AbstractTxType implements TxTypeFeeDelegate {
+public class TxTypeFeeDelegatedAccountUpdateWithRatio extends TxTypeFeeDelegate {
 
     /**
      * newly created accountKey

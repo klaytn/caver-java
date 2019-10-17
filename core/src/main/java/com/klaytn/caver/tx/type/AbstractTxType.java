@@ -22,6 +22,7 @@ import com.klaytn.caver.tx.exception.EmptyNonceException;
 import com.klaytn.caver.tx.model.KlayRawTransaction;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.KlaySignatureDataUtils;
+import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Sign;
 import org.web3j.rlp.RlpEncoder;
 import org.web3j.rlp.RlpList;

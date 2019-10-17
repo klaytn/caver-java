@@ -73,7 +73,7 @@ public class TxTypeFeeDelegatedValueTransfer extends AbstractTxType implements T
     /**
      * decode transaction hash from sender to reconstruct transaction with fee payer signature.
      *
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeFeeDelegatedValueTransfer decoded transaction
      */
     public static TxTypeFeeDelegatedValueTransfer decodeFromRawTransaction(byte[] rawTransaction) {
@@ -100,7 +100,7 @@ public class TxTypeFeeDelegatedValueTransfer extends AbstractTxType implements T
     }
 
     /**
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeFeeDelegatedValueTransfer decoded transaction
      */
     public static TxTypeFeeDelegatedValueTransfer decodeFromRawTransaction(String rawTransaction) {

@@ -67,7 +67,7 @@ public class TxTypeFeeDelegatedCancel extends AbstractTxType implements TxTypeFe
     /**
      * decode transaction hash from sender to reconstruct transaction with fee payer signature.
      *
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeFeeDelegatedCancel decoded transaction
      */
     public static TxTypeFeeDelegatedCancel decodeFromRawTransaction(byte[] rawTransaction) {
@@ -93,7 +93,7 @@ public class TxTypeFeeDelegatedCancel extends AbstractTxType implements TxTypeFe
     }
 
     /**
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeFeeDelegatedCancel decoded transaction
      */
     public static TxTypeFeeDelegatedCancel decodeFromRawTransaction(String rawTransaction) {

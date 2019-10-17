@@ -38,6 +38,7 @@ import java.util.Set;
  */
 public abstract class TxTypeFeeDelegate extends AbstractTxType {
     final static String EMPTY_FEE_PAYER_ADDRESS = "0x30";
+    final static int DEFAULT_FEE_RATIO = 100;
 
     private Set<KlaySignatureData> feePayerSignatureData;
     private String feePayer;
@@ -60,9 +61,9 @@ public abstract class TxTypeFeeDelegate extends AbstractTxType {
     public void setFeePayer(String feePayer) {
         this.feePayer = feePayer;
     }
-    
+
     public BigInteger getFeeRatio() {
-        return BigInteger.valueOf(100);
+        return BigInteger.valueOf(DEFAULT_FEE_RATIO);
     }
 
     /**
@@ -145,6 +146,8 @@ public abstract class TxTypeFeeDelegate extends AbstractTxType {
         if (getNonce() == null) {
             throw new EmptyNonceException();
         }
+        Set<KlaySignatureData> newSignatureDataSet = getNewSenderSignatureDataSet(credentials, chainId);
+        addSenderSignatureData(newSignatureDataSet);
 
         KlaySignatureData senderSignatureData = getSignatureData(credentials, chainId);
         addSenderSignatureData(senderSignatureData);

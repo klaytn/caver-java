@@ -68,10 +68,6 @@ public class TransactionManager {
     }
 
     public KlayRawTransaction sign(TransactionTransformer transactionTransformer) {
-        return sign(transactionTransformer, false);
-    }
-
-    public KlayRawTransaction sign(TransactionTransformer transactionTransformer, boolean isFeeDelegated) {
         KlayRawTransaction result = null;
         try {
             KlayCredentials credentials = walletManager.findByAddress(transactionTransformer.getFrom());
@@ -80,7 +76,7 @@ public class TransactionManager {
                 transactionTransformer.nonce(getNonceProcessor.getNonce(credentials));
             }
 
-            result = transactionTransformer.build(isFeeDelegated).sign(credentials, this.chainId);
+            result = transactionTransformer.build().sign(credentials, this.chainId);
         } catch (UnsupportedTxTypeException | CredentialNotFoundException | IOException | EmptyNonceException e) {
             exception(e);
         }

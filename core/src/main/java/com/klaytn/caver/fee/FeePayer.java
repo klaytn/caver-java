@@ -21,6 +21,7 @@ import com.klaytn.caver.utils.KlaySignatureDataUtils;
 import com.klaytn.caver.tx.model.KlayRawTransaction;
 import com.klaytn.caver.tx.type.AbstractTxType;
 import com.klaytn.caver.utils.BytesUtils;
+import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Sign;
 import org.web3j.rlp.RlpEncoder;
 import org.web3j.rlp.RlpList;
@@ -29,7 +30,9 @@ import org.web3j.rlp.RlpType;
 import org.web3j.utils.Numeric;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FeePayer {
 
@@ -67,5 +70,30 @@ public class FeePayer {
 
         Sign.SignatureData signedSignatureData = Sign.signMessage(encodedTransaction2, credentials.getEcKeyPair());
         return KlaySignatureDataUtils.createEip155KlaySignatureData(signedSignatureData, chainId);
+    }
+
+    /**
+     * extract signature data of fee payer signed in TxType
+     *
+     * @param txType txType to extract fee payer's signature data
+     * @return Set fee payer's signature data
+     */
+    private Set<KlaySignatureData> getFeePayerSignatureData(AbstractTxType txType) {
+        KlaySignatureData signatureData = KlaySignatureData.createKlaySignatureDataFromChainId(chainId);
+        Set<KlaySignatureData> feePayerSignatureDataSet = new HashSet<>();
+        byte[] encodedTransactionNoSig = txType.getEncodedTransactionNoSig();
+
+        List<RlpType> rlpTypeList = new ArrayList<>();
+        rlpTypeList.add(RlpString.create(encodedTransactionNoSig));
+        rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(credentials.getAddress())));
+        rlpTypeList.addAll(signatureData.toRlpList().getValues());
+        byte[] encodedTransaction = RlpEncoder.encode(new RlpList(rlpTypeList));
+
+        for (ECKeyPair ecKeyPair : credentials.getEcKeyPairsForFeePayerList()) {
+            Sign.SignatureData signedSignatureData = Sign.signMessage(encodedTransaction, ecKeyPair);
+            feePayerSignatureDataSet.add(KlaySignatureDataUtils.createEip155KlaySignatureData(signedSignatureData, chainId));
+        }
+
+        return feePayerSignatureDataSet;
     }
 }

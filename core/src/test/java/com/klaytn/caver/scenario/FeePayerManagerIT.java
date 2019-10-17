@@ -62,10 +62,10 @@ public class FeePayerManagerIT extends Scenario {
                 Numeric.hexStringToByteArray(CONTRACT_INPUT_DATA),
                 GAS_LIMIT,
                 CodeFormat.EVM
-        );
+        ).feeDelegate();
         TransactionManager transactionManager = new TransactionManager
                 .Builder(caver, credentials).setChaindId(LOCAL_CHAIN_ID).build();
-        String senderTx = transactionManager.sign(smartContractDeploy, true).getValueAsString();
+        String senderTx = transactionManager.sign(smartContractDeploy).getValueAsString();
 
         FeePayerManager feePayerManager = new FeePayerManager
                 .Builder(caver, LUMAN).setChainId(LOCAL_CHAIN_ID).build();

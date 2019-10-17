@@ -364,7 +364,6 @@ public class TransactionIT extends Scenario {
     @Test
     public void testTxTypeCancel() throws Exception {
         BigInteger nonce = getNonce(WAYNE.getAddress());
-        sendBasicTransaction(nonce, WAYNE, LUMAN);
 
         TxTypeCancel tx = TxTypeCancel.createTransaction(
                 nonce,
@@ -382,7 +381,6 @@ public class TransactionIT extends Scenario {
     @Test
     public void testTxTypeFeeDelegatedCancel() throws Exception {
         BigInteger nonce = getNonce(WAYNE.getAddress());
-        sendBasicTransaction(nonce, WAYNE, LUMAN);
 
         /**
          * Client Side
@@ -409,7 +407,6 @@ public class TransactionIT extends Scenario {
     @Test
     public void testTxTypeFeeDelegatedCancelWithRatio() throws Exception {
         BigInteger nonce = getNonce(WAYNE.getAddress());
-        sendBasicTransaction(nonce, WAYNE, LUMAN);
 
         /**
          * Client Side

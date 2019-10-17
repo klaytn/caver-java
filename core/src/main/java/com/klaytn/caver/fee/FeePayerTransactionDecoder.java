@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 public class FeePayerTransactionDecoder {
-    private static HashMap<TxType.Type, Function<byte[], AbstractTxType>> typeMap
-            = new HashMap<TxType.Type, Function<byte[], AbstractTxType>>() {
+    private static HashMap<TxType.Type, Function<byte[], TxTypeFeeDelegate>> typeMap
+            = new HashMap<TxType.Type, Function<byte[], TxTypeFeeDelegate>>() {
         {
             put(TxType.Type.FEE_DELEGATED_ACCOUNT_UPDATE, TxTypeFeeDelegatedAccountUpdate::decodeFromRawTransaction);
             put(TxType.Type.FEE_DELEGATED_ACCOUNT_UPDATE_WITH_RATIO, TxTypeFeeDelegatedAccountUpdateWithRatio::decodeFromRawTransaction);
@@ -42,7 +42,7 @@ public class FeePayerTransactionDecoder {
         }
     };
 
-    public static AbstractTxType decode(String rawTransaction) {
+    public static TxTypeFeeDelegate decode(String rawTransaction) {
         TxType.Type type = KlayTransactionUtils.getType(rawTransaction);
         return typeMap.get(type).apply(Numeric.hexStringToByteArray(rawTransaction));
     }

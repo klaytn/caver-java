@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * TxTypeFeeDelegatedValueTransferWithRatio is a value transfer transaction with a fee payer and its ratio.
  */
-public class TxTypeFeeDelegatedValueTransferWithRatio extends AbstractTxType implements TxTypeFeeDelegate {
+public class TxTypeFeeDelegatedValueTransferWithRatio extends TxTypeFeeDelegate {
 
     /**
      * Fee ratio of the fee payer. If it is 30, 30% of the fee will be paid by the fee payer.

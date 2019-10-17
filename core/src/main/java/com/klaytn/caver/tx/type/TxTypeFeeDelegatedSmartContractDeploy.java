@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * TxTypeFeeDelegatedSmartContractDeploy deploys a smart contract. The fee is paid by the fee payer.
  */
-public class TxTypeFeeDelegatedSmartContractDeploy extends AbstractTxType implements TxTypeFeeDelegate {
+public class TxTypeFeeDelegatedSmartContractDeploy extends TxTypeFeeDelegate {
 
     /**
      * code of the newly deployed smart contract

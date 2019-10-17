@@ -31,7 +31,7 @@ import java.util.List;
  * TxTypeFeeDelegatedValueTransfer is a value transfer transaction with a fee payer.
  * The fee payer address can be different from the sender.
  */
-public class TxTypeFeeDelegatedValueTransfer extends AbstractTxType implements TxTypeFeeDelegate {
+public class TxTypeFeeDelegatedValueTransfer extends TxTypeFeeDelegate {
 
     protected TxTypeFeeDelegatedValueTransfer(BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to,
                                               BigInteger value, String from) {

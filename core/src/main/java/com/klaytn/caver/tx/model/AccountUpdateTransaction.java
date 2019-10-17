@@ -48,7 +48,6 @@ public class AccountUpdateTransaction extends TransactionTransformer<AccountUpda
         if (this.feeDelegate) {
             return buildFeeDelegated();
         }
-
         return TxTypeAccountUpdate.createTransaction(getNonce(), getGasPrice(), getGasLimit(), getFrom(), this.accountKey);
     }
 

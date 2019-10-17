@@ -49,6 +49,13 @@ public class ValueTransferTransaction extends TransactionTransformer<ValueTransf
 
     @Override
     public TxType build() {
+        if (feeDelegate) {
+            return buildFeeDelegated();
+        }
+        return buildWithoutFeeDelegated();
+    }
+
+    public TxType buildWithoutFeeDelegated() {
         if (this.memo != null) {
             return TxTypeValueTransferMemo.createTransaction(getNonce(), getGasPrice(), getGasLimit(), this.to,
                     this.amount, getFrom(), this.memo);

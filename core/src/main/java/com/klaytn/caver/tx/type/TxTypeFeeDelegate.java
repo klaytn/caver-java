@@ -148,9 +148,7 @@ public abstract class TxTypeFeeDelegate extends AbstractTxType {
         }
         Set<KlaySignatureData> newSignatureDataSet = getNewSenderSignatureDataSet(credentials, chainId);
         addSenderSignatureData(newSignatureDataSet);
-
-        KlaySignatureData senderSignatureData = getSignatureData(credentials, chainId);
-        addSenderSignatureData(senderSignatureData);
+        
         List<RlpType> rlpTypeList = new ArrayList<>(rlpValues());
         List<RlpType> senderSignatureList = new ArrayList<>();
 

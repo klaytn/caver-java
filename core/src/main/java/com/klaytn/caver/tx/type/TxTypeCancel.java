@@ -72,7 +72,7 @@ public class TxTypeCancel extends AbstractTxType {
      * @return TxTypeCancel decoded transaction
      */
     public static TxTypeCancel decodeFromRawTransaction(byte[] rawTransaction) {
-        // SenderTxHashRLP = type + encode([nonce, gasPrice, gas, from, txSignatures])
+        // TxHashRLP = type + encode([nonce, gasPrice, gas, from, txSignatures])
         try {
             byte[] rawTransactionExceptType = KlayTransactionUtils.getRawTransactionNoType(rawTransaction);
 

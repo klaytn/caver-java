@@ -28,7 +28,7 @@ import java.util.List;
  * TxTypeFeeDelegatedCancel cancels the transaction with the same nonce in the txpool.
  * The fee is paid by the fee payer.
  */
-public class TxTypeFeeDelegatedCancel extends AbstractTxType implements TxTypeFeeDelegate {
+public class TxTypeFeeDelegatedCancel extends TxTypeFeeDelegate {
 
     protected TxTypeFeeDelegatedCancel(
             BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String from) {

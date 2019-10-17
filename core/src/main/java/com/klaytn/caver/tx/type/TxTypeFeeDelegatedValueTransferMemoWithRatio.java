@@ -31,7 +31,7 @@ import java.util.List;
  * TxTypeFeeDelegatedValueTransferMemoWithRatio transfers KLAY with a data.
  * The given ratio of the transaction fee is paid by the fee payer.
  */
-public class TxTypeFeeDelegatedValueTransferMemoWithRatio extends AbstractTxType implements TxTypeFeeDelegate {
+public class TxTypeFeeDelegatedValueTransferMemoWithRatio extends TxTypeFeeDelegate {
 
     /**
      * memo

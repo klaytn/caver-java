@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * TxTypeFeeDelegatedAccountUpdate updates the key of the account. The transaction fee is paid by the fee payer
  */
-public class TxTypeFeeDelegatedAccountUpdate extends AbstractTxType implements TxTypeFeeDelegate {
+public class TxTypeFeeDelegatedAccountUpdate extends TxTypeFeeDelegate {
 
     /**
      * newly created accountKey

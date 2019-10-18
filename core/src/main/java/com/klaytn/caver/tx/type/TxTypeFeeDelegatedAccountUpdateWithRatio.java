@@ -117,7 +117,7 @@ public class TxTypeFeeDelegatedAccountUpdateWithRatio extends TxTypeFeeDelegate 
             tx.addSignatureData(values, 6);
             return tx;
         } catch (Exception e) {
-            throw new RuntimeException("Incorrectly encoded tx.");
+            throw new RuntimeException("There is a error in the processing of decoding tx");
         }
     }
 

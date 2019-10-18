@@ -17,6 +17,7 @@ package com.klaytn.caver.fee;
 
 import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.crypto.KlaySignatureData;
+import com.klaytn.caver.tx.type.TxTypeFeeDelegate;
 import com.klaytn.caver.utils.KlaySignatureDataUtils;
 import com.klaytn.caver.tx.model.KlayRawTransaction;
 import com.klaytn.caver.tx.type.AbstractTxType;
@@ -36,6 +37,7 @@ import java.util.Set;
 
 public class FeePayer {
 
+    final static String EMPTY_FEE_PAYER_ADDRESS = "0x30";
     private KlayCredentials credentials;
     private int chainId;
 
@@ -44,20 +46,39 @@ public class FeePayer {
         this.chainId = chainId;
     }
 
-    public KlayRawTransaction sign(AbstractTxType txType) {
-        KlaySignatureData feePayerSignatureData = getSignatureData(txType);
+    public KlayRawTransaction sign(TxTypeFeeDelegate txType) {
+        Set<KlaySignatureData> feePayerSignatureDataSet = getFeePayerSignatureData(txType);
 
         List<RlpType> rlpTypeList = new ArrayList<>(txType.rlpValues());
-        rlpTypeList.add(new RlpList(txType.getSenderSignatureData().toRlpList()));
+        List<RlpType> senderSignatureList = new ArrayList<>();
+
+        for (KlaySignatureData senderSignature : txType.getSenderSignatureDataSet()) {
+            senderSignatureList.add(senderSignature.toRlpList());
+        }
+        rlpTypeList.add(new RlpList(senderSignatureList));
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(credentials.getAddress())));
-        rlpTypeList.add(new RlpList(feePayerSignatureData.toRlpList()));
+
+        List<RlpType> feePayerSignatureList = new ArrayList<>();
+
+        String feePayer = txType.getFeePayer();
+        if (!feePayer.equals(EMPTY_FEE_PAYER_ADDRESS)) {
+            for (KlaySignatureData feePayerSignatureData : txType.getFeePayerSignatureData()) {
+                feePayerSignatureList.add(feePayerSignatureData.toRlpList());
+            }
+        }
+
+        for (KlaySignatureData feePayerSignatureData : feePayerSignatureDataSet) {
+            feePayerSignatureList.add(feePayerSignatureData.toRlpList());
+        }
+        rlpTypeList.add(new RlpList(feePayerSignatureList));
 
         byte[] encodedTransaction = RlpEncoder.encode(new RlpList(rlpTypeList));
         byte[] type = {txType.getType().get()};
         byte[] rawTx = BytesUtils.concat(type, encodedTransaction);
-        return new KlayRawTransaction(rawTx, feePayerSignatureData);
+        return new KlayRawTransaction(rawTx, feePayerSignatureDataSet);
     }
 
+    @Deprecated
     public KlaySignatureData getSignatureData(AbstractTxType txType) {
         KlaySignatureData signatureData = KlaySignatureData.createKlaySignatureDataFromChainId(chainId);
         byte[] encodedTransaction = txType.getEncodedTransactionNoSig();

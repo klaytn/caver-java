@@ -107,7 +107,7 @@ public class TxTypeSmartContractExecution extends AbstractTxType {
             tx.addSignatureData(values, 7);
             return tx;
         } catch (Exception e) {
-            throw new RuntimeException("Incorrectly encoded tx.");
+            throw new RuntimeException("There is a error in the processing of decoding tx");
         }
     }
 

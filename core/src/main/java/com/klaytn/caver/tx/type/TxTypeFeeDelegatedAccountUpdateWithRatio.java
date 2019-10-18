@@ -97,28 +97,28 @@ public class TxTypeFeeDelegatedAccountUpdateWithRatio extends TxTypeFeeDelegate 
      * @return TxTypeFeeDelegatedAccountUpdateWithRatio decoded transaction
      */
     public static TxTypeFeeDelegatedAccountUpdateWithRatio decodeFromRawTransaction(byte[] rawTransaction) {
-        byte[] rawTransactionExceptType = KlayTransactionUtils.getRawTransactionNoType(rawTransaction);
+        // TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, feeRatio, txSignatures, feePayer, feePayerSignatures])
+        try {
+            byte[] rawTransactionExceptType = KlayTransactionUtils.getRawTransactionNoType(rawTransaction);
 
-        RlpList rlpList = RlpDecoder.decode(rawTransactionExceptType);
-        RlpList values = (RlpList) rlpList.getValues().get(0);
+            RlpList rlpList = RlpDecoder.decode(rawTransactionExceptType);
+            List<RlpType> values = ((RlpList) rlpList.getValues().get(0)).getValues();
 
-        BigInteger nonce = ((RlpString) values.getValues().get(0)).asPositiveBigInteger();
-        BigInteger gasPrice = ((RlpString) values.getValues().get(1)).asPositiveBigInteger();
-        BigInteger gasLimit = ((RlpString) values.getValues().get(2)).asPositiveBigInteger();
-        String from = ((RlpString) values.getValues().get(3)).asString();
-        String accountkeyRaw = ((RlpString) values.getValues().get(4)).asString();
-        BigInteger feeRatio = ((RlpString) values.getValues().get(5)).asPositiveBigInteger();
+            BigInteger nonce = ((RlpString) values.get(0)).asPositiveBigInteger();
+            BigInteger gasPrice = ((RlpString) values.get(1)).asPositiveBigInteger();
+            BigInteger gasLimit = ((RlpString) values.get(2)).asPositiveBigInteger();
+            String from = ((RlpString) values.get(3)).asString();
+            String accountkeyRaw = ((RlpString) values.get(4)).asString();
+            BigInteger feeRatio = ((RlpString) values.get(5)).asPositiveBigInteger();
 
-        TxTypeFeeDelegatedAccountUpdateWithRatio tx
-                = TxTypeFeeDelegatedAccountUpdateWithRatio.createTransaction(nonce, gasPrice, gasLimit, from, AccountKeyDecoder.fromRlp(accountkeyRaw), feeRatio);
-        if (values.getValues().size() > 5) {
-            RlpList vrs = (RlpList) ((RlpList) (values.getValues().get(6))).getValues().get(0);
-            byte[] v = ((RlpString) vrs.getValues().get(0)).getBytes();
-            byte[] r = ((RlpString) vrs.getValues().get(1)).getBytes();
-            byte[] s = ((RlpString) vrs.getValues().get(2)).getBytes();
-            tx.setSenderSignatureData(new KlaySignatureData(v, r, s));
+            TxTypeFeeDelegatedAccountUpdateWithRatio tx
+                    = TxTypeFeeDelegatedAccountUpdateWithRatio.createTransaction(nonce, gasPrice, gasLimit, from, AccountKeyDecoder.fromRlp(accountkeyRaw), feeRatio);
+
+            tx.addSignatureData(values, 6);
+            return tx;
+        } catch (Exception e) {
+            throw new RuntimeException("There is a error in the processing of decoding tx");
         }
-        return tx;
     }
 
     /**

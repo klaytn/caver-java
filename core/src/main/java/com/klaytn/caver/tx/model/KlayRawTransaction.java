@@ -19,6 +19,7 @@ package com.klaytn.caver.tx.model;
 import com.klaytn.caver.crypto.KlaySignatureData;
 import org.web3j.utils.Numeric;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 

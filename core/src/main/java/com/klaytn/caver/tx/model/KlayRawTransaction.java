@@ -33,8 +33,7 @@ public class KlayRawTransaction {
 
     public KlayRawTransaction(byte[] value, KlaySignatureData signatureData) {
         this.value = value;
-        this.signatureData = new HashSet<>();
-        this.signatureData.add(signatureData);
+        this.signatureData = new HashSet<>(Arrays.asList(signatureData));
     }
 
     public byte[] getValue() {

@@ -133,7 +133,7 @@ public class TransactionManager {
      * The result of signing a transaction is added to the raw transaction and returned
      *
      * @param txType
-     * @return
+     * @return signed raw transaction
      */
     public KlayRawTransaction sign(AbstractTxType txType) {
         KlayRawTransaction result = null;
@@ -150,7 +150,7 @@ public class TransactionManager {
      * The result of signing a transaction is added to the raw transaction and returned
      *
      * @param klayRawTransaction
-     * @return
+     * @return signed raw transaction
      */
     public KlayRawTransaction sign(String klayRawTransaction) {
         AbstractTxType txType = TransactionDecoder.decode(klayRawTransaction);

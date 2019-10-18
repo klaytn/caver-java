@@ -191,6 +191,12 @@ public abstract class AbstractTxType implements TxType {
         return senderSignatureDataList;
     }
 
+    /**
+     * get the keys you need to sign transactions
+     *
+     * @param credentials credentials for signing
+     * @return List of keys for signing
+     */
     protected List<ECKeyPair> getEcKeyPairsForSenderSign(KlayCredentials credentials) {
         return credentials.getEcKeyPairsForTransactionList();
     }

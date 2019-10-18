@@ -16,10 +16,11 @@
 
 package com.klaytn.caver.tx.type;
 
-import com.klaytn.caver.crypto.KlaySignatureData;
+import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.tx.account.AccountKey;
 import com.klaytn.caver.tx.account.AccountKeyDecoder;
 import com.klaytn.caver.utils.KlayTransactionUtils;
+import org.web3j.crypto.ECKeyPair;
 import org.web3j.rlp.RlpDecoder;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
@@ -127,5 +128,15 @@ public class TxTypeFeeDelegatedAccountUpdateWithRatio extends TxTypeFeeDelegate 
      */
     public static TxTypeFeeDelegatedAccountUpdateWithRatio decodeFromRawTransaction(String rawTransaction) {
         return decodeFromRawTransaction(Numeric.hexStringToByteArray(Numeric.cleanHexPrefix(rawTransaction)));
+    }
+
+    /**
+     * get the keys you need to sign transactions
+     *
+     * @param credentials credentials for signing
+     * @return List of keys for signing
+     */
+    protected List<ECKeyPair> getEcKeyPairsForSenderSign(KlayCredentials credentials) {
+        return credentials.getEcKeyPairsForUpdateList();
     }
 }

@@ -60,7 +60,7 @@ public class Scenario {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         this.caver = Caver.build(Caver.DEFAULT_URL);
     }
 

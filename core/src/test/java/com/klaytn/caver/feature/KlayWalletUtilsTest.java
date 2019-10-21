@@ -18,6 +18,7 @@ package com.klaytn.caver.feature;
 
 import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.wallet.KlayWalletUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.web3j.utils.Numeric;
 
@@ -54,6 +55,7 @@ public class KlayWalletUtilsTest {
         new File(keystoreFilePath).delete();
     }
 
+    @Ignore // Human readable is not currently supported. Afterwards, the test is modified when support starts.
     @Test
     public void testCreateKlayCredentialsWithHumanReadable() {
         String humanReadableAddress = "hello.klaytn";

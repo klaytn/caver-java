@@ -84,16 +84,14 @@ public class RoleBasedAccountSmartContractExecutionIT extends RoleBasedAccountSc
     public void feeDelegatedSmartContractExecutionTest() throws Exception {
         feeDelegatedRoleBasedTransactionTest(
                 getFeeDelegatedSmartContractExecutionTransactionGetter,
-                getFeeDelegatedSmartContractExecutionReceiptChecker, false
-        );
+                getFeeDelegatedSmartContractExecutionReceiptChecker, false);
     }
 
     @Test
     public void feeDelegatedSmartContractExecutionWithRatio() throws Exception {
         feeDelegatedRoleBasedTransactionTest(
                 getFeeRatioSmartContractExecutionTransactionGetter,
-                getFeeRatioSmartContractExecutionReceiptChecker, false
-        );
+                getFeeRatioSmartContractExecutionReceiptChecker, false);
     }
 
     //////////////////////////////// MultiTransactionSignerTest ////////////////////////////////
@@ -101,16 +99,14 @@ public class RoleBasedAccountSmartContractExecutionIT extends RoleBasedAccountSc
     public void feeDelegatedSmartContractDeployMultiTransactionSignerTest() throws Exception {
         feeDelegatedRoleBasedMultiTransactionSignerTest(
                 getFeeDelegatedSmartContractExecutionTransactionGetter,
-                getFeeDelegatedSmartContractExecutionReceiptChecker, false
-        );
+                getFeeDelegatedSmartContractExecutionReceiptChecker, false);
     }
 
     @Test
     public void feeDelegatedSmartContractDeployWithRatioMultiTransactionSignerTest() throws Exception {
         feeDelegatedRoleBasedMultiTransactionSignerTest(
                 getFeeRatioSmartContractExecutionTransactionGetter,
-                getFeeRatioSmartContractExecutionReceiptChecker, false
-        );
+                getFeeRatioSmartContractExecutionReceiptChecker, false);
     }
 
     //////////////////////////////// MultiFeePayerTest ////////////////////////////////
@@ -118,16 +114,14 @@ public class RoleBasedAccountSmartContractExecutionIT extends RoleBasedAccountSc
     public void feeDelegatedSmartContractDeployMultiFeePayerTest() throws Exception {
         feeDelegatedRoleBasedTransactionMultiFeePayerTest(
                 getFeeDelegatedSmartContractExecutionTransactionGetter,
-                getFeeDelegatedSmartContractExecutionReceiptChecker, false
-        );
+                getFeeDelegatedSmartContractExecutionReceiptChecker, false);
     }
 
     @Test
     public void feeDelegatedSmartContractDeployWithRatioMultiFeePayerTest() throws Exception {
         feeDelegatedRoleBasedTransactionMultiFeePayerTest(
                 getFeeRatioSmartContractExecutionTransactionGetter,
-                getFeeRatioSmartContractExecutionReceiptChecker, false
-        );
+                getFeeRatioSmartContractExecutionReceiptChecker, false);
     }
 
     //////////////////////////////// MultiSignerMultiFeePayerTest ////////////////////////////////
@@ -135,16 +129,14 @@ public class RoleBasedAccountSmartContractExecutionIT extends RoleBasedAccountSc
     public void feeDelegatedSmartContractDeployMultiTransactionSignerMultiFeePayerTest() throws Exception {
         feeDelegatedRoleBasedTransactionMultiTransactionSignerMultiFeePayerTest(
                 getFeeDelegatedSmartContractExecutionTransactionGetter,
-                getFeeDelegatedSmartContractExecutionReceiptChecker, false
-        );
+                getFeeDelegatedSmartContractExecutionReceiptChecker, false);
     }
 
     @Test
     public void feeDelegatedSmartContractDeployWithRatioMultiTransactionSignerMultiFeePayerTest() throws Exception {
         feeDelegatedRoleBasedTransactionMultiTransactionSignerMultiFeePayerTest(
                 getFeeRatioSmartContractExecutionTransactionGetter,
-                getFeeRatioSmartContractExecutionReceiptChecker, false
-        );
+                getFeeRatioSmartContractExecutionReceiptChecker, false);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

@@ -100,7 +100,7 @@ public class KlayCredentials {
     }
 
     /**
-     * Returns raw keys. getEcKeyPairsFor <Role> List returns the keys that play the role.
+     * Returns raw keys. getEcKeyPairsFor(Role)List returns the keys that play the role.
      * but getRawEcKeyPair returns the key pair as it is, regardless of role.
      *
      * @return List ECKeyPair List

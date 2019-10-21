@@ -24,19 +24,34 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
+import java.util.*;
 
 public class WalletFile {
     private String address;
     private WalletFile.Crypto crypto;
     private String id;
     private int version;
+    private List keyRing;
+
+    @JsonSetter("keyring")
+    @JsonDeserialize(using = KeyRingDeserializer.class)
+    public void setKeyring(List keyRing) {
+        this.keyRing = keyRing;
+    }
+
+    public List getKeyring() {
+        return this.keyRing;
+    }
 
     public WalletFile() {
     }
@@ -243,6 +258,24 @@ public class WalletFile {
 
     }
 
+    static class KeyRingDeserializer extends JsonDeserializer<List> {
+
+        @Override
+        public List deserialize(
+                JsonParser jsonParser, DeserializationContext deserializationContext)
+                throws IOException {
+
+            ObjectMapper objectMapper = (ObjectMapper) jsonParser.getCodec();
+            ArrayNode root = objectMapper.readTree(jsonParser);
+
+            if (root.get(0).isArray()) {
+                return (List) objectMapper.convertValue(root,new TypeReference<List<List<Crypto>>>(){});
+            } else {
+                return (List) objectMapper.convertValue(root,  new TypeReference<List<Crypto>>(){});
+            }
+        }
+    }
+
     public static class CipherParams {
         private String iv;
 
@@ -277,7 +310,6 @@ public class WalletFile {
             int result = getIv() != null ? getIv().hashCode() : 0;
             return result;
         }
-
     }
 
     interface KdfParams {

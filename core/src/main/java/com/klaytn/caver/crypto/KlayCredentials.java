@@ -38,14 +38,14 @@ public class KlayCredentials {
         this.ecKeyPairForTransactionList = Collections.unmodifiableList(Arrays.asList(ecKeyPair));
         this.ecKeyPairForUpdateList = Collections.unmodifiableList(Collections.emptyList());
         this.ecKeyPairForFeeFeePayerList = Collections.unmodifiableList(Collections.emptyList());
-        this.address = (address != null) ? address : "";
+        this.address = (address != null && address != "") ? Numeric.toHexStringWithPrefixZeroPadded(Numeric.toBigInt(address), 40) : "";
     }
 
     private KlayCredentials(List<ECKeyPair> ecKeyPairForTransaction, List<ECKeyPair> ecKeyPairForUpdate, List<ECKeyPair> ecKeyPairForFeePayer, String address) {
         this.ecKeyPairForTransactionList = (ecKeyPairForTransaction != null && ecKeyPairForTransaction.size() != 0) ? Collections.unmodifiableList(ecKeyPairForTransaction) : Collections.unmodifiableList(Collections.emptyList());;
         this.ecKeyPairForUpdateList = (ecKeyPairForUpdate != null && ecKeyPairForUpdate.size() != 0) ? Collections.unmodifiableList(ecKeyPairForUpdate) : Collections.unmodifiableList(Collections.emptyList());
         this.ecKeyPairForFeeFeePayerList = (ecKeyPairForFeePayer != null && ecKeyPairForFeePayer.size() != 0) ? Collections.unmodifiableList(ecKeyPairForFeePayer) : Collections.unmodifiableList(Collections.emptyList());
-        this.address = (address != null) ? address : "";
+        this.address = (address != null && address != "") ? Numeric.toHexStringWithPrefixZeroPadded(Numeric.toBigInt(address),40) : "";
     }
 
     @Deprecated
@@ -99,6 +99,20 @@ public class KlayCredentials {
         throw new RuntimeException("Fee key does not exist.");
     }
 
+    /**
+     * Returns raw keys. getEcKeyPairsFor <Role> List returns the keys that play the role.
+     * but getRawEcKeyPair returns the key pair as it is, regardless of role.
+     *
+     * @return List ECKeyPair List
+     */
+    public List<List<ECKeyPair>> getRawEcKeyPairs() {
+        List ecKeyPairs = new ArrayList();
+        ecKeyPairs.add(ecKeyPairForTransactionList);
+        ecKeyPairs.add(ecKeyPairForUpdateList);
+        ecKeyPairs.add(ecKeyPairForFeeFeePayerList);
+        return ecKeyPairs;
+    }
+
     public String getAddress() {
         return address;
     }
@@ -136,7 +150,7 @@ public class KlayCredentials {
      * @return KlayCredentials
      */
     public static KlayCredentials create(String privateKey, String address) {
-        return create(ECKeyPair.create(Numeric.toBigInt(privateKey)), address);
+        return create(ECKeyPair.create(Numeric.toBigInt(privateKey)), Numeric.prependHexPrefix(address));
     }
 
     /**
@@ -220,6 +234,37 @@ public class KlayCredentials {
         return create(ecKeyPairsForTransaction, ecKeyPairsForUpdate, ecKeyPairsForForFeePayer, address);
     }
 
+    /**
+     * Static method for creating KlayCredentials instance
+     *
+     * @param ecKeyPairListForRoleBased ecKeyPairList for role-base signing
+     * @param address address of account
+     * @return KlayCredentials
+     */
+    public static KlayCredentials createRoleBased(List<List<ECKeyPair>> ecKeyPairListForRoleBased, String address) {
+        List<ECKeyPair> ecKeyPairsForTransaction = new ArrayList<>();
+        List<ECKeyPair> ecKeyPairsForUpdate = new ArrayList<>();
+        List<ECKeyPair> ecKeyPairsForForFeePayer = new ArrayList<>();
+
+        Iterator<List<ECKeyPair>> iterator = ecKeyPairListForRoleBased.iterator();
+        if (iterator.hasNext()) {
+            for (ECKeyPair ecKeyPair : iterator.next()) {
+                ecKeyPairsForTransaction.add(ecKeyPair);
+            }
+        }
+        if (iterator.hasNext()) {
+            for (ECKeyPair ecKeyPair : iterator.next()) {
+                ecKeyPairsForUpdate.add(ecKeyPair);
+            }
+        }
+        if (iterator.hasNext()) {
+            for (ECKeyPair ecKeyPair : iterator.next()) {
+                ecKeyPairsForForFeePayer.add(ecKeyPair);
+            }
+        }
+
+        return create(ecKeyPairsForTransaction, ecKeyPairsForUpdate, ecKeyPairsForForFeePayer, address);
+    }
     /**
      * Static method for creating KlayCredentials instance
      *

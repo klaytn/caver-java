@@ -23,6 +23,7 @@ package com.klaytn.caver.wallet;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.klaytn.caver.Klay;
 import com.klaytn.caver.crypto.KlayCredentials;
 import org.web3j.crypto.*;
 import org.web3j.utils.Numeric;
@@ -152,9 +153,7 @@ public class KlayWalletUtils {
     public static KlayCredentials loadCredentials(String password, File source)
             throws IOException, CipherException {
         WalletFile walletFile = objectMapper.readValue(source, WalletFile.class);
-        ECKeyPair ecKeyPair = Wallet.decrypt(password, walletFile);
-
-        return KlayCredentials.create(ecKeyPair);
+        return Wallet.decrypt(password, walletFile);
     }
 
     public static KlayCredentials loadCredentials(String klaytnWalletKey) {

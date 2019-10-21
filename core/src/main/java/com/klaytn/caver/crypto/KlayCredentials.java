@@ -23,6 +23,7 @@ package com.klaytn.caver.crypto;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
 import org.web3j.utils.Numeric;
+import org.web3j.utils.Strings;
 
 import java.util.*;
 
@@ -38,14 +39,14 @@ public class KlayCredentials {
         this.ecKeyPairForTransactionList = Collections.unmodifiableList(Arrays.asList(ecKeyPair));
         this.ecKeyPairForUpdateList = Collections.unmodifiableList(Collections.emptyList());
         this.ecKeyPairForFeeFeePayerList = Collections.unmodifiableList(Collections.emptyList());
-        this.address = (address != null && address != "") ? Numeric.toHexStringWithPrefixZeroPadded(Numeric.toBigInt(address), 40) : "";
+        this.address = !Strings.isEmpty(address) ? Numeric.toHexStringWithPrefixZeroPadded(Numeric.toBigInt(address), 40) : "";
     }
 
     private KlayCredentials(List<ECKeyPair> ecKeyPairForTransaction, List<ECKeyPair> ecKeyPairForUpdate, List<ECKeyPair> ecKeyPairForFeePayer, String address) {
         this.ecKeyPairForTransactionList = (ecKeyPairForTransaction != null && ecKeyPairForTransaction.size() != 0) ? Collections.unmodifiableList(ecKeyPairForTransaction) : Collections.unmodifiableList(Collections.emptyList());;
         this.ecKeyPairForUpdateList = (ecKeyPairForUpdate != null && ecKeyPairForUpdate.size() != 0) ? Collections.unmodifiableList(ecKeyPairForUpdate) : Collections.unmodifiableList(Collections.emptyList());
         this.ecKeyPairForFeeFeePayerList = (ecKeyPairForFeePayer != null && ecKeyPairForFeePayer.size() != 0) ? Collections.unmodifiableList(ecKeyPairForFeePayer) : Collections.unmodifiableList(Collections.emptyList());
-        this.address = (address != null && address != "") ? Numeric.toHexStringWithPrefixZeroPadded(Numeric.toBigInt(address),40) : "";
+        this.address = !Strings.isEmpty(address) ? Numeric.toHexStringWithPrefixZeroPadded(Numeric.toBigInt(address), 40) : "";
     }
 
     @Deprecated

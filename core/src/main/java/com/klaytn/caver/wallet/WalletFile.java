@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
 
 public class WalletFile {
     private String address;
@@ -269,9 +269,11 @@ public class WalletFile {
             ArrayNode root = objectMapper.readTree(jsonParser);
 
             if (root.get(0).isArray()) {
-                return (List) objectMapper.convertValue(root,new TypeReference<List<List<Crypto>>>(){});
+                return (List) objectMapper.convertValue(root, new TypeReference<List<List<Crypto>>>() {
+                });
             } else {
-                return (List) objectMapper.convertValue(root,  new TypeReference<List<Crypto>>(){});
+                return (List) objectMapper.convertValue(root, new TypeReference<List<Crypto>>() {
+                });
             }
         }
     }

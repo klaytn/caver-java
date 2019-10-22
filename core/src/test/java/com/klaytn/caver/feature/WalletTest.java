@@ -153,18 +153,21 @@ public class WalletTest {
         List<ECKeyPair> updateECKeyPairList = new ArrayList<>();
         List<ECKeyPair> feePayerECKeyPairList = new ArrayList<>();
 
-        int size = random.nextInt(10);
-        for (int i = 0; i < size; i++) {
+        int sizeTransactionKey = random.nextInt(10);
+        for (int i = 0; i < sizeTransactionKey; i++) {
             transactionECKeyPairList.add(Keys.createEcKeyPair());
         }
 
-        size = random.nextInt(10);
-        for (int i = 0; i < size; i++) {
+        int sizeUpdateKey = random.nextInt(10);
+        for (int i = 0; i < sizeUpdateKey; i++) {
             updateECKeyPairList.add(Keys.createEcKeyPair());
         }
 
-        size = random.nextInt(10);
-        for (int i = 0; i < size; i++) {
+        int sizeFeePayerKey = random.nextInt(10);
+        if (sizeTransactionKey + sizeUpdateKey + sizeFeePayerKey == 0) {
+            sizeFeePayerKey = 1;
+        }
+        for (int i = 0; i < sizeFeePayerKey; i++) {
             feePayerECKeyPairList.add(Keys.createEcKeyPair());
         }
 
@@ -177,7 +180,7 @@ public class WalletTest {
 
         List<ECKeyPair> transactionECKeyPairList = new ArrayList<>();
 
-        int size = random.nextInt(10);
+        int size = random.nextInt(9) + 1;
         for (int i = 0; i < size; i++) {
             transactionECKeyPairList.add(Keys.createEcKeyPair());
         }

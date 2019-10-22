@@ -19,13 +19,22 @@ package com.klaytn.caver.tx.model;
 import com.klaytn.caver.crypto.KlaySignatureData;
 import org.web3j.utils.Numeric;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class KlayRawTransaction {
     private byte[] value;
-    private KlaySignatureData signatureData;
+    private Set<KlaySignatureData> signatureData;
+
+    public KlayRawTransaction(byte[] value, Set<KlaySignatureData> signatureData) {
+        this.value = value;
+        this.signatureData = signatureData;
+    }
 
     public KlayRawTransaction(byte[] value, KlaySignatureData signatureData) {
         this.value = value;
-        this.signatureData = signatureData;
+        this.signatureData = new HashSet<>(Arrays.asList(signatureData));
     }
 
     public byte[] getValue() {
@@ -33,7 +42,11 @@ public class KlayRawTransaction {
     }
 
     public KlaySignatureData getSignatureData() {
-        return signatureData;
+        try {
+            return signatureData.iterator().next();
+        } catch (Exception e) {
+            throw new RuntimeException("Called without signature data");
+        }
     }
 
     public String getValueAsString() {

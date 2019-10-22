@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package com.klaytn.caver.fee;
+package com.klaytn.caver.utils;
 
 import com.klaytn.caver.tx.type.*;
-import com.klaytn.caver.utils.KlayTransactionUtils;
 import org.web3j.utils.Numeric;
 
 import java.util.HashMap;
 import java.util.function.Function;
 
-public class FeePayerTransactionDecoder {
-    private static HashMap<TxType.Type, Function<byte[], TxTypeFeeDelegate>> typeMap
-            = new HashMap<TxType.Type, Function<byte[], TxTypeFeeDelegate>>() {
+public class TransactionDecoder {
+    private static HashMap<TxType.Type, Function<byte[], AbstractTxType>> typeMap
+            = new HashMap<TxType.Type, Function<byte[], AbstractTxType>>() {
         {
             put(TxType.Type.FEE_DELEGATED_ACCOUNT_UPDATE, TxTypeFeeDelegatedAccountUpdate::decodeFromRawTransaction);
             put(TxType.Type.FEE_DELEGATED_ACCOUNT_UPDATE_WITH_RATIO, TxTypeFeeDelegatedAccountUpdateWithRatio::decodeFromRawTransaction);
@@ -39,10 +38,18 @@ public class FeePayerTransactionDecoder {
             put(TxType.Type.FEE_DELEGATED_VALUE_TRANSFER_MEMO, TxTypeFeeDelegatedValueTransferMemo::decodeFromRawTransaction);
             put(TxType.Type.FEE_DELEGATED_VALUE_TRANSFER_MEMO_WITH_RATIO, TxTypeFeeDelegatedValueTransferMemoWithRatio::decodeFromRawTransaction);
             put(TxType.Type.FEE_DELEGATED_VALUE_TRANSFER_WITH_RATIO, TxTypeFeeDelegatedValueTransferWithRatio::decodeFromRawTransaction);
+
+            put(TxType.Type.ACCOUNT_UPDATE, TxTypeAccountUpdate::decodeFromRawTransaction);
+            put(TxType.Type.VALUE_TRANSFER, TxTypeValueTransfer::decodeFromRawTransaction);
+            put(TxType.Type.VALUE_TRANSFER_MEMO, TxTypeValueTransferMemo::decodeFromRawTransaction);
+            put(TxType.Type.SMART_CONTRACT_DEPLOY, TxTypeSmartContractDeploy::decodeFromRawTransaction);
+            put(TxType.Type.SMART_CONTRACT_EXECUTION, TxTypeSmartContractExecution::decodeFromRawTransaction);
+            put(TxType.Type.CANCEL, TxTypeCancel::decodeFromRawTransaction);
+            put(TxType.Type.CHAIN_DATA_ANCHORING, TxTypeChainDataAnchoringTransaction::decodeFromRawTransaction);
         }
     };
 
-    public static TxTypeFeeDelegate decode(String rawTransaction) {
+    public static AbstractTxType decode(String rawTransaction) {
         TxType.Type type = KlayTransactionUtils.getType(rawTransaction);
         return typeMap.get(type).apply(Numeric.hexStringToByteArray(rawTransaction));
     }

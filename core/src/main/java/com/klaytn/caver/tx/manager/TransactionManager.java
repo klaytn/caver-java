@@ -22,6 +22,7 @@ package com.klaytn.caver.tx.manager;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.crypto.KlayCredentials;
+import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.tx.model.TransactionTransformer;
@@ -29,12 +30,15 @@ import com.klaytn.caver.tx.exception.EmptyNonceException;
 import com.klaytn.caver.tx.exception.PlatformErrorException;
 import com.klaytn.caver.tx.exception.UnsupportedTxTypeException;
 import com.klaytn.caver.tx.model.KlayRawTransaction;
+import com.klaytn.caver.tx.type.AbstractTxType;
 import com.klaytn.caver.utils.ChainId;
+import com.klaytn.caver.utils.TransactionDecoder;
 import com.klaytn.caver.wallet.WalletManager;
 import com.klaytn.caver.wallet.exception.CredentialNotFoundException;
 import org.web3j.protocol.exceptions.TransactionException;
 
 import java.io.IOException;
+import java.util.Set;
 
 public class TransactionManager {
 
@@ -54,6 +58,12 @@ public class TransactionManager {
         this.getNonceProcessor = builder.getNonceProcessor;
     }
 
+    /**
+     * executes a transaction and receives a receipt for its live result
+     *
+     * @param transactionTransformer transaction
+     * @return receipt for transaction
+     */
     public KlayTransactionReceipt.TransactionReceipt executeTransaction(
             TransactionTransformer transactionTransformer) {
         KlayTransactionReceipt.TransactionReceipt receipt = null;
@@ -67,11 +77,87 @@ public class TransactionManager {
         return receipt;
     }
 
-    public KlayRawTransaction sign(TransactionTransformer transactionTransformer) {
-        return sign(transactionTransformer, false);
+    /**
+     * executes a transaction and receives a receipt for its live result
+     *
+     * @param txType transaction
+     * @return receipt for transaction
+     */
+    public KlayTransactionReceipt.TransactionReceipt executeTransaction(
+            AbstractTxType txType) {
+        KlayTransactionReceipt.TransactionReceipt receipt = null;
+        KlayRawTransaction rawTx = sign(txType);
+        try {
+            String transactionHash = send(rawTx);
+            receipt = transactionReceiptProcessor.waitForTransactionReceipt(transactionHash);
+        } catch (TransactionException | PlatformErrorException | IOException e) {
+            exception(e);
+        }
+        return receipt;
     }
 
-    public KlayRawTransaction sign(TransactionTransformer transactionTransformer, boolean isFeeDelegated) {
+    /**
+     * executes a transaction and receives a receipt for its live result
+     *
+     * @param rawTransaction transaction
+     * @return receipt for transaction
+     */
+    public KlayTransactionReceipt.TransactionReceipt executeTransaction(
+            String rawTransaction) {
+
+        AbstractTxType txType = TransactionDecoder.decode(rawTransaction);
+        return executeTransaction(txType);
+    }
+
+    /**
+     * After signing a transaction, the signature produced is returned in combination with the signature of the transaction.
+     *
+     * @param txType transaction
+     * @return signatures of transaction
+     */
+    public Set<KlaySignatureData> makeSignatureData(AbstractTxType txType) {
+        Set<KlaySignatureData> result = null;
+
+        try {
+            KlayCredentials credentials = walletManager.findByAddress(txType.getFrom());
+
+            result = txType.getSenderSignatureDataSet();
+            result.addAll(txType.getNewSenderSignatureDataSet(credentials, this.chainId));
+        } catch (CredentialNotFoundException | EmptyNonceException e) {
+            exception(e);
+        }
+        return result;
+    }
+
+    /**
+     * The result of signing a transaction is added to the raw transaction and returned
+     *
+     * @param txType
+     * @return signed raw transaction
+     */
+    public KlayRawTransaction sign(AbstractTxType txType) {
+        KlayRawTransaction result = null;
+        try {
+            KlayCredentials credentials = walletManager.findByAddress(txType.getFrom());
+            result = txType.sign(credentials, this.chainId);
+        } catch (CredentialNotFoundException | EmptyNonceException e) {
+            exception(e);
+        }
+        return result;
+    }
+
+    /**
+     * The result of signing a transaction is added to the raw transaction and returned
+     *
+     * @param klayRawTransaction
+     * @return signed raw transaction
+     */
+    public KlayRawTransaction sign(String klayRawTransaction) {
+        AbstractTxType txType = TransactionDecoder.decode(klayRawTransaction);
+        return sign(txType);
+    }
+
+    public KlayRawTransaction sign(TransactionTransformer transactionTransformer) {
         KlayRawTransaction result = null;
         try {
             KlayCredentials credentials = walletManager.findByAddress(transactionTransformer.getFrom());
@@ -80,7 +166,7 @@ public class TransactionManager {
                 transactionTransformer.nonce(getNonceProcessor.getNonce(credentials));
             }
 
-            result = transactionTransformer.build(isFeeDelegated).sign(credentials, this.chainId);
+            result = transactionTransformer.build().sign(credentials, this.chainId);
         } catch (UnsupportedTxTypeException | CredentialNotFoundException | IOException | EmptyNonceException e) {
             exception(e);
         }

@@ -31,7 +31,7 @@ import java.util.List;
  * TxTypeFeeDelegatedValueTransferMemoWithRatio transfers KLAY with a data.
  * The given ratio of the transaction fee is paid by the fee payer.
  */
-public class TxTypeFeeDelegatedValueTransferMemoWithRatio extends AbstractTxType implements TxTypeFeeDelegate {
+public class TxTypeFeeDelegatedValueTransferMemoWithRatio extends TxTypeFeeDelegate {
 
     /**
      * memo
@@ -94,36 +94,35 @@ public class TxTypeFeeDelegatedValueTransferMemoWithRatio extends AbstractTxType
     /**
      * decode transaction hash from sender to reconstruct transaction with fee payer signature.
      *
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeFeeDelegatedValueTransferMemoWithRatio decoded transaction
      */
     public static TxTypeFeeDelegatedValueTransferMemoWithRatio decodeFromRawTransaction(byte[] rawTransaction) {
-        byte[] rawTransactionExceptType = KlayTransactionUtils.getRawTransactionNoType(rawTransaction);
+        // TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, feeRatio, txSignatures, feePayer, feePayerSignatures])
+        try {
+            byte[] rawTransactionExceptType = KlayTransactionUtils.getRawTransactionNoType(rawTransaction);
 
-        RlpList rlpList = RlpDecoder.decode(rawTransactionExceptType);
-        RlpList values = (RlpList) rlpList.getValues().get(0);
-        BigInteger nonce = ((RlpString) values.getValues().get(0)).asPositiveBigInteger();
-        BigInteger gasPrice = ((RlpString) values.getValues().get(1)).asPositiveBigInteger();
-        BigInteger gasLimit = ((RlpString) values.getValues().get(2)).asPositiveBigInteger();
-        String to = ((RlpString) values.getValues().get(3)).asString();
-        BigInteger value = ((RlpString) values.getValues().get(4)).asPositiveBigInteger();
-        String from = ((RlpString) values.getValues().get(5)).asString();
-        byte[] payload = ((RlpString) values.getValues().get(6)).getBytes();
-        BigInteger feeRatio = ((RlpString) values.getValues().get(7)).asPositiveBigInteger();
-        TxTypeFeeDelegatedValueTransferMemoWithRatio tx
-                = TxTypeFeeDelegatedValueTransferMemoWithRatio.createTransaction(nonce, gasPrice, gasLimit, to, value, from, payload, feeRatio);
-        if (values.getValues().size() > 7) {
-            RlpList vrs = (RlpList) ((RlpList) (values.getValues().get(8))).getValues().get(0);
-            byte[] v = ((RlpString) vrs.getValues().get(0)).getBytes();
-            byte[] r = ((RlpString) vrs.getValues().get(1)).getBytes();
-            byte[] s = ((RlpString) vrs.getValues().get(2)).getBytes();
-            tx.setSenderSignatureData(new KlaySignatureData(v, r, s));
+            RlpList rlpList = RlpDecoder.decode(rawTransactionExceptType);
+            List<RlpType> values = ((RlpList) rlpList.getValues().get(0)).getValues();
+            BigInteger nonce = ((RlpString) values.get(0)).asPositiveBigInteger();
+            BigInteger gasPrice = ((RlpString) values.get(1)).asPositiveBigInteger();
+            BigInteger gasLimit = ((RlpString) values.get(2)).asPositiveBigInteger();
+            String to = ((RlpString) values.get(3)).asString();
+            BigInteger value = ((RlpString) values.get(4)).asPositiveBigInteger();
+            String from = ((RlpString) values.get(5)).asString();
+            byte[] payload = ((RlpString) values.get(6)).getBytes();
+            BigInteger feeRatio = ((RlpString) values.get(7)).asPositiveBigInteger();
+            TxTypeFeeDelegatedValueTransferMemoWithRatio tx
+                    = TxTypeFeeDelegatedValueTransferMemoWithRatio.createTransaction(nonce, gasPrice, gasLimit, to, value, from, payload, feeRatio);
+            tx.addSignatureData(values, 8);
+            return tx;
+        } catch (Exception e) {
+            throw new RuntimeException("There is a error in the processing of decoding tx");
         }
-        return tx;
     }
 
     /**
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeFeeDelegatedValueTransferMemoWithRatio decoded transaction
      */
     public static TxTypeFeeDelegatedValueTransferMemoWithRatio decodeFromRawTransaction(String rawTransaction) {

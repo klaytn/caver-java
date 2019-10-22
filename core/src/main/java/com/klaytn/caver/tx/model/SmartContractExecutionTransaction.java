@@ -50,6 +50,9 @@ public class SmartContractExecutionTransaction extends TransactionTransformer<Sm
 
     @Override
     public TxType build() {
+        if (this.feeDelegate) {
+            return buildFeeDelegated();
+        }
         return TxTypeSmartContractExecution.createTransaction(getNonce(), getGasPrice(), getGasLimit(),
                 this.recipient, this.amount, getFrom(), this.payload);
     }

@@ -28,7 +28,7 @@ import java.util.List;
  * TxTypeFeeDelegatedCancel cancels the transaction with the same nonce in the txpool.
  * The fee is paid by the fee payer.
  */
-public class TxTypeFeeDelegatedCancel extends AbstractTxType implements TxTypeFeeDelegate {
+public class TxTypeFeeDelegatedCancel extends TxTypeFeeDelegate {
 
     protected TxTypeFeeDelegatedCancel(
             BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String from) {
@@ -67,33 +67,32 @@ public class TxTypeFeeDelegatedCancel extends AbstractTxType implements TxTypeFe
     /**
      * decode transaction hash from sender to reconstruct transaction with fee payer signature.
      *
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeFeeDelegatedCancel decoded transaction
      */
     public static TxTypeFeeDelegatedCancel decodeFromRawTransaction(byte[] rawTransaction) {
-        byte[] rawTransactionExceptType = KlayTransactionUtils.getRawTransactionNoType(rawTransaction);
+        //TxHashRLP = type + encode([nonce, gasPrice, gas, from, txSignatures, feePayer, feePayerSignatures])
+        try {
+            byte[] rawTransactionExceptType = KlayTransactionUtils.getRawTransactionNoType(rawTransaction);
 
-        RlpList rlpList = RlpDecoder.decode(rawTransactionExceptType);
-        RlpList values = (RlpList) rlpList.getValues().get(0);
-        BigInteger nonce = ((RlpString) values.getValues().get(0)).asPositiveBigInteger();
-        BigInteger gasPrice = ((RlpString) values.getValues().get(1)).asPositiveBigInteger();
-        BigInteger gasLimit = ((RlpString) values.getValues().get(2)).asPositiveBigInteger();
-        String from = ((RlpString) values.getValues().get(3)).asString();
+            RlpList rlpList = RlpDecoder.decode(rawTransactionExceptType);
+            List<RlpType> values = ((RlpList) rlpList.getValues().get(0)).getValues();
+            BigInteger nonce = ((RlpString) values.get(0)).asPositiveBigInteger();
+            BigInteger gasPrice = ((RlpString) values.get(1)).asPositiveBigInteger();
+            BigInteger gasLimit = ((RlpString) values.get(2)).asPositiveBigInteger();
+            String from = ((RlpString) values.get(3)).asString();
 
-        TxTypeFeeDelegatedCancel tx
-                = TxTypeFeeDelegatedCancel.createTransaction(nonce, gasPrice, gasLimit, from);
-        if (values.getValues().size() > 3) {
-            RlpList vrs = (RlpList) ((RlpList) (values.getValues().get(4))).getValues().get(0);
-            byte[] v = ((RlpString) vrs.getValues().get(0)).getBytes();
-            byte[] r = ((RlpString) vrs.getValues().get(1)).getBytes();
-            byte[] s = ((RlpString) vrs.getValues().get(2)).getBytes();
-            tx.setSenderSignatureData(new KlaySignatureData(v, r, s));
+            TxTypeFeeDelegatedCancel tx
+                    = TxTypeFeeDelegatedCancel.createTransaction(nonce, gasPrice, gasLimit, from);
+            tx.addSignatureData(values, 4);
+            return tx;
+        } catch (Exception e) {
+            throw new RuntimeException("There is a error in the processing of decoding tx");
         }
-        return tx;
     }
 
     /**
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeFeeDelegatedCancel decoded transaction
      */
     public static TxTypeFeeDelegatedCancel decodeFromRawTransaction(String rawTransaction) {

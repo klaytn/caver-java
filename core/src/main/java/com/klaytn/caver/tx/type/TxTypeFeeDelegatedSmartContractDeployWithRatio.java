@@ -31,7 +31,7 @@ import java.util.List;
  * TxTypeFeeDelegatedSmartContractDeployWithRatio deploys a smart contract.
  * The given ratio of the transaction fee is paid by the fee payer.
  */
-public class TxTypeFeeDelegatedSmartContractDeployWithRatio extends AbstractTxType implements TxTypeFeeDelegate {
+public class TxTypeFeeDelegatedSmartContractDeployWithRatio extends TxTypeFeeDelegate {
 
     /**
      * code of the newly deployed smart contract
@@ -109,38 +109,37 @@ public class TxTypeFeeDelegatedSmartContractDeployWithRatio extends AbstractTxTy
     /**
      * decode transaction hash from sender to reconstruct transaction with fee payer signature.
      *
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeFeeDelegatedSmartContractDeployWithRatio decoded transaction
      */
     public static TxTypeFeeDelegatedSmartContractDeployWithRatio decodeFromRawTransaction(byte[] rawTransaction) {
-        byte[] rawTransactionExceptType = KlayTransactionUtils.getRawTransactionNoType(rawTransaction);
+        // TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, humanReadable, feeRatio, codeFormat, txSignatures, feePayer, feePayerSignatures])
+        try {
+            byte[] rawTransactionExceptType = KlayTransactionUtils.getRawTransactionNoType(rawTransaction);
 
-        RlpList rlpList = RlpDecoder.decode(rawTransactionExceptType);
-        RlpList values = (RlpList) rlpList.getValues().get(0);
-        BigInteger nonce = ((RlpString) values.getValues().get(0)).asPositiveBigInteger();
-        BigInteger gasPrice = ((RlpString) values.getValues().get(1)).asPositiveBigInteger();
-        BigInteger gasLimit = ((RlpString) values.getValues().get(2)).asPositiveBigInteger();
-        String to = ((RlpString) values.getValues().get(3)).asString();
-        BigInteger value = ((RlpString) values.getValues().get(4)).asPositiveBigInteger();
-        String from = ((RlpString) values.getValues().get(5)).asString();
-        byte[] payload = ((RlpString) values.getValues().get(6)).getBytes();
-        BigInteger feeRatio = ((RlpString) values.getValues().get(8)).asPositiveBigInteger();
-        BigInteger codeFormat = ((RlpString) values.getValues().get(9)).asPositiveBigInteger();
+            RlpList rlpList = RlpDecoder.decode(rawTransactionExceptType);
+            List<RlpType> values = ((RlpList) rlpList.getValues().get(0)).getValues();
+            BigInteger nonce = ((RlpString) values.get(0)).asPositiveBigInteger();
+            BigInteger gasPrice = ((RlpString) values.get(1)).asPositiveBigInteger();
+            BigInteger gasLimit = ((RlpString) values.get(2)).asPositiveBigInteger();
+            String to = ((RlpString) values.get(3)).asString();
+            BigInteger value = ((RlpString) values.get(4)).asPositiveBigInteger();
+            String from = ((RlpString) values.get(5)).asString();
+            byte[] payload = ((RlpString) values.get(6)).getBytes();
+            BigInteger feeRatio = ((RlpString) values.get(8)).asPositiveBigInteger();
+            BigInteger codeFormat = ((RlpString) values.get(9)).asPositiveBigInteger();
 
-        TxTypeFeeDelegatedSmartContractDeployWithRatio tx
-                = new TxTypeFeeDelegatedSmartContractDeployWithRatio(nonce, gasPrice, gasLimit, value, from, payload, feeRatio, codeFormat);
-        if (values.getValues().size() > 9) {
-            RlpList vrs = (RlpList) ((RlpList) (values.getValues().get(10))).getValues().get(0);
-            byte[] v = ((RlpString) vrs.getValues().get(0)).getBytes();
-            byte[] r = ((RlpString) vrs.getValues().get(1)).getBytes();
-            byte[] s = ((RlpString) vrs.getValues().get(2)).getBytes();
-            tx.setSenderSignatureData(new KlaySignatureData(v, r, s));
+            TxTypeFeeDelegatedSmartContractDeployWithRatio tx
+                    = new TxTypeFeeDelegatedSmartContractDeployWithRatio(nonce, gasPrice, gasLimit, value, from, payload, feeRatio, codeFormat);
+            tx.addSignatureData(values, 10);
+            return tx;
+        } catch (Exception e) {
+            throw new RuntimeException("There is a error in the processing of decoding tx");
         }
-        return tx;
     }
 
     /**
-     * @param rawTransaction signed transaction hash from sender
+     * @param rawTransaction RLP-encoded signed transaction from sender
      * @return TxTypeFeeDelegatedSmartContractDeployWithRatio decoded transaction
      */
     public static TxTypeFeeDelegatedSmartContractDeployWithRatio decodeFromRawTransaction(String rawTransaction) {

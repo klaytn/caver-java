@@ -20,9 +20,11 @@ import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.wallet.KlayWalletUtils;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.web3j.crypto.Keys;
 import org.web3j.utils.Numeric;
 
 import java.io.File;
+import java.util.Random;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
@@ -99,4 +101,21 @@ public class KlayWalletUtilsTest {
         assertEquals("0xee135d0b57c7ff81b198763cfd7c43f03a5f7622", credentials2.getAddress());
     }
 
+    @Test
+    public void testValidPrivateKey() throws Exception {
+        String longPrivateKey = Keys.createEcKeyPair().getPrivateKey().toString(16) + "00000000000000000000000000000000000000000000000000000000000000000";
+        assertEquals("longPrivateKey: " + longPrivateKey, false, KlayWalletUtils.isValidPrivateKey(longPrivateKey));
+
+        String validPrivateKey = Keys.createEcKeyPair().getPrivateKey().toString(16);
+        assertEquals("validPrivateKey: " + validPrivateKey, true, KlayWalletUtils.isValidPrivateKey(validPrivateKey));
+    }
+
+    @Test
+    public void testValidAddress() throws Exception {
+        String longAddress =  KlayCredentials.create(Keys.createEcKeyPair()).getAddress() + "00000000000000000000000000000000000000000";
+        assertEquals("longAddress: " + longAddress, false, KlayWalletUtils.isValidAddress(longAddress));
+
+        String validAddress =  KlayCredentials.create(Keys.createEcKeyPair()).getAddress();
+        assertEquals("validAddress: " + validAddress, true, KlayWalletUtils.isValidAddress(validAddress));
+    }
 }

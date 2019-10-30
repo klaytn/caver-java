@@ -42,13 +42,8 @@ import static org.web3j.crypto.Hash.sha256;
 
 public class KlayWalletUtils {
 
-    public static final int ADDRESS_SIZE = 40;
-    public static final int ADDRESS_LENGTH_IN_HEX = ADDRESS_SIZE >> 2;
-
-    private static final int PRIVATE_KEY_SIZE = 32;
-    private static final int PUBLIC_KEY_SIZE = 64;
-    private static final int PRIVATE_KEY_LENGTH_IN_HEX = ADDRESS_SIZE >> 2;
-    private static final int PUBLIC_KEY_LENGTH_IN_HEX = PUBLIC_KEY_SIZE << 1;
+    public static final int ADDRESS_HEX_SIZE = 40;
+    private static final int PRIVATE_KEY_HEX_SIZE = 64;
 
     public static final String CHECKSUM = "0x00";
 
@@ -188,7 +183,7 @@ public class KlayWalletUtils {
 
     public static boolean isValidPrivateKey(String privateKey) {
         String cleanPrivateKey = Numeric.cleanHexPrefix(privateKey);
-        return cleanPrivateKey.length() == PRIVATE_KEY_LENGTH_IN_HEX;
+        return (cleanPrivateKey.length() <= PRIVATE_KEY_HEX_SIZE && cleanPrivateKey.matches("^[0-9A-Fa-f]+$"));
     }
 
     public static boolean isValidAddress(String input) {
@@ -200,7 +195,7 @@ public class KlayWalletUtils {
             return false;
         }
 
-        return cleanInput.length() == ADDRESS_LENGTH_IN_HEX;
+        return (cleanInput.length() <= ADDRESS_HEX_SIZE && cleanInput.matches("^[0-9A-Fa-f]+$"));
     }
 
     public static String getDefaultKeyDirectory() {

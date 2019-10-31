@@ -24,7 +24,6 @@ import org.web3j.crypto.Keys;
 import org.web3j.utils.Numeric;
 
 import java.io.File;
-import java.util.Random;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;

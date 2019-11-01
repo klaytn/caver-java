@@ -37,6 +37,7 @@ import java.security.SecureRandom;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.regex.Pattern;
 
 import static org.web3j.crypto.Hash.sha256;
 
@@ -50,6 +51,7 @@ public class KlayWalletUtils {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final SecureRandom secureRandom = SecureRandomUtils.secureRandom();
 
+    private static final Pattern HEX_STRING = Pattern.compile("^[0-9A-Fa-f]+$");
 
     static {
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
@@ -183,7 +185,7 @@ public class KlayWalletUtils {
 
     public static boolean isValidPrivateKey(String privateKey) {
         String cleanPrivateKey = Numeric.cleanHexPrefix(privateKey);
-        return (cleanPrivateKey.length() <= PRIVATE_KEY_HEX_SIZE && cleanPrivateKey.matches("^[0-9A-Fa-f]+$"));
+        return cleanPrivateKey.length() <= PRIVATE_KEY_HEX_SIZE && HEX_STRING.matcher(cleanPrivateKey).matches();
     }
 
     public static boolean isValidAddress(String input) {
@@ -195,7 +197,7 @@ public class KlayWalletUtils {
             return false;
         }
 
-        return (cleanInput.length() <= ADDRESS_HEX_SIZE && cleanInput.matches("^[0-9A-Fa-f]+$"));
+        return cleanInput.length() <= ADDRESS_HEX_SIZE && HEX_STRING.matcher(cleanInput).matches();
     }
 
     public static String getDefaultKeyDirectory() {

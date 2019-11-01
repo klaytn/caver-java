@@ -27,6 +27,8 @@ import java.io.File;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class KlayWalletUtilsTest {
 
@@ -103,18 +105,18 @@ public class KlayWalletUtilsTest {
     @Test
     public void testValidPrivateKey() throws Exception {
         String longPrivateKey = Keys.createEcKeyPair().getPrivateKey().toString(16) + "00000000000000000000000000000000000000000000000000000000000000000";
-        assertEquals("longPrivateKey: " + longPrivateKey, false, KlayWalletUtils.isValidPrivateKey(longPrivateKey));
+        assertFalse("longPrivateKey: " + longPrivateKey, KlayWalletUtils.isValidPrivateKey(longPrivateKey));
 
         String validPrivateKey = Keys.createEcKeyPair().getPrivateKey().toString(16);
-        assertEquals("validPrivateKey: " + validPrivateKey, true, KlayWalletUtils.isValidPrivateKey(validPrivateKey));
+        assertTrue("validPrivateKey: " + validPrivateKey, KlayWalletUtils.isValidPrivateKey(validPrivateKey));
     }
 
     @Test
     public void testValidAddress() throws Exception {
         String longAddress =  KlayCredentials.create(Keys.createEcKeyPair()).getAddress() + "00000000000000000000000000000000000000000";
-        assertEquals("longAddress: " + longAddress, false, KlayWalletUtils.isValidAddress(longAddress));
+        assertFalse("longAddress: " + longAddress, KlayWalletUtils.isValidAddress(longAddress));
 
         String validAddress =  KlayCredentials.create(Keys.createEcKeyPair()).getAddress();
-        assertEquals("validAddress: " + validAddress, true, KlayWalletUtils.isValidAddress(validAddress));
+        assertTrue("validAddress: " + validAddress, KlayWalletUtils.isValidAddress(validAddress));
     }
 }

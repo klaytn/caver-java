@@ -212,6 +212,12 @@ public class RpcTest {
                 true).send();
         KlayBlock.Block result = response.getResult();
         TestCase.assertEquals(testBlock.blockHash, result.getTransactions().get(0).getBlockHash());
+
+        response = caver.klay().getBlockByNumber(
+                new DefaultBlockParameterNumber(testBlock.blockNumber),
+                true).send();
+        result = response.getResult();
+        TestCase.assertEquals(testBlock.blockHash, result.getHash());
     }
 
     @Test
@@ -219,6 +225,10 @@ public class RpcTest {
         KlayBlock response = caver.klay().getBlockByHash(testBlock.blockHash, true).send();
         KlayBlock.Block result = response.getResult();
         TestCase.assertEquals(testBlock.blockHash, result.getTransactions().get(0).getBlockHash());
+
+        response = caver.klay().getBlockByHash(testBlock.blockHash, true).send();
+        result = response.getResult();
+        TestCase.assertEquals(testBlock.blockHash, result.getHash());
     }
 
     @Test

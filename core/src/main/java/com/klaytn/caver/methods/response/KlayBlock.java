@@ -20,12 +20,17 @@
 
 package com.klaytn.caver.methods.response;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.klaytn.caver.wallet.WalletFile;
 import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.core.Response;
 
@@ -137,7 +142,7 @@ public class KlayBlock extends Response<KlayBlock.Block> {
         /**
          * Array of transaction objects, or 32-byte transaction hashes depending on the last given parameter
          */
-        private List<KlayTransaction.Transaction> transactions;
+        private List transactions;
 
         /**
          * RLP encoded governance configuration
@@ -266,6 +271,12 @@ public class KlayBlock extends Response<KlayBlock.Block> {
             return reward;
         }
 
+        @JsonSetter("transactions")
+        @JsonDeserialize(using = TransactionsDeserializer.class)
+        public void setTransactions(List transactions) {
+            this.transactions = transactions;
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) {
@@ -385,6 +396,26 @@ public class KlayBlock extends Response<KlayBlock.Block> {
                 return objectReader.readValue(jsonParser, Block.class);
             } else {
                 return null;  // null is wrapped by Optional in above getter
+            }
+        }
+    }
+
+    static class TransactionsDeserializer extends JsonDeserializer<List> {
+
+        @Override
+        public List deserialize(
+                JsonParser jsonParser, DeserializationContext deserializationContext)
+                throws IOException {
+
+            ObjectMapper objectMapper = (ObjectMapper) jsonParser.getCodec();
+            ArrayNode root = objectMapper.readTree(jsonParser);
+
+            if (root.get(0).isTextual()) {
+                return (List) objectMapper.convertValue(root, new TypeReference<List<String>>() {
+                });
+            } else {
+                return (List) objectMapper.convertValue(root, new TypeReference<List<KlayTransaction.Transaction>>() {
+                });
             }
         }
     }

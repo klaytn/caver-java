@@ -35,6 +35,7 @@ import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.core.Response;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -52,7 +53,7 @@ public class KlayBlock extends Response<KlayBlock.Block> {
         return getResult();
     }
 
-    public static class Block {
+    public static class Block<T> {
 
         /**
          * The block number. null when its pending block
@@ -255,7 +256,7 @@ public class KlayBlock extends Response<KlayBlock.Block> {
             return timestampFoS;
         }
 
-        public List<KlayTransaction.Transaction> getTransactions() {
+        public List<T> getTransactions() {
             return transactions;
         }
 
@@ -410,11 +411,13 @@ public class KlayBlock extends Response<KlayBlock.Block> {
             ObjectMapper objectMapper = (ObjectMapper) jsonParser.getCodec();
             ArrayNode root = objectMapper.readTree(jsonParser);
 
-            if (root.get(0).isTextual()) {
-                return (List) objectMapper.convertValue(root, new TypeReference<List<String>>() {
+            if (root.size() == 0) {
+              return Collections.emptyList();
+            } else if (root.get(0).isTextual()) {
+                return objectMapper.convertValue(root, new TypeReference<List<String>>() {
                 });
             } else {
-                return (List) objectMapper.convertValue(root, new TypeReference<List<KlayTransaction.Transaction>>() {
+                return objectMapper.convertValue(root, new TypeReference<List<KlayTransaction.Transaction>>() {
                 });
             }
         }

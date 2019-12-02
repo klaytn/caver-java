@@ -291,9 +291,17 @@ public class KlayCredentials {
     }
 
     public String getKlaytnWalletKey() {
+        if (!canExportKlaytnWalletKey()) {
+            throw new RuntimeException("The account cannot be exported in KlaytnWalletKey format. Use the WalletFile.createFull(String password, KlayCredentials klayCredentials) or WalletFile.createStandard(String password, KlayCredentials klayCredentials)");
+        }
+
         return Numeric.toHexStringWithPrefixZeroPadded(getEcKeyPair().getPrivateKey(), 64)
                 + CHECKSUM
                 + getAddress();
+    }
+
+    private boolean canExportKlaytnWalletKey() {
+        return ecKeyPairForTransactionList.size() == 1 && ecKeyPairForUpdateList.size() == 0 && ecKeyPairForFeeFeePayerList.size() == 0;
     }
 
     @Override

@@ -37,7 +37,7 @@ import java.util.Set;
  * This interface represents which is fee delegated transaction type
  */
 public abstract class TxTypeFeeDelegate extends AbstractTxType {
-    final static String EMPTY_FEE_PAYER_ADDRESS = "0x30";
+    final static String EMPTY_FEE_PAYER_ADDRESS = "0x";
     final static int DEFAULT_FEE_RATIO = 100;
 
     private Set<KlaySignatureData> feePayerSignatureData;

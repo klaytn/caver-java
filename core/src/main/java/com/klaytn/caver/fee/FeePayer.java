@@ -37,7 +37,7 @@ import java.util.Set;
 
 public class FeePayer {
 
-    final static String EMPTY_FEE_PAYER_ADDRESS = "0x30";
+    final static String EMPTY_FEE_PAYER_ADDRESS = "0x";
     private KlayCredentials credentials;
     private int chainId;
 

@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/klaytn/caver-java/tree/master.svg?style=svg)](https://circleci.com/gh/klaytn/caver-java/tree/master)
+[![CircleCI](https://circleci.com/gh/klaytn/caver-java/tree/dev.svg?style=svg)](https://circleci.com/gh/klaytn/caver-java/tree/dev)
 
 # caver-java: Caver Java Klaytn Dapp API
 

@@ -550,19 +550,19 @@ public class TransactionTest {
 
     @Test
     public void testFeePayerSignWithDummyData() {
-        String senderRawTx = "0x09f8808204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0bf845f84325a09f8e49e2ad84b0732984398749956e807e4b526c786af3c5f7416b293e638956a06bf88342092f6ff9fabe31739b2ebfa1409707ce54a54693e91a6b9bb77df0e730c4c3018080";
+        String senderRawTx = "0x09f8828204d21983419ce0942c8ad0ea2e0781db8b8c9242e07de3a5beabb71a0a94e97f27e9a5765ce36a7b919b1cb6004c7209217ef847f845820fe9a02ee358eb9919f27bf79b9246d393e3f700f2b4fd303cae25b196b19e52df6393a056429922ff6154fa616ceec0b3e2e8ba0e82a8462801173271ace5325b01516680c4c3018080";
         TxType.Type type = KlayTransactionUtils.getType(senderRawTx);
         TxTypeFeeDelegatedValueTransfer senderTx = TxTypeFeeDelegatedValueTransfer.decodeFromRawTransaction(senderRawTx);
         KlayRawTransaction payerTx = new FeePayer(FEE_PAYER, 1).sign(senderTx);
 
         assertEquals(type, TxType.Type.FEE_DELEGATED_VALUE_TRANSFER);
         assertEquals(BigInteger.valueOf(1234), senderTx.getNonce());
-        assertEquals(BigInteger.valueOf(0xf4240), senderTx.getGasLimit());
+        assertEquals(BigInteger.valueOf(4300000), senderTx.getGasLimit());
         assertEquals(BigInteger.valueOf(0xa), senderTx.getValue());
         assertEquals(BigInteger.valueOf(0x19), senderTx.getGasPrice());
-        assertEquals("0xa94f5374Fce5edBC8E2a8697C15331677e6EbF0B".toLowerCase(), senderTx.getFrom());
-        assertEquals("0x7b65B75d204aBed71587c9E519a89277766EE1d0".toLowerCase(), senderTx.getTo());
-        assertEquals("0x09f8d68204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0bf845f84325a09f8e49e2ad84b0732984398749956e807e4b526c786af3c5f7416b293e638956a06bf88342092f6ff9fabe31739b2ebfa1409707ce54a54693e91a6b9bb77df0e7945a0043070275d9f6054307ee7348bd660849d90ff845f84326a0f45cf8d7f88c08e6b6ec0b3b562f34ca94283e4689021987abb6b0772ddfd80aa0298fe2c5aeabb6a518f4cbb5ff39631a5d88be505d3923374f65fdcf63c2955b",
+        assertEquals("0xe97f27e9a5765ce36a7b919b1cb6004c7209217e".toLowerCase(), senderTx.getFrom());
+        assertEquals("0x2c8ad0ea2e0781db8b8c9242e07de3a5beabb71a".toLowerCase(), senderTx.getTo());
+        assertEquals("0x09f8d88204d21983419ce0942c8ad0ea2e0781db8b8c9242e07de3a5beabb71a0a94e97f27e9a5765ce36a7b919b1cb6004c7209217ef847f845820fe9a02ee358eb9919f27bf79b9246d393e3f700f2b4fd303cae25b196b19e52df6393a056429922ff6154fa616ceec0b3e2e8ba0e82a8462801173271ace5325b015166945a0043070275d9f6054307ee7348bd660849d90ff845f84326a00cef0aa2bb99ca7b7d00f0d093bed401ce210610776c73ac321455d18036f392a0138bd8ca23efb015b876f19f60a37700dd68eb420fb31753d0e9a0309b31333c",
                 payerTx.getValueAsString());
     }
 

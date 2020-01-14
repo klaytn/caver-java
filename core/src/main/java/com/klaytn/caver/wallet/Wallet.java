@@ -349,8 +349,10 @@ public class Wallet {
         if (walletFile.getVersion() == VERSION_3) {
             WalletFile.Crypto crypto = walletFile.getCrypto();
             validateCrypto(crypto);
+            return;
         }
 
+        // Validate current version
         List keyRing = walletFile.getKeyring();
         if (keyRing.get(0) instanceof WalletFile.Crypto) {
             for (WalletFile.Crypto crypto : (List<WalletFile.Crypto>)keyRing) {

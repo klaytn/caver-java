@@ -39,6 +39,7 @@ public class TransactionDecoder {
             put(TxType.Type.FEE_DELEGATED_VALUE_TRANSFER_MEMO_WITH_RATIO, TxTypeFeeDelegatedValueTransferMemoWithRatio::decodeFromRawTransaction);
             put(TxType.Type.FEE_DELEGATED_VALUE_TRANSFER_WITH_RATIO, TxTypeFeeDelegatedValueTransferWithRatio::decodeFromRawTransaction);
 
+            put(TxType.Type.LEGACY, TxTypeLegacyTransaction::decodeFromRawTransaction);
             put(TxType.Type.ACCOUNT_UPDATE, TxTypeAccountUpdate::decodeFromRawTransaction);
             put(TxType.Type.VALUE_TRANSFER, TxTypeValueTransfer::decodeFromRawTransaction);
             put(TxType.Type.VALUE_TRANSFER_MEMO, TxTypeValueTransferMemo::decodeFromRawTransaction);

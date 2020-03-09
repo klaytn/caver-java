@@ -20,11 +20,9 @@ import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.utils.KlaySignatureDataUtils;
 import com.klaytn.caver.tx.model.KlayRawTransaction;
+import com.klaytn.caver.utils.KlayTransactionUtils;
 import org.web3j.crypto.Sign;
-import org.web3j.rlp.RlpEncoder;
-import org.web3j.rlp.RlpList;
-import org.web3j.rlp.RlpString;
-import org.web3j.rlp.RlpType;
+import org.web3j.rlp.*;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
@@ -53,6 +51,46 @@ public class TxTypeLegacyTransaction extends AbstractTxType {
             BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to, BigInteger value, String data) {
 
         return new TxTypeLegacyTransaction(nonce, gasPrice, gasLimit, to, value, data);
+    }
+
+    /**
+     * decode transaction to reconstruct transaction
+     *
+     * @param rawTransaction RLP-encoded signed transaction
+     * @return TxTypeValueTransfer decoded transaction
+     */
+    public static TxTypeLegacyTransaction decodeFromRawTransaction(byte[] rawTransaction) {
+        // TxHashRLP = encode([nonce, gasPrice, gas, to, value, input, v, r, s])
+        try {
+            RlpList rlpList = RlpDecoder.decode(rawTransaction);
+            List<RlpType> values = ((RlpList) rlpList.getValues().get(0)).getValues();
+
+            BigInteger nonce = ((RlpString) values.get(0)).asPositiveBigInteger();
+            BigInteger gasPrice = ((RlpString) values.get(1)).asPositiveBigInteger();
+            BigInteger gasLimit = ((RlpString) values.get(2)).asPositiveBigInteger();
+            String to = ((RlpString) values.get(3)).asString();
+            BigInteger value = ((RlpString) values.get(4)).asPositiveBigInteger();
+            String input = ((RlpString) values.get(5)).asString();
+
+            TxTypeLegacyTransaction tx
+                    = TxTypeLegacyTransaction.createTransaction(nonce, gasPrice, gasLimit, to, value, input);
+            byte[] v = ((RlpString) values.get(6)).getBytes();
+            byte[] r = ((RlpString) values.get(7)).getBytes();
+            byte[] s = ((RlpString) values.get(8)).getBytes();
+            KlaySignatureData signatureData = new KlaySignatureData(v, r, s);
+            tx.addSenderSignatureData(signatureData);
+            return tx;
+        } catch (Exception e) {
+            throw new RuntimeException("There is a error in the processing of decoding tx");
+        }
+    }
+
+    /**
+     * @param rawTransaction RLP-encoded signed transaction
+     * @return TxTypeLegacyTransaction decoded transaction
+     */
+    public static TxTypeLegacyTransaction decodeFromRawTransaction(String rawTransaction) {
+        return decodeFromRawTransaction(Numeric.hexStringToByteArray(Numeric.cleanHexPrefix(rawTransaction)));
     }
 
     public String getData() {

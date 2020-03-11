@@ -37,9 +37,21 @@ public class SmartContractDeployTransaction extends TransactionTransformer<Smart
         this.codeFormat = codeFormat;
     }
 
+    private SmartContractDeployTransaction(String from, BigInteger amount, byte[] payload, BigInteger gasPrice, BigInteger gasLimit, BigInteger codeFormat) {
+        super(from, gasPrice, gasLimit);
+        this.amount = amount;
+        this.payload = payload;
+        this.codeFormat = codeFormat;
+    }
+
     public static SmartContractDeployTransaction create(
             String from, BigInteger amount, byte[] payload, BigInteger gasLimit, BigInteger codeFormat) {
         return new SmartContractDeployTransaction(from, amount, payload, gasLimit, codeFormat);
+    }
+
+    public static SmartContractDeployTransaction create(
+            String from, BigInteger amount, byte[] payload, BigInteger gasPrice, BigInteger gasLimit, BigInteger codeFormat) {
+        return new SmartContractDeployTransaction(from, amount, payload, gasPrice, gasLimit, codeFormat);
     }
 
     public SmartContractDeployTransaction feeRatio(BigInteger feeRatio) {

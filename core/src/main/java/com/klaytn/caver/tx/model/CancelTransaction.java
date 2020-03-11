@@ -30,9 +30,16 @@ public class CancelTransaction extends TransactionTransformer<CancelTransaction>
     private CancelTransaction(String from, BigInteger gasLimit) {
         super(from, gasLimit);
     }
+    private CancelTransaction(String from, BigInteger gasPrice, BigInteger gasLimit) {
+        super(from, gasPrice, gasLimit);
+    }
 
     public static CancelTransaction create(String from, BigInteger gasLimit) {
         return new CancelTransaction(from, gasLimit);
+    }
+
+    public static CancelTransaction create(String from, BigInteger gasPrice, BigInteger gasLimit) {
+        return new CancelTransaction(from, gasPrice, gasLimit);
     }
 
     public CancelTransaction feeRatio(BigInteger feeRatio) {

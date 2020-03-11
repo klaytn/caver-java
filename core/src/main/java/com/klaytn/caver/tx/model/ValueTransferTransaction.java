@@ -33,8 +33,18 @@ public class ValueTransferTransaction extends TransactionTransformer<ValueTransf
         this.amount = amount;
     }
 
+    private ValueTransferTransaction(String from, String to, BigInteger amount, BigInteger gasPrice, BigInteger gasLimit) {
+        super(from, gasPrice, gasLimit);
+        this.to = to;
+        this.amount = amount;
+    }
+
     public static ValueTransferTransaction create(String from, String to, BigInteger amount, BigInteger gasLimit) {
         return new ValueTransferTransaction(from, to, amount, gasLimit);
+    }
+
+    public static ValueTransferTransaction create(String from, String to, BigInteger amount, BigInteger gasPrice, BigInteger gasLimit) {
+        return new ValueTransferTransaction(from, to, amount, gasPrice, gasLimit);
     }
 
     public ValueTransferTransaction memo(String memo) {

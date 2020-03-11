@@ -374,6 +374,7 @@ public class SmartContract extends ManagedTransaction {
                     transactionManager.getDefaultAddress(),
                     pebValue,
                     Numeric.hexStringToByteArray(data),
+                    gasProvider.getGasPrice(funcName),
                     gasProvider.getGasLimit(funcName),
                     CodeFormat.EVM
             );
@@ -383,6 +384,7 @@ public class SmartContract extends ManagedTransaction {
                     contractAddress,
                     pebValue,
                     Numeric.hexStringToByteArray(data),
+                    gasProvider.getGasPrice(funcName),
                     gasProvider.getGasLimit(funcName)
             );
         }

@@ -60,6 +60,12 @@ public abstract class TransactionTransformer<T extends TransactionTransformer> {
         this.gasLimit = gasLimit;
     }
 
+    public TransactionTransformer(String from, BigInteger gasPrice, BigInteger gasLimit) {
+        this.from = from;
+        this.gasLimit = gasLimit;
+        this.gasPrice = gasPrice;
+    }
+
     public BigInteger getNonce() {
         return nonce;
     }

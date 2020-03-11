@@ -20,6 +20,7 @@
 
 package com.klaytn.caver.tx.gas;
 
+import com.klaytn.caver.Caver;
 import com.klaytn.caver.tx.ManagedTransaction;
 import com.klaytn.caver.tx.SmartContract;
 import org.web3j.tx.gas.StaticGasProvider;
@@ -32,5 +33,9 @@ public class DefaultGasProvider extends StaticGasProvider {
 
     public DefaultGasProvider() {
         super(GAS_PRICE, GAS_LIMIT);
+    }
+
+    public DefaultGasProvider(Caver caver) throws Exception{
+        super(caver.klay().getGasPrice().send().getValue(), GAS_LIMIT);
     }
 }

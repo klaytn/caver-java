@@ -24,9 +24,9 @@ import com.klaytn.caver.model.dto.Contract;
 import com.klaytn.caver.model.dto.TestComponent;
 import com.klaytn.caver.model.dto.Transaction;
 import com.klaytn.caver.tx.SmartContract;
+import com.klaytn.caver.tx.gas.DefaultGasProvider;
 import org.web3j.protocol.core.RemoteCall;
 import org.web3j.tx.gas.ContractGasProvider;
-import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

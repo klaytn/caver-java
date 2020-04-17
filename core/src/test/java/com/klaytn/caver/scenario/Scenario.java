@@ -39,7 +39,7 @@ import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static junit.framework.TestCase.fail;
 
 /**
- * Common methods & settings used across scenarios
+ * Common methods and settings used across scenarios
  */
 public class Scenario {
 

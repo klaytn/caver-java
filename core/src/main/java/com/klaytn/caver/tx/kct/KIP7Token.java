@@ -130,7 +130,7 @@ public class KIP7Token extends SmartContract {
      * Instance method for getting Event "Approval" in KIP-7 Standard Token
      *
      * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction to invoke "approve" Method
-     * @return List<ApprovalEventResponse>
+     * @return List Object to Approval Event Response
      */
     public List<ApprovalEventResponse> getApprovalEvents(KlayTransactionReceipt.TransactionReceipt transactionReceipt) {
         List<SmartContract.EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
@@ -150,7 +150,7 @@ public class KIP7Token extends SmartContract {
      * Instance method for getting Event "MinterAdded" in KIP-7 Standard Token
      *
      * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction to invoke "addMinter" Method
-     * @return List<MinterAddedEventResponse>
+     * @return List Object to MinterAdded Event Response
      */
     public List<MinterAddedEventResponse> getMinterAddedEvents(KlayTransactionReceipt.TransactionReceipt transactionReceipt) {
         List<SmartContract.EventValuesWithLog> valueList = extractEventParametersWithLog(MINTERADDED_EVENT, transactionReceipt);
@@ -168,7 +168,7 @@ public class KIP7Token extends SmartContract {
      * Instance method for getting Event "MinterRemoved" in KIP-7 Standard Token
      *
      * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction to invoke "renounceMinter" Method
-     * @return List<MinterRemovedEventResponse>
+     * @return List Object to MinerRemoved Event Response
      */
     public List<MinterRemovedEventResponse> getMinterRemovedEvents(KlayTransactionReceipt.TransactionReceipt transactionReceipt) {
         List<SmartContract.EventValuesWithLog> valueList = extractEventParametersWithLog(MINTERREMOVED_EVENT, transactionReceipt);
@@ -186,7 +186,7 @@ public class KIP7Token extends SmartContract {
      * Instance method for getting Event "Paused" in KIP-7 Standard Token
      *
      * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction to invoke "pause" Method
-     * @return List<PausedEventResponse>
+     * @return List Object to Paused Event Response
      */
     public List<PausedEventResponse> getPausedEvents(KlayTransactionReceipt.TransactionReceipt transactionReceipt) {
         List<SmartContract.EventValuesWithLog> valueList = extractEventParametersWithLog(PAUSED_EVENT, transactionReceipt);
@@ -204,7 +204,7 @@ public class KIP7Token extends SmartContract {
      * Instance method for getting Event "PauserAdded" in KIP-7 Standard Token
      *
      * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction to invoke "addPauser" Method
-     * @return List<PauserAddedEventResponse>
+     * @return List Object to PauserAdded Event Response
      */
     public List<PauserAddedEventResponse> getPauserAddedEvents(KlayTransactionReceipt.TransactionReceipt transactionReceipt) {
         List<SmartContract.EventValuesWithLog> valueList = extractEventParametersWithLog(PAUSERADDED_EVENT, transactionReceipt);
@@ -222,7 +222,7 @@ public class KIP7Token extends SmartContract {
      * Instance method for getting Event "PauserRemoved" in KIP-7 Standard Token
      *
      * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction to invoke "renouncePauser" Method
-     * @return List<PauserAddedEventResponse>
+     * @return List Object to PauserRemoved Event Response
      */
     public List<PauserRemovedEventResponse> getPauserRemovedEvents(KlayTransactionReceipt.TransactionReceipt transactionReceipt) {
         List<SmartContract.EventValuesWithLog> valueList = extractEventParametersWithLog(PAUSERREMOVED_EVENT, transactionReceipt);
@@ -240,7 +240,7 @@ public class KIP7Token extends SmartContract {
      * Instance method for getting Event "Transfer" in KIP-7 Standard Token
      *
      * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction to invoke "Transfer" Method
-     * @return List<TransferEventResponse>
+     * @return List Object to Transfer Event Response
      */
     public List<TransferEventResponse> getTransferEvents(KlayTransactionReceipt.TransactionReceipt transactionReceipt) {
         List<SmartContract.EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
@@ -260,7 +260,7 @@ public class KIP7Token extends SmartContract {
      * Instance method for getting Event "Unpaused" in KIP-7 Standard Token
      *
      * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction to invoke "unpause" Method
-     * @return List<UnpausedEventResponse>
+     * @return List Object to Unpaused Event Response
      */
     public List<UnpausedEventResponse> getUnpausedEvents(KlayTransactionReceipt.TransactionReceipt transactionReceipt) {
         List<SmartContract.EventValuesWithLog> valueList = extractEventParametersWithLog(UNPAUSED_EVENT, transactionReceipt);
@@ -607,8 +607,8 @@ public class KIP7Token extends SmartContract {
 
     /**
      * Instance method for calling method "transfer" in KIP-7 Standard Token
-     * @param recipient The owner will receive the tokens.
-     * @param amount The token amount will be transferred.
+     * @param to The owner will receive the tokens.
+     * @param value The token amount will be transferred.
      * @return RemoteCall
      */
     public RemoteCall<KlayTransactionReceipt.TransactionReceipt> transfer(String to, BigInteger value) {
@@ -622,9 +622,9 @@ public class KIP7Token extends SmartContract {
 
     /**
      * Instance method for calling method "transfer" in KIP-7 Standard Token
-     * @param sender The current owner of the tokens.
-     * @param recipient The owner will receive the tokens.
-     * @param amount The token amount will be transferred.
+     * @param from The current owner of the tokens.
+     * @param to The owner will receive the tokens.
+     * @param value The token amount will be transferred.
      * @return RemoteCall
      */
     public RemoteCall<KlayTransactionReceipt.TransactionReceipt> transferFrom(String from, String to, BigInteger value) {

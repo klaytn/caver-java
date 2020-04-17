@@ -47,9 +47,8 @@ public class AccountKeyTest {
         KlayCredentials credentials = KlayCredentials.create("0xf8cc7c3813ad23817466b1802ee805ee417001fcce9376ab8728c92dd8ea0a6b");
         BigInteger publicKey = credentials.getEcKeyPair().getPublicKey();
         AccountKeyPublic accountKeyPublic = AccountKeyPublic.create(publicKey);
-        System.out.println("test");
 
-        assertEquals("0xf8cc7c3813ad23817466b1802ee805ee417001fcce9376ab8728c92dd8ea0a6b",
+        assertEquals("0xf8cc7c3813ad2x3817466b1802ee805ee417001fcce9376ab8728c92dd8ea0a6b",
                 Numeric.toHexStringWithPrefix(credentials.getEcKeyPair().getPrivateKey()));
         assertEquals("0xdbac81e8486d68eac4e6ef9db617f7fbd79a04a3b323c982a09cdfc61f0ae0e8",
                 accountKeyPublic.getX());

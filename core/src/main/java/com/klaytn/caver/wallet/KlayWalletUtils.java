@@ -197,7 +197,7 @@ public class KlayWalletUtils {
             return false;
         }
 
-        return cleanInput.length() <= ADDRESS_HEX_SIZE && HEX_STRING.matcher(cleanInput).matches();
+        return cleanInput.length() == ADDRESS_HEX_SIZE && HEX_STRING.matcher(cleanInput).matches();
     }
 
     public static String getDefaultKeyDirectory() {

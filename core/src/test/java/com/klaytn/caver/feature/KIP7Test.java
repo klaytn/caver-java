@@ -3,22 +3,12 @@ package com.klaytn.caver.feature;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
-import com.klaytn.caver.tx.ValueTransfer;
 import com.klaytn.caver.tx.gas.DefaultGasProvider;
-import com.klaytn.caver.tx.kct.KIP7Token;
-import com.klaytn.caver.tx.manager.PollingTransactionReceiptProcessor;
+import com.klaytn.caver.tx.kct.KIP7;
 import com.klaytn.caver.tx.manager.TransactionManager;
-import com.klaytn.caver.utils.ChainId;
-import com.klaytn.caver.utils.Convert;
-import com.klaytn.caver.wallet.WalletManager;
-import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
-import java.io.ByteArrayInputStream;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -28,7 +18,7 @@ import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static org.junit.Assert.*;
 
 
-public class KCT7TokenTest {
+public class KIP7Test {
     private static final String ContractName = "TestKIP7Contract";
     private static final String ContractSymbol = "TKCP";
     private static final BigInteger ContractDecimal = BigInteger.valueOf(18);
@@ -56,7 +46,7 @@ public class KCT7TokenTest {
     //KCT-001
     public static void deployKIP7Contract() {
         try {
-            KIP7Token token = KIP7Token.deploy(mCaver,
+            KIP7 token = KIP7.deploy(mCaver,
                     mDeployerTxManager,
                     new DefaultGasProvider(),
                     ContractName,
@@ -76,7 +66,7 @@ public class KCT7TokenTest {
     //KCT-002
     @Test
     public void name() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
         try {
             String name = tokenHandler_owner.name().send();
             System.out.println("name is " + name);
@@ -90,7 +80,7 @@ public class KCT7TokenTest {
     //KCT-003
     @Test
     public void symbol() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
         try {
             String symbol = tokenHandler_owner.symbol().send();
             System.out.println("Symbol is " + symbol);
@@ -104,7 +94,7 @@ public class KCT7TokenTest {
     //KCT-004
     @Test
     public void decimals() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
         try {
             BigInteger decimals = tokenHandler_owner.decimals().send();
             System.out.println("decimals is " + decimals);
@@ -118,7 +108,7 @@ public class KCT7TokenTest {
     //KCT-005
     @Test
     public void totalSupply() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
         try {
             BigInteger totalSupply = tokenHandler_owner.totalSupply().send();
             System.out.println("totalSupply is " + totalSupply);
@@ -132,7 +122,7 @@ public class KCT7TokenTest {
     //KCT-006
     @Test
     public void balanceOf() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
         String noValueAddress = "0x176de75de3c4f253c69dcbc6575b0ccbda724f75";
         BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(ContractDecimal.intValue()));;
         try {
@@ -150,7 +140,7 @@ public class KCT7TokenTest {
     //KCT-007
     @Test
     public void isMinter() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
         String ownerAddr = mDeployerCredential.getAddress();
         String notMinterAddr = "0x176de75de3c4f253c69dcbc6575b0ccbda724f75";
 
@@ -171,7 +161,7 @@ public class KCT7TokenTest {
     //KCT-008
     @Test
     public void mint() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
         String newMinterAddr = mTestCredential.getAddress();
         BigInteger mintAmount = ContractInitialSupply;
         try {
@@ -189,7 +179,7 @@ public class KCT7TokenTest {
     //KCT-009
     @Test
     public void addMinter() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
         String newMinter = mTestCredential.getAddress();
 
         try {
@@ -197,7 +187,7 @@ public class KCT7TokenTest {
             boolean isMinter = tokenHandler_owner.isMinter(newMinter).send();
             assertTrue(isMinter);
 
-            List<KIP7Token.MinterAddedEventResponse> list = tokenHandler_owner.getMinterAddedEvents(receipt);
+            List<KIP7.MinterAddedEventResponse> list = tokenHandler_owner.getMinterAddedEvents(receipt);
             assertEquals(list.get(0).account, newMinter);
         } catch (Exception e) {
             e.printStackTrace();
@@ -208,8 +198,8 @@ public class KCT7TokenTest {
     //KCT-010
     @Test
     public void renounceMinter() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP7Token tokenHandler_minter = KIP7Token.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_minter = KIP7.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
         String renounceMinter = mTesterTxManger.getDefaultAddress();
 
         try {
@@ -221,7 +211,7 @@ public class KCT7TokenTest {
             isMinter = tokenHandler_minter.isMinter(renounceMinter).send();
             assertFalse(isMinter);
 
-            List<KIP7Token.MinterRemovedEventResponse> list = tokenHandler_minter.getMinterRemovedEvents(receipt);
+            List<KIP7.MinterRemovedEventResponse> list = tokenHandler_minter.getMinterRemovedEvents(receipt);
             assertEquals(list.get(0).account, renounceMinter);
         } catch (Exception e) {
             e.printStackTrace();
@@ -232,7 +222,7 @@ public class KCT7TokenTest {
     //KCT-011
     @Test
     public void isPauser() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
         String pauseUserAddr = mDeployerCredential.getAddress();
         String notPauseUserAddr = "0x176de75de3c4f253c69dcbc6575b0ccbda724f75";
 
@@ -253,14 +243,14 @@ public class KCT7TokenTest {
     //KCT-012
     @Test
     public void paused() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
 
         try {
             KlayTransactionReceipt.TransactionReceipt receipt = tokenHandler_owner.pause().send();
             boolean isPaused = tokenHandler_owner.paused().send();
             assertTrue(isPaused);
 
-            List<KIP7Token.PausedEventResponse> events = tokenHandler_owner.getPausedEvents(receipt);
+            List<KIP7.PausedEventResponse> events = tokenHandler_owner.getPausedEvents(receipt);
             assertEquals(events.get(0).account, mDeployerCredential.getAddress());
         } catch (Exception e) {
             e.printStackTrace();
@@ -271,7 +261,7 @@ public class KCT7TokenTest {
     //KCT-013
     @Test
     public void unpause() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
 
         try {
             tokenHandler_owner.pause().send();
@@ -282,7 +272,7 @@ public class KCT7TokenTest {
             isPaused = tokenHandler_owner.paused().send();
             assertFalse(isPaused);
 
-            List<KIP7Token.UnpausedEventResponse> events = tokenHandler_owner.getUnpausedEvents(receipt);
+            List<KIP7.UnpausedEventResponse> events = tokenHandler_owner.getUnpausedEvents(receipt);
             assertEquals(events.get(0).account, mDeployerCredential.getAddress());
         } catch (Exception e) {
             e.printStackTrace();
@@ -293,7 +283,7 @@ public class KCT7TokenTest {
     //KCT-014
     @Test
     public void addPauser() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
 
         String userAddr = mTestCredential.getAddress();
         try {
@@ -301,7 +291,7 @@ public class KCT7TokenTest {
             boolean isPauseUser = tokenHandler_owner.isPauser(userAddr).send();
             assertTrue(isPauseUser);
 
-            List<KIP7Token.PauserAddedEventResponse> events = tokenHandler_owner.getPauserAddedEvents(receipt);
+            List<KIP7.PauserAddedEventResponse> events = tokenHandler_owner.getPauserAddedEvents(receipt);
             assertEquals(events.get(0).account, userAddr);
         } catch (Exception e) {
             e.printStackTrace();
@@ -312,8 +302,8 @@ public class KCT7TokenTest {
     //KCT-015
     @Test
     public void renouncePauser() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP7Token tokenHandler_pauser = KIP7Token.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_pauser = KIP7.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
         String userAddr = mTestCredential.getAddress();
 
         try {
@@ -325,7 +315,7 @@ public class KCT7TokenTest {
             isPauseUser = tokenHandler_pauser.isPauser(userAddr).send();
             assertFalse(isPauseUser);
 
-            List<KIP7Token.PauserRemovedEventResponse> events = tokenHandler_pauser.getPauserRemovedEvents(receipt);
+            List<KIP7.PauserRemovedEventResponse> events = tokenHandler_pauser.getPauserRemovedEvents(receipt);
             assertEquals(events.get(0).account, userAddr);
         } catch (Exception e) {
             e.printStackTrace();
@@ -336,7 +326,7 @@ public class KCT7TokenTest {
     //KCT-016
     @Test
     public void transfer() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
         String recipientAddress = mTestCredential.getAddress();
         BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(ContractDecimal.intValue()));
 
@@ -346,7 +336,7 @@ public class KCT7TokenTest {
             BigInteger balance = tokenHandler_owner.balanceOf(recipientAddress).send();
             assertEquals(balance, preBalance.add(amount));
 
-            List<KIP7Token.TransferEventResponse> events = tokenHandler_owner.getTransferEvents(receipt);
+            List<KIP7.TransferEventResponse> events = tokenHandler_owner.getTransferEvents(receipt);
             assertEquals(events.get(0).from, mDeployerTxManager.getDefaultAddress());
             assertEquals(events.get(0).to, recipientAddress);
             assertEquals(events.get(0).value, amount);
@@ -359,7 +349,7 @@ public class KCT7TokenTest {
     //KCT-017
     @Test
     public void safeTransfer() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
         String recipientAddress = mTestCredential.getAddress();
         BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(ContractDecimal.intValue()));
 
@@ -369,7 +359,7 @@ public class KCT7TokenTest {
             BigInteger balance = tokenHandler_owner.balanceOf(recipientAddress).send();
             assertEquals(balance, preBalance.add(amount));
 
-            List<KIP7Token.TransferEventResponse> events = tokenHandler_owner.getTransferEvents(receipt);
+            List<KIP7.TransferEventResponse> events = tokenHandler_owner.getTransferEvents(receipt);
             assertEquals(events.get(0).from, mDeployerTxManager.getDefaultAddress());
             assertEquals(events.get(0).to, recipientAddress);
             assertEquals(events.get(0).value, amount);
@@ -382,7 +372,7 @@ public class KCT7TokenTest {
     //KCT-018
     @Test
     public void safeTransferWithData() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
         String recipientAddress = mTestCredential.getAddress();
         BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(ContractDecimal.intValue()));
 
@@ -393,7 +383,7 @@ public class KCT7TokenTest {
             BigInteger balance = tokenHandler_owner.balanceOf(recipientAddress).send();
             assertEquals(balance, preBalance.add(amount));
 
-            List<KIP7Token.TransferEventResponse> events = tokenHandler_owner.getTransferEvents(receipt);
+            List<KIP7.TransferEventResponse> events = tokenHandler_owner.getTransferEvents(receipt);
             assertEquals(events.get(0).from, mDeployerTxManager.getDefaultAddress());
             assertEquals(events.get(0).to, recipientAddress);
             assertEquals(events.get(0).value, amount);
@@ -406,7 +396,7 @@ public class KCT7TokenTest {
     //KCT-019
     @Test
     public void allowance() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
         String spenderAddress = mTestCredential.getAddress();
         BigInteger allowAmount = BigInteger.TEN.multiply(BigInteger.TEN.pow(ContractDecimal.intValue())); // 10 * 10^18
 
@@ -423,7 +413,7 @@ public class KCT7TokenTest {
     //KCT-020
     @Test
     public void appprove() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
         String spenderAddress = mTestCredential.getAddress();
         BigInteger allowAmount = BigInteger.TEN.multiply(BigInteger.TEN.pow(ContractDecimal.intValue())); // 10 * 10^18
 
@@ -433,7 +423,7 @@ public class KCT7TokenTest {
 
             KlayTransactionReceipt.TransactionReceipt receipt = tokenHandler_owner.approve(spenderAddress, allowAmount).send();
 
-            List<KIP7Token.ApprovalEventResponse> events = tokenHandler_owner.getApprovalEvents(receipt);
+            List<KIP7.ApprovalEventResponse> events = tokenHandler_owner.getApprovalEvents(receipt);
             assertEquals(events.get(0).owner, mDeployerTxManager.getDefaultAddress());
             assertEquals(events.get(0).spender, spenderAddress);
             assertEquals(events.get(0).value, allowAmount);
@@ -453,8 +443,8 @@ public class KCT7TokenTest {
     //KCT-021
     @Test
     public void transferFrom() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP7Token tokenHandler_spender = KIP7Token.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_spender = KIP7.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
         BigInteger allowAmount = BigInteger.TEN.multiply(BigInteger.TEN.pow(ContractDecimal.intValue())); // 10 * 10^18
 
         String spenderAddress = mTesterTxManger.getDefaultAddress();
@@ -468,7 +458,7 @@ public class KCT7TokenTest {
             allowance = tokenHandler_owner.allowance(mDeployerTxManager.getDefaultAddress(), spenderAddress).send();
             assertEquals(allowance, allowAmount);
 
-            List<KIP7Token.ApprovalEventResponse> approvalEventResponseList = tokenHandler_owner.getApprovalEvents(approveReceipt);
+            List<KIP7.ApprovalEventResponse> approvalEventResponseList = tokenHandler_owner.getApprovalEvents(approveReceipt);
             assertEquals(approvalEventResponseList.get(0).owner, mDeployerTxManager.getDefaultAddress());
             assertEquals(approvalEventResponseList.get(0).spender, spenderAddress);
             assertEquals(approvalEventResponseList.get(0).value, allowAmount);
@@ -481,7 +471,7 @@ public class KCT7TokenTest {
             BigInteger balance = tokenHandler_owner.balanceOf(recipientAddress).send();
             assertEquals(preBalance.add(allowAmount), balance);
 
-            List<KIP7Token.TransferEventResponse> transferEventResponseList = tokenHandler_owner.getTransferEvents(transferReceipt);
+            List<KIP7.TransferEventResponse> transferEventResponseList = tokenHandler_owner.getTransferEvents(transferReceipt);
             assertEquals(transferEventResponseList.get(0).from, mDeployerTxManager.getDefaultAddress());
             assertEquals(transferEventResponseList.get(0).to, recipientAddress);
             assertEquals(transferEventResponseList.get(0).value, allowAmount);
@@ -494,8 +484,8 @@ public class KCT7TokenTest {
     //KCT-022
     @Test
     public void safeTransferFrom() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP7Token tokenHandler_spender = KIP7Token.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_spender = KIP7.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
         BigInteger allowAmount = BigInteger.TEN.multiply(BigInteger.TEN.pow(ContractDecimal.intValue())); // 10 * 10^18
 
         String spenderAddress = mTesterTxManger.getDefaultAddress();
@@ -509,7 +499,7 @@ public class KCT7TokenTest {
             allowance = tokenHandler_owner.allowance(mDeployerTxManager.getDefaultAddress(), spenderAddress).send();
             assertEquals(allowance, allowAmount);
 
-            List<KIP7Token.ApprovalEventResponse> approvalEventResponseList = tokenHandler_owner.getApprovalEvents(approveReceipt);
+            List<KIP7.ApprovalEventResponse> approvalEventResponseList = tokenHandler_owner.getApprovalEvents(approveReceipt);
             assertEquals(approvalEventResponseList.get(0).owner, mDeployerTxManager.getDefaultAddress());
             assertEquals(approvalEventResponseList.get(0).spender, spenderAddress);
             assertEquals(approvalEventResponseList.get(0).value, allowAmount);
@@ -522,7 +512,7 @@ public class KCT7TokenTest {
             BigInteger balance = tokenHandler_owner.balanceOf(recipientAddress).send();
             assertEquals(preBalance.add(allowAmount), balance);
 
-            List<KIP7Token.TransferEventResponse> transferEventResponseList = tokenHandler_owner.getTransferEvents(transferReceipt);
+            List<KIP7.TransferEventResponse> transferEventResponseList = tokenHandler_owner.getTransferEvents(transferReceipt);
             assertEquals(transferEventResponseList.get(0).from, mDeployerTxManager.getDefaultAddress());
             assertEquals(transferEventResponseList.get(0).to, recipientAddress);
             assertEquals(transferEventResponseList.get(0).value, allowAmount);
@@ -535,8 +525,8 @@ public class KCT7TokenTest {
     //KCT-023
     @Test
     public void safeTransferFromWithData() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP7Token tokenHandler_spender = KIP7Token.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_spender = KIP7.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
         BigInteger allowAmount = BigInteger.TEN.multiply(BigInteger.TEN.pow(ContractDecimal.intValue())); // 10 * 10^18
 
         String spenderAddress = mTesterTxManger.getDefaultAddress();
@@ -550,7 +540,7 @@ public class KCT7TokenTest {
             allowance = tokenHandler_owner.allowance(mDeployerTxManager.getDefaultAddress(), spenderAddress).send();
             assertEquals(allowance, allowAmount);
 
-            List<KIP7Token.ApprovalEventResponse> approvalEventResponseList = tokenHandler_owner.getApprovalEvents(approveReceipt);
+            List<KIP7.ApprovalEventResponse> approvalEventResponseList = tokenHandler_owner.getApprovalEvents(approveReceipt);
             assertEquals(approvalEventResponseList.get(0).owner, mDeployerTxManager.getDefaultAddress());
             assertEquals(approvalEventResponseList.get(0).spender, spenderAddress);
             assertEquals(approvalEventResponseList.get(0).value, allowAmount);
@@ -566,7 +556,7 @@ public class KCT7TokenTest {
             BigInteger balance = tokenHandler_owner.balanceOf(recipientAddress).send();
             assertEquals(preBalance.add(allowAmount), balance);
 
-            List<KIP7Token.TransferEventResponse> transferEventResponseList = tokenHandler_owner.getTransferEvents(transferReceipt);
+            List<KIP7.TransferEventResponse> transferEventResponseList = tokenHandler_owner.getTransferEvents(transferReceipt);
             assertEquals(transferEventResponseList.get(0).from, mDeployerTxManager.getDefaultAddress());
             assertEquals(transferEventResponseList.get(0).to, recipientAddress);
             assertEquals(transferEventResponseList.get(0).value, allowAmount);
@@ -579,7 +569,7 @@ public class KCT7TokenTest {
     //KCT-024
     @Test
     public void burn() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
         BigInteger burnAmount = BigInteger.TEN.multiply(BigInteger.TEN.pow(ContractDecimal.intValue())); // 10 * 10^18
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
 
@@ -604,8 +594,8 @@ public class KCT7TokenTest {
     //KCT-024
     @Test
     public void burnFrom() {
-        KIP7Token tokenHandler_owner = KIP7Token.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP7Token tokenHandler_spender = KIP7Token.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP7 tokenHandler_spender = KIP7.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
         BigInteger burnAmount = BigInteger.TEN.multiply(BigInteger.TEN.pow(ContractDecimal.intValue())); // 10 * 10^18
 
         String ownerAddress = mDeployerTxManager.getDefaultAddress();

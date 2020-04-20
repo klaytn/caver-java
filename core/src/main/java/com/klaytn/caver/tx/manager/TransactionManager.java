@@ -149,7 +149,7 @@ public class TransactionManager {
     /**
      * The result of signing a transaction is added to the raw transaction and returned
      *
-     * @param klayRawTransaction Raw transaction String Object to Sign
+     * @param klayRawTransaction The RLP-encoded transaction(rawTransaction) string to sign.
      * @return signed raw transaction
      */
     public KlayRawTransaction sign(String klayRawTransaction) {

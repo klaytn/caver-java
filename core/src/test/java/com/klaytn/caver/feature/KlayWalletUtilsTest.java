@@ -116,7 +116,13 @@ public class KlayWalletUtilsTest {
         String longAddress =  KlayCredentials.create(Keys.createEcKeyPair()).getAddress() + "00000000000000000000000000000000000000000";
         assertFalse("longAddress: " + longAddress, KlayWalletUtils.isValidAddress(longAddress));
 
+        String shortAddress =  "0xe3ac552937b4ecc36891d5f37b189f8636e49f";
+        assertFalse("longAddress: " + longAddress, KlayWalletUtils.isValidAddress(shortAddress));
+
         String validAddress =  KlayCredentials.create(Keys.createEcKeyPair()).getAddress();
         assertTrue("validAddress: " + validAddress, KlayWalletUtils.isValidAddress(validAddress));
+
+        String withoutPrefix =  "e3ac552937b4ecc36891d5f37b189f8636e49f01";
+        assertTrue("validAddress: " + validAddress, KlayWalletUtils.isValidAddress(withoutPrefix));
     }
 }

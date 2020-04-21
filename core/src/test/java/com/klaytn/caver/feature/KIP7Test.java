@@ -653,7 +653,7 @@ public class KIP7Test {
             assertEquals(transferEvents.get(0).from, ownerAddress);
             assertEquals(transferEvents.get(0).to, zeroAddr);
             assertEquals(transferEvents.get(0).value, burnAmount);
-            
+
             List<KIP7.ApprovalEventResponse> approvalEvents = tokenHandler_owner.getApprovalEvents(receipt);
             assertEquals(approvalEvents.get(0).owner, ownerAddress);
             assertEquals(approvalEvents.get(0).spender, spenderAddress);
@@ -786,7 +786,6 @@ public class KIP7Test {
             assertNotNull(paused_events.get(0).log.getTopics());
             assertEquals(paused_events.get(0).account, mDeployerTxManager.getDefaultAddress());
 
-
             //Check UnPaused Event
             KlayTransactionReceipt.TransactionReceipt unPausedReceipt = tokenHanler.unpause().send();
             List<KIP7.UnpausedEventResponse> unpaused_events = tokenHanler.getUnpausedEvents(unPausedReceipt);
@@ -869,7 +868,6 @@ public class KIP7Test {
             assertNotNull(minterAddEvent.get(0).log.getData());
             assertNotNull(minterAddEvent.get(0).log.getTopics());
             assertEquals(minterAddEvent.get(0).account, minter);
-
 
             //Check MinterRemoved Event
             KlayTransactionReceipt.TransactionReceipt renounceMinterReceipt = tokenHandler_minter.renounceMinter().send();

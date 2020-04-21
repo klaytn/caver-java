@@ -735,7 +735,7 @@ public class KIP7Test {
         }
     }
 
-
+    //KCT-028
     @Test
     public void getApprovalEventTest() {
         KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
@@ -766,6 +766,7 @@ public class KIP7Test {
         }
     }
 
+    //KCT-029
     @Test
     public void getPausedEventTest() {
         KIP7 tokenHanler = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
@@ -806,6 +807,7 @@ public class KIP7Test {
         }
     }
 
+    //KCT-030
     @Test public void getPauserRoleEvents() {
         KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
         KIP7 tokenHandler_pauser = KIP7.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
@@ -847,6 +849,7 @@ public class KIP7Test {
         }
     }
 
+    //KCT-031
     @Test
     public void getMinterRoleEvents() {
         KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());

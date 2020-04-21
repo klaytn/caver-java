@@ -474,7 +474,6 @@ public class KIP7Test {
             allowance = tokenHandler_owner.allowance(mDeployerTxManager.getDefaultAddress(), spenderAddress).send();
             assertEquals(allowance, allowAmount);
 
-
             BigInteger preBalance = tokenHandler_owner.balanceOf(recipientAddress).send();
             KlayTransactionReceipt.TransactionReceipt transferReceipt = tokenHandler_spender.transferFrom(mDeployerTxManager.getDefaultAddress(), recipientAddress, allowAmount).send();
             allowance = tokenHandler_owner.allowance(mDeployerTxManager.getDefaultAddress(), spenderAddress).send();
@@ -483,12 +482,10 @@ public class KIP7Test {
             BigInteger balance = tokenHandler_owner.balanceOf(recipientAddress).send();
             assertEquals(preBalance.add(allowAmount), balance);
 
-
             List<KIP7.TransferEventResponse> transferEventResponseList = tokenHandler_owner.getTransferEvents(transferReceipt);
             assertEquals(transferEventResponseList.get(0).from, mDeployerTxManager.getDefaultAddress());
             assertEquals(transferEventResponseList.get(0).to, recipientAddress);
             assertEquals(transferEventResponseList.get(0).value, allowAmount);
-
 
             List<KIP7.ApprovalEventResponse> approvalEventResponseList = tokenHandler_owner.getApprovalEvents(transferReceipt);
             assertEquals(approvalEventResponseList.get(0).owner, mDeployerTxManager.getDefaultAddress());
@@ -521,7 +518,6 @@ public class KIP7Test {
             allowance = tokenHandler_owner.allowance(mDeployerTxManager.getDefaultAddress(), spenderAddress).send();
             assertEquals(allowance, allowAmount);
 
-
             BigInteger preBalance = tokenHandler_owner.balanceOf(recipientAddress).send();
 
             KlayTransactionReceipt.TransactionReceipt transferReceipt = tokenHandler_spender.safeTransferFrom(mDeployerTxManager.getDefaultAddress(), recipientAddress, allowAmount).send();
@@ -531,12 +527,10 @@ public class KIP7Test {
             BigInteger balance = tokenHandler_owner.balanceOf(recipientAddress).send();
             assertEquals(preBalance.add(allowAmount), balance);
 
-
             List<KIP7.TransferEventResponse> transferEventResponseList = tokenHandler_owner.getTransferEvents(transferReceipt);
             assertEquals(transferEventResponseList.get(0).from, mDeployerTxManager.getDefaultAddress());
             assertEquals(transferEventResponseList.get(0).to, recipientAddress);
             assertEquals(transferEventResponseList.get(0).value, allowAmount);
-
 
             List<KIP7.ApprovalEventResponse> approvalEventResponseList = tokenHandler_owner.getApprovalEvents(transferReceipt);
             assertEquals(approvalEventResponseList.get(0).owner, mDeployerTxManager.getDefaultAddress());
@@ -580,12 +574,10 @@ public class KIP7Test {
             BigInteger balance = tokenHandler_owner.balanceOf(recipientAddress).send();
             assertEquals(preBalance.add(allowAmount), balance);
 
-
             List<KIP7.TransferEventResponse> transferEventResponseList = tokenHandler_owner.getTransferEvents(transferReceipt);
             assertEquals(transferEventResponseList.get(0).from, mDeployerTxManager.getDefaultAddress());
             assertEquals(transferEventResponseList.get(0).to, recipientAddress);
             assertEquals(transferEventResponseList.get(0).value, allowAmount);
-
 
             List<KIP7.ApprovalEventResponse> approvalEventResponses = tokenHandler_owner.getApprovalEvents(transferReceipt);
             assertEquals(approvalEventResponses.get(0).owner, mDeployerTxManager.getDefaultAddress());
@@ -609,13 +601,11 @@ public class KIP7Test {
             BigInteger preBalance = tokenHandler_owner.balanceOf(ownerAddress).send();
             BigInteger preTotalSupply = tokenHandler_owner.totalSupply().send();
 
-
             KlayTransactionReceipt.TransactionReceipt receipt = tokenHandler_owner.burn(burnAmount).send();
             BigInteger balance = tokenHandler_owner.balanceOf(ownerAddress).send();
             BigInteger totalSupply = tokenHandler_owner.totalSupply().send();
             assertEquals(preBalance.subtract(burnAmount), balance);
             assertEquals(preTotalSupply.subtract(burnAmount), totalSupply);
-
 
             List<KIP7.TransferEventResponse> events = tokenHandler_owner.getTransferEvents(receipt);
             assertEquals(events.get(0).from, ownerAddress);
@@ -644,11 +634,9 @@ public class KIP7Test {
             BigInteger preBalance = tokenHandler_owner.balanceOf(ownerAddress).send();
             BigInteger preTotalSupply = tokenHandler_owner.totalSupply().send();
 
-
             tokenHandler_owner.approve(spenderAddress, BigInteger.ZERO).send();
             BigInteger allowance = tokenHandler_owner.allowance(ownerAddress, spenderAddress).send();
             assertEquals(allowance, BigInteger.ZERO);
-
 
             tokenHandler_owner.approve(spenderAddress, burnAmount).send();
             allowance = tokenHandler_owner.allowance(ownerAddress, spenderAddress).send();
@@ -661,13 +649,11 @@ public class KIP7Test {
             assertEquals(preBalance.subtract(burnAmount), balance);
             assertEquals(preTotalSupply.subtract(burnAmount), totalSupply);
 
-
             List<KIP7.TransferEventResponse> transferEvents = tokenHandler_owner.getTransferEvents(receipt);
             assertEquals(transferEvents.get(0).from, ownerAddress);
             assertEquals(transferEvents.get(0).to, zeroAddr);
             assertEquals(transferEvents.get(0).value, burnAmount);
-
-
+            
             List<KIP7.ApprovalEventResponse> approvalEvents = tokenHandler_owner.getApprovalEvents(receipt);
             assertEquals(approvalEvents.get(0).owner, ownerAddress);
             assertEquals(approvalEvents.get(0).spender, spenderAddress);

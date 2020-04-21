@@ -659,7 +659,7 @@ public class KIP7 extends SmartContract {
 
     /**
      * Static method create KIP7 Standard Token handler connecting existed Contract
-     * The account with the "KlayCredential Object" passed as a function parameter will control th contract
+     * The credential with the "KlayCredential Object" passed as a function parameter will control the contract
      * @param contractAddress KIP7 Standard Token Address
      * @param caver Caver Object
      * @param credentials KlayCredential Object to control Contract
@@ -672,7 +672,7 @@ public class KIP7 extends SmartContract {
 
     /**
      * Static method create KIP7 Standard Token handler connecting existed Contract
-     * The account with the "TransactionManager Object" passed as a function parameter will control th contract
+     * The default credential with the "TransactionManager Object" passed as a function parameter will control the contract
      * @param contractAddress KIP7 Standard Token Address
      * @param caver Caver Object
      * @param transactionManager transactionManger Object to control Contract

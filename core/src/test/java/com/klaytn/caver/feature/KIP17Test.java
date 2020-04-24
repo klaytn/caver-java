@@ -408,17 +408,15 @@ public class KIP17Test {
         try {
             BigInteger tokenId = sTotalSupply;
             BigInteger preTotalSupply = minterHandler.totalSupply().send();
-            KlayTransactionReceipt.TransactionReceipt receipt = minterHandler.mint(mDeployerTxManager.getDefaultAddress(), tokenId).send();
+
+            //Test
+            KlayTransactionReceipt.TransactionReceipt receipt = minterHandler.mint(ownerAddress, tokenId).send();
             checkTxStatus(receipt);
-
-            String address = minterHandler.ownerOf(tokenId).send();
-            assertEquals(address, mDeployerTxManager.getDefaultAddress());
-
             List<KIP17.TransferEventResponse> transferEventResponses = minterHandler.getTransferEvents(receipt);
             checkTransferEventValue(transferEventResponses.get(0), sZeroAddr, ownerAddress, tokenId);
 
             String tokenOwnerAddr = minterHandler.ownerOf(tokenId).send();
-            assertEquals(mDeployerTxManager.getDefaultAddress(), tokenOwnerAddr);
+            assertEquals(ownerAddress, tokenOwnerAddr);
 
             BigInteger total = minterHandler.totalSupply().send();
             assertEquals(preTotalSupply.add(BigInteger.ONE), total);
@@ -439,6 +437,7 @@ public class KIP17Test {
             BigInteger tokenId = sTotalSupply;
             BigInteger preTotalSupply = ownerHandler.totalSupply().send();
 
+            //Test
             KlayTransactionReceipt.TransactionReceipt receipt = ownerHandler.mintWithTokenURI(mDeployerTxManager.getDefaultAddress(), tokenId, sTokenURI).send();
             checkTxStatus(receipt);
 
@@ -488,6 +487,7 @@ public class KIP17Test {
             transferEventResponses = ownerHandler.getTransferEvents(mintReceipt3);
             checkTransferEventValue(transferEventResponses.get(0), sZeroAddr, userAddress, tokenIDArr[2]);
 
+            //Test
             BigInteger tokenID_1 = tester2Handler.tokenOfOwnerByIndex(userAddress, BigInteger.ZERO).send();
             assertEquals(tokenID_1, tokenIDArr[0]);
 
@@ -529,6 +529,7 @@ public class KIP17Test {
 
             total = ownerHandler.totalSupply().send();
 
+            //Test
             BigInteger findIndex = total.subtract(BigInteger.ONE);
             BigInteger tokenId = ownerHandler.tokenByIndex(findIndex).send();
             assertEquals(tokenId, tokenIdArr[2]);
@@ -802,7 +803,7 @@ public class KIP17Test {
 
         try {
             BigInteger tokenID = BigInteger.valueOf(9999);
-
+            //mint Token
             KlayTransactionReceipt.TransactionReceipt mintReceipt = ownerHandler.mint(ownerAddress, tokenID).send();
             checkTxStatus(mintReceipt);
             List<KIP17.TransferEventResponse> transferEventResponseList = ownerHandler.getTransferEvents(mintReceipt);
@@ -812,7 +813,7 @@ public class KIP17Test {
             assertEquals(ownerAddress, address);
 
             BigInteger preOwnerBalance = ownerHandler.balanceOf(ownerAddress).send();
-
+            //Test
             KlayTransactionReceipt.TransactionReceipt burnReceipt = ownerHandler.burn(tokenID).send();
             checkTxStatus(burnReceipt);
             transferEventResponseList = ownerHandler.getTransferEvents(burnReceipt);

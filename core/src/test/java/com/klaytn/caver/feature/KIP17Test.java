@@ -2,6 +2,8 @@ package com.klaytn.caver.feature;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.crypto.KlayCredentials;
+import com.klaytn.caver.methods.response.KlayAccount;
+import com.klaytn.caver.methods.response.KlayAccountKey;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.tx.gas.DefaultGasProvider;
 import com.klaytn.caver.tx.kct.KIP17;
@@ -12,6 +14,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.Keys;
+import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.tx.gas.StaticGasProvider;
 import org.web3j.utils.Numeric;
 
@@ -52,7 +57,6 @@ public class KIP17Test {
         deployKIP17Contract();
     }
 
-    //KCT-032
     public static void deployKIP17Contract() {
         try {
             KIP17 token = KIP17.deploy(
@@ -64,7 +68,6 @@ public class KIP17Test {
             ).send();
 
             mContractAddress = token.getContractAddress();
-            System.out.println("Contract Address is " + mContractAddress);
         } catch (Exception e) {
             e.printStackTrace();
             fail();
@@ -117,6 +120,28 @@ public class KIP17Test {
 
     private void checkMinterRemovedEventValue(KIP17.MinterRemovedEventResponse response, String account) {
         assertEquals(response.account, account);
+    }
+
+    //KCT-032
+    @Test
+    public void deployContract() {
+        try {
+            KIP17 token = KIP17.deploy(
+                    mCaver,
+                    mDeployerTxManager,
+                    new StaticGasProvider(DefaultGasProvider.GAS_PRICE, BigInteger.valueOf(6_000_000)),
+                    sContractName,
+                    sContractSymbol
+            ).send();
+
+            String contractAddress = token.getContractAddress();
+            KlayAccount response = mCaver.klay().getAccount(contractAddress, DefaultBlockParameterName.LATEST).send();
+            KlayAccount.Account account = response.getResult();
+            assertEquals(0x02, account.getAccType());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
     }
 
     //KCT-033
@@ -466,9 +491,7 @@ public class KIP17Test {
         KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
         KIP17 tester2Handler = KIP17.load(mContractAddress, mCaver, mTesterTxManger2, new DefaultGasProvider());
 
-        String ownerAddress = mDeployerTxManager.getDefaultAddress();
-        String userAddress = mTesterTxManger2.getDefaultAddress();
-
+        String userAddress = "0x25925f77ea2c3b82a1ab45858558076fdc44fcc4";
         BigInteger[] tokenIDArr = new BigInteger[] {BigInteger.valueOf(1000), BigInteger.valueOf(1001), BigInteger.valueOf(1002)};
 
         try {
@@ -717,17 +740,6 @@ public class KIP17Test {
 
             String approvedAddress = ownerHandler.getApproved(tokenId).send();
             assertEquals(operatorAddress, approvedAddress);
-
-            KlayTransactionReceipt.TransactionReceipt transferReceipt = operatorHandler.transferFrom(ownerAddress, operatorAddress, tokenId).send();
-            checkTxStatus(transferReceipt);
-            transferEventResponses = operatorHandler.getTransferEvents(transferReceipt);
-            checkTransferEventValue(transferEventResponses.get(0), ownerAddress, operatorAddress, tokenId);
-
-            String address = ownerHandler.ownerOf(tokenId).send();
-            assertEquals(address, operatorAddress);
-
-            approvedAddress = ownerHandler.getApproved(tokenId).send();
-            assertEquals(approvedAddress, sZeroAddr);
         } catch (Exception e) {
             e.printStackTrace();
             fail();
@@ -744,7 +756,7 @@ public class KIP17Test {
         String operatorAddress = mTesterTxManger.getDefaultAddress();
 
         try {
-            BigInteger[] tokenIdArr = new BigInteger[] {BigInteger.valueOf(4001), BigInteger.valueOf(4002)};
+            BigInteger[] tokenIdArr = new BigInteger[] {BigInteger.valueOf(4100), BigInteger.valueOf(4200)};
             //mint token to owner address
             KlayTransactionReceipt.TransactionReceipt mintReceipt = ownerHandler.mint(ownerAddress, tokenIdArr[0]).send();
             checkTxStatus(mintReceipt);
@@ -764,22 +776,6 @@ public class KIP17Test {
 
             boolean isApproved = ownerHandler.isApprovedForAll(ownerAddress, operatorAddress).send();
             assertTrue(isApproved);
-
-            KlayTransactionReceipt.TransactionReceipt transferReceipt = operatorHandler.transferFrom(ownerAddress, operatorAddress, tokenIdArr[0]).send();
-            checkTxStatus(transferReceipt);
-            transferEventResponses = operatorHandler.getTransferEvents(transferReceipt);
-            checkTransferEventValue(transferEventResponses.get(0), ownerAddress, operatorAddress, tokenIdArr[0]);
-
-            String address = ownerHandler.ownerOf(tokenIdArr[0]).send();
-            assertEquals(address, operatorAddress);
-
-            transferReceipt = operatorHandler.transferFrom(ownerAddress, operatorAddress, tokenIdArr[1]).send();
-            checkTxStatus(transferReceipt);
-            transferEventResponses = operatorHandler.getTransferEvents(transferReceipt);
-            checkTransferEventValue(transferEventResponses.get(0), ownerAddress, operatorAddress, tokenIdArr[1]);
-
-            address = ownerHandler.ownerOf(tokenIdArr[1]).send();
-            assertEquals(address, operatorAddress);
 
             //reset
             approvedReceipt = ownerHandler.setApprovalForAll(operatorAddress, false).send();
@@ -1067,4 +1063,314 @@ public class KIP17Test {
             fail();
         }
     }
+
+    //KCT-061
+    @Test
+    public void transferFrom_Approve() {
+        KIP17 owner_handler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 spender_handler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        String ownerAddress = mDeployerTxManager.getDefaultAddress();
+        String spenderAddress = mTesterTxManger.getDefaultAddress();
+        String userAddress = mTesterTxManger2.getDefaultAddress();
+        try {
+            BigInteger tokenId = BigInteger.valueOf(7777);
+
+            KlayTransactionReceipt.TransactionReceipt mintReceipt = owner_handler.mint(ownerAddress, tokenId).send();
+            checkTxStatus(mintReceipt);
+            List<KIP17.TransferEventResponse> transferEventResponses = owner_handler.getTransferEvents(mintReceipt);
+            checkTransferEventValue(transferEventResponses.get(0), sZeroAddr, ownerAddress, tokenId);
+
+            String address = owner_handler.ownerOf(tokenId).send();
+            assertEquals(address , ownerAddress);
+
+            KlayTransactionReceipt.TransactionReceipt approveReceipt = owner_handler.approve(spenderAddress, tokenId).send();
+            checkTxStatus(approveReceipt);
+            List<KIP17.ApprovalEventResponse> approvalEventResponses = owner_handler.getApprovalEvents(approveReceipt);
+            checkApprovalEventValue(approvalEventResponses.get(0), ownerAddress, spenderAddress, tokenId);
+
+            address = owner_handler.getApproved(tokenId).send();
+            assertEquals(address, spenderAddress);
+
+            KlayTransactionReceipt.TransactionReceipt transferReceipt = spender_handler.transferFrom(ownerAddress, userAddress, tokenId).send();
+            checkTxStatus(transferReceipt);
+            transferEventResponses = spender_handler.getTransferEvents(transferReceipt);
+            checkTransferEventValue(transferEventResponses.get(0), ownerAddress, userAddress, tokenId);
+
+            address = spender_handler.ownerOf(tokenId).send();
+            assertEquals(address , userAddress);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    //KCT-062
+    @Test
+    public void safeTransferFrom_Approve() {
+        KIP17 owner_handler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 spender_handler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        String ownerAddress = mDeployerTxManager.getDefaultAddress();
+        String spenderAddress = mTesterTxManger.getDefaultAddress();
+        String userAddress = mTesterTxManger2.getDefaultAddress();
+        try {
+            BigInteger tokenId = BigInteger.valueOf(7778);
+
+            KlayTransactionReceipt.TransactionReceipt mintReceipt = owner_handler.mint(ownerAddress, tokenId).send();
+            checkTxStatus(mintReceipt);
+            List<KIP17.TransferEventResponse> transferEventResponses = owner_handler.getTransferEvents(mintReceipt);
+            checkTransferEventValue(transferEventResponses.get(0), sZeroAddr, ownerAddress, tokenId);
+
+            String address = owner_handler.ownerOf(tokenId).send();
+            assertEquals(address , ownerAddress);
+
+            KlayTransactionReceipt.TransactionReceipt approveReceipt = owner_handler.approve(spenderAddress, tokenId).send();
+            checkTxStatus(approveReceipt);
+            List<KIP17.ApprovalEventResponse> approvalEventResponses = owner_handler.getApprovalEvents(approveReceipt);
+            checkApprovalEventValue(approvalEventResponses.get(0), ownerAddress, spenderAddress, tokenId);
+
+            address = owner_handler.getApproved(tokenId).send();
+            assertEquals(address, spenderAddress);
+
+            KlayTransactionReceipt.TransactionReceipt transferReceipt = spender_handler.safeTransferFrom(ownerAddress, userAddress, tokenId).send();
+            checkTxStatus(transferReceipt);
+            transferEventResponses = spender_handler.getTransferEvents(transferReceipt);
+            checkTransferEventValue(transferEventResponses.get(0), ownerAddress, userAddress, tokenId);
+
+            address = spender_handler.ownerOf(tokenId).send();
+            assertEquals(address , userAddress);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    //KCT-063
+    @Test
+    public void safeTransferFromWithData_Approve() {
+        KIP17 owner_handler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 spender_handler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        String ownerAddress = mDeployerTxManager.getDefaultAddress();
+        String spenderAddress = mTesterTxManger.getDefaultAddress();
+        String userAddress = mTesterTxManger2.getDefaultAddress();
+        try {
+            BigInteger tokenId = BigInteger.valueOf(7779);
+
+            KlayTransactionReceipt.TransactionReceipt mintReceipt = owner_handler.mint(ownerAddress, tokenId).send();
+            checkTxStatus(mintReceipt);
+            List<KIP17.TransferEventResponse> transferEventResponses = owner_handler.getTransferEvents(mintReceipt);
+            checkTransferEventValue(transferEventResponses.get(0), sZeroAddr, ownerAddress, tokenId);
+
+            String address = owner_handler.ownerOf(tokenId).send();
+            assertEquals(address , ownerAddress);
+
+            KlayTransactionReceipt.TransactionReceipt approveReceipt = owner_handler.approve(spenderAddress, tokenId).send();
+            checkTxStatus(approveReceipt);
+            List<KIP17.ApprovalEventResponse> approvalEventResponses = owner_handler.getApprovalEvents(approveReceipt);
+            checkApprovalEventValue(approvalEventResponses.get(0), ownerAddress, spenderAddress, tokenId);
+
+            address = owner_handler.getApproved(tokenId).send();
+            assertEquals(address, spenderAddress);
+
+            byte[] data = "buffered data".getBytes();
+            KlayTransactionReceipt.TransactionReceipt transferReceipt = spender_handler.safeTransferFrom(ownerAddress, userAddress, tokenId, data).send();
+            checkTxStatus(transferReceipt);
+            transferEventResponses = spender_handler.getTransferEvents(transferReceipt);
+            checkTransferEventValue(transferEventResponses.get(0), ownerAddress, userAddress, tokenId);
+
+            address = spender_handler.ownerOf(tokenId).send();
+            assertEquals(address , userAddress);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    //KCT-064
+    @Test
+    public void transferFrom_SetApprovedForAll() {
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 operatorHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+
+        String ownerAddress = mDeployerTxManager.getDefaultAddress();
+        String operatorAddress = mTesterTxManger.getDefaultAddress();
+        String userAddress = mTesterTxManger2.getDefaultAddress();
+
+        try {
+            BigInteger[] tokenIdArr = new BigInteger[] {BigInteger.valueOf(4001), BigInteger.valueOf(4002)};
+            //mint token to owner address
+            KlayTransactionReceipt.TransactionReceipt mintReceipt = ownerHandler.mint(ownerAddress, tokenIdArr[0]).send();
+            checkTxStatus(mintReceipt);
+            List<KIP17.TransferEventResponse> transferEventResponses = ownerHandler.getTransferEvents(mintReceipt);
+            checkTransferEventValue(transferEventResponses.get(0), sZeroAddr, ownerAddress, tokenIdArr[0]);
+
+            mintReceipt = ownerHandler.mint(ownerAddress, tokenIdArr[1]).send();
+            checkTxStatus(mintReceipt);
+            transferEventResponses = ownerHandler.getTransferEvents(mintReceipt);
+            checkTransferEventValue(transferEventResponses.get(0), sZeroAddr, ownerAddress, tokenIdArr[1]);
+
+            //test
+            KlayTransactionReceipt.TransactionReceipt approvedReceipt = ownerHandler.setApprovalForAll(operatorAddress, true).send();
+            checkTxStatus(approvedReceipt);
+            List<KIP17.ApprovalForAllEventResponse> approvalForAllEventResponses = ownerHandler.getApprovalForAllEvents(approvedReceipt);
+            checkApprovalForAllEventValue(approvalForAllEventResponses.get(0), ownerAddress, operatorAddress, true);
+
+            boolean isApproved = ownerHandler.isApprovedForAll(ownerAddress, operatorAddress).send();
+            assertTrue(isApproved);
+
+            KlayTransactionReceipt.TransactionReceipt transferReceipt = operatorHandler.transferFrom(ownerAddress, userAddress, tokenIdArr[0]).send();
+            checkTxStatus(transferReceipt);
+            transferEventResponses = operatorHandler.getTransferEvents(transferReceipt);
+            checkTransferEventValue(transferEventResponses.get(0), ownerAddress, userAddress, tokenIdArr[0]);
+
+            String address = ownerHandler.ownerOf(tokenIdArr[0]).send();
+            assertEquals(address, userAddress);
+
+            transferReceipt = operatorHandler.transferFrom(ownerAddress, userAddress, tokenIdArr[1]).send();
+            checkTxStatus(transferReceipt);
+            transferEventResponses = operatorHandler.getTransferEvents(transferReceipt);
+            checkTransferEventValue(transferEventResponses.get(0), ownerAddress, userAddress, tokenIdArr[1]);
+
+            address = ownerHandler.ownerOf(tokenIdArr[1]).send();
+            assertEquals(address, userAddress);
+
+            //reset
+            approvedReceipt = ownerHandler.setApprovalForAll(operatorAddress, false).send();
+            checkTxStatus(approvedReceipt);
+            approvalForAllEventResponses = ownerHandler.getApprovalForAllEvents(approvedReceipt);
+            checkApprovalForAllEventValue(approvalForAllEventResponses.get(0), ownerAddress, operatorAddress, false);
+
+            isApproved = ownerHandler.isApprovedForAll(ownerAddress, operatorAddress).send();
+            assertFalse(isApproved);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    //KCT-065
+    @Test
+    public void safeTransferFrom_SetApprovedForAll() {
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 operatorHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+
+        String ownerAddress = mDeployerTxManager.getDefaultAddress();
+        String operatorAddress = mTesterTxManger.getDefaultAddress();
+        String userAddress = mTesterTxManger2.getDefaultAddress();
+
+        try {
+            BigInteger[] tokenIdArr = new BigInteger[] {BigInteger.valueOf(4003), BigInteger.valueOf(4004)};
+            //mint token to owner address
+            KlayTransactionReceipt.TransactionReceipt mintReceipt = ownerHandler.mint(ownerAddress, tokenIdArr[0]).send();
+            checkTxStatus(mintReceipt);
+            List<KIP17.TransferEventResponse> transferEventResponses = ownerHandler.getTransferEvents(mintReceipt);
+            checkTransferEventValue(transferEventResponses.get(0), sZeroAddr, ownerAddress, tokenIdArr[0]);
+
+            mintReceipt = ownerHandler.mint(ownerAddress, tokenIdArr[1]).send();
+            checkTxStatus(mintReceipt);
+            transferEventResponses = ownerHandler.getTransferEvents(mintReceipt);
+            checkTransferEventValue(transferEventResponses.get(0), sZeroAddr, ownerAddress, tokenIdArr[1]);
+
+            //test
+            KlayTransactionReceipt.TransactionReceipt approvedReceipt = ownerHandler.setApprovalForAll(operatorAddress, true).send();
+            checkTxStatus(approvedReceipt);
+            List<KIP17.ApprovalForAllEventResponse> approvalForAllEventResponses = ownerHandler.getApprovalForAllEvents(approvedReceipt);
+            checkApprovalForAllEventValue(approvalForAllEventResponses.get(0), ownerAddress, operatorAddress, true);
+
+            boolean isApproved = ownerHandler.isApprovedForAll(ownerAddress, operatorAddress).send();
+            assertTrue(isApproved);
+
+            KlayTransactionReceipt.TransactionReceipt transferReceipt = operatorHandler.safeTransferFrom(ownerAddress, userAddress, tokenIdArr[0]).send();
+            checkTxStatus(transferReceipt);
+            transferEventResponses = operatorHandler.getTransferEvents(transferReceipt);
+            checkTransferEventValue(transferEventResponses.get(0), ownerAddress, userAddress, tokenIdArr[0]);
+
+            String address = ownerHandler.ownerOf(tokenIdArr[0]).send();
+            assertEquals(address, userAddress);
+
+            transferReceipt = operatorHandler.safeTransferFrom(ownerAddress, userAddress, tokenIdArr[1]).send();
+            checkTxStatus(transferReceipt);
+            transferEventResponses = operatorHandler.getTransferEvents(transferReceipt);
+            checkTransferEventValue(transferEventResponses.get(0), ownerAddress, userAddress, tokenIdArr[1]);
+
+            address = ownerHandler.ownerOf(tokenIdArr[1]).send();
+            assertEquals(address, userAddress);
+
+            //reset
+            approvedReceipt = ownerHandler.setApprovalForAll(operatorAddress, false).send();
+            checkTxStatus(approvedReceipt);
+            approvalForAllEventResponses = ownerHandler.getApprovalForAllEvents(approvedReceipt);
+            checkApprovalForAllEventValue(approvalForAllEventResponses.get(0), ownerAddress, operatorAddress, false);
+
+            isApproved = ownerHandler.isApprovedForAll(ownerAddress, operatorAddress).send();
+            assertFalse(isApproved);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    //KCT-066
+    @Test
+    public void safeTransferFromWithData_SetApprovedForAll() {
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 operatorHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+
+        String ownerAddress = mDeployerTxManager.getDefaultAddress();
+        String operatorAddress = mTesterTxManger.getDefaultAddress();
+        String userAddress = mTesterTxManger2.getDefaultAddress();
+
+        try {
+            BigInteger[] tokenIdArr = new BigInteger[] {BigInteger.valueOf(4005), BigInteger.valueOf(4006)};
+            //mint token to owner address
+            KlayTransactionReceipt.TransactionReceipt mintReceipt = ownerHandler.mint(ownerAddress, tokenIdArr[0]).send();
+            checkTxStatus(mintReceipt);
+            List<KIP17.TransferEventResponse> transferEventResponses = ownerHandler.getTransferEvents(mintReceipt);
+            checkTransferEventValue(transferEventResponses.get(0), sZeroAddr, ownerAddress, tokenIdArr[0]);
+
+            mintReceipt = ownerHandler.mint(ownerAddress, tokenIdArr[1]).send();
+            checkTxStatus(mintReceipt);
+            transferEventResponses = ownerHandler.getTransferEvents(mintReceipt);
+            checkTransferEventValue(transferEventResponses.get(0), sZeroAddr, ownerAddress, tokenIdArr[1]);
+
+            //test
+            KlayTransactionReceipt.TransactionReceipt approvedReceipt = ownerHandler.setApprovalForAll(operatorAddress, true).send();
+            checkTxStatus(approvedReceipt);
+            List<KIP17.ApprovalForAllEventResponse> approvalForAllEventResponses = ownerHandler.getApprovalForAllEvents(approvedReceipt);
+            checkApprovalForAllEventValue(approvalForAllEventResponses.get(0), ownerAddress, operatorAddress, true);
+
+            boolean isApproved = ownerHandler.isApprovedForAll(ownerAddress, operatorAddress).send();
+            assertTrue(isApproved);
+
+            byte[] data = "buffered data".getBytes();
+            KlayTransactionReceipt.TransactionReceipt transferReceipt = operatorHandler.safeTransferFrom(ownerAddress, userAddress, tokenIdArr[0], data).send();
+            checkTxStatus(transferReceipt);
+            transferEventResponses = operatorHandler.getTransferEvents(transferReceipt);
+            checkTransferEventValue(transferEventResponses.get(0), ownerAddress, userAddress, tokenIdArr[0]);
+
+            String address = ownerHandler.ownerOf(tokenIdArr[0]).send();
+            assertEquals(address, userAddress);
+
+            transferReceipt = operatorHandler.safeTransferFrom(ownerAddress, userAddress, tokenIdArr[1], data).send();
+            checkTxStatus(transferReceipt);
+            transferEventResponses = operatorHandler.getTransferEvents(transferReceipt);
+            checkTransferEventValue(transferEventResponses.get(0), ownerAddress, userAddress, tokenIdArr[1]);
+
+            address = ownerHandler.ownerOf(tokenIdArr[1]).send();
+            assertEquals(address, userAddress);
+
+            //reset
+            approvedReceipt = ownerHandler.setApprovalForAll(operatorAddress, false).send();
+            checkTxStatus(approvedReceipt);
+            approvalForAllEventResponses = ownerHandler.getApprovalForAllEvents(approvedReceipt);
+            checkApprovalForAllEventValue(approvalForAllEventResponses.get(0), ownerAddress, operatorAddress, false);
+
+            isApproved = ownerHandler.isApprovedForAll(ownerAddress, operatorAddress).send();
+            assertFalse(isApproved);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+
 }

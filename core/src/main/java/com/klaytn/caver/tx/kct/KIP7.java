@@ -663,6 +663,7 @@ public class KIP7 extends SmartContract {
      * @param contractAddress KIP7 Standard Token Address
      * @param caver Caver Object
      * @param credentials KlayCredential Object to control Contract
+     * @param chainId Klaytn network ID
      * @param contractGasProvider GasProvider
      * @return KIP7Token
      */

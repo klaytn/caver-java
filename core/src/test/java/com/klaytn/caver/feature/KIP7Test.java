@@ -2,12 +2,16 @@ package com.klaytn.caver.feature;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.crypto.KlayCredentials;
+import com.klaytn.caver.methods.response.KlayAccount;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.tx.gas.DefaultGasProvider;
+import com.klaytn.caver.tx.kct.KIP17;
 import com.klaytn.caver.tx.kct.KIP7;
 import com.klaytn.caver.tx.manager.TransactionManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.tx.gas.StaticGasProvider;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
@@ -44,7 +48,6 @@ public class KIP7Test {
         deployKIP7Contract();
     }
 
-    //KCT-001
     public static void deployKIP7Contract() {
         try {
             KIP7 token = KIP7.deploy(mCaver,
@@ -60,6 +63,29 @@ public class KIP7Test {
             mContractAddress = address;
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    //KCT-001
+    @Test
+    public void deployContract() {
+        try {
+            KIP7 token = KIP7.deploy(mCaver,
+                    mDeployerTxManager,
+                    new DefaultGasProvider(),
+                    ContractName,
+                    ContractSymbol,
+                    ContractDecimal,
+                    ContractInitialSupply
+            ).send();
+
+            String contractAddress = token.getContractAddress();
+            KlayAccount response = mCaver.klay().getAccount(contractAddress, DefaultBlockParameterName.LATEST).send();
+            KlayAccount.Account account = response.getResult();
+            assertEquals(0x02, account.getAccType());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
         }
     }
 
@@ -891,5 +917,4 @@ public class KIP7Test {
             fail();
         }
     }
-
 }

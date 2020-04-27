@@ -136,7 +136,7 @@ public class KIP7 extends SmartContract {
     /**
      * Instance method for getting Event "Approval" in KIP-7 Standard Token
      *
-     * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction to invoke "approve" Method
+     * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction invoking "Approval" event
      * @return List Object to Approval Event Response
      */
     public List<ApprovalEventResponse> getApprovalEvents(KlayTransactionReceipt.TransactionReceipt transactionReceipt) {
@@ -156,7 +156,7 @@ public class KIP7 extends SmartContract {
     /**
      * Instance method for getting Event "MinterAdded" in KIP-7 Standard Token
      *
-     * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction to invoke "addMinter" Method
+     * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction invoking "MinterAdded" event
      * @return List Object to MinterAdded Event Response
      */
     public List<MinterAddedEventResponse> getMinterAddedEvents(KlayTransactionReceipt.TransactionReceipt transactionReceipt) {
@@ -174,7 +174,7 @@ public class KIP7 extends SmartContract {
     /**
      * Instance method for getting Event "MinterRemoved" in KIP-7 Standard Token
      *
-     * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction to invoke "renounceMinter" Method
+     * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction invoking "MinterRemoved" event
      * @return List Object to MinerRemoved Event Response
      */
     public List<MinterRemovedEventResponse> getMinterRemovedEvents(KlayTransactionReceipt.TransactionReceipt transactionReceipt) {
@@ -192,7 +192,7 @@ public class KIP7 extends SmartContract {
     /**
      * Instance method for getting Event "Paused" in KIP-7 Standard Token
      *
-     * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction to invoke "pause" Method
+     * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction invoking "Paused" event
      * @return List Object to Paused Event Response
      */
     public List<PausedEventResponse> getPausedEvents(KlayTransactionReceipt.TransactionReceipt transactionReceipt) {
@@ -210,7 +210,7 @@ public class KIP7 extends SmartContract {
     /**
      * Instance method for getting Event "PauserAdded" in KIP-7 Standard Token
      *
-     * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction to invoke "addPauser" Method
+     * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction invoking "PauserAdded" event
      * @return List Object to PauserAdded Event Response
      */
     public List<PauserAddedEventResponse> getPauserAddedEvents(KlayTransactionReceipt.TransactionReceipt transactionReceipt) {
@@ -228,7 +228,7 @@ public class KIP7 extends SmartContract {
     /**
      * Instance method for getting Event "PauserRemoved" in KIP-7 Standard Token
      *
-     * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction to invoke "renouncePauser" Method
+     * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction invoking "PauserRemoved" event
      * @return List Object to PauserRemoved Event Response
      */
     public List<PauserRemovedEventResponse> getPauserRemovedEvents(KlayTransactionReceipt.TransactionReceipt transactionReceipt) {
@@ -246,7 +246,7 @@ public class KIP7 extends SmartContract {
     /**
      * Instance method for getting Event "Transfer" in KIP-7 Standard Token
      *
-     * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction to invoke "Transfer" Method
+     * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction invoking "Transfer" event
      * @return List Object to Transfer Event Response
      */
     public List<TransferEventResponse> getTransferEvents(KlayTransactionReceipt.TransactionReceipt transactionReceipt) {
@@ -266,7 +266,7 @@ public class KIP7 extends SmartContract {
     /**
      * Instance method for getting Event "Unpaused" in KIP-7 Standard Token
      *
-     * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction to invoke "unpause" Method
+     * @param transactionReceipt transactionReceipt after sending SmartContractExecution Transaction invoking "Unpaused" event
      * @return List Object to Unpaused Event Response
      */
     public List<UnpausedEventResponse> getUnpausedEvents(KlayTransactionReceipt.TransactionReceipt transactionReceipt) {
@@ -658,27 +658,27 @@ public class KIP7 extends SmartContract {
     }
 
     /**
-     * Static method create KIP7 Standard Token handler connecting existed Contract
+     * Static method create KIP-7 Standard Token handler connecting existed Contract
      * The credential with the "KlayCredential Object" passed as a function parameter will control the contract
      * @param contractAddress KIP7 Standard Token Address
      * @param caver Caver Object
      * @param credentials KlayCredential Object to control Contract
      * @param chainId Klaytn network ID
      * @param contractGasProvider GasProvider
-     * @return KIP7Token
+     * @return KIP7
      */
     public static KIP7 load(String contractAddress, Caver caver, KlayCredentials credentials, int chainId, ContractGasProvider contractGasProvider) {
         return new KIP7(contractAddress, caver, credentials, chainId, contractGasProvider);
     }
 
     /**
-     * Static method create KIP7 Standard Token handler connecting existed Contract
+     * Static method create KIP-7 Standard Token handler connecting existed Contract
      * The default credential in transactionManager passed as a function parameter will control the contract
      * @param contractAddress KIP7 Standard Token Address
      * @param caver Caver Object
      * @param transactionManager transactionManger Object to control Contract
      * @param contractGasProvider GasProvider
-     * @return KIP7Token
+     * @return KIP7
      */
     public static KIP7 load(String contractAddress, Caver caver, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
         return new KIP7(contractAddress, caver, transactionManager, contractGasProvider);
@@ -694,7 +694,7 @@ public class KIP7 extends SmartContract {
      * @param symbol Contract Constructor parameter
      * @param decimals Contract Constructor parameter
      * @param initialSupply Contract Constructor parameter
-     * @return KIP7Token
+     * @return KIP7
      */
     public static RemoteCall<KIP7> deploy(Caver caver, KlayCredentials credentials, int chainId, ContractGasProvider contractGasProvider, String name, String symbol, BigInteger decimals, BigInteger initialSupply) {
         String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(name),
@@ -713,7 +713,7 @@ public class KIP7 extends SmartContract {
      * @param symbol Contract Constructor parameter
      * @param decimals Contract Constructor parameter
      * @param initialSupply Contract Constructor parameter
-     * @return KIP7Token
+     * @return KIP7
      */
     public static RemoteCall<KIP7> deploy(Caver caver, TransactionManager transactionManager, ContractGasProvider contractGasProvider, String name, String symbol, BigInteger decimals, BigInteger initialSupply) {
         String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(name),

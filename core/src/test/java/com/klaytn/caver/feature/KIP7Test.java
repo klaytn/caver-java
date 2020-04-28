@@ -5,13 +5,11 @@ import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.methods.response.KlayAccount;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.tx.gas.DefaultGasProvider;
-import com.klaytn.caver.tx.kct.KIP17;
-import com.klaytn.caver.tx.kct.KIP7;
+import com.klaytn.caver.kct.KIP7;
 import com.klaytn.caver.tx.manager.TransactionManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.tx.gas.StaticGasProvider;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;

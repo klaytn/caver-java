@@ -1,4 +1,4 @@
-package com.klaytn.caver.tx.kct;
+package com.klaytn.caver.kct;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.crypto.KlayCredentials;

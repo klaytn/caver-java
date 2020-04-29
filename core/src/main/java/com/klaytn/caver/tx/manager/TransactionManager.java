@@ -132,7 +132,7 @@ public class TransactionManager {
     /**
      * The result of signing a transaction is added to the raw transaction and returned
      *
-     * @param txType
+     * @param txType Transaction Type Object to Sign
      * @return signed raw transaction
      */
     public KlayRawTransaction sign(AbstractTxType txType) {
@@ -149,7 +149,7 @@ public class TransactionManager {
     /**
      * The result of signing a transaction is added to the raw transaction and returned
      *
-     * @param klayRawTransaction
+     * @param klayRawTransaction The RLP-encoded transaction(rawTransaction) string to sign.
      * @return signed raw transaction
      */
     public KlayRawTransaction sign(String klayRawTransaction) {
@@ -157,6 +157,12 @@ public class TransactionManager {
         return sign(txType);
     }
 
+    /**
+     * The result of signing a transaction is added to the raw transaction and returned
+     *
+     * @param transactionTransformer TransactionTransformer Object to Sign
+     * @return signed raw transaction
+     */
     public KlayRawTransaction sign(TransactionTransformer transactionTransformer) {
         KlayRawTransaction result = null;
         try {

@@ -12,10 +12,14 @@ import java.util.Arrays;
 
 public class AccountKeyPublic implements IAccountKey{
 
-
-    private static final byte sType = (byte)0x03;
+    private static final byte TYPE = (byte)0x03;
 
     //0x{Public Key X point}||{Public Y point}
+    /**
+     * ECC Public Key value with "SECP-256k1" curve.
+     * This String has following format.
+     * 0x{Public Key X point}||{Public Y point}
+     */
     private String publicKey;
 
     public AccountKeyPublic(String publicKey) {
@@ -26,6 +30,12 @@ public class AccountKeyPublic implements IAccountKey{
 
     }
 
+    /**
+     * Creates AccountKeyPublic instance from Elliptic curve x, y coordinates.
+     * @param x The point x
+     * @param y The point y
+     * @return AccountKeyPublic
+     */
     public static AccountKeyPublic fromXYPoint(String x, String y) {
 
         if(!AccountKeyPublicUtils.checkPointValid(x, y)) {
@@ -36,6 +46,11 @@ public class AccountKeyPublic implements IAccountKey{
         return new AccountKeyPublic(publicKey);
     }
 
+    /**
+     * Creates AccountKeyPublic instance from ECC Public Key.
+     * @param publicKey The public key string. This public key can be in format of compressed or uncompressed.
+     * @return AccountKeyPublic
+     */
     public static AccountKeyPublic fromPublicKey(String publicKey) {
         String key = null;
 
@@ -45,7 +60,7 @@ public class AccountKeyPublic implements IAccountKey{
 
         //check Format -> Compressed or Decompressed
         if(AccountKeyPublicUtils.isCompressedFormat(publicKey)) {
-            key = AccountKeyPublicUtils.deCompressPublicKeyXY(publicKey);
+            key = AccountKeyPublicUtils.decompressPublicKeyXY(publicKey);
         } else {
             key = publicKey;
         }
@@ -53,12 +68,22 @@ public class AccountKeyPublic implements IAccountKey{
         return new AccountKeyPublic(key);
     }
 
+    /**
+     * Decodes an RLP-encoded AccountKeyPublic string
+     * @param rlpEncodedKey An RLP-encoded AccountKeyPublic string.
+     * @return AccountKeyPublic
+     */
     public static AccountKeyPublic decode(String rlpEncodedKey) {
         return decode(Numeric.hexStringToByteArray(rlpEncodedKey));
     }
 
+    /**
+     * Decodes an RLP-encoded AccountKeyPublic byte array
+     * @param rlpEncodedKey An RLP-encoded AccountKeyPublic byte array
+     * @return AccountKeyPublic
+     */
     public static AccountKeyPublic decode(byte[] rlpEncodedKey) {
-        if(rlpEncodedKey[0] != sType) {
+        if(rlpEncodedKey[0] != AccountKeyPublic.TYPE) {
             throw new IllegalArgumentException("Invalid RLP-encoded AccountKeyPublic Tag");
         }
 
@@ -69,27 +94,30 @@ public class AccountKeyPublic implements IAccountKey{
 
         try {
             //Get decompressed Public Key and ECC Point validation Check in toDecompressPublicKeyXY()
-            String publicKey = AccountKeyPublicUtils.deCompressPublicKeyXY(compressedPubKey);
+            String publicKey = AccountKeyPublicUtils.decompressPublicKeyXY(compressedPubKey);
             return new AccountKeyPublic(publicKey);
-        } catch (IllegalArgumentException e) {
-            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("There is an error while decoding process.");
         }
-
     }
 
+    /**
+     * Encodes a AccountKeyPublic Object by RLP-Encoding method.
+     * @return a RLP-encoded AccountKeyPublic String
+     */
     @Override
     public String getRLPEncoding() {
         String compressedKey = AccountKeyPublicUtils.toCompressedPublicKey(Numeric.toBigInt(this.publicKey));
         byte[] encodedPubKey = RlpEncoder.encode(RlpString.create(Numeric.hexStringToByteArray(compressedKey)));
-        byte[] type = new byte[]{AccountKeyPublic.sType};
+        byte[] type = new byte[] { AccountKeyPublic.TYPE };
 
         return Numeric.toHexString(BytesUtils.concat(type, encodedPubKey));
     }
 
-    public String getPublicKey() {
-        return publicKey;
-    }
-
+    /**
+     * Returns the x and y coordinates of publicKey.
+     * @return String array of X,Y coordinates.
+     */
     public String[] getXYPoint() {
         String noPrefixKeyStr = Numeric.cleanHexPrefix(this.publicKey);
         String[] arr = new String[2];
@@ -98,5 +126,9 @@ public class AccountKeyPublic implements IAccountKey{
         arr[1] = noPrefixKeyStr.substring(64, 127);
 
         return arr;
+    }
+
+    public String getPublicKey() {
+        return publicKey;
     }
 }

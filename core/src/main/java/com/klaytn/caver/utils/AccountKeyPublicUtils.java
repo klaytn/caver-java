@@ -55,4 +55,83 @@ public class AccountKeyPublicUtils {
                 Numeric.toHexStringWithPrefixZeroPadded(ecPoint.getAffineYCoord().toBigInteger(), 64)
         );
     }
+
+    public static String deCompressPublicKeyXY(String compressedPublicKey) {
+        String noPrefixPublicKey = Numeric.cleanHexPrefix(compressedPublicKey);
+        boolean yBit = noPrefixPublicKey.startsWith("03");
+        BigInteger xBN = Numeric.toBigInt(noPrefixPublicKey);
+        X9IntegerConverter x9 = new X9IntegerConverter();
+        byte[] compEnc = x9.integerToBytes(xBN, 1 + x9.getByteLength(CURVE.getCurve()));
+        compEnc[0] = (byte)(yBit ? 0x03 : 0x02);
+        ECPoint ecPoint = CURVE.getCurve().decodePoint(compEnc);
+
+        String pointXY = Numeric.toHexStringWithPrefixZeroPadded(ecPoint.getAffineXCoord().toBigInteger(), 64) +
+                Numeric.toHexStringNoPrefixZeroPadded(ecPoint.getAffineYCoord().toBigInteger(), 64);
+        return pointXY;
+    }
+
+    public static ECPoint getECPoint(String compressedPublicKey) {
+        String noPrefixPublicKey = Numeric.cleanHexPrefix(compressedPublicKey);
+        boolean yBit = noPrefixPublicKey.startsWith("03");
+        BigInteger xBN = Numeric.toBigInt(noPrefixPublicKey);
+        X9IntegerConverter x9 = new X9IntegerConverter();
+        byte[] compEnc = x9.integerToBytes(xBN, 1 + x9.getByteLength(CURVE.getCurve()));
+        compEnc[0] = (byte)(yBit ? 0x03 : 0x02);
+        ECPoint ecPoint = CURVE.getCurve().decodePoint(compEnc);
+        return ecPoint;
+    }
+
+    public static ECPoint getECPoint(String x, String y) {
+        BigInteger bigIntegerX = Numeric.toBigInt(x);
+        BigInteger bigIntegerY = Numeric.toBigInt(y);
+
+        ECPoint ecPoint = CURVE.getCurve().createPoint(bigIntegerX, bigIntegerY);
+        return ecPoint;
+    }
+
+    public static boolean checkPointValid(String compressedPubKey) {
+        ECPoint point = getECPoint(compressedPubKey);
+        return point.isValid();
+    }
+
+    public static boolean checkPointValid(String x, String y) {
+        ECPoint point = getECPoint(x, y);
+        return point.isValid();
+    }
+
+    public static boolean isValidatePublicKeyFormat(String publicKey) {
+        String noPrefixPubKey = Numeric.cleanHexPrefix(publicKey);
+        ECPoint point = null;
+        boolean result;
+        if(noPrefixPubKey.length() != 66 && noPrefixPubKey.length() != 128) {
+            return false;
+        }
+
+        //Compressed Format
+        if(noPrefixPubKey.length() == 66) {
+            if(!noPrefixPubKey.startsWith("0x02") || !noPrefixPubKey.startsWith("0x03")) {
+                return false;
+            }
+            result = checkPointValid(publicKey);
+        } else { // Decompressed Format
+            String x = publicKey.substring(0, 63);
+            String y = publicKey.substring(64, 127);
+
+            result = checkPointValid(x, y);
+        }
+
+        return result;
+    }
+
+    public static boolean isCompressedFormat(String key) {
+        String noPrefixKey = Numeric.cleanHexPrefix(key);
+
+        if(noPrefixKey.length() != 66 && (noPrefixKey.startsWith("0x02") || noPrefixKey.startsWith("0x03"))) {
+            return true;
+        }
+        return false;
+    }
+
+
+
 }

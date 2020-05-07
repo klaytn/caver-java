@@ -56,20 +56,6 @@ public class AccountKeyPublicUtils {
         );
     }
 
-    public static String deCompressPublicKeyXY(String compressedPublicKey) {
-        String noPrefixPublicKey = Numeric.cleanHexPrefix(compressedPublicKey);
-        boolean yBit = noPrefixPublicKey.startsWith("03");
-        BigInteger xBN = Numeric.toBigInt(noPrefixPublicKey);
-        X9IntegerConverter x9 = new X9IntegerConverter();
-        byte[] compEnc = x9.integerToBytes(xBN, 1 + x9.getByteLength(CURVE.getCurve()));
-        compEnc[0] = (byte)(yBit ? 0x03 : 0x02);
-        ECPoint ecPoint = CURVE.getCurve().decodePoint(compEnc);
-
-        String pointXY = Numeric.toHexStringWithPrefixZeroPadded(ecPoint.getAffineXCoord().toBigInteger(), 64) +
-                Numeric.toHexStringNoPrefixZeroPadded(ecPoint.getAffineYCoord().toBigInteger(), 64);
-        return pointXY;
-    }
-
     public static ECPoint getECPoint(String compressedPublicKey) {
         String noPrefixPublicKey = Numeric.cleanHexPrefix(compressedPublicKey);
         boolean yBit = noPrefixPublicKey.startsWith("03");
@@ -87,6 +73,13 @@ public class AccountKeyPublicUtils {
 
         ECPoint ecPoint = CURVE.getCurve().createPoint(bigIntegerX, bigIntegerY);
         return ecPoint;
+    }
+
+    public static String decompressPublicKeyXY(String compressedPublicKey) {
+        ECPoint ecPoint = getECPoint(compressedPublicKey);
+        String pointXY = Numeric.toHexStringWithPrefixZeroPadded(ecPoint.getAffineXCoord().toBigInteger(), 64) +
+                Numeric.toHexStringNoPrefixZeroPadded(ecPoint.getAffineYCoord().toBigInteger(), 64);
+        return pointXY;
     }
 
     public static boolean checkPointValid(String compressedPubKey) {

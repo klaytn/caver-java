@@ -102,13 +102,13 @@ public class AccountKeyPublicUtils {
 
         //Compressed Format
         if(noPrefixPubKey.length() == 66) {
-            if(!noPrefixPubKey.startsWith("0x02") || !noPrefixPubKey.startsWith("0x03")) {
+            if(!noPrefixPubKey.startsWith("02") && !noPrefixPubKey.startsWith("03")) {
                 return false;
             }
             result = checkPointValid(publicKey);
         } else { // Decompressed Format
-            String x = publicKey.substring(0, 63);
-            String y = publicKey.substring(64, 127);
+            String x = noPrefixPubKey.substring(0, 64);
+            String y = noPrefixPubKey.substring(64);
 
             result = checkPointValid(x, y);
         }
@@ -119,7 +119,7 @@ public class AccountKeyPublicUtils {
     public static boolean isCompressedFormat(String key) {
         String noPrefixKey = Numeric.cleanHexPrefix(key);
 
-        if(noPrefixKey.length() != 66 && (noPrefixKey.startsWith("0x02") || noPrefixKey.startsWith("0x03"))) {
+        if(noPrefixKey.length() == 66 && (noPrefixKey.startsWith("02") || noPrefixKey.startsWith("03"))) {
             return true;
         }
         return false;

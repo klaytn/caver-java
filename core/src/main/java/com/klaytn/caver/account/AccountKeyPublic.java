@@ -10,6 +10,16 @@ import org.web3j.utils.Numeric;
 
 import java.util.Arrays;
 
+
+/**
+ * AccountKeyPublic is used for accounts having one public key.
+ * If an account has an AccountKeyPublic object, the tx validation process is done like below:
+ * <ul>
+ * <li> Get the public key derived from ecrecover(txhash, txsig) </li>
+ * <li> Check that the derived public key is the same as the corresponding </li>
+ * <li> account's public key </li>
+ * </ul>
+ */
 public class AccountKeyPublic implements IAccountKey{
 
     private static final byte TYPE = (byte)0x03;
@@ -69,8 +79,8 @@ public class AccountKeyPublic implements IAccountKey{
     }
 
     /**
-     * Decodes an RLP-encoded AccountKeyPublic string
-     * @param rlpEncodedKey An RLP-encoded AccountKeyPublic string.
+     * Decodes a RLP-encoded AccountKeyPublic string
+     * @param rlpEncodedKey RLP-encoded AccountKeyPublic string.
      * @return AccountKeyPublic
      */
     public static AccountKeyPublic decode(String rlpEncodedKey) {
@@ -78,8 +88,8 @@ public class AccountKeyPublic implements IAccountKey{
     }
 
     /**
-     * Decodes an RLP-encoded AccountKeyPublic byte array
-     * @param rlpEncodedKey An RLP-encoded AccountKeyPublic byte array
+     * Decodes a RLP-encoded AccountKeyPublic byte array
+     * @param rlpEncodedKey RLP-encoded AccountKeyPublic byte array
      * @return AccountKeyPublic
      */
     public static AccountKeyPublic decode(byte[] rlpEncodedKey) {
@@ -102,8 +112,8 @@ public class AccountKeyPublic implements IAccountKey{
     }
 
     /**
-     * Encodes a AccountKeyPublic Object by RLP-Encoding method.
-     * @return a RLP-encoded AccountKeyPublic String
+     * Encodes a AccountKeyPublic Object by RLP-encoding method.
+     * @return RLP-encoded AccountKeyPublic String
      */
     @Override
     public String getRLPEncoding() {
@@ -122,13 +132,17 @@ public class AccountKeyPublic implements IAccountKey{
         String noPrefixKeyStr = Numeric.cleanHexPrefix(this.publicKey);
         String[] arr = new String[2];
 
-        arr[0] = noPrefixKeyStr.substring(0, 63);
-        arr[1] = noPrefixKeyStr.substring(64, 127);
+        arr[0] = noPrefixKeyStr.substring(0, 63); // x point
+        arr[1] = noPrefixKeyStr.substring(64, 127); // y point
 
         return arr;
     }
 
     public String getPublicKey() {
         return publicKey;
+    }
+
+    public static byte getType() {
+        return TYPE;
     }
 }

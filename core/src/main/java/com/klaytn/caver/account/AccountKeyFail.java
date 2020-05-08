@@ -11,8 +11,10 @@ import java.util.Arrays;
  */
 public class AccountKeyFail implements IAccountKey{
     private static final byte[] RLP = new byte[]{(byte) 0x03, (byte) 0xc0};
-    private static final byte TYPE = 0x03;
+    private static final byte TYPE = (byte)0x03;
 
+    public AccountKeyFail() {
+    }
 
     /**
      * Decodes a RLP-encoded AccountKeyFail string
@@ -34,9 +36,6 @@ public class AccountKeyFail implements IAccountKey{
         }
 
         return new AccountKeyFail();
-    }
-
-    protected AccountKeyFail() {
     }
 
     /**

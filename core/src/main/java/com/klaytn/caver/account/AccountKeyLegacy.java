@@ -17,7 +17,12 @@ import java.util.Arrays;
 public class AccountKeyLegacy implements IAccountKey{
 
     private static final byte[] RLP = new byte[]{(byte) 0x01, (byte) 0xc0};
-    private static final byte TYPE = 0x01;
+    private static final byte TYPE = (byte)0x01;
+
+
+    public AccountKeyLegacy() {
+
+    }
 
 
     /**
@@ -25,7 +30,7 @@ public class AccountKeyLegacy implements IAccountKey{
      * @param rlpEncodedKey A RLP-encoded AccountKeyLegacy string
      * @return AccountKeyLegacy
      */
-    static AccountKeyLegacy decode(String rlpEncodedKey) {
+    public static AccountKeyLegacy decode(String rlpEncodedKey) {
         return decode(Numeric.hexStringToByteArray(rlpEncodedKey));
     }
 
@@ -34,7 +39,7 @@ public class AccountKeyLegacy implements IAccountKey{
      * @param rlpEncodedKey RLP-encoded AccountKeyLegacy byte array
      * @return AccountKeyLegacy
      */
-    static AccountKeyLegacy decode(byte[] rlpEncodedKey) {
+    public static AccountKeyLegacy decode(byte[] rlpEncodedKey) {
         if(!Arrays.equals(RLP, rlpEncodedKey)) {
             throw new RuntimeException("Invalid RLP-encoded account key String");
         }
@@ -50,12 +55,6 @@ public class AccountKeyLegacy implements IAccountKey{
     @Override
     public String getRLPEncoding() {
         return Numeric.toHexString(RLP);
-    }
-
-
-
-    protected AccountKeyLegacy() {
-
     }
 
     public static byte getType() {

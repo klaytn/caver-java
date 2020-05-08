@@ -108,11 +108,16 @@ public class AccountKeyPublic implements IAccountKey{
      * @return String array of X,Y coordinates.
      */
     public String[] getXYPoint() {
-        String noPrefixKeyStr = Numeric.cleanHexPrefix(this.publicKey);
+        String key = this.getPublicKey();
+        if (AccountKeyPublicUtils.isCompressedFormat(this.getPublicKey())) {
+            key = AccountKeyPublicUtils.decompressPublicKeyXY(this.getPublicKey());
+        }
+
+        String noPrefixKeyStr = Numeric.cleanHexPrefix(key);
         String[] arr = new String[2];
 
-        arr[0] = noPrefixKeyStr.substring(0, 63); // x point
-        arr[1] = noPrefixKeyStr.substring(64, 127); // y point
+        arr[0] = noPrefixKeyStr.substring(0, 64); // x point
+        arr[1] = noPrefixKeyStr.substring(64); // y point
 
         return arr;
     }

@@ -33,11 +33,7 @@ public class AccountKeyPublic implements IAccountKey{
     private String publicKey;
 
     public AccountKeyPublic(String publicKey) {
-        this.publicKey = publicKey;
-    }
-
-    protected AccountKeyPublic() {
-
+        setPublicKey(publicKey);
     }
 
     /**
@@ -47,11 +43,6 @@ public class AccountKeyPublic implements IAccountKey{
      * @return AccountKeyPublic
      */
     public static AccountKeyPublic fromXYPoint(String x, String y) {
-
-        if(!AccountKeyPublicUtils.checkPointValid(x, y)) {
-            throw new IllegalArgumentException("Invalid Argument Public Key value.");
-        }
-
         String publicKey = Numeric.prependHexPrefix(x) + Numeric.cleanHexPrefix(y);
         return new AccountKeyPublic(publicKey);
     }
@@ -62,20 +53,7 @@ public class AccountKeyPublic implements IAccountKey{
      * @return AccountKeyPublic
      */
     public static AccountKeyPublic fromPublicKey(String publicKey) {
-        String key = null;
-
-        if(!AccountKeyPublicUtils.isValidatePublicKeyFormat(publicKey)) {
-            throw new IllegalArgumentException("Invalid Argument Public Key value.");
-        }
-
-        //check Format -> Compressed or Decompressed
-        if(AccountKeyPublicUtils.isCompressedFormat(publicKey)) {
-            key = AccountKeyPublicUtils.decompressPublicKeyXY(publicKey);
-        } else {
-            key = publicKey;
-        }
-
-        return new AccountKeyPublic(key);
+        return new AccountKeyPublic(publicKey);
     }
 
     /**
@@ -144,5 +122,13 @@ public class AccountKeyPublic implements IAccountKey{
 
     public static byte getType() {
         return TYPE;
+    }
+
+    public void setPublicKey(String publicKey) {
+        if(!AccountKeyPublicUtils.isValidatePublicKeyFormat(publicKey)) {
+            throw new RuntimeException("Invalid Public Key format");
+        }
+
+        this.publicKey = publicKey;
     }
 }

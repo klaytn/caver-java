@@ -75,13 +75,6 @@ public class AccountKeyPublicUtils {
         return ecPoint;
     }
 
-    public static String decompressPublicKeyXY(String compressedPublicKey) {
-        ECPoint ecPoint = getECPoint(compressedPublicKey);
-        String pointXY = Numeric.toHexStringWithPrefixZeroPadded(ecPoint.getAffineXCoord().toBigInteger(), 64) +
-                Numeric.toHexStringNoPrefixZeroPadded(ecPoint.getAffineYCoord().toBigInteger(), 64);
-        return pointXY;
-    }
-
     public static boolean checkPointValid(String compressedPubKey) {
         ECPoint point = getECPoint(compressedPubKey);
         return point.isValid();
@@ -90,6 +83,15 @@ public class AccountKeyPublicUtils {
     public static boolean checkPointValid(String x, String y) {
         ECPoint point = getECPoint(x, y);
         return point.isValid();
+    }
+
+    public static boolean isCompressedFormat(String key) {
+        String noPrefixKey = Numeric.cleanHexPrefix(key);
+
+        if(noPrefixKey.length() == 66 && (noPrefixKey.startsWith("02") || noPrefixKey.startsWith("03"))) {
+            return true;
+        }
+        return false;
     }
 
     public static boolean isValidatePublicKeyFormat(String publicKey) {
@@ -116,15 +118,21 @@ public class AccountKeyPublicUtils {
         return result;
     }
 
-    public static boolean isCompressedFormat(String key) {
-        String noPrefixKey = Numeric.cleanHexPrefix(key);
-
-        if(noPrefixKey.length() == 66 && (noPrefixKey.startsWith("02") || noPrefixKey.startsWith("03"))) {
-            return true;
-        }
-        return false;
+    public static String decompressPublicKey(String compressedPublicKey) {
+        ECPoint ecPoint = getECPoint(compressedPublicKey);
+        String pointXY = Numeric.toHexStringWithPrefixZeroPadded(ecPoint.getAffineXCoord().toBigInteger(), 64) +
+                Numeric.toHexStringNoPrefixZeroPadded(ecPoint.getAffineYCoord().toBigInteger(), 64);
+        return pointXY;
     }
 
+    public static String compressPublicKey(String publicKey) {
+        if(isCompressedFormat(publicKey)) return publicKey;
 
+        BigInteger publicKeyBN = Numeric.toBigInt(publicKey);
+        String noPrefixKey = Numeric.cleanHexPrefix(publicKey);
 
+        String publicKeyX = noPrefixKey.substring(0, 64);
+        String pubKeyYPrefix = publicKeyBN.testBit(0) ? "03" : "02";
+        return pubKeyYPrefix + publicKeyX;
+    }
 }

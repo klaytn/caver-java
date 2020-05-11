@@ -83,7 +83,7 @@ public class AccountKeyPublic implements IAccountKey{
 
         try {
             //Get decompressed Public Key and ECC Point validation Check in toDecompressPublicKeyXY()
-            String publicKey = AccountKeyPublicUtils.decompressPublicKeyXY(compressedPubKey);
+            String publicKey = AccountKeyPublicUtils.decompressPublicKey(compressedPubKey);
             return new AccountKeyPublic(publicKey);
         } catch (Exception e) {
             throw new RuntimeException("There is an error while decoding process.");
@@ -96,7 +96,7 @@ public class AccountKeyPublic implements IAccountKey{
      */
     @Override
     public String getRLPEncoding() {
-        String compressedKey = AccountKeyPublicUtils.toCompressedPublicKey(Numeric.toBigInt(this.publicKey));
+        String compressedKey = AccountKeyPublicUtils.compressPublicKey(this.publicKey);
         byte[] encodedPubKey = RlpEncoder.encode(RlpString.create(Numeric.hexStringToByteArray(compressedKey)));
         byte[] type = new byte[] { AccountKeyPublic.TYPE };
 
@@ -110,7 +110,7 @@ public class AccountKeyPublic implements IAccountKey{
     public String[] getXYPoint() {
         String key = this.getPublicKey();
         if (AccountKeyPublicUtils.isCompressedFormat(this.getPublicKey())) {
-            key = AccountKeyPublicUtils.decompressPublicKeyXY(this.getPublicKey());
+            key = AccountKeyPublicUtils.decompressPublicKey(this.getPublicKey());
         }
 
         String noPrefixKeyStr = Numeric.cleanHexPrefix(key);

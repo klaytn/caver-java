@@ -1,9 +1,8 @@
 package com.klaytn.caver.common;
 
-import com.klaytn.caver.account.AccountKeyFail;
-import com.klaytn.caver.account.AccountKeyLegacy;
-import com.klaytn.caver.account.AccountKeyPublic;
+import com.klaytn.caver.account.*;
 import com.klaytn.caver.tx.account.AccountKey;
+import com.klaytn.caver.utils.AccountKeyPublicUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -11,10 +10,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AccountKeyTest.AccountKeyFailTests.class, AccountKeyTest.AccountKeyLegacyTest.class, AccountKeyTest.AccountKeyPublicTest.class})
+@Suite.SuiteClasses({AccountKeyTest.AccountKeyFailTests.class, AccountKeyTest.AccountKeyLegacyTest.class, AccountKeyTest.AccountKeyPublicTest.class, AccountKeyTest.AccountKeyWeightedMultiSigTest.class})
 public class AccountKeyTest {
 
     public static class AccountKeyFailTests {
@@ -288,5 +292,206 @@ public class AccountKeyTest {
         }
     }
 
+    public static class AccountKeyWeightedMultiSigTest {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
 
+        public void checkWeightedPublicKey(String[] expectedPublicKey, WeightedMultiSigOptions expectedOptions, AccountKeyWeightedMultiSig actualAccount) {
+            //check Threshold
+            assertEquals(expectedOptions.getThreshold(), actualAccount.getThreshold());
+
+            //check WeightedPublicKey
+            for(int i=0; i<expectedPublicKey.length; i++) {
+                assertEquals(expectedOptions.getWeights().get(i), actualAccount.getWeightedPublicKeys().get(i).getWeight());
+
+                String publicKey = actualAccount.getWeightedPublicKeys().get(i).getPublicKey();
+                if(AccountKeyPublicUtils.isCompressedFormat(publicKey)) {
+                    publicKey = AccountKeyPublicUtils.decompressPublicKey(publicKey);
+                }
+                assertEquals(expectedPublicKey[i], publicKey);
+            }
+        }
+        //CA-ACCOUNT-022
+        @Test
+        public void decodeWithString() {
+            String[] expectedAccountKey = new String[] {
+                    "0xc10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9803a1898f45b2770eda7abce70e8503b5e82b748ec0ce557ac9f4f4796965e4e",
+                    "0x1769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c12a4d0eeb91d7bd5d592653d43dd0593cfe24cb20a5dbef05832932e7c7191bf6"
+            };
+
+            BigInteger[] weight = new BigInteger[] {BigInteger.ONE, BigInteger.ONE};
+            List<BigInteger> weightList = Arrays.asList(weight);
+
+            WeightedMultiSigOptions expectedOption = new WeightedMultiSigOptions(BigInteger.valueOf(2), weightList);
+
+            String encodedKey = "0x04f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1";
+
+            AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.decode(encodedKey);
+
+            checkWeightedPublicKey(expectedAccountKey, expectedOption, multiSig);
+        }
+        //CA-ACCOUNT-023
+        @Test
+        public void decodeWithByteArray() {
+            String[] expectedAccountKey = new String[] {
+                    "0xc10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9803a1898f45b2770eda7abce70e8503b5e82b748ec0ce557ac9f4f4796965e4e",
+                    "0x1769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c12a4d0eeb91d7bd5d592653d43dd0593cfe24cb20a5dbef05832932e7c7191bf6"
+            };
+
+            BigInteger[] weight = new BigInteger[] {BigInteger.ONE, BigInteger.ONE};
+            List<BigInteger> weightList = Arrays.asList(weight);
+
+            WeightedMultiSigOptions expectedOption = new WeightedMultiSigOptions(BigInteger.valueOf(2), weightList);
+            byte[] encodedKeyArr = Numeric.hexStringToByteArray("0x04f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1");
+
+            AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.decode(encodedKeyArr);
+            checkWeightedPublicKey(expectedAccountKey, expectedOption, multiSig);
+        }
+        //CA-ACCOUNT-024
+        @Test
+        public void decodeStringWithException() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid RLP-encoded AccountKeyWeightedMultiSig Tag");
+
+            String encodedKey = "0x03f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1";
+            AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.decode(encodedKey);
+        }
+        //CA-ACCOUNT-025
+        @Test
+        public void decodeByteArrayWithException() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid RLP-encoded AccountKeyWeightedMultiSig Tag");
+
+            byte[] encodedKeyArr = Numeric.hexStringToByteArray("0x03f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1");
+            AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.decode(encodedKeyArr);
+        }
+        //CA-ACCOUNT-026
+        @Test
+        public void fromPublicKeysAndOptions() {
+            String[] expectedAccountKey = new String[] {
+                    "0xc10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9803a1898f45b2770eda7abce70e8503b5e82b748ec0ce557ac9f4f4796965e4e",
+                    "0x1769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c12a4d0eeb91d7bd5d592653d43dd0593cfe24cb20a5dbef05832932e7c7191bf6"
+            };
+
+            BigInteger[] weight = new BigInteger[] {BigInteger.ONE, BigInteger.ONE};
+            List<BigInteger> weightList = Arrays.asList(weight);
+
+            WeightedMultiSigOptions expectedOption = new WeightedMultiSigOptions(BigInteger.valueOf(2), weightList);
+
+            AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.fromPublicKeysAndOptions(expectedAccountKey, expectedOption);
+            checkWeightedPublicKey(expectedAccountKey, expectedOption, multiSig);
+        }
+        //CA-ACCOUNT-027
+        @Test
+        public void getRLPEncoding() {
+            String expectedEncodedData = "0x04f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1";
+
+            String[] publicKey = new String[] {
+                    "0xc10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9803a1898f45b2770eda7abce70e8503b5e82b748ec0ce557ac9f4f4796965e4e",
+                    "0x1769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c12a4d0eeb91d7bd5d592653d43dd0593cfe24cb20a5dbef05832932e7c7191bf6"
+            };
+
+            BigInteger threshold = BigInteger.valueOf(2);
+
+            BigInteger[] weight = new BigInteger[] {BigInteger.ONE, BigInteger.ONE};
+            List<BigInteger> weightList = Arrays.asList(weight);
+
+            WeightedMultiSigOptions option = new WeightedMultiSigOptions(threshold, weightList);
+            AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.fromPublicKeysAndOptions(publicKey, option);
+            String data = multiSig.getRLPEncoding();
+
+            assertEquals(expectedEncodedData, data);
+        }
+        //CA-ACCOUNT-028
+        @Test
+        public void weightedMultiSigOptionTest_ThresholdCondition1() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid argument in passing params.");
+
+            //The sum of weight of WeightedPublicKey should be bigger than threshold.
+            BigInteger threshold = BigInteger.TEN;
+            BigInteger[] weight = new BigInteger[] {BigInteger.ONE, BigInteger.ONE};
+            List<BigInteger> weightList = Arrays.asList(weight);
+
+            WeightedMultiSigOptions options = new WeightedMultiSigOptions(threshold, weightList);
+        }
+        //CA-ACCOUNT-029
+        @Test
+        public void weightedMultiSigOptionTest_ThresholdCondition2() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid argument in passing params.");
+
+            //threshold value has bigger than zero.
+            BigInteger threshold = BigInteger.ZERO;
+            BigInteger[] weight = new BigInteger[] {BigInteger.ONE, BigInteger.ONE};
+            List<BigInteger> weightList = Arrays.asList(weight);
+
+            WeightedMultiSigOptions options = new WeightedMultiSigOptions(threshold, weightList);
+        }
+        //CA-ACCOUNT-030
+        @Test
+        public void weightedMultiSigOptionTest_WeightCount() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid argument in passing params.");
+
+            //Weights option must have smaller than 10
+            BigInteger threshold = BigInteger.valueOf(2);
+            BigInteger[] weight = new BigInteger[] {BigInteger.ONE, BigInteger.ONE, BigInteger.ONE, BigInteger.ONE, BigInteger.ONE, BigInteger.ONE, BigInteger.ONE, BigInteger.ONE, BigInteger.ONE, BigInteger.ONE, BigInteger.ONE};
+            List<BigInteger> weightList = Arrays.asList(weight);
+
+            WeightedMultiSigOptions options = new WeightedMultiSigOptions(threshold, weightList);
+        }
+
+        //CA-ACCOUNT-031
+        @Test
+        public void fromPublicKeysAndOptionsWithException() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("The count of public keys is not equal to the length of weight array.");
+
+            String[] publicKey = new String[] {
+                    "0xc10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9803a1898f45b2770eda7abce70e8503b5e82b748ec0ce557ac9f4f4796965e4e",
+                    "0x1769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c12a4d0eeb91d7bd5d592653d43dd0593cfe24cb20a5dbef05832932e7c7191bf6",
+                    "0xd31970913271bb571db505418414ae15e97337b944ef1bef84a0e5d20c2ece7f27a39deb8f449edea7cecf8f3588a51974f31d676a8b200fb61175149fff9b74",
+                    "0x68ad36b538afe09997af82bb92d056404feb93816b5ec6a5199bc1d6bb15358fa3cfb84ac7cab3275e973be6699cd19c61ba8c470fee97a9998bd0684cf44355",
+            };
+
+            BigInteger threshold = BigInteger.valueOf(2);
+            BigInteger[] weight = new BigInteger[] {BigInteger.ONE, BigInteger.ONE, BigInteger.ONE};
+            List<BigInteger> weightList = Arrays.asList(weight);
+
+            WeightedMultiSigOptions options = new WeightedMultiSigOptions(threshold, weightList);
+
+            AccountKeyWeightedMultiSig accountKeyWeightedMultiSig = AccountKeyWeightedMultiSig.fromPublicKeysAndOptions(publicKey, options);
+        }
+
+        //CA-ACCOUNT-031
+        @Test
+        public void fromPublicKeysAndOptionsWithException2() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("It exceeds maximum public key count.");
+
+            String[] publicKey = new String[] {
+                    "0xc10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9803a1898f45b2770eda7abce70e8503b5e82b748ec0ce557ac9f4f4796965e4e",
+                    "0x1769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c12a4d0eeb91d7bd5d592653d43dd0593cfe24cb20a5dbef05832932e7c7191bf6",
+                    "0xd31970913271bb571db505418414ae15e97337b944ef1bef84a0e5d20c2ece7f27a39deb8f449edea7cecf8f3588a51974f31d676a8b200fb61175149fff9b74",
+                    "0x68ad36b538afe09997af82bb92d056404feb93816b5ec6a5199bc1d6bb15358fa3cfb84ac7cab3275e973be6699cd19c61ba8c470fee97a9998bd0684cf44355",
+                    "0xc10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9803a1898f45b2770eda7abce70e8503b5e82b748ec0ce557ac9f4f4796965e4e",
+                    "0x1769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c12a4d0eeb91d7bd5d592653d43dd0593cfe24cb20a5dbef05832932e7c7191bf6",
+                    "0xd31970913271bb571db505418414ae15e97337b944ef1bef84a0e5d20c2ece7f27a39deb8f449edea7cecf8f3588a51974f31d676a8b200fb61175149fff9b74",
+                    "0x68ad36b538afe09997af82bb92d056404feb93816b5ec6a5199bc1d6bb15358fa3cfb84ac7cab3275e973be6699cd19c61ba8c470fee97a9998bd0684cf44355",
+                    "0xc10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9803a1898f45b2770eda7abce70e8503b5e82b748ec0ce557ac9f4f4796965e4e",
+                    "0x1769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c12a4d0eeb91d7bd5d592653d43dd0593cfe24cb20a5dbef05832932e7c7191bf6",
+                    "0xd31970913271bb571db505418414ae15e97337b944ef1bef84a0e5d20c2ece7f27a39deb8f449edea7cecf8f3588a51974f31d676a8b200fb61175149fff9b74",
+                    "0x68ad36b538afe09997af82bb92d056404feb93816b5ec6a5199bc1d6bb15358fa3cfb84ac7cab3275e973be6699cd19c61ba8c470fee97a9998bd0684cf44355"
+            };
+
+            BigInteger threshold = BigInteger.valueOf(2);
+            BigInteger[] weight = new BigInteger[] {BigInteger.ONE, BigInteger.ONE, BigInteger.ONE};
+            List<BigInteger> weightList = Arrays.asList(weight);
+
+            WeightedMultiSigOptions options = new WeightedMultiSigOptions(threshold, weightList);
+
+            AccountKeyWeightedMultiSig accountKeyWeightedMultiSig = AccountKeyWeightedMultiSig.fromPublicKeysAndOptions(publicKey, options);
+        }
+    }
 }

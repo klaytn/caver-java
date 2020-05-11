@@ -24,7 +24,6 @@ public class AccountKeyPublic implements IAccountKey{
 
     private static final byte TYPE = (byte)0x02;
 
-    //0x{Public Key X point}||{Public Y point}
     /**
      * ECC Public Key value with "SECP-256k1" curve.
      * This String has following format.

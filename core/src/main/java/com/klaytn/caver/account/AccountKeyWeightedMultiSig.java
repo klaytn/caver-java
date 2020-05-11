@@ -95,16 +95,16 @@ public class AccountKeyWeightedMultiSig implements IAccountKey {
             throw new IllegalArgumentException("It exceeds maximum public key count.");
         }
 
-        if(publicKeyArr.length != options.weights.size()) {
+        if(publicKeyArr.length != options.getWeights().size()) {
             throw new IllegalArgumentException("The count of public keys is not equal to the length of weight array.");
         }
 
         List<WeightedPublicKey> weightedPublicKeyList = new ArrayList<>();
         for(int i=0; i< publicKeyArr.length; i++) {
-            weightedPublicKeyList.add(new WeightedPublicKey(publicKeyArr[i], options.weights.get(i)));
+            weightedPublicKeyList.add(new WeightedPublicKey(publicKeyArr[i], options.getWeights().get(i)));
         }
 
-        return new AccountKeyWeightedMultiSig(options.threshold, weightedPublicKeyList);
+        return new AccountKeyWeightedMultiSig(options.getThreshold(), weightedPublicKeyList);
     }
 
 
@@ -130,7 +130,7 @@ public class AccountKeyWeightedMultiSig implements IAccountKey {
             List<RlpType> rlpWeightedPublicKey = new ArrayList<>();
 
             BigInteger weight = item.weight;
-            String compressedKey = AccountKeyPublicUtils.compressPublicKey(item.publicKey);
+            String compressedKey = AccountKeyPublicUtils.compressPublicKey(item.getPublicKey());
             rlpWeightedPublicKey.addAll(Arrays.asList(
                     RlpString.create(weight),
                     RlpString.create(Numeric.hexStringToByteArray(compressedKey))

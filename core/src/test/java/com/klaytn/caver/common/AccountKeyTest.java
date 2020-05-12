@@ -63,7 +63,7 @@ public class AccountKeyTest {
             AccountKeyFail accountKeyFail = AccountKeyFail.decode(encodedString);
         }
 
-        //CA-ACCOUNT-005
+        //CA-ACCOUNT-004
         @Test
         public void decodeWithByteArray_throwException() {
             expectedException.expect(RuntimeException.class);
@@ -74,7 +74,7 @@ public class AccountKeyTest {
             //should throw RuntimeException
             AccountKeyFail accountKeyFail = AccountKeyFail.decode(encodedArr);
         }
-        //CA-ACCOUNT-006
+        //CA-ACCOUNT-005
         @Test
         public void encodeKey() {
             String expected = "0x03c0";
@@ -88,7 +88,7 @@ public class AccountKeyTest {
 
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
-        //CA-ACCOUNT-007
+        //CA-ACCOUNT-006
         @Test
         public void decodeWithString() {
             String encodedString = "0x01c0";
@@ -102,7 +102,7 @@ public class AccountKeyTest {
             }
         }
 
-        //CA-ACCOUNT-008
+        //CA-ACCOUNT-007
         @Test
         public void decodeWithByteArray() {
             byte[] encodedArr = new byte[]{(byte) 0x01, (byte) 0xc0};
@@ -116,7 +116,7 @@ public class AccountKeyTest {
             }
         }
 
-        //CA-ACCOUNT-009
+        //CA-ACCOUNT-008
         @Test
         public void decodeWithString_throwException() {
             expectedException.expect(RuntimeException.class);
@@ -128,7 +128,7 @@ public class AccountKeyTest {
             AccountKeyLegacy accountKeyLegacy = AccountKeyLegacy.decode(encodedString);
         }
 
-        //CA-ACCOUNT-011
+        //CA-ACCOUNT-009
         @Test
         public void decodeWithByteArray_throwException() {
             expectedException.expect(RuntimeException.class);
@@ -140,7 +140,7 @@ public class AccountKeyTest {
             AccountKeyLegacy accountKeyLegacy = AccountKeyLegacy.decode(encodedArr);
         }
 
-        //CA-ACCOUNT-012
+        //CA-ACCOUNT-010
         @Test
         public void encode() {
             String encodedString = "0x01c0";
@@ -159,7 +159,7 @@ public class AccountKeyTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
-        //CA-ACCOUNT-013
+        //CA-ACCOUNT-011
         @Test
         public void decodeWithString() {
             String expectedAccountKey = "0xc10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9803a1898f45b2770eda7abce70e8503b5e82b748ec0ce557ac9f4f4796965e4e";
@@ -176,7 +176,7 @@ public class AccountKeyTest {
             }
         }
 
-        //CA-ACCOUNT-014
+        //CA-ACCOUNT-012
         @Test
         public void decodeWithByteArray() {
             String expectedAccountKey = "0xc10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9803a1898f45b2770eda7abce70e8503b5e82b748ec0ce557ac9f4f4796965e4e";
@@ -194,7 +194,7 @@ public class AccountKeyTest {
             }
         }
 
-        //CA-ACCOUNT-015
+        //CA-ACCOUNT-013
         @Test
         public void decodeWithString_throwException() {
             expectedException.expect(IllegalArgumentException.class);
@@ -206,7 +206,7 @@ public class AccountKeyTest {
             AccountKeyPublic accountKeyPublic = AccountKeyPublic.decode(invalidEncodedValue);
         }
 
-        //CA-ACCOUNT-016
+        //CA-ACCOUNT-014
         @Test
         public void decodeWithByteArray_throwException() {
             expectedException.expect(IllegalArgumentException.class);
@@ -218,7 +218,7 @@ public class AccountKeyTest {
             AccountKeyPublic accountKeyPublic = AccountKeyPublic.decode(invalidEncodedValue);
         }
 
-        //CA-ACCOUNT-017
+        //CA-ACCOUNT-015
         @Test
         public void fromXYPoint() {
             String publicKey = "0x022dfe0d7c496d954037ab15afd3352008f6c5bfe972850b7b321e96721f4bf11f7e6aa508dd50af53e190dcd4a2559aa1c3ef3f78b97b97e2928ac33e038464";
@@ -233,7 +233,7 @@ public class AccountKeyTest {
             assertEquals(publicKey, accountKeyPublic.getPublicKey());
         }
 
-        //CA-ACCOUNT-018
+        //CA-ACCOUNT-016
         @Test
         public void fromPublicKey_uncompressedFormat() {
             String publicKey = "0x022dfe0d7c496d954037ab15afd3352008f6c5bfe972850b7b321e96721f4bf11f7e6aa508dd50af53e190dcd4a2559aa1c3ef3f78b97b97e2928ac33e038464";
@@ -244,7 +244,7 @@ public class AccountKeyTest {
             assertEquals(publicKey, accountKeyPublic.getPublicKey());
         }
 
-        //CA-ACCOUNT-019
+        //CA-ACCOUNT-017
         @Test
         public void fromPublicKey_compressedFormat() {
             String publicKey = "0x02022dfe0d7c496d954037ab15afd3352008f6c5bfe972850b7b321e96721f4bf1";
@@ -255,7 +255,7 @@ public class AccountKeyTest {
             assertEquals(publicKey, accountKeyPublic.getPublicKey());
         }
 
-        //CA-ACCOUNT-020
+        //CA-ACCOUNT-018
         @Test
         public void getXYPoint_uncompressedFormat() {
             String publicKey = "0x022dfe0d7c496d954037ab15afd3352008f6c5bfe972850b7b321e96721f4bf11f7e6aa508dd50af53e190dcd4a2559aa1c3ef3f78b97b97e2928ac33e038464";
@@ -272,7 +272,7 @@ public class AccountKeyTest {
             assertEquals(expectedY, arr[1]);
         }
 
-        //CA-ACCOUNT-021
+        //CA-ACCOUNT-019
         @Test
         public void getXYPoint_compressedFormat() {
             String compressedPublicKey = "0x02022dfe0d7c496d954037ab15afd3352008f6c5bfe972850b7b321e96721f4bf1";
@@ -311,7 +311,7 @@ public class AccountKeyTest {
                 assertEquals(expectedPublicKey[i], publicKey);
             }
         }
-        //CA-ACCOUNT-022
+        //CA-ACCOUNT-020
         @Test
         public void decodeWithString() {
             String[] expectedAccountKey = new String[] {
@@ -330,7 +330,7 @@ public class AccountKeyTest {
 
             checkWeightedPublicKey(expectedAccountKey, expectedOption, multiSig);
         }
-        //CA-ACCOUNT-023
+        //CA-ACCOUNT-021
         @Test
         public void decodeWithByteArray() {
             String[] expectedAccountKey = new String[] {
@@ -347,7 +347,7 @@ public class AccountKeyTest {
             AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.decode(encodedKeyArr);
             checkWeightedPublicKey(expectedAccountKey, expectedOption, multiSig);
         }
-        //CA-ACCOUNT-024
+        //CA-ACCOUNT-022
         @Test
         public void decodeStringWithException() {
             expectedException.expect(IllegalArgumentException.class);
@@ -356,7 +356,7 @@ public class AccountKeyTest {
             String encodedKey = "0x03f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1";
             AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.decode(encodedKey);
         }
-        //CA-ACCOUNT-025
+        //CA-ACCOUNT-023
         @Test
         public void decodeByteArrayWithException() {
             expectedException.expect(IllegalArgumentException.class);
@@ -365,7 +365,7 @@ public class AccountKeyTest {
             byte[] encodedKeyArr = Numeric.hexStringToByteArray("0x03f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1");
             AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.decode(encodedKeyArr);
         }
-        //CA-ACCOUNT-026
+        //CA-ACCOUNT-024
         @Test
         public void fromPublicKeysAndOptions() {
             String[] expectedAccountKey = new String[] {
@@ -381,7 +381,7 @@ public class AccountKeyTest {
             AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.fromPublicKeysAndOptions(expectedAccountKey, expectedOption);
             checkWeightedPublicKey(expectedAccountKey, expectedOption, multiSig);
         }
-        //CA-ACCOUNT-027
+        //CA-ACCOUNT-025
         @Test
         public void getRLPEncoding() {
             String expectedEncodedData = "0x04f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1";
@@ -402,7 +402,7 @@ public class AccountKeyTest {
 
             assertEquals(expectedEncodedData, data);
         }
-        //CA-ACCOUNT-028
+        //CA-ACCOUNT-026
         @Test
         public void weightedMultiSigOptionTest_ThresholdCondition1() {
             expectedException.expect(IllegalArgumentException.class);
@@ -415,7 +415,7 @@ public class AccountKeyTest {
 
             WeightedMultiSigOptions options = new WeightedMultiSigOptions(threshold, weightList);
         }
-        //CA-ACCOUNT-029
+        //CA-ACCOUNT-027
         @Test
         public void weightedMultiSigOptionTest_ThresholdCondition2() {
             expectedException.expect(IllegalArgumentException.class);
@@ -428,7 +428,7 @@ public class AccountKeyTest {
 
             WeightedMultiSigOptions options = new WeightedMultiSigOptions(threshold, weightList);
         }
-        //CA-ACCOUNT-030
+        //CA-ACCOUNT-028
         @Test
         public void weightedMultiSigOptionTest_WeightCount() {
             expectedException.expect(IllegalArgumentException.class);
@@ -442,7 +442,7 @@ public class AccountKeyTest {
             WeightedMultiSigOptions options = new WeightedMultiSigOptions(threshold, weightList);
         }
 
-        //CA-ACCOUNT-031
+        //CA-ACCOUNT-029
         @Test
         public void fromPublicKeysAndOptionsWithException() {
             expectedException.expect(IllegalArgumentException.class);
@@ -464,7 +464,7 @@ public class AccountKeyTest {
             AccountKeyWeightedMultiSig accountKeyWeightedMultiSig = AccountKeyWeightedMultiSig.fromPublicKeysAndOptions(publicKey, options);
         }
 
-        //CA-ACCOUNT-031
+        //CA-ACCOUNT-030
         @Test
         public void fromPublicKeysAndOptionsWithException2() {
             expectedException.expect(IllegalArgumentException.class);

@@ -10,15 +10,25 @@ import java.util.Arrays;
  * If an account has the key AccountKeyFail, the tx validation process always fails.
  */
 public class AccountKeyFail implements IAccountKey{
+    /**
+     * AccountKeyFail's RLP-Encoded data
+     */
     private static final byte[] RLP = new byte[]{(byte) 0x03, (byte) 0xc0};
+
+    /**
+     * AccountKeyFail's Type attribute.
+     */
     private static final byte TYPE = (byte)0x03;
 
+    /**
+     * Creates an AccountKeyFail instance.
+     */
     public AccountKeyFail() {
     }
 
     /**
      * Decodes a RLP-encoded AccountKeyFail string
-     * @param rlpEncodedKey RLP-encoded AccountKeyPublic string
+     * @param rlpEncodedKey RLP-encoded AccountKeyFail string
      * @return AccountKeyFail
      */
     public static AccountKeyFail decode(String rlpEncodedKey) {
@@ -39,14 +49,18 @@ public class AccountKeyFail implements IAccountKey{
     }
 
     /**
-     * Encodes a AccountKeyPublic Object by RLP-Encoding method.
-     * @return RLP-encoded AccountKeyPublic String
+     * Encodes a AccountKeyFail Object by RLP-Encoding method.
+     * @return RLP-encoded AccountKeyFail String
      */
     @Override
     public String getRLPEncoding() {
         return Numeric.toHexString(RLP);
     }
 
+    /**
+     * Returns an AccountKeyFail's type attribute
+     * @return AccountKeyFail's type attribute
+     */
     public static byte getType() {
         return TYPE;
     }

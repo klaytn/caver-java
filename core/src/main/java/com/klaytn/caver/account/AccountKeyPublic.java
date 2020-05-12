@@ -14,14 +14,17 @@ import java.util.Arrays;
 /**
  * AccountKeyPublic is used for accounts having one public key.
  * If an account has an AccountKeyPublic object, the tx validation process is done like below:
- * <ul>
- * <li> Get the public key derived from ecrecover(txhash, txsig) </li>
- * <li> Check that the derived public key is the same as the corresponding </li>
- * <li> account's public key </li>
- * </ul>
+ *
+ * Get the public key derived from ecrecover(txhash, txsig)
+ * Check that the derived public key is the same as the corresponding
+ * account's public key
+ *
  */
 public class AccountKeyPublic implements IAccountKey{
 
+    /**
+     * AccountKeyPublic's Type attribute.
+     */
     private static final byte TYPE = (byte)0x02;
 
     /**
@@ -32,6 +35,10 @@ public class AccountKeyPublic implements IAccountKey{
      */
     private String publicKey;
 
+    /**
+     * Creates an AccountKeyPublic instance.
+     * @param publicKey ECC public key. (Uncompress or compress format)
+     */
     public AccountKeyPublic(String publicKey) {
         setPublicKey(publicKey);
     }
@@ -121,16 +128,28 @@ public class AccountKeyPublic implements IAccountKey{
         return arr;
     }
 
+    /**
+     * Getter function for publicKey
+     * @return ECC PublicKey string
+     */
     public String getPublicKey() {
         return publicKey;
     }
 
+    /**
+     * Returns an AccountKeyPublic's type attribute
+     * @return AccountKeyPublic's type attribute
+     */
     public static byte getType() {
         return TYPE;
     }
 
+    /**
+     * Setter function for publicKey
+     * @param publicKey ECC public key(compressed or uncompressed format)
+     */
     public void setPublicKey(String publicKey) {
-        if(!AccountKeyPublicUtils.isValidatePublicKeyFormat(publicKey)) {
+        if(!AccountKeyPublicUtils.isValidPublicKey(publicKey)) {
             throw new RuntimeException("Invalid Public Key format");
         }
 

@@ -70,7 +70,7 @@ public class WeightedMultiSigOptions {
     }
 
     /**
-     * Threshold getter method
+     * Getter function for threshold
      * @return threshold
      */
     public BigInteger getThreshold() {
@@ -78,7 +78,7 @@ public class WeightedMultiSigOptions {
     }
 
     /**
-     * List of weight getter method
+     * Getter function for list of weight
      * @return weights
      */
     public List<BigInteger> getWeights() {

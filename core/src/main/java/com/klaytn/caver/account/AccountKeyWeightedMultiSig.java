@@ -18,6 +18,9 @@ import java.util.List;
  */
 public class AccountKeyWeightedMultiSig implements IAccountKey {
 
+    /**
+     * AccountKeyWeightedMultiSig's Type attribute.
+     */
     private static final byte TYPE = (byte)0x04;
 
     /**
@@ -115,10 +118,10 @@ public class AccountKeyWeightedMultiSig implements IAccountKey {
     @Override
     public String getRLPEncoding() {
         if (threshold == null || weightedPublicKeys == null) {
-            throw new RuntimeException();
+            throw new NullPointerException("threshold or weightedPublicKeys must be exists for multisig.");
         }
         if(weightedPublicKeys.size() == 0) {
-            throw new RuntimeException();
+            throw new RuntimeException("weightedPublicKeys must have items for multisig.");
         }
 
         List<RlpType> rlpTypeList = new ArrayList<>();
@@ -146,10 +149,18 @@ public class AccountKeyWeightedMultiSig implements IAccountKey {
         return Numeric.toHexString(BytesUtils.concat(type, encodedWeightedKey));
     }
 
+    /**
+     * Getter function for threshold
+     * @return threshold
+     */
     public BigInteger getThreshold() {
         return threshold;
     }
 
+    /**
+     * Getter function for List of WeightedOfPublicKey
+     * @return List of WeightedOfPublicKey
+     */
     public List<WeightedPublicKey> getWeightedPublicKeys() {
         return weightedPublicKeys;
     }

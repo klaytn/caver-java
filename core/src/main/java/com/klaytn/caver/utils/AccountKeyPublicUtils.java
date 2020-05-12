@@ -35,7 +35,12 @@ public class AccountKeyPublicUtils {
     public static final X9ECParameters CURVE_PARAMS = CustomNamedCurves.getByName("secp256k1");
     static final ECDomainParameters CURVE = new ECDomainParameters(
             CURVE_PARAMS.getCurve(), CURVE_PARAMS.getG(), CURVE_PARAMS.getN(), CURVE_PARAMS.getH());
-    
+
+    /**
+     * Convert uncompressed public key to compress format
+     * @param publicKey uncompressed public key biginteger
+     * @return compressed public key string
+     */
     public static String toCompressedPublicKey(BigInteger publicKey) {
         String hexStringPublicKey = Numeric.toHexStringNoPrefixZeroPadded(publicKey, 128);
         String publicKeyX = hexStringPublicKey.substring(0, 64);
@@ -43,6 +48,11 @@ public class AccountKeyPublicUtils {
         return pubKeyYPrefix + publicKeyX;
     }
 
+    /**
+     * Creates AccountKeyPublic(caver.tx.account.AccountKeyPublic) instance with converting uncompressed format
+     * @param compressedPublicKey compressed public key
+     * @return AccountKeyPublic(caver.tx.account.AccountKeyPublic)
+     */
     public static AccountKeyPublic decompressKey(String compressedPublicKey) {
         boolean yBit = Numeric.cleanHexPrefix(compressedPublicKey).substring(0, 2).equals("03");
         BigInteger xBN = Numeric.toBigInt(compressedPublicKey.substring(2));
@@ -56,6 +66,11 @@ public class AccountKeyPublicUtils {
         );
     }
 
+    /**
+     * Creates ECPoint instance using compressed public key
+     * @param compressedPublicKey compressed public key
+     * @return ECPoint
+     */
     public static ECPoint getECPoint(String compressedPublicKey) {
         String noPrefixPublicKey = Numeric.cleanHexPrefix(compressedPublicKey);
         boolean yBit = noPrefixPublicKey.startsWith("03");
@@ -67,6 +82,12 @@ public class AccountKeyPublicUtils {
         return ecPoint;
     }
 
+    /**
+     * Creates ECPoint instance using ecc public key x,y coordinates
+     * @param x x point
+     * @param y y point
+     * @return ECPoint
+     */
     public static ECPoint getECPoint(String x, String y) {
         BigInteger bigIntegerX = Numeric.toBigInt(x);
         BigInteger bigIntegerY = Numeric.toBigInt(y);
@@ -75,16 +96,32 @@ public class AccountKeyPublicUtils {
         return ecPoint;
     }
 
+    /**
+     * Check if the X, Y coordinates included in the public key are valid.
+     * @param compressedPubKey compressed public key
+     * @return valid or not
+     */
     public static boolean checkPointValid(String compressedPubKey) {
         ECPoint point = getECPoint(compressedPubKey);
         return point.isValid();
     }
 
+    /**
+     * Check that given X, Y coordinates included in the public key.
+     * @param x x point
+     * @param y y point
+     * @return valid or not
+     */
     public static boolean checkPointValid(String x, String y) {
         ECPoint point = getECPoint(x, y);
         return point.isValid();
     }
 
+    /**
+     * Check if the given key is in compressed format.
+     * @param key public key
+     * @return valid or not
+     */
     public static boolean isCompressedFormat(String key) {
         String noPrefixKey = Numeric.cleanHexPrefix(key);
 
@@ -94,7 +131,13 @@ public class AccountKeyPublicUtils {
         return false;
     }
 
-    public static boolean isValidatePublicKeyFormat(String publicKey) {
+    /**
+     * Check if th given public key is valid.
+     * It also check both compressed and uncompressed key.
+     * @param publicKey public key
+     * @return valid or not
+     */
+    public static boolean isValidPublicKey(String publicKey) {
         String noPrefixPubKey = Numeric.cleanHexPrefix(publicKey);
         ECPoint point = null;
         boolean result;
@@ -118,6 +161,11 @@ public class AccountKeyPublicUtils {
         return result;
     }
 
+    /**
+     * Convert an compressed public key to uncompressed format.
+     * @param compressedPublicKey uncompressed public key string
+     * @return uncompressed public key string
+     */
     public static String decompressPublicKey(String compressedPublicKey) {
         ECPoint ecPoint = getECPoint(compressedPublicKey);
         String pointXY = Numeric.toHexStringWithPrefixZeroPadded(ecPoint.getAffineXCoord().toBigInteger(), 64) +
@@ -125,6 +173,12 @@ public class AccountKeyPublicUtils {
         return pointXY;
     }
 
+    /**
+     * Convert an uncompressed public key to compressed public key
+     * Given public key has already compressed format it will return.
+     * @param publicKey public key string(uncompressed or compressed)
+     * @return compressed public key
+     */
     public static String compressPublicKey(String publicKey) {
         if(isCompressedFormat(publicKey)) return publicKey;
 

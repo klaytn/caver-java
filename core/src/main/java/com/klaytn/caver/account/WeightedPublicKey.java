@@ -34,7 +34,7 @@ public class WeightedPublicKey {
     }
 
     /**
-     * PublicKey getter function.
+     * Getter function for PublicKey
      * @return publicKey
      */
     public String getPublicKey() {
@@ -42,19 +42,19 @@ public class WeightedPublicKey {
     }
 
     /**
-     * PublicKey setter function.
+     * Setter function for PublicKey
      * It allows both compressed and uncompressed format.
      * @param publicKey ecc Public key
      */
     public void setPublicKey(String publicKey) {
-        if(!AccountKeyPublicUtils.isValidatePublicKeyFormat(publicKey)) {
+        if(!AccountKeyPublicUtils.isValidPublicKey(publicKey)) {
             throw new IllegalArgumentException("Invalid Public key format");
         }
         this.publicKey = publicKey;
     }
 
     /**
-     * Weight getter method
+     * Getter function for weight.
      * @return weight
      */
     public BigInteger getWeight() {
@@ -62,8 +62,8 @@ public class WeightedPublicKey {
     }
 
     /**
-     * Weight setter method
-     * @param weight a weigth
+     * Setter function for weight
+     * @param weight a weight
      */
     public void setWeight(BigInteger weight) {
         this.weight = weight;

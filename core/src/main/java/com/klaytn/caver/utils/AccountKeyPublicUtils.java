@@ -202,7 +202,7 @@ public class AccountKeyPublicUtils {
     }
 
     /**
-     * Convert an uncompressed public key to compressed public key
+     * Convert an uncompressed public key to a compressed public key
      * Given public key has already compressed format, it will return.
      * @param publicKey public key string(uncompressed or compressed)
      * @return compressed public key

@@ -35,6 +35,9 @@ public class AccountKeyPublic implements IAccountKey{
      */
     private String publicKey;
 
+    public static final int OFFSET_X_POINT = 0;
+    public static final int OFFSET_Y_POINT = 1;
+
     /**
      * Creates an AccountKeyPublic instance.
      * @param publicKey ECC public key. (Uncompress or compress format)
@@ -123,8 +126,8 @@ public class AccountKeyPublic implements IAccountKey{
         String noPrefixKeyStr = Numeric.cleanHexPrefix(key);
         String[] arr = new String[2];
 
-        arr[0] = noPrefixKeyStr.substring(0, 64); // x point
-        arr[1] = noPrefixKeyStr.substring(64); // y point
+        arr[OFFSET_X_POINT] = noPrefixKeyStr.substring(0, 64); // x point
+        arr[OFFSET_Y_POINT] = noPrefixKeyStr.substring(64); // y point
 
         return arr;
     }

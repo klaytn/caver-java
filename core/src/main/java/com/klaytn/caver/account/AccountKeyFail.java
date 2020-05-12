@@ -18,7 +18,7 @@ public class AccountKeyFail implements IAccountKey{
     /**
      * AccountKeyFail's Type attribute.
      */
-    private static final byte TYPE = (byte)0x03;
+    private static final String TYPE = "0x03";
 
     /**
      * Creates an AccountKeyFail instance.
@@ -61,7 +61,7 @@ public class AccountKeyFail implements IAccountKey{
      * Returns an AccountKeyFail's type attribute
      * @return AccountKeyFail's type attribute
      */
-    public static byte getType() {
+    public static String getType() {
         return TYPE;
     }
 }

@@ -1,7 +1,6 @@
 package com.klaytn.caver.common;
 
 import com.klaytn.caver.account.*;
-import com.klaytn.caver.tx.account.AccountKey;
 import com.klaytn.caver.utils.AccountKeyPublicUtils;
 import org.junit.Rule;
 import org.junit.Test;
@@ -11,7 +10,6 @@ import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -305,7 +303,7 @@ public class AccountKeyTest {
                 assertEquals(expectedOptions.getWeights().get(i), actualAccount.getWeightedPublicKeys().get(i).getWeight());
 
                 String publicKey = actualAccount.getWeightedPublicKeys().get(i).getPublicKey();
-                if(AccountKeyPublicUtils.isCompressedFormat(publicKey)) {
+                if(AccountKeyPublicUtils.isCompressedPublicKey(publicKey)) {
                     publicKey = AccountKeyPublicUtils.decompressPublicKey(publicKey);
                 }
                 assertEquals(expectedPublicKey[i], publicKey);

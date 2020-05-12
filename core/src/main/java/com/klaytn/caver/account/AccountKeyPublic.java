@@ -25,7 +25,7 @@ public class AccountKeyPublic implements IAccountKey{
     /**
      * AccountKeyPublic's Type attribute.
      */
-    private static final byte TYPE = (byte)0x02;
+    private static final String TYPE = "0x02";
 
     /**
      * ECC Public Key value with "SECP-256k1" curve.
@@ -78,7 +78,8 @@ public class AccountKeyPublic implements IAccountKey{
      * @return AccountKeyPublic
      */
     public static AccountKeyPublic decode(byte[] rlpEncodedKey) {
-        if(rlpEncodedKey[0] != AccountKeyPublic.TYPE) {
+        byte type = Numeric.hexStringToByteArray(getType())[0];
+        if(rlpEncodedKey[0] != type) {
             throw new IllegalArgumentException("Invalid RLP-encoded AccountKeyPublic Tag");
         }
 
@@ -104,7 +105,7 @@ public class AccountKeyPublic implements IAccountKey{
     public String getRLPEncoding() {
         String compressedKey = AccountKeyPublicUtils.compressPublicKey(this.publicKey);
         byte[] encodedPubKey = RlpEncoder.encode(RlpString.create(Numeric.hexStringToByteArray(compressedKey)));
-        byte[] type = new byte[] { AccountKeyPublic.TYPE };
+        byte[] type = Numeric.hexStringToByteArray(AccountKeyPublic.getType());
 
         return Numeric.toHexString(BytesUtils.concat(type, encodedPubKey));
     }
@@ -115,7 +116,7 @@ public class AccountKeyPublic implements IAccountKey{
      */
     public String[] getXYPoint() {
         String key = this.getPublicKey();
-        if (AccountKeyPublicUtils.isCompressedFormat(this.getPublicKey())) {
+        if (AccountKeyPublicUtils.isCompressedPublicKey(this.getPublicKey())) {
             key = AccountKeyPublicUtils.decompressPublicKey(this.getPublicKey());
         }
 
@@ -140,7 +141,7 @@ public class AccountKeyPublic implements IAccountKey{
      * Returns an AccountKeyPublic's type attribute
      * @return AccountKeyPublic's type attribute
      */
-    public static byte getType() {
+    public static String getType() {
         return TYPE;
     }
 

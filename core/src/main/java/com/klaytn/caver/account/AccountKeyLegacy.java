@@ -24,7 +24,7 @@ public class AccountKeyLegacy implements IAccountKey{
     /**
      * AccountKeyLegacy's Type attribute.
      */
-    private static final byte TYPE = (byte)0x01;
+    private static final String TYPE = "0x01";
 
 
     /**
@@ -69,7 +69,7 @@ public class AccountKeyLegacy implements IAccountKey{
      * Returns an AccountKeyLegacy's type attribute
      * @return AccountKeyLegacy's type attribute
      */
-    public static byte getType() {
+    public static String getType() {
         return TYPE;
     }
 }

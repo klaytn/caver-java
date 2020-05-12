@@ -21,7 +21,7 @@ public class AccountKeyWeightedMultiSig implements IAccountKey {
     /**
      * AccountKeyWeightedMultiSig's Type attribute.
      */
-    private static final byte TYPE = (byte)0x04;
+    private static final String TYPE = "0x04";
 
     /**
      * Validation threshold. To be a valid transaction, the weight sum of signatures should be larger than
@@ -62,7 +62,8 @@ public class AccountKeyWeightedMultiSig implements IAccountKey {
      */
     public static AccountKeyWeightedMultiSig decode(byte[] rlpEncodedKey) {
         //check tag
-        if(rlpEncodedKey[0] != AccountKeyWeightedMultiSig.TYPE) {
+        byte type = Numeric.hexStringToByteArray(TYPE)[0];
+        if(rlpEncodedKey[0] != type) {
             throw new IllegalArgumentException("Invalid RLP-encoded AccountKeyWeightedMultiSig Tag");
         }
 
@@ -144,7 +145,7 @@ public class AccountKeyWeightedMultiSig implements IAccountKey {
         rlpTypeList.add(new RlpList(rlpWeightedPublicKeyList));
 
         byte[] encodedWeightedKey = RlpEncoder.encode(new RlpList(rlpTypeList));
-        byte[] type = new byte[] {AccountKeyWeightedMultiSig.TYPE};
+        byte[] type = Numeric.hexStringToByteArray(AccountKeyWeightedMultiSig.getType());
 
         return Numeric.toHexString(BytesUtils.concat(type, encodedWeightedKey));
     }
@@ -163,5 +164,9 @@ public class AccountKeyWeightedMultiSig implements IAccountKey {
      */
     public List<WeightedPublicKey> getWeightedPublicKeys() {
         return weightedPublicKeys;
+    }
+
+    public static String getType() {
+        return TYPE;
     }
 }

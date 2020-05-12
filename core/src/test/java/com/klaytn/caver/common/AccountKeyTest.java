@@ -23,6 +23,7 @@ public class AccountKeyTest {
 
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
+
         //CA-ACCOUNT-001
         @Test
         public void decodeWithString() {
@@ -72,6 +73,7 @@ public class AccountKeyTest {
             //should throw RuntimeException
             AccountKeyFail accountKeyFail = AccountKeyFail.decode(encodedArr);
         }
+
         //CA-ACCOUNT-005
         @Test
         public void encodeKey() {
@@ -86,6 +88,7 @@ public class AccountKeyTest {
 
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
+
         //CA-ACCOUNT-006
         @Test
         public void decodeWithString() {
@@ -309,6 +312,7 @@ public class AccountKeyTest {
                 assertEquals(expectedPublicKey[i], publicKey);
             }
         }
+
         //CA-ACCOUNT-020
         @Test
         public void decodeWithString() {
@@ -328,6 +332,7 @@ public class AccountKeyTest {
 
             checkWeightedPublicKey(expectedAccountKey, expectedOption, multiSig);
         }
+
         //CA-ACCOUNT-021
         @Test
         public void decodeWithByteArray() {
@@ -345,6 +350,7 @@ public class AccountKeyTest {
             AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.decode(encodedKeyArr);
             checkWeightedPublicKey(expectedAccountKey, expectedOption, multiSig);
         }
+
         //CA-ACCOUNT-022
         @Test
         public void decodeStringWithException() {
@@ -354,6 +360,7 @@ public class AccountKeyTest {
             String encodedKey = "0x03f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1";
             AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.decode(encodedKey);
         }
+
         //CA-ACCOUNT-023
         @Test
         public void decodeByteArrayWithException() {
@@ -363,6 +370,7 @@ public class AccountKeyTest {
             byte[] encodedKeyArr = Numeric.hexStringToByteArray("0x03f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1");
             AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.decode(encodedKeyArr);
         }
+
         //CA-ACCOUNT-024
         @Test
         public void fromPublicKeysAndOptions() {
@@ -379,6 +387,7 @@ public class AccountKeyTest {
             AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.fromPublicKeysAndOptions(expectedAccountKey, expectedOption);
             checkWeightedPublicKey(expectedAccountKey, expectedOption, multiSig);
         }
+
         //CA-ACCOUNT-025
         @Test
         public void getRLPEncoding() {
@@ -400,6 +409,7 @@ public class AccountKeyTest {
 
             assertEquals(expectedEncodedData, data);
         }
+
         //CA-ACCOUNT-026
         @Test
         public void weightedMultiSigOptionTest_ThresholdCondition1() {
@@ -413,6 +423,7 @@ public class AccountKeyTest {
 
             WeightedMultiSigOptions options = new WeightedMultiSigOptions(threshold, weightList);
         }
+
         //CA-ACCOUNT-027
         @Test
         public void weightedMultiSigOptionTest_ThresholdCondition2() {
@@ -426,6 +437,7 @@ public class AccountKeyTest {
 
             WeightedMultiSigOptions options = new WeightedMultiSigOptions(threshold, weightList);
         }
+
         //CA-ACCOUNT-028
         @Test
         public void weightedMultiSigOptionTest_WeightCount() {

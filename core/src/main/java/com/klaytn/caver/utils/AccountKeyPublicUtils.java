@@ -68,11 +68,15 @@ public class AccountKeyPublicUtils {
 
     /**
      * Creates ECPoint instance using compressed public key
-     * @param compressedPublicKey compressed public key
+     * @param key public key
      * @return ECPoint
      */
-    public static ECPoint getECPoint(String compressedPublicKey) {
-        String noPrefixPublicKey = Numeric.cleanHexPrefix(compressedPublicKey);
+    public static ECPoint getECPoint(String key) {
+        if(isUncompressedPublicKey(key)) {
+            key = compressPublicKey(key);
+        }
+
+        String noPrefixPublicKey = Numeric.cleanHexPrefix(key);
         boolean yBit = noPrefixPublicKey.startsWith("03");
         BigInteger xBN = Numeric.toBigInt(noPrefixPublicKey);
         X9IntegerConverter x9 = new X9IntegerConverter();

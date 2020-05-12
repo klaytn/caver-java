@@ -166,6 +166,10 @@ public class AccountKeyWeightedMultiSig implements IAccountKey {
         return weightedPublicKeys;
     }
 
+    /**
+     * Returns an AccountKeyWeightedMultiSig's type attribute
+     * @return AccountKeyWeightedMultiSig's type attribute
+     */
     public static String getType() {
         return TYPE;
     }

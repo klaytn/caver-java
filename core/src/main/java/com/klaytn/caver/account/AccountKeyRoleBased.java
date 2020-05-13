@@ -101,16 +101,16 @@ public class AccountKeyRoleBased implements IAccountKey{
         List<IAccountKey> accountKeys = new ArrayList<>();
 
         /*
-        * pubArray must have three item.
+        * pubArray must have up to three item.
         * each item can have
         * {String, String...}, {}
         *
-        * options must have to three item.
+        * options must have up to three item.
         * Valid WeightedMultiSigOption or Empty WeightedMultiSigOption
         *  - Valid WeightedMultiSigOption : make AccountKeyWeightedMultiSig instance
         *  - Empty WeightedMultiSigOption : make AccountKeyPublicKey instance
         * */
-        if(pubArray.size() != MAX_ROLE_BASED_KEY_COUNT && options.size() != MAX_ROLE_BASED_KEY_COUNT) {
+        if(pubArray.size() > MAX_ROLE_BASED_KEY_COUNT && options.size() != pubArray.size()) {
             throw new IllegalArgumentException("Each parameter must have three items");
         }
 

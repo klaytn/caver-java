@@ -24,6 +24,13 @@ public class WeightedMultiSigOptions {
     private List<BigInteger> weights;
 
     /**
+     * Creates a empty WeightedMultiSIgOptions instance
+     * This instance used when setting AccountKeyPublic to AccountKeyRoleBased component.
+     */
+    public WeightedMultiSigOptions() {
+    }
+
+    /**
      * Creates a WeightedMultiSigOptions instance.
      * @param threshold a threshold
      * @param weights a List contains weight value of key
@@ -67,6 +74,13 @@ public class WeightedMultiSigOptions {
         }
 
         return true;
+    }
+
+    public boolean isEmpty() {
+        if(this.getWeights() == null && this.threshold == null) {
+            return true;
+        }
+        return false;
     }
 
     /**

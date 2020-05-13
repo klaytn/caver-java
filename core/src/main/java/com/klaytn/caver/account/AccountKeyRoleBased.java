@@ -18,9 +18,8 @@ public class AccountKeyRoleBased implements IAccountKey{
      */
     private static final String TYPE = "0x05";
 
-    public static final String RLP_ACCOUNT_NIL = "0x80";
-
     public static final int MAX_ROLE_BASED_KEY_COUNT = 3;
+
     public static final int OFFSET_TRANSACTION_ROLE = 0;
     public static final int OFFSET_ACCOUNT_UPDATE_ROLE = 1;
     public static final int OFFSET_FEEPAYER_ROLE = 2;
@@ -112,10 +111,10 @@ public class AccountKeyRoleBased implements IAccountKey{
 
             //Set AccountKeyNil
             if(publicKeyArr.length == 0) {
-                if (options.get(i) != null) {
+                if (!weightedMultiSigOption.isEmpty()) {
                     throw new RuntimeException("Invalid options: AccountKeyNil cannot have options.");
                 }
-                accountKeys.add(null);
+                accountKeys.add(new AccountKeyNil());
                 continue;
             }
             //Set AccountKeyPublic
@@ -126,8 +125,8 @@ public class AccountKeyRoleBased implements IAccountKey{
                 }
             }
 
-            if (weightedMultiSigOption == null) {
-                throw new NullPointerException("Invalid options : AccountKeyWeightedMultiSig must have options");
+            if (weightedMultiSigOption.isEmpty()) {
+                throw new RuntimeException("Invalid options : AccountKeyWeightedMultiSig must have options");
             }
             accountKeys.add(AccountKeyWeightedMultiSig.fromPublicKeysAndOptions(publicKeyArr, weightedMultiSigOption));
         }
@@ -160,13 +159,7 @@ public class AccountKeyRoleBased implements IAccountKey{
     public String getRLPEncoding() {
         List<RlpType> rlpTypeList = new ArrayList<>();
         for(IAccountKey accountKey: accountKeys) {
-            byte[] encodedData;
-            if (accountKey == null) {
-                encodedData = Numeric.hexStringToByteArray(RLP_ACCOUNT_NIL);
-            } else {
-                encodedData = Numeric.hexStringToByteArray(accountKey.getRLPEncoding());
-            }
-
+            byte[] encodedData = Numeric.hexStringToByteArray(accountKey.getRLPEncoding());
             rlpTypeList.add(RlpString.create(encodedData));
         }
         byte[] encodedRoleBasedKey = RlpEncoder.encode(new RlpList(rlpTypeList));

@@ -25,6 +25,8 @@ public class AccountKeyDecoder {
             return AccountKeyWeightedMultiSig.decode(hexPrefixEncoded);
         } else if(hexPrefixEncoded.startsWith(AccountKeyRoleBased.getType())) {
             return AccountKeyRoleBased.decode(hexPrefixEncoded);
+        } else if(hexPrefixEncoded.startsWith(AccountKeyNil.getType())){
+            return AccountKeyNil.decode(hexPrefixEncoded);
         } else {
             throw new RuntimeException("Invalid RLP-encoded account key string");
         }

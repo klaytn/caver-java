@@ -18,17 +18,29 @@ public class AccountKeyRoleBased implements IAccountKey{
      */
     private static final String TYPE = "0x05";
 
-    public static final int MAX_ROLE_BASED_KEY_COUNT = 3;
+    public enum RoleGroup {
+        TRANSACTION(0),
+        ACCOUNT_UPDATE(1),
+        FEE_PAYER(2);
 
-    public static final int OFFSET_TRANSACTION_ROLE = 0;
-    public static final int OFFSET_ACCOUNT_UPDATE_ROLE = 1;
-    public static final int OFFSET_FEEPAYER_ROLE = 2;
+        private int groupIndex;
+
+        RoleGroup(int groupIndex) {
+            this.groupIndex = groupIndex;
+        }
+
+        public int getIndex() {
+            return this.groupIndex;
+        }
+    }
+
+    public static final int MAX_ROLE_BASED_KEY_COUNT = RoleGroup.values().length;
 
     /**
      * First Key : roleTransaction
      * Default key. Transactions other than TxTypeAccountUpdate should be signed by the key of this role.
      *
-     * Second Key : roleUpdate
+     * Second Key : roleAccountUpdate
      * TxTypeAccountUpdate transaction should be signed by this key. If this key is not present in the account,
      * TxTypeAccountUpdate transaction is validated using RoleTransaction key.
      *
@@ -80,7 +92,7 @@ public class AccountKeyRoleBased implements IAccountKey{
     }
 
     /**
-     * Creates an AccountKeyRoleBased give params.
+     * Creates an AccountKeyRoleBased with given params.
      * @param pubArray An List contains public key string array.
      * @param options An List contains WeightedMultiSigOptions
      * @return AccountKeyRoleBased
@@ -98,8 +110,8 @@ public class AccountKeyRoleBased implements IAccountKey{
         *  - Valid WeightedMultiSigOption : make AccountKeyWeightedMultiSig instance
         *  - Empty WeightedMultiSigOption : make AccountKeyPublicKey instance
         * */
-        if(pubArray.size() != 3 && options.size() != 3) {
-            throw new RuntimeException("");
+        if(pubArray.size() != MAX_ROLE_BASED_KEY_COUNT && options.size() != MAX_ROLE_BASED_KEY_COUNT) {
+            throw new IllegalArgumentException("Each parameter must have three items");
         }
 
         for(int i=0; i<pubArray.size(); i++) {
@@ -118,11 +130,9 @@ public class AccountKeyRoleBased implements IAccountKey{
                 continue;
             }
             //Set AccountKeyPublic
-            else if (publicKeyArr.length == 1) {
-                if (weightedMultiSigOption.isEmpty()) {
+            else if (publicKeyArr.length == 1 && weightedMultiSigOption.isEmpty()) {
                     accountKeys.add(AccountKeyPublic.fromPublicKey(publicKeyArr[0]));
                     continue;
-                }
             }
 
             if (weightedMultiSigOption.isEmpty()) {
@@ -177,26 +187,26 @@ public class AccountKeyRoleBased implements IAccountKey{
     }
 
     /**
-     * Returns a TransactionRole key
+     * Returns a RoleTransactionKey
      * @return IAccountKey
      */
-    public IAccountKey getTransactionKey() {
-        return this.getAccountKeys().get(OFFSET_TRANSACTION_ROLE);
+    public IAccountKey getRoleTransactionKey() {
+        return this.getAccountKeys().get(RoleGroup.TRANSACTION.getIndex());
     }
 
     /**
-     * Returns a AccountUpdate key
+     * Returns a RoleAccountUpdateKey
      * @return IAccountKey
      */
-    public IAccountKey getAccountUpdateKey() {
-        return this.getAccountKeys().get(OFFSET_ACCOUNT_UPDATE_ROLE);
+    public IAccountKey getRoleAccountUpdateKey() {
+        return this.getAccountKeys().get(RoleGroup.ACCOUNT_UPDATE.getIndex());
     }
 
     /**
-     * Returns a FeePayer key
+     * Returns a RoleFeePayerKey
      * @return IAccountKey
      */
-    public IAccountKey getFeePayerKey() {
-        return this.getAccountKeys().get(OFFSET_FEEPAYER_ROLE);
+    public IAccountKey getRoleFeePayerKey() {
+        return this.getAccountKeys().get(RoleGroup.FEE_PAYER.getIndex());
     }
 }

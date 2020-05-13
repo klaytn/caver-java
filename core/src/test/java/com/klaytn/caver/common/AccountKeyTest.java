@@ -584,15 +584,15 @@ public class AccountKeyTest {
 
             AccountKeyRoleBased accountKey = AccountKeyRoleBased.decode(encodedData);
 
-            IAccountKey transactionKey = accountKey.getTransactionKey();
+            IAccountKey transactionKey = accountKey.getRoleTransactionKey();
             assertTrue(transactionKey instanceof AccountKeyPublic);
             checkAccountKeyPublic(expectedPublicKeyArr[0], transactionKeyOptions, (AccountKeyPublic)transactionKey);
 
-            IAccountKey accountUpdateKey = accountKey.getAccountUpdateKey();
+            IAccountKey accountUpdateKey = accountKey.getRoleAccountUpdateKey();
             assertTrue(accountUpdateKey instanceof AccountKeyWeightedMultiSig);
             checkAccountKeyWeightedMultiSig(expectedPublicKeyArr[1], accountUpdateKeyOption, (AccountKeyWeightedMultiSig)accountUpdateKey);
 
-            IAccountKey feePayerKey = accountKey.getFeePayerKey();
+            IAccountKey feePayerKey = accountKey.getRoleFeePayerKey();
             assertTrue(feePayerKey instanceof AccountKeyWeightedMultiSig);
             checkAccountKeyWeightedMultiSig(expectedPublicKeyArr[2], feePayerKeyOption, (AccountKeyWeightedMultiSig)feePayerKey);
         }
@@ -625,15 +625,15 @@ public class AccountKeyTest {
 
             AccountKeyRoleBased accountKey = AccountKeyRoleBased.decode(encodedArr);
 
-            IAccountKey transactionKey = accountKey.getTransactionKey();
+            IAccountKey transactionKey = accountKey.getRoleTransactionKey();
             assertTrue(transactionKey instanceof AccountKeyPublic);
             checkAccountKeyPublic(expectedPublicKeyArr[0], transactionKeyOptions, (AccountKeyPublic)transactionKey);
 
-            IAccountKey accountUpdateKey = accountKey.getAccountUpdateKey();
+            IAccountKey accountUpdateKey = accountKey.getRoleAccountUpdateKey();
             assertTrue(accountUpdateKey instanceof AccountKeyWeightedMultiSig);
             checkAccountKeyWeightedMultiSig(expectedPublicKeyArr[1], accountUpdateKeyOption, (AccountKeyWeightedMultiSig)accountUpdateKey);
 
-            IAccountKey feePayerKey = accountKey.getFeePayerKey();
+            IAccountKey feePayerKey = accountKey.getRoleFeePayerKey();
             assertTrue(feePayerKey instanceof AccountKeyWeightedMultiSig);
             checkAccountKeyWeightedMultiSig(expectedPublicKeyArr[2], feePayerKeyOption, (AccountKeyWeightedMultiSig)feePayerKey);
         }
@@ -662,15 +662,15 @@ public class AccountKeyTest {
 
             AccountKeyRoleBased accountKeyRoleBased = AccountKeyRoleBased.decode(encodedData);
 
-            IAccountKey transactionKey = accountKeyRoleBased.getTransactionKey();
+            IAccountKey transactionKey = accountKeyRoleBased.getRoleTransactionKey();
             assertTrue(transactionKey instanceof AccountKeyPublic);
             checkAccountKeyPublic(expectedPublicKeyArr[0], expectedTransactionRoleOpt, (AccountKeyPublic)transactionKey);
 
-            IAccountKey updateKey = accountKeyRoleBased.getAccountUpdateKey();
+            IAccountKey updateKey = accountKeyRoleBased.getRoleAccountUpdateKey();
             assertTrue(updateKey instanceof AccountKeyNil);
             assertTrue(expectedAccountUpdateRoleOpt.isEmpty());
 
-            IAccountKey feePayerKey = accountKeyRoleBased.getFeePayerKey();
+            IAccountKey feePayerKey = accountKeyRoleBased.getRoleFeePayerKey();
             assertTrue(feePayerKey instanceof AccountKeyWeightedMultiSig );
             checkAccountKeyWeightedMultiSig(expectedPublicKeyArr[2], expectedFeePayerRoleOpt, (AccountKeyWeightedMultiSig)feePayerKey);
         }
@@ -722,9 +722,9 @@ public class AccountKeyTest {
                     {BigInteger.ONE, BigInteger.ONE, BigInteger.valueOf(2)},
                     {BigInteger.ONE, BigInteger.ONE, BigInteger.valueOf(2), BigInteger.valueOf(2)},
             };
-            WeightedMultiSigOptions transactionOpt = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(optionWeight[AccountKeyRoleBased.OFFSET_TRANSACTION_ROLE]));
-            WeightedMultiSigOptions accountUpdateOpt = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(optionWeight[AccountKeyRoleBased.OFFSET_ACCOUNT_UPDATE_ROLE]));
-            WeightedMultiSigOptions feePayerOpt = new WeightedMultiSigOptions(BigInteger.valueOf(3), Arrays.asList(optionWeight[AccountKeyRoleBased.OFFSET_FEEPAYER_ROLE]));
+            WeightedMultiSigOptions transactionOpt = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(optionWeight[AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex()]));
+            WeightedMultiSigOptions accountUpdateOpt = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(optionWeight[AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex()]));
+            WeightedMultiSigOptions feePayerOpt = new WeightedMultiSigOptions(BigInteger.valueOf(3), Arrays.asList(optionWeight[AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex()]));
 
             List<WeightedMultiSigOptions> options = new ArrayList<>();
             options.add(transactionOpt);
@@ -733,17 +733,17 @@ public class AccountKeyTest {
 
             AccountKeyRoleBased accountKeyRoleBased = AccountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
 
-            IAccountKey txKey = accountKeyRoleBased.getTransactionKey();
+            IAccountKey txKey = accountKeyRoleBased.getRoleTransactionKey();
             assertTrue(txKey instanceof AccountKeyWeightedMultiSig);
-            checkAccountKeyWeightedMultiSig(expectedPublicKey[AccountKeyRoleBased.OFFSET_TRANSACTION_ROLE], transactionOpt, (AccountKeyWeightedMultiSig)txKey);
+            checkAccountKeyWeightedMultiSig(expectedPublicKey[AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex()], transactionOpt, (AccountKeyWeightedMultiSig)txKey);
 
-            IAccountKey accountUpdateKey = accountKeyRoleBased.getAccountUpdateKey();
+            IAccountKey accountUpdateKey = accountKeyRoleBased.getRoleAccountUpdateKey();
             assertTrue(accountUpdateKey instanceof AccountKeyWeightedMultiSig);
-            checkAccountKeyWeightedMultiSig(expectedPublicKey[AccountKeyRoleBased.OFFSET_ACCOUNT_UPDATE_ROLE], accountUpdateOpt, (AccountKeyWeightedMultiSig)accountUpdateKey);
+            checkAccountKeyWeightedMultiSig(expectedPublicKey[AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex()], accountUpdateOpt, (AccountKeyWeightedMultiSig)accountUpdateKey);
 
-            IAccountKey feePayerKey = accountKeyRoleBased.getFeePayerKey();
+            IAccountKey feePayerKey = accountKeyRoleBased.getRoleFeePayerKey();
             assertTrue(feePayerKey instanceof AccountKeyWeightedMultiSig);
-            checkAccountKeyWeightedMultiSig(expectedPublicKey[AccountKeyRoleBased.OFFSET_FEEPAYER_ROLE], feePayerOpt, (AccountKeyWeightedMultiSig)feePayerKey);
+            checkAccountKeyWeightedMultiSig(expectedPublicKey[AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex()], feePayerOpt, (AccountKeyWeightedMultiSig)feePayerKey);
         }
 
         //CA-ACCOUNT-037
@@ -772,9 +772,9 @@ public class AccountKeyTest {
                     {BigInteger.ONE, BigInteger.ONE, BigInteger.valueOf(2)},
                     {BigInteger.ONE, BigInteger.ONE, BigInteger.valueOf(2), BigInteger.valueOf(2)},
             };
-            WeightedMultiSigOptions transactionOpt = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(optionWeight[AccountKeyRoleBased.OFFSET_TRANSACTION_ROLE]));
-            WeightedMultiSigOptions accountUpdateOpt = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(optionWeight[AccountKeyRoleBased.OFFSET_ACCOUNT_UPDATE_ROLE]));
-            WeightedMultiSigOptions feePayerOpt = new WeightedMultiSigOptions(BigInteger.valueOf(3), Arrays.asList(optionWeight[AccountKeyRoleBased.OFFSET_FEEPAYER_ROLE]));
+            WeightedMultiSigOptions transactionOpt = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(optionWeight[AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex()]));
+            WeightedMultiSigOptions accountUpdateOpt = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(optionWeight[AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex()]));
+            WeightedMultiSigOptions feePayerOpt = new WeightedMultiSigOptions(BigInteger.valueOf(3), Arrays.asList(optionWeight[AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex()]));
 
             List<WeightedMultiSigOptions> options = new ArrayList<>();
             options.add(transactionOpt);
@@ -783,17 +783,17 @@ public class AccountKeyTest {
 
             AccountKeyRoleBased accountKeyRoleBased = AccountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
 
-            IAccountKey txKey = accountKeyRoleBased.getTransactionKey();
+            IAccountKey txKey = accountKeyRoleBased.getRoleTransactionKey();
             assertTrue(txKey instanceof AccountKeyWeightedMultiSig);
-            checkAccountKeyWeightedMultiSig(expectedPublicKey[AccountKeyRoleBased.OFFSET_TRANSACTION_ROLE], transactionOpt, (AccountKeyWeightedMultiSig)txKey);
+            checkAccountKeyWeightedMultiSig(expectedPublicKey[AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex()], transactionOpt, (AccountKeyWeightedMultiSig)txKey);
 
-            IAccountKey accountUpdateKey = accountKeyRoleBased.getAccountUpdateKey();
+            IAccountKey accountUpdateKey = accountKeyRoleBased.getRoleAccountUpdateKey();
             assertTrue(accountUpdateKey instanceof AccountKeyWeightedMultiSig);
-            checkAccountKeyWeightedMultiSig(expectedPublicKey[AccountKeyRoleBased.OFFSET_ACCOUNT_UPDATE_ROLE], accountUpdateOpt, (AccountKeyWeightedMultiSig)accountUpdateKey);
+            checkAccountKeyWeightedMultiSig(expectedPublicKey[AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex()], accountUpdateOpt, (AccountKeyWeightedMultiSig)accountUpdateKey);
 
-            IAccountKey feePayerKey = accountKeyRoleBased.getFeePayerKey();
+            IAccountKey feePayerKey = accountKeyRoleBased.getRoleFeePayerKey();
             assertTrue(feePayerKey instanceof AccountKeyWeightedMultiSig);
-            checkAccountKeyWeightedMultiSig(expectedPublicKey[AccountKeyRoleBased.OFFSET_FEEPAYER_ROLE], feePayerOpt, (AccountKeyWeightedMultiSig)feePayerKey);
+            checkAccountKeyWeightedMultiSig(expectedPublicKey[AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex()], feePayerOpt, (AccountKeyWeightedMultiSig)feePayerKey);
         }
 
         //CA-ACCOUNT-038
@@ -821,8 +821,8 @@ public class AccountKeyTest {
                     {BigInteger.ONE, BigInteger.ONE, BigInteger.valueOf(2), BigInteger.valueOf(2)},
             };
             WeightedMultiSigOptions transactionOpt = new WeightedMultiSigOptions();
-            WeightedMultiSigOptions accountUpdateOpt = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(optionWeight[AccountKeyRoleBased.OFFSET_ACCOUNT_UPDATE_ROLE]));
-            WeightedMultiSigOptions feePayerOpt = new WeightedMultiSigOptions(BigInteger.valueOf(3), Arrays.asList(optionWeight[AccountKeyRoleBased.OFFSET_FEEPAYER_ROLE]));
+            WeightedMultiSigOptions accountUpdateOpt = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(optionWeight[AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex()]));
+            WeightedMultiSigOptions feePayerOpt = new WeightedMultiSigOptions(BigInteger.valueOf(3), Arrays.asList(optionWeight[AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex()]));
 
             List<WeightedMultiSigOptions> options = new ArrayList<>();
             options.add(transactionOpt);
@@ -831,17 +831,17 @@ public class AccountKeyTest {
 
             AccountKeyRoleBased accountKeyRoleBased = AccountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
 
-            IAccountKey txKey = accountKeyRoleBased.getTransactionKey();
+            IAccountKey txKey = accountKeyRoleBased.getRoleTransactionKey();
             assertTrue(txKey instanceof AccountKeyNil);
             assertTrue(transactionOpt.isEmpty());
 
-            IAccountKey accountUpdateKey = accountKeyRoleBased.getAccountUpdateKey();
+            IAccountKey accountUpdateKey = accountKeyRoleBased.getRoleAccountUpdateKey();
             assertTrue(accountUpdateKey instanceof AccountKeyWeightedMultiSig);
-            checkAccountKeyWeightedMultiSig(expectedPublicKey[AccountKeyRoleBased.OFFSET_ACCOUNT_UPDATE_ROLE], accountUpdateOpt, (AccountKeyWeightedMultiSig)accountUpdateKey);
+            checkAccountKeyWeightedMultiSig(expectedPublicKey[AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex()], accountUpdateOpt, (AccountKeyWeightedMultiSig)accountUpdateKey);
 
-            IAccountKey feePayerKey = accountKeyRoleBased.getFeePayerKey();
+            IAccountKey feePayerKey = accountKeyRoleBased.getRoleFeePayerKey();
             assertTrue(feePayerKey instanceof AccountKeyWeightedMultiSig);
-            checkAccountKeyWeightedMultiSig(expectedPublicKey[AccountKeyRoleBased.OFFSET_FEEPAYER_ROLE], feePayerOpt, (AccountKeyWeightedMultiSig)feePayerKey);
+            checkAccountKeyWeightedMultiSig(expectedPublicKey[AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex()], feePayerOpt, (AccountKeyWeightedMultiSig)feePayerKey);
         }
 
         //CA-ACCOUNT-039
@@ -871,9 +871,9 @@ public class AccountKeyTest {
                     {BigInteger.ONE, BigInteger.ONE, BigInteger.valueOf(2)},
                     {BigInteger.ONE, BigInteger.ONE, BigInteger.valueOf(2), BigInteger.valueOf(2)},
             };
-            WeightedMultiSigOptions transactionOpt = new WeightedMultiSigOptions(BigInteger.valueOf(1), Arrays.asList(optionWeight[AccountKeyRoleBased.OFFSET_ACCOUNT_UPDATE_ROLE]));
-            WeightedMultiSigOptions accountUpdateOpt = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(optionWeight[AccountKeyRoleBased.OFFSET_ACCOUNT_UPDATE_ROLE]));
-            WeightedMultiSigOptions feePayerOpt = new WeightedMultiSigOptions(BigInteger.valueOf(3), Arrays.asList(optionWeight[AccountKeyRoleBased.OFFSET_FEEPAYER_ROLE]));
+            WeightedMultiSigOptions transactionOpt = new WeightedMultiSigOptions(BigInteger.valueOf(1), Arrays.asList(optionWeight[AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex()]));
+            WeightedMultiSigOptions accountUpdateOpt = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(optionWeight[AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex()]));
+            WeightedMultiSigOptions feePayerOpt = new WeightedMultiSigOptions(BigInteger.valueOf(3), Arrays.asList(optionWeight[AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex()]));
 
             List<WeightedMultiSigOptions> options = new ArrayList<>();
             options.add(transactionOpt);
@@ -913,8 +913,8 @@ public class AccountKeyTest {
                     {BigInteger.ONE, BigInteger.ONE, BigInteger.valueOf(2), BigInteger.valueOf(2)},
             };
             WeightedMultiSigOptions transactionOpt = new WeightedMultiSigOptions();
-            WeightedMultiSigOptions accountUpdateOpt = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(optionWeight[AccountKeyRoleBased.OFFSET_ACCOUNT_UPDATE_ROLE]));
-            WeightedMultiSigOptions feePayerOpt = new WeightedMultiSigOptions(BigInteger.valueOf(3), Arrays.asList(optionWeight[AccountKeyRoleBased.OFFSET_FEEPAYER_ROLE]));
+            WeightedMultiSigOptions accountUpdateOpt = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(optionWeight[AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex()]));
+            WeightedMultiSigOptions feePayerOpt = new WeightedMultiSigOptions(BigInteger.valueOf(3), Arrays.asList(optionWeight[AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex()]));
 
             List<WeightedMultiSigOptions> options = new ArrayList<>();
             options.add(transactionOpt);
@@ -946,13 +946,13 @@ public class AccountKeyTest {
 
             AccountKeyRoleBased accountKeyRoleBased = new AccountKeyRoleBased(accountKeys);
 
-            IAccountKey txKey = accountKeyRoleBased.getTransactionKey();
+            IAccountKey txKey = accountKeyRoleBased.getRoleTransactionKey();
             assertTrue(txKey instanceof AccountKeyLegacy);
 
-            IAccountKey accountUpdateKey = accountKeyRoleBased.getAccountUpdateKey();
+            IAccountKey accountUpdateKey = accountKeyRoleBased.getRoleAccountUpdateKey();
             assertTrue(accountUpdateKey instanceof AccountKeyFail);
 
-            IAccountKey feePayerKey = accountKeyRoleBased.getFeePayerKey();
+            IAccountKey feePayerKey = accountKeyRoleBased.getRoleFeePayerKey();
             assertTrue(feePayerKey instanceof AccountKeyWeightedMultiSig);
             checkAccountKeyWeightedMultiSig(publicKey, option, (AccountKeyWeightedMultiSig)feePayerKey);
         }

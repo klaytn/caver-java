@@ -17,7 +17,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AccountKeyTest.AccountKeyFailTests.class, AccountKeyTest.AccountKeyLegacyTest.class, AccountKeyTest.AccountKeyPublicTest.class, AccountKeyTest.AccountKeyWeightedMultiSigTest.class})
+@Suite.SuiteClasses({AccountKeyTest.AccountKeyFailTests.class, AccountKeyTest.AccountKeyLegacyTest.class, AccountKeyTest.AccountKeyPublicTest.class, AccountKeyTest.AccountKeyWeightedMultiSigTest.class, AccountKeyTest.AccountKeyRoleBasedTest.class})
 public class AccountKeyTest {
 
     public static class AccountKeyFailTests {

@@ -110,8 +110,11 @@ public class AccountKeyRoleBased implements IAccountKey{
         *  - Valid WeightedMultiSigOption : make AccountKeyWeightedMultiSig instance
         *  - Empty WeightedMultiSigOption : make AccountKeyPublicKey instance
         * */
-        if(pubArray.size() > MAX_ROLE_BASED_KEY_COUNT && options.size() != pubArray.size()) {
-            throw new IllegalArgumentException("Each parameter must have three items");
+        if(pubArray.size() > MAX_ROLE_BASED_KEY_COUNT) {
+            throw new IllegalArgumentException("pubArray must have up to three items");
+        }
+        if(options.size() != pubArray.size()) {
+            throw new IllegalArgumentException("pubArray and options must have the same number of items.");
         }
 
         for(int i=0; i<pubArray.size(); i++) {

@@ -46,7 +46,7 @@ public class WeightedMultiSigOptions {
 
     /**
      * Create a WeightedMultiSigOptions instance fill with default value.(threshold, weight has 1)
-     * @param lengthOfKeys Length of public key array
+     * @param publicKeyArr public key array
      * @return WeightedMultiSigOptions
      */
     public static WeightedMultiSigOptions fillWeightedMultiSigOptionForMultiSig(String[] publicKeyArr) {
@@ -75,7 +75,7 @@ public class WeightedMultiSigOptions {
             if(roleBasedPublicKeys.get(i).length == 1) {
                 option = new WeightedMultiSigOptions();
             } else {
-                option = fillWeightedMultiSigOptionForMultiSig(roleBasedPublicKeys.get(i).length);
+                option = fillWeightedMultiSigOptionForMultiSig(roleBasedPublicKeys.get(i));
             }
 
             optionList.add(option);

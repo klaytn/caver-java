@@ -49,7 +49,7 @@ public class WeightedMultiSigOptions {
      * @param publicKeyArr public key array
      * @return WeightedMultiSigOptions
      */
-    public static WeightedMultiSigOptions fillWeightedMultiSigOptionForMultiSig(String[] publicKeyArr) {
+    public static WeightedMultiSigOptions fillDefaultValuesForWeightedMultiSig(String[] publicKeyArr) {
         BigInteger threshold = BigInteger.ONE;
         List<BigInteger> weights = new ArrayList<>();
 
@@ -66,7 +66,7 @@ public class WeightedMultiSigOptions {
      * @param roleBasedPublicKeys Public key list instance for using AccountKeyRolebased.
      * @return List
      */
-    public static List<WeightedMultiSigOptions> fillWeightedMultiSigOptionForRoleBased(List<String[]> roleBasedPublicKeys) {
+    public static List<WeightedMultiSigOptions> fillDefaultValuesForWeightedForRoleBased(List<String[]> roleBasedPublicKeys) {
         List<WeightedMultiSigOptions> optionList = new ArrayList<>();
 
         for(int i=0; i<roleBasedPublicKeys.size(); i++) {
@@ -75,7 +75,7 @@ public class WeightedMultiSigOptions {
             if(roleBasedPublicKeys.get(i).length == 1) {
                 option = new WeightedMultiSigOptions();
             } else {
-                option = fillWeightedMultiSigOptionForMultiSig(roleBasedPublicKeys.get(i));
+                option = fillDefaultValuesForWeightedMultiSig(roleBasedPublicKeys.get(i));
             }
 
             optionList.add(option);

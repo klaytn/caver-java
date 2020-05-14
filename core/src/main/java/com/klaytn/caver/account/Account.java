@@ -1,8 +1,5 @@
 package com.klaytn.caver.account;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -133,7 +130,7 @@ public class Account {
      * @return Account
      */
     public static Account createWithAccountKeyWeightedMultiSig(String address, String[] publicKeys) {
-        WeightedMultiSigOptions options = WeightedMultiSigOptions.fillWeightedMultiSigOptionForMultiSig(publicKeys);
+        WeightedMultiSigOptions options = WeightedMultiSigOptions.fillDefaultValuesForWeightedMultiSig(publicKeys);
         return createWithAccountKeyWeightedMultiSig(address, publicKeys, options);
     }
 
@@ -160,7 +157,7 @@ public class Account {
      * @return Account
      */
     public static Account createWithAccountKeyRoleBased(String address, List<String[]> roleBasedPublicKey) {
-        List<WeightedMultiSigOptions> optionList = WeightedMultiSigOptions.fillWeightedMultiSigOptionForRoleBased(roleBasedPublicKey);
+        List<WeightedMultiSigOptions> optionList = WeightedMultiSigOptions.fillDefaultValuesForWeightedForRoleBased(roleBasedPublicKey);
         return createWithAccountKeyRoleBased(address, roleBasedPublicKey, optionList);
     }
 

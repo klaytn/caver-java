@@ -43,6 +43,47 @@ public class WeightedMultiSigOptions {
         this.weights = weights;
     }
 
+
+    /**
+     * Create a WeightedMultiSigOptions instance fill with default value.(threshold, weight has 1)
+     * @param lengthOfKeys Length of public key array
+     * @return WeightedMultiSigOptions
+     */
+    public static WeightedMultiSigOptions fillWeightedMultiSigOptionForMultiSig(int lengthOfKeys) {
+        BigInteger threshold = BigInteger.ONE;
+        List<BigInteger> weights = new ArrayList<>();
+
+        for(int i=0; i<lengthOfKeys; i++) {
+            weights.add(BigInteger.ONE);
+        }
+
+        return new WeightedMultiSigOptions(threshold, weights);
+    }
+
+
+    /**
+     * Creates a List that has WeightedMultiSigOptions instance fill with default value.(threshold, weight has 1)
+     * @param roleBasedPublicKeys Public key list instance for using AccountKeyRolebased.
+     * @return List
+     */
+    public static List<WeightedMultiSigOptions> fillWeightedMultiSigOptionForRoleBased(List<String[]> roleBasedPublicKeys) {
+        List<WeightedMultiSigOptions> optionList = new ArrayList<>();
+
+        for(int i=0; i<roleBasedPublicKeys.size(); i++) {
+            WeightedMultiSigOptions option;
+            //This is used for AccountKeyPublic.
+            if(roleBasedPublicKeys.get(i).length == 1) {
+                option = new WeightedMultiSigOptions();
+            } else {
+                option = fillWeightedMultiSigOptionForMultiSig(roleBasedPublicKeys.get(i).length);
+            }
+
+            optionList.add(option);
+        }
+
+        return optionList;
+    }
+
     /**
      * Before creating an instance, check whether the passed option is valid.
      *   - check threshold value bigger than zero

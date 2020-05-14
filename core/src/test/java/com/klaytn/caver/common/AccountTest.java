@@ -286,6 +286,58 @@ public class AccountTest {
 
     //CA-ACCOUNT-051
     @Test
+    public void createToAccountKeyRoleBased_noOption_AccountKeyPublic() {
+        String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
+        String[][] publicKeys = {
+                {
+                        "0x02b86b2787e8c7accd7d2d82678c9bef047a0aafd72a6e690817506684e8513c9a",
+                },
+                {
+                        "0x031a909c4d7dbb5281b1d1b55e79a1b2568111bd2830246c3173ce824000eb8716",
+                        "0x021427ac6351bbfc15811e8e5389a674b01d7a2c253e69a6ed30a33583864368f6",
+                        "0x0290fe4bb78bc981a40874ebcff2f9de4eba1e59ecd7a271a37814413720a3a5ea",
+                },
+                {
+                        "0x0291245244462b3eee6436d3dc0ba3f69ef413fe2296c729733eff891a55f70c02",
+                        "0x0277e05dd93cdd6362f8648447f33d5676cbc5f42f4c4946ae1ad62bd4c0c4f357",
+                        "0x03d3bb14320d87eed081ae44740b5abbc52bac2c7ccf85b6281a0fc69f3ba4c171",
+                        "0x03cfa4d1bee51e59e6842b136ff95b9d01385f94bed13c4be8996c6d20cb732c3e",
+                }
+        };
+
+        BigInteger[][] optionWeight = {
+                {BigInteger.ONE, BigInteger.ONE},
+                {BigInteger.ONE, BigInteger.ONE, BigInteger.ONE},
+                {BigInteger.ONE, BigInteger.ONE, BigInteger.ONE, BigInteger.ONE},
+        };
+
+        WeightedMultiSigOptions[] expectedOptions = {
+                new WeightedMultiSigOptions(),
+                new WeightedMultiSigOptions(BigInteger.valueOf(1), Arrays.asList(optionWeight[1])),
+                new WeightedMultiSigOptions(BigInteger.valueOf(1), Arrays.asList(optionWeight[2])),
+        };
+
+        Account account = Account.create(address, Arrays.asList(publicKeys));
+        assertEquals(address, account.getAddress());
+
+        assertTrue(account.getAccountKey() instanceof AccountKeyRoleBased);
+        AccountKeyRoleBased accountKeyRoleBased = (AccountKeyRoleBased) account.getAccountKey();
+
+        IAccountKey txKey = accountKeyRoleBased.getRoleTransactionKey();
+        assertTrue(txKey instanceof  AccountKeyPublic);
+        checkAccountKeyPublic(txKey, publicKeys[0][0]);
+
+        IAccountKey accountUpdateKey = accountKeyRoleBased.getRoleAccountUpdateKey();
+        assertTrue(accountUpdateKey instanceof  AccountKeyWeightedMultiSig);
+        checkAccountKeyWeightedMultiSig(accountUpdateKey, publicKeys[1], expectedOptions[1]);
+
+        IAccountKey feePayerKey = accountKeyRoleBased.getRoleFeePayerKey();
+        assertTrue(feePayerKey instanceof  AccountKeyWeightedMultiSig);
+        checkAccountKeyWeightedMultiSig(feePayerKey, publicKeys[2], expectedOptions[2]);
+    }
+
+    //CA-ACCOUNT-052
+    @Test
     public void createFromRLPEncoding_AccountKeyLegacy() {
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
         String rlpEncodedAccountKey = "0x01c0";
@@ -295,7 +347,7 @@ public class AccountTest {
         assertTrue(account.getAccountKey() instanceof AccountKeyLegacy);
     }
 
-    //CA-ACCOUNT-052
+    //CA-ACCOUNT-053
     @Test
     public void createFromRLPEncoding_AccountKeyPublic() {
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
@@ -308,7 +360,7 @@ public class AccountTest {
         checkAccountKeyPublic(account.getAccountKey(), expectedPubKey);
     }
 
-    //CA-ACCOUNT-053
+    //CA-ACCOUNT-054
     @Test
     public void createFromRLPEncoding_AccountKeyFail() {
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
@@ -319,7 +371,7 @@ public class AccountTest {
         assertTrue(account.getAccountKey() instanceof AccountKeyFail);
     }
 
-    //CA-ACCOUNT-054
+    //CA-ACCOUNT-055
     @Test
     public void createFromRLPEncoding_AccountKeyWeightedMultiSig() {
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
@@ -336,7 +388,7 @@ public class AccountTest {
         checkAccountKeyWeightedMultiSig(account.getAccountKey(), expectPublicKey, expectedOption);
     }
 
-    //CA-ACCOUNT-055
+    //CA-ACCOUNT-056
     @Test
     public void createFromRLPEncoding_AccountKeyRoleBased() {
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
@@ -384,7 +436,7 @@ public class AccountTest {
         checkAccountKeyWeightedMultiSig(feePayerKey, publicKeys[2], expectedOptions[2]);
     }
 
-    //CA-ACCOUNT-056
+    //CA-ACCOUNT-057
     @Test
     public void createFromRLPEncoding_AccountKeyRoleBasedWithAccountNil() {
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
@@ -429,7 +481,7 @@ public class AccountTest {
         checkAccountKeyWeightedMultiSig(feePayerKey, publicKeys[2], expectedOptions[2]);
     }
 
-    //CA-ACCOUNT-057
+    //CA-ACCOUNT-058
     @Test
     public void createWithAccountKeyLegacy() {
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
@@ -438,7 +490,7 @@ public class AccountTest {
         assertEquals(address, account.getAddress());
     }
 
-    //CA-ACCOUNT-058
+    //CA-ACCOUNT-059
     @Test
     public void createWithAccountKeyPublic_uncompressed() {
         String address = "0xf43dcbb903a0b4b48a7dfa8a370a63f0a731708d";
@@ -450,7 +502,7 @@ public class AccountTest {
         checkAccountKeyPublic(account.getAccountKey(), publicKey);
     }
 
-    //CA-ACCOUNT-059
+    //CA-ACCOUNT-060
     @Test
     public void createWithAccountKeyPublic_compressed() {
         String address = "0xf43dcbb903a0b4b48a7dfa8a370a63f0a731708d";
@@ -462,7 +514,7 @@ public class AccountTest {
         checkAccountKeyPublic(account.getAccountKey(), publicKey);
     }
 
-    //CA-ACCOUNT-060
+    //CA-ACCOUNT-061
     @Test
     public void createWithAccountKeyFail() {
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
@@ -472,7 +524,7 @@ public class AccountTest {
         assertEquals(address, account.getAddress());
     }
 
-    //CA-ACCOUNT-061
+    //CA-ACCOUNT-062
     @Test
     public void createWithAccountWeightedMultiSig() {
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
@@ -488,7 +540,7 @@ public class AccountTest {
         checkAccountKeyWeightedMultiSig(account.getAccountKey(), expectPublicKey, expectedOption);
     }
 
-    //CA-ACCOUNT-062
+    //CA-ACCOUNT-063
     @Test
     public void createWithAccountWeightedMultiSig_NoOption() {
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
@@ -504,7 +556,7 @@ public class AccountTest {
         checkAccountKeyWeightedMultiSig(account.getAccountKey(), expectPublicKey, expectedOption);
     }
 
-    //CA-ACCOUNT-063
+    //CA-ACCOUNT-064
     @Test
     public void createWithAccountRoleBased() {
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
@@ -551,7 +603,7 @@ public class AccountTest {
         checkAccountKeyWeightedMultiSig(feePayerKey, publicKeys[2], expectedOptions[2]);
     }
 
-    //CA-ACCOUNT-064
+    //CA-ACCOUNT-065
     @Test
     public void createWithAccountRoleBased_NoOption() {
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
@@ -600,7 +652,7 @@ public class AccountTest {
         checkAccountKeyWeightedMultiSig(feePayerKey, publicKeys[2], expectedOptions[2]);
     }
 
-    //CA-ACCOUNT-065
+    //CA-ACCOUNT-066
     @Test
     public void getRLPEncodingAccountKey_AccountKeyLegacy() {
         String rlpEncodedAccountKey = "0x01c0";
@@ -612,7 +664,7 @@ public class AccountTest {
         assertEquals(rlpEncodedAccountKey, account.getRLPEncodingAccountKey());
     }
 
-    //CA-ACCOUNT-066
+    //CA-ACCOUNT-067
     @Test
     public void getRLPEncodingAccountKey_AccountKeyPublic() {
         String rlpEncodedAccountKey = "0x02a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9";
@@ -624,7 +676,7 @@ public class AccountTest {
         assertEquals(rlpEncodedAccountKey, account.getRLPEncodingAccountKey());
     }
 
-    //CA-ACCOUNT-067
+    //CA-ACCOUNT-068
     @Test
     public void getRLPEncodingAccountKey_AccountKeyFail() {
         String rlpEncodedAccountKey = "0x03c0";
@@ -636,7 +688,7 @@ public class AccountTest {
         assertEquals(rlpEncodedAccountKey, account.getRLPEncodingAccountKey());
     }
 
-    //CA-ACCOUNT-068
+    //CA-ACCOUNT-069
     @Test
     public void getRLPEncodingAccountKey_AccountKeyWeightedMultiSig() {
         String rlpEncodedAccountKey = "0x04f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1";
@@ -648,7 +700,7 @@ public class AccountTest {
         assertEquals(rlpEncodedAccountKey, account.getRLPEncodingAccountKey());
     }
 
-    //CA-ACCOUNT-069
+    //CA-ACCOUNT-070
     @Test
     public void getRLPEncodingAccountKey_AccountKeyRoleBased() {
         String rlpEncodedAccountKey = "0x05f8c4a302a1036250dad4985bc22c8b9b84d1a05624c4daa0e83c8ae8fb35702d9024a8c14a71b84e04f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1b84e04f84b01f848e301a103e7615d056e770b3262e5b39a4823c3124989924ed4dcfab13f10b252701540d4e301a1036f21d60c16200d99e6777422470b3122b65850d5135a5a4b41344a5607a1446d";
@@ -660,7 +712,7 @@ public class AccountTest {
         assertEquals(rlpEncodedAccountKey, account.getRLPEncodingAccountKey());
     }
 
-    //CA-ACCOUNT-070
+    //CA-ACCOUNT-071
     @Test
     public void getRLPEncodingAccountKey_AccountKeyRoleBasedWithAccountNil() {
         String rlpEncodedAccountKey = "0x05f876a302a1036250dad4985bc22c8b9b84d1a05624c4daa0e83c8ae8fb35702d9024a8c14a718180b84e04f84b01f848e301a103e7615d056e770b3262e5b39a4823c3124989924ed4dcfab13f10b252701540d4e301a1036f21d60c16200d99e6777422470b3122b65850d5135a5a4b41344a5607a1446d";

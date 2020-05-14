@@ -115,8 +115,9 @@ public class Account {
     }
 
     /**
-     * Create an Account instance which has AccountKeyPublic as an accountKey
+     * Creates an Account instance which has AccountKeyPublic as an accountKey
      * @param address address of Account
+     * @param publicKey public key
      * @return Account
      */
     public static Account createWithAccountKeyPublic(String address, String publicKey) {
@@ -128,10 +129,11 @@ public class Account {
      * Create an Account instance which has AccountKeyWeightedMultiSig as an accountKey
      * This method set 1 to WeightedMultiSigOptions values(threshold, weights)
      * @param address address of Account
+     * @param publicKeys array of public key
      * @return Account
      */
     public static Account createWithAccountKeyWeightedMultiSig(String address, String[] publicKeys) {
-        WeightedMultiSigOptions options = getDefaultOptions(publicKeys.length);
+        WeightedMultiSigOptions options = WeightedMultiSigOptions.fillWeightedMultiSigOptionForMultiSig(publicKeys.length);
         return createWithAccountKeyWeightedMultiSig(address, publicKeys, options);
     }
 
@@ -158,13 +160,7 @@ public class Account {
      * @return Account
      */
     public static Account createWithAccountKeyRoleBased(String address, List<String[]> roleBasedPublicKey) {
-        List<WeightedMultiSigOptions> optionList = new ArrayList<>();
-
-        for(int i=0; i<roleBasedPublicKey.size(); i++) {
-            WeightedMultiSigOptions option = getDefaultOptions(roleBasedPublicKey.get(i).length);
-            optionList.add(option);
-        }
-
+        List<WeightedMultiSigOptions> optionList = WeightedMultiSigOptions.fillWeightedMultiSigOptionForRoleBased(roleBasedPublicKey);
         return createWithAccountKeyRoleBased(address, roleBasedPublicKey, optionList);
     }
 
@@ -185,24 +181,8 @@ public class Account {
     }
 
     /**
-     * Set 1 to WeightedMultiSigOptions values(threshold, weights)
-     * @param arrayLength Length of public key array
-     * @return WeightedMultiSigOptions
-     */
-    private static WeightedMultiSigOptions getDefaultOptions(int arrayLength) {
-        BigInteger threshold = BigInteger.ONE;
-        List<BigInteger> weights = new ArrayList<>();
-
-        for(int i=0; i<arrayLength; i++) {
-            weights.add(BigInteger.ONE);
-        }
-
-        return new WeightedMultiSigOptions(threshold, weights);
-    }
-
-    /**
      * Returns RLP-encoded accountKey string
-     * @returnf String
+     * @return String
      */
     public String getRLPEncodingAccountKey() {
         return this.getAccountKey().getRLPEncoding();

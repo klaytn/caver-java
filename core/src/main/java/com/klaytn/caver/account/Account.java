@@ -143,6 +143,9 @@ public class Account {
      * @return Account
      */
     public static Account createWithAccountKeyWeightedMultiSig(String address, String[] publicKeys, WeightedMultiSigOptions options) {
+        if(options == null) {
+            throw new NullPointerException("The variable 'options' is undefined. To create an Account instance with AccountKeyWeightedMultiSig, 'options' should be defined.");
+        }
         IAccountKey accountKey = AccountKeyWeightedMultiSig.fromPublicKeysAndOptions(publicKeys, options);
         return new Account(address, accountKey);
     }
@@ -173,6 +176,9 @@ public class Account {
      * @return Account
      */
     public static Account createWithAccountKeyRoleBased(String address, List<String[]> roleBasedPublicKey, List<WeightedMultiSigOptions> optionsList) {
+        if (optionsList == null) {
+            throw new NullPointerException("The variable 'optionsList' is undefined. To create an Account instance with AccountKeyRoleBased, 'optionsList' should be defined");
+        }
         IAccountKey accountKey = AccountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(roleBasedPublicKey, optionsList);
 
         return new Account(address, accountKey);
@@ -185,13 +191,13 @@ public class Account {
      */
     private static WeightedMultiSigOptions getDefaultOptions(int arrayLength) {
         BigInteger threshold = BigInteger.ONE;
-        BigInteger[] weightArr = new BigInteger[arrayLength];
+        List<BigInteger> weights = new ArrayList<>();
 
-        for(BigInteger element : weightArr) {
-            element = BigInteger.ONE;
+        for(int i=0; i<arrayLength; i++) {
+            weights.add(BigInteger.ONE);
         }
 
-        return new WeightedMultiSigOptions(threshold, Arrays.asList(weightArr));
+        return new WeightedMultiSigOptions(threshold, weights);
     }
 
     /**

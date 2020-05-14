@@ -49,11 +49,11 @@ public class WeightedMultiSigOptions {
      * @param lengthOfKeys Length of public key array
      * @return WeightedMultiSigOptions
      */
-    public static WeightedMultiSigOptions fillWeightedMultiSigOptionForMultiSig(int lengthOfKeys) {
+    public static WeightedMultiSigOptions fillWeightedMultiSigOptionForMultiSig(String[] publicKeyArr) {
         BigInteger threshold = BigInteger.ONE;
         List<BigInteger> weights = new ArrayList<>();
 
-        for(int i=0; i<lengthOfKeys; i++) {
+        for(int i=0; i<publicKeyArr.length; i++) {
             weights.add(BigInteger.ONE);
         }
 

@@ -133,7 +133,7 @@ public class Account {
      * @return Account
      */
     public static Account createWithAccountKeyWeightedMultiSig(String address, String[] publicKeys) {
-        WeightedMultiSigOptions options = WeightedMultiSigOptions.fillWeightedMultiSigOptionForMultiSig(publicKeys.length);
+        WeightedMultiSigOptions options = WeightedMultiSigOptions.fillWeightedMultiSigOptionForMultiSig(publicKeys);
         return createWithAccountKeyWeightedMultiSig(address, publicKeys, options);
     }
 

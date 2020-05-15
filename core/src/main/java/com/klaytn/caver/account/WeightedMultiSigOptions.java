@@ -45,11 +45,11 @@ public class WeightedMultiSigOptions {
 
 
     /**
-     * Create a WeightedMultiSigOptions instance fill with default value.(threshold, weight has 1)
+     * Create a WeightedMultiSigOptions instance with default value.(threshold, weight has 1)
      * @param publicKeyArr public key array
      * @return WeightedMultiSigOptions
      */
-    public static WeightedMultiSigOptions fillDefaultValuesForWeightedMultiSig(String[] publicKeyArr) {
+    public static WeightedMultiSigOptions getDefaultOptionsForWeightedMultiSig(String[] publicKeyArr) {
         BigInteger threshold = BigInteger.ONE;
         List<BigInteger> weights = new ArrayList<>();
 
@@ -62,11 +62,11 @@ public class WeightedMultiSigOptions {
 
 
     /**
-     * Creates a List that has WeightedMultiSigOptions instance fill with default value.(threshold, weight has 1)
+     * Creates a List that has WeightedMultiSigOptions instance with default value.(threshold, weight has 1)
      * @param roleBasedPublicKeys Public key list instance for using AccountKeyRolebased.
      * @return List
      */
-    public static List<WeightedMultiSigOptions> fillDefaultValuesForWeightedForRoleBased(List<String[]> roleBasedPublicKeys) {
+    public static List<WeightedMultiSigOptions> getDefaultOptionsForRoleBased(List<String[]> roleBasedPublicKeys) {
         List<WeightedMultiSigOptions> optionList = new ArrayList<>();
 
         for(int i=0; i<roleBasedPublicKeys.size(); i++) {

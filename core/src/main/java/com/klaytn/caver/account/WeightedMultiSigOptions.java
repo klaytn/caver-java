@@ -75,7 +75,7 @@ public class WeightedMultiSigOptions {
             if(roleBasedPublicKeys.get(i).length == 1) {
                 option = new WeightedMultiSigOptions();
             } else {
-                option = fillDefaultValuesForWeightedMultiSig(roleBasedPublicKeys.get(i));
+                option = getDefaultOptionsForWeightedMultiSig(roleBasedPublicKeys.get(i));
             }
 
             optionList.add(option);

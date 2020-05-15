@@ -130,7 +130,7 @@ public class Account {
      * @return Account
      */
     public static Account createWithAccountKeyWeightedMultiSig(String address, String[] publicKeys) {
-        WeightedMultiSigOptions options = WeightedMultiSigOptions.fillDefaultValuesForWeightedMultiSig(publicKeys);
+        WeightedMultiSigOptions options = WeightedMultiSigOptions.getDefaultOptionsForWeightedMultiSig(publicKeys);
         return createWithAccountKeyWeightedMultiSig(address, publicKeys, options);
     }
 
@@ -157,7 +157,7 @@ public class Account {
      * @return Account
      */
     public static Account createWithAccountKeyRoleBased(String address, List<String[]> roleBasedPublicKey) {
-        List<WeightedMultiSigOptions> optionList = WeightedMultiSigOptions.fillDefaultValuesForWeightedForRoleBased(roleBasedPublicKey);
+        List<WeightedMultiSigOptions> optionList = WeightedMultiSigOptions.getDefaultOptionsForRoleBased(roleBasedPublicKey);
         return createWithAccountKeyRoleBased(address, roleBasedPublicKey, optionList);
     }
 

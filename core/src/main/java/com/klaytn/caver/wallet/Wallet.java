@@ -378,7 +378,7 @@ public class Wallet {
         }
     }
 
-    static byte[] generateRandomBytes(int size) {
+    public static byte[] generateRandomBytes(int size) {
         byte[] bytes = new byte[size];
         SecureRandomUtils.secureRandom().nextBytes(bytes);
         return bytes;

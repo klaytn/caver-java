@@ -183,11 +183,13 @@ public class KlayWalletUtils {
         return directory;
     }
 
+    @Deprecated
     public static boolean isValidPrivateKey(String privateKey) {
         String cleanPrivateKey = Numeric.cleanHexPrefix(privateKey);
         return cleanPrivateKey.length() <= PRIVATE_KEY_HEX_SIZE && HEX_STRING.matcher(cleanPrivateKey).matches();
     }
 
+    @Deprecated
     public static boolean isValidAddress(String input) {
         String cleanInput = Numeric.cleanHexPrefix(input);
 

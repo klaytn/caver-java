@@ -172,7 +172,7 @@ public class Keyring {
     public List<String[]> getPublicKey() {
         List<String[]> publicKeyList = this.keys.stream().map(element -> {
             return Arrays.stream(element)
-                    .map(PrivateKey::getDerivedAddress)
+                    .map(privateKey -> privateKey.getPublicKey(false))
                     .toArray(String[]::new);
         }).collect(Collectors.toCollection(ArrayList::new));
 
@@ -206,7 +206,7 @@ public class Keyring {
         if(keyIndex >= groupKeyArr.length) throw new IllegalArgumentException("keyIndex value must be less than the length of key array");
 
         String messageHash = Hash.sha3(message);
-        KlaySignatureData signatureData =  groupKeyArr[keyIndex].signMessage(messageHash);
+        KlaySignatureData signatureData = groupKeyArr[keyIndex].signMessage(message);
         return new MessageSigned(messageHash, signatureData, message);
     }
 
@@ -249,8 +249,12 @@ public class Keyring {
     }
 
     public Account toAccount() {
-        if(isEmptyKey(this)) {
-            throw new RuntimeException("Failed to create Account instance: Empty key in keyring.");
+        boolean isExistsOtherGroupKeys = this.keys.stream()
+                .skip(1)
+                .anyMatch(groupKeyArr -> groupKeyArr.length != 0);
+
+        if(isExistsOtherGroupKeys) {
+            throw new RuntimeException("Failed to create Account instance: There are exists keys in other Group(RoleAccountUpdate, RoleFeePayer)");
         }
 
         PrivateKey[] txGroupKeyArr = getKeyByRole(AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
@@ -258,27 +262,17 @@ public class Keyring {
             throw new RuntimeException("Failed to create Account instance: There are two or more keys in RoleTransaction Key array.");
         }
 
-        boolean isExistsOtherGroupKeys = this.keys.stream()
-                .skip(AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex())
-                .anyMatch(groupKeyArr -> groupKeyArr.length != 0);
-
-        if(isExistsOtherGroupKeys) {
-            throw new RuntimeException("Failed to create Account instance: There are exists keys in other Group(RoleAccountUpdate, RoleFeePayer)");
-        }
-
-//        for(int i = AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex(); i<AccountKeyRoleBased.MAX_ROLE_BASED_KEY_COUNT; i++) {
-//            PrivateKey[] groupKeyArr = getKeyByRole(i);
-//            if(groupKeyArr.length !=0) {
-//                throw new RuntimeException("Failed to create Account instance: There are exists keys in Group(RoleAccountUpdate, RoleFeePayer)");
-//            }
-//        }
         String publicKey = this.getPublicKey().get(0)[0];
         return Account.createWithAccountKeyPublic(this.address, publicKey);
     }
 
     public Account toAccount(WeightedMultiSigOptions options) {
-        if(isEmptyKey(this)) {
-            throw new RuntimeException("Failed to create Account instance: Empty key in keyring.");
+        boolean isExistsOtherGroupKeys = this.keys.stream()
+                .skip(1)
+                .anyMatch(groupKeyArr -> groupKeyArr.length != 0);
+
+        if(isExistsOtherGroupKeys) {
+            throw new RuntimeException("Failed to create Account instance: There are exists keys in other Group(RoleAccountUpdate, RoleFeePayer)");
         }
 
         PrivateKey[] txGroupKeyArr = getKeyByRole(AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
@@ -290,24 +284,12 @@ public class Keyring {
             throw new RuntimeException("Failed to create Account instance: The number of keys and the number of elements in the Weights array should be the same.");
         }
 
-        boolean isExistsOtherGroupKeys = this.keys.stream()
-                .skip(AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex())
-                .anyMatch(groupKeyArr -> groupKeyArr.length != 0);
-
-        if(isExistsOtherGroupKeys) {
-            throw new RuntimeException("Failed to create Account instance: There are exists keys in other Group(RoleAccountUpdate, RoleFeePayer)");
-        }
-
         String address = this.address;
         String[] publicKeyArr = this.getPublicKey().get(0);
         return Account.createWithAccountKeyWeightedMultiSig(address, publicKeyArr, options);
     }
 
     public Account toAccount(List<WeightedMultiSigOptions> options) {
-        if(isEmptyKey(this)) {
-            throw new RuntimeException("Failed to create Account instance: Empty key in keyring.");
-        }
-
         return Account.createWithAccountKeyRoleBased(this.address, this.getPublicKey(), options);
     }
 
@@ -327,14 +309,6 @@ public class Keyring {
         String derivedKey = privateKey.getDerivedAddress();
 
         return !(derivedKey.toLowerCase().equals(this.address.toLowerCase()));
-    }
-
-    private static boolean isEmptyKey(Keyring keyring) {
-        if(keyring.keys == null)  {
-            return true;
-        }
-
-        return keyring.keys.stream().allMatch(element -> element.length == 0);
     }
 
     public String getAddress() {

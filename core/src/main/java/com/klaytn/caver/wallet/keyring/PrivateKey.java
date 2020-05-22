@@ -15,6 +15,7 @@ import org.web3j.utils.Numeric;
 import java.math.BigInteger;
 
 public class PrivateKey {
+    static final int LEN_UNCOMPRESSED_PUBLIC_KEY_STRING = 128;
     private String privateKey;
 
     public PrivateKey(String privateKey) {
@@ -66,10 +67,10 @@ public class PrivateKey {
         BigInteger publicKey = Sign.publicKeyFromPrivate(Numeric.toBigInt(privateKey));
 
         if(compressed) {
-            return AccountKeyPublicUtils.compressPublicKey(Numeric.toHexStringNoPrefix(publicKey));
+            return AccountKeyPublicUtils.compressPublicKey(Numeric.toHexStringWithPrefixZeroPadded(publicKey, LEN_UNCOMPRESSED_PUBLIC_KEY_STRING));
         }
 
-        return Numeric.toHexStringWithPrefix(publicKey);
+        return Numeric.toHexStringNoPrefixZeroPadded(publicKey, LEN_UNCOMPRESSED_PUBLIC_KEY_STRING);
     }
 
     public String getDerivedAddress() {

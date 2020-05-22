@@ -119,7 +119,7 @@ public class KeyringTest {
 
         @Test
         public void generateWithEntropy() {
-            byte[] random = Wallet.generateRandomBytes(32);
+            byte[] random = Utils.generateRandomBytes(32);
             Keyring keyring = Keyring.generate(Numeric.toHexString(random));
 
             assertTrue(Utils.isValidAddress(keyring.getAddress()));

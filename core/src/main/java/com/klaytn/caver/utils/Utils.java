@@ -78,4 +78,10 @@ public class Utils {
         return Hash.sha3(klaytnMessage);
     }
 
+    public static byte[] generateRandomBytes(int size) {
+        byte[] bytes = new byte[size];
+        SecureRandomUtils.secureRandom().nextBytes(bytes);
+        return bytes;
+    }
+
 }

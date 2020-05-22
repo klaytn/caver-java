@@ -29,17 +29,17 @@ public class PrivateKey {
     }
 
     public static PrivateKey generate(String entropy) {
-        byte[] random = Wallet.generateRandomBytes(32);
+        byte[] random = Utils.generateRandomBytes(32);
 
         byte[] entropyArr;
         if(entropy == null || entropy.isEmpty()) {
-            entropyArr = Wallet.generateRandomBytes(32);
+            entropyArr = Utils.generateRandomBytes(32);
         } else {
             entropyArr = Numeric.hexStringToByteArray(entropy);
         }
 
         byte[] innerHex = Hash.sha3(BytesUtils.concat(random, entropyArr));
-        byte[] middleHex = BytesUtils.concat(BytesUtils.concat(Wallet.generateRandomBytes(32), innerHex), Wallet.generateRandomBytes(32));
+        byte[] middleHex = BytesUtils.concat(BytesUtils.concat(Utils.generateRandomBytes(32), innerHex), Utils.generateRandomBytes(32));
 
         String outerHex = Numeric.toHexString(Hash.sha3(middleHex));
 

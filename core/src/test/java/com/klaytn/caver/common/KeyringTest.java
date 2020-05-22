@@ -165,7 +165,7 @@ public class KeyringTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("Invalid private key.");
 
-            byte[] random = Wallet.generateRandomBytes(31);
+            byte[] random = Utils.generateRandomBytes(31);
             Keyring keyring = Keyring.createFromPrivateKey(Numeric.toHexString(random));
         }
     }
@@ -399,7 +399,7 @@ public class KeyringTest {
 
             String expectedAddress = Keyring.generate().getAddress();
 
-            byte[] random = Wallet.generateRandomBytes(31);
+            byte[] random = Utils.generateRandomBytes(31);
             String[] expectedPrivateKeyArr = {
                     Numeric.toHexString(random),
                     PrivateKey.generate().getPrivateKey(),

@@ -57,7 +57,7 @@ public class PrivateKey {
 
     public KlaySignatureData signMessage(String messageHash) {
         ECKeyPair keyPair = ECKeyPair.create(Numeric.toBigInt(privateKey));
-        Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(messageHash), keyPair);
+        Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(messageHash), keyPair, false);
         KlaySignatureData klaySignatureData = new KlaySignatureData(new byte[]{signatureData.getV()}, signatureData.getR(), signatureData.getS());
 
         return klaySignatureData;
@@ -75,7 +75,7 @@ public class PrivateKey {
 
     public String getDerivedAddress() {
         BigInteger publicKey = Sign.publicKeyFromPrivate(Numeric.toBigInt(privateKey));
-        return Keys.getAddress(publicKey);
+        return Numeric.prependHexPrefix(Keys.getAddress(publicKey));
     }
 
     public String getPrivateKey() {

@@ -5,17 +5,11 @@ import com.klaytn.caver.account.AccountKeyRoleBased;
 import com.klaytn.caver.account.WeightedMultiSigOptions;
 import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.utils.Utils;
-import com.klaytn.caver.wallet.Wallet;
-import com.klaytn.caver.wallet.WalletFile;
-import jnr.posix.Crypt;
 import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.bouncycastle.crypto.generators.SCrypt;
 import org.bouncycastle.crypto.params.KeyParameter;
-import org.web3j.crypto.CipherException;
-import org.web3j.crypto.Hash;
-import org.web3j.crypto.Keys;
-import org.web3j.crypto.Sign;
+import org.web3j.crypto.*;
 import org.web3j.utils.Numeric;
 
 import javax.crypto.BadPaddingException;
@@ -36,6 +30,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.web3j.utils.Assertions.verifyPrecondition;
 
 public class Keyring {
     String address;
@@ -269,13 +264,39 @@ public class Keyring {
     }
 
     public static String recover(String message, KlaySignatureData signatureData, boolean isPrefixed) throws SignatureException {
-        Sign.SignatureData data = new Sign.SignatureData(signatureData.getV()[0], signatureData.getR(), signatureData.getS());
+        Sign.SignatureData signData = new Sign.SignatureData(signatureData.getV()[0], signatureData.getR(), signatureData.getS());
+        String messageHash = message;
         if(!isPrefixed) {
-            message = Utils.addPrefixSignMessage(message);
+            messageHash = Utils.signMessage(message);
         }
 
-        BigInteger publicKey = Sign.signedMessageToKey(Numeric.hexStringToByteArray(message), data);
-        return Numeric.prependHexPrefix(Keys.getAddress(publicKey));
+        byte[] r = signatureData.getR();
+        byte[] s = signatureData.getS();
+
+        if(r == null || r.length != 32) {
+            throw new IllegalArgumentException("r must be 32 bytes");
+        }
+        if(s == null || s.length != 32) {
+            throw new IllegalArgumentException("s must be 32 bytes");
+        }
+
+        int header = signData.getV() & 0xFF;
+        // The header byte: 0x1B = first key with even y, 0x1C = first key with odd y,
+        //                  0x1D = second key with even y, 0x1E = second key with odd y
+        if (header < 27 || header > 34) {
+            throw new SignatureException("Header byte out of range: " + header);
+        }
+
+        ECDSASignature sig = new ECDSASignature(
+                new BigInteger(1, signatureData.getR()),
+                new BigInteger(1, signatureData.getS()));
+
+        int recId = header - 27;
+        BigInteger key = Sign.recoverFromSignature(recId, sig, Numeric.hexStringToByteArray(messageHash));
+        if (key == null) {
+            throw new SignatureException("Could not recover public key from signature");
+        }
+        return Numeric.prependHexPrefix(Keys.getAddress(key));
     }
 
     public List<String[]> getPublicKey() {
@@ -314,7 +335,7 @@ public class Keyring {
         if(keyIndex < 0) throw new IllegalArgumentException("keyIndex cannot have negative value.");
         if(keyIndex >= groupKeyArr.length) throw new IllegalArgumentException("keyIndex value must be less than the length of key array");
 
-        String messageHash = Hash.sha3(Utils.addPrefixSignMessage(message));
+        String messageHash = Utils.signMessage(message);
         KlaySignatureData signatureData = groupKeyArr[keyIndex].signMessage(messageHash);
         return new MessageSigned(messageHash, signatureData, message);
     }

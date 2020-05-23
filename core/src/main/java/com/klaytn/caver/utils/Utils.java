@@ -71,11 +71,11 @@ public class Utils {
         return arr;
     }
 
-    public static String addPrefixSignMessage(String message) {
+    public static String signMessage(String message) {
         final String preamble = "\\x19Klaytn Signed Message:\\n";
 
         String klaytnMessage =  preamble + message.length() + message;
-        return klaytnMessage;
+        return Hash.sha3(klaytnMessage);
     }
 
     public static byte[] generateRandomBytes(int size) {

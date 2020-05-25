@@ -330,6 +330,17 @@ public class Keyring {
                 }).collect(Collectors.toCollection(ArrayList::new));
     }
 
+    public MessageSigned signMessage(String message) {
+        int roleIndex = AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex();
+        PrivateKey[] groupKeyArr = getKeyByRole(roleIndex);
+
+        if(groupKeyArr.length == 0) {
+            throw new RuntimeException("Default Key does not have enough keys to sign.");
+        }
+
+        return signMessage(message, 0, 0);
+    }
+
     public MessageSigned signMessage(String message, int roleIndex, int keyIndex) {
         PrivateKey[] groupKeyArr = getKeyByRole(roleIndex);
         if(keyIndex < 0) throw new IllegalArgumentException("keyIndex cannot have negative value.");

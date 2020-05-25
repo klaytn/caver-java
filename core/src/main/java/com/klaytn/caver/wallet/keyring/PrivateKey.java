@@ -14,10 +14,21 @@ import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 
+/**
+ * Represents a PrivateKey class that includes private key string
+ */
 public class PrivateKey {
     static final int LEN_UNCOMPRESSED_PUBLIC_KEY_STRING = 128;
+
+    /**
+     * Private key string
+     */
     private String privateKey;
 
+    /**
+     * Creates a PrivateKey instance
+     * @param privateKey The private key string.
+     */
     public PrivateKey(String privateKey) {
         if(!Utils.isPrivateKeyValid(privateKey)) {
             throw new IllegalArgumentException("Invalid private key.");
@@ -25,10 +36,19 @@ public class PrivateKey {
         this.privateKey = Numeric.prependHexPrefix(privateKey);
     }
 
+    /**
+     * Create a random PrivateKey instance.
+     * @return PrivateKey
+     */
     public static PrivateKey generate() {
         return PrivateKey.generate(null);
     }
 
+    /**
+     * Create a PrivateKey instance with entropy
+     * @param entropy The entropy string
+     * @return PrivateKey
+     */
     public static PrivateKey generate(String entropy) {
         byte[] random = Utils.generateRandomBytes(32);
 
@@ -47,6 +67,12 @@ public class PrivateKey {
         return new PrivateKey(outerHex);
     }
 
+    /**
+     * Signs with transactionHash with key and returns signature
+     * @param sigHash The has of transactionHash
+     * @param chainId The chainId or network
+     * @return KlaySignatureData
+     */
     public KlaySignatureData sign(String sigHash, int chainId) {
         ECKeyPair keyPair = ECKeyPair.create(Numeric.toBigInt(privateKey));
         Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(sigHash), keyPair);
@@ -55,6 +81,11 @@ public class PrivateKey {
         return klaySignatureData;
     }
 
+    /**
+     * Signs with hashed data and returns signature
+     * @param messageHash The hash of data to sign
+     * @return KlaySignatureData
+     */
     public KlaySignatureData signMessage(String messageHash) {
         ECKeyPair keyPair = ECKeyPair.create(Numeric.toBigInt(privateKey));
         Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(messageHash), keyPair, false);
@@ -63,6 +94,11 @@ public class PrivateKey {
         return klaySignatureData;
     }
 
+    /**
+     * Returns public key string
+     * @param compressed If true, it returns compressed format
+     * @return String
+     */
     public String getPublicKey(boolean compressed) {
         BigInteger publicKey = Sign.publicKeyFromPrivate(Numeric.toBigInt(privateKey));
 
@@ -73,11 +109,19 @@ public class PrivateKey {
         return Numeric.toHexStringNoPrefixZeroPadded(publicKey, LEN_UNCOMPRESSED_PUBLIC_KEY_STRING);
     }
 
+    /**
+     * Returns derived address from private key string
+     * @return String
+     */
     public String getDerivedAddress() {
         BigInteger publicKey = Sign.publicKeyFromPrivate(Numeric.toBigInt(privateKey));
         return Numeric.prependHexPrefix(Keys.getAddress(publicKey));
     }
 
+    /**
+     * Getter function of private key string
+     * @return String
+     */
     public String getPrivateKey() {
         return privateKey;
     }

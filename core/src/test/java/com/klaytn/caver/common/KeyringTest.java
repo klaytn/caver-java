@@ -3,7 +3,6 @@ package com.klaytn.caver.common;
 import com.klaytn.caver.account.*;
 import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.utils.Utils;
-import com.klaytn.caver.wallet.WalletFile;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Rule;
 import org.junit.Test;
@@ -21,13 +20,28 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({KeyringTest.GenerateTest.class,
-        KeyringTest.CreateFromPrivateKeyTest.class,
-        KeyringTest.CreateFromKlaytnWalletKeyTest.class,
-        KeyringTest.CreateTest.class,
-        KeyringTest.CreateWithSingleKeyTest.class,
-        KeyringTest.CreateWithMultipleKeyTest.class,
-        KeyringTest.CreateWithRoleBasedKeyTest.class,})
+@Suite.SuiteClasses({
+        KeyringTest.generateTest.class,
+        KeyringTest.createFromPrivateKeyTest.class,
+        KeyringTest.createFromKlaytnWalletKeyTest.class,
+        KeyringTest.createTest.class,
+        KeyringTest.createWithSingleKeyTest.class,
+        KeyringTest.createWithMultipleKeyTest.class,
+        KeyringTest.createWithRoleBasedKeyTest.class,
+        KeyringTest.copyTest.class,
+        KeyringTest.signWithKeyTest.class,
+        KeyringTest.signWithKeysTest.class,
+        KeyringTest.signMessageTest.class,
+        KeyringTest.recoverTest.class,
+        KeyringTest.decryptTest.class,
+        KeyringTest.encryptTest.class,
+        KeyringTest.encryptV3Test.class,
+        KeyringTest.getKeyByRoleTest.class,
+        KeyringTest.getKlaytnWalletKeyTest.class,
+        KeyringTest.getPublicKeyTest.class,
+        KeyringTest.isDecoupledTest.class,
+        KeyringTest.toAccountTest.class,
+})
 public class KeyringTest {
 
     public static void checkValidateSingleKey(Keyring actualKeyring, String expectedAddress, String expectedPrivateKey) {
@@ -100,7 +114,7 @@ public class KeyringTest {
         return Keyring.createWithRoleBasedKey(address, arr);
     }
 
-    public static class GenerateTest {
+    public static class generateTest {
         @Test
         public void generate() {
             Keyring keyring = Keyring.generate();
@@ -116,7 +130,7 @@ public class KeyringTest {
         }
     }
 
-    public static class CreateFromPrivateKeyTest {
+    public static class createFromPrivateKeyTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
@@ -161,7 +175,7 @@ public class KeyringTest {
     }
 
 
-    public static class CreateFromKlaytnWalletKeyTest {
+    public static class createFromKlaytnWalletKeyTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
@@ -185,7 +199,7 @@ public class KeyringTest {
         }
     }
 
-    public static class CreateTest {
+    public static class createTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
@@ -326,7 +340,7 @@ public class KeyringTest {
         }
     }
 
-    public static class CreateWithSingleKeyTest {
+    public static class createWithSingleKeyTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
@@ -364,7 +378,7 @@ public class KeyringTest {
     }
 
 
-    public static class CreateWithMultipleKeyTest {
+    public static class createWithMultipleKeyTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
@@ -399,7 +413,7 @@ public class KeyringTest {
         }
     }
 
-    public static class CreateWithRoleBasedKeyTest {
+    public static class createWithRoleBasedKeyTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
@@ -474,7 +488,7 @@ public class KeyringTest {
         }
     }
 
-    public static class CopyTest {
+    public static class copyTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
@@ -538,7 +552,7 @@ public class KeyringTest {
         }
     }
 
-    public static class SignWithKeyTest {
+    public static class signWithKeyTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
@@ -1022,7 +1036,7 @@ public class KeyringTest {
         @Test
         public void multipleKey_throwException_WithInvalidKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex cannot have negative value.");
+            expectedException.expectMessage("keyIndex value must be less than the length of key array");
 
             Keyring keyring = generateMultipleKeyring(3);
             MessageSigned expect = keyring.signMessage(data, 0, 6);
@@ -1663,7 +1677,7 @@ public class KeyringTest {
             PrivateKey[] keys = roleKeyring.getKeyByRole(AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
 
             assertNotNull(keys);
-            assertEquals(2, roleKeyring.getKeys().size());
+            assertEquals(2, keys.length);
         }
 
         @Test

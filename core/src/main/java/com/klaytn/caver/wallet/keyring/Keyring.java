@@ -1,5 +1,6 @@
 package com.klaytn.caver.wallet.keyring;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.account.Account;
 import com.klaytn.caver.account.AccountKeyRoleBased;
 import com.klaytn.caver.account.WeightedMultiSigOptions;
@@ -8,6 +9,7 @@ import com.klaytn.caver.utils.Utils;
 import org.web3j.crypto.*;
 import org.web3j.utils.Numeric;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SignatureException;
 import java.util.ArrayList;
@@ -301,7 +303,22 @@ public class Keyring {
     public static KeyStore encryptV3(Keyring keyring, String password, KeyStoreOption options) throws CipherException {
         return keyring.encryptV3(password, options);
     }
-    
+
+    /**
+     * Decrypts a KeyStore json string and returns a keyring instance.
+     * @param keyStore The encrypted keystore to decrypt.
+     * @param password The password to use for decryption.
+     * @return Keyring
+     * @throws CipherException
+     * @throws IOException
+     */
+    public static Keyring decrypt(String keyStore, String password) throws CipherException, IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        KeyStore file = mapper.readValue(keyStore, KeyStore.class);
+
+        return decrypt(file, password);
+    }
+
     /**
      * Decrypts a keystore v3 or v4 and returns a keyring instance.
      * @param keystore The encrypted keystore to decrypt.

@@ -5,31 +5,16 @@ import com.klaytn.caver.account.AccountKeyRoleBased;
 import com.klaytn.caver.account.WeightedMultiSigOptions;
 import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.utils.Utils;
-import org.bouncycastle.crypto.digests.SHA256Digest;
-import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
-import org.bouncycastle.crypto.generators.SCrypt;
-import org.bouncycastle.crypto.params.KeyParameter;
 import org.web3j.crypto.*;
 import org.web3j.utils.Numeric;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.math.BigInteger;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 
 /**
@@ -206,7 +191,7 @@ public class Keyring {
     /**
      * Encrypts a keyring instance and returns a keystore object. (according to KeyStoreV4)
      * @param key A private key string.
-     * @param password The password to be used for encryption.
+     * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
      * @param option The options to use when encrypt a keyring.
      * @return KeyStore
      * @throws CipherException It throws when cipher operation has failed.
@@ -233,7 +218,7 @@ public class Keyring {
     /**
      * Encrypts an keyring instance and returns a keystore object. (according to KeyStoreV4)
      * @param key A private key strings.
-     * @param password The password to be used for encryption.
+     * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
      * @param option The options to use when encrypt a keyring.
      * @return KeyStore
      * @throws CipherException It throws when cipher operation has failed.
@@ -251,7 +236,7 @@ public class Keyring {
     /**
      * Encrypts a keyring instance and returns a keystore object. (according to KeyStoreV4)
      * @param key A List of private key strings
-     * @param password The password to be used for encryption.
+     * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
      * @param option The options to use when encrypt a keyring.
      * @return KeyStore
      * @throws CipherException It throws when cipher operation has failed.
@@ -269,7 +254,7 @@ public class Keyring {
     /**
      * Encrypts a keyring instance and returns a keystore object. (according to KeyStoreV4)
      * @param keyring A Keyring instance
-     * @param password The password to be used for encryption.
+     * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
      * @param option The options to use when encrypt a keyring.
      * @return KeyStore
      * @throws CipherException It throws when cipher operation has failed.
@@ -281,7 +266,7 @@ public class Keyring {
     /**
      * Encrypts a keyring instance and returns a keystore object. (according to KeyStoreV3)
      * @param key A private key string.
-     * @param password The password to be used for encryption.
+     * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
      * @param option The options to use when encrypt a keyring.
      * @return KeyStore
      * @throws CipherException It throws when cipher operation has failed.
@@ -308,7 +293,7 @@ public class Keyring {
     /**
      * Encrypts a keyring instance and returns a keystore object. (according to KeyStoreV3)
      * @param keyring A Keyring instance.
-     * @param password The password to be used for encryption.
+     * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
      * @param options The options to use when encrypt a keyring.
      * @return KeyStore
      * @throws CipherException It throws when cipher operation has failed.
@@ -316,8 +301,7 @@ public class Keyring {
     public static KeyStore encryptV3(Keyring keyring, String password, KeyStoreOption options) throws CipherException {
         return keyring.encryptV3(password, options);
     }
-
-
+    
     /**
      * Decrypts a keystore v3 or v4 and returns a keyring instance.
      * @param keystore The encrypted keystore to decrypt.
@@ -340,7 +324,7 @@ public class Keyring {
 
         if(keystore.getVersion() == KeyStore.KEY_VERSION_V3) {
             KeyStore.Crypto crypto = keystore.getCrypto();
-            String privateKey = decryptKeyFromKeyStore(crypto, password);
+            String privateKey = KeyStore.Crypto.decryptCrypto(crypto, password);
             return Keyring.create(keystore.getAddress(), privateKey);
         }
 
@@ -350,7 +334,7 @@ public class Keyring {
             String[] privateKeyArr = new String[keyring.size()];
             for(int i=0; i<keyring.size(); i++) {
                 KeyStore.Crypto crypto = (KeyStore.Crypto)keyring.get(i);
-                String privateKey = decryptKeyFromKeyStore(crypto, password);
+                String privateKey = KeyStore.Crypto.decryptCrypto(crypto, password);
                 privateKeyArr[i] = privateKey;
             }
             privateKeyList.add(privateKeyArr);
@@ -359,7 +343,7 @@ public class Keyring {
                 String[] privateKeyArr = new String[multiKeying.size()];
                 for(int i=0; i<multiKeying.size(); i++) {
                     KeyStore.Crypto crypto = multiKeying.get(i);
-                    String privateKey = decryptKeyFromKeyStore(crypto, password);
+                    String privateKey = KeyStore.Crypto.decryptCrypto(crypto, password);
                     privateKeyArr[i] = privateKey;
                 }
                 privateKeyList.add(privateKeyArr);
@@ -635,7 +619,7 @@ public class Keyring {
 
     /**
      * Encrypts a keyring and returns a KeyStore.(according to KeyStore V4)
-     * @param password The password to be used for encryption. The encrypted key store can be decrypted with this password.
+     * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
      * @param options The options to use when encrypt a keyring.
      * @return KeyStore
      * @throws CipherException It throws when cipher operation has failed.
@@ -646,7 +630,7 @@ public class Keyring {
         boolean isRoleBased = false;
         for(int i=0; i<AccountKeyRoleBased.MAX_ROLE_BASED_KEY_COUNT; i++) {
             PrivateKey[] privateKeys = this.getKeys().get(i);
-            List<KeyStore.Crypto> list = generateKeyStoreCrypto(privateKeys, password, options);
+            List<KeyStore.Crypto> list = KeyStore.Crypto.createCrypto(privateKeys, password, options);
             cryptosList.add(list);
 
             if(i > AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex() && privateKeys.length > 0) {
@@ -667,7 +651,7 @@ public class Keyring {
 
     /**
      * Encrypts a keyring and returns a KeyStore.(according to KeyStore V3)
-     * @param password The password to be used for encryption. The encrypted key store can be decrypted with this password.
+     * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
      * @param options The options to use when encrypt a keyring.
      * @return KeyStore
      * @throws CipherException It throws when cipher operation has failed.
@@ -683,7 +667,7 @@ public class Keyring {
             throw new RuntimeException(notAvailableError);
         }
 
-        List<KeyStore.Crypto> crypto = generateKeyStoreCrypto(this.getKeys().get(AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex()), password, options);
+        List<KeyStore.Crypto> crypto = KeyStore.Crypto.createCrypto(this.getKeys().get(AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex()), password, options);
 
         KeyStore keyStore = new KeyStore();
         keyStore.setAddress(this.getAddress());
@@ -732,162 +716,9 @@ public class Keyring {
         this.address = Numeric.prependHexPrefix(address);
     }
 
-    private static List<KeyStore.Crypto> generateKeyStoreCrypto(PrivateKey[] privateKeys, String password, KeyStoreOption option) throws CipherException {
-        final int PRIVATE_KEY_SIZE = 32;
-        final String CIPHER_METHOD = "aes-128-ctr";
 
-        List<KeyStore.Crypto> cryptoList = new ArrayList<>();
 
-        String kdfName = "";
 
-        byte[] salt = (option.kdfParams.getSalt() != null) ? Numeric.hexStringToByteArray(option.kdfParams.getSalt()) : Utils.generateRandomBytes(32);
-
-        byte[] iv;
-        if(option.cipherParams.getIv() == null) {
-            iv = Utils.generateRandomBytes(16);
-            option.getCipherParams().setIv(Numeric.toHexStringNoPrefix(iv));
-        } else {
-            iv = Numeric.hexStringToByteArray(option.cipherParams.getIv());
-        }
-
-        for(int i=0; i < privateKeys.length; i++) {
-            byte[] derivedKey;
-
-            if(option.kdfParams instanceof KeyStore.ScryptKdfParams) {
-                kdfName = KeyStore.ScryptKdfParams.getName();
-                derivedKey = generateDerivedScryptKey(
-                        password.getBytes(UTF_8),
-                        salt,
-                        ((KeyStore.ScryptKdfParams) option.kdfParams).getN(),
-                        ((KeyStore.ScryptKdfParams) option.kdfParams).getR(),
-                        ((KeyStore.ScryptKdfParams) option.kdfParams).getP(),
-                        option.kdfParams.getDklen());
-
-                ((KeyStore.ScryptKdfParams) option.kdfParams).setSalt(Numeric.toHexStringNoPrefix(salt));
-            } else if(option.kdfParams instanceof KeyStore.Pbkdf2KdfParams) {
-                kdfName = KeyStore.Pbkdf2KdfParams.getName();
-
-                derivedKey = generatePbkdf2DerivedKey(
-                        password.getBytes(UTF_8),
-                        salt,
-                        ((KeyStore.Pbkdf2KdfParams) option.kdfParams).getC(),
-                        ((KeyStore.Pbkdf2KdfParams) option.kdfParams).getPrf()
-                );
-
-                ((KeyStore.Pbkdf2KdfParams) option.kdfParams).setSalt(Numeric.toHexStringNoPrefix(salt));
-            } else {
-                throw new RuntimeException("Unsupported KDF");
-            }
-
-            byte[] encryptKey = Arrays.copyOfRange(derivedKey, 0, 16);
-            byte[] privateKeyBytes =
-                    Numeric.toBytesPadded(Numeric.toBigInt(privateKeys[i].getPrivateKey()), PRIVATE_KEY_SIZE);
-
-            byte[] cipherText = performCipherOperation(
-                    Cipher.ENCRYPT_MODE, iv, encryptKey, privateKeyBytes);
-
-            byte[] mac = generateMac(derivedKey, cipherText);
-
-            KeyStore.Crypto crypto = new KeyStore.Crypto();
-            crypto.setCipher(CIPHER_METHOD);
-            crypto.setCiphertext(Numeric.toHexStringNoPrefix(cipherText));
-            crypto.setCipherparams(option.getCipherParams());
-
-            crypto.setKdf(kdfName);
-            crypto.setKdfparams(option.kdfParams);
-            crypto.setMac(Numeric.toHexStringNoPrefix(mac));
-
-            cryptoList.add(crypto);
-        }
-        return cryptoList;
-    }
-
-    private static String decryptKeyFromKeyStore(KeyStore.Crypto crypto, String password) throws CipherException {
-        byte[] mac = Numeric.hexStringToByteArray(crypto.getMac());
-        byte[] iv = Numeric.hexStringToByteArray(crypto.getCipherparams().getIv());
-        byte[] cipherText = Numeric.hexStringToByteArray(crypto.getCiphertext());
-
-        byte[] derivedKey;
-
-        KeyStore.KdfParams kdfParams = crypto.getKdfparams();
-        if (kdfParams instanceof KeyStore.ScryptKdfParams) {
-            KeyStore.ScryptKdfParams scryptKdfParams =
-                    (KeyStore.ScryptKdfParams) crypto.getKdfparams();
-            int dklen = scryptKdfParams.getDklen();
-            int n = scryptKdfParams.getN();
-            int p = scryptKdfParams.getP();
-            int r = scryptKdfParams.getR();
-            byte[] salt = Numeric.hexStringToByteArray(scryptKdfParams.getSalt());
-
-            derivedKey = generateDerivedScryptKey(password.getBytes(UTF_8), salt, n, r, p, dklen);
-        } else if (kdfParams instanceof KeyStore.Pbkdf2KdfParams) {
-            KeyStore.Pbkdf2KdfParams aes128CtrKdfParams =
-                    (KeyStore.Pbkdf2KdfParams) crypto.getKdfparams();
-            int c = aes128CtrKdfParams.getC();
-            String prf = aes128CtrKdfParams.getPrf();
-            byte[] salt = Numeric.hexStringToByteArray(aes128CtrKdfParams.getSalt());
-
-            derivedKey = generatePbkdf2DerivedKey(password.getBytes(UTF_8), salt, c, prf);
-        } else {
-            throw new CipherException("Unable to deserialize params: " + crypto.getKdf());
-        }
-
-        byte[] derivedMac = generateMac(derivedKey, cipherText);
-
-        if (!Arrays.equals(derivedMac, mac)) {
-            throw new CipherException("Invalid password provided");
-        }
-
-        byte[] encryptKey = Arrays.copyOfRange(derivedKey, 0, 16);
-        byte[] privateKey = performCipherOperation(Cipher.DECRYPT_MODE, iv, encryptKey, cipherText);
-
-        return Numeric.toHexString(privateKey);
-    }
-
-    private static byte[] generateDerivedScryptKey(
-            byte[] password, byte[] salt, int n, int r, int p, int dkLen) throws CipherException {
-        return SCrypt.generate(password, salt, n, r, p, dkLen);
-    }
-
-    private static byte[] generatePbkdf2DerivedKey(
-            byte[] password, byte[] salt, int c, String prf) throws CipherException {
-
-        if (!prf.equals("hmac-sha256")) {
-            throw new CipherException("Unsupported prf:" + prf);
-        }
-
-        // Java 8 supports this, but you have to convert the password to a character array, see
-        // http://stackoverflow.com/a/27928435/3211687
-        PKCS5S2ParametersGenerator gen = new PKCS5S2ParametersGenerator(new SHA256Digest());
-        gen.init(password, salt, c);
-        return ((KeyParameter) gen.generateDerivedParameters(256)).getKey();
-    }
-
-    private static byte[] performCipherOperation(
-            int mode, byte[] iv, byte[] encryptKey, byte[] text) throws CipherException {
-
-        try {
-            IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
-            Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
-
-            SecretKeySpec secretKeySpec = new SecretKeySpec(encryptKey, "AES");
-            cipher.init(mode, secretKeySpec, ivParameterSpec);
-            return cipher.doFinal(text);
-        } catch (NoSuchPaddingException | NoSuchAlgorithmException
-                | InvalidAlgorithmParameterException | InvalidKeyException
-                | BadPaddingException | IllegalBlockSizeException e) {
-            throw new CipherException("Error performing cipher operation", e);
-        }
-    }
-
-    private static byte[] generateMac(byte[] derivedKey, byte[] cipherText) {
-        byte[] result = new byte[16 + cipherText.length];
-
-        System.arraycopy(derivedKey, 16, result, 0, 16);
-        System.arraycopy(cipherText, 0, result, 16, cipherText.length);
-
-        return Hash.sha3(result);
-    }
 
 
 }

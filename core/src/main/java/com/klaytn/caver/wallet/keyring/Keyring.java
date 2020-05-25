@@ -30,12 +30,20 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.web3j.utils.Assertions.verifyPrecondition;
 
+
+/**
+ * Representing a Keyring which includes 'address' and 'private keys' by roles.
+ */
 public class Keyring {
     String address;
     List<PrivateKey[]> keys;
 
+    /**
+     * Creates a Keyring instance.
+     * @param address The address of Keyring instance.
+     * @param keys The key list of keyring instance.
+     */
     private Keyring(String address, List<PrivateKey[]> keys) {
         if(!Utils.isValidAddress(address)) {
             throw new IllegalArgumentException("Invalid Address");
@@ -45,14 +53,19 @@ public class Keyring {
         this.keys = keys;
     }
 
-    public void setAddress(String address) {
-        this.address = Numeric.prependHexPrefix(address);
-    }
-
+    /**
+     * Generates a keyring instance.
+     * @return Keyring
+     */
     public static Keyring generate() {
         return Keyring.generate(null);
     }
 
+    /**
+     * Generates an keyring instance with entropy.
+     * @param entropy A random string to create keyring.
+     * @return Keyring
+     */
     public static Keyring generate(String entropy) {
         PrivateKey privateKey = PrivateKey.generate(entropy);
         String address = privateKey.getDerivedAddress();
@@ -60,18 +73,41 @@ public class Keyring {
         return createWithSingleKey(address, privateKey.getPrivateKey());
     }
 
+    /**
+     * Creates a single type of keyring instance.
+     * @param address The address of keyring.
+     * @param key The key of keyring.
+     * @return Keyring
+     */
     public static Keyring create(String address, String key) {
         return createWithSingleKey(address, key);
     }
 
+    /**
+     * Creates a multiple type of keyring instance.
+     * @param address The address of keyring.
+     * @param keys The key list of keyring.
+     * @return Keyring
+     */
     public static Keyring create(String address, String[] keys) {
         return createWithMultipleKey(address, keys);
     }
 
+    /**
+     * Creates a roleBased type of keyring instance.
+     * @param address The address of keyring.
+     * @param keys The key list of keyring.
+     * @return Keyring
+     */
     public static Keyring create(String address, List<String[]> keys) {
         return createWithRoleBasedKey(address, keys);
     }
 
+    /**
+     * Creates a keyring instance with private key.
+     * @param key A private key string.
+     * @return Keyring
+     */
     public static Keyring createFromPrivateKey(String key) {
         if(Utils.isKlaytnWalletKeyFormat(key)) {
             return Keyring.createFromKlaytnWalletKey(key);
@@ -84,6 +120,11 @@ public class Keyring {
         return new Keyring(address, Arrays.asList(privateKeys));
     }
 
+    /**
+     * Creates a keyring instance from KlaytnWalletKey string.
+     * @param klaytnWalletKey A key string in KlaytnWalletKey format.
+     * @return Keyring
+     */
     public static Keyring createFromKlaytnWalletKey(String klaytnWalletKey) {
         if(!Utils.isKlaytnWalletKeyFormat(klaytnWalletKey)) {
             throw new IllegalArgumentException("Invalid Klaytn wallet key.");
@@ -98,6 +139,12 @@ public class Keyring {
         return new Keyring(address, Arrays.asList(privateKeys));
     }
 
+    /**
+     * Creates a single type of keyring instance from address and private key string.
+     * @param address An address of keyring.
+     * @param key A private key string.
+     * @return Keyring
+     */
     public static Keyring createWithSingleKey(String address, String key) {
         if(Utils.isKlaytnWalletKeyFormat(key)) {
             throw new IllegalArgumentException("Invalid format of parameter. Use 'fromKlaytnWalletKey' to create Keyring from KlaytnWalletKey.");
@@ -108,6 +155,12 @@ public class Keyring {
         return new Keyring(address, Arrays.asList(privateKeys));
     }
 
+    /**
+     * Creates a multiple type of keyring instance from address and private key strings.
+     * @param address An address of keyring.
+     * @param multipleKey An array of private key strings.
+     * @return Keyring
+     */
     public static Keyring createWithMultipleKey(String address, String[] multipleKey) {
         if(multipleKey.length > WeightedMultiSigOptions.MAX_COUNT_WEIGHTED_PUBLIC_KEY) {
             throw new IllegalArgumentException("MultipleKey has up to 10.");
@@ -121,6 +174,12 @@ public class Keyring {
         return new Keyring(address, Arrays.asList(privateKeys));
     }
 
+    /**
+     * Create a roleBased type of keyring instance from address and private key strings.
+     * @param address An address of keyring.
+     * @param roleBasedKey A List of private key strings.
+     * @return Keyring
+     */
     public static Keyring createWithRoleBasedKey(String address, List<String[]> roleBasedKey) {
         if(roleBasedKey.size() > AccountKeyRoleBased.MAX_ROLE_BASED_KEY_COUNT) {
             throw new IllegalArgumentException("RoleBasedKey component must have 3.");
@@ -144,6 +203,14 @@ public class Keyring {
         return new Keyring(address, privateKeys);
     }
 
+    /**
+     * Encrypts a keyring instance and returns a keystore object. (according to KeyStoreV4)
+     * @param key A private key string.
+     * @param password The password to be used for encryption.
+     * @param option The options to use when encrypt a keyring.
+     * @return KeyStore
+     * @throws CipherException It throws when cipher operation has failed.
+     */
     public static KeyStore encrypt(String key, String password, KeyStoreOption option) throws CipherException{
         Keyring keyring = null;
         if(option.getAddress() != null) {
@@ -163,6 +230,14 @@ public class Keyring {
         return keyring.encrypt(password, option);
     }
 
+    /**
+     * Encrypts an keyring instance and returns a keystore object. (according to KeyStoreV4)
+     * @param key A private key strings.
+     * @param password The password to be used for encryption.
+     * @param option The options to use when encrypt a keyring.
+     * @return KeyStore
+     * @throws CipherException It throws when cipher operation has failed.
+     */
     public static KeyStore encrypt(String[] key, String password, KeyStoreOption option) throws CipherException{
         if(option.getAddress() == null) {
             throw new IllegalArgumentException("The address must be defined inside the option object to encrypt multiple keys.");
@@ -173,6 +248,14 @@ public class Keyring {
         return keyring.encrypt(password, option);
     }
 
+    /**
+     * Encrypts a keyring instance and returns a keystore object. (according to KeyStoreV4)
+     * @param key A List of private key strings
+     * @param password The password to be used for encryption.
+     * @param option The options to use when encrypt a keyring.
+     * @return KeyStore
+     * @throws CipherException It throws when cipher operation has failed.
+     */
     public static KeyStore encrypt(List<String[]> key, String password, KeyStoreOption option) throws CipherException{
         if(option.getAddress() == null) {
             throw new IllegalArgumentException("The address must be defined inside the option object to encrypt roleBased keys.");
@@ -183,10 +266,26 @@ public class Keyring {
         return keyring.encrypt(password, option);
     }
 
+    /**
+     * Encrypts a keyring instance and returns a keystore object. (according to KeyStoreV4)
+     * @param keyring A Keyring instance
+     * @param password The password to be used for encryption.
+     * @param option The options to use when encrypt a keyring.
+     * @return KeyStore
+     * @throws CipherException It throws when cipher operation has failed.
+     */
     public static KeyStore encrypt(Keyring keyring, String password, KeyStoreOption option) throws CipherException {
         return keyring.encrypt(password, option);
     }
 
+    /**
+     * Encrypts a keyring instance and returns a keystore object. (according to KeyStoreV3)
+     * @param key A private key string.
+     * @param password The password to be used for encryption.
+     * @param option The options to use when encrypt a keyring.
+     * @return KeyStore
+     * @throws CipherException It throws when cipher operation has failed.
+     */
     public static KeyStore encryptV3(String key, String password, KeyStoreOption option) throws CipherException {
         Keyring keyring = null;
         if(option.getAddress() != null) {
@@ -206,10 +305,26 @@ public class Keyring {
         return keyring.encryptV3(password, option);
     }
 
+    /**
+     * Encrypts a keyring instance and returns a keystore object. (according to KeyStoreV3)
+     * @param keyring A Keyring instance.
+     * @param password The password to be used for encryption.
+     * @param options The options to use when encrypt a keyring.
+     * @return KeyStore
+     * @throws CipherException It throws when cipher operation has failed.
+     */
     public static KeyStore encryptV3(Keyring keyring, String password, KeyStoreOption options) throws CipherException {
         return keyring.encryptV3(password, options);
     }
 
+
+    /**
+     * Decrypts a keystore v3 or v4 and returns a keyring instance.
+     * @param keystore The encrypted keystore to decrypt.
+     * @param password The password to use for decryption.
+     * @return Keyring
+     * @throws CipherException It throws when cipher operation has failed.
+     */
     public static Keyring decrypt(KeyStore keystore, String password) throws CipherException{
         if(keystore.getVersion() == KeyStore.KEY_VERSION_V3 && keystore.getCrypto() == null) {
             throw new IllegalArgumentException("Invalid keystore V3 format: 'crypto' is not defined.");
@@ -254,15 +369,39 @@ public class Keyring {
         return Keyring.createWithRoleBasedKey(keystore.getAddress(), privateKeyList);
     }
 
+    /**
+     * Recovers the address that was used to sign the given data.
+     * This function automatically creates a message hash by appending a Klaytn sign prefix to the message.
+     * @param messageSigned A MessageSigned object
+     * @return String
+     * @throws SignatureException It throws when recover operation has failed.
+     */
     public static String recover(MessageSigned messageSigned) throws SignatureException {
         KlaySignatureData klaySignatureData = messageSigned.getSignatureData();
         return recover(messageSigned.getMessage(), klaySignatureData);
     }
 
+    /**
+     * Recovers the address that was used to sign the given data.
+     * This function automatically creates a message hash by appending a Klaytn sign prefix to the message.
+     * @param message A plain message when using signed.
+     * @param signatureData The signature values in KlaySignatureData
+     * @return String
+     * @throws SignatureException It throws when recover operation has failed.
+     */
     public static String recover(String message, KlaySignatureData signatureData) throws SignatureException {
         return recover(message, signatureData, false);
     }
 
+
+    /**
+     * Recovers the address that was used to sign the given data.
+     * @param message A plain message or hashed message.
+     * @param signatureData The signature values in KlaySignatureData
+     * @param isPrefixed If true, the message param already hashed by appending a Klaytn sign prefix to the message.
+     * @return String
+     * @throws SignatureException It throws when recover operation has failed.
+     */
     public static String recover(String message, KlaySignatureData signatureData, boolean isPrefixed) throws SignatureException {
         Sign.SignatureData signData = new Sign.SignatureData(signatureData.getV()[0], signatureData.getR(), signatureData.getS());
         String messageHash = message;
@@ -299,6 +438,10 @@ public class Keyring {
         return Numeric.prependHexPrefix(Keys.getAddress(key));
     }
 
+    /**
+     * Returns public key strings in format of role-based.
+     * @return A list of public keys
+     */
     public List<String[]> getPublicKey() {
         List<String[]> publicKeyList = this.keys.stream().map(element -> {
             return Arrays.stream(element)
@@ -309,10 +452,22 @@ public class Keyring {
         return publicKeyList;
     }
 
+    /**
+     * Returns a copied keyring instance.
+     * @return Keyring
+     */
     public Keyring copy() {
         return new Keyring(this.address, this.keys);
     }
 
+    /**
+     * Signs with transactionHash with key and returns signature.
+     * @param sigHash The hash of transaction.
+     * @param chainId The chainId specific to the network.
+     * @param roleIndex A number indicating the role of the key.
+     * @param keyIndex The index of the key to be used.
+     * @return KlaySignatureData
+     */
     public KlaySignatureData signWithKey(String sigHash, int chainId, int roleIndex, int keyIndex) {
         PrivateKey[] groupKeyArr = getKeyByRole(roleIndex);
         if(keyIndex < 0) throw new IllegalArgumentException("keyIndex cannot have negative value.");
@@ -321,6 +476,13 @@ public class Keyring {
         return groupKeyArr[keyIndex].sign(sigHash, chainId);
     }
 
+    /**
+     * Signs with transactionHash with multiple keys and returns signature.
+     * @param sigHash The hash of transaction.
+     * @param chainId The chainId specific to the network
+     * @param roleIndex A number indicating the role of the key.
+     * @return KlaySignatureData
+     */
     public List<KlaySignatureData> signWithKeys(String sigHash, int chainId, int roleIndex) {
         PrivateKey[] groupKeyArr = getKeyByRole(roleIndex);
 
@@ -330,6 +492,12 @@ public class Keyring {
                 }).collect(Collectors.toCollection(ArrayList::new));
     }
 
+    /**
+     * Signs with hashed data and returns MessageSigned Object.
+     * The role index and key index set 0.
+     * @param message The data string to sign
+     * @return MessageSigned
+     */
     public MessageSigned signMessage(String message) {
         int roleIndex = AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex();
         PrivateKey[] groupKeyArr = getKeyByRole(roleIndex);
@@ -341,6 +509,13 @@ public class Keyring {
         return signMessage(message, 0, 0);
     }
 
+    /**
+     * Signs with hashed data and returns MessageSigned Object.
+     * @param message The data string to sign.
+     * @param roleIndex A number indicating the role of the key.
+     * @param keyIndex The index of the key to be used.
+     * @return MessageSigned
+     */
     public MessageSigned signMessage(String message, int roleIndex, int keyIndex) {
         PrivateKey[] groupKeyArr = getKeyByRole(roleIndex);
         if(keyIndex < 0) throw new IllegalArgumentException("keyIndex cannot have negative value.");
@@ -351,6 +526,12 @@ public class Keyring {
         return new MessageSigned(messageHash, signatureData, message);
     }
 
+    /**
+     * Returns keys corresponding to the role index.
+     * If the keys corresponding to the role index is empty, the default key is returned.(Role index 0)
+     * @param roleIndex A number indicating the role of the key.
+     * @return An array of PrivateKey
+     */
     public PrivateKey[] getKeyByRole(int roleIndex) {
         if(roleIndex >= AccountKeyRoleBased.MAX_ROLE_BASED_KEY_COUNT) {
             throw new IllegalArgumentException("Invalid role index");
@@ -369,6 +550,10 @@ public class Keyring {
         return groupKeyArr;
     }
 
+    /**
+     * Returns a KlaytnWalletKey format
+     * @return String
+     */
     public String getKlaytnWalletKey() {
         String errorMessage = "The keyring cannot be exported in KlaytnWalletKey format. Use caver.wallet.keyring.encrypt or keyring.encrypt.";
 
@@ -389,6 +574,10 @@ public class Keyring {
         return privateKeyStr + "0x00" + address;
     }
 
+    /**
+     * Returns an instance of Account(AccountKeyPublic).
+     * @return Account
+     */
     public Account toAccount() {
         boolean isExistsOtherGroupKeys = this.keys.stream()
                 .skip(1)
@@ -407,6 +596,11 @@ public class Keyring {
         return Account.createWithAccountKeyPublic(this.address, publicKey);
     }
 
+    /**
+     * Returns an instance of Account.(AccountKeyWeightedMultiSig)
+     * @param options WeightedMultiSigOption to make AccountKeyWeightedMultiSig.
+     * @return Account
+     */
     public Account toAccount(WeightedMultiSigOptions options) {
         boolean isExistsOtherGroupKeys = this.keys.stream()
                 .skip(1)
@@ -430,10 +624,22 @@ public class Keyring {
         return Account.createWithAccountKeyWeightedMultiSig(address, publicKeyArr, options);
     }
 
+    /**
+     * Return an instance of Account.(AccountKeyRoleBased)
+     * @param options A List of WeightedMultiSigOption to make AccountKeyRoleBased.
+     * @return Account
+     */
     public Account toAccount(List<WeightedMultiSigOptions> options) {
         return Account.createWithAccountKeyRoleBased(this.address, this.getPublicKey(), options);
     }
 
+    /**
+     * Encrypts a keyring and returns a KeyStore.(according to KeyStore V4)
+     * @param password The password to be used for encryption. The encrypted key store can be decrypted with this password.
+     * @param options The options to use when encrypt a keyring.
+     * @return KeyStore
+     * @throws CipherException It throws when cipher operation has failed.
+     */
     public KeyStore encrypt(String password, KeyStoreOption options) throws CipherException {
         List<List<KeyStore.Crypto>> cryptosList = new ArrayList<>();
 
@@ -459,6 +665,13 @@ public class Keyring {
         return keyStore;
     }
 
+    /**
+     * Encrypts a keyring and returns a KeyStore.(according to KeyStore V3)
+     * @param password The password to be used for encryption. The encrypted key store can be decrypted with this password.
+     * @param options The options to use when encrypt a keyring.
+     * @return KeyStore
+     * @throws CipherException It throws when cipher operation has failed.
+     */
     public KeyStore encryptV3(String password, KeyStoreOption options) throws CipherException {
         String notAvailableError = "This keyring cannot be encrypted keystore v3. use 'keyring.encrypt(password)";
         if(getKeyByRole(AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex()).length > 1) {
@@ -481,6 +694,10 @@ public class Keyring {
         return keyStore;
     }
 
+    /**
+     * Returns true if keyring has decoupled key.
+     * @return boolean
+     */
     public boolean isDecoupled() {
         boolean isMultiple = this.keys.stream().anyMatch(privateKeys -> privateKeys.length > 1);
         if(isMultiple) return true;
@@ -491,12 +708,28 @@ public class Keyring {
         return !(derivedKey.toLowerCase().equals(this.address.toLowerCase()));
     }
 
+    /**
+     * Getter function of address
+     * @return String
+     */
     public String getAddress() {
         return address;
     }
 
+    /**
+     * Getter function of keys
+     * @return List
+     */
     public List<PrivateKey[]> getKeys() {
         return keys;
+    }
+
+    /**
+     * Setter function of address
+     * @param address An address
+     */
+    public void setAddress(String address) {
+        this.address = Numeric.prependHexPrefix(address);
     }
 
     private static List<KeyStore.Crypto> generateKeyStoreCrypto(PrivateKey[] privateKeys, String password, KeyStoreOption option) throws CipherException {
@@ -585,6 +818,7 @@ public class Keyring {
             int p = scryptKdfParams.getP();
             int r = scryptKdfParams.getR();
             byte[] salt = Numeric.hexStringToByteArray(scryptKdfParams.getSalt());
+
             derivedKey = generateDerivedScryptKey(password.getBytes(UTF_8), salt, n, r, p, dklen);
         } else if (kdfParams instanceof KeyStore.Pbkdf2KdfParams) {
             KeyStore.Pbkdf2KdfParams aes128CtrKdfParams =
@@ -610,8 +844,6 @@ public class Keyring {
         return Numeric.toHexString(privateKey);
     }
 
-
-
     private static byte[] generateDerivedScryptKey(
             byte[] password, byte[] salt, int n, int r, int p, int dkLen) throws CipherException {
         return SCrypt.generate(password, salt, n, r, p, dkLen);
@@ -626,7 +858,6 @@ public class Keyring {
 
         // Java 8 supports this, but you have to convert the password to a character array, see
         // http://stackoverflow.com/a/27928435/3211687
-
         PKCS5S2ParametersGenerator gen = new PKCS5S2ParametersGenerator(new SHA256Digest());
         gen.init(password, salt, c);
         return ((KeyParameter) gen.generateDerivedParameters(256)).getKey();

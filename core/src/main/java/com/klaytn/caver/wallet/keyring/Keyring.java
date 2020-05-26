@@ -32,7 +32,7 @@ public class Keyring {
      * @param keys The key list of keyring instance.
      */
     private Keyring(String address, List<PrivateKey[]> keys) {
-        if(!Utils.isValidAddress(address)) {
+        if(!Utils.isAddress(address)) {
             throw new IllegalArgumentException("Invalid Address");
         }
 
@@ -96,7 +96,7 @@ public class Keyring {
      * @return Keyring
      */
     public static Keyring createFromPrivateKey(String key) {
-        if(Utils.isKlaytnWalletKeyFormat(key)) {
+        if(Utils.isKlaytnKey(key)) {
             return Keyring.createFromKlaytnWalletKey(key);
         }
 
@@ -113,7 +113,7 @@ public class Keyring {
      * @return Keyring
      */
     public static Keyring createFromKlaytnWalletKey(String klaytnWalletKey) {
-        if(!Utils.isKlaytnWalletKeyFormat(klaytnWalletKey)) {
+        if(!Utils.isKlaytnKey(klaytnWalletKey)) {
             throw new IllegalArgumentException("Invalid Klaytn wallet key.");
         }
 
@@ -133,7 +133,7 @@ public class Keyring {
      * @return Keyring
      */
     public static Keyring createWithSingleKey(String address, String key) {
-        if(Utils.isKlaytnWalletKeyFormat(key)) {
+        if(Utils.isKlaytnKey(key)) {
             throw new IllegalArgumentException("Invalid format of parameter. Use 'fromKlaytnWalletKey' to create Keyring from KlaytnWalletKey.");
         }
 
@@ -191,7 +191,7 @@ public class Keyring {
     }
 
     /**
-     * Encrypts a keyring instance and returns a keystore object. (according to KeyStoreV4)
+     * Encrypts a key string (normal private key or KlaytnWalletKey format) and returns a keystore object. (according to KeyStoreV4)
      * @param key A private key string.
      * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
      * @param option The options to use when encrypt a keyring.
@@ -201,7 +201,7 @@ public class Keyring {
     public static KeyStore encrypt(String key, String password, KeyStoreOption option) throws CipherException{
         Keyring keyring = null;
         if(option.getAddress() != null) {
-            if(Utils.isKlaytnWalletKeyFormat(key)) {
+            if(Utils.isKlaytnKey(key)) {
                 keyring = Keyring.createFromKlaytnWalletKey(key);
                 if (!keyring.address.equals(option.address)) {
                     throw new RuntimeException("The address defined in options does not match the address of KlaytnWalletKey");
@@ -218,10 +218,10 @@ public class Keyring {
     }
 
     /**
-     * Encrypts an keyring instance and returns a keystore object. (according to KeyStoreV4)
+     * Encrypts an multiple private key strings and returns a keystore object. (according to KeyStoreV4)
      * @param key A private key strings.
      * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
-     * @param option The options to use when encrypt a keyring.
+     * @param option The options to use when encrypt a keyring. To encrypt multiple private key strings, address should be defined in option.
      * @return KeyStore
      * @throws CipherException It throws when cipher operation has failed.
      */
@@ -236,10 +236,10 @@ public class Keyring {
     }
 
     /**
-     * Encrypts a keyring instance and returns a keystore object. (according to KeyStoreV4)
+     * Encrypts a role based private key strings and returns a keystore object. (according to KeyStoreV4)
      * @param key A List of private key strings
      * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
-     * @param option The options to use when encrypt a keyring.
+     * @param option The options to use when encrypt a keyring. To encrypt multiple private key strings, address should be defined in option.
      * @return KeyStore
      * @throws CipherException It throws when cipher operation has failed.
      */
@@ -254,7 +254,7 @@ public class Keyring {
     }
 
     /**
-     * Encrypts a keyring instance and returns a keystore object. (according to KeyStoreV4)
+     * Encrypts a private key string and returns a keystore object. (according to KeyStoreV4)
      * @param keyring A Keyring instance
      * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
      * @param option The options to use when encrypt a keyring.
@@ -276,7 +276,7 @@ public class Keyring {
     public static KeyStore encryptV3(String key, String password, KeyStoreOption option) throws CipherException {
         Keyring keyring = null;
         if(option.getAddress() != null) {
-            if(Utils.isKlaytnWalletKeyFormat(key)) {
+            if(Utils.isKlaytnKey(key)) {
                 keyring = Keyring.createFromKlaytnWalletKey(key);
                 if (!keyring.address.equals(option.address)) {
                     throw new RuntimeException("The address defined in options does not match the address of KlaytnWalletKey");
@@ -327,9 +327,9 @@ public class Keyring {
      * @throws CipherException It throws when cipher operation has failed.
      */
     public static Keyring decrypt(KeyStore keystore, String password) throws CipherException{
-        if(keystore.getVersion() == KeyStore.KEY_VERSION_V3 && keystore.getCrypto() == null) {
+        if(keystore.getVersion() == KeyStore.KEY_STORE_VERSION_V3 && keystore.getCrypto() == null) {
             throw new IllegalArgumentException("Invalid keystore V3 format: 'crypto' is not defined.");
-        } else if(keystore.getVersion() == KeyStore.KEY_VERSION_V4 && keystore.getKeyring() == null) {
+        } else if(keystore.getVersion() == KeyStore.KEY_STORE_VERSION_V4 && keystore.getKeyring() == null) {
             throw new IllegalArgumentException("Invalid keystore V4 format: 'keyring' is not defined.");
         }
 
@@ -339,7 +339,7 @@ public class Keyring {
             }
         }
 
-        if(keystore.getVersion() == KeyStore.KEY_VERSION_V3) {
+        if(keystore.getVersion() == KeyStore.KEY_STORE_VERSION_V3) {
             KeyStore.Crypto crypto = keystore.getCrypto();
             String privateKey = KeyStore.Crypto.decryptCrypto(crypto, password);
             return Keyring.create(keystore.getAddress(), privateKey);
@@ -372,14 +372,13 @@ public class Keyring {
 
     /**
      * Recovers the address that was used to sign the given data.
-     * This function automatically creates a message hash by appending a Klaytn sign prefix to the message.
      * @param messageSigned A MessageSigned object
      * @return String
      * @throws SignatureException It throws when recover operation has failed.
      */
     public static String recover(MessageSigned messageSigned) throws SignatureException {
         KlaySignatureData klaySignatureData = messageSigned.getSignatureData();
-        return recover(messageSigned.getMessage(), klaySignatureData);
+        return recover(messageSigned.getMessageHash(), klaySignatureData, true);
     }
 
     /**
@@ -407,7 +406,7 @@ public class Keyring {
         Sign.SignatureData signData = new Sign.SignatureData(signatureData.getV()[0], signatureData.getR(), signatureData.getS());
         String messageHash = message;
         if(!isPrefixed) {
-            messageHash = Utils.signMessage(message);
+            messageHash = Utils.hashMessage(message);
         }
 
         byte[] r = signatureData.getR();
@@ -522,7 +521,7 @@ public class Keyring {
         if(keyIndex < 0) throw new IllegalArgumentException("keyIndex cannot have negative value.");
         if(keyIndex >= groupKeyArr.length) throw new IllegalArgumentException("keyIndex value must be less than the length of key array");
 
-        String messageHash = Utils.signMessage(message);
+        String messageHash = Utils.hashMessage(message);
         KlaySignatureData signatureData = groupKeyArr[keyIndex].signMessage(messageHash);
         return new MessageSigned(messageHash, signatureData, message);
     }
@@ -585,12 +584,14 @@ public class Keyring {
                 .anyMatch(groupKeyArr -> groupKeyArr.length != 0);
 
         if(isExistsOtherGroupKeys) {
-            throw new RuntimeException("Failed to create Account instance: There are exists keys in other Group(RoleAccountUpdate, RoleFeePayer)");
+            return Account.createWithAccountKeyRoleBased(this.getAddress(), this.getPublicKey());
         }
 
         PrivateKey[] txGroupKeyArr = getKeyByRole(AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+
         if(txGroupKeyArr.length != 1) {
-            throw new RuntimeException("Failed to create Account instance: There are two or more keys in RoleTransaction Key array.");
+            String[] publicKey = this.getPublicKey().get(0);
+            return Account.createWithAccountKeyWeightedMultiSig(this.address, publicKey);
         }
 
         String publicKey = this.getPublicKey().get(0)[0];
@@ -660,7 +661,7 @@ public class Keyring {
         KeyStore keyStore = new KeyStore();
         keyStore.setAddress(this.getAddress());
         keyStore.setKeyring(keyList);
-        keyStore.setVersion(KeyStore.KEY_VERSION_V4);
+        keyStore.setVersion(KeyStore.KEY_STORE_VERSION_V4);
         keyStore.setId(UUID.randomUUID().toString());
 
         return keyStore;
@@ -688,7 +689,7 @@ public class Keyring {
 
         KeyStore keyStore = new KeyStore();
         keyStore.setAddress(this.getAddress());
-        keyStore.setVersion(KeyStore.KEY_VERSION_V3);
+        keyStore.setVersion(KeyStore.KEY_STORE_VERSION_V3);
         keyStore.setId(UUID.randomUUID().toString());
         keyStore.setCrypto(crypto.get(0));
 

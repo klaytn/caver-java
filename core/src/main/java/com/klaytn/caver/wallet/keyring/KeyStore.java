@@ -46,12 +46,12 @@ public class KeyStore {
     /**
      * Keystore Format V4 version
      */
-    public static final int KEY_VERSION_V3 = 3;
+    public static final int KEY_STORE_VERSION_V3 = 3;
 
     /**
      * Keystore Format V3 version
      */
-    public static final int KEY_VERSION_V4 = 4;
+    public static final int KEY_STORE_VERSION_V4 = 4;
 
     /**
      * An address in KeyStore
@@ -176,47 +176,11 @@ public class KeyStore {
         this.version = version;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof KeyStore)) {
-            return false;
-        }
-
-        KeyStore that = (KeyStore) o;
-
-        if (getAddress() != null
-                ? !getAddress().equals(that.getAddress())
-                : that.getAddress() != null) {
-            return false;
-        }
-        if (getCrypto() != null
-                ? !getCrypto().equals(that.getCrypto())
-                : that.getCrypto() != null) {
-            return false;
-        }
-        if (getId() != null
-                ? !getId().equals(that.getId())
-                : that.getId() != null) {
-            return false;
-        }
-        return version == that.version;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getAddress() != null ? getAddress().hashCode() : 0;
-        result = 31 * result + (getCrypto() != null ? getCrypto().hashCode() : 0);
-        result = 31 * result + (getId() != null ? getId().hashCode() : 0);
-        result = 31 * result + version;
-        return result;
-    }
-
     /**
      * Represent a Crypto data in KeyStore
      * It represents a 'keyring' in KeyStore Format V4
+     *   - If role-based Keyring : It has a List that has Crypto list.
+     *   - If other type keyring : It has a List that has Crypto.
      * It represents a 'crypto' in KeyStore Format V3
      */
     public static class Crypto {
@@ -257,7 +221,7 @@ public class KeyStore {
         }
 
         /**
-         * Creates Crypto instance with given params.
+         * Creates Crypto instances with given params.
          * @param privateKeys An array of PrivateKeys to be encrypted.
          * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
          * @param option The options to use when encrypt a keys.
@@ -583,58 +547,6 @@ public class KeyStore {
         public void setMac(String mac) {
             this.mac = mac;
         }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof KeyStore.Crypto)) {
-                return false;
-            }
-
-            KeyStore.Crypto that = (KeyStore.Crypto) o;
-
-            if (getCipher() != null
-                    ? !getCipher().equals(that.getCipher())
-                    : that.getCipher() != null) {
-                return false;
-            }
-            if (getCiphertext() != null
-                    ? !getCiphertext().equals(that.getCiphertext())
-                    : that.getCiphertext() != null) {
-                return false;
-            }
-            if (getCipherparams() != null
-                    ? !getCipherparams().equals(that.getCipherparams())
-                    : that.getCipherparams() != null) {
-                return false;
-            }
-            if (getKdf() != null
-                    ? !getKdf().equals(that.getKdf())
-                    : that.getKdf() != null) {
-                return false;
-            }
-            if (getKdfparams() != null
-                    ? !getKdfparams().equals(that.getKdfparams())
-                    : that.getKdfparams() != null) {
-                return false;
-            }
-            return getMac() != null
-                    ? getMac().equals(that.getMac()) : that.getMac() == null;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = getCipher() != null ? getCipher().hashCode() : 0;
-            result = 31 * result + (getCiphertext() != null ? getCiphertext().hashCode() : 0);
-            result = 31 * result + (getCipherparams() != null ? getCipherparams().hashCode() : 0);
-            result = 31 * result + (getKdf() != null ? getKdf().hashCode() : 0);
-            result = 31 * result + (getKdfparams() != null ? getKdfparams().hashCode() : 0);
-            result = 31 * result + (getMac() != null ? getMac().hashCode() : 0);
-            return result;
-        }
-
     }
 
     /**
@@ -711,27 +623,6 @@ public class KeyStore {
                 throw new IllegalArgumentException("AES-128-CTR must have iv length 16.");
             }
             this.iv = iv;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof KeyStore.CipherParams)) {
-                return false;
-            }
-
-            KeyStore.CipherParams that = (KeyStore.CipherParams) o;
-
-            return getIv() != null
-                    ? getIv().equals(that.getIv()) : that.getIv() == null;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = getIv() != null ? getIv().hashCode() : 0;
-            return result;
         }
     }
 
@@ -886,41 +777,6 @@ public class KeyStore {
          */
         public static String getName() {
             return NAME;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof Pbkdf2KdfParams)) {
-                return false;
-            }
-
-            Pbkdf2KdfParams that = (Pbkdf2KdfParams) o;
-
-            if (dklen != that.dklen) {
-                return false;
-            }
-            if (c != that.c) {
-                return false;
-            }
-            if (getPrf() != null
-                    ? !getPrf().equals(that.getPrf())
-                    : that.getPrf() != null) {
-                return false;
-            }
-            return getSalt() != null
-                    ? getSalt().equals(that.getSalt()) : that.getSalt() == null;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = dklen;
-            result = 31 * result + c;
-            result = 31 * result + (getPrf() != null ? getPrf().hashCode() : 0);
-            result = 31 * result + (getSalt() != null ? getSalt().hashCode() : 0);
-            return result;
         }
     }
 
@@ -1081,43 +937,6 @@ public class KeyStore {
          */
         public static String getName() {
             return NAME;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof KeyStore.ScryptKdfParams)) {
-                return false;
-            }
-
-            KeyStore.ScryptKdfParams that = (KeyStore.ScryptKdfParams) o;
-
-            if (dklen != that.dklen) {
-                return false;
-            }
-            if (n != that.n) {
-                return false;
-            }
-            if (p != that.p) {
-                return false;
-            }
-            if (r != that.r) {
-                return false;
-            }
-            return getSalt() != null
-                    ? getSalt().equals(that.getSalt()) : that.getSalt() == null;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = dklen;
-            result = 31 * result + n;
-            result = 31 * result + p;
-            result = 31 * result + r;
-            result = 31 * result + (getSalt() != null ? getSalt().hashCode() : 0);
-            return result;
         }
     }
 

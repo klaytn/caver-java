@@ -5,7 +5,6 @@ import com.klaytn.caver.utils.AccountKeyPublicUtils;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.KlaySignatureDataUtils;
 import com.klaytn.caver.utils.Utils;
-import com.klaytn.caver.wallet.Wallet;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Hash;
 import org.web3j.crypto.Keys;
@@ -30,7 +29,7 @@ public class PrivateKey {
      * @param privateKey The private key string.
      */
     public PrivateKey(String privateKey) {
-        if(!Utils.isPrivateKeyValid(privateKey)) {
+        if(!Utils.isValidPrivateKey(privateKey)) {
             throw new IllegalArgumentException("Invalid private key.");
         }
         this.privateKey = Numeric.prependHexPrefix(privateKey);

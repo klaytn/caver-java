@@ -46,16 +46,16 @@ import static org.junit.Assert.*;
 public class KeyringTest {
 
     public static void checkValidateSingleKey(Keyring actualKeyring, String expectedAddress, String expectedPrivateKey) {
-        assertTrue(Utils.isValidAddress(actualKeyring.getAddress()));
+        assertTrue(Utils.isAddress(actualKeyring.getAddress()));
         assertEquals(expectedAddress, actualKeyring.getAddress());
 
         PrivateKey actualPrivateKey = actualKeyring.getKeys().get(0)[0];
-        assertTrue(Utils.isPrivateKeyValid(actualPrivateKey.getPrivateKey()));
+        assertTrue(Utils.isValidPrivateKey(actualPrivateKey.getPrivateKey()));
         assertEquals(expectedPrivateKey, actualPrivateKey.getPrivateKey());
     }
 
     public static void checkValidateMultipleKey(Keyring actualKeyring, String expectedAddress, String[] expectedPrivateKeyArr) {
-        assertTrue(Utils.isValidAddress(actualKeyring.getAddress()));
+        assertTrue(Utils.isAddress(actualKeyring.getAddress()));
         assertEquals(expectedAddress, actualKeyring.getAddress());
 
         PrivateKey[] actualPrivateKeyArr = actualKeyring.getKeys().get(0);
@@ -68,7 +68,7 @@ public class KeyringTest {
     }
 
     public static void checkValidateRoleBasedKey(Keyring actualKeyring, String expectedAddress, List<String[]> expectedPrivateKeyList) {
-        assertTrue(Utils.isValidAddress(actualKeyring.getAddress()));
+        assertTrue(Utils.isAddress(actualKeyring.getAddress()));
         assertEquals(expectedAddress, actualKeyring.getAddress());
 
         List<PrivateKey[]> actualKeyList = actualKeyring.getKeys();
@@ -120,7 +120,7 @@ public class KeyringTest {
         @Test
         public void generate() {
             Keyring keyring = Keyring.generate();
-            assertTrue(Utils.isValidAddress(keyring.getAddress()));
+            assertTrue(Utils.isAddress(keyring.getAddress()));
         }
         //CA-KEYRING-002
         @Test
@@ -128,7 +128,7 @@ public class KeyringTest {
             byte[] random = Utils.generateRandomBytes(32);
             Keyring keyring = Keyring.generate(Numeric.toHexString(random));
 
-            assertTrue(Utils.isValidAddress(keyring.getAddress()));
+            assertTrue(Utils.isAddress(keyring.getAddress()));
         }
     }
 
@@ -933,7 +933,7 @@ public class KeyringTest {
             Keyring keyring = Keyring.generate();
             MessageSigned actual = keyring.signMessage(data, 0, 0);
 
-            assertEquals(Utils.signMessage(data), actual.getMessageHash());
+            assertEquals(Utils.hashMessage(data), actual.getMessageHash());
             assertNotNull(actual.getSignatureData().getV());
             assertNotNull(actual.getSignatureData().getR());
             assertNotNull(actual.getSignatureData().getS());
@@ -1001,7 +1001,7 @@ public class KeyringTest {
 
             MessageSigned actual = decoupled.signMessage(data, 0, 0);
 
-            assertEquals(Utils.signMessage(data), actual.getMessageHash());
+            assertEquals(Utils.hashMessage(data), actual.getMessageHash());
             assertNotNull(actual.getSignatureData().getV());
             assertNotNull(actual.getSignatureData().getR());
             assertNotNull(actual.getSignatureData().getS());
@@ -1076,7 +1076,7 @@ public class KeyringTest {
 
             MessageSigned actual = keyring.signMessage(data, 0, 0);
 
-            assertEquals(Utils.signMessage(data), actual.getMessageHash());
+            assertEquals(Utils.hashMessage(data), actual.getMessageHash());
             assertNotNull(actual.getSignatureData().getV());
             assertNotNull(actual.getSignatureData().getR());
             assertNotNull(actual.getSignatureData().getS());
@@ -1140,7 +1140,7 @@ public class KeyringTest {
 
             MessageSigned actual = keyring.signMessage(data, 0, 0);
 
-            assertEquals(Utils.signMessage(data), actual.getMessageHash());
+            assertEquals(Utils.hashMessage(data), actual.getMessageHash());
             assertNotNull(actual.getSignatureData().getV());
             assertNotNull(actual.getSignatureData().getR());
             assertNotNull(actual.getSignatureData().getS());
@@ -2324,7 +2324,60 @@ public class KeyringTest {
             IAccountKey feePayerRoleKey = key.getRoleFeePayerKey();
             assertTrue(feePayerRoleKey instanceof AccountKeyPublic);
             assertEquals(expectedPublicKeys.get(2)[0], ((AccountKeyPublic) feePayerRoleKey).getPublicKey());
+        }
+
+        //CA-KEYRING-135
+        @Test
+        public void toAccount_withMultipleType() {
+            Keyring expectedKeyring = generateMultipleKeyring(3);
+
+            BigInteger[] optionWeight = {
+                    BigInteger.ONE, BigInteger.ONE, BigInteger.ONE,
+            };
+
+            WeightedMultiSigOptions expectedOptions = new WeightedMultiSigOptions(
+                    BigInteger.ONE, Arrays.asList(optionWeight)
+            );
+
+            Account account = expectedKeyring.toAccount();
+            checkAccountKeyWeightedMultiSig(expectedKeyring, account, expectedOptions);
+        }
+
+        @Test
+        public void toAccount_withRoleBasedType() {
+            Keyring expectedKeyring = generateRoleBaseKeyring(new int[] {2, 1, 4});
+
+            BigInteger[][] optionWeight = {
+                    {BigInteger.ONE, BigInteger.ONE},
+                    {},
+                    {BigInteger.ONE, BigInteger.ONE, BigInteger.ONE, BigInteger.ONE},
+            };
+
+            WeightedMultiSigOptions[] expectedOption = {
+                    new WeightedMultiSigOptions(BigInteger.valueOf(1), Arrays.asList(optionWeight[0])),
+                    new WeightedMultiSigOptions(),
+                    new WeightedMultiSigOptions(BigInteger.valueOf(1), Arrays.asList(optionWeight[2])),
+            };
+            List<String[]> expectedPublicKeys = expectedKeyring.getPublicKey();
+
+            Account account = expectedKeyring.toAccount();
+
+            IAccountKey key = account.getAccountKey();
+            assertTrue(key instanceof  AccountKeyRoleBased);
+
+            IAccountKey txRoleKey = ((AccountKeyRoleBased) key).getRoleTransactionKey();
+            assertTrue(txRoleKey instanceof  AccountKeyWeightedMultiSig);
+            checkPublicKey(expectedPublicKeys.get(0), ((AccountKeyWeightedMultiSig) txRoleKey).getWeightedPublicKeys(), expectedOption[0]);
+
+            IAccountKey accountRoleKey = ((AccountKeyRoleBased) key).getRoleAccountUpdateKey();
+            assertTrue(accountRoleKey instanceof  AccountKeyPublic);
+            assertEquals(expectedPublicKeys.get(1)[0], ((AccountKeyPublic) accountRoleKey).getPublicKey());
+
+            IAccountKey feePayerKey = ((AccountKeyRoleBased) key).getRoleFeePayerKey();
+            assertTrue(feePayerKey instanceof  AccountKeyWeightedMultiSig);
+            checkPublicKey(expectedPublicKeys.get(0), ((AccountKeyWeightedMultiSig) txRoleKey).getWeightedPublicKeys(), expectedOption[0]);
 
         }
+
     }
 }

@@ -21,6 +21,7 @@
 package com.klaytn.caver.wallet;
 
 import com.klaytn.caver.crypto.KlayCredentials;
+import com.klaytn.caver.utils.SecureRandomUtils;
 import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.bouncycastle.crypto.generators.SCrypt;

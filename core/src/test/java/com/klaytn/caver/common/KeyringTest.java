@@ -2148,22 +2148,56 @@ public class KeyringTest {
 
         //CA-KEYRING-126
         @Test
-        public void singleKeyTest_throwException_multipleKey() {
-            expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("Failed to create Account instance: There are two or more keys in RoleTransaction Key array.");
+        public void toAccount_withMultipleType() {
+            Keyring expectedKeyring = generateMultipleKeyring(3);
 
-            Keyring keyring = generateMultipleKeyring(3);
-            Account account = keyring.toAccount();
+            BigInteger[] optionWeight = {
+                    BigInteger.ONE, BigInteger.ONE, BigInteger.ONE,
+            };
+
+            WeightedMultiSigOptions expectedOptions = new WeightedMultiSigOptions(
+                    BigInteger.ONE, Arrays.asList(optionWeight)
+            );
+
+            Account account = expectedKeyring.toAccount();
+            checkAccountKeyWeightedMultiSig(expectedKeyring, account, expectedOptions);
         }
 
         //CA-KEYRING-127
         @Test
-        public void singleKeyTest_throwException_roleBaseKey() {
-            expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("Failed to create Account instance: There are exists keys in other Group(RoleAccountUpdate, RoleFeePayer)");
+        public void toAccount_withRoleBasedType() {
+            Keyring expectedKeyring = generateRoleBaseKeyring(new int[] {2, 1, 4});
 
-            Keyring keyring = generateRoleBaseKeyring(new int[]{1,2,3});
-            Account account = keyring.toAccount();
+            BigInteger[][] optionWeight = {
+                    {BigInteger.ONE, BigInteger.ONE},
+                    {},
+                    {BigInteger.ONE, BigInteger.ONE, BigInteger.ONE, BigInteger.ONE},
+            };
+
+            WeightedMultiSigOptions[] expectedOption = {
+                    new WeightedMultiSigOptions(BigInteger.valueOf(1), Arrays.asList(optionWeight[0])),
+                    new WeightedMultiSigOptions(),
+                    new WeightedMultiSigOptions(BigInteger.valueOf(1), Arrays.asList(optionWeight[2])),
+            };
+            List<String[]> expectedPublicKeys = expectedKeyring.getPublicKey();
+
+            Account account = expectedKeyring.toAccount();
+
+            IAccountKey key = account.getAccountKey();
+            assertTrue(key instanceof  AccountKeyRoleBased);
+
+            IAccountKey txRoleKey = ((AccountKeyRoleBased) key).getRoleTransactionKey();
+            assertTrue(txRoleKey instanceof  AccountKeyWeightedMultiSig);
+            checkPublicKey(expectedPublicKeys.get(0), ((AccountKeyWeightedMultiSig) txRoleKey).getWeightedPublicKeys(), expectedOption[0]);
+
+            IAccountKey accountRoleKey = ((AccountKeyRoleBased) key).getRoleAccountUpdateKey();
+            assertTrue(accountRoleKey instanceof  AccountKeyPublic);
+            assertEquals(expectedPublicKeys.get(1)[0], ((AccountKeyPublic) accountRoleKey).getPublicKey());
+
+            IAccountKey feePayerKey = ((AccountKeyRoleBased) key).getRoleFeePayerKey();
+            assertTrue(feePayerKey instanceof  AccountKeyWeightedMultiSig);
+            checkPublicKey(expectedPublicKeys.get(0), ((AccountKeyWeightedMultiSig) txRoleKey).getWeightedPublicKeys(), expectedOption[0]);
+
         }
 
         //CA-KEYRING-128
@@ -2326,58 +2360,7 @@ public class KeyringTest {
             assertEquals(expectedPublicKeys.get(2)[0], ((AccountKeyPublic) feePayerRoleKey).getPublicKey());
         }
 
-        //CA-KEYRING-135
-        @Test
-        public void toAccount_withMultipleType() {
-            Keyring expectedKeyring = generateMultipleKeyring(3);
 
-            BigInteger[] optionWeight = {
-                    BigInteger.ONE, BigInteger.ONE, BigInteger.ONE,
-            };
-
-            WeightedMultiSigOptions expectedOptions = new WeightedMultiSigOptions(
-                    BigInteger.ONE, Arrays.asList(optionWeight)
-            );
-
-            Account account = expectedKeyring.toAccount();
-            checkAccountKeyWeightedMultiSig(expectedKeyring, account, expectedOptions);
-        }
-
-        @Test
-        public void toAccount_withRoleBasedType() {
-            Keyring expectedKeyring = generateRoleBaseKeyring(new int[] {2, 1, 4});
-
-            BigInteger[][] optionWeight = {
-                    {BigInteger.ONE, BigInteger.ONE},
-                    {},
-                    {BigInteger.ONE, BigInteger.ONE, BigInteger.ONE, BigInteger.ONE},
-            };
-
-            WeightedMultiSigOptions[] expectedOption = {
-                    new WeightedMultiSigOptions(BigInteger.valueOf(1), Arrays.asList(optionWeight[0])),
-                    new WeightedMultiSigOptions(),
-                    new WeightedMultiSigOptions(BigInteger.valueOf(1), Arrays.asList(optionWeight[2])),
-            };
-            List<String[]> expectedPublicKeys = expectedKeyring.getPublicKey();
-
-            Account account = expectedKeyring.toAccount();
-
-            IAccountKey key = account.getAccountKey();
-            assertTrue(key instanceof  AccountKeyRoleBased);
-
-            IAccountKey txRoleKey = ((AccountKeyRoleBased) key).getRoleTransactionKey();
-            assertTrue(txRoleKey instanceof  AccountKeyWeightedMultiSig);
-            checkPublicKey(expectedPublicKeys.get(0), ((AccountKeyWeightedMultiSig) txRoleKey).getWeightedPublicKeys(), expectedOption[0]);
-
-            IAccountKey accountRoleKey = ((AccountKeyRoleBased) key).getRoleAccountUpdateKey();
-            assertTrue(accountRoleKey instanceof  AccountKeyPublic);
-            assertEquals(expectedPublicKeys.get(1)[0], ((AccountKeyPublic) accountRoleKey).getPublicKey());
-
-            IAccountKey feePayerKey = ((AccountKeyRoleBased) key).getRoleFeePayerKey();
-            assertTrue(feePayerKey instanceof  AccountKeyWeightedMultiSig);
-            checkPublicKey(expectedPublicKeys.get(0), ((AccountKeyWeightedMultiSig) txRoleKey).getWeightedPublicKeys(), expectedOption[0]);
-
-        }
 
     }
 }

@@ -34,7 +34,7 @@ public class Utils {
         return cleanInput.length() == LENGTH_ADDRESS_String && HEX_STRING.matcher(cleanInput).matches();
     }
 
-    public static boolean isKlaytnKey(String key) {
+    public static boolean isKlaytnWalletKey(String key) {
         //0x{private key}0x{type}0x{address in hex}
         //[0] = privateKey
         //[1] = type - must be "00"

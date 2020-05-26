@@ -96,7 +96,7 @@ public class Keyring {
      * @return Keyring
      */
     public static Keyring createFromPrivateKey(String key) {
-        if(Utils.isKlaytnKey(key)) {
+        if(Utils.isKlaytnWalletKey(key)) {
             return Keyring.createFromKlaytnWalletKey(key);
         }
 
@@ -113,7 +113,7 @@ public class Keyring {
      * @return Keyring
      */
     public static Keyring createFromKlaytnWalletKey(String klaytnWalletKey) {
-        if(!Utils.isKlaytnKey(klaytnWalletKey)) {
+        if(!Utils.isKlaytnWalletKey(klaytnWalletKey)) {
             throw new IllegalArgumentException("Invalid Klaytn wallet key.");
         }
 
@@ -133,7 +133,7 @@ public class Keyring {
      * @return Keyring
      */
     public static Keyring createWithSingleKey(String address, String key) {
-        if(Utils.isKlaytnKey(key)) {
+        if(Utils.isKlaytnWalletKey(key)) {
             throw new IllegalArgumentException("Invalid format of parameter. Use 'fromKlaytnWalletKey' to create Keyring from KlaytnWalletKey.");
         }
 
@@ -201,7 +201,7 @@ public class Keyring {
     public static KeyStore encrypt(String key, String password, KeyStoreOption option) throws CipherException{
         Keyring keyring = null;
         if(option.getAddress() != null) {
-            if(Utils.isKlaytnKey(key)) {
+            if(Utils.isKlaytnWalletKey(key)) {
                 keyring = Keyring.createFromKlaytnWalletKey(key);
                 if (!keyring.address.equals(option.address)) {
                     throw new RuntimeException("The address defined in options does not match the address of KlaytnWalletKey");
@@ -276,7 +276,7 @@ public class Keyring {
     public static KeyStore encryptV3(String key, String password, KeyStoreOption option) throws CipherException {
         Keyring keyring = null;
         if(option.getAddress() != null) {
-            if(Utils.isKlaytnKey(key)) {
+            if(Utils.isKlaytnWalletKey(key)) {
                 keyring = Keyring.createFromKlaytnWalletKey(key);
                 if (!keyring.address.equals(option.address)) {
                     throw new RuntimeException("The address defined in options does not match the address of KlaytnWalletKey");

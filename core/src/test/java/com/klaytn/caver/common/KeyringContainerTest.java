@@ -29,12 +29,12 @@ import static org.junit.Assert.*;
 })
 public class KeyringContainerTest {
 
-    public static void validateSingleKeyring(Keyring actual, String expectAddress, String expectKey) {
+    static void validateSingleKeyring(Keyring actual, String expectAddress, String expectKey) {
         assertEquals(expectAddress, actual.getAddress());
         assertEquals(expectKey, actual.getKeys().get(0)[0].getPrivateKey());
     }
 
-    public static void validateMultipleKeyring(Keyring actual, String expectAddress, String[] expectKeyArr) {
+    static void validateMultipleKeyring(Keyring actual, String expectAddress, String[] expectKeyArr) {
         PrivateKey[] actualKeyArr = actual.getKeys().get(0);
 
         assertEquals(expectAddress, actual.getAddress());
@@ -43,7 +43,7 @@ public class KeyringContainerTest {
         }
     }
 
-    public static void validateRoleBasedKeyring(Keyring actual, String expectAddress, String[][] expectKeyArr) {
+    static void validateRoleBasedKeyring(Keyring actual, String expectAddress, String[][] expectKeyArr) {
         List<PrivateKey[]> actualKeyArr = actual.getKeys();
 
         assertEquals(expectAddress, actual.getAddress());
@@ -181,7 +181,7 @@ public class KeyringContainerTest {
             Keyring updated = container.updateKeyring(coupled);
             Keyring fromContainer = container.getKeyring(address);
 
-            validateSingleKeyring(updated, address, privateKey);
+            validateSingleKeyring(updated, address, coupled.getKeys().get(0)[0].getPrivateKey());
             validateSingleKeyring(fromContainer, coupled.getAddress(), coupled.getKeys().get(0)[0].getPrivateKey());
         }
 
@@ -194,7 +194,7 @@ public class KeyringContainerTest {
 
             container.add(coupled);
 
-            Keyring updated = container.updateKeyring(coupled);
+            Keyring updated = container.updateKeyring(deCoupled);
             Keyring fromContainer = container.getKeyring(coupled.getAddress());
 
             validateSingleKeyring(updated,  coupled.getAddress(), deCoupled.getKeys().get(0)[0].getPrivateKey());

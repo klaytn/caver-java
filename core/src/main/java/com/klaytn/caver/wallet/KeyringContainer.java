@@ -174,7 +174,7 @@ public class KeyringContainer {
      * Signs with data and returns MessageSigned instance that includes 'signature', 'message', 'messageHash'
      * It automatically set 'roleIndex' and 'keyIndex' to 0.
      * @param address An address of keyring in keyringContainer
-     * @param data The data string to sing
+     * @param data The data string to sign
      * @return MessageSigned
      */
     public MessageSigned signMessage(String address, String data) {
@@ -184,7 +184,7 @@ public class KeyringContainer {
     /**
      * Signs with data and returns MessageSigned instance that includes 'signature', 'message', 'messageHash'
      * @param address An address of keyring in keyringContainer
-     * @param data The data string to sing
+     * @param data The data string to sign
      * @param role A number indication the role of the key.
      * @param index An index of key to use for signing.
      * @return MessageSigned

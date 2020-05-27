@@ -21,7 +21,6 @@ public class KeyringContainer {
 
     /**
      * Creates KeyringContainer instance
-     * @param keyrings An list of keyring
      */
     public KeyringContainer() {}
 
@@ -70,7 +69,7 @@ public class KeyringContainer {
 
     /**
      * Creates a single type keyring instance with given parameters and adds it to the keyringContainer.
-     * KeyringContainer manages Keyring instance using Map <string:Keyring> which has address as key value.
+     * KeyringContainer manages Keyring instance using Map {string:Keyring} which has address as key value.
      * @param address The address of the keyring
      * @param key Private key string
      * @return Keyring
@@ -83,7 +82,7 @@ public class KeyringContainer {
 
     /**
      * Creates a multiple type keyring instance with given parameters and add it to the keyringContainer.
-     * KeyringContainer manages Keyring instance using Map <string:Keyring> which has address as key value.
+     * KeyringContainer manages Keyring instance using Map {string:Keyring} which has address as key value.
      * @param address The address of the keyring
      * @param keys An array of private keys
      * @return Keyring
@@ -96,7 +95,7 @@ public class KeyringContainer {
 
     /**
      * Creates a role-basd type keyring instance with given parameters and add it to the keyringContainer.
-     * KeyringContainer manages Keyring instance using Map <string:Keyring> which has address as key value.
+     * KeyringContainer manages Keyring instance using Map {string:Keyring} which has address as key value.
      * @param address The address of the keyring
      * @param keys A List of private key array
      * @return Keyring
@@ -140,6 +139,8 @@ public class KeyringContainer {
 
     /**
      * Adds a keyring to the keyringContainer.
+     * @param keyring Keyring instance to be added.
+     * @return Keyring
      */
     public Keyring add(Keyring keyring) {
         if (this.getKeyring(keyring.getAddress()) != null) {

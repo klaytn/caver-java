@@ -5,6 +5,7 @@ import org.web3j.crypto.Hash;
 import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class Utils {
@@ -61,12 +62,20 @@ public class Utils {
     }
 
     public static String[] parseKlaytnWalletKey(String key) {
+        if(!isKlaytnWalletKey(key)) {
+            throw new IllegalArgumentException("Invalid Klaytn wallet key.");
+        }
+
         //0x{private key}0x{type}0x{address in hex}
         //[0] = privateKey
         //[1] = type - must be "00"
         //[2] = address
         key = Numeric.cleanHexPrefix(key);
         String[] arr = key.split("0x");
+
+        for(int i=0; i< arr.length; i++) {
+            arr[i] = Numeric.prependHexPrefix(arr[i]);
+        }
 
         return arr;
     }

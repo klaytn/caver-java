@@ -113,17 +113,12 @@ public class Keyring {
      * @return Keyring
      */
     public static Keyring createFromKlaytnWalletKey(String klaytnWalletKey) {
-        if(!Utils.isKlaytnWalletKey(klaytnWalletKey)) {
-            throw new IllegalArgumentException("Invalid Klaytn wallet key.");
-        }
-
         String[] parsedKey = Utils.parseKlaytnWalletKey(klaytnWalletKey);
 
-        PrivateKey privateKey = new PrivateKey(parsedKey[0]);
-        String address = Numeric.prependHexPrefix(parsedKey[2]);
+        String privateKey = parsedKey[0];
+        String address = parsedKey[2];
 
-        PrivateKey[][] privateKeys = {{privateKey}, {}, {}};
-        return new Keyring(address, Arrays.asList(privateKeys));
+        return Keyring.createWithSingleKey(address, privateKey);
     }
 
     /**

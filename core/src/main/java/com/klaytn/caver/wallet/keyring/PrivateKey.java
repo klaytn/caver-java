@@ -74,7 +74,7 @@ public class PrivateKey {
      */
     public KlaySignatureData sign(String sigHash, int chainId) {
         ECKeyPair keyPair = ECKeyPair.create(Numeric.toBigInt(privateKey));
-        Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(sigHash), keyPair);
+        Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(sigHash), keyPair, false);
         KlaySignatureData klaySignatureData = KlaySignatureDataUtils.createEip155KlaySignatureData(signatureData, chainId);
 
         return klaySignatureData;

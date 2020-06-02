@@ -31,22 +31,77 @@ abstract public class AbstractTransaction {
     String chainId = "";
     List<KlaySignatureData> signatures = new ArrayList<>();
 
-    public AbstractTransaction(String type, int tag, String from, String nonce, String gas, String gasPrice, String chainId) {
+    public AbstractTransaction(Klay klaytnCall, int tag, String type, String from, String nonce, String gas, String gasPrice, String chainId) {
+        this.klaytnCall = klaytnCall;
         this.tag = tag;
         this.type = type;
+        this.from = from;
         this.nonce = nonce;
         this.gas = gas;
         this.gasPrice = gasPrice;
         this.chainId = chainId;
-        setFrom(from);
     }
 
-    public AbstractTransaction(Klay klay, String type, int tag, String from, String gas) {
-        this.tag = tag;
-        this.type = type;
-        this.gas = gas;
-        this.klaytnCall = klay;
-        setFrom(from);
+    public static class Builder<B extends AbstractTransaction.Builder> {
+        final String type;
+        final int tag;
+
+        String from = "0x";
+        String nonce = "";
+        String gas;
+        String gasPrice = "";
+        String chainId = "";
+        Klay klaytnCall = null;
+
+        public Builder(String type, int tag) {
+            this.type = type;
+            this.tag = tag;
+        }
+
+        public B setFrom(String from) {
+            this.from = from;
+            return (B) this;
+        }
+
+        public B setNonce(String nonce) {
+            this.nonce = nonce;
+            return (B) this;
+        }
+
+        public B setGas(String gas) {
+            this.gas = gas;
+            return (B) this;
+        }
+
+        public B setGas(BigInteger gas) {
+            setGas(Numeric.toHexStringWithPrefix(gas));
+            return (B) this;
+        }
+
+        public B setGasPrice(String gasPrice) {
+            this.gasPrice = gasPrice;
+            return (B) this;
+        }
+
+        public B setGasPrice(BigInteger gasPrice) {
+            setGasPrice(Numeric.toHexStringWithPrefix(gasPrice));
+            return (B) this;
+        }
+
+        public B setChainId(String chainId) {
+            this.chainId = chainId;
+            return (B) this;
+        }
+
+        public B setChainId(BigInteger chainId) {
+            setChainId(Numeric.toHexStringWithPrefix(chainId));
+            return (B) this;
+        }
+
+        public B setKlaytnCall(Klay klaytnCall) {
+            this.klaytnCall = klaytnCall;
+            return (B) this;
+        }
     }
 
     /**
@@ -405,56 +460,40 @@ abstract public class AbstractTransaction {
         }
     }
 
-    public String getNonce() {
-        return nonce;
+    public Klay getKlaytnCall() {
+        return klaytnCall;
     }
 
-    public void setNonce(String nonce) {
-        this.nonce = nonce;
+    public void setKlaytnCall(Klay klaytnCall) {
+        this.klaytnCall = klaytnCall;
     }
 
-    public String getGas() {
-        return gas;
-    }
-
-    public void setGas(String gas) {
-        this.gas = gas;
-    }
-
-    public String getGasPrice() {
-        return gasPrice;
-    }
-
-    public void setGasPrice(String gasPrice) {
-        this.gasPrice = gasPrice;
-    }
-
-    public String getChainId() {
-        return chainId;
-    }
-
-    public void setChainId(String chainId) {
-        this.chainId = chainId;
-    }
-
-    public String getFrom() {
-        return from;
-    }
-
-    public void setFrom(String from) {
-        if(!from.equals("0x") && !Utils.isAddress(from)) {
-            throw new IllegalArgumentException("Invalid address.");
-        }
-
-       this.from = from;
+    public int getTag() {
+        return tag;
     }
 
     public String getType() {
         return type;
     }
 
-    public int getTag() {
-        return tag;
+    public String getFrom() {
+        return from;
+    }
+
+    public String getNonce() {
+        return nonce;
+    }
+
+    public String getGas() {
+        return gas;
+    }
+
+    public String getGasPrice() {
+        return gasPrice;
+    }
+
+    public String getChainId() {
+        return chainId;
     }
 
     public List<KlaySignatureData> getSignatures() {

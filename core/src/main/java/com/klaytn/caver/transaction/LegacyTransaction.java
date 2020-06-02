@@ -17,121 +17,57 @@ public class LegacyTransaction extends AbstractTransaction {
     String value;
 
 
-    public LegacyTransaction(String nonce, String to, String value, String gas, String gasPrice, String input, String chainId) {
-        super(
-                TransactionType.TxTypeLegacyTransaction.toString(),
-                TransactionType.TxTypeLegacyTransaction.getType(),
-                "0x",
-                nonce,
-                gas,
-                gasPrice,
-                chainId
-        );
+    public static class Builder extends AbstractTransaction.Builder<LegacyTransaction.Builder> {
+        private String to;
+        private String value;
+        private String input = "0x";
 
-        this.input = input;
-        this.value = value;
-        setTo(to);
+        public Builder(String to) {
+            super(TransactionType.TxTypeLegacyTransaction.toString(), TransactionType.TxTypeLegacyTransaction.getType());
+            setTo(to);
+        }
+
+        public Builder setValue(String value) {
+            this.value = value;
+            return this;
+        }
+
+        public Builder setValue(BigInteger value) {
+            setValue(Numeric.toHexStringWithPrefix(value));
+            return this;
+        }
+
+        public Builder setInput(String input) {
+            this.input = input;
+            return this;
+        }
+
+        public void setTo(String to) {
+            if(!to.equals("0x") && !Utils.isAddress(to)) {
+                throw new IllegalArgumentException("Invalid address.");
+            }
+            this.to = to;
+        }
+
+        public LegacyTransaction build() {
+            return new LegacyTransaction(this);
+        }
     }
 
-    public LegacyTransaction(String nonce, String to, String value, BigInteger gas, BigInteger gasPrice, String input, BigInteger chainId) {
+    private LegacyTransaction(Builder builder) {
         super(
-                TransactionType.TxTypeLegacyTransaction.toString(),
-                TransactionType.TxTypeLegacyTransaction.getType(),
-                "0x",
-                nonce,
-                Numeric.toHexStringWithPrefix(gas),
-                Numeric.toHexStringWithPrefix(gasPrice),
-                Numeric.toHexStringWithPrefix(chainId)
+                builder.klaytnCall,
+                builder.tag,
+                builder.type,
+                builder.from,
+                builder.nonce,
+                builder.gas,
+                builder.gasPrice,
+                builder.chainId
         );
-
-        this.input = input;
-        this.value = value;
-        setTo(to);
-    }
-
-    public LegacyTransaction(String nonce, String to, String value, String gas, String gasPrice, String chainId) {
-        super(
-                TransactionType.TxTypeLegacyTransaction.toString(),
-                TransactionType.TxTypeLegacyTransaction.getType(),
-                "0x",
-                nonce,
-                gas,
-                gasPrice,
-                chainId
-        );
-
-        this.value = value;
-        setTo(to);
-    }
-
-    public LegacyTransaction(String nonce, String to, String value, BigInteger gas, BigInteger gasPrice, BigInteger chainId) {
-        super(
-                TransactionType.TxTypeLegacyTransaction.toString(),
-                TransactionType.TxTypeLegacyTransaction.getType(),
-                "0x",
-                nonce,
-                Numeric.toHexStringWithPrefix(gas),
-                Numeric.toHexStringWithPrefix(gasPrice),
-                Numeric.toHexStringWithPrefix(chainId)
-        );
-
-        this.value = value;
-        setTo(to);
-    }
-
-
-    public LegacyTransaction(Klay klay, String gas, String to, String input, String value) {
-        super(
-                klay,
-                TransactionType.TxTypeLegacyTransaction.toString(),
-                TransactionType.TxTypeLegacyTransaction.getType(),
-                "0x",
-                gas
-        );
-
-        this.input = input;
-        this.value = value;
-        setTo(to);
-    }
-
-    public LegacyTransaction(Klay klay, BigInteger gas, String to, String input, BigInteger value) {
-        super(
-                klay,
-                TransactionType.TxTypeLegacyTransaction.toString(),
-                TransactionType.TxTypeLegacyTransaction.getType(),
-                "0x",
-                Numeric.toHexStringWithPrefix(gas)
-        );
-
-        this.input = input;
-        this.value = Numeric.toHexStringWithPrefix(value);
-        setTo(to);
-    }
-
-    public LegacyTransaction(Klay klay, String gas, String to, String value) {
-        super(
-                klay,
-                TransactionType.TxTypeLegacyTransaction.toString(),
-                TransactionType.TxTypeLegacyTransaction.getType(),
-                "0x",
-                gas
-        );
-
-        this.value = value;
-        setTo(to);
-    }
-
-    public LegacyTransaction(Klay klay, BigInteger gas, String to, BigInteger value) {
-        super(
-                klay,
-                TransactionType.TxTypeLegacyTransaction.toString(),
-                TransactionType.TxTypeLegacyTransaction.getType(),
-                "0x",
-                Numeric.toHexStringWithPrefix(gas)
-        );
-
-        this.value = Numeric.toHexStringWithPrefix(value);
-        setTo(to);
+        this.to = builder.to;
+        this.value = builder.value;
+        this.input = builder.input;
     }
 
     /**
@@ -161,7 +97,14 @@ public class LegacyTransaction extends AbstractTransaction {
             String value = ((RlpString) values.get(4)).asString();
             String input = ((RlpString) values.get(5)).asString();
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction(nonce, gas, gasPrice, to, input, value, "");
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+                    .setInput(input)
+                    .setValue(value)
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setNonce(nonce)
+                    .build();
 
             byte[] v = ((RlpString) values.get(6)).getBytes();
             byte[] r = ((RlpString) values.get(7)).getBytes();

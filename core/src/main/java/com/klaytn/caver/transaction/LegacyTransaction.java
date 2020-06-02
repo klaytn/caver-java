@@ -11,11 +11,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LegacyTransaction extends AbstractTransaction {
+    /**
+     * The account address that will receive the transferred value.
+     */
     String to;
+
+    /**
+     * Data attached to the transaction, used for transaction execution.
+     */
     String input = "0x";
+
+    /**
+     * The amount of KLAY in peb to be transferred.
+     */
     String value;
 
 
+    /**
+     * LegacyTransaction Builder class
+     */
     public static class Builder extends AbstractTransaction.Builder<LegacyTransaction.Builder> {
         private String to;
         private String value;
@@ -54,6 +68,10 @@ public class LegacyTransaction extends AbstractTransaction {
         }
     }
 
+    /**
+     * Creates an LegacyTransaction instance.
+     * @param builder LegacyTransaction.Builder instance.
+     */
     private LegacyTransaction(Builder builder) {
         super(builder);
 
@@ -206,6 +224,12 @@ public class LegacyTransaction extends AbstractTransaction {
         return encodedStr;
     }
 
+    /**
+     * Check equals txObj passed parameter and Current instance.
+     * @param obj The AbstractTransaction Object to compare
+     * @param checkSig Check whether signatures field is equal.
+     * @return boolean
+     */
     @Override
     public boolean checkTxField(AbstractTransaction obj, boolean checkSig) {
         if(!super.checkTxField(obj, checkSig)) return false;

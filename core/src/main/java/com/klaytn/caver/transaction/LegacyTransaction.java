@@ -1,6 +1,5 @@
 package com.klaytn.caver.transaction;
 
-import com.klaytn.caver.Klay;
 import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.utils.Utils;
@@ -42,11 +41,12 @@ public class LegacyTransaction extends AbstractTransaction {
             return this;
         }
 
-        public void setTo(String to) {
+        private Builder setTo(String to) {
             if(!to.equals("0x") && !Utils.isAddress(to)) {
                 throw new IllegalArgumentException("Invalid address.");
             }
             this.to = to;
+            return this;
         }
 
         public LegacyTransaction build() {
@@ -55,16 +55,16 @@ public class LegacyTransaction extends AbstractTransaction {
     }
 
     private LegacyTransaction(Builder builder) {
-        super(
-                builder.klaytnCall,
-                builder.tag,
-                builder.type,
-                builder.from,
-                builder.nonce,
-                builder.gas,
-                builder.gasPrice,
-                builder.chainId
-        );
+        super(builder);
+
+        if(builder.to == null || builder.to.isEmpty() || builder.to.equals("0x")) {
+            throw new IllegalArgumentException("to is missing");
+        }
+
+        if(builder.value == null || builder.value.isEmpty() || builder.value.equals("0x")) {
+            throw new IllegalArgumentException("value is missing");
+        }
+
         this.to = builder.to;
         this.value = builder.value;
         this.input = builder.input;
@@ -104,6 +104,7 @@ public class LegacyTransaction extends AbstractTransaction {
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setNonce(nonce)
+                    .setTo(to)
                     .build();
 
             byte[] v = ((RlpString) values.get(6)).getBytes();
@@ -125,7 +126,7 @@ public class LegacyTransaction extends AbstractTransaction {
      */
     @Override
     public void appendSignatures(KlaySignatureData signatureData) {
-        if(super.signatures.size() != 0) {
+        if(this.getSignatures().size() != 0) {
             throw new RuntimeException("Signatures already defined." + TransactionType.TxTypeLegacyTransaction.toString() + " cannot include more than one signature.");
         }
 
@@ -139,12 +140,12 @@ public class LegacyTransaction extends AbstractTransaction {
      */
     @Override
     public void appendSignatures(List<KlaySignatureData> signatureData) {
-        if(super.signatures.size() != 0) {
+        if(this.getSignatures().size() != 0) {
             throw new RuntimeException("Signatures already defined." + TransactionType.TxTypeLegacyTransaction.toString() + " cannot include more than one signature.");
         }
 
         if(signatureData.size() != 1) {
-            throw new RuntimeException("Signatures are too long" + TransactionType.TxTypeLegacyTransaction.toString() + " cannot include more than one signature.");
+            throw new RuntimeException("Signatures are too long " + TransactionType.TxTypeLegacyTransaction.toString() + " cannot include more than one signature.");
         }
 
         super.appendSignatures(signatureData);
@@ -156,15 +157,15 @@ public class LegacyTransaction extends AbstractTransaction {
      */
     @Override
     public String getRLPEncoding() {
-        super.validateOptionalValues();
+        this.validateOptionalValues();
         //TxHashRLP = encode([nonce, gasPrice, gas, to, value, input, v, r, s])
         List<RlpType> rlpTypeList = new ArrayList<>();
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getNonce())));
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getGasPrice())));
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getGas())));
-        rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.to)));
-        rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.value)));
-        rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.input)));
+        rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getTo())));
+        rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getValue())));
+        rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getInput())));
         KlaySignatureData signatureData = this.getSignatures().get(0);
         rlpTypeList.addAll(signatureData.toRlpList().getValues());
 
@@ -186,16 +187,16 @@ public class LegacyTransaction extends AbstractTransaction {
      */
     @Override
     public String getRLPEncodingForSignature() {
-        super.validateOptionalValues();
+        this.validateOptionalValues();
 
         List<RlpType> rlpTypeList = new ArrayList<>();
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getNonce())));
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getGasPrice())));
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getGas())));
-        rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.to)));
-        rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.value)));
-        rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.input)));
-        rlpTypeList.add(RlpString.create(Numeric.toBigInt(chainId)));
+        rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getTo())));
+        rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getValue())));
+        rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getInput())));
+        rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getChainId())));
         rlpTypeList.add(RlpString.create(0));
         rlpTypeList.add(RlpString.create(0));
 
@@ -207,21 +208,26 @@ public class LegacyTransaction extends AbstractTransaction {
 
     @Override
     public boolean checkTxField(AbstractTransaction obj, boolean checkSig) {
-        super.checkTxField(obj, checkSig);
+        if(!super.checkTxField(obj, checkSig)) return false;
         if(!(obj instanceof LegacyTransaction)) return false;
         LegacyTransaction txObj = (LegacyTransaction)obj;
 
-        if(!this.to.toLowerCase().equals(txObj.to.toLowerCase())) return false;
-        if(!this.value.equals(txObj.value)) return false;
-        if(!this.input.equals(txObj.input)) return false;
+        if(!this.getTo().toLowerCase().equals(txObj.getTo().toLowerCase())) return false;
+        if(!Numeric.toBigInt(this.getValue()).equals(Numeric.toBigInt(txObj.getValue()))) return false;
+        if(!this.getInput().equals(txObj.getInput())) return false;
 
         return true;
     }
 
-    public void setTo(String to) {
-        if(!to.equals("0x") && !Utils.isAddress(to)) {
-            throw new IllegalArgumentException("Invalid address.");
-        }
-        this.to = to;
+    public String getTo() {
+        return to;
+    }
+
+    public String getInput() {
+        return input;
+    }
+
+    public String getValue() {
+        return value;
     }
 }

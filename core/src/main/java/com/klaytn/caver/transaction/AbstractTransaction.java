@@ -31,7 +31,11 @@ abstract public class AbstractTransaction {
     String chainId = "";
     List<KlaySignatureData> signatures = new ArrayList<>();
 
-    public AbstractTransaction(Klay klaytnCall, int tag, String type, String from, String nonce, String gas, String gasPrice, String chainId) {
+    private AbstractTransaction(Klay klaytnCall, int tag, String type, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures) {
+        if(gas == null || gas.isEmpty() || gas.equals("0x")) {
+            throw new IllegalArgumentException("gas is missing");
+        }
+
         this.klaytnCall = klaytnCall;
         this.tag = tag;
         this.type = type;
@@ -40,18 +44,23 @@ abstract public class AbstractTransaction {
         this.gas = gas;
         this.gasPrice = gasPrice;
         this.chainId = chainId;
+
+        if(signatures != null) {
+            this.signatures.addAll(signatures);
+        }
     }
 
     public static class Builder<B extends AbstractTransaction.Builder> {
-        final String type;
-        final int tag;
+        private String type;
+        private int tag;
+        private String gas;
 
-        String from = "0x";
-        String nonce = "";
-        String gas;
-        String gasPrice = "";
-        String chainId = "";
-        Klay klaytnCall = null;
+        private String from = "0x";
+        private String nonce = "";
+        private String gasPrice = "";
+        private String chainId = "";
+        private Klay klaytnCall = null;
+        private List<KlaySignatureData> signList = new ArrayList<>();
 
         public Builder(String type, int tag) {
             this.type = type;
@@ -59,6 +68,10 @@ abstract public class AbstractTransaction {
         }
 
         public B setFrom(String from) {
+            if(!from.equals("0x") && !Utils.isAddress(from)) {
+                throw new IllegalArgumentException("Invalid address.");
+            }
+
             this.from = from;
             return (B) this;
         }
@@ -68,7 +81,15 @@ abstract public class AbstractTransaction {
             return (B) this;
         }
 
+        public B setNonce(BigInteger nonce) {
+            setNonce(Numeric.toHexStringWithPrefix(nonce));
+            return (B) this;
+        }
+
         public B setGas(String gas) {
+            if(gas == null || gas.isEmpty() || gas.equals("0x")) {
+                throw new IllegalArgumentException("Gas is missing.");
+            }
             this.gas = gas;
             return (B) this;
         }
@@ -102,19 +123,42 @@ abstract public class AbstractTransaction {
             this.klaytnCall = klaytnCall;
             return (B) this;
         }
+
+        public B setSignList(List<KlaySignatureData> signList) {
+            this.signList.addAll(signList);
+            return (B) this;
+        }
+
+        public B setSignList(KlaySignatureData sign) {
+            this.signList.add(sign);
+            return (B) this;
+        }
+    }
+
+    public AbstractTransaction(AbstractTransaction.Builder builder) {
+        this(builder.klaytnCall,
+                builder.tag,
+                builder.type,
+                builder.from,
+                builder.nonce,
+                builder.gas,
+                builder.gasPrice,
+                builder.chainId,
+                builder.signList
+        );
     }
 
     /**
      * Returns the RLP-encoded string of this transaction (i.e., rawTransaction).
      * @return String
      */
-    abstract public String getRLPEncoding();
+    public abstract String getRLPEncoding();
 
     /**
      * Returns the RLP-encoded string to make the signature of this transaction.
      * @return String
      */
-    abstract String getCommonRLPEncodingForSignature();
+    public abstract String getCommonRLPEncodingForSignature();
 
     /**
      * Signs to the transaction with a single private key.
@@ -425,10 +469,10 @@ abstract public class AbstractTransaction {
     public boolean checkTxField(AbstractTransaction txObj, boolean checkSig) {
         if(this.getTag() != txObj.getTag()) return false;
         if(!this.getType().equals(txObj.getType())) return false;
-        if(!this.getNonce().equals(txObj.getNonce())) return false;
-        if(!this.getGas().equals(txObj.getGas())) return false;
-        if(!this.getGasPrice().equals(txObj.getGasPrice())) return false;
         if(!this.getFrom().toLowerCase().equals(txObj.getFrom().toLowerCase())) return false;
+        if(!Numeric.toBigInt(this.getNonce()).equals(Numeric.toBigInt(txObj.getNonce()))) return false;
+        if(!Numeric.toBigInt(this.getGas()).equals(Numeric.toBigInt(txObj.getGas()))) return false;
+        if(!Numeric.toBigInt(this.getGasPrice()).equals(Numeric.toBigInt(txObj.getGasPrice()))) return false;
 
         if(checkSig) {
             List<KlaySignatureData> dataList = this.getSignatures();
@@ -449,13 +493,13 @@ abstract public class AbstractTransaction {
      * If there is an undefined variable, an error occurs.
      */
     public void validateOptionalValues() {
-        if(this.getNonce() == null || this.getNonce().isEmpty()) {
+        if(this.getNonce() == null || this.getNonce().isEmpty() || this.getNonce().equals("0x")) {
             throw new RuntimeException("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");
         }
-        if(this.getGasPrice() == null || this.getGasPrice().isEmpty()) {
+        if(this.getGasPrice() == null || this.getGasPrice().isEmpty() || this.getGasPrice().equals("0x")) {
             throw new RuntimeException("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
         }
-        if(this.getChainId() == null || this.getChainId().isEmpty()) {
+        if(this.getChainId() == null || this.getChainId().isEmpty() || this.getChainId().equals("0x")) {
             throw new RuntimeException("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
         }
     }

@@ -199,21 +199,6 @@ public class LegacyTransactionTest {
                     .setTo(to)
                     .build();
         }
-
-        @Test
-        public void throwException_missingValue() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("value is missing");
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setTo(to)
-                    .build();
-        }
     }
 
 

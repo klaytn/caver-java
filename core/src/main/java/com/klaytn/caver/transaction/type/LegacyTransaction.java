@@ -74,6 +74,10 @@ public class LegacyTransaction extends AbstractTransaction {
     private LegacyTransaction(Builder builder) {
         super(builder);
 
+        if(builder.value == null || builder.value.isEmpty() || builder.value.equals("0x")) {
+            throw new IllegalArgumentException("value is missing");
+        }
+
         this.to = builder.to;
         this.value = builder.value;
         this.input = builder.input;

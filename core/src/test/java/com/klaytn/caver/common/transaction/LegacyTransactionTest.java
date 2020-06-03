@@ -54,13 +54,14 @@ public class LegacyTransactionTest {
 
         @Test
         public void BuilderTest() {
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setInput(input)
                     .setValue(value)
+                    .setTo(to)
                     .build();
 
             assertNotNull(legacyTransaction);
@@ -68,13 +69,14 @@ public class LegacyTransactionTest {
 
         @Test
         public void BuilderTestWithBigInteger() {
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
-                    .setGas(Numeric.toBigInt(gas))
-                    .setGasPrice(Numeric.toBigInt(gasPrice))
-                    .setChainId(Numeric.toBigInt(chainID))
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
                     .setInput(input)
-                    .setValue(Numeric.toBigInt(value))
+                    .setValue(value)
+                    .setTo(to)
                     .build();
 
             assertEquals(gas, legacyTransaction.getGas());
@@ -93,12 +95,13 @@ public class LegacyTransactionTest {
             Caver caver = Caver.build(Caver.DEFAULT_URL);
             Keyring keyring = Keyring.createFromPrivateKey(privateKey);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setKlaytnCall(caver.klay())
                     .setGas(gas)
                     .setInput(input)
                     .setValue(value)
                     .setFrom(keyring.getAddress()) // For Test. It automatically filled when executed LegacyTransaction.signWithKey or signWithKeysTest.
+                    .setTo(to)
                     .build();
 
             legacyTransaction.fillTransaction();
@@ -112,12 +115,13 @@ public class LegacyTransactionTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("value is missing");
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setInput(input)
+                    .setTo(to)
                     .setValue("")
                     .build();
         }
@@ -127,12 +131,13 @@ public class LegacyTransactionTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("value is missing");
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setInput(input)
+                    .setTo(to)
                     .setValue("0x")
                     .build();
         }
@@ -147,13 +152,14 @@ public class LegacyTransactionTest {
             String input = "0x31323334";
             String value = "0xa";
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setInput(input)
                     .setValue(value)
+                    .setTo(to)
                     .build();
         }
 
@@ -169,12 +175,13 @@ public class LegacyTransactionTest {
             String value = "0xa";
 
             Keyring keyring = Keyring.createFromPrivateKey("0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8");
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setKlaytnCall(caver.klay())
                     .setGas(gas)
                     .setInput(input)
                     .setValue(value)
                     .setFrom(keyring.getAddress()) // For Test. It automatically filled when executed LegacyTransaction.signWithKey or signWithKeysTest.
+                    .setTo(to)
                     .build();
         }
 
@@ -183,12 +190,13 @@ public class LegacyTransactionTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("gas is missing");
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setInput(input)
                     .setValue(value)
+                    .setTo(to)
                     .build();
         }
 
@@ -197,12 +205,13 @@ public class LegacyTransactionTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("value is missing");
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setInput(input)
+                    .setTo(to)
                     .build();
         }
     }
@@ -230,13 +239,14 @@ public class LegacyTransactionTest {
         static String expectedRawTransaction = "0xf8668204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a843132333425a0b2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9a029da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567";
 
         public static LegacyTransaction createLegacyTransaction() {
-            return new LegacyTransaction.Builder(to)
+            return new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setInput(input)
                     .setValue(value)
+                    .setTo(to)
                     .build();
         }
 
@@ -338,7 +348,7 @@ public class LegacyTransactionTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The from address of the transaction is different with the address of the keyring to use");
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(Numeric.toBigInt(gas))
                     .setGasPrice(Numeric.toBigInt(gasPrice))
@@ -346,6 +356,7 @@ public class LegacyTransactionTest {
                     .setInput(input)
                     .setValue(Numeric.toBigInt(value))
                     .setFrom("0x7b65b75d204abed71587c9e519a89277766aaaa1")
+                    .setTo(to)
                     .build();
 
             legacyTransaction.signWithKey(coupledKeyring);
@@ -373,13 +384,14 @@ public class LegacyTransactionTest {
         static String expectedRawTransaction = "0xf8668204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a843132333425a0b2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9a029da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567";
 
         public static LegacyTransaction createLegacyTransaction() {
-            return new LegacyTransaction.Builder(to)
+            return new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setInput(input)
                     .setValue(value)
+                    .setTo(to)
                     .build();
         }
 
@@ -507,7 +519,7 @@ public class LegacyTransactionTest {
             String input = "0x31323334";
             String value = "0xa";
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -515,6 +527,7 @@ public class LegacyTransactionTest {
                     .setFrom("0x7b65b75d204abed71587c9e519a89277766aaaa1")
                     .setInput(input)
                     .setValue(value)
+                    .setTo(to)
                     .build();
 
             Keyring keyring = Keyring.createFromPrivateKey(privateKey);
@@ -547,7 +560,7 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -555,6 +568,7 @@ public class LegacyTransactionTest {
                     .setValue(value)
                     .setInput(input)
                     .setSignList(list)
+                    .setTo(to)
                     .build();
 
             String expectedRLP = "0xf8668204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a843132333425a0b2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9a029da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567";
@@ -584,13 +598,14 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setValue(value)
                     .setInput(input)
                     .setSignList(list)
+                    .setTo(to)
                     .build();
 
             legacyTransaction.getRLPEncoding();
@@ -617,13 +632,14 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setChainId(chainID)
                     .setValue(value)
                     .setInput(input)
                     .setSignList(list)
+                    .setTo(to)
                     .build();
 
             legacyTransaction.getRLPEncoding();
@@ -650,13 +666,14 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setValue(value)
                     .setInput(input)
                     .setSignList(list)
+                    .setTo(to)
                     .build();
 
             legacyTransaction.getRLPEncoding();
@@ -681,12 +698,13 @@ public class LegacyTransactionTest {
             String nonce = "0x3a";
             BigInteger chainID = BigInteger.valueOf(2019);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setValue(value)
+                    .setTo(to)
                     .build();
 
             String rlpEncoded = "0xf8673a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae0180820feaa0ade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6ea038160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e";
@@ -718,13 +736,14 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setValue(value)
                     .setSignList(list)
+                    .setTo(to)
                     .build();
 
 
@@ -747,12 +766,13 @@ public class LegacyTransactionTest {
             String nonce = "0x3F";
             BigInteger chainID = BigInteger.valueOf(2019);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setValue(value)
+                    .setTo(to)
                     .build();
 
             String rlpEncoded = "0xf8673a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae0180820feaa0ade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6ea038160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e";
@@ -784,13 +804,14 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setValue(value)
                     .setSignList(list)
+                    .setTo(to)
                     .build();
 
 
@@ -824,13 +845,14 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setValue(value)
                     .setInput(input)
+                    .setTo(to)
                     .setSignList(list)
                     .build();
 
@@ -861,12 +883,13 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setValue(value)
                     .setInput(input)
+                    .setTo(to)
                     .build();
 
             legacyTransaction.getRawTransaction();
@@ -893,12 +916,13 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setChainId(chainID)
                     .setValue(value)
                     .setInput(input)
+                    .setTo(to)
                     .setSignList(list)
                     .build();
 
@@ -929,12 +953,13 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setValue(value)
                     .setInput(input)
+                    .setTo(to)
                     .setSignList(list)
                     .build();
 
@@ -968,13 +993,14 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setValue(value)
                     .setInput(input)
+                    .setTo(to)
                     .setSignList(list)
                     .build();
 
@@ -1005,12 +1031,13 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setValue(value)
                     .setInput(input)
+                    .setTo(to)
                     .setSignList(list)
                     .build();
 
@@ -1038,12 +1065,13 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setChainId(chainID)
                     .setValue(value)
                     .setInput(input)
+                    .setTo(to)
                     .setSignList(list)
                     .build();
 
@@ -1072,12 +1100,13 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setValue(value)
                     .setInput(input)
+                    .setTo(to)
                     .setSignList(list)
                     .build();
 
@@ -1109,13 +1138,14 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setValue(value)
                     .setInput(input)
+                    .setTo(to)
                     .setSignList(list)
                     .build();
 
@@ -1146,12 +1176,13 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setValue(value)
                     .setInput(input)
+                    .setTo(to)
                     .setSignList(list)
                     .build();
 
@@ -1179,12 +1210,13 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setChainId(chainID)
                     .setValue(value)
                     .setInput(input)
+                    .setTo(to)
                     .setSignList(list)
                     .build();
 
@@ -1213,12 +1245,13 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setValue(value)
                     .setInput(input)
+                    .setTo(to)
                     .setSignList(list)
                     .build();
 
@@ -1245,11 +1278,12 @@ public class LegacyTransactionTest {
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
+                    .setTo(to)
                     .setValue(value)
                     .build();
 
@@ -1276,12 +1310,13 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setValue(value)
+                    .setTo(to)
                     .build();
 
             legacyTransaction.appendSignatures(list);
@@ -1310,12 +1345,13 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setValue(value)
+                    .setTo(to)
                     .setSignList(list)
                     .build();
 
@@ -1343,12 +1379,13 @@ public class LegacyTransactionTest {
             List<KlaySignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setValue(value)
+                    .setTo(to)
                     .setSignList(list)
                     .build();
 
@@ -1377,11 +1414,12 @@ public class LegacyTransactionTest {
             list.add(signatureData);
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
+                    .setTo(to)
                     .setValue(value)
                     .build();
 

@@ -1,5 +1,6 @@
 package com.klaytn.caver.transaction.type;
 
+import com.klaytn.caver.Klay;
 import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.utils.Utils;
@@ -14,7 +15,7 @@ public class LegacyTransaction extends AbstractTransaction {
     /**
      * The account address that will receive the transferred value.
      */
-    String to;
+    String to = "0x";
 
     /**
      * Data attached to the transaction, used for transaction execution.
@@ -24,20 +25,18 @@ public class LegacyTransaction extends AbstractTransaction {
     /**
      * The amount of KLAY in peb to be transferred.
      */
-    String value;
-
+    String value = "0x00";
 
     /**
      * LegacyTransaction Builder class
      */
     public static class Builder extends AbstractTransaction.Builder<LegacyTransaction.Builder> {
-        private String to;
-        private String value;
+        private String to = "0x";
+        private String value = "0x00";
         private String input = "0x";
 
-        public Builder(String to) {
+        public Builder() {
             super(TransactionType.TxTypeLegacyTransaction.toString());
-            setTo(to);
         }
 
         public Builder setValue(String value) {
@@ -55,7 +54,7 @@ public class LegacyTransaction extends AbstractTransaction {
             return this;
         }
 
-        private Builder setTo(String to) {
+        public Builder setTo(String to) {
             if(!to.equals("0x") && !Utils.isAddress(to)) {
                 throw new IllegalArgumentException("Invalid address.");
             }
@@ -75,17 +74,30 @@ public class LegacyTransaction extends AbstractTransaction {
     private LegacyTransaction(Builder builder) {
         super(builder);
 
-        if(builder.to == null || builder.to.isEmpty() || builder.to.equals("0x")) {
-            throw new IllegalArgumentException("to is missing");
-        }
-
-        if(builder.value == null || builder.value.isEmpty() || builder.value.equals("0x")) {
-            throw new IllegalArgumentException("value is missing");
-        }
-
         this.to = builder.to;
         this.value = builder.value;
         this.input = builder.input;
+    }
+
+    /**
+     * Create LegacyTransaction instance.
+     * @param klaytnCall Klay RPC instance
+     * @param type Transaction's type string
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A Signature list
+     * @param to The account address that will receive the transferred value.
+     * @param input Data attached to the transaction, used for transaction execution.
+     * @param value The amount of KLAY in peb to be transferred.
+     */
+    public LegacyTransaction(Klay klaytnCall, String type, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures, String to, String input, String value) {
+        super(klaytnCall, type, from, nonce, gas, gasPrice, chainId, signatures);
+        this.to = to;
+        this.input = input;
+        this.value = value;
     }
 
     /**
@@ -115,7 +127,7 @@ public class LegacyTransaction extends AbstractTransaction {
             String value = ((RlpString) values.get(4)).asString();
             String input = ((RlpString) values.get(5)).asString();
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder(to)
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setInput(input)
                     .setValue(value)
                     .setNonce(nonce)

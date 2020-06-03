@@ -17,9 +17,7 @@ import org.web3j.utils.Numeric;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 
 abstract public class AbstractTransaction {
@@ -565,15 +563,9 @@ abstract public class AbstractTransaction {
      */
     public List<KlaySignatureData> refineSignature(List<KlaySignatureData> signatureDataList) {
         boolean isLegacy = this.getType().equals(TransactionType.TxTypeLegacyTransaction.toString());
+        KlaySignatureData emptySig = KlaySignatureData.getEmptySignature();
 
         List<KlaySignatureData> refinedList = new ArrayList<>();
-
-        KlaySignatureData emptySig = new KlaySignatureData(
-                Numeric.hexStringToByteArray("0x01"),
-                Numeric.hexStringToByteArray("0x"),
-                Numeric.hexStringToByteArray("0x")
-        );
-
 
         for(KlaySignatureData signData : signatureDataList) {
             if(!Utils.isEmptySig(signData)) {

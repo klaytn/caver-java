@@ -93,4 +93,13 @@ public class Utils {
         return bytes;
     }
 
+    public static boolean isEmptySig(KlaySignatureData signatureData) {
+        KlaySignatureData emptySig = new KlaySignatureData(
+                Numeric.hexStringToByteArray("0x01"),
+                Numeric.hexStringToByteArray("0x"),
+                Numeric.hexStringToByteArray("0x")
+        );
+
+        return emptySig.equals(signatureData);
+    }
 }

@@ -17,7 +17,9 @@ import org.web3j.utils.Numeric;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 abstract public class AbstractTransaction {
@@ -403,7 +405,9 @@ abstract public class AbstractTransaction {
      * @param signatureData KlaySignatureData instance contains ECDSA signature data
      */
     public void appendSignatures(KlaySignatureData signatureData) {
-        this.signatures.add(signatureData);
+        List<KlaySignatureData> signList = new ArrayList<>();
+        signList.add(signatureData);
+        appendSignatures(signList);
     }
 
     /**
@@ -412,6 +416,7 @@ abstract public class AbstractTransaction {
      */
     public void appendSignatures(List<KlaySignatureData> signatureData) {
         this.signatures.addAll(signatureData);
+        this.signatures = refineSignature(this.getSignatures());
     }
 
     /**
@@ -548,6 +553,45 @@ abstract public class AbstractTransaction {
         if(this.getChainId() == null || this.getChainId().isEmpty() || this.getChainId().equals("0x")) {
             throw new RuntimeException("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
         }
+    }
+
+    /**
+     * Refines the array containing signatures
+     *   - Removes duplicate signatures
+     *   - Removes the default empty signature("0x01", "0x", "0x")
+     *   - For an empty signature array, return an array containing the default empty signature("0x01", "0x", "0x")
+     * @param signatureDataList
+     * @return
+     */
+    public List<KlaySignatureData> refineSignature(List<KlaySignatureData> signatureDataList) {
+        boolean isLegacy = this.getType().equals(TransactionType.TxTypeLegacyTransaction.toString());
+
+        List<KlaySignatureData> refinedList = new ArrayList<>();
+
+        KlaySignatureData emptySig = new KlaySignatureData(
+                Numeric.hexStringToByteArray("0x01"),
+                Numeric.hexStringToByteArray("0x"),
+                Numeric.hexStringToByteArray("0x")
+        );
+
+
+        for(KlaySignatureData signData : signatureDataList) {
+            if(!Utils.isEmptySig(signData)) {
+                if(!refinedList.contains(signData)) {
+                    refinedList.add(signData);
+                }
+            }
+        }
+
+        if(refinedList.size() == 0) {
+            refinedList.add(emptySig);
+        }
+
+        if(isLegacy && refinedList.size() > 1) {
+            throw new RuntimeException("LegacyTransaction cannot have multiple signature.");
+        }
+
+        return refinedList;
     }
 
     /**

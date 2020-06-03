@@ -1,5 +1,6 @@
 package com.klaytn.caver.utils;
 
+import com.klaytn.caver.crypto.KlaySignatureData;
 import org.bouncycastle.math.ec.ECPoint;
 import org.web3j.crypto.Hash;
 import org.web3j.crypto.Sign;
@@ -93,4 +94,9 @@ public class Utils {
         return bytes;
     }
 
+    public static boolean isEmptySig(KlaySignatureData signatureData) {
+        KlaySignatureData emptySig = KlaySignatureData.getEmptySignature();
+
+        return emptySig.equals(signatureData);
+    }
 }

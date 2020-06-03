@@ -42,6 +42,16 @@ public class KlaySignatureData {
         this.s = s;
     }
 
+    public static KlaySignatureData getEmptySignature() {
+        KlaySignatureData emptySig = new KlaySignatureData(
+                Numeric.hexStringToByteArray("0x01"),
+                Numeric.hexStringToByteArray("0x"),
+                Numeric.hexStringToByteArray("0x")
+        );
+
+        return emptySig;
+    }
+
     public byte[] getV() {
         return v;
     }

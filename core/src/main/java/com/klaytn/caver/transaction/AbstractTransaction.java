@@ -64,36 +64,6 @@ abstract public class AbstractTransaction {
     private List<KlaySignatureData> signatures = new ArrayList<>();
 
     /**
-     * Create AbstractTransaction instance
-     * @param klaytnCall Klay RPC instance
-     * @param tag Transaction's tag value
-     * @param type Transaction's type string
-     * @param from The address of the sender.
-     * @param nonce A value used to uniquely identify a sender’s transaction.
-     * @param gas The maximum amount of gas the transaction is allowed to use.
-     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
-     * @param chainId Network ID
-     * @param signatures A Signature list
-     */
-    private AbstractTransaction(Klay klaytnCall, String type, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures) {
-        if(gas == null || gas.isEmpty() || gas.equals("0x")) {
-            throw new IllegalArgumentException("gas is missing");
-        }
-
-        this.klaytnCall = klaytnCall;
-        this.type = type;
-        this.from = from;
-        this.nonce = nonce;
-        this.gas = gas;
-        this.gasPrice = gasPrice;
-        this.chainId = chainId;
-
-        if(signatures != null) {
-            this.signatures.addAll(signatures);
-        }
-    }
-
-    /**
      * Represents a AbstractTransaction class builder.
      * @param <B> An generic extends to AbstractTransaction.Builder
      */
@@ -180,6 +150,10 @@ abstract public class AbstractTransaction {
         }
     }
 
+    /**
+     * Create AbstractTransaction instance
+     * @param builder AbstractTransaction.builder
+     */
     public AbstractTransaction(AbstractTransaction.Builder builder) {
         this(builder.klaytnCall,
                 builder.type,
@@ -190,6 +164,35 @@ abstract public class AbstractTransaction {
                 builder.chainId,
                 builder.signList
         );
+    }
+
+    /**
+     * Create AbstractTransaction instance
+     * @param klaytnCall Klay RPC instance
+     * @param type Transaction's type string
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A Signature list
+     */
+    public AbstractTransaction(Klay klaytnCall, String type, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures) {
+        if(gas == null || gas.isEmpty() || gas.equals("0x")) {
+            throw new IllegalArgumentException("gas is missing");
+        }
+
+        this.klaytnCall = klaytnCall;
+        this.type = type;
+        this.from = from;
+        this.nonce = nonce;
+        this.gas = gas;
+        this.gasPrice = gasPrice;
+        this.chainId = chainId;
+
+        if(signatures != null) {
+            this.signatures.addAll(signatures);
+        }
     }
 
     /**

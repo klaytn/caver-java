@@ -28,11 +28,6 @@ abstract public class AbstractTransaction {
     private Klay klaytnCall = null;
 
     /**
-     * Transaction's tag value
-     */
-    private int tag;
-
-    /**
      * Transaction's type string
      */
     private String type;
@@ -80,13 +75,12 @@ abstract public class AbstractTransaction {
      * @param chainId Network ID
      * @param signatures A Signature list
      */
-    private AbstractTransaction(Klay klaytnCall, int tag, String type, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures) {
+    private AbstractTransaction(Klay klaytnCall, String type, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures) {
         if(gas == null || gas.isEmpty() || gas.equals("0x")) {
             throw new IllegalArgumentException("gas is missing");
         }
 
         this.klaytnCall = klaytnCall;
-        this.tag = tag;
         this.type = type;
         this.from = from;
         this.nonce = nonce;
@@ -105,7 +99,6 @@ abstract public class AbstractTransaction {
      */
     public static class Builder<B extends AbstractTransaction.Builder> {
         private String type;
-        private int tag;
         private String gas;
 
         private String from = "0x";
@@ -115,9 +108,8 @@ abstract public class AbstractTransaction {
         private Klay klaytnCall = null;
         private List<KlaySignatureData> signList = new ArrayList<>();
 
-        public Builder(String type, int tag) {
+        public Builder(String type) {
             this.type = type;
-            this.tag = tag;
         }
 
         public B setFrom(String from) {
@@ -190,7 +182,6 @@ abstract public class AbstractTransaction {
 
     public AbstractTransaction(AbstractTransaction.Builder builder) {
         this(builder.klaytnCall,
-                builder.tag,
                 builder.type,
                 builder.from,
                 builder.nonce,
@@ -520,7 +511,6 @@ abstract public class AbstractTransaction {
      * @return boolean
      */
     public boolean checkTxField(AbstractTransaction txObj, boolean checkSig) {
-        if(this.getTag() != txObj.getTag()) return false;
         if(!this.getType().equals(txObj.getType())) return false;
         if(!this.getFrom().toLowerCase().equals(txObj.getFrom().toLowerCase())) return false;
         if(!Numeric.toBigInt(this.getNonce()).equals(Numeric.toBigInt(txObj.getNonce()))) return false;
@@ -571,14 +561,6 @@ abstract public class AbstractTransaction {
      */
     public void setKlaytnCall(Klay klaytnCall) {
         this.klaytnCall = klaytnCall;
-    }
-
-    /**
-     * Getter function for tag.
-     * @return int
-     */
-    public int getTag() {
-        return tag;
     }
 
     /**

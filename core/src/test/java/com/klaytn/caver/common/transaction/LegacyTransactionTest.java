@@ -3,7 +3,7 @@ package com.klaytn.caver.common.transaction;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.AbstractTransaction;
-import com.klaytn.caver.transaction.LegacyTransaction;
+import com.klaytn.caver.transaction.type.LegacyTransaction;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.wallet.keyring.Keyring;

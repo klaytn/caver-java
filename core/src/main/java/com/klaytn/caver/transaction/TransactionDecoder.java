@@ -1,5 +1,6 @@
 package com.klaytn.caver.transaction;
 
+import com.klaytn.caver.transaction.type.LegacyTransaction;
 import com.klaytn.caver.transaction.type.TransactionType;
 import org.web3j.utils.Numeric;
 

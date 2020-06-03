@@ -1,7 +1,7 @@
-package com.klaytn.caver.transaction;
+package com.klaytn.caver.transaction.type;
 
 import com.klaytn.caver.crypto.KlaySignatureData;
-import com.klaytn.caver.transaction.type.TransactionType;
+import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.utils.Utils;
 import org.web3j.rlp.*;
 import org.web3j.utils.Numeric;
@@ -36,7 +36,7 @@ public class LegacyTransaction extends AbstractTransaction {
         private String input = "0x";
 
         public Builder(String to) {
-            super(TransactionType.TxTypeLegacyTransaction.toString(), TransactionType.TxTypeLegacyTransaction.getType());
+            super(TransactionType.TxTypeLegacyTransaction.toString());
             setTo(to);
         }
 

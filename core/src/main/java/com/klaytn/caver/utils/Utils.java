@@ -95,11 +95,7 @@ public class Utils {
     }
 
     public static boolean isEmptySig(KlaySignatureData signatureData) {
-        KlaySignatureData emptySig = new KlaySignatureData(
-                Numeric.hexStringToByteArray("0x01"),
-                Numeric.hexStringToByteArray("0x"),
-                Numeric.hexStringToByteArray("0x")
-        );
+        KlaySignatureData emptySig = KlaySignatureData.getEmptySignature();
 
         return emptySig.equals(signatureData);
     }

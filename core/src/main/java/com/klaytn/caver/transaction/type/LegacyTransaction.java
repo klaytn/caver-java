@@ -243,8 +243,8 @@ public class LegacyTransaction extends AbstractTransaction {
      * @return boolean
      */
     @Override
-    public boolean checkTxField(AbstractTransaction obj, boolean checkSig) {
-        if(!super.checkTxField(obj, checkSig)) return false;
+    public boolean compareTxField(AbstractTransaction obj, boolean checkSig) {
+        if(!super.compareTxField(obj, checkSig)) return false;
         if(!(obj instanceof LegacyTransaction)) return false;
         LegacyTransaction txObj = (LegacyTransaction)obj;
 

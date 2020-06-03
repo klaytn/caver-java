@@ -439,7 +439,7 @@ abstract public class AbstractTransaction {
 
             // Signatures can only be combined for the same transaction.
             // Therefore, compare whether the decoded transaction is the same as this.
-            if(!this.checkTxField(txObj, false)) {
+            if(!this.compareTxField(txObj, false)) {
                 throw new RuntimeException("Transactions containing different information cannot be combined.");
             }
 
@@ -513,7 +513,7 @@ abstract public class AbstractTransaction {
      * @param checkSig Check whether signatures field is equal.
      * @return boolean
      */
-    public boolean checkTxField(AbstractTransaction txObj, boolean checkSig) {
+    public boolean compareTxField(AbstractTransaction txObj, boolean checkSig) {
         if(!this.getType().equals(txObj.getType())) return false;
         if(!this.getFrom().toLowerCase().equals(txObj.getFrom().toLowerCase())) return false;
         if(!Numeric.toBigInt(this.getNonce()).equals(Numeric.toBigInt(txObj.getNonce()))) return false;

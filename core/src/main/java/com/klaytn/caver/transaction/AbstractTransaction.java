@@ -497,7 +497,7 @@ abstract public class AbstractTransaction {
      */
     public void fillTransaction() throws IOException{
         if(klaytnCall != null) {
-            this.nonce = klaytnCall.getTransactionCount(this.from, DefaultBlockParameterName.LATEST).send().getResult();
+            this.nonce = klaytnCall.getTransactionCount(this.from, DefaultBlockParameterName.PENDING).send().getResult();
             this.chainId = klaytnCall.getChainID().send().getResult();
             this.gasPrice = klaytnCall.getGasPrice().send().getResult();
         }

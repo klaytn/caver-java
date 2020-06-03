@@ -487,7 +487,7 @@ abstract public class AbstractTransaction {
 
         List<RlpType> rlpTypeList = new ArrayList<>();
         rlpTypeList.add(RlpString.create(txRLP));
-        rlpTypeList.add(RlpString.create(chainId));
+        rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getChainId())));
         rlpTypeList.add(RlpString.create(0));
         rlpTypeList.add(RlpString.create(0));
         byte[] encoded = RlpEncoder.encode(new RlpList(rlpTypeList));

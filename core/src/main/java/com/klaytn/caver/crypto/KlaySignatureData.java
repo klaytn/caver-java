@@ -22,11 +22,14 @@ package com.klaytn.caver.crypto;
 
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
+import org.web3j.rlp.RlpType;
 import org.web3j.utils.Bytes;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class KlaySignatureData {
     private byte[] v;
@@ -50,6 +53,21 @@ public class KlaySignatureData {
         );
 
         return emptySig;
+    }
+
+    public static List<KlaySignatureData> decodeSignatures(List<RlpType> signatureRlpTypeList) {
+        List<KlaySignatureData> signatureDataList = new ArrayList<>();
+
+        for (RlpType signature : signatureRlpTypeList) {
+            List<RlpType> vrs = ((RlpList) signature).getValues();
+            if (vrs.size() < 3) continue;
+            byte[] v = ((RlpString) vrs.get(0)).getBytes();
+            byte[] r = ((RlpString) vrs.get(1)).getBytes();
+            byte[] s = ((RlpString) vrs.get(2)).getBytes();
+            signatureDataList.add(new KlaySignatureData(v, r, s));
+        }
+
+        return signatureDataList;
     }
 
     public byte[] getV() {

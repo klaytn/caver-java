@@ -161,7 +161,7 @@ public class LegacyTransaction extends AbstractTransaction {
      */
     @Override
     public void appendSignatures(KlaySignatureData signatureData) {
-        if(this.getSignatures().size() != 0) {
+        if(this.getSignatures().size() != 0 && !Utils.isEmptySig(this.getSignatures().get(0))) {
             throw new RuntimeException("Signatures already defined." + TransactionType.TxTypeLegacyTransaction.toString() + " cannot include more than one signature.");
         }
 

@@ -27,7 +27,8 @@ import static org.junit.Assert.*;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        LegacyTransactionTest.createInstanceTest.class,
+        LegacyTransactionTest.createInstance.class,
+        LegacyTransactionTest.createInstanceBuilder.class,
         LegacyTransactionTest.signWithKeyTest.class,
         LegacyTransactionTest.signWithKeysTest.class,
         LegacyTransactionTest.getRLPEncodingTest.class,
@@ -40,7 +41,7 @@ import static org.junit.Assert.*;
 })
 public class LegacyTransactionTest {
 
-    public static class createInstanceTest {
+    public static class createInstance {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
@@ -48,7 +49,148 @@ public class LegacyTransactionTest {
         String nonce = "0x4D2";
         String gas = "0xf4240";
         String gasPrice = "0x19";
-        String to = "7b65b75d204abed71587c9e519a89277766ee1d0";
+        String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
+        String chainID = "0x1";
+        String input = "0x31323334";
+        String value = "0xa";
+
+        @Test
+        public void create() {
+            Keyring keyring = Keyring.createFromPrivateKey(privateKey);
+
+            LegacyTransaction legacyTransaction = new LegacyTransaction(
+                    null,
+                    keyring.getAddress(),
+                    nonce,
+                    gas,
+                    gasPrice,
+                    chainID,
+                    null,
+                    to,
+                    input,
+                    value
+            );
+            assertNotNull(legacyTransaction);
+        }
+
+        @Test
+        public void createWithRPC() throws IOException {
+            String gas = "0x0f4240";
+            String to = "7b65b75d204abed71587c9e519a89277766ee1d0";
+            String input = "0x31323334";
+            String value = "0x0a";
+
+            Caver caver = Caver.build(Caver.DEFAULT_URL);
+            Keyring keyring = Keyring.createFromPrivateKey(privateKey);
+
+            LegacyTransaction legacyTransaction = new LegacyTransaction(
+                    caver.klay(),
+                    keyring.getAddress(),
+                    nonce,
+                    gas,
+                    gasPrice,
+                    chainID,
+                    null,
+                    to,
+                    input,
+                    value
+            );
+
+            legacyTransaction.fillTransaction();
+            assertNotNull(legacyTransaction.getNonce());
+            assertNotNull(legacyTransaction.getGasPrice());
+            assertNotNull(legacyTransaction.getChainId());
+        }
+
+        @Test
+        public void throwException_missing_value() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("value is missing");
+
+            LegacyTransaction legacyTransaction = new LegacyTransaction(
+                    null,
+                    "0x",
+                    nonce,
+                    gas,
+                    gasPrice,
+                    chainID,
+                    null,
+                    to,
+                    input,
+                    null
+            );
+        }
+
+        @Test
+        public void throwException_invalid_value() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid value.");
+
+            String value = "invalid";
+
+            LegacyTransaction legacyTransaction = new LegacyTransaction(
+                    null,
+                    "0x",
+                    nonce,
+                    gas,
+                    gasPrice,
+                    chainID,
+                    null,
+                    to,
+                    input,
+                    value
+            );
+        }
+
+        @Test
+        public void throwException_invalid_To() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid address.");
+
+            String gas = "0xf4240";
+            String to = "invalid";
+            String input = "0x31323334";
+            String value = "0xa";
+
+            LegacyTransaction legacyTransaction = new LegacyTransaction(
+                    null,
+                    "0x",
+                    nonce,
+                    gas,
+                    gasPrice,
+                    chainID,
+                    null,
+                    to,
+                    input,
+                    value
+            );
+        }
+
+        @Test
+        public void throwException_missingGas() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("gas is missing");
+
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
+                    .setNonce(nonce)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setInput(input)
+                    .setValue(value)
+                    .setTo(to)
+                    .build();
+        }
+    }
+
+    public static class createInstanceBuilder {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
+        String nonce = "0x4D2";
+        String gas = "0xf4240";
+        String gasPrice = "0x19";
+        String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
         String chainID = "0x1";
         String input = "0x31323334";
         String value = "0xa";
@@ -70,13 +212,14 @@ public class LegacyTransactionTest {
 
         @Test
         public void BuilderTestWithBigInteger() {
+
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
+                    .setGasPrice(Numeric.toBigInt(gasPrice))
+                    .setChainId(Numeric.toBigInt(chainID))
                     .setInput(input)
-                    .setValue(value)
+                    .setValue(Numeric.toBigInt(value))
                     .setTo(to)
                     .build();
 
@@ -114,7 +257,7 @@ public class LegacyTransactionTest {
         @Test
         public void throwException_invalid_value() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("value is missing");
+            expectedException.expectMessage("Invalid value.");
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
@@ -130,7 +273,7 @@ public class LegacyTransactionTest {
         @Test
         public void throwException_invalid_value2() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("value is missing");
+            expectedException.expectMessage("Invalid value.");
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
@@ -165,28 +308,6 @@ public class LegacyTransactionTest {
         }
 
         @Test
-        public void throwException_invalid_To_WithRPC() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid address.");
-
-            Caver caver = Caver.build(Caver.DEFAULT_URL);
-            String gas = "0xf4240";
-            String to = "invalid";
-            String input = "0x31323334";
-            String value = "0xa";
-
-            Keyring keyring = Keyring.createFromPrivateKey("0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8");
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setKlaytnCall(caver.klay())
-                    .setGas(gas)
-                    .setInput(input)
-                    .setValue(value)
-                    .setFrom(keyring.getAddress()) // For Test. It automatically filled when executed LegacyTransaction.signWithKey or signWithKeysTest.
-                    .setTo(to)
-                    .build();
-        }
-
-        @Test
         public void throwException_missingGas() {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("gas is missing");
@@ -201,8 +322,6 @@ public class LegacyTransactionTest {
                     .build();
         }
     }
-
-
 
     public static class signWithKeyTest {
         @Rule
@@ -657,6 +776,33 @@ public class LegacyTransactionTest {
                     .setChainId(chainID)
                     .setValue(value)
                     .setTo(to)
+                    .build();
+
+            String rlpEncoded = "0xf8673a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae0180820feaa0ade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6ea038160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e";
+            List<String> rlpList = new ArrayList<>();
+            rlpList.add(rlpEncoded);
+            String combined = legacyTransaction.combineSignatures(rlpList);
+
+            assertEquals(rlpEncoded, combined);
+        }
+
+        @Test
+        public void combineSignature_EmptySig() {
+            String to = "0x8723590d5D60e35f7cE0Db5C09D3938b26fF80Ae";
+            BigInteger value = BigInteger.ONE;
+            BigInteger gas = BigInteger.valueOf(90000);
+            String gasPrice = "0x5d21dba00";
+            String nonce = "0x3a";
+            BigInteger chainID = BigInteger.valueOf(2019);
+
+            KlaySignatureData emptySig = KlaySignatureData.getEmptySignature();
+
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
+                    .setGas(gas)
+                    .setChainId(chainID)
+                    .setValue(value)
+                    .setTo(to)
+                    .setSignList(emptySig)
                     .build();
 
             String rlpEncoded = "0xf8673a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae0180820feaa0ade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6ea038160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e";
@@ -1173,6 +1319,38 @@ public class LegacyTransactionTest {
         }
 
         @Test
+        public void appendSignatureWithEmptySig() {
+            String to = "0x8723590d5D60e35f7cE0Db5C09D3938b26fF80Ae";
+            BigInteger value = BigInteger.ONE;
+            BigInteger gas = BigInteger.valueOf(90000);
+            String gasPrice = "0x5d21dba00";
+            String nonce = "0x3a";
+            BigInteger chainID = BigInteger.valueOf(2019);
+
+            KlaySignatureData emptySignature = KlaySignatureData.getEmptySignature();
+
+            KlaySignatureData signatureData = new KlaySignatureData(
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+            );
+
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setTo(to)
+                    .setValue(value)
+                    .setSignList(emptySignature)
+                    .build();
+
+            legacyTransaction.appendSignatures(signatureData);
+
+            assertEquals(signatureData, legacyTransaction.getSignatures().get(0));
+        }
+
+        @Test
         public void appendSignatureList() {
             String to = "0x8723590d5D60e35f7cE0Db5C09D3938b26fF80Ae";
             BigInteger value = BigInteger.ONE;
@@ -1197,6 +1375,41 @@ public class LegacyTransactionTest {
                     .setChainId(chainID)
                     .setValue(value)
                     .setTo(to)
+                    .build();
+
+            legacyTransaction.appendSignatures(list);
+
+            assertEquals(signatureData, legacyTransaction.getSignatures().get(0));
+        }
+
+        @Test
+        public void appendSignatureList_EmptySig() {
+            String to = "0x8723590d5D60e35f7cE0Db5C09D3938b26fF80Ae";
+            BigInteger value = BigInteger.ONE;
+            BigInteger gas = BigInteger.valueOf(90000);
+            String gasPrice = "0x5d21dba00";
+            String nonce = "0x3a";
+            BigInteger chainID = BigInteger.valueOf(2019);
+
+            KlaySignatureData emptySignature = KlaySignatureData.getEmptySignature();
+
+            KlaySignatureData signatureData = new KlaySignatureData(
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+            );
+
+            List<KlaySignatureData> list = new ArrayList<>();
+            list.add(signatureData);
+
+            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setValue(value)
+                    .setTo(to)
+                    .setSignList(emptySignature)
                     .build();
 
             legacyTransaction.appendSignatures(list);

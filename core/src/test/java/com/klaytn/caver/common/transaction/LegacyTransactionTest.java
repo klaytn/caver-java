@@ -630,40 +630,6 @@ public class LegacyTransactionTest {
 
             legacyTransaction.getRLPEncoding();
         }
-
-        @Test
-        public void throwException_NoChainID() {
-            expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
-
-            String nonce = "0x4D2";
-            String gas = "0xf4240";
-            String gasPrice = "0x19";
-            String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
-            String input = "0x31323334";
-            String value = "0xa";
-
-            KlaySignatureData signatureData = new KlaySignatureData(
-                    Numeric.hexStringToByteArray("0x25"),
-                    Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
-                    Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
-            );
-
-            List<KlaySignatureData> list = new ArrayList<>();
-            list.add(signatureData);
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setValue(value)
-                    .setInput(input)
-                    .setSignList(list)
-                    .setTo(to)
-                    .build();
-
-            legacyTransaction.getRLPEncoding();
-        }
     }
 
     public static class combineSignatureTest {
@@ -917,43 +883,6 @@ public class LegacyTransactionTest {
 
             assertEquals(expected, txHash);
         }
-
-        @Test
-        public void throwException_NotDefined_gasChainID() {
-            expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
-
-            String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
-            String value = "0xa";
-            String gas = "0xf4240";
-            String gasPrice = "0x19";
-            BigInteger nonce = BigInteger.valueOf(1234);
-            String input = "0x31323334";
-
-            KlaySignatureData signatureData = new KlaySignatureData(
-                    Numeric.hexStringToByteArray("0x25"),
-                    Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
-                    Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
-            );
-
-            List<KlaySignatureData> list = new ArrayList<>();
-            list.add(signatureData);
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setValue(value)
-                    .setInput(input)
-                    .setTo(to)
-                    .setSignList(list)
-                    .build();
-
-            String expected = "0xe434257753bf31a130c839fec0bd34fc6ea4aa256b825288ee82db31c2ed7524";
-            String txHash = legacyTransaction.getTransactionHash();
-
-            assertEquals(expected, txHash);
-        }
     }
 
     public static class getSenderTxHashTest {
@@ -1055,41 +984,6 @@ public class LegacyTransactionTest {
                     .setNonce(nonce)
                     .setGas(gas)
                     .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setTo(to)
-                    .setSignList(list)
-                    .build();
-
-
-            String txHash = legacyTransaction.getSenderTxHash();
-        }
-
-        @Test
-        public void throwException_NotDefined_gasChainID() {
-            expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
-
-            String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
-            String value = "0xa";
-            String gas = "0xf4240";
-            String gasPrice = "0x19";
-            BigInteger nonce = BigInteger.valueOf(1234);
-            String input = "0x31323334";
-
-            KlaySignatureData signatureData = new KlaySignatureData(
-                    Numeric.hexStringToByteArray("0x25"),
-                    Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
-                    Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
-            );
-
-            List<KlaySignatureData> list = new ArrayList<>();
-            list.add(signatureData);
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
                     .setValue(value)
                     .setInput(input)
                     .setTo(to)

@@ -1418,7 +1418,7 @@ public class LegacyTransactionTest {
         }
 
         @Test
-        public void throwException_existsSignatureInTransaction() {
+        public void throwException_appendData_existsSignatureInTransaction() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("Signatures already defined." + TransactionType.TxTypeLegacyTransaction.toString() + " cannot include more than one signature.");
 
@@ -1452,7 +1452,7 @@ public class LegacyTransactionTest {
         }
 
         @Test
-        public void throwException_existsSignatureInTransaction2() {
+        public void throwException_appendList_existsSignatureInTransaction() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("Signatures already defined." + TransactionType.TxTypeLegacyTransaction.toString() + " cannot include more than one signature.");
 

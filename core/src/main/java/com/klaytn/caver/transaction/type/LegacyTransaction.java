@@ -71,10 +71,6 @@ public class LegacyTransaction extends AbstractTransaction {
     private LegacyTransaction(Builder builder) {
         super(builder);
 
-        if(builder.value == null || builder.value.isEmpty() || builder.value.equals("0x")) {
-            throw new IllegalArgumentException("value is missing");
-        }
-
         setTo(builder.to);
         setValue(builder.value);
         setInput(builder.input);
@@ -179,7 +175,7 @@ public class LegacyTransaction extends AbstractTransaction {
      */
     @Override
     public void appendSignatures(List<KlaySignatureData> signatureData) {
-        if(this.getSignatures().size() != 0) {
+        if(this.getSignatures().size() != 0 && !Utils.isEmptySig(this.getSignatures().get(0))) {
             throw new RuntimeException("Signatures already defined." + TransactionType.TxTypeLegacyTransaction.toString() + " cannot include more than one signature.");
         }
 

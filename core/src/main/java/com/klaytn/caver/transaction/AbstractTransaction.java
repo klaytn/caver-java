@@ -418,14 +418,15 @@ abstract public class AbstractTransaction {
 
         // If the signatures are empty, there may be an undefined member variable.
         // In this case, the empty information is filled with the decoded result.
-        if(this.getSignatures().size() == 0) fillVariable = true;
+        boolean isContainsEmptySig = this.getSignatures().stream().anyMatch(Utils::isEmptySig);
+        if(this.getSignatures().size() == 0 || isContainsEmptySig) fillVariable = true;
 
         for(String encodedStr : rlpEncoded) {
             AbstractTransaction txObj = TransactionDecoder.decode(encodedStr);
 
             if(fillVariable) {
-                if(this.getNonce().equals("")) this.nonce = txObj.getNonce();
-                if(this.getGas().equals("")) this.nonce = txObj.getGas();
+                if(this.getNonce().equals("")) this.setNonce(txObj.getNonce());
+                if(this.getGasPrice().equals("")) this.setGasPrice(txObj.getGasPrice());
                 fillVariable = false;
             }
 
@@ -669,7 +670,7 @@ abstract public class AbstractTransaction {
     private void setGas(String gas) {
         //Gas value must be set.
         if(gas == null || gas.isEmpty() || gas.equals("0x")) {
-            throw new IllegalArgumentException("gas is missing");
+            throw new IllegalArgumentException("gas is missing.");
         }
 
         if(!Utils.isNumber(gas)) {

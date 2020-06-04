@@ -678,14 +678,26 @@ abstract public class AbstractTransaction {
         this.gas = gas;
     }
 
+    /**
+     * Setter function for nonce.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     */
     private void setNonce(String nonce) {
         this.nonce = nonce;
     }
 
+    /**
+     * Setter function for gas price.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     */
     private void setGasPrice(String gasPrice) {
         this.gasPrice = gasPrice;
     }
 
+    /**
+     * Setter function for chain id.
+     * @param chainId A network id.
+     */
     private void setChainId(String chainId) {
         this.chainId = chainId;
     }

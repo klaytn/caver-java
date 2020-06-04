@@ -236,6 +236,10 @@ public class ValueTransfer extends AbstractTransaction {
         return value;
     }
 
+    /**
+     * Setter function for to
+     * @param to The account address that will receive the transferred value.
+     */
     private void setTo(String to) {
         if(to == null) {
             throw new IllegalArgumentException("to is missing");
@@ -248,6 +252,10 @@ public class ValueTransfer extends AbstractTransaction {
         this.to = to;
     }
 
+    /**
+     * Setter function for value
+     * @param value The amount of KLAY in peb to be transferred.
+     */
     private void setValue(String value) {
         if(value == null) {
             throw new IllegalArgumentException("value is missing");

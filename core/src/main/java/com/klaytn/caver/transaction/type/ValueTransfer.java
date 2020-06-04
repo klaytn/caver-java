@@ -99,8 +99,8 @@ public class ValueTransfer extends AbstractTransaction {
 
     /**
      * Decodes a RLP-encoded ValueTransfer string.
-     * @param rlpEncoded RLP-encoded LegacyTransaction string
-     * @return LegacyTransaction
+     * @param rlpEncoded RLP-encoded ValueTransfer string
+     * @return ValueTransfer
      */
     public static ValueTransfer decode(String rlpEncoded) {
         return decode(Numeric.hexStringToByteArray(rlpEncoded));
@@ -108,8 +108,8 @@ public class ValueTransfer extends AbstractTransaction {
 
     /**
      * Decodes a RLP-encoded ValueTransfer byte array.
-     * @param rlpEncoded RLP-encoded LegacyTransaction byte array.
-     * @return LegacyTransaction
+     * @param rlpEncoded RLP-encoded ValueTransfer byte array.
+     * @return ValueTransfer
      */
     public static ValueTransfer decode(byte[] rlpEncoded) {
         // TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, txSignatures])

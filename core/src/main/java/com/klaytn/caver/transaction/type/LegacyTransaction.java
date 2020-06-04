@@ -196,7 +196,7 @@ public class LegacyTransaction extends AbstractTransaction {
      */
     @Override
     public String getRLPEncoding() {
-        this.validateOptionalValues();
+        this.validateOptionalValues(false);
         //TxHashRLP = encode([nonce, gasPrice, gas, to, value, input, v, r, s])
         List<RlpType> rlpTypeList = new ArrayList<>();
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getNonce())));
@@ -226,7 +226,7 @@ public class LegacyTransaction extends AbstractTransaction {
      */
     @Override
     public String getRLPEncodingForSignature() {
-        this.validateOptionalValues();
+        this.validateOptionalValues(true);
 
         List<RlpType> rlpTypeList = new ArrayList<>();
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getNonce())));

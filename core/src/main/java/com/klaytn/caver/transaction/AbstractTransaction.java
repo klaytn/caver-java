@@ -470,7 +470,7 @@ abstract public class AbstractTransaction {
      * @return String
      */
     public String getRLPEncodingForSignature() {
-        validateOptionalValues();
+        validateOptionalValues(true);
 
         byte[] txRLP = Numeric.hexStringToByteArray(getCommonRLPEncodingForSignature());
 
@@ -530,15 +530,19 @@ abstract public class AbstractTransaction {
      * Checks that member variables that can be defined by the user are defined.
      * If there is an undefined variable, an error occurs.
      */
-    public void validateOptionalValues() {
+    public void validateOptionalValues(boolean checkChainID) {
         if(this.getNonce() == null || this.getNonce().isEmpty() || this.getNonce().equals("0x")) {
             throw new RuntimeException("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");
         }
+
         if(this.getGasPrice() == null || this.getGasPrice().isEmpty() || this.getGasPrice().equals("0x")) {
             throw new RuntimeException("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
         }
-        if(this.getChainId() == null || this.getChainId().isEmpty() || this.getChainId().equals("0x")) {
-            throw new RuntimeException("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
+
+        if(checkChainID) {
+            if(this.getChainId() == null || this.getChainId().isEmpty() || this.getChainId().equals("0x")) {
+                throw new RuntimeException("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
+            }
         }
     }
 

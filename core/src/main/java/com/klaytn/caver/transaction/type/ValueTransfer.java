@@ -153,7 +153,7 @@ public class ValueTransfer extends AbstractTransaction {
     @Override
     public String getRLPEncoding() {
         //TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, txSignatures])
-        this.validateOptionalValues();
+        this.validateOptionalValues(false);
 
         List<RlpType> signatureRLPList = new ArrayList<>();
 
@@ -185,8 +185,6 @@ public class ValueTransfer extends AbstractTransaction {
     public String getCommonRLPEncodingForSignature() {
         //SigRLP = encode([encode([type, nonce, gasPrice, gas, to, value, from]), chainId, 0, 0]
         //encode([type, nonce, gasPrice, gas, to, value, from]
-        this.validateOptionalValues();
-
         byte type = (byte)TransactionType.TxTypeValueTransfer.getType();
 
         List<RlpType> rlpTypeList = new ArrayList<>();

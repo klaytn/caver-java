@@ -65,7 +65,7 @@ public class LegacyTransaction extends AbstractTransaction {
     }
 
     /**
-     * Creates an LegacyTransaction instance.
+     * Creates a LegacyTransaction instance.
      * @param builder LegacyTransaction.Builder instance.
      */
     private LegacyTransaction(Builder builder) {
@@ -81,7 +81,7 @@ public class LegacyTransaction extends AbstractTransaction {
     }
 
     /**
-     * Create LegacyTransaction instance.
+     * Create a LegacyTransaction instance.
      * @param klaytnCall Klay RPC instance
      * @param from The address of the sender.
      * @param nonce A value used to uniquely identify a sender’s transaction.

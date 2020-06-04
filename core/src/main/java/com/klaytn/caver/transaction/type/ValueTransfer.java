@@ -61,7 +61,7 @@ public class ValueTransfer extends AbstractTransaction {
     }
 
     /**
-     * Creates an ValueTransfer instance.
+     * Creates a ValueTransfer instance.
      * @param builder ValueTransfer.Builder instance.
      */
     public ValueTransfer(Builder builder) {
@@ -71,7 +71,7 @@ public class ValueTransfer extends AbstractTransaction {
     }
 
     /**
-     * Creates an ValueTransfer instance.
+     * Creates a ValueTransfer instance.
      * @param klaytnCall Klay RPC instance
      * @param from The address of the sender.
      * @param nonce A value used to uniquely identify a sender’s transaction.

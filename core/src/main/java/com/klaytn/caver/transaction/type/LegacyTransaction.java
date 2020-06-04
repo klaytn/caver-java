@@ -55,9 +55,6 @@ public class LegacyTransaction extends AbstractTransaction {
         }
 
         public Builder setTo(String to) {
-            if(!to.equals("0x") && !Utils.isAddress(to)) {
-                throw new IllegalArgumentException("Invalid address.");
-            }
             this.to = to;
             return this;
         }
@@ -78,15 +75,14 @@ public class LegacyTransaction extends AbstractTransaction {
             throw new IllegalArgumentException("value is missing");
         }
 
-        this.to = builder.to;
-        this.value = builder.value;
-        this.input = builder.input;
+        setTo(builder.to);
+        setValue(builder.value);
+        setInput(builder.input);
     }
 
     /**
      * Create LegacyTransaction instance.
      * @param klaytnCall Klay RPC instance
-     * @param type Transaction's type string
      * @param from The address of the sender.
      * @param nonce A value used to uniquely identify a sender’s transaction.
      * @param gas The maximum amount of gas the transaction is allowed to use.
@@ -97,11 +93,20 @@ public class LegacyTransaction extends AbstractTransaction {
      * @param input Data attached to the transaction, used for transaction execution.
      * @param value The amount of KLAY in peb to be transferred.
      */
-    public LegacyTransaction(Klay klaytnCall, String type, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures, String to, String input, String value) {
-        super(klaytnCall, type, from, nonce, gas, gasPrice, chainId, signatures);
-        this.to = to;
-        this.input = input;
-        this.value = value;
+    public LegacyTransaction(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures, String to, String input, String value) {
+        super(
+                klaytnCall,
+                TransactionType.TxTypeLegacyTransaction.toString(),
+                from,
+                nonce,
+                gas,
+                gasPrice,
+                chainId,
+                signatures
+        );
+        setTo(to);
+        setValue(value);
+        setInput(input);
     }
 
     /**
@@ -269,5 +274,38 @@ public class LegacyTransaction extends AbstractTransaction {
 
     public String getValue() {
         return value;
+    }
+
+    public void setTo(String to) {
+        if(to == null) {
+            throw new IllegalArgumentException("to is missing");
+        }
+
+        if(!to.equals("0x") && !Utils.isAddress(to)) {
+            throw new IllegalArgumentException("Invalid address.");
+        }
+        this.to = to;
+    }
+
+    public void setInput(String input) {
+        if(input == null) {
+            throw new IllegalArgumentException("input is missing");
+        }
+
+        if(!input.equals("0x") && !Utils.isHex(input)) {
+            throw new IllegalArgumentException("Invalid input.");
+        }
+        this.input = input;
+    }
+
+    public void setValue(String value) {
+        if(value == null) {
+            throw new IllegalArgumentException("value is missing");
+        }
+
+        if(!Utils.isHex(value)) {
+            throw new IllegalArgumentException("Invalid value.");
+        }
+        this.value = value;
     }
 }

@@ -6,6 +6,7 @@ import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.transaction.type.LegacyTransaction;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.type.TransactionType;
+import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.Keyring;
 import com.klaytn.caver.wallet.keyring.PrivateKey;
 import org.junit.BeforeClass;

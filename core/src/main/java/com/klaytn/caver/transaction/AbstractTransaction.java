@@ -35,7 +35,7 @@ abstract public class AbstractTransaction {
     /**
      * The address of the sender.
      */
-    private String from;
+    private String from = "0x";
 
     /**
      * A value used to uniquely identify a sender’s transaction.
@@ -83,10 +83,6 @@ abstract public class AbstractTransaction {
         }
 
         public B setFrom(String from) {
-            if(!from.equals("0x") && !Utils.isAddress(from)) {
-                throw new IllegalArgumentException("Invalid address.");
-            }
-
             this.from = from;
             return (B) this;
         }
@@ -102,9 +98,6 @@ abstract public class AbstractTransaction {
         }
 
         public B setGas(String gas) {
-            if(gas == null || gas.isEmpty() || gas.equals("0x")) {
-                throw new IllegalArgumentException("Gas is missing.");
-            }
             this.gas = gas;
             return (B) this;
         }
@@ -178,17 +171,13 @@ abstract public class AbstractTransaction {
      * @param signatures A Signature list
      */
     public AbstractTransaction(Klay klaytnCall, String type, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures) {
-        if(gas == null || gas.isEmpty() || gas.equals("0x")) {
-            throw new IllegalArgumentException("gas is missing");
-        }
-
-        this.klaytnCall = klaytnCall;
-        this.type = type;
-        this.from = from;
-        this.nonce = nonce;
-        this.gas = gas;
-        this.gasPrice = gasPrice;
-        this.chainId = chainId;
+        setKlaytnCall(klaytnCall);
+        setType(type);
+        setFrom(from);
+        setNonce(nonce);
+        setGasPrice(gasPrice);
+        setGas(gas);
+        setChainId(chainId);
 
         if(signatures != null) {
             this.signatures.addAll(signatures);
@@ -656,5 +645,44 @@ abstract public class AbstractTransaction {
      */
     public List<KlaySignatureData> getSignatures() {
         return signatures;
+    }
+
+    private void setType(String type) {
+        this.type = type;
+    }
+
+    private void setFrom(String from) {
+        if(from == null) {
+            throw new IllegalArgumentException("from is missing.");
+        }
+
+        if(!from.equals("0x") && !Utils.isAddress(from)) {
+            throw new IllegalArgumentException("Invalid address.");
+        }
+        this.from = from;
+    }
+
+    private void setGas(String gas) {
+        //Gas value must be set.
+        if(gas == null || gas.isEmpty() || gas.equals("0x")) {
+            throw new IllegalArgumentException("gas is missing");
+        }
+
+        if(!Utils.isNumber(gas)) {
+            throw new IllegalArgumentException("Invalid gas.");
+        }
+        this.gas = gas;
+    }
+
+    private void setNonce(String nonce) {
+        this.nonce = nonce;
+    }
+
+    private void setGasPrice(String gasPrice) {
+        this.gasPrice = gasPrice;
+    }
+
+    private void setChainId(String chainId) {
+        this.chainId = chainId;
     }
 }

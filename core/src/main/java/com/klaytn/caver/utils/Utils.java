@@ -36,6 +36,27 @@ public class Utils {
         return cleanInput.length() == LENGTH_ADDRESS_String && HEX_STRING.matcher(cleanInput).matches();
     }
 
+    public static boolean isHex(String input) {
+        String cleanInput = Numeric.cleanHexPrefix(input);
+
+        return HEX_STRING.matcher(cleanInput).matches();
+    }
+
+    public static boolean isHexStrict(String input) {
+        String cleanInput = Numeric.cleanHexPrefix(input);
+
+        return input.startsWith("0x") && HEX_STRING.matcher(cleanInput).matches();
+    }
+
+    public static boolean isNumber(String input) {
+        try {
+            Numeric.toBigInt(input);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
+
     public static boolean isKlaytnWalletKey(String key) {
         //0x{private key}0x{type}0x{address in hex}
         //[0] = privateKey

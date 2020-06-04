@@ -40,9 +40,6 @@ public class ValueTransfer extends AbstractTransaction {
         }
 
         public Builder setTo(String to) {
-            if(!to.equals("0x") && !Utils.isAddress(to)) {
-                throw new IllegalArgumentException("Invalid address.");
-            }
             this.to = to;
 
             return this;
@@ -69,14 +66,13 @@ public class ValueTransfer extends AbstractTransaction {
      */
     public ValueTransfer(Builder builder) {
         super(builder);
-        this.to = builder.to;
-        this.value = builder.value;
+        setTo(builder.to);
+        setValue(builder.value);
     }
 
     /**
      * Creates an ValueTransfer instance.
      * @param klaytnCall Klay RPC instance
-     * @param type Transaction's type string
      * @param from The address of the sender.
      * @param nonce A value used to uniquely identify a sender’s transaction.
      * @param gas The maximum amount of gas the transaction is allowed to use.
@@ -86,10 +82,19 @@ public class ValueTransfer extends AbstractTransaction {
      * @param to The account address that will receive the transferred value.
      * @param value The amount of KLAY in peb to be transferred.
      */
-    public ValueTransfer(Klay klaytnCall, String type, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures, String to, String value) {
-        super(klaytnCall, type, from, nonce, gas, gasPrice, chainId, signatures);
-        this.to = to;
-        this.value = value;
+    public ValueTransfer(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures, String to, String value) {
+        super(
+                klaytnCall,
+                TransactionType.TxTypeValueTransfer.toString(),
+                from,
+                nonce,
+                gas,
+                gasPrice,
+                chainId,
+                signatures
+        );
+        setTo(to);
+        setValue(value);
     }
 
     /**
@@ -107,7 +112,7 @@ public class ValueTransfer extends AbstractTransaction {
      * @return LegacyTransaction
      */
     public static ValueTransfer decode(byte[] rlpEncoded) {
-        //TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, txSignatures])
+        // TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, txSignatures])
         if(rlpEncoded[0] != (byte)TransactionType.TxTypeValueTransfer.getType()) {
             throw new IllegalArgumentException("Invalid RLP-encoded tag - " + TransactionType.TxTypeValueTransfer.toString());
         }
@@ -231,5 +236,28 @@ public class ValueTransfer extends AbstractTransaction {
      */
     public String getValue() {
         return value;
+    }
+
+    private void setTo(String to) {
+        if(to == null) {
+            throw new IllegalArgumentException("to is missing");
+        }
+
+        if(!to.equals("0x") && !Utils.isAddress(to)) {
+            throw new IllegalArgumentException("Invalid address.");
+        }
+
+        this.to = to;
+    }
+
+    private void setValue(String value) {
+        if(value == null) {
+            throw new IllegalArgumentException("value is missing");
+        }
+
+        if(!Utils.isNumber(value)) {
+            throw new IllegalArgumentException("Invalid value.");
+        }
+        this.value = value;
     }
 }

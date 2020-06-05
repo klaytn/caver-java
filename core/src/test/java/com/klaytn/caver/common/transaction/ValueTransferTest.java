@@ -186,8 +186,6 @@ public class ValueTransferTest {
                     .build();
         }
 
-
-
         @Test
         public void throwException_invalidValue() {
             expectedException.expect(IllegalArgumentException.class);
@@ -498,10 +496,11 @@ public class ValueTransferTest {
         @Test
         public void throwException_NoGasPrice() {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");
+            expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             ValueTransfer valueTransfer = new ValueTransfer.Builder()
                     .setFrom(from)
+                    .setNonce(BigInteger.valueOf(nonce))
                     .setTo(to)
                     .setValue(value)
                     .setGas(gas)

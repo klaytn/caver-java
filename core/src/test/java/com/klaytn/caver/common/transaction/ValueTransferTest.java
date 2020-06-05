@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -20,6 +22,20 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        ValueTransferTest.createInstance.class,
+        ValueTransferTest.createInstanceBuilder.class,
+        ValueTransferTest.getRLPEncodingTest.class,
+        ValueTransferTest.signWithKeyTest.class,
+        ValueTransferTest.signWithKeysTest.class,
+        ValueTransferTest.appendSignaturesTest.class,
+        ValueTransferTest.combineSignatureTest.class,
+        ValueTransferTest.getRawTransactionTest.class,
+        ValueTransferTest.getTransactionHashTest.class,
+        ValueTransferTest.getSenderTxHashTest.class,
+        ValueTransferTest.getRLPEncodingForSignatureTest.class,
+})
 public class ValueTransferTest {
 
     public static Keyring generateRoleBaseKeyring(int[] numArr, String address) {
@@ -39,42 +55,7 @@ public class ValueTransferTest {
         return Keyring.createWithRoleBasedKey(address, arr);
     }
 
-    @Test
-    public void commonTest() throws IOException {
-        String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
-        Keyring keyring = Keyring.createFromPrivateKey(privateKey);
-
-        String from = "0xa94f5374Fce5edBC8E2a8697C15331677e6EbF0B";
-        String to = "0x7b65B75d204aBed71587c9E519a89277766EE1d0";
-        BigInteger nonce = BigInteger.valueOf(1234);
-        String gasPrice = "0x19";
-        String gas = "0xf4240";
-        String chainId = "0x01";
-        String value = "0xa";
-
-        ValueTransfer valueTransfer = new ValueTransfer.Builder()
-                .setFrom(from)
-                .setTo(to)
-                .setNonce(nonce)
-                .setGasPrice(gasPrice)
-                .setGas(gas)
-                .setChainId(chainId)
-                .setValue(value)
-                .build();
-
-        String expectedSigRLP = "0xf839b5f4088204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0b018080";
-        assertEquals(expectedSigRLP, valueTransfer.getRLPEncodingForSignature());
-
-        valueTransfer.signWithKey(keyring);
-        String expectedTxHashRLP = "0x08f87a8204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0bf845f84325a0f3d0cd43661cabf53425535817c5058c27781f478cb5459874feaa462ed3a29aa06748abe186269ff10b8100a4b7d7fea274b53ea2905acbf498dc8b5ab1bf4fbc";
-        assertEquals(expectedTxHashRLP, valueTransfer.getRLPEncoding());
-
-        String expectedTxHash = "0x762f130342569e9669a4d8547f1248bd2554fbbf3062d63a97ce28bfa97aa9d7";
-        assertEquals(expectedTxHash, valueTransfer.getTransactionHash());
-    }
-
-
-    public static class CreateInstanceBuilder {
+    public static class createInstanceBuilder {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
@@ -276,7 +257,7 @@ public class ValueTransferTest {
         }
     }
 
-    public static class CreateInstance {
+    public static class createInstance {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
@@ -1036,7 +1017,7 @@ public class ValueTransferTest {
         }
     }
 
-    public static class getRawTransaction {
+    public static class getRawTransactionTest {
 
         String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
         String from = "0xa94f5374Fce5edBC8E2a8697C15331677e6EbF0B";

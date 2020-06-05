@@ -242,7 +242,7 @@ public class ValueTransfer extends AbstractTransaction {
      */
     private void setTo(String to) {
         if(to == null) {
-            throw new IllegalArgumentException("to is missing");
+            throw new IllegalArgumentException("to is missing.");
         }
 
         if(!to.equals("0x") && !Utils.isAddress(to)) {
@@ -258,7 +258,7 @@ public class ValueTransfer extends AbstractTransaction {
      */
     private void setValue(String value) {
         if(value == null) {
-            throw new IllegalArgumentException("value is missing");
+            throw new IllegalArgumentException("value is missing.");
         }
 
         if(!Utils.isNumber(value)) {

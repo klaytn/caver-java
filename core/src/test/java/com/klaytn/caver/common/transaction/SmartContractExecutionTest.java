@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -20,8 +22,23 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        SmartContractExecutionTest.createInstance.class,
+        SmartContractExecutionTest.createInstanceBuilder.class,
+        SmartContractExecutionTest.getRLPEncodingTest.class,
+        SmartContractExecutionTest.signWithKeyTest.class,
+        SmartContractExecutionTest.signWithKeysTest.class,
+        SmartContractExecutionTest.appendSignaturesTest.class,
+        SmartContractExecutionTest.combineSignatureTest.class,
+        SmartContractExecutionTest.getRawTransactionTest.class,
+        SmartContractExecutionTest.getTransactionHashTest.class,
+        SmartContractExecutionTest.getSenderTxHashTest.class,
+        SmartContractExecutionTest.getRLPEncodingForSignatureTest.class,
+})
 public class SmartContractExecutionTest {
-    
+
     static Caver caver = Caver.build(Caver.DEFAULT_URL);
 
     static String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";

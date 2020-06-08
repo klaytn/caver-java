@@ -115,8 +115,8 @@ public class ValueTransferMemoTest {
             txObj.fillTransaction();
 
             assertFalse(txObj.getNonce().isEmpty());
-            assertFalse(txObj.getNonce().isEmpty());
-            assertFalse(txObj.getNonce().isEmpty());
+            assertFalse(txObj.getGasPrice().isEmpty());
+            assertFalse(txObj.getChainId().isEmpty());
         }
 
         @Test

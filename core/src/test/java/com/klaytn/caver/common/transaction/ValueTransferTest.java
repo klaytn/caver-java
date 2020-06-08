@@ -96,8 +96,8 @@ public class ValueTransferTest {
             valueTransfer.fillTransaction();
 
             assertFalse(valueTransfer.getNonce().isEmpty());
-            assertFalse(valueTransfer.getNonce().isEmpty());
-            assertFalse(valueTransfer.getNonce().isEmpty());
+            assertFalse(valueTransfer.getGasPrice().isEmpty());
+            assertFalse(valueTransfer.getChainId().isEmpty());
         }
 
         @Test

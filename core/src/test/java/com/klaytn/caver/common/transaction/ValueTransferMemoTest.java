@@ -1198,7 +1198,7 @@ public class ValueTransferMemoTest {
         }
 
         @Test
-        public void getTransactionHash() {
+        public void getSenderTransactionHash() {
             String txHash = mTxObj.getSenderTxHash();
             assertEquals(expectedTransactionHash, txHash);
         }

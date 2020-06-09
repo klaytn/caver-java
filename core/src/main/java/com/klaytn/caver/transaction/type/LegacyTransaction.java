@@ -273,8 +273,9 @@ public class LegacyTransaction extends AbstractTransaction {
     }
 
     public void setTo(String to) {
-        if(to == null) {
-            throw new IllegalArgumentException("to is missing");
+        // "to" field in LegacyTransaction allows null
+        if(to == null || to.isEmpty()) {
+            to = "0x";
         }
 
         if(!to.equals("0x") && !Utils.isAddress(to)) {

@@ -21,7 +21,7 @@ public class ValueTransfer extends AbstractTransaction {
     /**
      * The account address that will receive the transferred value.
      */
-    String to = "0x";
+    String to;
 
     /**
      * The amount of KLAY in peb to be transferred.
@@ -32,7 +32,7 @@ public class ValueTransfer extends AbstractTransaction {
      * ValueTransfer Builder class
      */
     public static class Builder extends AbstractTransaction.Builder<ValueTransfer.Builder> {
-        private String to = "0x";
+        private String to;
         private String value = "0x00";
 
         public Builder() {

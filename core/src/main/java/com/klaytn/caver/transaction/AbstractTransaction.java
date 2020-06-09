@@ -36,7 +36,7 @@ abstract public class AbstractTransaction {
     /**
      * The address of the sender.
      */
-    private String from = "0x";
+    private String from;
 
     /**
      * A value used to uniquely identify a sender’s transaction.
@@ -72,7 +72,7 @@ abstract public class AbstractTransaction {
         private String type;
         private String gas;
 
-        private String from = "0x";
+        private String from;
         private String nonce = "";
         private String gasPrice = "";
         private String chainId = "";

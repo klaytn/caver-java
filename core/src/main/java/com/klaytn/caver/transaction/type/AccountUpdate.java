@@ -58,7 +58,6 @@ public class AccountUpdate extends AbstractTransaction {
     /**
      * Creates an AccountUpdate instance.
      * @param klaytnCall Klay RPC instance.
-     * @param type Transaction's type string.
      * @param from The address of the sender.
      * @param nonce A value used to uniquely identify a sender’s transaction.
      * @param gas The maximum amount of gas the transaction is allowed to use.

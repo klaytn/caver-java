@@ -332,7 +332,11 @@ public class SmartContractDeploy extends AbstractTransaction {
      * @param to The account address that will receive the transferred value.
      */
     private void setTo(String to) {
-        if(to != null && !to.equals("0x") && !Utils.isAddress(to)) {
+        if(to == null) {
+            throw new IllegalArgumentException("to is missing.");
+        }
+
+        if(!Utils.isAddress(to)) {
             throw new IllegalArgumentException("Invalid address.");
         }
 

@@ -273,7 +273,7 @@ public class ValueTransferMemo extends AbstractTransaction {
             throw new IllegalArgumentException("to is missing.");
         }
 
-        if(!to.equals("0x") && !Utils.isAddress(to)) {
+        if(!Utils.isAddress(to)) {
             throw new IllegalArgumentException("Invalid address.");
         }
         this.to = to;

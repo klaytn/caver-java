@@ -3,6 +3,7 @@ package com.klaytn.caver.transaction;
 import com.klaytn.caver.Klay;
 import com.klaytn.caver.account.AccountKeyRoleBased;
 import com.klaytn.caver.crypto.KlaySignatureData;
+import com.klaytn.caver.transaction.type.LegacyTransaction;
 import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.Keyring;
@@ -657,13 +658,19 @@ abstract public class AbstractTransaction {
     }
 
     private void setFrom(String from) {
-        if(from == null) {
-            throw new IllegalArgumentException("from is missing.");
+        //"From" field in LegacyTransaction allows null
+        if(this instanceof LegacyTransaction) {
+            if(from == null || from.isEmpty() || from.equals("0x")) from = "0x";
+        } else {
+            if(from == null) {
+                throw new IllegalArgumentException("from is missing.");
+            }
+
+            if(!Utils.isAddress(from)) {
+                throw new IllegalArgumentException("Invalid address.");
+            }
         }
 
-        if(!from.equals("0x") && !Utils.isAddress(from)) {
-            throw new IllegalArgumentException("Invalid address.");
-        }
         this.from = from;
     }
 

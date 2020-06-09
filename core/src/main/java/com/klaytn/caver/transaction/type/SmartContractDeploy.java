@@ -340,7 +340,7 @@ public class SmartContractDeploy extends AbstractTransaction {
             throw new IllegalArgumentException("Invalid address.");
         }
 
-        this.to = "0x";
+        this.to = "0x"; // currently "to" field must be nil
     }
 
     /**

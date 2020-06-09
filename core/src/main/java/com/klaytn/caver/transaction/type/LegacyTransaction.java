@@ -279,7 +279,7 @@ public class LegacyTransaction extends AbstractTransaction {
         }
 
         if(!to.equals("0x") && !Utils.isAddress(to)) {
-            throw new IllegalArgumentException("Invalid address.");
+            throw new IllegalArgumentException("Invalid address. : " + to);
         }
         this.to = to;
     }

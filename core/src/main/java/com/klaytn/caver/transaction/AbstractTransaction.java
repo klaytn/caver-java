@@ -667,7 +667,7 @@ abstract public class AbstractTransaction {
             }
 
             if(!Utils.isAddress(from)) {
-                throw new IllegalArgumentException("Invalid address.");
+                throw new IllegalArgumentException("Invalid address. : " + from);
             }
         }
 

@@ -18,7 +18,10 @@ public class TransactionDecoder {
             return SmartContractExecution.decode(rlpBytes);
         } else if(rlpBytes[0] == TransactionType.TxTypeAccountUpdate.getType()) {
             return AccountUpdate.decode(rlpBytes);
-        } else {
+        } else if(rlpBytes[0] == TransactionType.TxTypeCancel.getType()) {
+            return Cancel.decode(rlpBytes);
+        }
+        else {
             return LegacyTransaction.decode(rlpBytes);
         }
     }

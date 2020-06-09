@@ -200,7 +200,7 @@ public class ChainDataAnchoring extends AbstractTransaction {
      * Setter function for input
      * @param input Data of the service chain.
      */
-    private void setInput(String input) {
+    public void setInput(String input) {
         if(input == null) {
             throw new IllegalArgumentException("input is missing.");
         }

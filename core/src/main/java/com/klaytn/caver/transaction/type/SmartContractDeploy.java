@@ -331,7 +331,7 @@ public class SmartContractDeploy extends AbstractTransaction {
      * Setter function for to
      * @param to The account address that will receive the transferred value.
      */
-    private void setTo(String to) {
+    public void setTo(String to) {
         if(to == null || to.isEmpty()) {
             to = "0x";
         }
@@ -347,7 +347,7 @@ public class SmartContractDeploy extends AbstractTransaction {
      * Setter function for value
      * @param value The amount of KLAY in peb to be transferred.
      */
-    private void setValue(String value) {
+    public void setValue(String value) {
         if(value == null) {
             throw new IllegalArgumentException("value is missing.");
         }
@@ -362,7 +362,7 @@ public class SmartContractDeploy extends AbstractTransaction {
      * Setter function for input
      * @param input Data attached to the transaction, used for transaction execution.
      */
-    private void setInput(String input) {
+    public void setInput(String input) {
         if(input == null) {
             throw new IllegalArgumentException("input is missing.");
         }
@@ -378,7 +378,7 @@ public class SmartContractDeploy extends AbstractTransaction {
      * Setter function for humanReadable
      * @param humanReadable boolean
      */
-    private void setHumanReadable(boolean humanReadable) {
+    public void setHumanReadable(boolean humanReadable) {
         if(humanReadable) {
             throw new IllegalArgumentException("HumanReadable attribute must set false");
         }
@@ -389,7 +389,7 @@ public class SmartContractDeploy extends AbstractTransaction {
      * Setter function for codeFormat
      * @param codeFormat The code format of smart contract code.
      */
-    private void setCodeFormat(String codeFormat) {
+    public void setCodeFormat(String codeFormat) {
         if(codeFormat == null) {
             throw new IllegalArgumentException("codeFormat is missing");
         }

@@ -218,7 +218,7 @@ public class AccountUpdate extends AbstractTransaction {
      * Setter function for Account
      * @param account Account instance
      */
-    private void setAccount(Account account) {
+    public void setAccount(Account account) {
         if(account == null) {
             throw new IllegalArgumentException("account is missing.");
         }

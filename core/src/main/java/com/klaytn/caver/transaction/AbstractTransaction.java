@@ -653,11 +653,11 @@ abstract public class AbstractTransaction {
         return signatures;
     }
 
-    private void setType(String type) {
+    public void setType(String type) {
         this.type = type;
     }
 
-    private void setFrom(String from) {
+    public void setFrom(String from) {
         //"From" field in LegacyTransaction allows null
         if(this instanceof LegacyTransaction) {
             if(from == null || from.isEmpty() || from.equals("0x")) from = "0x";
@@ -674,7 +674,7 @@ abstract public class AbstractTransaction {
         this.from = from;
     }
 
-    private void setGas(String gas) {
+    public void setGas(String gas) {
         //Gas value must be set.
         if(gas == null || gas.isEmpty() || gas.equals("0x")) {
             throw new IllegalArgumentException("gas is missing.");
@@ -690,7 +690,7 @@ abstract public class AbstractTransaction {
      * Setter function for nonce.
      * @param nonce A value used to uniquely identify a sender’s transaction.
      */
-    private void setNonce(String nonce) {
+    public void setNonce(String nonce) {
         this.nonce = nonce;
     }
 
@@ -698,7 +698,7 @@ abstract public class AbstractTransaction {
      * Setter function for gas price.
      * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
      */
-    private void setGasPrice(String gasPrice) {
+    public void setGasPrice(String gasPrice) {
         this.gasPrice = gasPrice;
     }
 
@@ -706,7 +706,7 @@ abstract public class AbstractTransaction {
      * Setter function for chain id.
      * @param chainId A network id.
      */
-    private void setChainId(String chainId) {
+    public void setChainId(String chainId) {
         this.chainId = chainId;
     }
 }

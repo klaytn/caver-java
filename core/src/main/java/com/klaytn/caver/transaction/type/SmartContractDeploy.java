@@ -333,10 +333,10 @@ public class SmartContractDeploy extends AbstractTransaction {
      */
     private void setTo(String to) {
         if(to == null) {
-            throw new IllegalArgumentException("to is missing.");
+            to = "0x";
         }
 
-        if(!Utils.isAddress(to)) {
+        if(!to.equals("0x") && !Utils.isAddress(to)) {
             throw new IllegalArgumentException("Invalid address.");
         }
 

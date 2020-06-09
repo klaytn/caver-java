@@ -20,6 +20,8 @@ public class TransactionDecoder {
             return AccountUpdate.decode(rlpBytes);
         } else if(rlpBytes[0] == TransactionType.TxTypeCancel.getType()) {
             return Cancel.decode(rlpBytes);
+        } else if(rlpBytes[0] == TransactionType.TxTypeChainDataAnchoring.getType()) {
+            return ChainDataAnchoring.decode(rlpBytes);
         }
         else {
             return LegacyTransaction.decode(rlpBytes);

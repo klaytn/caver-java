@@ -208,7 +208,7 @@ public class ChainDataAnchoringTest {
         @Test
         public void throwException_invalidInput() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid input.");
+            expectedException.expectMessage("Invalid input");
 
             String input = "invalid input";
 
@@ -345,7 +345,7 @@ public class ChainDataAnchoringTest {
         @Test
         public void throwException_invalidInput() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid input.");
+            expectedException.expectMessage("Invalid input");
 
             String input = "invalid input";
 

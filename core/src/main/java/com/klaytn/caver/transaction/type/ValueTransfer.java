@@ -262,7 +262,7 @@ public class ValueTransfer extends AbstractTransaction {
         }
 
         if(!Utils.isNumber(value)) {
-            throw new IllegalArgumentException("Invalid value.");
+            throw new IllegalArgumentException("Invalid value : " + value);
         }
         this.value = value;
     }

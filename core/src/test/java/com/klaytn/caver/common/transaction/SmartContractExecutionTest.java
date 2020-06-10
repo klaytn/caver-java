@@ -225,7 +225,7 @@ public class SmartContractExecutionTest {
         @Test
         public void throwException_invalidValue() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid value.");
+            expectedException.expectMessage("Invalid value");
 
             String value = "invalid value";
 
@@ -305,7 +305,7 @@ public class SmartContractExecutionTest {
         @Test
         public void throwException_invalidInput() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid input.");
+            expectedException.expectMessage("Invalid input");
 
             String input = "invalid input";
 
@@ -454,7 +454,7 @@ public class SmartContractExecutionTest {
         @Test
         public void throwException_invalidValue() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid value.");
+            expectedException.expectMessage("Invalid value");
 
             String value = "invalid value";
 
@@ -538,7 +538,7 @@ public class SmartContractExecutionTest {
         @Test
         public void throwException_invalidInput() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid input.");
+            expectedException.expectMessage("Invalid input");
 
             String input = "invalid input";
 

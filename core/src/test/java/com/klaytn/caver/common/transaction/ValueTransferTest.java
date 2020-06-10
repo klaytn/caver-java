@@ -189,7 +189,7 @@ public class ValueTransferTest {
         @Test
         public void throwException_invalidValue() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid value.");
+            expectedException.expectMessage("Invalid value");
 
             String value = "invalid value";
 
@@ -365,7 +365,7 @@ public class ValueTransferTest {
         @Test
         public void throwException_invalidValue() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid value.");
+            expectedException.expectMessage("Invalid value");
 
             String value = "invalid value";
 

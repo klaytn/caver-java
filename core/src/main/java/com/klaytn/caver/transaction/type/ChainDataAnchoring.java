@@ -206,7 +206,7 @@ public class ChainDataAnchoring extends AbstractTransaction {
         }
 
         if(!Utils.isHex(input)) {
-            throw new IllegalArgumentException("Invalid input.");
+            throw new IllegalArgumentException("Invalid input : " + input);
         }
 
         this.input = Numeric.prependHexPrefix(input);

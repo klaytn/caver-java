@@ -289,7 +289,7 @@ public class ValueTransferMemo extends AbstractTransaction {
         }
 
         if(!Utils.isNumber(value)) {
-            throw new IllegalArgumentException("Invalid value.");
+            throw new IllegalArgumentException("Invalid value : " + value);
         }
         this.value = value;
     }
@@ -304,7 +304,7 @@ public class ValueTransferMemo extends AbstractTransaction {
         }
 
         if(!Utils.isHex(input)) {
-            throw new IllegalArgumentException("Invalid input.");
+            throw new IllegalArgumentException("Invalid input : " + input);
         }
 
         this.input = Numeric.prependHexPrefix(input);

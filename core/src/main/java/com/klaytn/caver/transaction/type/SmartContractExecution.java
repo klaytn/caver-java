@@ -27,7 +27,7 @@ public class SmartContractExecution extends AbstractTransaction {
     /**
      * The amount of KLAY in peb to be transferred.
      */
-    String value;
+    String value = "0x00";
 
     /**
      * Data attached to the transaction, used for transaction execution.
@@ -39,7 +39,7 @@ public class SmartContractExecution extends AbstractTransaction {
      */
     public static class Builder extends AbstractTransaction.Builder<SmartContractExecution.Builder> {
         String to;
-        String value;
+        String value = "0x00";
         String input;
 
         public Builder() {
@@ -290,7 +290,7 @@ public class SmartContractExecution extends AbstractTransaction {
         }
 
         if(!Utils.isNumber(value)) {
-            throw new IllegalArgumentException("Invalid value.");
+            throw new IllegalArgumentException("Invalid value : " + value);
         }
 
         this.value = Numeric.prependHexPrefix(value);
@@ -306,7 +306,7 @@ public class SmartContractExecution extends AbstractTransaction {
         }
 
         if(!Utils.isHex(input)) {
-            throw new IllegalArgumentException("Invalid input.");
+            throw new IllegalArgumentException("Invalid input : " + input);
         }
 
         this.input = Numeric.prependHexPrefix(input);

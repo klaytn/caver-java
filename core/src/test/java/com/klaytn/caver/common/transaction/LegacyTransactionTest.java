@@ -124,7 +124,7 @@ public class LegacyTransactionTest {
         @Test
         public void throwException_invalid_value() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid value.");
+            expectedException.expectMessage("Invalid value");
 
             String value = "invalid";
 
@@ -257,7 +257,7 @@ public class LegacyTransactionTest {
         @Test
         public void throwException_invalid_value() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid value.");
+            expectedException.expectMessage("Invalid value");
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
@@ -273,7 +273,7 @@ public class LegacyTransactionTest {
         @Test
         public void throwException_invalid_value2() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid value.");
+            expectedException.expectMessage("Invalid value");
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)

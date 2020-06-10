@@ -290,7 +290,7 @@ public class LegacyTransaction extends AbstractTransaction {
         }
 
         if(!Utils.isHex(input)) {
-            throw new IllegalArgumentException("Invalid input.");
+            throw new IllegalArgumentException("Invalid input : " + input);
         }
         this.input = input;
     }
@@ -301,7 +301,7 @@ public class LegacyTransaction extends AbstractTransaction {
         }
 
         if(!Utils.isNumber(value)) {
-            throw new IllegalArgumentException("Invalid value.");
+            throw new IllegalArgumentException("Invalid value : " + value);
         }
         this.value = value;
     }

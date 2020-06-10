@@ -201,8 +201,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Signs to the transaction with a single private key.
-     * It sets index and Hasher default value.
-     *   - index : 0
+     * It sets Hasher default value.
      *   - signer : TransactionHasher.getHashForSignature()
      * @param keyString The private key string.
      * @return AbstractTransaction
@@ -210,25 +209,11 @@ abstract public class AbstractTransaction {
      */
     public AbstractTransaction sign(String keyString) throws IOException {
         AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(keyString);
-        return this.sign(keyring, 0, TransactionHasher::getHashForSignature);
+        return this.sign(keyring, TransactionHasher::getHashForSignature);
     }
 
     /**
      * Signs to the transaction with a single private key.
-     * It sets signer to TransactionHasher.getHashForSignature()
-     * @param keyString The private key string.
-     * @return AbstractTransaction
-     * @throws IOException
-     */
-    public AbstractTransaction sign(String keyString, int index) throws IOException {
-        AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(keyString);
-        return this.sign(keyring, index, TransactionHasher::getHashForSignature);
-    }
-
-
-    /**
-     * Signs to the transaction with a single private key.
-     * It sets index 0.
      * @param keyString The private key string
      * @param signer The function to get hash of transaction.
      * @return AbstractTransaction
@@ -236,49 +221,54 @@ abstract public class AbstractTransaction {
      */
     public AbstractTransaction sign(String keyString, Function<AbstractTransaction, String> signer) throws IOException {
         AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(keyString);
-        return this.sign(keyring, 0, signer);
+        return this.sign(keyring, signer);
     }
 
     /**
-     * Signs to the transaction with a single private key.
-     * @param keyString The private key string
-     * @param index The index of private key to use in Keyring instance.
-     * @param signer The function to get hash of transaction.
-     * @return AbstractTransaction
-     * @throws IOException
-     */
-    public AbstractTransaction sign(String keyString, int index, Function<AbstractTransaction, String> signer) throws IOException {
-        AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(keyString);
-        return this.sign(keyring, index, signer);
-    }
-
-    /**
-     * Signs to the transaction with a single private key in the Keyring instance.
+     * Signs to the transaction with all keys in the Keyring instance.
      * It sets index and Hasher default value.
-     *   - index : 0
      *   - signer : TransactionHasher.getHashForSignature()
      * @param keyring The Keyring instance.
      * @return AbstractTransaction
      * @throws IOException
      */
     public AbstractTransaction sign(AbstractKeyring keyring) throws IOException  {
-        return this.sign(keyring, 0, TransactionHasher::getHashForSignature);
+        return this.sign(keyring, TransactionHasher::getHashForSignature);
     }
 
     /**
-     * Signs to the transaction with a single private key in the Keyring instance.
-     * It sets index 0.
+     * Signs to the transaction with all keys in the Keyring instance.
      * @param keyring The Keyring instance.
      * @param signer The function to get hash of transaction.
      * @return AbstractTransaction
      * @throws IOException
      */
     public AbstractTransaction sign(AbstractKeyring keyring, Function<AbstractTransaction, String> signer) throws IOException  {
-        return this.sign(keyring, 0, signer);
+        if(this.getType().equals(TransactionType.TxTypeLegacyTransaction.toString()) && keyring.isDecoupled()) {
+            throw new IllegalArgumentException("A legacy transaction cannot be signed with a decoupled keyring.");
+        }
+
+        if(this.from.equals("0x")){
+            this.from = keyring.getAddress();
+        }
+
+        if(!this.from.toLowerCase().equals(keyring.getAddress().toLowerCase())) {
+            throw new IllegalArgumentException("The from address of the transaction is different with the address of the keyring to use");
+        }
+
+        this.fillTransaction();
+        int role = this.type.startsWith("AccountUpdate") ? AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex() : AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex();
+
+        String hash = signer.apply(this);
+        List<SignatureData> sigList = keyring.sign(hash, Numeric.toBigInt(this.chainId).intValue(), role);
+
+        this.appendSignatures(sigList);
+
+        return this;
     }
 
     /**
-     * Signs to the transaction with a single private key in the Keyring instance.
+     * Signs to the transaction with a private key in the Keyring instance.
      * It sets signer to TransactionHasher.getHashForSignature()
      * @param keyring The Keyring instance.
      * @param index The index of private key to use in Keyring instance.
@@ -290,7 +280,7 @@ abstract public class AbstractTransaction {
     }
 
     /**
-     * Signs to the transaction with a single private key in the Keyring instance.
+     * Signs to the transaction with a private key in the Keyring instance.
      * @param keyring The Keyring instance.
      * @param index The index of private key to use in Keyring instance.
      * @param signer The function to get hash of transaction.
@@ -317,75 +307,6 @@ abstract public class AbstractTransaction {
         SignatureData sig = keyring.sign(hash, Numeric.toBigInt(this.chainId).intValue(), role, index);
 
         this.appendSignatures(sig);
-
-        return this;
-    }
-
-    /**
-     * Signs to the transaction using all private keys in Keyring instance.
-     * It sets signer to TransactionHasher.getHashForSignature()
-     * @param keyString The private key string
-     * @return AbstractTransaction
-     * @throws IOException
-     */
-    public AbstractTransaction signWithKeys(String keyString) throws IOException {
-        AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(keyString);
-
-        return this.signWithKeys(keyring, TransactionHasher::getHashForSignature);
-    }
-
-
-    /**
-     * Signs to the transaction using all private keys in Keyring instance.
-     * @param keyString The private key string
-     * @param signer The function to get hash of transaction.
-     * @return AbstractTransaction
-     * @throws IOException
-     */
-    public AbstractTransaction signWithKeys(String keyString, Function<AbstractTransaction, String> signer) throws IOException {
-        AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(keyString);
-
-        return this.signWithKeys(keyring, signer);
-    }
-
-    /**
-     * Signs to the transaction using all private keys in Keyring instance.
-     * It sets singer to TransactionHasher.getHashForSignature().
-     * @param keyring The Keyring instance
-     * @return AbstractTransaction
-     * @throws IOException
-     */
-    public AbstractTransaction signWithKeys(AbstractKeyring keyring) throws IOException {
-        return this.signWithKeys(keyring, TransactionHasher::getHashForSignature);
-    }
-
-    /**
-     * Signs to the transaction using all private keys in Keyring
-     * @param keyring The Keyring instance.
-     * @param signer The function to get hash of transaction.
-     * @return AbstractTransaction
-     * @throws IOException
-     */
-    public AbstractTransaction signWithKeys(AbstractKeyring keyring, Function<AbstractTransaction, String> signer) throws IOException {
-        if(this.getType().equals(TransactionType.TxTypeLegacyTransaction.toString()) && keyring.isDecoupled()) {
-            throw new IllegalArgumentException("A legacy transaction cannot be signed with a decoupled keyring.");
-        }
-
-        if(this.from.equals("0x")){
-            this.from = keyring.getAddress();
-        }
-
-        if(!this.from.toLowerCase().equals(keyring.getAddress().toLowerCase())) {
-            throw new IllegalArgumentException("The from address of the transaction is different with the address of the keyring to use");
-        }
-
-        this.fillTransaction();
-        int role = this.type.startsWith("AccountUpdate") ? AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex() : AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex();
-
-        String hash = signer.apply(this);
-        List<SignatureData> sigList = keyring.sign(hash, Numeric.toBigInt(this.chainId).intValue(), role);
-
-        this.appendSignatures(sigList);
 
         return this;
     }

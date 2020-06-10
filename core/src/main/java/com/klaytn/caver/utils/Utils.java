@@ -7,6 +7,7 @@ import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class Utils {
@@ -119,5 +120,14 @@ public class Utils {
         KlaySignatureData emptySig = KlaySignatureData.getEmptySignature();
 
         return emptySig.equals(signatureData);
+    }
+
+
+    public static boolean isEmptySig(List<KlaySignatureData> signatureDataList) {
+        KlaySignatureData emptySig = KlaySignatureData.getEmptySignature();
+
+        boolean isMatched = signatureDataList.stream().anyMatch(emptySig::equals);
+
+        return isMatched;
     }
 }

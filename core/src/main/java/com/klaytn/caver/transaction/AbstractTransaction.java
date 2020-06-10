@@ -419,8 +419,7 @@ abstract public class AbstractTransaction {
 
         // If the signatures are empty, there may be an undefined member variable.
         // In this case, the empty information is filled with the decoded result.
-        boolean isContainsEmptySig = this.getSignatures().stream().anyMatch(Utils::isEmptySig);
-        if(this.getSignatures().size() == 0 || isContainsEmptySig) fillVariable = true;
+        if(this.getSignatures().size() == 0 || Utils.isEmptySig(this.getSignatures())) fillVariable = true;
 
         for(String encodedStr : rlpEncoded) {
             AbstractTransaction txObj = TransactionDecoder.decode(encodedStr);

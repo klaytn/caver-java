@@ -72,12 +72,14 @@ public class PrivateKey {
      * @param chainId The chainId or network
      * @return KlaySignatureData
      */
-    public KlaySignatureData sign(String sigHash, int chainId) {
+    public SignatureData sign(String sigHash, int chainId) {
         ECKeyPair keyPair = ECKeyPair.create(Numeric.toBigInt(privateKey));
         Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(sigHash), keyPair, false);
-        KlaySignatureData klaySignatureData = KlaySignatureDataUtils.createEip155KlaySignatureData(signatureData, chainId);
 
-        return klaySignatureData;
+        SignatureData signData = new SignatureData(new byte[]{signatureData.getV()}, signatureData.getR(), signatureData.getS());
+        signData.makeEIP155Signature(chainId);
+
+        return signData;
     }
 
     /**
@@ -85,12 +87,12 @@ public class PrivateKey {
      * @param messageHash The hash of data to sign
      * @return KlaySignatureData
      */
-    public KlaySignatureData signMessage(String messageHash) {
+    public SignatureData signMessage(String messageHash) {
         ECKeyPair keyPair = ECKeyPair.create(Numeric.toBigInt(privateKey));
         Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(messageHash), keyPair, false);
-        KlaySignatureData klaySignatureData = new KlaySignatureData(new byte[]{signatureData.getV()}, signatureData.getR(), signatureData.getS());
 
-        return klaySignatureData;
+        SignatureData signData = new SignatureData(new byte[]{signatureData.getV()}, signatureData.getR(), signatureData.getS());
+        return signData;
     }
 
     /**

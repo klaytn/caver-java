@@ -6,6 +6,7 @@ import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.CodeFormat;
 import com.klaytn.caver.utils.Utils;
+import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.web3j.rlp.*;
 import org.web3j.utils.Numeric;
 
@@ -131,7 +132,7 @@ public class SmartContractDeploy extends AbstractTransaction {
      * @param humanReadable Is human-readable address.
      * @param codeFormat The code format of smart contract code
      */
-    public SmartContractDeploy(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures, String to, String value, String input, boolean humanReadable, String codeFormat) {
+    public SmartContractDeploy(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String value, String input, boolean humanReadable, String codeFormat) {
         super(
                 klaytnCall,
                 TransactionType.TxTypeSmartContractDeploy.toString(),
@@ -187,7 +188,7 @@ public class SmartContractDeploy extends AbstractTransaction {
         BigInteger codeFormat = ((RlpString) values.get(8)).asPositiveBigInteger();
 
         List<RlpType> senderSignatures = ((RlpList) (values.get(9))).getValues();
-        List<KlaySignatureData> signatureDataList = KlaySignatureData.decodeSignatures(senderSignatures);
+        List<SignatureData> signatureDataList = SignatureData.decodeSignatures(senderSignatures);
 
         SmartContractDeploy smartContractDeploy = new SmartContractDeploy.Builder()
                 .setNonce(nonce)
@@ -216,7 +217,7 @@ public class SmartContractDeploy extends AbstractTransaction {
 
         List<RlpType> signatureRLPList = new ArrayList<>();
 
-        for(KlaySignatureData signatureData : this.getSignatures()) {
+        for(SignatureData signatureData : this.getSignatures()) {
             signatureRLPList.add(signatureData.toRlpList());
         }
 

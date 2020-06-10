@@ -6,7 +6,9 @@ import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.type.LegacyTransaction;
 import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.utils.Utils;
-import com.klaytn.caver.wallet.keyring.Keyring;
+import com.klaytn.caver.wallet.keyring.AbstractKeyring;
+import com.klaytn.caver.wallet.keyring.KeyringFactory;
+import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.web3j.crypto.Hash;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.rlp.RlpEncoder;
@@ -62,7 +64,7 @@ abstract public class AbstractTransaction {
     /**
      * A Signature list
      */
-    private List<KlaySignatureData> signatures = new ArrayList<>();
+    private List<SignatureData> signatures = new ArrayList<>();
 
     /**
      * Represents a AbstractTransaction class builder.
@@ -77,7 +79,7 @@ abstract public class AbstractTransaction {
         private String gasPrice = "0x";
         private String chainId = "0x";
         private Klay klaytnCall = null;
-        private List<KlaySignatureData> signList = new ArrayList<>();
+        private List<SignatureData> signList = new ArrayList<>();
 
         public Builder(String type) {
             this.type = type;
@@ -133,12 +135,12 @@ abstract public class AbstractTransaction {
             return (B) this;
         }
 
-        public B setSignList(List<KlaySignatureData> signList) {
+        public B setSignList(List<SignatureData> signList) {
             this.signList.addAll(signList);
             return (B) this;
         }
 
-        public B setSignList(KlaySignatureData sign) {
+        public B setSignList(SignatureData sign) {
             this.signList.add(sign);
             return (B) this;
         }
@@ -171,7 +173,7 @@ abstract public class AbstractTransaction {
      * @param chainId Network ID
      * @param signatures A Signature list
      */
-    public AbstractTransaction(Klay klaytnCall, String type, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures) {
+    public AbstractTransaction(Klay klaytnCall, String type, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures) {
         setKlaytnCall(klaytnCall);
         setType(type);
         setFrom(from);
@@ -206,9 +208,9 @@ abstract public class AbstractTransaction {
      * @return AbstractTransaction
      * @throws IOException
      */
-    public AbstractTransaction signWithKey(String keyString) throws IOException {
-        Keyring keyring = Keyring.createFromPrivateKey(keyString);
-        return this.signWithKey(keyring, 0, TransactionHasher::getHashForSignature);
+    public AbstractTransaction sign(String keyString) throws IOException {
+        AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(keyString);
+        return this.sign(keyring, 0, TransactionHasher::getHashForSignature);
     }
 
     /**
@@ -218,9 +220,9 @@ abstract public class AbstractTransaction {
      * @return AbstractTransaction
      * @throws IOException
      */
-    public AbstractTransaction signWithKey(String keyString, int index) throws IOException {
-        Keyring keyring = Keyring.createFromPrivateKey(keyString);
-        return this.signWithKey(keyring, index, TransactionHasher::getHashForSignature);
+    public AbstractTransaction sign(String keyString, int index) throws IOException {
+        AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(keyString);
+        return this.sign(keyring, index, TransactionHasher::getHashForSignature);
     }
 
 
@@ -232,9 +234,9 @@ abstract public class AbstractTransaction {
      * @return AbstractTransaction
      * @throws IOException
      */
-    public AbstractTransaction signWithKey(String keyString, Function<AbstractTransaction, String> signer) throws IOException {
-        Keyring keyring = Keyring.createFromPrivateKey(keyString);
-        return this.signWithKey(keyring, 0, signer);
+    public AbstractTransaction sign(String keyString, Function<AbstractTransaction, String> signer) throws IOException {
+        AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(keyString);
+        return this.sign(keyring, 0, signer);
     }
 
     /**
@@ -245,9 +247,9 @@ abstract public class AbstractTransaction {
      * @return AbstractTransaction
      * @throws IOException
      */
-    public AbstractTransaction signWithKey(String keyString, int index, Function<AbstractTransaction, String> signer) throws IOException {
-        Keyring keyring = Keyring.createFromPrivateKey(keyString);
-        return this.signWithKey(keyring, index, signer);
+    public AbstractTransaction sign(String keyString, int index, Function<AbstractTransaction, String> signer) throws IOException {
+        AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(keyString);
+        return this.sign(keyring, index, signer);
     }
 
     /**
@@ -259,8 +261,8 @@ abstract public class AbstractTransaction {
      * @return AbstractTransaction
      * @throws IOException
      */
-    public AbstractTransaction signWithKey(Keyring keyring) throws IOException  {
-        return this.signWithKey(keyring, 0, TransactionHasher::getHashForSignature);
+    public AbstractTransaction sign(AbstractKeyring keyring) throws IOException  {
+        return this.sign(keyring, 0, TransactionHasher::getHashForSignature);
     }
 
     /**
@@ -271,8 +273,8 @@ abstract public class AbstractTransaction {
      * @return AbstractTransaction
      * @throws IOException
      */
-    public AbstractTransaction signWithKey(Keyring keyring, Function<AbstractTransaction, String> signer) throws IOException  {
-        return this.signWithKey(keyring, 0, signer);
+    public AbstractTransaction sign(AbstractKeyring keyring, Function<AbstractTransaction, String> signer) throws IOException  {
+        return this.sign(keyring, 0, signer);
     }
 
     /**
@@ -283,8 +285,8 @@ abstract public class AbstractTransaction {
      * @return AbstractTransaction
      * @throws IOException
      */
-    public AbstractTransaction signWithKey(Keyring keyring, int index) throws IOException {
-        return this.signWithKey(keyring, index, TransactionHasher::getHashForSignature);
+    public AbstractTransaction sign(AbstractKeyring keyring, int index) throws IOException {
+        return this.sign(keyring, index, TransactionHasher::getHashForSignature);
     }
 
     /**
@@ -295,7 +297,7 @@ abstract public class AbstractTransaction {
      * @return AbstractTransaction
      * @throws IOException
      */
-    public AbstractTransaction signWithKey(Keyring keyring, int index, Function<AbstractTransaction, String> signer) throws IOException {
+    public AbstractTransaction sign(AbstractKeyring keyring, int index, Function<AbstractTransaction, String> signer) throws IOException {
         if(this.getType().equals(TransactionType.TxTypeLegacyTransaction.toString()) && keyring.isDecoupled()) {
             throw new IllegalArgumentException("A legacy transaction cannot be signed with a decoupled keyring.");
         }
@@ -312,7 +314,7 @@ abstract public class AbstractTransaction {
         int role = this.type.startsWith("AccountUpdate") ? AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex() : AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex();
 
         String hash = signer.apply(this);
-        KlaySignatureData sig = keyring.signWithKey(hash, Numeric.toBigInt(this.chainId).intValue(), role, index);
+        SignatureData sig = keyring.sign(hash, Numeric.toBigInt(this.chainId).intValue(), role, index);
 
         this.appendSignatures(sig);
 
@@ -327,7 +329,7 @@ abstract public class AbstractTransaction {
      * @throws IOException
      */
     public AbstractTransaction signWithKeys(String keyString) throws IOException {
-        Keyring keyring = Keyring.createFromPrivateKey(keyString);
+        AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(keyString);
 
         return this.signWithKeys(keyring, TransactionHasher::getHashForSignature);
     }
@@ -341,7 +343,7 @@ abstract public class AbstractTransaction {
      * @throws IOException
      */
     public AbstractTransaction signWithKeys(String keyString, Function<AbstractTransaction, String> signer) throws IOException {
-        Keyring keyring = Keyring.createFromPrivateKey(keyString);
+        AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(keyString);
 
         return this.signWithKeys(keyring, signer);
     }
@@ -353,7 +355,7 @@ abstract public class AbstractTransaction {
      * @return AbstractTransaction
      * @throws IOException
      */
-    public AbstractTransaction signWithKeys(Keyring keyring) throws IOException {
+    public AbstractTransaction signWithKeys(AbstractKeyring keyring) throws IOException {
         return this.signWithKeys(keyring, TransactionHasher::getHashForSignature);
     }
 
@@ -364,7 +366,7 @@ abstract public class AbstractTransaction {
      * @return AbstractTransaction
      * @throws IOException
      */
-    public AbstractTransaction signWithKeys(Keyring keyring, Function<AbstractTransaction, String> signer) throws IOException {
+    public AbstractTransaction signWithKeys(AbstractKeyring keyring, Function<AbstractTransaction, String> signer) throws IOException {
         if(this.getType().equals(TransactionType.TxTypeLegacyTransaction.toString()) && keyring.isDecoupled()) {
             throw new IllegalArgumentException("A legacy transaction cannot be signed with a decoupled keyring.");
         }
@@ -381,7 +383,7 @@ abstract public class AbstractTransaction {
         int role = this.type.startsWith("AccountUpdate") ? AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex() : AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex();
 
         String hash = signer.apply(this);
-        List<KlaySignatureData> sigList = keyring.signWithKeys(hash, Numeric.toBigInt(this.chainId).intValue(), role);
+        List<SignatureData> sigList = keyring.sign(hash, Numeric.toBigInt(this.chainId).intValue(), role);
 
         this.appendSignatures(sigList);
 
@@ -392,8 +394,8 @@ abstract public class AbstractTransaction {
      * Appends signatures to the transaction.
      * @param signatureData KlaySignatureData instance contains ECDSA signature data
      */
-    public void appendSignatures(KlaySignatureData signatureData) {
-        List<KlaySignatureData> signList = new ArrayList<>();
+    public void appendSignatures(SignatureData signatureData) {
+        List<SignatureData> signList = new ArrayList<>();
         signList.add(signatureData);
         appendSignatures(signList);
     }
@@ -402,7 +404,7 @@ abstract public class AbstractTransaction {
      * Appends signatures to the transaction.
      * @param signatureData List of KlaySignatureData contains ECDSA signature data
      */
-    public void appendSignatures(List<KlaySignatureData> signatureData) {
+    public void appendSignatures(List<SignatureData> signatureData) {
         this.signatures.addAll(signatureData);
         this.signatures = refineSignature(this.getSignatures());
     }
@@ -523,7 +525,7 @@ abstract public class AbstractTransaction {
         if(!Numeric.toBigInt(this.getGasPrice()).equals(Numeric.toBigInt(txObj.getGasPrice()))) return false;
 
         if(checkSig) {
-            List<KlaySignatureData> dataList = this.getSignatures();
+            List<SignatureData> dataList = this.getSignatures();
             if(dataList.size() != txObj.getSignatures().size()) return false;
 
             for(int i=0; i< dataList.size(); i++) {
@@ -564,13 +566,13 @@ abstract public class AbstractTransaction {
      * @param signatureDataList
      * @return
      */
-    public List<KlaySignatureData> refineSignature(List<KlaySignatureData> signatureDataList) {
+    public List<SignatureData> refineSignature(List<SignatureData> signatureDataList) {
         boolean isLegacy = this.getType().equals(TransactionType.TxTypeLegacyTransaction.toString());
-        KlaySignatureData emptySig = KlaySignatureData.getEmptySignature();
+        SignatureData emptySig = SignatureData.getEmptySignature();
 
-        List<KlaySignatureData> refinedList = new ArrayList<>();
+        List<SignatureData> refinedList = new ArrayList<>();
 
-        for(KlaySignatureData signData : signatureDataList) {
+        for(SignatureData signData : signatureDataList) {
             if(!Utils.isEmptySig(signData)) {
                 if(!refinedList.contains(signData)) {
                     refinedList.add(signData);
@@ -657,7 +659,7 @@ abstract public class AbstractTransaction {
      * Getter function for signatures
      * @return String
      */
-    public List<KlaySignatureData> getSignatures() {
+    public List<SignatureData> getSignatures() {
         return signatures;
     }
 

@@ -121,15 +121,15 @@ public class Utils {
         return bytes;
     }
 
-    public static boolean isEmptySig(KlaySignatureData signatureData) {
+    public static boolean isEmptySig(SignatureData signatureData) {
         KlaySignatureData emptySig = KlaySignatureData.getEmptySignature();
 
         return emptySig.equals(signatureData);
     }
 
 
-    public static boolean isEmptySig(List<KlaySignatureData> signatureDataList) {
-        KlaySignatureData emptySig = KlaySignatureData.getEmptySignature();
+    public static boolean isEmptySig(List<SignatureData> signatureDataList) {
+        SignatureData emptySig = SignatureData.getEmptySignature();
 
         boolean isMatched = signatureDataList.stream().allMatch(emptySig::equals);
 

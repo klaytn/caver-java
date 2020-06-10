@@ -7,12 +7,13 @@ import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class Utils {
     public static final int LENGTH_ADDRESS_String = 40;
     public static final int LENGTH_PRIVATE_KEY_STRING = 64;
-    private static final Pattern HEX_STRING = Pattern.compile("^[0-9A-Fa-f]+$");
+    private static final Pattern HEX_STRING = Pattern.compile("^[0-9A-Fa-f]*$");
 
     public static boolean isValidPrivateKey(String privateKey) {
         String noHexPrefixKey = Numeric.cleanHexPrefix(privateKey);
@@ -34,6 +35,27 @@ public class Utils {
         }
 
         return cleanInput.length() == LENGTH_ADDRESS_String && HEX_STRING.matcher(cleanInput).matches();
+    }
+
+    public static boolean isHex(String input) {
+        String cleanInput = Numeric.cleanHexPrefix(input);
+
+        return HEX_STRING.matcher(cleanInput).matches();
+    }
+
+    public static boolean isHexStrict(String input) {
+        String cleanInput = Numeric.cleanHexPrefix(input);
+
+        return input.startsWith("0x") && HEX_STRING.matcher(cleanInput).matches();
+    }
+
+    public static boolean isNumber(String input) {
+        try {
+            Numeric.toBigInt(input);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
     }
 
     public static boolean isKlaytnWalletKey(String key) {
@@ -98,5 +120,14 @@ public class Utils {
         KlaySignatureData emptySig = KlaySignatureData.getEmptySignature();
 
         return emptySig.equals(signatureData);
+    }
+
+
+    public static boolean isEmptySig(List<KlaySignatureData> signatureDataList) {
+        KlaySignatureData emptySig = KlaySignatureData.getEmptySignature();
+
+        boolean isMatched = signatureDataList.stream().allMatch(emptySig::equals);
+
+        return isMatched;
     }
 }

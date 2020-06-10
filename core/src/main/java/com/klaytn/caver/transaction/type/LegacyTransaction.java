@@ -25,14 +25,14 @@ public class LegacyTransaction extends AbstractTransaction {
     /**
      * The amount of KLAY in peb to be transferred.
      */
-    String value = "0x00";
+    String value;
 
     /**
      * LegacyTransaction Builder class
      */
     public static class Builder extends AbstractTransaction.Builder<LegacyTransaction.Builder> {
         private String to = "0x";
-        private String value = "0x00";
+        private String value;
         private String input = "0x";
 
         public Builder() {
@@ -55,9 +55,6 @@ public class LegacyTransaction extends AbstractTransaction {
         }
 
         public Builder setTo(String to) {
-            if(!to.equals("0x") && !Utils.isAddress(to)) {
-                throw new IllegalArgumentException("Invalid address.");
-            }
             this.to = to;
             return this;
         }
@@ -68,25 +65,20 @@ public class LegacyTransaction extends AbstractTransaction {
     }
 
     /**
-     * Creates an LegacyTransaction instance.
+     * Creates a LegacyTransaction instance.
      * @param builder LegacyTransaction.Builder instance.
      */
     private LegacyTransaction(Builder builder) {
         super(builder);
 
-        if(builder.value == null || builder.value.isEmpty() || builder.value.equals("0x")) {
-            throw new IllegalArgumentException("value is missing");
-        }
-
-        this.to = builder.to;
-        this.value = builder.value;
-        this.input = builder.input;
+        setTo(builder.to);
+        setValue(builder.value);
+        setInput(builder.input);
     }
 
     /**
-     * Create LegacyTransaction instance.
+     * Create a LegacyTransaction instance.
      * @param klaytnCall Klay RPC instance
-     * @param type Transaction's type string
      * @param from The address of the sender.
      * @param nonce A value used to uniquely identify a sender’s transaction.
      * @param gas The maximum amount of gas the transaction is allowed to use.
@@ -97,11 +89,20 @@ public class LegacyTransaction extends AbstractTransaction {
      * @param input Data attached to the transaction, used for transaction execution.
      * @param value The amount of KLAY in peb to be transferred.
      */
-    public LegacyTransaction(Klay klaytnCall, String type, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures, String to, String input, String value) {
-        super(klaytnCall, type, from, nonce, gas, gasPrice, chainId, signatures);
-        this.to = to;
-        this.input = input;
-        this.value = value;
+    public LegacyTransaction(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures, String to, String input, String value) {
+        super(
+                klaytnCall,
+                TransactionType.TxTypeLegacyTransaction.toString(),
+                from,
+                nonce,
+                gas,
+                gasPrice,
+                chainId,
+                signatures
+        );
+        setTo(to);
+        setValue(value);
+        setInput(input);
     }
 
     /**
@@ -160,7 +161,7 @@ public class LegacyTransaction extends AbstractTransaction {
      */
     @Override
     public void appendSignatures(KlaySignatureData signatureData) {
-        if(this.getSignatures().size() != 0) {
+        if(this.getSignatures().size() != 0 && !Utils.isEmptySig(this.getSignatures().get(0))) {
             throw new RuntimeException("Signatures already defined." + TransactionType.TxTypeLegacyTransaction.toString() + " cannot include more than one signature.");
         }
 
@@ -174,7 +175,7 @@ public class LegacyTransaction extends AbstractTransaction {
      */
     @Override
     public void appendSignatures(List<KlaySignatureData> signatureData) {
-        if(this.getSignatures().size() != 0) {
+        if(this.getSignatures().size() != 0 && !Utils.isEmptySig(this.getSignatures())) {
             throw new RuntimeException("Signatures already defined." + TransactionType.TxTypeLegacyTransaction.toString() + " cannot include more than one signature.");
         }
 
@@ -191,7 +192,7 @@ public class LegacyTransaction extends AbstractTransaction {
      */
     @Override
     public String getRLPEncoding() {
-        this.validateOptionalValues();
+        this.validateOptionalValues(false);
         //TxHashRLP = encode([nonce, gasPrice, gas, to, value, input, v, r, s])
         List<RlpType> rlpTypeList = new ArrayList<>();
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getNonce())));
@@ -221,7 +222,7 @@ public class LegacyTransaction extends AbstractTransaction {
      */
     @Override
     public String getRLPEncodingForSignature() {
-        this.validateOptionalValues();
+        this.validateOptionalValues(true);
 
         List<RlpType> rlpTypeList = new ArrayList<>();
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getNonce())));
@@ -269,5 +270,39 @@ public class LegacyTransaction extends AbstractTransaction {
 
     public String getValue() {
         return value;
+    }
+
+    public void setTo(String to) {
+        // "to" field in LegacyTransaction allows null
+        if(to == null || to.isEmpty()) {
+            to = "0x";
+        }
+
+        if(!to.equals("0x") && !Utils.isAddress(to)) {
+            throw new IllegalArgumentException("Invalid address. : " + to);
+        }
+        this.to = to;
+    }
+
+    public void setInput(String input) {
+        if(input == null) {
+            throw new IllegalArgumentException("input is missing");
+        }
+
+        if(!Utils.isHex(input)) {
+            throw new IllegalArgumentException("Invalid input : " + input);
+        }
+        this.input = input;
+    }
+
+    public void setValue(String value) {
+        if(value == null) {
+            throw new IllegalArgumentException("value is missing");
+        }
+
+        if(!Utils.isNumber(value)) {
+            throw new IllegalArgumentException("Invalid value : " + value);
+        }
+        this.value = value;
     }
 }

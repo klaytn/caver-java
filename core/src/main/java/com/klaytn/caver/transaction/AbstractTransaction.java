@@ -490,12 +490,21 @@ abstract public class AbstractTransaction {
      */
     public void fillTransaction() throws IOException{
         if(klaytnCall != null) {
-            this.nonce = klaytnCall.getTransactionCount(this.from, DefaultBlockParameterName.PENDING).send().getResult();
-            this.chainId = klaytnCall.getChainID().send().getResult();
-            this.gasPrice = klaytnCall.getGasPrice().send().getResult();
+            if(this.nonce.equals("0x")) {
+                this.nonce = klaytnCall.getTransactionCount(this.from, DefaultBlockParameterName.PENDING).send().getResult();
+            }
+
+            if(this.chainId.equals("0x")) {
+                this.chainId = klaytnCall.getChainID().send().getResult();
+            }
+
+            if(this.gasPrice.equals("0x")) {
+                this.gasPrice = klaytnCall.getGasPrice().send().getResult();
+            }
+
         }
 
-        if(this.nonce.isEmpty() || this.chainId.isEmpty() || this.gasPrice.isEmpty()) {
+        if(this.nonce.equals("0x") || this.chainId.equals("0x") || this.gasPrice.equals("0x")) {
             throw new RuntimeException("Cannot fill transaction data.(nonce, chainId, gasPrice");
         }
     }

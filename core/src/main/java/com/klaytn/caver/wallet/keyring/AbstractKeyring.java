@@ -130,4 +130,7 @@ abstract public class AbstractKeyring {
         return true;
     }
 
+    public String getAddress() {
+        return address;
+    }
 }

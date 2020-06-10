@@ -1056,6 +1056,7 @@ public class ValueTransferMemoTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
+                    .setInput(input)
                     .setSignList(signatureData)
                     .build();
 
@@ -1145,6 +1146,7 @@ public class ValueTransferMemoTest {
                     .setChainId(chainID)
                     .setValue(value)
                     .setFrom(from)
+                    .setInput(input)
                     .setSignList(klaySignatureData)
                     .build();
 
@@ -1163,6 +1165,7 @@ public class ValueTransferMemoTest {
                     .setChainId(chainID)
                     .setValue(value)
                     .setFrom(from)
+                    .setInput(input)
                     .setSignList(klaySignatureData)
                     .build();
 
@@ -1215,6 +1218,7 @@ public class ValueTransferMemoTest {
                     .setChainId(chainID)
                     .setValue(value)
                     .setFrom(from)
+                    .setInput(input)
                     .setSignList(klaySignatureData)
                     .build();
 
@@ -1233,6 +1237,7 @@ public class ValueTransferMemoTest {
                     .setChainId(chainID)
                     .setValue(value)
                     .setFrom(from)
+                    .setInput(input)
                     .setSignList(klaySignatureData)
                     .build();
 

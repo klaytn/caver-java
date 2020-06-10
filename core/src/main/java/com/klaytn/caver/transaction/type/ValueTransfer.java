@@ -26,14 +26,14 @@ public class ValueTransfer extends AbstractTransaction {
     /**
      * The amount of KLAY in peb to be transferred.
      */
-    String value = "0x00";
+    String value;
 
     /**
      * ValueTransfer Builder class
      */
     public static class Builder extends AbstractTransaction.Builder<ValueTransfer.Builder> {
         private String to;
-        private String value = "0x00";
+        private String value;
 
         public Builder() {
             super(TransactionType.TxTypeValueTransfer.toString());

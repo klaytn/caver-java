@@ -28,12 +28,12 @@ public class SmartContractDeploy extends AbstractTransaction {
     /**
      * The amount of KLAY in peb to be transferred.
      */
-    String value = "0x00";
+    String value;
 
     /**
      * Data attached to the transaction, used for transaction execution.
      */
-    String input = " 0x";
+    String input;
 
     /**
      * This must be false since human-readable address is not supported yet.
@@ -52,8 +52,8 @@ public class SmartContractDeploy extends AbstractTransaction {
      */
     public static class Builder extends AbstractTransaction.Builder<SmartContractDeploy.Builder> {
         String to = "0x";
-        String value = "0x00";
-        String input = " 0x";
+        String value;
+        String input;
         boolean humanReadable = false;
         String codeFormat = Numeric.toHexStringWithPrefix(CodeFormat.EVM);
 
@@ -228,7 +228,7 @@ public class SmartContractDeploy extends AbstractTransaction {
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getValue())));
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getFrom())));
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getInput())));
-        rlpTypeList.add(RlpString.create(this.isHumanReadable()? 1 : 0));
+        rlpTypeList.add(RlpString.create(this.getHumanReadable()? 1 : 0));
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getCodeFormat())));
         rlpTypeList.add(new RlpList(signatureRLPList));
 
@@ -257,7 +257,7 @@ public class SmartContractDeploy extends AbstractTransaction {
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getValue())));
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getFrom())));
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getInput())));
-        rlpTypeList.add(RlpString.create(this.isHumanReadable()? 1 : 0));
+        rlpTypeList.add(RlpString.create(this.getHumanReadable()? 1 : 0));
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getCodeFormat())));
 
         byte[] encoded = RlpEncoder.encode(new RlpList(rlpTypeList));
@@ -281,7 +281,7 @@ public class SmartContractDeploy extends AbstractTransaction {
         if(!this.getTo().toLowerCase().equals(txObj.getTo().toLowerCase())) return false;
         if(!Numeric.toBigInt(this.getValue()).equals(Numeric.toBigInt(txObj.getValue()))) return false;
         if(!this.getInput().equals(txObj.getInput())) return false;
-        if(this.isHumanReadable() != txObj.isHumanReadable()) return false;
+        if(this.getHumanReadable() != txObj.getHumanReadable()) return false;
         if(!this.getCodeFormat().equals(txObj.getCodeFormat())) return false;
 
         return true;
@@ -315,7 +315,7 @@ public class SmartContractDeploy extends AbstractTransaction {
      * Getter function for humanReadable
      * @return boolean
      */
-    public boolean isHumanReadable() {
+    public boolean getHumanReadable() {
         return humanReadable;
     }
 
@@ -367,7 +367,7 @@ public class SmartContractDeploy extends AbstractTransaction {
             throw new IllegalArgumentException("input is missing.");
         }
 
-        if(!input.equals("0x") && !Utils.isHex(input)) {
+        if(!Utils.isHex(input)) {
             throw new IllegalArgumentException("Invalid input.");
         }
 

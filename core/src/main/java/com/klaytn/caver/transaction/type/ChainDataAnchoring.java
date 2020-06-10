@@ -21,13 +21,13 @@ public class ChainDataAnchoring extends AbstractTransaction {
     /**
      * Data of the service chain.
      */
-    String input = "0x";
+    String input;
 
     /**
      * ChainDataAnchoring Builder class
      */
     public static class Builder extends AbstractTransaction.Builder<ChainDataAnchoring.Builder> {
-        String input = "0x";
+        String input;
 
         public Builder() {
             super(TransactionType.TxTypeChainDataAnchoring.toString());
@@ -205,7 +205,7 @@ public class ChainDataAnchoring extends AbstractTransaction {
             throw new IllegalArgumentException("input is missing.");
         }
 
-        if(!input.equals("0x") && !Utils.isHex(input)) {
+        if(!Utils.isHex(input)) {
             throw new IllegalArgumentException("Invalid input.");
         }
 

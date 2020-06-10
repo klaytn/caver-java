@@ -27,20 +27,20 @@ public class SmartContractExecution extends AbstractTransaction {
     /**
      * The amount of KLAY in peb to be transferred.
      */
-    String value = "0x00";
+    String value;
 
     /**
      * Data attached to the transaction, used for transaction execution.
      */
-    String input = "0x";
+    String input;
 
     /**
      * SmartContractExecution Builder class
      */
     public static class Builder extends AbstractTransaction.Builder<SmartContractExecution.Builder> {
         String to;
-        String value = "0x00";
-        String input = "0x";
+        String value;
+        String input;
 
         public Builder() {
             super(TransactionType.TxTypeSmartContractExecution.toString());
@@ -83,7 +83,7 @@ public class SmartContractExecution extends AbstractTransaction {
     }
 
     /**
-     * Creates an ValueTransferMemo instance
+     * Creates a SmartContractExecution instance
      * @param klaytnCall Klay RPC instance
      * @param from The address of the sender.
      * @param nonce A value used to uniquely identify a sender’s transaction.

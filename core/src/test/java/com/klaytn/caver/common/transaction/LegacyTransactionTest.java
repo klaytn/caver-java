@@ -266,7 +266,7 @@ public class LegacyTransactionTest {
                     .setChainId(chainID)
                     .setInput(input)
                     .setTo(to)
-                    .setValue("")
+                    .setValue("0x")
                     .build();
         }
 
@@ -282,7 +282,7 @@ public class LegacyTransactionTest {
                     .setChainId(chainID)
                     .setInput(input)
                     .setTo(to)
-                    .setValue("0x")
+                    .setValue("invalid")
                     .build();
         }
 

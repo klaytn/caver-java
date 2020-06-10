@@ -27,20 +27,20 @@ public class ValueTransferMemo extends AbstractTransaction {
     /**
      * The amount of KLAY in peb to be transferred.
      */
-    String value = "0x00";
+    String value;
 
     /**
      * Data attached to the transaction. The message should be passed to this attribute.
      */
-    String input = "0x";
+    String input;
 
     /**
      * ValueTransferMemo Builder class
      */
     public static class Builder extends AbstractTransaction.Builder<ValueTransferMemo.Builder> {
         String to;
-        String value = "0x00";
-        String input = "0x";
+        String value;
+        String input;
 
         public Builder() {
             super(TransactionType.TxTypeValueTransferMemo.toString());
@@ -83,7 +83,7 @@ public class ValueTransferMemo extends AbstractTransaction {
     }
 
     /**
-     * Creates an ValueTransferMemo instance
+     * Creates a ValueTransferMemo instance
      * @param klaytnCall Klay RPC instance
      * @param from The address of the sender.
      * @param nonce A value used to uniquely identify a sender’s transaction.
@@ -303,7 +303,7 @@ public class ValueTransferMemo extends AbstractTransaction {
             throw new IllegalArgumentException("input is missing.");
         }
 
-        if(!input.equals("0x") && !Utils.isHex(input)) {
+        if(!Utils.isHex(input)) {
             throw new IllegalArgumentException("Invalid input.");
         }
 

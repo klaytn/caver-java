@@ -25,14 +25,14 @@ public class LegacyTransaction extends AbstractTransaction {
     /**
      * The amount of KLAY in peb to be transferred.
      */
-    String value = "0x00";
+    String value;
 
     /**
      * LegacyTransaction Builder class
      */
     public static class Builder extends AbstractTransaction.Builder<LegacyTransaction.Builder> {
         private String to = "0x";
-        private String value = "0x00";
+        private String value;
         private String input = "0x";
 
         public Builder() {
@@ -289,7 +289,7 @@ public class LegacyTransaction extends AbstractTransaction {
             throw new IllegalArgumentException("input is missing");
         }
 
-        if(!input.equals("0x") && !Utils.isHex(input)) {
+        if(!Utils.isHex(input)) {
             throw new IllegalArgumentException("Invalid input.");
         }
         this.input = input;
@@ -300,7 +300,7 @@ public class LegacyTransaction extends AbstractTransaction {
             throw new IllegalArgumentException("value is missing");
         }
 
-        if(!Utils.isHex(value)) {
+        if(!Utils.isNumber(value)) {
             throw new IllegalArgumentException("Invalid value.");
         }
         this.value = value;

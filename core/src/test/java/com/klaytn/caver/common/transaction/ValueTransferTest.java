@@ -4,8 +4,10 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.type.ValueTransfer;
-import com.klaytn.caver.wallet.keyring.Keyring;
+import com.klaytn.caver.wallet.keyring.AbstractKeyring;
+import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.PrivateKey;
+import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,7 +40,7 @@ import static org.junit.Assert.*;
 })
 public class ValueTransferTest {
 
-    public static Keyring generateRoleBaseKeyring(int[] numArr, String address) {
+    public static AbstractKeyring generateRoleBaseKeyring(int[] numArr, String address) {
         String[][] keyArr = new String[3][];
 
         for(int i=0; i<numArr.length; i++) {
@@ -52,7 +54,7 @@ public class ValueTransferTest {
 
         List<String[]> arr = Arrays.asList(keyArr);
 
-        return Keyring.createWithRoleBasedKey(address, arr);
+        return KeyringFactory.createWithRoleBasedKey(address, arr);
     }
 
     public static class createInstanceBuilder {
@@ -451,7 +453,7 @@ public class ValueTransferTest {
         String gasPrice = "0x19";
         String chainId = "0x1";
         int nonce = 1234;
-        KlaySignatureData klaySignatureData = new KlaySignatureData(
+        SignatureData signatureData = new SignatureData(
                 Numeric.hexStringToByteArray("0x25"),
                 Numeric.hexStringToByteArray("0xf3d0cd43661cabf53425535817c5058c27781f478cb5459874feaa462ed3a29a"),
                 Numeric.hexStringToByteArray("0x6748abe186269ff10b8100a4b7d7fea274b53ea2905acbf498dc8b5ab1bf4fbc")
@@ -469,7 +471,7 @@ public class ValueTransferTest {
                     .setGasPrice(gasPrice)
                     .setChainId(chainId)
                     .setNonce(BigInteger.valueOf(nonce))
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             assertEquals(expectedEncoded, valueTransfer.getRLPEncoding());
@@ -487,7 +489,7 @@ public class ValueTransferTest {
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainId)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             valueTransfer.getRLPEncoding();
@@ -505,7 +507,7 @@ public class ValueTransferTest {
                     .setValue(value)
                     .setGas(gas)
                     .setChainId(chainId)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             valueTransfer.getRLPEncoding();
@@ -524,14 +526,14 @@ public class ValueTransferTest {
         String gasPrice = "0x19";
         String chainId = "0x1";
         int nonce = 1234;
-        KlaySignatureData klaySignatureData = new KlaySignatureData(
+        SignatureData signatureData = new SignatureData(
                 Numeric.hexStringToByteArray("0x25"),
                 Numeric.hexStringToByteArray("0xf3d0cd43661cabf53425535817c5058c27781f478cb5459874feaa462ed3a29a"),
                 Numeric.hexStringToByteArray("0x6748abe186269ff10b8100a4b7d7fea274b53ea2905acbf498dc8b5ab1bf4fbc")
         );
 
         ValueTransfer mValueTransfer;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         String expectedRawTx = "0x08f87a8204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0bf845f84325a0f3d0cd43661cabf53425535817c5058c27781f478cb5459874feaa462ed3a29aa06748abe186269ff10b8100a4b7d7fea274b53ea2905acbf498dc8b5ab1bf4fbc";
@@ -548,63 +550,51 @@ public class ValueTransferTest {
                     .setFrom(from)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
 
         }
 
         @Test
         public void signWithKey_Keyring() throws IOException{
-            mValueTransfer.signWithKey(coupledKeyring, 0, TransactionHasher::getHashForSignature);
+            mValueTransfer.sign(coupledKeyring, 0, TransactionHasher::getHashForSignature);
             assertEquals(expectedRawTx, mValueTransfer.getRawTransaction());
         }
 
         @Test
         public void signWithKey_Keyring_NoIndex() throws IOException {
-            mValueTransfer.signWithKey(coupledKeyring, TransactionHasher::getHashForSignature);
+            mValueTransfer.sign(coupledKeyring, TransactionHasher::getHashForSignature);
             assertEquals(expectedRawTx, mValueTransfer.getRawTransaction());
         }
 
         @Test
         public void signWithKey_Keyring_NoSigner() throws IOException {
-            mValueTransfer.signWithKey(coupledKeyring, 0);
+            mValueTransfer.sign(coupledKeyring, 0);
             assertEquals(expectedRawTx, mValueTransfer.getRawTransaction());
         }
 
         @Test
         public void signWithKey_Keyring_Only() throws IOException {
-            mValueTransfer.signWithKey(coupledKeyring);
-            assertEquals(expectedRawTx, mValueTransfer.getRawTransaction());
-        }
-
-        @Test
-        public void signWithKey_KeyString() throws IOException {
-            mValueTransfer.signWithKey(privateKey, 0, TransactionHasher::getHashForSignature);
+            mValueTransfer.sign(coupledKeyring);
             assertEquals(expectedRawTx, mValueTransfer.getRawTransaction());
         }
 
         @Test
         public void signWithKey_KeyString_NoIndex() throws IOException {
-            mValueTransfer.signWithKey(privateKey, TransactionHasher::getHashForSignature);
-            assertEquals(expectedRawTx, mValueTransfer.getRawTransaction());
-        }
-
-        @Test
-        public void signWithKey_KeyString_NoSigner() throws IOException {
-            mValueTransfer.signWithKey(privateKey, 0);
+            mValueTransfer.sign(privateKey, TransactionHasher::getHashForSignature);
             assertEquals(expectedRawTx, mValueTransfer.getRawTransaction());
         }
 
         @Test
         public void signWithKey_KeyString_Only() throws IOException {
-            mValueTransfer.signWithKey(privateKey);
+            mValueTransfer.sign(privateKey);
             assertEquals(expectedRawTx, mValueTransfer.getRawTransaction());
         }
 
         @Test
         public void signWithKey_KlayWalletKey() throws IOException {
-            mValueTransfer.signWithKey(klaytnWalletKey);
+            mValueTransfer.sign(klaytnWalletKey);
             assertEquals(expectedRawTx, mValueTransfer.getRawTransaction());
         }
 
@@ -613,7 +603,7 @@ public class ValueTransferTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The from address of the transaction is different with the address of the keyring to use");
 
-            mValueTransfer.signWithKey(deCoupledKeyring);
+            mValueTransfer.sign(deCoupledKeyring);
         }
 
         @Test
@@ -621,8 +611,8 @@ public class ValueTransferTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("keyIndex value must be less than the length of key array");
 
-            Keyring role = generateRoleBaseKeyring(new int[]{3,3,3}, from);
-            mValueTransfer.signWithKey(role, 4);
+            AbstractKeyring role = generateRoleBaseKeyring(new int[]{3,3,3}, from);
+            mValueTransfer.sign(role, 4);
         }
     }
 
@@ -638,14 +628,14 @@ public class ValueTransferTest {
         String gasPrice = "0x19";
         String chainId = "0x1";
         int nonce = 1234;
-        KlaySignatureData klaySignatureData = new KlaySignatureData(
+        SignatureData signatureData = new SignatureData (
                 Numeric.hexStringToByteArray("0x25"),
                 Numeric.hexStringToByteArray("0xf3d0cd43661cabf53425535817c5058c27781f478cb5459874feaa462ed3a29a"),
                 Numeric.hexStringToByteArray("0x6748abe186269ff10b8100a4b7d7fea274b53ea2905acbf498dc8b5ab1bf4fbc")
         );
 
         ValueTransfer mValueTransfer;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         String expectedRawTx = "0x08f87a8204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0bf845f84325a0f3d0cd43661cabf53425535817c5058c27781f478cb5459874feaa462ed3a29aa06748abe186269ff10b8100a4b7d7fea274b53ea2905acbf498dc8b5ab1bf4fbc";
@@ -662,36 +652,36 @@ public class ValueTransferTest {
                     .setFrom(from)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
 
         }
 
         @Test
         public void signWithKeys_Keyring() throws IOException {
-            mValueTransfer.signWithKeys(coupledKeyring, TransactionHasher::getHashForSignature);
+            mValueTransfer.sign(coupledKeyring, TransactionHasher::getHashForSignature);
             assertEquals(1, mValueTransfer.getSignatures().size());
             assertEquals(expectedRawTx, mValueTransfer.getRawTransaction());
         }
 
         @Test
         public void signWithKeys_Keyring_NoSigner() throws IOException {
-            mValueTransfer.signWithKeys(coupledKeyring);
+            mValueTransfer.sign(coupledKeyring);
             assertEquals(1, mValueTransfer.getSignatures().size());
             assertEquals(expectedRawTx, mValueTransfer.getRawTransaction());
         }
 
         @Test
         public void signWithKeys_KeyString() throws IOException {
-            mValueTransfer.signWithKeys(privateKey, TransactionHasher::getHashForSignature);
+            mValueTransfer.sign(privateKey, TransactionHasher::getHashForSignature);
             assertEquals(1, mValueTransfer.getSignatures().size());
             assertEquals(expectedRawTx, mValueTransfer.getRawTransaction());
         }
 
         @Test
         public void signWithKeys_KeyString_NoSigner() throws IOException {
-            mValueTransfer.signWithKeys(privateKey, TransactionHasher::getHashForSignature);
+            mValueTransfer.sign(privateKey, TransactionHasher::getHashForSignature);
             assertEquals(1, mValueTransfer.getSignatures().size());
             assertEquals(expectedRawTx, mValueTransfer.getRawTransaction());
         }
@@ -701,14 +691,14 @@ public class ValueTransferTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The from address of the transaction is different with the address of the keyring to use");
 
-            mValueTransfer.signWithKeys(deCoupledKeyring);
+            mValueTransfer.sign(deCoupledKeyring);
         }
 
         @Test
         public void signWithKeys_roleBasedKeyring() throws IOException {
-            Keyring roleBased = generateRoleBaseKeyring(new int[]{3,3,3}, from);
+            AbstractKeyring roleBased = generateRoleBaseKeyring(new int[]{3,3,3}, from);
 
-            mValueTransfer.signWithKeys(roleBased);
+            mValueTransfer.sign(roleBased);
             assertEquals(3, mValueTransfer.getSignatures().size());
         }
     }
@@ -727,7 +717,7 @@ public class ValueTransferTest {
         int nonce = 1234;
 
         ValueTransfer mValueTransfer;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         String expectedRawTx = "0x08f87a8204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0bf845f84325a0f3d0cd43661cabf53425535817c5058c27781f478cb5459874feaa462ed3a29aa06748abe186269ff10b8100a4b7d7fea274b53ea2905acbf498dc8b5ab1bf4fbc";
@@ -744,15 +734,15 @@ public class ValueTransferTest {
                     .setFrom(from)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
 
         @Test
         public void appendSignature() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
@@ -764,13 +754,13 @@ public class ValueTransferTest {
 
         @Test
         public void appendSignatureList() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             mValueTransfer.appendSignatures(list);
@@ -779,7 +769,7 @@ public class ValueTransferTest {
 
         @Test
         public void appendSignatureList_EmptySig() {
-            KlaySignatureData emptySignature = KlaySignatureData.getEmptySignature();
+            SignatureData emptySignature = SignatureData.getEmptySignature();
 
             mValueTransfer = new ValueTransfer.Builder()
                     .setNonce(BigInteger.valueOf(nonce))
@@ -792,13 +782,13 @@ public class ValueTransferTest {
                     .setSignList(emptySignature)
                     .build();
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             mValueTransfer.appendSignatures(list);
@@ -807,7 +797,7 @@ public class ValueTransferTest {
 
         @Test
         public void appendSignature_ExistedSignature() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
@@ -824,13 +814,13 @@ public class ValueTransferTest {
                     .setSignList(signatureData)
                     .build();
 
-            KlaySignatureData signatureData1 = new KlaySignatureData(
+            SignatureData signatureData1 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
                     Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData1);
 
             mValueTransfer.appendSignatures(list);
@@ -841,7 +831,7 @@ public class ValueTransferTest {
 
         @Test
         public void appendSignatureList_ExistedSignature() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
@@ -858,19 +848,19 @@ public class ValueTransferTest {
                     .setSignList(signatureData)
                     .build();
 
-            KlaySignatureData signatureData1 = new KlaySignatureData(
+            SignatureData signatureData1 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
                     Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
-            KlaySignatureData signatureData2 = new KlaySignatureData(
+            SignatureData signatureData2 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x9a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
                     Numeric.hexStringToByteArray("0xa3ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData1);
             list.add(signatureData2);
 
@@ -897,7 +887,7 @@ public class ValueTransferTest {
         BigInteger value = BigInteger.ONE;
 
         ValueTransfer mValueTransfer;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -912,14 +902,14 @@ public class ValueTransferTest {
                     .setFrom(from)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
         @Test
         public void combineSignature() {
-            KlaySignatureData expectedSignature = new KlaySignatureData(
+            SignatureData expectedSignature = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x3d820b27d0997baf16f98df01c7b2b2e9734ad05b2228c4d403c2facff8397f3"),
                     Numeric.hexStringToByteArray("0x1f4a44eeb8b7f0b0019162d1d6b90c401078e56fcd7495e74f7cfcd37e25f017")
@@ -935,7 +925,7 @@ public class ValueTransferTest {
 
         @Test
         public void combine_multipleSignature() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x3d820b27d0997baf16f98df01c7b2b2e9734ad05b2228c4d403c2facff8397f3"),
                     Numeric.hexStringToByteArray("0x1f4a44eeb8b7f0b0019162d1d6b90c401078e56fcd7495e74f7cfcd37e25f017")
@@ -954,18 +944,18 @@ public class ValueTransferTest {
 
             String expectedRLPEncoded = "0x08f9010d3a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae01947d0104ac150f749d36bb34999bcade9f2c0bd2e6f8d5f845820feaa03d820b27d0997baf16f98df01c7b2b2e9734ad05b2228c4d403c2facff8397f3a01f4a44eeb8b7f0b0019162d1d6b90c401078e56fcd7495e74f7cfcd37e25f017f845820feaa0c24227c8128652d4ec039950d9cfa82c3f962c4f4dee61e54236bdf89cbff8e9a04522134ef899ba136a668afd4ae76bd00bb19c0dc5ff66d7492a6a2a506021c2f845820fe9a0c9845154419b26dcb7700b4856c38f6e272004654ac3f38e9663134863600c52a05671961420adee43ee4538cba0200e82ff3c939c81e7d6f977660546b06d6914";
 
-            KlaySignatureData[] expectedSignature = new KlaySignatureData[] {
-                    new KlaySignatureData(
+            SignatureData[] expectedSignature = new SignatureData[] {
+                    new SignatureData(
                             Numeric.hexStringToByteArray("0x0fea"),
                             Numeric.hexStringToByteArray("0x3d820b27d0997baf16f98df01c7b2b2e9734ad05b2228c4d403c2facff8397f3"),
                             Numeric.hexStringToByteArray("0x1f4a44eeb8b7f0b0019162d1d6b90c401078e56fcd7495e74f7cfcd37e25f017")
                     ),
-                    new KlaySignatureData(
+                    new SignatureData(
                             Numeric.hexStringToByteArray("0x0fea"),
                             Numeric.hexStringToByteArray("0xc24227c8128652d4ec039950d9cfa82c3f962c4f4dee61e54236bdf89cbff8e9"),
                             Numeric.hexStringToByteArray("0x4522134ef899ba136a668afd4ae76bd00bb19c0dc5ff66d7492a6a2a506021c2")
                     ),
-                    new KlaySignatureData(
+                    new SignatureData(
                             Numeric.hexStringToByteArray("0x0fe9"),
                             Numeric.hexStringToByteArray("0xc9845154419b26dcb7700b4856c38f6e272004654ac3f38e9663134863600c52"),
                             Numeric.hexStringToByteArray("0x5671961420adee43ee4538cba0200e82ff3c939c81e7d6f977660546b06d6914")
@@ -989,7 +979,7 @@ public class ValueTransferTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("Transactions containing different information cannot be combined.");
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x3d820b27d0997baf16f98df01c7b2b2e9734ad05b2228c4d403c2facff8397f3"),
                     Numeric.hexStringToByteArray("0x1f4a44eeb8b7f0b0019162d1d6b90c401078e56fcd7495e74f7cfcd37e25f017")
@@ -1029,7 +1019,7 @@ public class ValueTransferTest {
 
         ValueTransfer mValueTransfer;
 
-        KlaySignatureData klaySignatureData = new KlaySignatureData(
+        SignatureData SignatureData = new SignatureData(
                 Numeric.hexStringToByteArray("0x25"),
                 Numeric.hexStringToByteArray("0xf3d0cd43661cabf53425535817c5058c27781f478cb5459874feaa462ed3a29a"),
                 Numeric.hexStringToByteArray("0x6748abe186269ff10b8100a4b7d7fea274b53ea2905acbf498dc8b5ab1bf4fbc")
@@ -1045,7 +1035,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(klaySignatureData)
+                    .setSignList(SignatureData)
                     .build();
         }
 
@@ -1073,7 +1063,7 @@ public class ValueTransferTest {
 
         ValueTransfer mValueTransfer;
 
-        KlaySignatureData klaySignatureData = new KlaySignatureData(
+        SignatureData signatureData = new SignatureData(
                 Numeric.hexStringToByteArray("0x25"),
                 Numeric.hexStringToByteArray("0xf3d0cd43661cabf53425535817c5058c27781f478cb5459874feaa462ed3a29a"),
                 Numeric.hexStringToByteArray("0x6748abe186269ff10b8100a4b7d7fea274b53ea2905acbf498dc8b5ab1bf4fbc")
@@ -1089,7 +1079,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             String txHash = mValueTransfer.getTransactionHash();
@@ -1108,7 +1098,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mValueTransfer.getTransactionHash();
@@ -1126,7 +1116,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mValueTransfer.getTransactionHash();
@@ -1149,7 +1139,7 @@ public class ValueTransferTest {
 
         ValueTransfer mValueTransfer;
 
-        KlaySignatureData klaySignatureData = new KlaySignatureData(
+        SignatureData signatureData = new SignatureData(
                 Numeric.hexStringToByteArray("0x25"),
                 Numeric.hexStringToByteArray("0xf3d0cd43661cabf53425535817c5058c27781f478cb5459874feaa462ed3a29a"),
                 Numeric.hexStringToByteArray("0x6748abe186269ff10b8100a4b7d7fea274b53ea2905acbf498dc8b5ab1bf4fbc")
@@ -1165,7 +1155,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             String txHash = mValueTransfer.getSenderTxHash();
@@ -1184,7 +1174,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mValueTransfer.getSenderTxHash();
@@ -1202,7 +1192,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mValueTransfer.getSenderTxHash();
@@ -1223,7 +1213,7 @@ public class ValueTransferTest {
 
         ValueTransfer mValueTransfer;
 
-        KlaySignatureData klaySignatureData = new KlaySignatureData(
+        SignatureData signatureData = new  SignatureData(
                 Numeric.hexStringToByteArray("0x25"),
                 Numeric.hexStringToByteArray("0xf3d0cd43661cabf53425535817c5058c27781f478cb5459874feaa462ed3a29a"),
                 Numeric.hexStringToByteArray("0x6748abe186269ff10b8100a4b7d7fea274b53ea2905acbf498dc8b5ab1bf4fbc")
@@ -1259,7 +1249,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mValueTransfer.getRLPEncodingForSignature();
@@ -1277,7 +1267,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mValueTransfer.getRLPEncodingForSignature();

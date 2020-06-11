@@ -1,14 +1,15 @@
 package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.transaction.type.LegacyTransaction;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.utils.Utils;
-import com.klaytn.caver.wallet.keyring.Keyring;
+import com.klaytn.caver.wallet.keyring.AbstractKeyring;
+import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.PrivateKey;
+import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -56,7 +57,7 @@ public class LegacyTransactionTest {
 
         @Test
         public void create() {
-            Keyring keyring = Keyring.createFromPrivateKey(privateKey);
+            AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(privateKey);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction(
                     null,
@@ -81,7 +82,7 @@ public class LegacyTransactionTest {
             String value = "0x0a";
 
             Caver caver = Caver.build(Caver.DEFAULT_URL);
-            Keyring keyring = Keyring.createFromPrivateKey(privateKey);
+            AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(privateKey);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction(
                     caver.klay(),
@@ -237,7 +238,7 @@ public class LegacyTransactionTest {
             String value = "0x0a";
 
             Caver caver = Caver.build(Caver.DEFAULT_URL);
-            Keyring keyring = Keyring.createFromPrivateKey(privateKey);
+            AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(privateKey);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setKlaytnCall(caver.klay())
@@ -329,8 +330,8 @@ public class LegacyTransactionTest {
 
         static Caver caver;
 
-        static Keyring coupledKeyring;
-        static Keyring deCoupledKeyring;
+        static AbstractKeyring coupledKeyring;
+        static AbstractKeyring deCoupledKeyring;
         static String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
 
         static String nonce = "0x4D2";
@@ -358,15 +359,15 @@ public class LegacyTransactionTest {
         @BeforeClass
         public static void preSetup() {
             caver = Caver.build(Caver.DEFAULT_URL);
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), PrivateKey.generate().getPrivateKey());
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), PrivateKey.generate().getPrivateKey());
         }
 
         @Test
         public void signWithKey_Keyring() throws IOException {
             LegacyTransaction legacyTransaction = createLegacyTransaction();
 
-            AbstractTransaction tx = legacyTransaction.signWithKey(coupledKeyring, 0, TransactionHasher::getHashForSignature);
+            AbstractTransaction tx = legacyTransaction.sign(coupledKeyring, 0, TransactionHasher::getHashForSignature);
             assertEquals(expectedRawTransaction, tx.getRawTransaction());
         }
 
@@ -374,7 +375,7 @@ public class LegacyTransactionTest {
         public void signWithKey_Keyring_NoIndex() throws IOException {
             LegacyTransaction legacyTransaction = createLegacyTransaction();
 
-            AbstractTransaction tx = legacyTransaction.signWithKey(coupledKeyring, TransactionHasher::getHashForSignature);
+            AbstractTransaction tx = legacyTransaction.sign(coupledKeyring, TransactionHasher::getHashForSignature);
             assertEquals(expectedRawTransaction, tx.getRawTransaction());
         }
 
@@ -382,7 +383,7 @@ public class LegacyTransactionTest {
         public void signWithKey_Keyring_NoSigner() throws IOException {
             LegacyTransaction legacyTransaction = createLegacyTransaction();
 
-            AbstractTransaction tx = legacyTransaction.signWithKey(coupledKeyring, 0);
+            AbstractTransaction tx = legacyTransaction.sign(coupledKeyring, 0);
             assertEquals(expectedRawTransaction, tx.getRawTransaction());
         }
 
@@ -390,15 +391,7 @@ public class LegacyTransactionTest {
         public void singWithKey_Keyring_Only() throws IOException {
             LegacyTransaction legacyTransaction = createLegacyTransaction();
 
-            AbstractTransaction tx = legacyTransaction.signWithKey(coupledKeyring);
-            assertEquals(expectedRawTransaction, tx.getRawTransaction());
-        }
-
-        @Test
-        public void signWithKey_KeyString() throws IOException {
-            LegacyTransaction legacyTransaction = createLegacyTransaction();
-
-            AbstractTransaction tx = legacyTransaction.signWithKey(privateKey, 0, TransactionHasher::getHashForSignature);
+            AbstractTransaction tx = legacyTransaction.sign(coupledKeyring);
             assertEquals(expectedRawTransaction, tx.getRawTransaction());
         }
 
@@ -406,24 +399,7 @@ public class LegacyTransactionTest {
         public void signWithKey_KeyString_NoIndex() throws IOException {
             LegacyTransaction legacyTransaction = createLegacyTransaction();
 
-            AbstractTransaction tx = legacyTransaction.signWithKey(privateKey, TransactionHasher::getHashForSignature);
-            assertEquals(expectedRawTransaction, tx.getRawTransaction());
-        }
-
-        @Test
-        public void signWithKey_KeyString_NoSigner() throws IOException {
-            LegacyTransaction legacyTransaction = createLegacyTransaction();
-
-            AbstractTransaction tx = legacyTransaction.signWithKey(privateKey, 0);
-            assertEquals(expectedRawTransaction, tx.getRawTransaction());
-        }
-
-        @Test
-        public void signWithKey_KeyString_KlaytnWalletKeyFormat() throws IOException {
-            LegacyTransaction legacyTransaction = createLegacyTransaction();
-            String klaytnKey = privateKey + "0x00" + Keyring.createFromPrivateKey(privateKey).getAddress();
-
-            AbstractTransaction tx = legacyTransaction.signWithKey(klaytnKey, 0);
+            AbstractTransaction tx = legacyTransaction.sign(privateKey, TransactionHasher::getHashForSignature);
             assertEquals(expectedRawTransaction, tx.getRawTransaction());
         }
 
@@ -433,19 +409,7 @@ public class LegacyTransactionTest {
             expectedException.expectMessage("A legacy transaction cannot be signed with a decoupled keyring.");
 
             LegacyTransaction legacyTransaction = createLegacyTransaction();
-            legacyTransaction.signWithKey(deCoupledKeyring);
-        }
-
-        @Test
-        public void throwException_KlaytnWalletKeyFormat_decoupledKey() throws IOException {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("A legacy transaction cannot be signed with a decoupled keyring.");
-
-            LegacyTransaction legacyTransaction = createLegacyTransaction();
-
-            String klaytnKey = privateKey + "0x00" + Keyring.generate().getAddress();
-            AbstractTransaction tx = legacyTransaction.signWithKey(klaytnKey, 0);
-            assertEquals(expectedRawTransaction, tx.getRawTransaction());
+            legacyTransaction.sign(deCoupledKeyring);
         }
 
         @Test
@@ -464,7 +428,7 @@ public class LegacyTransactionTest {
                     .setTo(to)
                     .build();
 
-            legacyTransaction.signWithKey(coupledKeyring);
+            legacyTransaction.sign(coupledKeyring);
         }
     }
 
@@ -474,8 +438,8 @@ public class LegacyTransactionTest {
 
         static Caver caver;
 
-        static Keyring coupledKeyring;
-        static Keyring deCoupledKeyring;
+        static AbstractKeyring coupledKeyring;
+        static AbstractKeyring deCoupledKeyring;
         static String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
 
         static String nonce = "0x4D2";
@@ -503,14 +467,14 @@ public class LegacyTransactionTest {
         @BeforeClass
         public static void preSetup() {
             caver = Caver.build(Caver.DEFAULT_URL);
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), PrivateKey.generate().getPrivateKey());
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), PrivateKey.generate().getPrivateKey());
         }
 
         @Test
         public void signWithKeys_Keyring() throws IOException {
             LegacyTransaction legacyTransaction = createLegacyTransaction();
-            legacyTransaction.signWithKeys(coupledKeyring, TransactionHasher::getHashForSignature);
+            legacyTransaction.sign(coupledKeyring, TransactionHasher::getHashForSignature);
 
             assertEquals(expectedRawTransaction, legacyTransaction.getRawTransaction());
         }
@@ -518,7 +482,7 @@ public class LegacyTransactionTest {
         @Test
         public void signWithKeys_Keyring_NoSigner() throws IOException {
             LegacyTransaction legacyTransaction = createLegacyTransaction();
-            legacyTransaction.signWithKeys(coupledKeyring);
+            legacyTransaction.sign(coupledKeyring);
 
             assertEquals(expectedRawTransaction, legacyTransaction.getRawTransaction());
         }
@@ -526,7 +490,7 @@ public class LegacyTransactionTest {
         @Test
         public void signWithKeys_KeyString() throws IOException {
             LegacyTransaction legacyTransaction = createLegacyTransaction();
-            legacyTransaction.signWithKeys(privateKey, TransactionHasher::getHashForSignature);
+            legacyTransaction.sign(privateKey, TransactionHasher::getHashForSignature);
 
             assertEquals(expectedRawTransaction, legacyTransaction.getRawTransaction());
         }
@@ -535,8 +499,8 @@ public class LegacyTransactionTest {
         public void signWithKeys_KeyString_KlaytnWalletKeyFormat() throws IOException {
             LegacyTransaction legacyTransaction = createLegacyTransaction();
 
-            String klaytnKey = privateKey + "0x00" + Keyring.createFromPrivateKey(privateKey).getAddress();
-            AbstractTransaction tx = legacyTransaction.signWithKeys(klaytnKey, TransactionHasher::getHashForSignature);
+            String klaytnKey = privateKey + "0x00" + KeyringFactory.createFromPrivateKey(privateKey).getAddress();
+            AbstractTransaction tx = legacyTransaction.sign(klaytnKey, TransactionHasher::getHashForSignature);
 
             assertEquals(expectedRawTransaction, tx.getRawTransaction());
         }
@@ -545,7 +509,7 @@ public class LegacyTransactionTest {
         public void signWithKeys_KeyString_NoSigner() throws IOException {
             LegacyTransaction legacyTransaction = createLegacyTransaction();
 
-            legacyTransaction.signWithKeys(coupledKeyring);
+            legacyTransaction.sign(coupledKeyring);
             assertEquals(expectedRawTransaction, legacyTransaction.getRawTransaction());
         }
 
@@ -555,7 +519,7 @@ public class LegacyTransactionTest {
             expectedException.expectMessage("A legacy transaction cannot be signed with a decoupled keyring.");
 
             LegacyTransaction legacyTransaction = createLegacyTransaction();
-            legacyTransaction.signWithKeys(deCoupledKeyring);
+            legacyTransaction.sign(deCoupledKeyring);
         }
 
         @Test
@@ -565,8 +529,8 @@ public class LegacyTransactionTest {
 
             LegacyTransaction legacyTransaction = createLegacyTransaction();
 
-            String klaytnKey = privateKey + "0x00" + Keyring.generate().getAddress();
-            legacyTransaction.signWithKeys(klaytnKey);
+            String klaytnKey = privateKey + "0x00" + KeyringFactory.generate().getAddress();
+            legacyTransaction.sign(klaytnKey);
         }
 
         @Test
@@ -581,8 +545,8 @@ public class LegacyTransactionTest {
 
             LegacyTransaction legacyTransaction = createLegacyTransaction();
 
-            Keyring keyring = Keyring.createWithMultipleKey(PrivateKey.generate().getDerivedAddress(), privateKeyArr);
-            legacyTransaction.signWithKeys(keyring);
+            AbstractKeyring keyring = KeyringFactory.createWithMultipleKey(PrivateKey.generate().getDerivedAddress(), privateKeyArr);
+            legacyTransaction.sign(keyring);
         }
 
         @Test
@@ -607,8 +571,8 @@ public class LegacyTransactionTest {
 
             LegacyTransaction legacyTransaction = createLegacyTransaction();
 
-            Keyring keyring = Keyring.createWithRoleBasedKey(PrivateKey.generate().getDerivedAddress(), Arrays.asList(privateKeyArr));
-            legacyTransaction.signWithKeys(keyring);
+            AbstractKeyring keyring = KeyringFactory.createWithRoleBasedKey(PrivateKey.generate().getDerivedAddress(), Arrays.asList(privateKeyArr));
+            legacyTransaction.sign(keyring);
         }
 
         @Test
@@ -635,8 +599,8 @@ public class LegacyTransactionTest {
                     .setTo(to)
                     .build();
 
-            Keyring keyring = Keyring.createFromPrivateKey(privateKey);
-            legacyTransaction.signWithKeys(keyring);
+            AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(privateKey);
+            legacyTransaction.sign(keyring);
         }
     }
 
@@ -656,13 +620,13 @@ public class LegacyTransactionTest {
             String input = "0x31323334";
             String value = "0xa";
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x25"),
                     Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
                     Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -694,13 +658,13 @@ public class LegacyTransactionTest {
             String input = "0x31323334";
             String value = "0xa";
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x25"),
                     Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
                     Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -728,13 +692,13 @@ public class LegacyTransactionTest {
             String input = "0x31323334";
             String value = "0xa";
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x25"),
                     Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
                     Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -795,7 +759,7 @@ public class LegacyTransactionTest {
             String nonce = "0x3a";
             BigInteger chainID = BigInteger.valueOf(2019);
 
-            KlaySignatureData emptySig = KlaySignatureData.getEmptySignature();
+            SignatureData emptySig = SignatureData.getEmptySignature();
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setGas(gas)
@@ -825,13 +789,13 @@ public class LegacyTransactionTest {
             String nonce = "0x3a";
             BigInteger chainID = BigInteger.valueOf(2019);
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -893,13 +857,13 @@ public class LegacyTransactionTest {
             String nonce = "0x3a";
             BigInteger chainID = BigInteger.valueOf(2019);
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -934,13 +898,13 @@ public class LegacyTransactionTest {
             String chainID = "0x1";
             String input = "0x31323334";
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x25"),
                     Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
                     Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -972,13 +936,13 @@ public class LegacyTransactionTest {
             String chainID = "0x1";
             String input = "0x31323334";
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x25"),
                     Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
                     Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -1005,13 +969,13 @@ public class LegacyTransactionTest {
             String chainID = "0x1";
             String input = "0x31323334";
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x25"),
                     Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
                     Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -1045,13 +1009,13 @@ public class LegacyTransactionTest {
             String chainID = "0x1";
             String input = "0x31323334";
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x25"),
                     Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
                     Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -1083,13 +1047,13 @@ public class LegacyTransactionTest {
             String chainID = "0x1";
             String input = "0x31323334";
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x25"),
                     Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
                     Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -1117,13 +1081,13 @@ public class LegacyTransactionTest {
             String chainID = "0x1";
             String input = "0x31323334";
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x25"),
                     Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
                     Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -1155,13 +1119,13 @@ public class LegacyTransactionTest {
             String chainID = "0x1";
             String input = "0x31323334";
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x25"),
                     Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
                     Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -1193,13 +1157,13 @@ public class LegacyTransactionTest {
             String chainID = "0x1";
             String input = "0x31323334";
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x25"),
                     Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
                     Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -1227,13 +1191,13 @@ public class LegacyTransactionTest {
             String chainID = "0x1";
             String input = "0x31323334";
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x25"),
                     Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
                     Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -1262,13 +1226,13 @@ public class LegacyTransactionTest {
             BigInteger nonce = BigInteger.valueOf(1234);
             String input = "0x31323334";
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x25"),
                     Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
                     Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -1298,7 +1262,7 @@ public class LegacyTransactionTest {
             String nonce = "0x3a";
             BigInteger chainID = BigInteger.valueOf(2019);
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
@@ -1327,9 +1291,9 @@ public class LegacyTransactionTest {
             String nonce = "0x3a";
             BigInteger chainID = BigInteger.valueOf(2019);
 
-            KlaySignatureData emptySignature = KlaySignatureData.getEmptySignature();
+            SignatureData emptySignature = SignatureData.getEmptySignature();
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
@@ -1359,13 +1323,13 @@ public class LegacyTransactionTest {
             String nonce = "0x3a";
             BigInteger chainID = BigInteger.valueOf(2019);
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -1391,15 +1355,15 @@ public class LegacyTransactionTest {
             String nonce = "0x3a";
             BigInteger chainID = BigInteger.valueOf(2019);
 
-            KlaySignatureData emptySignature = KlaySignatureData.getEmptySignature();
+            SignatureData emptySignature = SignatureData.getEmptySignature();
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -1429,13 +1393,13 @@ public class LegacyTransactionTest {
             String nonce = "0x3a";
             BigInteger chainID = BigInteger.valueOf(2019);
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -1463,13 +1427,13 @@ public class LegacyTransactionTest {
             String nonce = "0x3a";
             BigInteger chainID = BigInteger.valueOf(2019);
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
@@ -1497,13 +1461,13 @@ public class LegacyTransactionTest {
             String nonce = "0x3a";
             BigInteger chainID = BigInteger.valueOf(2019);
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
             list.add(signatureData);
 

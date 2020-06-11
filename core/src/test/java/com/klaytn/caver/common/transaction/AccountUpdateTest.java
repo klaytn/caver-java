@@ -6,10 +6,10 @@ import com.klaytn.caver.account.WeightedMultiSigOptions;
 import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.type.AccountUpdate;
-import com.klaytn.caver.transaction.type.SmartContractExecution;
-import com.klaytn.caver.transaction.type.ValueTransferMemo;
-import com.klaytn.caver.wallet.keyring.Keyring;
+import com.klaytn.caver.wallet.keyring.AbstractKeyring;
+import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.PrivateKey;
+import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -44,7 +44,7 @@ import static org.junit.Assert.assertEquals;
 })
 public class AccountUpdateTest {
 
-    public static Keyring generateRoleBaseKeyring(int[] numArr, String address) {
+    public static AbstractKeyring generateRoleBaseKeyring(int[] numArr, String address) {
         String[][] keyArr = new String[3][];
 
         for(int i=0; i<numArr.length; i++) {
@@ -58,7 +58,7 @@ public class AccountUpdateTest {
 
         List<String[]> arr = Arrays.asList(keyArr);
 
-        return Keyring.createWithRoleBasedKey(address, arr);
+        return KeyringFactory.createWithRoleBasedKey(address, arr);
     }
 
     public static List<AccountUpdate> getAccountUpdateList() {
@@ -91,7 +91,7 @@ public class AccountUpdateTest {
         String nonce = "0x0";
         String gasPrice = "0x5d21dba00";
         String chainID = "0x7e3";
-        KlaySignatureData signatureData = new KlaySignatureData(
+        SignatureData signatureData = new SignatureData(
                 Numeric.hexStringToByteArray("0x0fea"),
                 Numeric.hexStringToByteArray("0x866f7cf552d4062a3c1a6055cabbe358a21ce779cfe2b81cee87b66024b993af"),
                 Numeric.hexStringToByteArray("0x2990dc2d9d36cc4de4b9a79c30aeab8d59e2d60631e0d90c8ac3c096b7a38852")
@@ -117,7 +117,7 @@ public class AccountUpdateTest {
         String gasPrice = "0x5d21dba00";
         String chainID = "0x7e3";
 
-        KlaySignatureData signatureData = new KlaySignatureData(
+        SignatureData signatureData = new SignatureData(
                 Numeric.hexStringToByteArray("0x0fe9"),
                 Numeric.hexStringToByteArray("0x9c2ca281e94567846acbeef724b1a7a5f882d581aff9984755abd92272592b8e"),
                 Numeric.hexStringToByteArray("0x344fd23d7774ae9c227809bb579387dfcd69e74ae2fe3a788617f54a4001e5ab")
@@ -144,7 +144,7 @@ public class AccountUpdateTest {
         String gasPrice = "0x5d21dba00";
         String chainID = "0x7e3";
 
-        KlaySignatureData signatureData = new KlaySignatureData(
+        SignatureData signatureData = new SignatureData(
                 Numeric.hexStringToByteArray("0x0fe9"),
                 Numeric.hexStringToByteArray("0x86361c43593859b6989794a6848c5ba1e5d8bd860522347cd167042acd6a7816"),
                 Numeric.hexStringToByteArray("0x773f5cc10f734b3b4486b9c5b7e5def156e06d9d9f4a3aaae6662f9a2126094c")
@@ -170,7 +170,7 @@ public class AccountUpdateTest {
         String gasPrice = "0x5d21dba00";
         String chainID = "0x7e3";
 
-        KlaySignatureData signatureData = new KlaySignatureData(
+        SignatureData signatureData = new SignatureData(
                 Numeric.hexStringToByteArray("0x0fe9"),
                 Numeric.hexStringToByteArray("0x02aca4ec6773a26c71340c2500cb45886a61797bcd82790f7f01150ced48b0ac"),
                 Numeric.hexStringToByteArray("0x20502f22a1b3c95a5f260a03dc3de0eaa1f4a618b1d2a7d4da643507302e523c")
@@ -204,7 +204,7 @@ public class AccountUpdateTest {
         String gasPrice = "0x5d21dba00";
         String chainID = "0x7e3";
 
-        KlaySignatureData signatureData = new KlaySignatureData(
+        SignatureData signatureData = new SignatureData(
                 Numeric.hexStringToByteArray("0x0fe9"),
                 Numeric.hexStringToByteArray("0x66e28c27f16ba34325770e842874d07473180bcec22e86851a6882acbaeb56c3"),
                 Numeric.hexStringToByteArray("0x761e12fe11003aa4cb8fd9b44a41e5edebeb943cc366264b345d0f7e63853724")
@@ -638,7 +638,7 @@ public class AccountUpdateTest {
         String expectedRLPEncoding = "0x20f8888204d219830f424094a94f5374fce5edbc8e2a8697c15331677e6ebf0ba302a1033a514176466fa815ed481ffad09110a2d344f6c9b78c1d14afc351c3a51be33df845f84325a0f7d479628f05f51320f0842193e3f7ae55a5b49d3645bf55c35bee1e8fd2593aa04de8eab5338fdc86e96f8c49ed516550f793fc2c4007614ce3d2a6b33cf9e451";
 
         AccountUpdate mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
 
@@ -656,62 +656,50 @@ public class AccountUpdateTest {
                     .setAccount(account)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
         @Test
         public void signWithKey_Keyring() throws IOException{
-            mTxObj.signWithKey(coupledKeyring, 0, TransactionHasher::getHashForSignature);
+            mTxObj.sign(coupledKeyring, 0, TransactionHasher::getHashForSignature);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_Keyring_NoIndex() throws IOException {
-            mTxObj.signWithKey(coupledKeyring, TransactionHasher::getHashForSignature);
+            mTxObj.sign(coupledKeyring, TransactionHasher::getHashForSignature);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_Keyring_NoSigner() throws IOException {
-            mTxObj.signWithKey(coupledKeyring, 0);
+            mTxObj.sign(coupledKeyring, 0);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_Keyring_Only() throws IOException {
-            mTxObj.signWithKey(coupledKeyring);
-            assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
-        }
-
-        @Test
-        public void signWithKey_KeyString() throws IOException {
-            mTxObj.signWithKey(privateKey, 0, TransactionHasher::getHashForSignature);
+            mTxObj.sign(coupledKeyring);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_KeyString_NoIndex() throws IOException {
-            mTxObj.signWithKey(privateKey, TransactionHasher::getHashForSignature);
-            assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
-        }
-
-        @Test
-        public void signWithKey_KeyString_NoSigner() throws IOException {
-            mTxObj.signWithKey(privateKey, 0);
+            mTxObj.sign(privateKey, TransactionHasher::getHashForSignature);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_KeyString_Only() throws IOException {
-            mTxObj.signWithKey(privateKey);
+            mTxObj.sign(privateKey);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_KlayWalletKey() throws IOException {
-            mTxObj.signWithKey(klaytnWalletKey);
+            mTxObj.sign(klaytnWalletKey);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
@@ -720,7 +708,7 @@ public class AccountUpdateTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The from address of the transaction is different with the address of the keyring to use");
 
-            mTxObj.signWithKey(deCoupledKeyring);
+            mTxObj.sign(deCoupledKeyring);
         }
 
         @Test
@@ -728,8 +716,8 @@ public class AccountUpdateTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("keyIndex value must be less than the length of key array");
 
-            Keyring role = generateRoleBaseKeyring(new int[]{3,3,3}, from);
-            mTxObj.signWithKey(role, 4);
+            AbstractKeyring role = generateRoleBaseKeyring(new int[]{3,3,3}, from);
+            mTxObj.sign(role, 4);
         }
     }
 
@@ -748,7 +736,7 @@ public class AccountUpdateTest {
         String expectedRLPEncoding = "0x20f8888204d219830f424094a94f5374fce5edbc8e2a8697c15331677e6ebf0ba302a1033a514176466fa815ed481ffad09110a2d344f6c9b78c1d14afc351c3a51be33df845f84325a0f7d479628f05f51320f0842193e3f7ae55a5b49d3645bf55c35bee1e8fd2593aa04de8eab5338fdc86e96f8c49ed516550f793fc2c4007614ce3d2a6b33cf9e451";
 
         AccountUpdate mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
 
@@ -766,35 +754,35 @@ public class AccountUpdateTest {
                     .setAccount(account)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
         @Test
         public void signWithKeys_Keyring() throws IOException {
-            mTxObj.signWithKeys(coupledKeyring, TransactionHasher::getHashForSignature);
+            mTxObj.sign(coupledKeyring, TransactionHasher::getHashForSignature);
             assertEquals(1, mTxObj.getSignatures().size());
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKeys_Keyring_NoSigner() throws IOException {
-            mTxObj.signWithKeys(coupledKeyring);
+            mTxObj.sign(coupledKeyring);
             assertEquals(1, mTxObj.getSignatures().size());
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKeys_KeyString() throws IOException {
-            mTxObj.signWithKeys(privateKey, TransactionHasher::getHashForSignature);
+            mTxObj.sign(privateKey, TransactionHasher::getHashForSignature);
             assertEquals(1, mTxObj.getSignatures().size());
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKeys_KeyString_NoSigner() throws IOException {
-            mTxObj.signWithKeys(privateKey, TransactionHasher::getHashForSignature);
+            mTxObj.sign(privateKey, TransactionHasher::getHashForSignature);
             assertEquals(1, mTxObj.getSignatures().size());
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
@@ -804,14 +792,14 @@ public class AccountUpdateTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The from address of the transaction is different with the address of the keyring to use");
 
-            mTxObj.signWithKeys(deCoupledKeyring);
+            mTxObj.sign(deCoupledKeyring);
         }
 
         @Test
         public void signWithKeys_roleBasedKeyring() throws IOException {
-            Keyring roleBased = generateRoleBaseKeyring(new int[]{3,3,3}, from);
+            AbstractKeyring roleBased = generateRoleBaseKeyring(new int[]{3,3,3}, from);
 
-            mTxObj.signWithKeys(roleBased);
+            mTxObj.sign(roleBased);
             assertEquals(3, mTxObj.getSignatures().size());
         }
     }
@@ -847,7 +835,7 @@ public class AccountUpdateTest {
 
         @Test
         public void appendSignature() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
@@ -859,13 +847,13 @@ public class AccountUpdateTest {
 
         @Test
         public void appendSignatureList() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             mTxObj.appendSignatures(list);
@@ -874,7 +862,7 @@ public class AccountUpdateTest {
 
         @Test
         public void appendSignatureList_EmptySig() {
-            KlaySignatureData emptySignature = KlaySignatureData.getEmptySignature();
+            SignatureData emptySignature = SignatureData.getEmptySignature();
 
             mTxObj = new AccountUpdate.Builder()
                     .setFrom(from)
@@ -886,13 +874,13 @@ public class AccountUpdateTest {
                     .setSignList(emptySignature)
                     .build();
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             mTxObj.appendSignatures(list);
@@ -901,7 +889,7 @@ public class AccountUpdateTest {
 
         @Test
         public void appendSignature_ExistedSignature() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
@@ -917,13 +905,13 @@ public class AccountUpdateTest {
                     .setSignList(signatureData)
                     .build();
 
-            KlaySignatureData signatureData1 = new KlaySignatureData(
+            SignatureData signatureData1 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
                     Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData1);
 
             mTxObj.appendSignatures(list);
@@ -934,7 +922,7 @@ public class AccountUpdateTest {
 
         @Test
         public void appendSignatureList_ExistedSignature() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
@@ -950,19 +938,19 @@ public class AccountUpdateTest {
                     .setSignList(signatureData)
                     .build();
 
-            KlaySignatureData signatureData1 = new KlaySignatureData(
+            SignatureData signatureData1 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
                     Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
-            KlaySignatureData signatureData2 = new KlaySignatureData(
+            SignatureData signatureData2 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x9a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
                     Numeric.hexStringToByteArray("0xa3ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData1);
             list.add(signatureData2);
 
@@ -1020,7 +1008,7 @@ public class AccountUpdateTest {
 
         @Test
         public void combine_multipleSignature() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fe9"),
                     Numeric.hexStringToByteArray("0xf2a83743da6931ce25a29d04f1c51cec8464f0d9d4dabb5acb059aa3fb8c345a"),
                     Numeric.hexStringToByteArray("0x65879e06474669005e02e0b8ca06cba6f8943022305659f8936f1f6109147fdd")
@@ -1039,18 +1027,18 @@ public class AccountUpdateTest {
 
             String expectedRLPEncoded = "0x20f8fa018505d21dba0083015f909440efcb7d744fdc881f698a8ec573999fe63835458201c0f8d5f845820fe9a0f2a83743da6931ce25a29d04f1c51cec8464f0d9d4dabb5acb059aa3fb8c345aa065879e06474669005e02e0b8ca06cba6f8943022305659f8936f1f6109147fddf845820feaa0638f0d712b4b709cadab174dea6da50e5429ea59d78446e810af954af8d67981a0129ad4eb9222e161e9e52be9c2384e1b1ff7566c640bc5b30c054efd64b081e7f845820fe9a0935584330d98f4a8a1cf83bf81ea7a18e33a962ad17b6a9eb8e04e3f5f95179da026804e07b5c105427497e8336300c1435d30ffa8d379dc27e5c1facd966c58db";
 
-            KlaySignatureData[] expectedSignature = new KlaySignatureData[] {
-                    new KlaySignatureData(
+            SignatureData[] expectedSignature = new SignatureData[] {
+                    new SignatureData(
                             Numeric.hexStringToByteArray("0x0fe9"),
                             Numeric.hexStringToByteArray("0xf2a83743da6931ce25a29d04f1c51cec8464f0d9d4dabb5acb059aa3fb8c345a"),
                             Numeric.hexStringToByteArray("0x65879e06474669005e02e0b8ca06cba6f8943022305659f8936f1f6109147fdd")
                     ),
-                    new KlaySignatureData(
+                    new SignatureData(
                             Numeric.hexStringToByteArray("0x0fea"),
                             Numeric.hexStringToByteArray("0x638f0d712b4b709cadab174dea6da50e5429ea59d78446e810af954af8d67981"),
                             Numeric.hexStringToByteArray("0x129ad4eb9222e161e9e52be9c2384e1b1ff7566c640bc5b30c054efd64b081e7")
                     ),
-                    new KlaySignatureData(
+                    new SignatureData(
                             Numeric.hexStringToByteArray("0x0fe9"),
                             Numeric.hexStringToByteArray("0x935584330d98f4a8a1cf83bf81ea7a18e33a962ad17b6a9eb8e04e3f5f95179d"),
                             Numeric.hexStringToByteArray("0x26804e07b5c105427497e8336300c1435d30ffa8d379dc27e5c1facd966c58db")
@@ -1074,7 +1062,7 @@ public class AccountUpdateTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("Transactions containing different information cannot be combined.");
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x3d820b27d0997baf16f98df01c7b2b2e9734ad05b2228c4d403c2facff8397f3"),
                     Numeric.hexStringToByteArray("0x1f4a44eeb8b7f0b0019162d1d6b90c401078e56fcd7495e74f7cfcd37e25f017")

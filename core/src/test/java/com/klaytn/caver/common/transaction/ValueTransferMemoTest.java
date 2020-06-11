@@ -1,12 +1,12 @@
 package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.TransactionHasher;
-import com.klaytn.caver.transaction.type.ValueTransfer;
 import com.klaytn.caver.transaction.type.ValueTransferMemo;
-import com.klaytn.caver.wallet.keyring.Keyring;
+import com.klaytn.caver.wallet.keyring.AbstractKeyring;
+import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.PrivateKey;
+import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 
 @RunWith(Suite.class)
@@ -53,7 +52,7 @@ public class ValueTransferMemoTest {
     static String value = "0xa";
     static String input = "0x68656c6c6f";
 
-    static KlaySignatureData klaySignatureData = new KlaySignatureData(
+    static SignatureData signatureData = new SignatureData(
             Numeric.hexStringToByteArray("0x25"),
             Numeric.hexStringToByteArray("0x7d2b0c89ee8afa502b3186413983bfe9a31c5776f4f820210cffe44a7d568d1c"),
             Numeric.hexStringToByteArray("0x2b1cbd587c73b0f54969f6b76ef2fd95cea0c1bb79256a75df9da696278509f3")
@@ -64,7 +63,7 @@ public class ValueTransferMemoTest {
     static String expectedTransactionHash = "0x6c7ee543c24e5b928b638a9f4502c1eca69103f5467ed4b6a2ed0ea5aede2e6b";
     static String expectedRLPEncoding = "0x10f8808204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0b8568656c6c6ff845f84325a07d2b0c89ee8afa502b3186413983bfe9a31c5776f4f820210cffe44a7d568d1ca02b1cbd587c73b0f54969f6b76ef2fd95cea0c1bb79256a75df9da696278509f3";
 
-    public static Keyring generateRoleBaseKeyring(int[] numArr, String address) {
+    public static AbstractKeyring generateRoleBaseKeyring(int[] numArr, String address) {
         String[][] keyArr = new String[3][];
 
         for(int i=0; i<numArr.length; i++) {
@@ -78,7 +77,7 @@ public class ValueTransferMemoTest {
 
         List<String[]> arr = Arrays.asList(keyArr);
 
-        return Keyring.createWithRoleBasedKey(address, arr);
+        return KeyringFactory.createWithRoleBasedKey(address, arr);
     }
 
     public static class createInstanceBuilder {
@@ -567,7 +566,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
@@ -586,7 +585,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             txObj.getRLPEncoding();
@@ -605,7 +604,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             txObj.getRLPEncoding();
@@ -617,7 +616,7 @@ public class ValueTransferMemoTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         ValueTransferMemo mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -633,62 +632,50 @@ public class ValueTransferMemoTest {
                     .setInput(input)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
         @Test
         public void signWithKey_Keyring() throws IOException{
-            mTxObj.signWithKey(coupledKeyring, 0, TransactionHasher::getHashForSignature);
+            mTxObj.sign(coupledKeyring, 0, TransactionHasher::getHashForSignature);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_Keyring_NoIndex() throws IOException {
-            mTxObj.signWithKey(coupledKeyring, TransactionHasher::getHashForSignature);
+            mTxObj.sign(coupledKeyring, TransactionHasher::getHashForSignature);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_Keyring_NoSigner() throws IOException {
-            mTxObj.signWithKey(coupledKeyring, 0);
+            mTxObj.sign(coupledKeyring, 0);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_Keyring_Only() throws IOException {
-            mTxObj.signWithKey(coupledKeyring);
-            assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
-        }
-
-        @Test
-        public void signWithKey_KeyString() throws IOException {
-            mTxObj.signWithKey(privateKey, 0, TransactionHasher::getHashForSignature);
+            mTxObj.sign(coupledKeyring);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_KeyString_NoIndex() throws IOException {
-            mTxObj.signWithKey(privateKey, TransactionHasher::getHashForSignature);
-            assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
-        }
-
-        @Test
-        public void signWithKey_KeyString_NoSigner() throws IOException {
-            mTxObj.signWithKey(privateKey, 0);
+            mTxObj.sign(privateKey, TransactionHasher::getHashForSignature);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_KeyString_Only() throws IOException {
-            mTxObj.signWithKey(privateKey);
+            mTxObj.sign(privateKey);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_KlayWalletKey() throws IOException {
-            mTxObj.signWithKey(klaytnWalletKey);
+            mTxObj.sign(klaytnWalletKey);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
@@ -697,7 +684,7 @@ public class ValueTransferMemoTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The from address of the transaction is different with the address of the keyring to use");
 
-            mTxObj.signWithKey(deCoupledKeyring);
+            mTxObj.sign(deCoupledKeyring);
         }
 
         @Test
@@ -705,8 +692,8 @@ public class ValueTransferMemoTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("keyIndex value must be less than the length of key array");
 
-            Keyring role = generateRoleBaseKeyring(new int[]{3,3,3}, from);
-            mTxObj.signWithKey(role, 4);
+            AbstractKeyring role = generateRoleBaseKeyring(new int[]{3,3,3}, from);
+            mTxObj.sign(role, 4);
         }
     }
 
@@ -715,7 +702,7 @@ public class ValueTransferMemoTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         ValueTransferMemo mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -731,35 +718,35 @@ public class ValueTransferMemoTest {
                     .setInput(input)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
         @Test
         public void signWithKeys_Keyring() throws IOException {
-            mTxObj.signWithKeys(coupledKeyring, TransactionHasher::getHashForSignature);
+            mTxObj.sign(coupledKeyring, TransactionHasher::getHashForSignature);
             assertEquals(1, mTxObj.getSignatures().size());
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKeys_Keyring_NoSigner() throws IOException {
-            mTxObj.signWithKeys(coupledKeyring);
+            mTxObj.sign(coupledKeyring);
             assertEquals(1, mTxObj.getSignatures().size());
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKeys_KeyString() throws IOException {
-            mTxObj.signWithKeys(privateKey, TransactionHasher::getHashForSignature);
+            mTxObj.sign(privateKey, TransactionHasher::getHashForSignature);
             assertEquals(1, mTxObj.getSignatures().size());
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKeys_KeyString_NoSigner() throws IOException {
-            mTxObj.signWithKeys(privateKey, TransactionHasher::getHashForSignature);
+            mTxObj.sign(privateKey, TransactionHasher::getHashForSignature);
             assertEquals(1, mTxObj.getSignatures().size());
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
@@ -769,14 +756,14 @@ public class ValueTransferMemoTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The from address of the transaction is different with the address of the keyring to use");
 
-            mTxObj.signWithKeys(deCoupledKeyring);
+            mTxObj.sign(deCoupledKeyring);
         }
 
         @Test
         public void signWithKeys_roleBasedKeyring() throws IOException {
-            Keyring roleBased = generateRoleBaseKeyring(new int[]{3,3,3}, from);
+            AbstractKeyring roleBased = generateRoleBaseKeyring(new int[]{3,3,3}, from);
 
-            mTxObj.signWithKeys(roleBased);
+            mTxObj.sign(roleBased);
             assertEquals(3, mTxObj.getSignatures().size());
         }
     }
@@ -786,7 +773,7 @@ public class ValueTransferMemoTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         ValueTransferMemo mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -802,15 +789,15 @@ public class ValueTransferMemoTest {
                     .setInput(input)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
 
         @Test
         public void appendSignature() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
@@ -822,13 +809,13 @@ public class ValueTransferMemoTest {
 
         @Test
         public void appendSignatureList() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             mTxObj.appendSignatures(list);
@@ -837,7 +824,7 @@ public class ValueTransferMemoTest {
 
         @Test
         public void appendSignatureList_EmptySig() {
-            KlaySignatureData emptySignature = KlaySignatureData.getEmptySignature();
+            SignatureData emptySignature = SignatureData.getEmptySignature();
 
             mTxObj = new ValueTransferMemo.Builder()
                     .setNonce(nonce)
@@ -851,13 +838,13 @@ public class ValueTransferMemoTest {
                     .setSignList(emptySignature)
                     .build();
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             mTxObj.appendSignatures(list);
@@ -866,7 +853,7 @@ public class ValueTransferMemoTest {
 
         @Test
         public void appendSignature_ExistedSignature() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
@@ -884,13 +871,13 @@ public class ValueTransferMemoTest {
                     .setSignList(signatureData)
                     .build();
 
-            KlaySignatureData signatureData1 = new KlaySignatureData(
+            SignatureData signatureData1 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
                     Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData1);
 
             mTxObj.appendSignatures(list);
@@ -901,7 +888,7 @@ public class ValueTransferMemoTest {
 
         @Test
         public void appendSignatureList_ExistedSignature() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
@@ -919,19 +906,19 @@ public class ValueTransferMemoTest {
                     .setSignList(signatureData)
                     .build();
 
-            KlaySignatureData signatureData1 = new KlaySignatureData(
+            SignatureData signatureData1 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
                     Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
-            KlaySignatureData signatureData2 = new KlaySignatureData(
+            SignatureData signatureData2 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x9a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
                     Numeric.hexStringToByteArray("0xa3ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData1);
             list.add(signatureData2);
 
@@ -957,12 +944,12 @@ public class ValueTransferMemoTest {
         String input = "0x68656c6c6f";
 
         ValueTransferMemo mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
         public void before() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fe9"),
                     Numeric.hexStringToByteArray("0x2aea3bb7c0632f1991b0b0b7a51cd6537a35554b74c198ebd79069c72a591832"),
                     Numeric.hexStringToByteArray("0x617d2942861f2c4280e793f2bdb107751e88c43048983823110eb044d7572254")
@@ -980,14 +967,14 @@ public class ValueTransferMemoTest {
                     .setSignList(signatureData)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
         @Test
         public void combineSignature() {
-            KlaySignatureData expectedSignature = new KlaySignatureData(
+            SignatureData expectedSignature = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fe9"),
                     Numeric.hexStringToByteArray("0x2aea3bb7c0632f1991b0b0b7a51cd6537a35554b74c198ebd79069c72a591832"),
                     Numeric.hexStringToByteArray("0x617d2942861f2c4280e793f2bdb107751e88c43048983823110eb044d7572254")
@@ -1005,18 +992,18 @@ public class ValueTransferMemoTest {
         public void combine_multipleSignature() {
             String expectedRLPEncoded = "0x10f901133a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae01947d0104ac150f749d36bb34999bcade9f2c0bd2e68568656c6c6ff8d5f845820fe9a02aea3bb7c0632f1991b0b0b7a51cd6537a35554b74c198ebd79069c72a591832a0617d2942861f2c4280e793f2bdb107751e88c43048983823110eb044d7572254f845820feaa0eda88095a7e349facbb40cc68c8c082aab3c21fbdbb05dca7fce6ab6c0a92866a03420efb785a186cda7f5bf99473bff57c18f9c4384126bec6f9172d6dcce2565f845820fe9a08d80151db0b7195adfef41443ddacd5ca57a6a479eb31fb0fea9f1c98596d4c9a079f37b400123c6a8415d8a851e8519102a02345feff6e2b3fb3b28699712e7e4";
 
-            KlaySignatureData[] expectedSignature = new KlaySignatureData[] {
-                    new KlaySignatureData(
+            SignatureData[] expectedSignature = new SignatureData[] {
+                    new SignatureData(
                             Numeric.hexStringToByteArray("0x0fe9"),
                             Numeric.hexStringToByteArray("0x2aea3bb7c0632f1991b0b0b7a51cd6537a35554b74c198ebd79069c72a591832"),
                             Numeric.hexStringToByteArray("0x617d2942861f2c4280e793f2bdb107751e88c43048983823110eb044d7572254")
                     ),
-                    new KlaySignatureData(
+                    new SignatureData(
                             Numeric.hexStringToByteArray("0x0fea"),
                             Numeric.hexStringToByteArray("0xeda88095a7e349facbb40cc68c8c082aab3c21fbdbb05dca7fce6ab6c0a92866"),
                             Numeric.hexStringToByteArray("0x3420efb785a186cda7f5bf99473bff57c18f9c4384126bec6f9172d6dcce2565")
                     ),
-                    new KlaySignatureData(
+                    new SignatureData(
                             Numeric.hexStringToByteArray("0x0fe9"),
                             Numeric.hexStringToByteArray("0x8d80151db0b7195adfef41443ddacd5ca57a6a479eb31fb0fea9f1c98596d4c9"),
                             Numeric.hexStringToByteArray("0x79f37b400123c6a8415d8a851e8519102a02345feff6e2b3fb3b28699712e7e4")
@@ -1040,7 +1027,7 @@ public class ValueTransferMemoTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("Transactions containing different information cannot be combined.");
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x3d820b27d0997baf16f98df01c7b2b2e9734ad05b2228c4d403c2facff8397f3"),
                     Numeric.hexStringToByteArray("0x1f4a44eeb8b7f0b0019162d1d6b90c401078e56fcd7495e74f7cfcd37e25f017")
@@ -1071,7 +1058,7 @@ public class ValueTransferMemoTest {
     public static class getRawTransactionTest {
 
         ValueTransferMemo mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -1085,11 +1072,11 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
@@ -1105,7 +1092,7 @@ public class ValueTransferMemoTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         ValueTransferMemo mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -1119,11 +1106,11 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
@@ -1147,7 +1134,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mTxObj.getTransactionHash();
@@ -1166,7 +1153,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mTxObj.getTransactionHash();
@@ -1178,7 +1165,7 @@ public class ValueTransferMemoTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         ValueTransferMemo mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -1192,11 +1179,11 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
@@ -1219,7 +1206,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mTxObj.getSenderTxHash();
@@ -1238,7 +1225,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mTxObj.getSenderTxHash();
@@ -1250,7 +1237,7 @@ public class ValueTransferMemoTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         ValueTransferMemo mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -1264,11 +1251,11 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
         @Test
@@ -1290,7 +1277,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();
@@ -1309,7 +1296,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();
@@ -1328,7 +1315,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();

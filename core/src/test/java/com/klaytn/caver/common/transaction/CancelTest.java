@@ -4,10 +4,10 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.type.Cancel;
-import com.klaytn.caver.transaction.type.SmartContractExecution;
-import com.klaytn.caver.transaction.type.ValueTransferMemo;
-import com.klaytn.caver.wallet.keyring.Keyring;
+import com.klaytn.caver.wallet.keyring.AbstractKeyring;
+import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.PrivateKey;
+import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -50,7 +50,7 @@ public class CancelTest {
     static String nonce = "0x4d2";
     static String chainID = "0x1";
 
-    static KlaySignatureData klaySignatureData = new KlaySignatureData(
+    static SignatureData signatureData = new SignatureData(
             Numeric.hexStringToByteArray("0x25"),
             Numeric.hexStringToByteArray("0xfb2c3d53d2f6b7bb1deb5a09f80366a5a45429cc1e3956687b075a9dcad20434"),
             Numeric.hexStringToByteArray("0x5c6187822ee23b1001e9613d29a5d6002f990498d2902904f7f259ab3358216e")
@@ -60,7 +60,7 @@ public class CancelTest {
     static String expectedTransactionHash = "0x10d135d590cb587cc45c1f94f4a0e3b8c24d24a6e4243f09ca395fb4e2450413";
     static String expectedRLPEncodingForSigning = "0xe39fde388204d219830f424094a94f5374fce5edbc8e2a8697c15331677e6ebf0b018080";
 
-    public static Keyring generateRoleBaseKeyring(int[] numArr, String address) {
+    public static AbstractKeyring generateRoleBaseKeyring(int[] numArr, String address) {
         String[][] keyArr = new String[3][];
 
         for(int i=0; i<numArr.length; i++) {
@@ -74,7 +74,7 @@ public class CancelTest {
 
         List<String[]> arr = Arrays.asList(keyArr);
 
-        return Keyring.createWithRoleBasedKey(address, arr);
+        return KeyringFactory.createWithRoleBasedKey(address, arr);
     }
 
     public static class createInstanceBuilder {
@@ -89,7 +89,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             assertNotNull(txObj);
@@ -101,7 +101,7 @@ public class CancelTest {
                     .setKlaytnCall(caver.klay())
                     .setGas(gas)
                     .setFrom(from)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             txObj.fillTransaction();
@@ -118,7 +118,7 @@ public class CancelTest {
                     .setGasPrice(Numeric.toBigInt(gasPrice))
                     .setChainId(Numeric.toBigInt(chainID))
                     .setFrom(from)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             assertNotNull(txObj);
@@ -141,7 +141,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
         }
 
@@ -158,7 +158,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
         }
 
@@ -175,7 +175,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
         }
 
@@ -192,7 +192,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
         }
     }
@@ -301,7 +301,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
@@ -317,7 +317,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             txObj.getRLPEncoding();
@@ -333,7 +333,7 @@ public class CancelTest {
                     .setGas(gas)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             txObj.getRLPEncoding();
@@ -345,7 +345,7 @@ public class CancelTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         Cancel mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -358,62 +358,50 @@ public class CancelTest {
                     .setChainId(chainID)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
 
         @Test
         public void signWithKey_Keyring() throws IOException{
-            mTxObj.signWithKey(coupledKeyring, 0, TransactionHasher::getHashForSignature);
+            mTxObj.sign(coupledKeyring, 0, TransactionHasher::getHashForSignature);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_Keyring_NoIndex() throws IOException {
-            mTxObj.signWithKey(coupledKeyring, TransactionHasher::getHashForSignature);
+            mTxObj.sign(coupledKeyring, TransactionHasher::getHashForSignature);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_Keyring_NoSigner() throws IOException {
-            mTxObj.signWithKey(coupledKeyring, 0);
+            mTxObj.sign(coupledKeyring, 0);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_Keyring_Only() throws IOException {
-            mTxObj.signWithKey(coupledKeyring);
-            assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
-        }
-
-        @Test
-        public void signWithKey_KeyString() throws IOException {
-            mTxObj.signWithKey(privateKey, 0, TransactionHasher::getHashForSignature);
+            mTxObj.sign(coupledKeyring);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_KeyString_NoIndex() throws IOException {
-            mTxObj.signWithKey(privateKey, TransactionHasher::getHashForSignature);
-            assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
-        }
-
-        @Test
-        public void signWithKey_KeyString_NoSigner() throws IOException {
-            mTxObj.signWithKey(privateKey, 0);
+            mTxObj.sign(privateKey, TransactionHasher::getHashForSignature);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_KeyString_Only() throws IOException {
-            mTxObj.signWithKey(privateKey);
+            mTxObj.sign(privateKey);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_KlayWalletKey() throws IOException {
-            mTxObj.signWithKey(klaytnWalletKey);
+            mTxObj.sign(klaytnWalletKey);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
@@ -422,7 +410,7 @@ public class CancelTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The from address of the transaction is different with the address of the keyring to use");
 
-            mTxObj.signWithKey(deCoupledKeyring);
+            mTxObj.sign(deCoupledKeyring);
         }
 
         @Test
@@ -430,8 +418,8 @@ public class CancelTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("keyIndex value must be less than the length of key array");
 
-            Keyring role = generateRoleBaseKeyring(new int[]{3,3,3}, from);
-            mTxObj.signWithKey(role, 4);
+            AbstractKeyring role = generateRoleBaseKeyring(new int[]{3,3,3}, from);
+            mTxObj.sign(role, 4);
         }
     }
 
@@ -440,7 +428,7 @@ public class CancelTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         Cancel mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -453,35 +441,35 @@ public class CancelTest {
                     .setChainId(chainID)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
 
         @Test
         public void signWithKeys_Keyring() throws IOException {
-            mTxObj.signWithKeys(coupledKeyring, TransactionHasher::getHashForSignature);
+            mTxObj.sign(coupledKeyring, TransactionHasher::getHashForSignature);
             assertEquals(1, mTxObj.getSignatures().size());
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKeys_Keyring_NoSigner() throws IOException {
-            mTxObj.signWithKeys(coupledKeyring);
+            mTxObj.sign(coupledKeyring);
             assertEquals(1, mTxObj.getSignatures().size());
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKeys_KeyString() throws IOException {
-            mTxObj.signWithKeys(privateKey, TransactionHasher::getHashForSignature);
+            mTxObj.sign(privateKey, TransactionHasher::getHashForSignature);
             assertEquals(1, mTxObj.getSignatures().size());
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKeys_KeyString_NoSigner() throws IOException {
-            mTxObj.signWithKeys(privateKey, TransactionHasher::getHashForSignature);
+            mTxObj.sign(privateKey, TransactionHasher::getHashForSignature);
             assertEquals(1, mTxObj.getSignatures().size());
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
@@ -491,14 +479,14 @@ public class CancelTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The from address of the transaction is different with the address of the keyring to use");
 
-            mTxObj.signWithKeys(deCoupledKeyring);
+            mTxObj.sign(deCoupledKeyring);
         }
 
         @Test
         public void signWithKeys_roleBasedKeyring() throws IOException {
-            Keyring roleBased = generateRoleBaseKeyring(new int[]{3,3,3}, from);
+            AbstractKeyring roleBased = generateRoleBaseKeyring(new int[]{3,3,3}, from);
 
-            mTxObj.signWithKeys(roleBased);
+            mTxObj.sign(roleBased);
             assertEquals(3, mTxObj.getSignatures().size());
         }
     }
@@ -508,7 +496,7 @@ public class CancelTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         Cancel mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -521,14 +509,14 @@ public class CancelTest {
                     .setChainId(chainID)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
 
         @Test
         public void appendSignature() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
@@ -540,13 +528,13 @@ public class CancelTest {
 
         @Test
         public void appendSignatureList() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             mTxObj.appendSignatures(list);
@@ -555,7 +543,7 @@ public class CancelTest {
 
         @Test
         public void appendSignatureList_EmptySig() {
-            KlaySignatureData emptySignature = KlaySignatureData.getEmptySignature();
+            SignatureData emptySignature = SignatureData.getEmptySignature();
 
             mTxObj = new Cancel.Builder()
                     .setNonce(nonce)
@@ -566,13 +554,13 @@ public class CancelTest {
                     .setSignList(emptySignature)
                     .build();
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             mTxObj.appendSignatures(list);
@@ -581,7 +569,7 @@ public class CancelTest {
 
         @Test
         public void appendSignature_ExistedSignature() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
@@ -596,13 +584,13 @@ public class CancelTest {
                     .setSignList(signatureData)
                     .build();
 
-            KlaySignatureData signatureData1 = new KlaySignatureData(
+            SignatureData signatureData1 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
                     Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData1);
 
             mTxObj.appendSignatures(list);
@@ -613,7 +601,7 @@ public class CancelTest {
 
         @Test
         public void appendSignatureList_ExistedSignature() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
@@ -628,19 +616,19 @@ public class CancelTest {
                     .setSignList(signatureData)
                     .build();
 
-            KlaySignatureData signatureData1 = new KlaySignatureData(
+            SignatureData signatureData1 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
                     Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
-            KlaySignatureData signatureData2 = new KlaySignatureData(
+            SignatureData signatureData2 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x9a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
                     Numeric.hexStringToByteArray("0xa3ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData1);
             list.add(signatureData2);
 
@@ -711,7 +699,7 @@ public class CancelTest {
                     )
             };
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x0382dcd275a9657d8fc3c4dc1509ad975f083184e3d34779dc6bef10e0e973c8"),
                     Numeric.hexStringToByteArray("0x59d5deb0f4c06a35a8024506159864ffc46dd08d91d5ac16fa69e92fb2d6b9ae")
@@ -761,7 +749,7 @@ public class CancelTest {
 
     public static class getRawTransactionTest {
         Cancel mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -772,11 +760,11 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
 
@@ -792,7 +780,7 @@ public class CancelTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         Cancel mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -803,11 +791,11 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
 
@@ -830,7 +818,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mTxObj.getTransactionHash();
@@ -849,7 +837,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mTxObj.getTransactionHash();
@@ -861,7 +849,7 @@ public class CancelTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         Cancel mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -872,11 +860,11 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
 
@@ -899,7 +887,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mTxObj.getSenderTxHash();
@@ -918,7 +906,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mTxObj.getSenderTxHash();
@@ -930,7 +918,7 @@ public class CancelTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         Cancel mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -941,11 +929,11 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
 
@@ -968,7 +956,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();
@@ -987,7 +975,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();
@@ -1006,7 +994,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(klaySignatureData)
+                    .setSignList(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();

@@ -1,10 +1,9 @@
 package com.klaytn.caver.common;
 
+import com.klaytn.caver.methods.response.KlayAccount;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.KeyringContainer;
-import com.klaytn.caver.wallet.keyring.Keyring;
-import com.klaytn.caver.wallet.keyring.MessageSigned;
-import com.klaytn.caver.wallet.keyring.PrivateKey;
+import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -29,13 +28,18 @@ import static org.junit.Assert.*;
 })
 public class KeyringContainerTest {
 
-    static void validateSingleKeyring(Keyring actual, String expectAddress, String expectKey) {
+    static void validateSingleKeyring(AbstractKeyring actual, String expectAddress, String expectKey) {
+        assertTrue(actual instanceof SingleKeyring);
+        SingleKeyring keyring = (SingleKeyring)actual;
         assertEquals(expectAddress, actual.getAddress());
-        assertEquals(expectKey, actual.getKeys().get(0)[0].getPrivateKey());
+        assertEquals(expectKey, keyring.getKey().getPrivateKey());
     }
 
-    static void validateMultipleKeyring(Keyring actual, String expectAddress, String[] expectKeyArr) {
-        PrivateKey[] actualKeyArr = actual.getKeys().get(0);
+    static void validateMultipleKeyring(AbstractKeyring actual, String expectAddress, String[] expectKeyArr) {
+        assertTrue(actual instanceof MultipleKeyring);
+        MultipleKeyring keyring = (MultipleKeyring)actual;
+
+        PrivateKey[] actualKeyArr = keyring.getKeys();
 
         assertEquals(expectAddress, actual.getAddress());
         for(int i=0; i<expectKeyArr.length; i++) {
@@ -43,8 +47,11 @@ public class KeyringContainerTest {
         }
     }
 
-    static void validateRoleBasedKeyring(Keyring actual, String expectAddress, String[][] expectKeyArr) {
-        List<PrivateKey[]> actualKeyArr = actual.getKeys();
+    static void validateRoleBasedKeyring(AbstractKeyring actual, String expectAddress, String[][] expectKeyArr) {
+        assertTrue(actual instanceof RoleBasedKeyring);
+        RoleBasedKeyring keyring = (RoleBasedKeyring)actual;
+
+        List<PrivateKey[]> actualKeyArr = keyring.getKeys();
 
         assertEquals(expectAddress, actual.getAddress());
 
@@ -59,7 +66,7 @@ public class KeyringContainerTest {
     public static class generateTest {
         public void checkAddress(List<String> expectedAddress, KeyringContainer container) {
             expectedAddress.stream().forEach(address -> {
-                Keyring keyring = container.getKeyring(address);
+                AbstractKeyring keyring = container.getKeyring(address);
                 assertNotNull(keyring);
                 assertEquals(address, keyring.getAddress());
             });
@@ -94,7 +101,7 @@ public class KeyringContainerTest {
             String expectAddress = privateKey.getDerivedAddress();
             String expectPrivateKey = privateKey.getPrivateKey();
 
-            Keyring added = container.newKeyring(expectAddress, expectPrivateKey);
+            AbstractKeyring added = container.newKeyring(expectAddress, expectPrivateKey);
             validateSingleKeyring(added, expectAddress, expectPrivateKey);
             assertEquals(1, container.length());
         }
@@ -110,7 +117,7 @@ public class KeyringContainerTest {
                     PrivateKey.generate().getPrivateKey(),
             };
 
-            Keyring added = container.newKeyring(expectAddress, expectPrivateKeyArr);
+            AbstractKeyring added = container.newKeyring(expectAddress, expectPrivateKeyArr);
             validateMultipleKeyring(added, expectAddress, expectPrivateKeyArr);
         }
 
@@ -135,7 +142,7 @@ public class KeyringContainerTest {
                     }
             };
 
-            Keyring added = container.newKeyring(expectAddress, Arrays.asList(expectPrivateKeyArr));
+            AbstractKeyring added = container.newKeyring(expectAddress, Arrays.asList(expectPrivateKeyArr));
             validateRoleBasedKeyring(added, expectAddress, expectPrivateKeyArr);
         }
 
@@ -155,7 +162,7 @@ public class KeyringContainerTest {
                     }
             };
 
-            Keyring added = container.newKeyring(expectAddress, Arrays.asList(expectPrivateKeyArr));
+            AbstractKeyring added = container.newKeyring(expectAddress, Arrays.asList(expectPrivateKeyArr));
             validateRoleBasedKeyring(added, expectAddress, expectPrivateKeyArr);
         }
     }
@@ -169,43 +176,43 @@ public class KeyringContainerTest {
         @Test
         public void updateToCoupledKeyring() {
             KeyringContainer container = new KeyringContainer();
-            Keyring coupled = Keyring.generate();
+            SingleKeyring coupled = KeyringFactory.generate();
 
             String address = coupled.getAddress();
             String privateKey = PrivateKey.generate().getPrivateKey();
 
-            Keyring decoupled = Keyring.createWithSingleKey(coupled.getAddress(), privateKey);
+            SingleKeyring decoupled = KeyringFactory.createWithSingleKey(coupled.getAddress(), privateKey);
 
             container.add(decoupled);
 
-            Keyring updated = container.updateKeyring(coupled);
-            Keyring fromContainer = container.getKeyring(address);
+            AbstractKeyring updated = container.updateKeyring(coupled);
+            AbstractKeyring fromContainer = container.getKeyring(address);
 
-            validateSingleKeyring(updated, address, coupled.getKeys().get(0)[0].getPrivateKey());
-            validateSingleKeyring(fromContainer, coupled.getAddress(), coupled.getKeys().get(0)[0].getPrivateKey());
+            validateSingleKeyring(updated, address, coupled.getKey().getPrivateKey());
+            validateSingleKeyring(fromContainer, coupled.getAddress(), coupled.getKey().getPrivateKey());
         }
 
         //CA-KEYRINGCONTAINER-008
         @Test
         public void updateToDecoupledKeyring() {
             KeyringContainer container = new KeyringContainer();
-            Keyring coupled = Keyring.generate();
-            Keyring deCoupled = Keyring.createWithSingleKey(coupled.getAddress(), PrivateKey.generate().getPrivateKey());
+            SingleKeyring coupled = KeyringFactory.generate();
+            SingleKeyring deCoupled = KeyringFactory.createWithSingleKey(coupled.getAddress(), PrivateKey.generate().getPrivateKey());
 
             container.add(coupled);
 
-            Keyring updated = container.updateKeyring(deCoupled);
-            Keyring fromContainer = container.getKeyring(coupled.getAddress());
+            AbstractKeyring updated = container.updateKeyring(deCoupled);
+            AbstractKeyring fromContainer = container.getKeyring(coupled.getAddress());
 
-            validateSingleKeyring(updated,  coupled.getAddress(), deCoupled.getKeys().get(0)[0].getPrivateKey());
-            validateSingleKeyring(fromContainer, coupled.getAddress(), deCoupled.getKeys().get(0)[0].getPrivateKey());
+            validateSingleKeyring(updated,  coupled.getAddress(), deCoupled.getKey().getPrivateKey());
+            validateSingleKeyring(fromContainer, coupled.getAddress(), deCoupled.getKey().getPrivateKey());
         }
 
         //CA-KEYRINGCONTAINER-009
         @Test
         public void updateToMultipleKeyring() {
             KeyringContainer container = new KeyringContainer();
-            Keyring origin = Keyring.generate();
+            SingleKeyring origin = KeyringFactory.generate();
 
             String[] expectPrivateKeyArr = {
                     PrivateKey.generate().getPrivateKey(),
@@ -213,12 +220,12 @@ public class KeyringContainerTest {
                     PrivateKey.generate().getPrivateKey(),
             };
 
-            Keyring multipleKeyring = Keyring.createWithMultipleKey(origin.getAddress(), expectPrivateKeyArr);
+            MultipleKeyring multipleKeyring = KeyringFactory.createWithMultipleKey(origin.getAddress(), expectPrivateKeyArr);
 
             container.add(origin);
 
-            Keyring updated = container.updateKeyring(multipleKeyring);
-            Keyring fromContainer = container.getKeyring(origin.getAddress());
+            AbstractKeyring updated = container.updateKeyring(multipleKeyring);
+            AbstractKeyring fromContainer = container.getKeyring(origin.getAddress());
 
             validateMultipleKeyring(updated, origin.getAddress(), expectPrivateKeyArr);
             validateMultipleKeyring(fromContainer, origin.getAddress(), expectPrivateKeyArr);
@@ -228,7 +235,7 @@ public class KeyringContainerTest {
         @Test
         public void updateToRoleBasedKeyring() {
             KeyringContainer container = new KeyringContainer();
-            Keyring origin = Keyring.generate();
+            SingleKeyring origin = KeyringFactory.generate();
 
             String[][] expectPrivateKeyArr = {
                     {
@@ -246,12 +253,12 @@ public class KeyringContainerTest {
                     }
             };
 
-            Keyring roleBasedKeyring = Keyring.createWithRoleBasedKey(origin.getAddress(), Arrays.asList(expectPrivateKeyArr));
+            RoleBasedKeyring roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(origin.getAddress(), Arrays.asList(expectPrivateKeyArr));
 
             container.add(origin);
 
-            Keyring updated = container.updateKeyring(roleBasedKeyring);
-            Keyring fromContainer = container.getKeyring(origin.getAddress());
+            AbstractKeyring updated = container.updateKeyring(roleBasedKeyring);
+            AbstractKeyring fromContainer = container.getKeyring(origin.getAddress());
 
             validateRoleBasedKeyring(updated, origin.getAddress(), expectPrivateKeyArr);
             validateRoleBasedKeyring(fromContainer, origin.getAddress(), expectPrivateKeyArr);
@@ -263,7 +270,7 @@ public class KeyringContainerTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("Failed to find keyring to update.");
 
-            Keyring keyring = Keyring.generate();
+            SingleKeyring keyring = KeyringFactory.generate();
             KeyringContainer container = new KeyringContainer();
 
             container.updateKeyring(keyring);
@@ -279,19 +286,19 @@ public class KeyringContainerTest {
         public void withValidAddress() {
             KeyringContainer container = new KeyringContainer();
 
-            Keyring added = container.add(Keyring.generate());
-            Keyring keyring = container.getKeyring(added.getAddress());
+            SingleKeyring added = (SingleKeyring)container.add(KeyringFactory.generate());
+            AbstractKeyring keyring = container.getKeyring(added.getAddress());
 
-            validateSingleKeyring(keyring, added.getAddress(), added.getKeys().get(0)[0].getPrivateKey());
+            validateSingleKeyring(keyring, added.getAddress(), added.getKey().getPrivateKey());
         }
 
         //CA-KEYRINGCONTAINER-013
         @Test
         public void notExistsAddress() {
             KeyringContainer container = new KeyringContainer();
-            Keyring keyring = Keyring.generate();
+            SingleKeyring keyring = KeyringFactory.generate();
 
-            Keyring actual = container.getKeyring(keyring.getAddress());
+            AbstractKeyring actual = container.getKeyring(keyring.getAddress());
             assertNull(actual);
         }
 
@@ -314,26 +321,26 @@ public class KeyringContainerTest {
         @Test
         public void singleKeyring() {
             KeyringContainer container = new KeyringContainer();
-            Keyring keyringToAdd = Keyring.generate();
+            SingleKeyring keyringToAdd = KeyringFactory.generate();
 
-            Keyring added = container.add(keyringToAdd);
-            Keyring fromContainer = container.getKeyring(added.getAddress());
+            AbstractKeyring added = container.add(keyringToAdd);
+            AbstractKeyring fromContainer = container.getKeyring(added.getAddress());
 
-            validateSingleKeyring(added, keyringToAdd.getAddress(), keyringToAdd.getKeys().get(0)[0].getPrivateKey());
-            validateSingleKeyring(fromContainer, keyringToAdd.getAddress(), keyringToAdd.getKeys().get(0)[0].getPrivateKey());
+            validateSingleKeyring(added, keyringToAdd.getAddress(), keyringToAdd.getKey().getPrivateKey());
+            validateSingleKeyring(fromContainer, keyringToAdd.getAddress(), keyringToAdd.getKey().getPrivateKey());
         }
 
         //CA-KEYRINGCONTAINER-016
         @Test
         public void deCoupledKeyring() {
             KeyringContainer container = new KeyringContainer();
-            Keyring deCoupled = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), PrivateKey.generate().getPrivateKey());
+            SingleKeyring deCoupled = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), PrivateKey.generate().getPrivateKey());
 
-            Keyring added = container.add(deCoupled);
-            Keyring fromContainer = container.getKeyring(deCoupled.getAddress());
+            AbstractKeyring added = container.add(deCoupled);
+            AbstractKeyring fromContainer = container.getKeyring(deCoupled.getAddress());
 
-            validateSingleKeyring(added, deCoupled.getAddress(), deCoupled.getKeys().get(0)[0].getPrivateKey());
-            validateSingleKeyring(fromContainer, deCoupled.getAddress(), deCoupled.getKeys().get(0)[0].getPrivateKey());
+            validateSingleKeyring(added, deCoupled.getAddress(), deCoupled.getKey().getPrivateKey());
+            validateSingleKeyring(fromContainer, deCoupled.getAddress(), deCoupled.getKey().getPrivateKey());
         }
 
         //CA-KEYRINGCONTAINER-017
@@ -347,10 +354,10 @@ public class KeyringContainerTest {
                     PrivateKey.generate().getPrivateKey(),
             };
 
-            Keyring multipleKeyring = Keyring.createWithMultipleKey(address, expectPrivateKeyArr);
+            MultipleKeyring multipleKeyring = KeyringFactory.createWithMultipleKey(address, expectPrivateKeyArr);
 
-            Keyring added = container.add(multipleKeyring);
-            Keyring fromContainer = container.getKeyring(multipleKeyring.getAddress());
+            AbstractKeyring added = container.add(multipleKeyring);
+            AbstractKeyring fromContainer = container.getKeyring(multipleKeyring.getAddress());
 
             validateMultipleKeyring(added, address, expectPrivateKeyArr);
             validateMultipleKeyring(fromContainer, address, expectPrivateKeyArr);
@@ -377,10 +384,10 @@ public class KeyringContainerTest {
                     }
             };
 
-            Keyring roleBasedKeyring = Keyring.createWithRoleBasedKey(address, Arrays.asList(expectPrivateKeyArr));
+            RoleBasedKeyring roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(address, Arrays.asList(expectPrivateKeyArr));
 
-            Keyring added = container.add(roleBasedKeyring);
-            Keyring fromContainer = container.getKeyring(added.getAddress());
+            AbstractKeyring added = container.add(roleBasedKeyring);
+            AbstractKeyring fromContainer = container.getKeyring(added.getAddress());
 
             validateRoleBasedKeyring(added, address, expectPrivateKeyArr);
             validateRoleBasedKeyring(fromContainer, address, expectPrivateKeyArr);
@@ -393,9 +400,9 @@ public class KeyringContainerTest {
         @Test
         public void coupledKey() {
             KeyringContainer container = new KeyringContainer();
-            Keyring keyringToAdd = Keyring.generate();
+            AbstractKeyring keyringToAdd = KeyringFactory.generate();
 
-            Keyring added = container.add(keyringToAdd);
+            AbstractKeyring added = container.add(keyringToAdd);
             boolean result = container.remove(added.getAddress());
 
             assertTrue(result);
@@ -407,9 +414,9 @@ public class KeyringContainerTest {
         @Test
         public void deCoupledKey() {
             KeyringContainer container = new KeyringContainer();
-            Keyring keyringToAdd = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), PrivateKey.generate().getPrivateKey());
+            AbstractKeyring keyringToAdd = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), PrivateKey.generate().getPrivateKey());
 
-            Keyring added = container.add(keyringToAdd);
+            AbstractKeyring added = container.add(keyringToAdd);
             boolean result = container.remove(added.getAddress());
 
             assertTrue(result);
@@ -428,9 +435,9 @@ public class KeyringContainerTest {
                     PrivateKey.generate().getPrivateKey(),
             };
 
-            Keyring keyringToAdd = Keyring.createWithMultipleKey(address, expectPrivateKeyArr);
+            AbstractKeyring keyringToAdd = KeyringFactory.createWithMultipleKey(address, expectPrivateKeyArr);
 
-            Keyring added = container.add(keyringToAdd);
+            AbstractKeyring added = container.add(keyringToAdd);
             boolean result = container.remove(added.getAddress());
 
             assertTrue(result);
@@ -459,9 +466,9 @@ public class KeyringContainerTest {
                     }
             };
 
-            Keyring keyringToAdd = Keyring.createWithRoleBasedKey(address, Arrays.asList(expectPrivateKeyArr));
+            AbstractKeyring keyringToAdd = KeyringFactory.createWithRoleBasedKey(address, Arrays.asList(expectPrivateKeyArr));
 
-            Keyring added = container.add(keyringToAdd);
+            AbstractKeyring added = container.add(keyringToAdd);
             boolean result = container.remove(added.getAddress());
 
             assertTrue(result);
@@ -495,7 +502,7 @@ public class KeyringContainerTest {
                     }
             };
 
-            Keyring roleBased = container.newKeyring(address, Arrays.asList(expectPrivateKeyArr));
+            AbstractKeyring roleBased = container.newKeyring(address, Arrays.asList(expectPrivateKeyArr));
             MessageSigned expectedData = roleBased.signMessage(message, 0, 0);
             MessageSigned actualData = container.signMessage(address, message);
 
@@ -503,9 +510,9 @@ public class KeyringContainerTest {
             assertEquals(Utils.hashMessage(message), actualData.getMessageHash());
             assertNotNull(actualData.getSignatureData());
 
-            assertEquals(Numeric.toHexString(expectedData.getSignatureData().getR()), Numeric.toHexString(actualData.getSignatureData().getR()));
-            assertEquals(Numeric.toHexString(expectedData.getSignatureData().getS()), Numeric.toHexString(actualData.getSignatureData().getS()));
-            assertEquals(Numeric.toHexString(expectedData.getSignatureData().getV()), Numeric.toHexString(actualData.getSignatureData().getV()));
+            assertEquals(expectedData.getSignatureData().get(0).getR(), actualData.getSignatureData().get(0).getR());
+            assertEquals(expectedData.getSignatureData().get(0).getS(), actualData.getSignatureData().get(0).getS());
+            assertEquals(expectedData.getSignatureData().get(0).getV(), actualData.getSignatureData().get(0).getV());
         }
 
         //CA-KEYRINGCONTAINER-024
@@ -531,7 +538,7 @@ public class KeyringContainerTest {
                     }
             };
 
-            Keyring roleBased = container.newKeyring(address, Arrays.asList(expectPrivateKeyArr));
+            AbstractKeyring roleBased = container.newKeyring(address, Arrays.asList(expectPrivateKeyArr));
             MessageSigned expectedData = roleBased.signMessage(message, 1, 0);
             MessageSigned actualData = container.signMessage(address, message, 1, 0);
 
@@ -539,9 +546,9 @@ public class KeyringContainerTest {
             assertEquals(Utils.hashMessage(message), actualData.getMessageHash());
             assertNotNull(actualData.getSignatureData());
 
-            assertEquals(Numeric.toHexString(expectedData.getSignatureData().getR()), Numeric.toHexString(actualData.getSignatureData().getR()));
-            assertEquals(Numeric.toHexString(expectedData.getSignatureData().getS()), Numeric.toHexString(actualData.getSignatureData().getS()));
-            assertEquals(Numeric.toHexString(expectedData.getSignatureData().getV()), Numeric.toHexString(actualData.getSignatureData().getV()));
+            assertEquals(expectedData.getSignatureData().get(0).getR(), actualData.getSignatureData().get(0).getR());
+            assertEquals(expectedData.getSignatureData().get(0).getS(), actualData.getSignatureData().get(0).getS());
+            assertEquals(expectedData.getSignatureData().get(0).getV(), actualData.getSignatureData().get(0).getV());
         }
     }
 }

@@ -123,4 +123,8 @@ public class RoleBasedKeyring extends AbstractKeyring {
     public Account toAccount(List<WeightedMultiSigOptions> options) {
         return Account.createWithAccountKeyRoleBased(this.address, this.getPublicKey(), options);
     }
+
+    public List<PrivateKey[]> getKeys() {
+        return keys;
+    }
 }

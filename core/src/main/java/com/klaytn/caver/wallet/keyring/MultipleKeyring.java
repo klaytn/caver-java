@@ -108,4 +108,8 @@ public class MultipleKeyring extends AbstractKeyring{
     public Account toAccount(WeightedMultiSigOptions options) {
         return Account.createWithAccountKeyWeightedMultiSig(address, this.getPublicKey(), options);
     }
+
+    public PrivateKey[] getKeys() {
+        return keys;
+    }
 }

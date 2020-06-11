@@ -111,4 +111,8 @@ public class SingleKeyring extends AbstractKeyring{
 
         return this.key;
     }
+
+    public PrivateKey getKey() {
+        return key;
+    }
 }

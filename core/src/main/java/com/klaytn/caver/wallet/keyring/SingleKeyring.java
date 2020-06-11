@@ -57,7 +57,7 @@ public class SingleKeyring extends AbstractKeyring{
 
     @Override
     public String getKlaytnWalletKey() {
-        return key.getPrivateKey() + "0x00" + key.getDerivedAddress();
+        return key.getPrivateKey() + "0x00" + this.getAddress();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class SingleKeyring extends AbstractKeyring{
 
         KeyStore keyStore = new KeyStore();
         keyStore.setAddress(this.address);
-        keyStore.setVersion(KeyStore.KEY_STORE_VERSION_V3);
+        keyStore.setVersion(KeyStore.KEY_STORE_VERSION_V4);
         keyStore.setId(UUID.randomUUID().toString());
         keyStore.setKeyring(crypto);
 
@@ -88,7 +88,7 @@ public class SingleKeyring extends AbstractKeyring{
 
     @Override
     public boolean isDecoupled() {
-        return this.address.toLowerCase().equals(this.key.getDerivedAddress().toLowerCase());
+        return !(this.address.toLowerCase().equals(this.key.getDerivedAddress().toLowerCase()));
     }
 
     @Override
@@ -101,7 +101,7 @@ public class SingleKeyring extends AbstractKeyring{
     }
 
     public String getPublicKey() {
-        return this.key.getDerivedAddress();
+        return this.key.getPublicKey(false);
     }
 
     public PrivateKey getKeyByRole(int role) {

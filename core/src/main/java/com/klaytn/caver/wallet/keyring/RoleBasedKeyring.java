@@ -112,7 +112,16 @@ public class RoleBasedKeyring extends AbstractKeyring {
             throw new IllegalArgumentException("Invalid role index : " + role);
         }
 
-        return this.keys.get(role);
+        PrivateKey[] keyArr = this.keys.get(role);
+        if(keyArr.length == 0 && role > AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex()) {
+            if(this.keys.get(AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex()).length == 0) {
+                throw new IllegalArgumentException("The Key with specified role group does not exists. The TRANSACTION role group is also empty");
+            }
+
+            keyArr = this.keys.get(AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+        }
+
+        return keyArr;
     }
 
     public Account toAccount() {

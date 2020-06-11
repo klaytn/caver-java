@@ -226,7 +226,17 @@ public class KeyringFactory {
             }
         }
 
-        return KeyringFactory.createWithRoleBasedKey(keystore.getAddress(), privateKeyList);
+        boolean isRoleBased = privateKeyList.stream().skip(1).anyMatch(array -> array.length > 0);
+
+        if(isRoleBased) {
+            return KeyringFactory.createWithRoleBasedKey(keystore.getAddress(), privateKeyList);
+        } else {
+            if(privateKeyList.get(0).length > 1) {
+                return KeyringFactory.createWithMultipleKey(keystore.getAddress(), privateKeyList.get(0));
+            } else {
+                return KeyringFactory.createWithSingleKey(keystore.getAddress(), privateKeyList.get(0)[0]);
+            }
+        }
     }
 
 

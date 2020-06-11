@@ -74,7 +74,7 @@ public class MultipleKeyring extends AbstractKeyring{
 
         KeyStore keyStore = new KeyStore();
         keyStore.setAddress(this.address);
-        keyStore.setVersion(KeyStore.KEY_STORE_VERSION_V3);
+        keyStore.setVersion(KeyStore.KEY_STORE_VERSION_V4);
         keyStore.setId(UUID.randomUUID().toString());
         keyStore.setKeyring(cryptoList);
 

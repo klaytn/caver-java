@@ -1,6 +1,5 @@
 package com.klaytn.caver.wallet.keyring;
 
-import com.klaytn.caver.crypto.KlaySignatureData;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
 import org.web3j.rlp.RlpType;
@@ -9,7 +8,6 @@ import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SignatureData {
@@ -68,8 +66,8 @@ public class SignatureData {
 
     public RlpList toRlpList() {
         byte[] v = Numeric.hexStringToByteArray(getV());
-        byte[] r = Numeric.hexStringToByteArray(getV());
-        byte[] s = Numeric.hexStringToByteArray(getV());
+        byte[] r = Numeric.hexStringToByteArray(getR());
+        byte[] s = Numeric.hexStringToByteArray(getS());
 
         return new RlpList(
                 RlpString.create(Bytes.trimLeadingZeroes(v)),
@@ -95,7 +93,20 @@ public class SignatureData {
         if (!r.equals(that.r)) {
             return false;
         }
-        return !s.equals(that.s);
+        return s.equals(that.s);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = v.hashCode();
+        result = 31 * result + r.hashCode();
+        result = 31 * result + s.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "V : " + getV() + "\nR : " + getR() + "\nS : " + getS();
     }
 
     public String getV() {

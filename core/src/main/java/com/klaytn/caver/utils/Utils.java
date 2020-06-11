@@ -122,7 +122,7 @@ public class Utils {
     }
 
     public static boolean isEmptySig(SignatureData signatureData) {
-        KlaySignatureData emptySig = KlaySignatureData.getEmptySignature();
+        SignatureData emptySig = SignatureData.getEmptySignature();
 
         return emptySig.equals(signatureData);
     }

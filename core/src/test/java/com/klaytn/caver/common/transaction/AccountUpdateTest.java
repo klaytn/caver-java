@@ -714,7 +714,7 @@ public class AccountUpdateTest {
         @Test
         public void throwException_InvalidIndex() throws IOException {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
             AbstractKeyring role = generateRoleBaseKeyring(new int[]{3,3,3}, from);
             mTxObj.sign(role, 4);
@@ -991,7 +991,7 @@ public class AccountUpdateTest {
 
         @Test
         public void combineSignature() {
-            KlaySignatureData expectedSignature = new KlaySignatureData(
+            SignatureData expectedSignature = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fe9"),
                     Numeric.hexStringToByteArray("0xf2a83743da6931ce25a29d04f1c51cec8464f0d9d4dabb5acb059aa3fb8c345a"),
                     Numeric.hexStringToByteArray("0x65879e06474669005e02e0b8ca06cba6f8943022305659f8936f1f6109147fdd")

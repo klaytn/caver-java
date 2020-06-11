@@ -609,7 +609,7 @@ public class ValueTransferTest {
         @Test
         public void throwException_InvalidIndex() throws IOException {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
             AbstractKeyring role = generateRoleBaseKeyring(new int[]{3,3,3}, from);
             mValueTransfer.sign(role, 4);

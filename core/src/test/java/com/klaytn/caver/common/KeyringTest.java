@@ -649,7 +649,7 @@ public class KeyringTest {
         @Test
         public void coupleKey_throwException_negativeKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex cannot have negative value");
+            expectedException.expectMessage("Invalid index : index cannot be negative");
             AbstractKeyring keyring = KeyringFactory.generate();
             SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), -1);
         }
@@ -658,7 +658,7 @@ public class KeyringTest {
         @Test
         public void coupleKey_throwException_outOfBoundKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
             AbstractKeyring keyring = KeyringFactory.generate();
             SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 1);
         }
@@ -699,7 +699,7 @@ public class KeyringTest {
         @Test
         public void deCoupleKey_throwException_negativeKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex cannot have negative value");
+            expectedException.expectMessage("Invalid index : index cannot be negative");
             String address = PrivateKey.generate().getDerivedAddress();
             String privateKey = PrivateKey.generate().getPrivateKey();
             AbstractKeyring keyring = KeyringFactory.create(address, privateKey);
@@ -711,7 +711,7 @@ public class KeyringTest {
         @Test
         public void deCoupleKey_throwException_outOfBoundKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
             String address = PrivateKey.generate().getDerivedAddress();
             String privateKey = PrivateKey.generate().getPrivateKey();
             AbstractKeyring keyring = KeyringFactory.create(address, privateKey);
@@ -750,7 +750,7 @@ public class KeyringTest {
         @Test
         public void multipleKey_throwException_negativeKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex cannot have negative value");
+            expectedException.expectMessage("Invalid index : index cannot be negative");
 
             AbstractKeyring keyring = generateMultipleKeyring(3);
             SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex(), -1);
@@ -760,7 +760,7 @@ public class KeyringTest {
         @Test
         public void multipleKey_throwException_outOfBoundKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
             AbstractKeyring keyring = generateMultipleKeyring(3);
             SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 10);
         }
@@ -798,7 +798,7 @@ public class KeyringTest {
         @Test
         public void roleBasedKey_throwException_negativeKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex cannot have negative value");
+            expectedException.expectMessage("Invalid index : index cannot be negative");
             AbstractKeyring keyring = generateRoleBaseKeyring(new int[] {2,0,4});
             SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), -1);
         }
@@ -807,7 +807,7 @@ public class KeyringTest {
         @Test
         public void roleBasedKey_throwException_outOfBoundKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
             AbstractKeyring keyring = generateRoleBaseKeyring(new int[] {2,0,4});
             SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 10);
@@ -991,7 +991,7 @@ public class KeyringTest {
         @Test
         public void coupleKey_throwException_WithInvalidKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
             SingleKeyring keyring = KeyringFactory.generate();
             MessageSigned expect = keyring.signMessage(data, 0, 3);
@@ -1001,7 +1001,7 @@ public class KeyringTest {
         @Test
         public void coupleKey_throwException_WithNegativeKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex cannot have negative value.");
+            expectedException.expectMessage("Invalid index : index cannot be negative");
 
             SingleKeyring keyring = KeyringFactory.generate();
             MessageSigned expect = keyring.signMessage(data, 0, -1);
@@ -1064,7 +1064,7 @@ public class KeyringTest {
         @Test
         public void decoupleKey_throwException_WithInvalidKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
             String privateKey = PrivateKey.generate().getPrivateKey();
             String address = PrivateKey.generate().getDerivedAddress();
@@ -1077,7 +1077,7 @@ public class KeyringTest {
         @Test
         public void decoupleKey_throwException_WithNegativeKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex cannot have negative value.");
+            expectedException.expectMessage("Invalid index : index cannot be negative");
 
             String privateKey = PrivateKey.generate().getPrivateKey();
             String address = PrivateKey.generate().getDerivedAddress();
@@ -1134,7 +1134,7 @@ public class KeyringTest {
         @Test
         public void multipleKey_throwException_WithInvalidKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
             MultipleKeyring keyring = generateMultipleKeyring(3);
             MessageSigned expect = keyring.signMessage(data, 0, 6);
@@ -1144,7 +1144,7 @@ public class KeyringTest {
         @Test
         public void multipleKey_throwException_WithNegativeKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex cannot have negative value.");
+            expectedException.expectMessage("Invalid index : index cannot be negative");
 
             MultipleKeyring keyring = generateMultipleKeyring(3);
             MessageSigned expect = keyring.signMessage(data, 0, -1);
@@ -1183,7 +1183,7 @@ public class KeyringTest {
         @Test
         public void roleBasedKey_throwException_WithInvalidKey() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
             RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
             MessageSigned expect = keyring.signMessage(data, 0, 8);
@@ -1193,7 +1193,7 @@ public class KeyringTest {
         @Test
         public void roleBasedKey_throwException_WithNegativeKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex cannot have negative value.");
+            expectedException.expectMessage("Invalid index : index cannot be negative");
 
             RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
             MessageSigned expect = keyring.signMessage(data, 0, -1);
@@ -1836,7 +1836,7 @@ public class KeyringTest {
         @Test
         public void throwException_keyring_multiple() throws CipherException {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. use 'keyring.encrypt(password)");
+            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
             String password = "password";
             MultipleKeyring keyring = generateMultipleKeyring(3);
 
@@ -1848,7 +1848,7 @@ public class KeyringTest {
         @Test
         public void throwException_keyring_roleBased() throws CipherException {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. use 'keyring.encrypt(password)");
+            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
             String password = "password";
             RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[] {2,3,4});
 
@@ -1871,7 +1871,7 @@ public class KeyringTest {
         @Test
         public void throwException_instanceMethod_multipleKey() throws CipherException {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. use 'keyring.encrypt(password)");
+            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
 
             String password = "password";
             MultipleKeyring keyring = generateMultipleKeyring(3);
@@ -1884,7 +1884,7 @@ public class KeyringTest {
         @Test
         public void throwException_instanceMethod_roleBasedKey() throws CipherException {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. use 'keyring.encrypt(password)");
+            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
 
             String password = "password";
             RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
@@ -1924,7 +1924,7 @@ public class KeyringTest {
         @Test
         public void getKeyByRole_throwException_defaultKeyEmpty() {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("The key data with specified roleIndex does not exist. The default key in TransactionRole is also empty.");
+            expectedException.expectMessage("The Key with specified role group does not exists. The TRANSACTION role group is also empty");
 
             int[] count = {0, 0, 3};
             RoleBasedKeyring keyring = generateRoleBaseKeyring(count);
@@ -1974,7 +1974,7 @@ public class KeyringTest {
         @Test
         public void getKlaytnWallet_throwException_multiKey() {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("The keyring cannot be exported in KlaytnWalletKey format. Use caver.wallet.keyring.encrypt or keyring.encrypt.");
+            expectedException.expectMessage("The keyring cannot be exported in KlaytnWalletKey format. Use keyring.encrypt.");
 
             MultipleKeyring keyring = generateMultipleKeyring(3);
             String keyStr = keyring.getKlaytnWalletKey();
@@ -1984,7 +1984,7 @@ public class KeyringTest {
         @Test
         public void getKlaytnWallet_thrownException_roleBased() {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("The keyring cannot be exported in KlaytnWalletKey format. Use caver.wallet.keyring.encrypt or keyring.encrypt.");
+            expectedException.expectMessage("The keyring cannot be exported in KlaytnWalletKey format. Use keyring.encrypt.");
 
             RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[]{1,3,4});
             String keyStr = keyring.getKlaytnWalletKey();
@@ -2193,7 +2193,7 @@ public class KeyringTest {
         @Test
         public void multipleKeyTest_throwException_noKey() {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("Failed to create Account instance: There must be one or more keys in RoleTransaction Key array.");
+            expectedException.expectMessage("The count of public keys is not equal to the length of weight array.");
 
             BigInteger[] weights = {BigInteger.ONE, BigInteger.ONE, BigInteger.valueOf(2)};
             WeightedMultiSigOptions options = new WeightedMultiSigOptions(BigInteger.ONE, Arrays.asList(weights));
@@ -2206,7 +2206,7 @@ public class KeyringTest {
         @Test
         public void multipleKeyTest_throwException_weightedOptionCount() {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("Failed to create Account instance: The number of keys and the number of elements in the Weights array should be the same.");
+            expectedException.expectMessage("The count of public keys is not equal to the length of weight array.");
 
             MultipleKeyring keyring = generateMultipleKeyring(2);
 

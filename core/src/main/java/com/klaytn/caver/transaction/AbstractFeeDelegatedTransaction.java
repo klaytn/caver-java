@@ -2,9 +2,11 @@ package com.klaytn.caver.transaction;
 
 import com.klaytn.caver.Klay;
 import com.klaytn.caver.account.AccountKeyRoleBased;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.utils.Utils;
-import com.klaytn.caver.wallet.keyring.Keyring;
+import com.klaytn.caver.wallet.keyring.AbstractKeyring;
+import com.klaytn.caver.wallet.keyring.KeyringFactory;
+import com.klaytn.caver.wallet.keyring.SignatureData;
+import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import org.web3j.rlp.RlpEncoder;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
@@ -26,7 +28,7 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
     /**
      * The fee payer's signatures.
      */
-    List<KlaySignatureData> feePayerSignatures = new ArrayList<>();
+    List<SignatureData> feePayerSignatures = new ArrayList<>();
 
     /**
      * Represent a AbstractFeeDelegatedTransaction builder
@@ -34,7 +36,7 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
      */
     public static class Builder<B extends AbstractFeeDelegatedTransaction.Builder> extends AbstractTransaction.Builder<B> {
         String feePayer;
-        private List<KlaySignatureData> signList = new ArrayList<>();
+        private List<SignatureData> feePayerSignatures = new ArrayList<>();
 
         public Builder(String type) {
             super(type);
@@ -45,19 +47,19 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
             return (B) this;
         }
 
-        public B setFeePayerSignList(KlaySignatureData data) {
-            this.signList.add(data);
+        public B setFeePayerSignatures(List<SignatureData> feePayerSignatures) {
+            this.feePayerSignatures = feePayerSignatures;
             return (B) this;
         }
 
-        public B setFeePayerSignList(List<KlaySignatureData> signList) {
-            this.signList.addAll(signList);
+        public B setFeePayerSignatures(SignatureData data) {
+            this.feePayerSignatures.add(data);
             return (B) this;
         }
     }
 
     /**
-     * Create AbstractFeeDelegatedTransaction instance
+     * Create an AbstractFeeDelegatedTransaction instance
      * @param builder AbstractFeeDelegatedTransaction.Builder
      */
     public AbstractFeeDelegatedTransaction(Builder builder) {
@@ -65,12 +67,12 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
         this.feePayer = builder.feePayer;
 
         if (this.feePayerSignatures != null) {
-            this.feePayerSignatures.addAll(builder.signList);
+            this.feePayerSignatures.addAll(builder.feePayerSignatures);
         }
     }
 
     /**
-     * Create AbstractFeeDelegatedTransaction instance
+     * Create an AbstractFeeDelegatedTransaction instance
      * @param klaytnCall Klay RPC instance
      * @param type Transaction's type string
      * @param from The address of the sender.
@@ -82,62 +84,79 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
      * @param feePayer The address of the fee payer.
      * @param feePayerSignatures The fee payers's signatures.
      */
-    public AbstractFeeDelegatedTransaction(Klay klaytnCall, String type, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures, String feePayer, List<KlaySignatureData> feePayerSignatures) {
+    public AbstractFeeDelegatedTransaction(Klay klaytnCall, String type, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures) {
         super(klaytnCall, type, from, nonce, gas, gasPrice, chainId, signatures);
         this.feePayer = feePayer;
         this.feePayerSignatures = feePayerSignatures;
     }
 
     /**
-     *
-     * @param keyString
-     * @return
+     * Signs to the transaction with a single private key as a fee payer.
+     * It sets Hasher default value.
+     *   - signer : TransactionHasher.getHashForSignature()
+     * @param keyString The private key string.
+     * @return AbstractFeeDelegatedTransaction
      * @throws IOException
      */
     public AbstractFeeDelegatedTransaction signAsFeePayer(String keyString) throws IOException {
-        Keyring keyring = Keyring.createFromPrivateKey(keyString);
+        SingleKeyring keyring = KeyringFactory.createFromPrivateKey(keyString);
 
-        return signAsFeePayer(keyring, 0);
+        return signAsFeePayer(keyring, TransactionHasher::getHashForFeePayerSignature);
     }
 
+    /**
+     * Signs to the transaction with a single private key as a fee payer.
+     * @param keyString The private key string.
+     * @param hasher The function to get hash of transaction.
+     * @return AbstractFeeDelegatedTransaction
+     * @throws IOException
+     */
     public AbstractFeeDelegatedTransaction signAsFeePayer(String keyString, Function<AbstractFeeDelegatedTransaction, String> hasher) throws IOException {
-        Keyring keyring = Keyring.createFromPrivateKey(keyString);
+        SingleKeyring keyring = KeyringFactory.createFromPrivateKey(keyString);
 
-        return signAsFeePayer(keyring, 0, TransactionHasher::getHashForSignature);
+        return signAsFeePayer(keyring, hasher);
     }
 
-    public AbstractFeeDelegatedTransaction signAsFeePayer(Keyring keyring) throws IOException {
-        return signAsFeePayer(keyring, TransactionHasher::getHashForSignature);
+    /**
+     * Signs using all private keys used in the role defined in the Keyring instance as a fee payer.
+     * It sets index and Hasher default value.
+     *    - signer : TransactionHasher.getHashForSignature()
+     * @param keyring The Keyring instance.
+     * @return AbstractFeeDelegatedTransaction
+     * @throws IOException
+     */
+    public AbstractFeeDelegatedTransaction signAsFeePayer(AbstractKeyring keyring) throws IOException {
+        return signAsFeePayer(keyring, TransactionHasher::getHashForFeePayerSignature);
     }
 
-    public AbstractFeeDelegatedTransaction signAsFeePayer(Keyring keyring, int index) throws IOException {
-        return signAsFeePayer(keyring, 0, TransactionHasher::getHashForSignature);
+    /**
+     * Signs using all private keys used in the role defined in the keyring instance as a fee payer.
+     * @param keyring The Keyring instance.
+     * @param index The index of private key to use in Keyring instance.
+     * @return AbstractFeeDelegatedTransaction
+     * @throws IOException
+     */
+    public AbstractFeeDelegatedTransaction signAsFeePayer(AbstractKeyring keyring, int index) throws IOException {
+        return signAsFeePayer(keyring, index, TransactionHasher::getHashForFeePayerSignature);
     }
 
-    public AbstractFeeDelegatedTransaction signAsFeePayer(Keyring keyring, Function<AbstractFeeDelegatedTransaction, String> hasher) throws IOException {
+    /**
+     * Signs using all private keys used in the role defined in the Keyring instance as a fee payer.
+     * @param keyring The Keyring instance.
+     * @param hasher The function to get hash of transaction.
+     * @return AbstractFeeDelegatedTransaction
+     * @throws IOException
+     */
+    public AbstractFeeDelegatedTransaction signAsFeePayer(AbstractKeyring keyring, Function<AbstractFeeDelegatedTransaction, String> hasher) throws IOException {
         if(!this.getFeePayer().toLowerCase().equals(keyring.getAddress().toLowerCase())) {
             throw new IllegalArgumentException("The feePayer address of the transaction is different with the address of the keyring to use.");
         }
 
         this.fillTransaction();
         int role = AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex();
+
         String hash = hasher.apply(this);
-        List<KlaySignatureData> sigList = keyring.signWithKeys(hash, Numeric.toBigInt(this.getChainId()).intValue(), role);
-
-        this.appendFeePayerSignatures(sigList);
-
-        return this;
-    }
-
-    public AbstractFeeDelegatedTransaction signAsFeePayer(Keyring keyring, int index, Function<AbstractFeeDelegatedTransaction, String> hasher) throws IOException {
-        if(!this.getFeePayer().toLowerCase().equals(keyring.getAddress().toLowerCase())) {
-            throw new IllegalArgumentException("The feePayer address of the transaction is different with the address of the keyring to use.");
-        }
-
-        this.fillTransaction();
-        int role = AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex();
-        String hash = hasher.apply(this);
-        KlaySignatureData sigList = keyring.signWithKey(hash, Numeric.toBigInt(this.getChainId()).intValue(), role, index);
+        List<SignatureData> sigList = keyring.sign(hash, Numeric.toBigInt(this.getChainId()).intValue(), role);
 
         this.appendFeePayerSignatures(sigList);
 
@@ -145,24 +164,56 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
     }
 
     /**
-     * Appends signatures to the transaction.
-     * @param signatureData KlaySignatureData instance contains ECDSA signature data
+     * Signs to the transaction with a private key in the Keyring instance as a fee payer.
+     * @param keyring The Keyring instance.
+     * @param index The index of private key to use in Keyring instance.
+     * @param hasher The function to get hash of transaction.
+     * @return AbstractFeeDelegatedTransaction
+     * @throws IOException
      */
-    public void appendFeePayerSignatures(KlaySignatureData signatureData) {
-        List<KlaySignatureData> signList = new ArrayList<>();
-        signList.add(signatureData);
-        appendFeePayerSignatures(signList);
+    public AbstractFeeDelegatedTransaction signAsFeePayer(AbstractKeyring keyring, int index, Function<AbstractFeeDelegatedTransaction, String> hasher) throws IOException {
+        if(!this.getFeePayer().toLowerCase().equals(keyring.getAddress().toLowerCase())) {
+            throw new IllegalArgumentException("The feePayer address of the transaction is different with the address of the keyring to use.");
+        }
+
+        this.fillTransaction();
+        int role = AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex();
+
+        String hash = hasher.apply(this);
+        SignatureData sigList = keyring.sign(hash, Numeric.toBigInt(this.getChainId()).intValue(), role, index);
+
+        this.appendFeePayerSignatures(sigList);
+
+        return this;
     }
 
     /**
-     * Appends signatures to the transaction.
-     * @param signatureData List of KlaySignatureData contains ECDSA signature data
+     * Appends fee payer's signatures to the transaction.
+     * @param signatureData SignatureData instance contains ECDSA signature data
      */
-    public void appendFeePayerSignatures(List<KlaySignatureData> signatureData) {
+    public void appendFeePayerSignatures(SignatureData signatureData) {
+        List<SignatureData> feePayerSignatureList = new ArrayList<>();
+        feePayerSignatureList.add(signatureData);
+
+        appendFeePayerSignatures(feePayerSignatureList);
+    }
+
+    /**
+     * Appends fee payer's signatures to the transaction.
+     * @param signatureData List of SignatureData contains ECDSA signature data
+     */
+    public void appendFeePayerSignatures(List<SignatureData> signatureData) {
         this.feePayerSignatures.addAll(signatureData);
-        this.feePayerSignatures = refineSignature(this.getSignatures());
+        this.feePayerSignatures = refineSignature(this.getFeePayerSignatures());
     }
 
+    /**
+     * Combines signatures and feePayerSignatures to the transaction from RLP-encoded transaction strings and returns a single transaction with all signatures combined.
+     * When combining the signatures into a transaction instance,
+     * an error is thrown if the decoded transaction contains different value except signatures.
+     * @param rlpEncoded A List of RLP-encoded transaction strings.
+     * @return String
+     */
     public String combineSignature(List<String> rlpEncoded) {
         boolean fillVariable = false;
 
@@ -198,6 +249,10 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
         return this.getRLPEncoding();
     }
 
+    /**
+     * Returns a RLP-encoded transaction string for making fee payer's signature.
+     * @return String
+     */
     public String getRLPEncodingForFeePayerSignature() {
         validateOptionalValues(true);
 
@@ -213,13 +268,19 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
         return Numeric.toHexString(encoded);
     }
 
+    /**
+     * Check equals txObj passed parameter and current instance.
+     * @param txObj The AbstractFeeDelegatedTransaction Object to compare
+     * @param checkSig Check whether signatures field is equal.
+     * @return boolean
+     */
     public boolean compareTxField(AbstractFeeDelegatedTransaction txObj, boolean checkSig) {
         if(!super.compareTxField(txObj, checkSig)) return false;
 
         if(!this.getFeePayer().toLowerCase().equals(txObj.getFeePayer().toLowerCase())) return false;
 
         if(checkSig) {
-            List<KlaySignatureData> dataList = this.getFeePayerSignatures();
+            List<SignatureData> dataList = this.getFeePayerSignatures();
 
             if(dataList.size() != txObj.getFeePayerSignatures().size()) return false;
 
@@ -233,10 +294,18 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
         return true;
     }
 
+    /**
+     * Getter function for feePayer
+     * @return String
+     */
     public String getFeePayer() {
         return feePayer;
     }
 
+    /**
+     * Setter function for feePayer
+     * @param feePayer The address of fee payer.
+     */
     public void setFeePayer(String feePayer) {
         if(feePayer == null) {
             feePayer = "0x";
@@ -249,7 +318,11 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
         this.feePayer = feePayer;
     }
 
-    public List<KlaySignatureData> getFeePayerSignatures() {
+    /**
+     * Getter function for feePayerSignatures
+     * @return List
+     */
+    public List<SignatureData> getFeePayerSignatures() {
         return feePayerSignatures;
     }
 }

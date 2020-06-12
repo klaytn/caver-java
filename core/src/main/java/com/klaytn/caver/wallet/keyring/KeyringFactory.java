@@ -5,11 +5,8 @@ import com.klaytn.caver.account.AccountKeyRoleBased;
 import com.klaytn.caver.account.WeightedMultiSigOptions;
 import com.klaytn.caver.utils.Utils;
 import org.web3j.crypto.*;
-import org.web3j.utils.Numeric;
 
 import java.io.IOException;
-import java.math.BigInteger;
-import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -141,7 +138,7 @@ public class KeyringFactory {
      * @return Keyring
      */
     public static RoleBasedKeyring createWithRoleBasedKey(String address, List<String[]> roleBasedKey) {
-        if(roleBasedKey.size() > AccountKeyRoleBased.MAX_ROLE_BASED_KEY_COUNT) {
+        if(roleBasedKey.size() > AccountKeyRoleBased.ROLE_GROUP_COUNT) {
             throw new IllegalArgumentException("RoleBasedKey component must have 3.");
         }
 

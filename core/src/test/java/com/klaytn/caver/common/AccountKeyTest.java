@@ -514,7 +514,7 @@ public class AccountKeyTest {
                                      AccountKeyRoleBased actualRoleBasedKey) {
             List<IAccountKey> actualKeys = actualRoleBasedKey.getAccountKeys();
 
-            for(int i=0; i<AccountKeyRoleBased.MAX_ROLE_BASED_KEY_COUNT; i++) {
+            for(int i = 0; i<AccountKeyRoleBased.ROLE_GROUP_COUNT; i++) {
                 IAccountKey key = actualKeys.get(i);
                 if(key instanceof AccountKeyPublic) {
                     checkAccountKeyPublic(expectedPublicKeyArr[i], expectedOptionsList.get(i), (AccountKeyPublic)key);

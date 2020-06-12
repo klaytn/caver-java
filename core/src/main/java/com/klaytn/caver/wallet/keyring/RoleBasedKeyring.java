@@ -165,7 +165,7 @@ public class RoleBasedKeyring extends AbstractKeyring {
      * @return PrivateKey Array
      */
     public PrivateKey[] getKeyByRole(int role) {
-        if(role < 0 || role > AccountKeyRoleBased.MAX_ROLE_BASED_KEY_COUNT) {
+        if(role < 0 || role >= AccountKeyRoleBased.ROLE_GROUP_COUNT) {
             throw new IllegalArgumentException("Invalid role index : " + role);
         }
 

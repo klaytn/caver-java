@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 
 /**
- * Representing a Keyring which includes 'address' and 'private keys' by roles.
+ * Representing a KeyringFactory which supports create function for Keyring(Single/Multiple/RoleBased) instance.
  */
 public class KeyringFactory {
 

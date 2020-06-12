@@ -9,14 +9,33 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Representing a Keyring which includes 'address' and a 'private key'
+ */
 public class SingleKeyring extends AbstractKeyring{
+
+    /**
+     * The key to use in SingleKeyring.
+     */
     PrivateKey key;
 
+    /**
+     * Creates a SingleKeyring instance.
+     * @param address The address of keyring.
+     * @param key The key to use in SingleKeyring.
+     */
     public SingleKeyring(String address, PrivateKey key) {
         super(address);
         this.key = key;
     }
 
+    /**
+     * Signs a transaction hash with all keys in specific role group and return signature list.
+     * @param txHash The hash of transaction.
+     * @param chainId The chainId specific to the network.
+     * @param role A number indicating the role of the key.
+     * @return List
+     */
     @Override
     public List<SignatureData> sign(String txHash, int chainId, int role) {
         PrivateKey key = getKeyByRole(role);
@@ -25,6 +44,14 @@ public class SingleKeyring extends AbstractKeyring{
         return Arrays.asList(data);
     }
 
+    /**
+     * Signs a transaction hash with key in specific role group and return signature.
+     * @param txHash The hash of transaction.
+     * @param chainId The chainId specific to the network.
+     * @param role A number indicating the role of the key.
+     * @param index The index of the key to be used in the specific role group.
+     * @return SignatureData
+     */
     @Override
     public SignatureData sign(String txHash, int chainId, int role, int index) {
         validatedIndexWithKeys(index, 1);
@@ -35,6 +62,12 @@ public class SingleKeyring extends AbstractKeyring{
         return data;
     }
 
+    /**
+     * Signs a hashed data with all key in specific role group and return MessageSigned instance.
+     * @param message The data string to sign
+     * @param role A number indicating the role of the key
+     * @return MessageSigned
+     */
     @Override
     public MessageSigned signMessage(String message, int role) {
         PrivateKey key = getKeyByRole(role);
@@ -45,6 +78,13 @@ public class SingleKeyring extends AbstractKeyring{
 
     }
 
+    /**
+     * Signs a hashed data with key in specific role group and return MessageSigned instance.
+     * @param message The data string to sign
+     * @param role A number indicating the role of the key
+     * @param index The index of the key to be used in the specific role group
+     * @return MessageSigned
+     */
     @Override
     public MessageSigned signMessage(String message, int role, int index) {
         validatedIndexWithKeys(index, 1);
@@ -55,11 +95,21 @@ public class SingleKeyring extends AbstractKeyring{
         return new MessageSigned(messageHash, Arrays.asList(signatureData), message);
     }
 
+    /**
+     * Returns a KlaytnWalletKey format
+     * @return String
+     */
     @Override
     public String getKlaytnWalletKey() {
         return key.getPrivateKey() + "0x00" + this.getAddress();
     }
 
+    /**
+     * Encrypts a keyring and returns a KeyStore.(according to KeyStore V4)
+     * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
+     * @param options  The options to use when encrypt a keyring.
+     * @return KeyStore
+     */
     @Override
     public KeyStore encrypt(String password, KeyStoreOption options) throws CipherException {
         List<KeyStore.Crypto> crypto = KeyStore.Crypto.createCrypto(new PrivateKey[]{this.key}, password, options);
@@ -73,6 +123,12 @@ public class SingleKeyring extends AbstractKeyring{
         return keyStore;
     }
 
+    /**
+     * Encrypts a keyring and returns a KeyStore.(according to KeyStore V3)
+     * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
+     * @param options The options to use when encrypt a keyring.
+     * @return KeyStore
+     */
     @Override
     public KeyStore encryptV3(String password, KeyStoreOption options) throws CipherException {
         List<KeyStore.Crypto> crypto = KeyStore.Crypto.createCrypto(new PrivateKey[]{this.key}, password, options);
@@ -86,24 +142,45 @@ public class SingleKeyring extends AbstractKeyring{
         return keyStore;
     }
 
+    /**
+     * Returns true if keyring has decoupled key.
+     * @return boolean
+     */
     @Override
     public boolean isDecoupled() {
         return !(this.address.toLowerCase().equals(this.key.getDerivedAddress().toLowerCase()));
     }
 
+    /**
+     * Returns a copied SingleKeyring instance.
+     * @return Keyring
+     */
     @Override
     public AbstractKeyring copy() {
         return (AbstractKeyring) new SingleKeyring(this.address, this.key);
     }
 
+    /**
+     * Returns an instance of Account
+     * @return Account
+     */
     public Account toAccount() {
         return Account.createWithAccountKeyPublic(this.address, this.key.getPublicKey(false));
     }
 
+    /**
+     * Return a public key strings
+     * @return String
+     */
     public String getPublicKey() {
         return this.key.getPublicKey(false);
     }
 
+    /**
+     * returns keys by role. If the key of the role passed as parameter is empty, the default key is returned.
+     * @param role A number indicating the role of the key. You can use `caver.wallet.keyring.role`.
+     * @return PrivateKey Array
+     */
     public PrivateKey getKeyByRole(int role) {
         if(role < 0 || role > AccountKeyRoleBased.MAX_ROLE_BASED_KEY_COUNT) {
             throw new IllegalArgumentException("Invalid role index : " + role);
@@ -112,6 +189,10 @@ public class SingleKeyring extends AbstractKeyring{
         return this.key;
     }
 
+    /**
+     * Getter function for key
+     * @return PrivateKey
+     */
     public PrivateKey getKey() {
         return key;
     }

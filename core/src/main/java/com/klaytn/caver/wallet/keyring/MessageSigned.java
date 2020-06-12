@@ -14,7 +14,7 @@ public class MessageSigned {
     String messageHash;
 
     /**
-     * ECDSA signature data(V, R, S)
+     * ECDSA signature data(V, R, S) list
      */
     List<SignatureData> signatureData;
 
@@ -26,7 +26,7 @@ public class MessageSigned {
     /**
      * Creates a MessageSigned instance
      * @param messageHash Signed message string
-     * @param signatureData ECDSA signature data
+     * @param signatureData ECDSA signature data list
      * @param message Plain message string
      */
     public MessageSigned(String messageHash, List<SignatureData> signatureData, String message) {

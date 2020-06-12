@@ -10,23 +10,53 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Representing a ECDSA Signature data
+ */
 public class SignatureData {
+    /**
+     * Version byte
+     */
     private String v;
+
+    /**
+     * ECDSA Signature data R
+     */
     private String r;
+
+    /**
+     * ECDSA Signature data S
+     */
     private String s;
 
+    /**
+     * Creates a SignatureData instance
+     * @param v The version byte.
+     * @param r The ECDSA Signature data R
+     * @param s The ECDSA Signature data S
+     */
     public SignatureData(String v, String r, String s) {
         this.v = v;
         this.r = r;
         this.s = s;
     }
 
+    /**
+     * Creates a SignatureData instance
+     * @param v The version byte.
+     * @param r The ECDSA Signature data R
+     * @param s The ECDSA Signature data S
+     */
     public SignatureData(byte[] v, byte[] r, byte[] s) {
         this.v = Numeric.toHexString(v);
         this.r = Numeric.toHexString(r);
         this.s = Numeric.toHexString(s);
     }
 
+    /**
+     * Get empty signature.
+     * @return SignatureData
+     */
     public static SignatureData getEmptySignature() {
         SignatureData emptySig = new SignatureData(
                 "0x01",
@@ -37,6 +67,11 @@ public class SignatureData {
         return emptySig;
     }
 
+    /**
+     * Decodes a RLP encoded string contains signature list.
+     * @param signatureRlpTypeList a RLP encoded string contains signature list.
+     * @return List
+     */
     public static List<SignatureData> decodeSignatures(List<RlpType> signatureRlpTypeList) {
         List<SignatureData> signatureDataList = new ArrayList<>();
 
@@ -52,6 +87,10 @@ public class SignatureData {
         return signatureDataList;
     }
 
+    /**
+     * Set "V" field according to EIP-155
+     * @param chainId The chain id specific to the network.
+     */
     public void makeEIP155Signature(int chainId) {
         if(this.getV() == null || this.getV().isEmpty() || this.getV().equals("0x")) {
             throw new IllegalArgumentException("V value must be set.");
@@ -64,6 +103,10 @@ public class SignatureData {
     }
 
 
+    /**
+     * Returns the RLP-encoded string of this signature.
+     * @return RlpList
+     */
     public RlpList toRlpList() {
         byte[] v = Numeric.hexStringToByteArray(getV());
         byte[] r = Numeric.hexStringToByteArray(getR());
@@ -76,6 +119,11 @@ public class SignatureData {
         );
     }
 
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     * @param o The reference object with which to compare.
+     * @return boolean
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -96,6 +144,10 @@ public class SignatureData {
         return s.equals(that.s);
     }
 
+    /**
+     * Returns a hash code value for the object.
+     * @return integer
+     */
     @Override
     public int hashCode() {
         int result = v.hashCode();
@@ -104,31 +156,59 @@ public class SignatureData {
         return result;
     }
 
+    /**
+     * Returns a string representation of the object.
+     * @return String
+     */
     @Override
     public String toString() {
         return "V : " + getV() + "\nR : " + getR() + "\nS : " + getS();
     }
 
+    /**
+     * Getter function for V.
+     * @return String
+     */
     public String getV() {
         return v;
     }
 
+    /**
+     * Getter function for R.
+     * @return String
+     */
     public String getR() {
         return r;
     }
 
+    /**
+     * Getter function for S.
+     * @return String
+     */
     public String getS() {
         return s;
     }
 
+    /**
+     * Setter function for V.
+     * @param v Version byte.
+     */
     public void setV(String v) {
         this.v = v;
     }
 
+    /**
+     * Setter function for R.
+     * @param r ECDSA Signature data R.
+     */
     public void setR(String r) {
         this.r = r;
     }
 
+    /**
+     * Setter function for S.
+     * @param s ECDSA Signature data S.
+     */
     public void setS(String s) {
         this.s = s;
     }

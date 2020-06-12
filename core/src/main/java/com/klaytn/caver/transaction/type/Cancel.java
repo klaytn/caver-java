@@ -92,7 +92,7 @@ public class Cancel extends AbstractTransaction {
                 .setGasPrice(gasPrice)
                 .setGas(gas)
                 .setFrom(from)
-                .setSignList(signatureDataList)
+                .setSignatures(signatureDataList)
                 .build();
 
         return cancel;

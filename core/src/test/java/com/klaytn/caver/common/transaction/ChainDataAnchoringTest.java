@@ -1,7 +1,6 @@
 package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.type.ChainDataAnchoring;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
@@ -91,7 +90,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertNotNull(txObj);
@@ -104,7 +103,7 @@ public class ChainDataAnchoringTest {
                     .setGas(gas)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             txObj.fillTransaction();
@@ -122,7 +121,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertNotNull(txObj);
@@ -146,7 +145,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -164,7 +163,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -182,7 +181,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -200,7 +199,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -218,7 +217,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertNotNull(txObj);
@@ -238,7 +237,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertNotNull(txObj);
@@ -393,7 +392,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
@@ -413,7 +412,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             txObj.getRLPEncoding();
@@ -433,7 +432,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             txObj.getRLPEncoding();
@@ -655,7 +654,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(emptySignature)
+                    .setSignatures(emptySignature)
                     .build();
 
             SignatureData signatureData = new SignatureData(
@@ -686,7 +685,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             SignatureData signatureData1 = new SignatureData(
@@ -719,7 +718,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             SignatureData signatureData1 = new SignatureData(
@@ -818,7 +817,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signature)
+                    .setSignatures(signature)
                     .build();
 
             String[] rlpEncodedString = new String[] {
@@ -870,7 +869,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
@@ -902,7 +901,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
@@ -930,7 +929,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getTransactionHash();
@@ -950,7 +949,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getTransactionHash();
@@ -974,7 +973,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
@@ -1002,7 +1001,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getSenderTxHash();
@@ -1022,7 +1021,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getSenderTxHash();
@@ -1046,7 +1045,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
@@ -1074,7 +1073,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();
@@ -1094,7 +1093,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();
@@ -1114,7 +1113,7 @@ public class ChainDataAnchoringTest {
                     .setFrom(from)
                     .setChainId(chainID)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();

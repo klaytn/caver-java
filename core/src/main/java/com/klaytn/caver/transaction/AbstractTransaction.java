@@ -2,7 +2,6 @@ package com.klaytn.caver.transaction;
 
 import com.klaytn.caver.Klay;
 import com.klaytn.caver.account.AccountKeyRoleBased;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.type.LegacyTransaction;
 import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.utils.Utils;
@@ -79,7 +78,7 @@ abstract public class AbstractTransaction {
         private String gasPrice = "0x";
         private String chainId = "0x";
         private Klay klaytnCall = null;
-        private List<SignatureData> signList = new ArrayList<>();
+        private List<SignatureData> signatures = new ArrayList<>();
 
         public Builder(String type) {
             this.type = type;
@@ -135,13 +134,13 @@ abstract public class AbstractTransaction {
             return (B) this;
         }
 
-        public B setSignList(List<SignatureData> signList) {
-            this.signList.addAll(signList);
+        public B setSignatures(List<SignatureData> signatures) {
+            this.signatures.addAll(signatures);
             return (B) this;
         }
 
-        public B setSignList(SignatureData sign) {
-            this.signList.add(sign);
+        public B setSignatures(SignatureData sign) {
+            this.signatures.add(sign);
             return (B) this;
         }
     }
@@ -158,7 +157,7 @@ abstract public class AbstractTransaction {
                 builder.gas,
                 builder.gasPrice,
                 builder.chainId,
-                builder.signList
+                builder.signatures
         );
     }
 

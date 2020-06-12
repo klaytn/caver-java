@@ -92,7 +92,7 @@ public class SmartContractExecutionTest {
                     .setFrom(from)
                     .setTo(to)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertNotNull(txObj);
@@ -108,7 +108,7 @@ public class SmartContractExecutionTest {
                     .setFrom(from)
                     .setTo(to)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             txObj.fillTransaction();
@@ -128,7 +128,7 @@ public class SmartContractExecutionTest {
                     .setFrom(from)
                     .setTo(to)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertNotNull(txObj);
@@ -155,7 +155,7 @@ public class SmartContractExecutionTest {
                     .setFrom(from)
                     .setTo(to)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -175,7 +175,7 @@ public class SmartContractExecutionTest {
                     .setFrom(from)
                     .setTo(to)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -195,7 +195,7 @@ public class SmartContractExecutionTest {
                     .setFrom(from)
                     .setTo(to)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -215,7 +215,7 @@ public class SmartContractExecutionTest {
                     .setFrom(from)
                     .setTo(to)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -236,7 +236,7 @@ public class SmartContractExecutionTest {
                     .setFrom(from)
                     .setTo(to)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -256,7 +256,7 @@ public class SmartContractExecutionTest {
                     .setFrom(from)
                     .setTo(to)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -276,7 +276,7 @@ public class SmartContractExecutionTest {
                     .setFrom(from)
                     .setTo(to)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -296,7 +296,7 @@ public class SmartContractExecutionTest {
                     .setFrom(from)
                     .setTo(to)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -316,7 +316,7 @@ public class SmartContractExecutionTest {
                     .setFrom(from)
                     .setTo(to)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -336,7 +336,7 @@ public class SmartContractExecutionTest {
                     .setFrom(from)
                     .setTo(to)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
     }
@@ -591,7 +591,7 @@ public class SmartContractExecutionTest {
                     .setFrom(from)
                     .setTo(to)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
@@ -610,7 +610,7 @@ public class SmartContractExecutionTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             txObj.getRLPEncoding();
@@ -629,7 +629,7 @@ public class SmartContractExecutionTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             txObj.getRLPEncoding();
@@ -874,7 +874,7 @@ public class SmartContractExecutionTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(emptySignature)
+                    .setSignatures(emptySignature)
                     .build();
 
             SignatureData signatureData = new SignatureData(
@@ -907,7 +907,7 @@ public class SmartContractExecutionTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             SignatureData signatureData1 = new SignatureData(
@@ -942,7 +942,7 @@ public class SmartContractExecutionTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             SignatureData signatureData1 = new SignatureData(
@@ -1022,7 +1022,7 @@ public class SmartContractExecutionTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             String[] rlpEncodedString = new String[] {
@@ -1060,7 +1060,7 @@ public class SmartContractExecutionTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             String rlpEncoded = "0x28f9027e018505d21dba00830dbba080809447a4caa81fe2ed8cc834aafe5b1d7ee3ddedecfab9020e60806040526000805534801561001457600080fd5b506101ea806100246000396000f30060806040526004361061006d576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd1461007257806342cbb15c1461009d578063767800de146100c8578063b22636271461011f578063d14e62b814610150575b600080fd5b34801561007e57600080fd5b5061008761017d565b6040518082815260200191505060405180910390f35b3480156100a957600080fd5b506100b2610183565b6040518082815260200191505060405180910390f35b3480156100d457600080fd5b506100dd61018b565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34801561012b57600080fd5b5061014e60048036038101908080356000191690602001909291905050506101b1565b005b34801561015c57600080fd5b5061017b600480360381019080803590602001909291905050506101b4565b005b60005481565b600043905090565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b50565b80600081905550505600a165627a7a7230582053c65686a3571c517e2cf4f741d842e5ee6aa665c96ce70f46f9a594794f11eb00298080f847f845820fe9a06f59d699a5dd22a653b0ed1e39cbfc52ee468607eec95b195f302680ed7f9815a03b2f3f2a7a9482edfbcc9ee8e003e284b6c4a7ecbc8d361cc486562d4bdda389";
@@ -1088,7 +1088,7 @@ public class SmartContractExecutionTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -1118,7 +1118,7 @@ public class SmartContractExecutionTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -1142,7 +1142,7 @@ public class SmartContractExecutionTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getTransactionHash();
@@ -1161,7 +1161,7 @@ public class SmartContractExecutionTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getTransactionHash();
@@ -1187,7 +1187,7 @@ public class SmartContractExecutionTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -1211,7 +1211,7 @@ public class SmartContractExecutionTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getSenderTxHash();
@@ -1230,7 +1230,7 @@ public class SmartContractExecutionTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getSenderTxHash();
@@ -1256,7 +1256,7 @@ public class SmartContractExecutionTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
         @Test
@@ -1278,7 +1278,7 @@ public class SmartContractExecutionTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
             mTxObj.getRLPEncodingForSignature();
         }
@@ -1296,7 +1296,7 @@ public class SmartContractExecutionTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();
@@ -1315,7 +1315,7 @@ public class SmartContractExecutionTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();

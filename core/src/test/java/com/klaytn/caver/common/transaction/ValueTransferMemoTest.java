@@ -566,7 +566,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
@@ -585,7 +585,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             txObj.getRLPEncoding();
@@ -604,7 +604,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             txObj.getRLPEncoding();
@@ -835,7 +835,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(emptySignature)
+                    .setSignatures(emptySignature)
                     .build();
 
             SignatureData signatureData = new SignatureData(
@@ -868,7 +868,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             SignatureData signatureData1 = new SignatureData(
@@ -903,7 +903,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             SignatureData signatureData1 = new SignatureData(
@@ -964,7 +964,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
@@ -1044,7 +1044,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             String rlpEncoded = "0x08f87f3a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae01947d0104ac150f749d36bb34999bcade9f2c0bd2e6f847f845820feaa0c24227c8128652d4ec039950d9cfa82c3f962c4f4dee61e54236bdf89cbff8e9a04522134ef899ba136a668afd4ae76bd00bb19c0dc5ff66d7492a6a2a506021c2";
@@ -1072,7 +1072,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
@@ -1106,7 +1106,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
@@ -1134,7 +1134,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getTransactionHash();
@@ -1153,7 +1153,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getTransactionHash();
@@ -1179,7 +1179,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
@@ -1206,7 +1206,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getSenderTxHash();
@@ -1225,7 +1225,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getSenderTxHash();
@@ -1251,7 +1251,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
@@ -1277,7 +1277,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();
@@ -1296,7 +1296,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();
@@ -1315,7 +1315,7 @@ public class ValueTransferMemoTest {
                     .setValue(value)
                     .setFrom(from)
                     .setInput(input)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();

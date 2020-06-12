@@ -5,7 +5,6 @@ import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.transaction.type.LegacyTransaction;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.type.TransactionType;
-import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.PrivateKey;
@@ -636,7 +635,7 @@ public class LegacyTransactionTest {
                     .setChainId(chainID)
                     .setValue(value)
                     .setInput(input)
-                    .setSignList(list)
+                    .setSignatures(list)
                     .setTo(to)
                     .build();
 
@@ -673,7 +672,7 @@ public class LegacyTransactionTest {
                     .setChainId(chainID)
                     .setValue(value)
                     .setInput(input)
-                    .setSignList(list)
+                    .setSignatures(list)
                     .setTo(to)
                     .build();
 
@@ -707,7 +706,7 @@ public class LegacyTransactionTest {
                     .setChainId(chainID)
                     .setValue(value)
                     .setInput(input)
-                    .setSignList(list)
+                    .setSignatures(list)
                     .setTo(to)
                     .build();
 
@@ -766,7 +765,7 @@ public class LegacyTransactionTest {
                     .setChainId(chainID)
                     .setValue(value)
                     .setTo(to)
-                    .setSignList(emptySig)
+                    .setSignatures(emptySig)
                     .build();
 
             String rlpEncoded = "0xf8673a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae0180820feaa0ade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6ea038160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e";
@@ -804,7 +803,7 @@ public class LegacyTransactionTest {
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setValue(value)
-                    .setSignList(list)
+                    .setSignatures(list)
                     .setTo(to)
                     .build();
 
@@ -872,7 +871,7 @@ public class LegacyTransactionTest {
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setValue(value)
-                    .setSignList(list)
+                    .setSignatures(list)
                     .setTo(to)
                     .build();
 
@@ -915,7 +914,7 @@ public class LegacyTransactionTest {
                     .setValue(value)
                     .setInput(input)
                     .setTo(to)
-                    .setSignList(list)
+                    .setSignatures(list)
                     .build();
 
             String expected = "0xe434257753bf31a130c839fec0bd34fc6ea4aa256b825288ee82db31c2ed7524";
@@ -985,7 +984,7 @@ public class LegacyTransactionTest {
                     .setValue(value)
                     .setInput(input)
                     .setTo(to)
-                    .setSignList(list)
+                    .setSignatures(list)
                     .build();
 
             String expected = "0xe434257753bf31a130c839fec0bd34fc6ea4aa256b825288ee82db31c2ed7524";
@@ -1026,7 +1025,7 @@ public class LegacyTransactionTest {
                     .setValue(value)
                     .setInput(input)
                     .setTo(to)
-                    .setSignList(list)
+                    .setSignatures(list)
                     .build();
 
             String expected = "0xe434257753bf31a130c839fec0bd34fc6ea4aa256b825288ee82db31c2ed7524";
@@ -1063,7 +1062,7 @@ public class LegacyTransactionTest {
                     .setValue(value)
                     .setInput(input)
                     .setTo(to)
-                    .setSignList(list)
+                    .setSignatures(list)
                     .build();
 
             legacyTransaction.getSenderTxHash();
@@ -1097,7 +1096,7 @@ public class LegacyTransactionTest {
                     .setValue(value)
                     .setInput(input)
                     .setTo(to)
-                    .setSignList(list)
+                    .setSignatures(list)
                     .build();
 
 
@@ -1136,7 +1135,7 @@ public class LegacyTransactionTest {
                     .setValue(value)
                     .setInput(input)
                     .setTo(to)
-                    .setSignList(list)
+                    .setSignatures(list)
                     .build();
 
             String expected = "0xe68204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a8431323334018080";
@@ -1173,7 +1172,7 @@ public class LegacyTransactionTest {
                     .setValue(value)
                     .setInput(input)
                     .setTo(to)
-                    .setSignList(list)
+                    .setSignatures(list)
                     .build();
 
             String encoded = legacyTransaction.getRLPEncodingForSignature();
@@ -1207,7 +1206,7 @@ public class LegacyTransactionTest {
                     .setValue(value)
                     .setInput(input)
                     .setTo(to)
-                    .setSignList(list)
+                    .setSignatures(list)
                     .build();
 
             String encoded = legacyTransaction.getRLPEncodingForSignature();
@@ -1242,7 +1241,7 @@ public class LegacyTransactionTest {
                     .setValue(value)
                     .setInput(input)
                     .setTo(to)
-                    .setSignList(list)
+                    .setSignatures(list)
                     .build();
 
             String encoded = legacyTransaction.getRLPEncodingForSignature();
@@ -1306,7 +1305,7 @@ public class LegacyTransactionTest {
                     .setChainId(chainID)
                     .setTo(to)
                     .setValue(value)
-                    .setSignList(emptySignature)
+                    .setSignatures(emptySignature)
                     .build();
 
             legacyTransaction.appendSignatures(signatureData);
@@ -1373,7 +1372,7 @@ public class LegacyTransactionTest {
                     .setChainId(chainID)
                     .setValue(value)
                     .setTo(to)
-                    .setSignList(emptySignature)
+                    .setSignatures(emptySignature)
                     .build();
 
             legacyTransaction.appendSignatures(list);
@@ -1409,7 +1408,7 @@ public class LegacyTransactionTest {
                     .setChainId(chainID)
                     .setValue(value)
                     .setTo(to)
-                    .setSignList(list)
+                    .setSignatures(list)
                     .build();
 
             legacyTransaction.appendSignatures(signatureData);
@@ -1443,7 +1442,7 @@ public class LegacyTransactionTest {
                     .setChainId(chainID)
                     .setValue(value)
                     .setTo(to)
-                    .setSignList(list)
+                    .setSignatures(list)
                     .build();
 
             legacyTransaction.appendSignatures(list);

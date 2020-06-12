@@ -156,7 +156,7 @@ public class ValueTransferMemo extends AbstractTransaction {
                 .setValue(value)
                 .setFrom(from)
                 .setInput(input)
-                .setSignList(signatureDataList)
+                .setSignatures(signatureDataList)
                 .build();
 
         return valueTransferMemo;

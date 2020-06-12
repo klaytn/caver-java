@@ -1,7 +1,6 @@
 package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.type.ValueTransfer;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
@@ -471,7 +470,7 @@ public class ValueTransferTest {
                     .setGasPrice(gasPrice)
                     .setChainId(chainId)
                     .setNonce(BigInteger.valueOf(nonce))
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertEquals(expectedEncoded, valueTransfer.getRLPEncoding());
@@ -489,7 +488,7 @@ public class ValueTransferTest {
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainId)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             valueTransfer.getRLPEncoding();
@@ -507,7 +506,7 @@ public class ValueTransferTest {
                     .setValue(value)
                     .setGas(gas)
                     .setChainId(chainId)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             valueTransfer.getRLPEncoding();
@@ -779,7 +778,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(emptySignature)
+                    .setSignatures(emptySignature)
                     .build();
 
             SignatureData signatureData = new SignatureData(
@@ -811,7 +810,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             SignatureData signatureData1 = new SignatureData(
@@ -845,7 +844,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             SignatureData signatureData1 = new SignatureData(
@@ -939,7 +938,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             String expectedRLPEncoded = "0x08f9010d3a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae01947d0104ac150f749d36bb34999bcade9f2c0bd2e6f8d5f845820feaa03d820b27d0997baf16f98df01c7b2b2e9734ad05b2228c4d403c2facff8397f3a01f4a44eeb8b7f0b0019162d1d6b90c401078e56fcd7495e74f7cfcd37e25f017f845820feaa0c24227c8128652d4ec039950d9cfa82c3f962c4f4dee61e54236bdf89cbff8e9a04522134ef899ba136a668afd4ae76bd00bb19c0dc5ff66d7492a6a2a506021c2f845820fe9a0c9845154419b26dcb7700b4856c38f6e272004654ac3f38e9663134863600c52a05671961420adee43ee4538cba0200e82ff3c939c81e7d6f977660546b06d6914";
@@ -995,7 +994,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             String rlpEncoded = "0x08f87f3a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae01947d0104ac150f749d36bb34999bcade9f2c0bd2e6f847f845820feaa0c24227c8128652d4ec039950d9cfa82c3f962c4f4dee61e54236bdf89cbff8e9a04522134ef899ba136a668afd4ae76bd00bb19c0dc5ff66d7492a6a2a506021c2";
@@ -1035,7 +1034,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(SignatureData)
+                    .setSignatures(SignatureData)
                     .build();
         }
 
@@ -1079,7 +1078,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             String txHash = mValueTransfer.getTransactionHash();
@@ -1098,7 +1097,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mValueTransfer.getTransactionHash();
@@ -1116,7 +1115,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mValueTransfer.getTransactionHash();
@@ -1155,7 +1154,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             String txHash = mValueTransfer.getSenderTxHash();
@@ -1174,7 +1173,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mValueTransfer.getSenderTxHash();
@@ -1192,7 +1191,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mValueTransfer.getSenderTxHash();
@@ -1249,7 +1248,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mValueTransfer.getRLPEncodingForSignature();
@@ -1267,7 +1266,7 @@ public class ValueTransferTest {
                     .setChainId(chainId)
                     .setValue(value)
                     .setFrom(from)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mValueTransfer.getRLPEncodingForSignature();

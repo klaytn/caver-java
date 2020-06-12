@@ -1,7 +1,6 @@
 package com.klaytn.caver.common;
 
 import com.klaytn.caver.account.*;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Rule;
@@ -955,9 +954,9 @@ public class KeyringTest {
             assertEquals(expect.getMessage(), actual.getMessage());
             assertEquals(expect.getMessageHash(), actual.getMessageHash());
 
-            assertEquals(expect.getSignatureData().get(0).getR(), actual.getSignatureData().get(0).getR());
-            assertEquals(expect.getSignatureData().get(0).getS(), actual.getSignatureData().get(0).getS());
-            assertEquals(expect.getSignatureData().get(0).getV(), actual.getSignatureData().get(0).getV());
+            assertEquals(expect.getSignatures().get(0).getR(), actual.getSignatures().get(0).getR());
+            assertEquals(expect.getSignatures().get(0).getS(), actual.getSignatures().get(0).getS());
+            assertEquals(expect.getSignatures().get(0).getV(), actual.getSignatures().get(0).getV());
         }
 
         //CA-KEYRING-053
@@ -967,9 +966,9 @@ public class KeyringTest {
             MessageSigned actual = keyring.signMessage(data, 0, 0);
 
             assertEquals(Utils.hashMessage(data), actual.getMessageHash());
-            assertNotNull(actual.getSignatureData().get(0).getV());
-            assertNotNull(actual.getSignatureData().get(0).getR());
-            assertNotNull(actual.getSignatureData().get(0).getS());
+            assertNotNull(actual.getSignatures().get(0).getV());
+            assertNotNull(actual.getSignatures().get(0).getR());
+            assertNotNull(actual.getSignatures().get(0).getS());
         }
 
         //CA-KEYRING-054
@@ -982,9 +981,9 @@ public class KeyringTest {
             assertEquals(expect.getMessage(), actual.getMessage());
             assertEquals(expect.getMessageHash(), actual.getMessageHash());
 
-            assertEquals(expect.getSignatureData().get(0).getR(), actual.getSignatureData().get(0).getR());
-            assertEquals(expect.getSignatureData().get(0).getS(), actual.getSignatureData().get(0).getS());
-            assertEquals(expect.getSignatureData().get(0).getV(), actual.getSignatureData().get(0).getV());
+            assertEquals(expect.getSignatures().get(0).getR(), actual.getSignatures().get(0).getR());
+            assertEquals(expect.getSignatures().get(0).getS(), actual.getSignatures().get(0).getS());
+            assertEquals(expect.getSignatures().get(0).getV(), actual.getSignatures().get(0).getV());
         }
 
         //CA-KEYRING-055
@@ -1020,9 +1019,9 @@ public class KeyringTest {
             assertEquals(expect.getMessage(), actual.getMessage());
             assertEquals(expect.getMessageHash(), actual.getMessageHash());
 
-            assertEquals(expect.getSignatureData().get(0).getR(), actual.getSignatureData().get(0).getR());
-            assertEquals(expect.getSignatureData().get(0).getS(), actual.getSignatureData().get(0).getS());
-            assertEquals(expect.getSignatureData().get(0).getV(), actual.getSignatureData().get(0).getV());
+            assertEquals(expect.getSignatures().get(0).getR(), actual.getSignatures().get(0).getR());
+            assertEquals(expect.getSignatures().get(0).getS(), actual.getSignatures().get(0).getS());
+            assertEquals(expect.getSignatures().get(0).getV(), actual.getSignatures().get(0).getV());
         }
 
         //CA-KEYRING-058
@@ -1035,9 +1034,9 @@ public class KeyringTest {
             MessageSigned actual = decoupled.signMessage(data, 0, 0);
 
             assertEquals(Utils.hashMessage(data), actual.getMessageHash());
-            assertNotNull(actual.getSignatureData().get(0).getV());
-            assertNotNull(actual.getSignatureData().get(0).getR());
-            assertNotNull(actual.getSignatureData().get(0).getS());
+            assertNotNull(actual.getSignatures().get(0).getV());
+            assertNotNull(actual.getSignatures().get(0).getR());
+            assertNotNull(actual.getSignatures().get(0).getS());
         }
 
 
@@ -1054,9 +1053,9 @@ public class KeyringTest {
             assertEquals(expect.getMessage(), actual.getMessage());
             assertEquals(expect.getMessageHash(), actual.getMessageHash());
 
-            assertEquals(expect.getSignatureData().get(0).getR(), actual.getSignatureData().get(0).getR());
-            assertEquals(expect.getSignatureData().get(0).getS(), actual.getSignatureData().get(0).getS());
-            assertEquals(expect.getSignatureData().get(0).getV(), actual.getSignatureData().get(0).getV());
+            assertEquals(expect.getSignatures().get(0).getR(), actual.getSignatures().get(0).getR());
+            assertEquals(expect.getSignatures().get(0).getS(), actual.getSignatures().get(0).getS());
+            assertEquals(expect.getSignatures().get(0).getV(), actual.getSignatures().get(0).getV());
         }
 
 
@@ -1097,9 +1096,9 @@ public class KeyringTest {
             assertEquals(expect.getMessage(), actual.getMessage());
             assertEquals(expect.getMessageHash(), actual.getMessageHash());
 
-            assertEquals(expect.getSignatureData().get(0).getR(), actual.getSignatureData().get(0).getR());
-            assertEquals(expect.getSignatureData().get(0).getS(), actual.getSignatureData().get(0).getS());
-            assertEquals(expect.getSignatureData().get(0).getV(), actual.getSignatureData().get(0).getV());
+            assertEquals(expect.getSignatures().get(0).getR(), actual.getSignatures().get(0).getR());
+            assertEquals(expect.getSignatures().get(0).getS(), actual.getSignatures().get(0).getS());
+            assertEquals(expect.getSignatures().get(0).getV(), actual.getSignatures().get(0).getV());
         }
 
         //CA-KEYRING-063
@@ -1110,9 +1109,9 @@ public class KeyringTest {
             MessageSigned actual = keyring.signMessage(data, 0, 0);
 
             assertEquals(Utils.hashMessage(data), actual.getMessageHash());
-            assertNotNull(actual.getSignatureData().get(0).getR());
-            assertNotNull(actual.getSignatureData().get(0).getR());
-            assertNotNull(actual.getSignatureData().get(0).getS());
+            assertNotNull(actual.getSignatures().get(0).getR());
+            assertNotNull(actual.getSignatures().get(0).getR());
+            assertNotNull(actual.getSignatures().get(0).getS());
         }
 
         //CA-KEYRING-064
@@ -1125,9 +1124,9 @@ public class KeyringTest {
             assertEquals(expect.getMessage(), actual.getMessage());
             assertEquals(expect.getMessageHash(), actual.getMessageHash());
 
-            assertEquals(expect.getSignatureData().get(0).getR(), actual.getSignatureData().get(0).getR());
-            assertEquals(expect.getSignatureData().get(0).getS(), actual.getSignatureData().get(0).getS());
-            assertEquals(expect.getSignatureData().get(0).getV(), actual.getSignatureData().get(0).getV());
+            assertEquals(expect.getSignatures().get(0).getR(), actual.getSignatures().get(0).getR());
+            assertEquals(expect.getSignatures().get(0).getS(), actual.getSignatures().get(0).getS());
+            assertEquals(expect.getSignatures().get(0).getV(), actual.getSignatures().get(0).getV());
         }
 
         //CA-KEYRING-065
@@ -1158,9 +1157,9 @@ public class KeyringTest {
             MessageSigned actual = keyring.signMessage(data, 0, 0);
 
             assertEquals(Utils.hashMessage(data), actual.getMessageHash());
-            assertNotNull(actual.getSignatureData().get(0).getR());
-            assertNotNull(actual.getSignatureData().get(0).getR());
-            assertNotNull(actual.getSignatureData().get(0).getS());
+            assertNotNull(actual.getSignatures().get(0).getR());
+            assertNotNull(actual.getSignatures().get(0).getR());
+            assertNotNull(actual.getSignatures().get(0).getS());
         }
 
         //CA-KEYRING-069
@@ -1174,9 +1173,9 @@ public class KeyringTest {
             assertEquals(expect.getMessage(), actual.getMessage());
             assertEquals(expect.getMessageHash(), actual.getMessageHash());
 
-            assertEquals(expect.getSignatureData().get(0).getR(), actual.getSignatureData().get(0).getR());
-            assertEquals(expect.getSignatureData().get(0).getS(), actual.getSignatureData().get(0).getS());
-            assertEquals(expect.getSignatureData().get(0).getV(), actual.getSignatureData().get(0).getV());
+            assertEquals(expect.getSignatures().get(0).getR(), actual.getSignatures().get(0).getR());
+            assertEquals(expect.getSignatures().get(0).getS(), actual.getSignatures().get(0).getS());
+            assertEquals(expect.getSignatures().get(0).getV(), actual.getSignatures().get(0).getV());
         }
 
         //CA-KEYRING-070
@@ -1236,7 +1235,7 @@ public class KeyringTest {
             String message = "Some data";
 
             MessageSigned signed = keyring.signMessage(message, 0, 0);
-            String actualAddr = Utils.recover(signed.getMessage(), signed.getSignatureData().get(0));
+            String actualAddr = Utils.recover(signed.getMessage(), signed.getSignatures().get(0));
 
             checkAddress(keyring.getAddress(), actualAddr);
         }
@@ -1248,7 +1247,7 @@ public class KeyringTest {
             String message = "Some data";
 
             MessageSigned signed = keyring.signMessage(message, 0, 0);
-            String actualAddr = Utils.recover(signed.getMessageHash(), signed.getSignatureData().get(0), true);
+            String actualAddr = Utils.recover(signed.getMessageHash(), signed.getSignatures().get(0), true);
 
             checkAddress(keyring.getAddress(), actualAddr);
         }

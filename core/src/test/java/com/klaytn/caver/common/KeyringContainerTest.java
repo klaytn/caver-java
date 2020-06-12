@@ -1,6 +1,5 @@
 package com.klaytn.caver.common;
 
-import com.klaytn.caver.methods.response.KlayAccount;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.KeyringContainer;
 import com.klaytn.caver.wallet.keyring.*;
@@ -9,7 +8,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.web3j.utils.Numeric;
 
 import java.util.Arrays;
 import java.util.List;
@@ -508,11 +506,11 @@ public class KeyringContainerTest {
 
             assertEquals(message, actualData.getMessage());
             assertEquals(Utils.hashMessage(message), actualData.getMessageHash());
-            assertNotNull(actualData.getSignatureData());
+            assertNotNull(actualData.getSignatures());
 
-            assertEquals(expectedData.getSignatureData().get(0).getR(), actualData.getSignatureData().get(0).getR());
-            assertEquals(expectedData.getSignatureData().get(0).getS(), actualData.getSignatureData().get(0).getS());
-            assertEquals(expectedData.getSignatureData().get(0).getV(), actualData.getSignatureData().get(0).getV());
+            assertEquals(expectedData.getSignatures().get(0).getR(), actualData.getSignatures().get(0).getR());
+            assertEquals(expectedData.getSignatures().get(0).getS(), actualData.getSignatures().get(0).getS());
+            assertEquals(expectedData.getSignatures().get(0).getV(), actualData.getSignatures().get(0).getV());
         }
 
         //CA-KEYRINGCONTAINER-024
@@ -544,11 +542,11 @@ public class KeyringContainerTest {
 
             assertEquals(message, actualData.getMessage());
             assertEquals(Utils.hashMessage(message), actualData.getMessageHash());
-            assertNotNull(actualData.getSignatureData());
+            assertNotNull(actualData.getSignatures());
 
-            assertEquals(expectedData.getSignatureData().get(0).getR(), actualData.getSignatureData().get(0).getR());
-            assertEquals(expectedData.getSignatureData().get(0).getS(), actualData.getSignatureData().get(0).getS());
-            assertEquals(expectedData.getSignatureData().get(0).getV(), actualData.getSignatureData().get(0).getV());
+            assertEquals(expectedData.getSignatures().get(0).getR(), actualData.getSignatures().get(0).getR());
+            assertEquals(expectedData.getSignatures().get(0).getS(), actualData.getSignatures().get(0).getS());
+            assertEquals(expectedData.getSignatures().get(0).getV(), actualData.getSignatures().get(0).getV());
         }
     }
 }

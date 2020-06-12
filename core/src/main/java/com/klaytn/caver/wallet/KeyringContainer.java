@@ -1,7 +1,8 @@
 package com.klaytn.caver.wallet;
 
 import com.klaytn.caver.utils.Utils;
-import com.klaytn.caver.wallet.keyring.Keyring;
+import com.klaytn.caver.wallet.keyring.AbstractKeyring;
+import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.MessageSigned;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class KeyringContainer {
     /**
      * The map where address and keyring are mapped
      */
-    Map<String, Keyring> addressKeyringMap = new HashMap<>();
+    Map<String, AbstractKeyring> addressKeyringMap = new HashMap<>();
 
 
     /**
@@ -29,7 +30,7 @@ public class KeyringContainer {
      * Creates KeyringContainer instance
      * @param keyrings An list of keyring
      */
-    public KeyringContainer(List<Keyring> keyrings) {
+    public KeyringContainer(List<AbstractKeyring> keyrings) {
         keyrings.stream().forEach(this::add);
     }
 
@@ -51,7 +52,7 @@ public class KeyringContainer {
     public List<String> generate(int numberOfKeyrings, String entropy) {
         List<String> addressList = new ArrayList<>();
         for(int i=0; i<numberOfKeyrings; i++) {
-            Keyring keyring = Keyring.generate(entropy);
+            AbstractKeyring keyring = KeyringFactory.generate(entropy);
             addressList.add(keyring.getAddress());
             this.add(keyring);
         }
@@ -74,8 +75,8 @@ public class KeyringContainer {
      * @param key Private key string
      * @return Keyring
      */
-    public Keyring newKeyring(String address, String key) {
-        Keyring keyring = Keyring.createWithSingleKey(address, key);
+    public AbstractKeyring newKeyring(String address, String key) {
+        AbstractKeyring keyring = KeyringFactory.createWithSingleKey(address, key);
 
         return this.add(keyring);
     }
@@ -87,8 +88,8 @@ public class KeyringContainer {
      * @param keys An array of private keys
      * @return Keyring
      */
-    public Keyring newKeyring(String address, String[] keys) {
-        Keyring keyring = Keyring.createWithMultipleKey(address, keys);
+    public AbstractKeyring newKeyring(String address, String[] keys) {
+        AbstractKeyring keyring = KeyringFactory.createWithMultipleKey(address, keys);
 
         return this.add(keyring);
     }
@@ -100,8 +101,8 @@ public class KeyringContainer {
      * @param keys A List of private key array
      * @return Keyring
      */
-    public Keyring newKeyring(String address, List<String[]> keys) {
-        Keyring keyring = Keyring.createWithRoleBasedKey(address, keys);
+    public AbstractKeyring newKeyring(String address, List<String[]> keys) {
+        AbstractKeyring keyring = KeyringFactory.createWithRoleBasedKey(address, keys);
 
         return this.add(keyring);
     }
@@ -113,8 +114,8 @@ public class KeyringContainer {
      * @param keyring The keyring with new key
      * @return Keyring
      */
-    public Keyring updateKeyring(Keyring keyring) {
-        Keyring founded = this.getKeyring(keyring.getAddress());
+    public AbstractKeyring updateKeyring(AbstractKeyring keyring) {
+        AbstractKeyring founded = this.getKeyring(keyring.getAddress());
         if(founded == null) {
             throw new IllegalArgumentException("Failed to find keyring to update.");
         }
@@ -128,12 +129,12 @@ public class KeyringContainer {
      * @param address The address of keyring to query
      * @return Keyring
      */
-    public Keyring getKeyring(String address) {
+    public AbstractKeyring getKeyring(String address) {
         if(!Utils.isAddress(address)) {
             throw new IllegalArgumentException("Invalid address. To get keyring from wallet, you need to pass a valid address string as a parameter.");
         }
 
-        Keyring found = this.addressKeyringMap.get(address.toLowerCase());
+        AbstractKeyring found = this.addressKeyringMap.get(address.toLowerCase());
         return found;
     }
 
@@ -142,12 +143,12 @@ public class KeyringContainer {
      * @param keyring Keyring instance to be added.
      * @return Keyring
      */
-    public Keyring add(Keyring keyring) {
+    public AbstractKeyring add(AbstractKeyring keyring) {
         if (this.getKeyring(keyring.getAddress()) != null) {
             throw new IllegalArgumentException("Duplicated Account. Please use updateKeyring() instead");
         }
 
-        Keyring added = keyring.copy();
+        AbstractKeyring added = keyring.copy();
         this.addressKeyringMap.put(keyring.getAddress(), added);
 
         return added;
@@ -164,7 +165,7 @@ public class KeyringContainer {
         }
 
         //deallocate keyring object created for keyringContainer.
-        Keyring removed = this.addressKeyringMap.remove(address);
+        AbstractKeyring removed = this.addressKeyringMap.remove(address);
         removed = null;
 
         return true;
@@ -190,7 +191,7 @@ public class KeyringContainer {
      * @return MessageSigned
      */
     public MessageSigned signMessage(String address, String data, int role, int index) {
-        Keyring keyring = this.getKeyring(address);
+        AbstractKeyring keyring = this.getKeyring(address);
         if(keyring == null) {
             throw new NullPointerException("Failed to find keyring from wallet with address");
         }
@@ -199,27 +200,19 @@ public class KeyringContainer {
     }
 
 
-//    public AbstractTransaction signWithKey(String address, AbstractTransaction transaction) { }
-
-//    public AbstractTransaction signWithKey(String address, AbstractTransaction transaction, TransactionHasher hasher) { }
-
-//    public AbstractTransaction signWithKey(String address, AbstractTransaction transaction, int index) {}
-
-//    public AbstractTransaction signWithKey(String address, AbstractTransaction transaction, int index, TransactionHasher hasher) { }
-
-//    public AbstractTransaction signWithKeys(String address, AbstractTransaction transaction) {}
-
-//    public AbstractTransaction signWithKeys(String address, AbstractTransaction transaction, TransactionHasher hasher) {}
-
-//    public AbstractTransaction signFeePayerWithKey(String address, AbstractTransaction transaction) {}
-
-//    public AbstractTransaction signFeePayerWithKey(String address, AbstractTransaction transaction, TransactionHasher hasher) {}
-
-//    public AbstractTransaction signFeePayerWithKey(String address, AbstractTransaction transaction, int index) {}
-
-//    public AbstractTransaction signFeePayerWithKey(String address, AbstractTransaction transaction, int index, TransactionHasher hasher) {}
-
-//    public AbstractTransaction signFeePayerWithKeys(String address, AbstractTransaction transaction) {}
-
-//    public AbstractTransaction signFeePayerWithKeys(String address, AbstractTransaction transaction, TransactionHasher hasher) {}
+//    public AbstractTransaction sign(String address, AbstractTransaction transaction) { }
+//
+//    public AbstractTransaction sign(String address, AbstractTransaction transaction, TransactionHasher hasher) { }
+//
+//    public AbstractTransaction sign(String address, AbstractTransaction transaction, int index) {}
+//
+//    public AbstractTransaction sign(String address, AbstractTransaction transaction, int index, TransactionHasher hasher) { }
+//
+//    public AbstractTransaction signAsFeePayer(String address, AbstractTransaction transaction) {}
+//
+//    public AbstractTransaction signAsFeePayer(String address, AbstractTransaction transaction, TransactionHasher hasher) {}
+//
+//    public AbstractTransaction signAsFeePayer(String address, AbstractTransaction transaction, int index) {}
+//
+//    public AbstractTransaction signAsFeePayer(String address, AbstractTransaction transaction, int index, TransactionHasher hasher) {}
 }

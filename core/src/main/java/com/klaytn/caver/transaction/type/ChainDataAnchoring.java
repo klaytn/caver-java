@@ -1,10 +1,10 @@
 package com.klaytn.caver.transaction.type;
 
 import com.klaytn.caver.Klay;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
+import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.web3j.rlp.*;
 import org.web3j.utils.Numeric;
 
@@ -63,7 +63,7 @@ public class ChainDataAnchoring extends AbstractTransaction {
      * @param signatures A Signature list
      * @param input Data of the service chain.
      */
-    public ChainDataAnchoring(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures, String input) {
+    public ChainDataAnchoring(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String input) {
         super(klaytnCall, TransactionType.TxTypeChainDataAnchoring.toString(), from, nonce, gas, gasPrice, chainId, signatures);
         setInput(input);
     }
@@ -101,7 +101,7 @@ public class ChainDataAnchoring extends AbstractTransaction {
         String input = ((RlpString) values.get(4)).asString();
 
         List<RlpType> senderSignatures = ((RlpList) (values.get(5))).getValues();
-        List<KlaySignatureData> signatureDataList = KlaySignatureData.decodeSignatures(senderSignatures);
+        List<SignatureData> signatureDataList = SignatureData.decodeSignatures(senderSignatures);
 
         ChainDataAnchoring chainDataAnchoring = new ChainDataAnchoring.Builder()
                 .setNonce(nonce)
@@ -126,7 +126,7 @@ public class ChainDataAnchoring extends AbstractTransaction {
 
         List<RlpType> signatureRLPList = new ArrayList<>();
 
-        for(KlaySignatureData signatureData : this.getSignatures()) {
+        for(SignatureData signatureData : this.getSignatures()) {
             signatureRLPList.add(signatureData.toRlpList());
         }
 

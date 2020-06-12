@@ -1,9 +1,9 @@
 package com.klaytn.caver.transaction.type;
 
 import com.klaytn.caver.Klay;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.utils.BytesUtils;
+import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.web3j.rlp.*;
 import org.web3j.utils.Numeric;
 
@@ -49,7 +49,7 @@ public class Cancel extends AbstractTransaction {
      * @param chainId Network ID
      * @param signatures A Signature list
      */
-    public Cancel(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures) {
+    public Cancel(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures) {
         super(klaytnCall, TransactionType.TxTypeCancel.toString(), from, nonce, gas, gasPrice, chainId, signatures);
     }
 
@@ -85,7 +85,7 @@ public class Cancel extends AbstractTransaction {
         String from = ((RlpString) values.get(3)).asString();
 
         List<RlpType> senderSignatures = ((RlpList) (values.get(4))).getValues();
-        List<KlaySignatureData> signatureDataList = KlaySignatureData.decodeSignatures(senderSignatures);
+        List<SignatureData> signatureDataList = SignatureData.decodeSignatures(senderSignatures);
 
         Cancel cancel = new Cancel.Builder()
                 .setNonce(nonce)
@@ -109,7 +109,7 @@ public class Cancel extends AbstractTransaction {
         // TxHashRLP = type + encode([nonce, gasPrice, gas, from, txSignatures])
         List<RlpType> signatureRLPList = new ArrayList<>();
 
-        for(KlaySignatureData signatureData : this.getSignatures()) {
+        for(SignatureData signatureData : this.getSignatures()) {
             signatureRLPList.add(signatureData.toRlpList());
         }
 

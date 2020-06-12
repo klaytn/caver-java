@@ -1,9 +1,7 @@
 package com.klaytn.caver.wallet.keyring;
 
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.utils.AccountKeyPublicUtils;
 import com.klaytn.caver.utils.BytesUtils;
-import com.klaytn.caver.utils.KlaySignatureDataUtils;
 import com.klaytn.caver.utils.Utils;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Hash;
@@ -70,27 +68,29 @@ public class PrivateKey {
      * Signs with transactionHash with key and returns signature
      * @param sigHash The has of transactionHash
      * @param chainId The chainId or network
-     * @return KlaySignatureData
+     * @return SignatureData
      */
-    public KlaySignatureData sign(String sigHash, int chainId) {
+    public SignatureData sign(String sigHash, int chainId) {
         ECKeyPair keyPair = ECKeyPair.create(Numeric.toBigInt(privateKey));
         Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(sigHash), keyPair, false);
-        KlaySignatureData klaySignatureData = KlaySignatureDataUtils.createEip155KlaySignatureData(signatureData, chainId);
 
-        return klaySignatureData;
+        SignatureData signData = new SignatureData(new byte[]{signatureData.getV()}, signatureData.getR(), signatureData.getS());
+        signData.makeEIP155Signature(chainId);
+
+        return signData;
     }
 
     /**
      * Signs with hashed data and returns signature
      * @param messageHash The hash of data to sign
-     * @return KlaySignatureData
+     * @return SignatureData
      */
-    public KlaySignatureData signMessage(String messageHash) {
+    public SignatureData signMessage(String messageHash) {
         ECKeyPair keyPair = ECKeyPair.create(Numeric.toBigInt(privateKey));
         Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(messageHash), keyPair, false);
-        KlaySignatureData klaySignatureData = new KlaySignatureData(new byte[]{signatureData.getV()}, signatureData.getR(), signatureData.getS());
 
-        return klaySignatureData;
+        SignatureData signData = new SignatureData(new byte[]{signatureData.getV()}, signatureData.getR(), signatureData.getS());
+        return signData;
     }
 
     /**

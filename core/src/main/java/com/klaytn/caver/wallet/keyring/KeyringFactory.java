@@ -27,7 +27,7 @@ public class KeyringFactory {
     }
 
     /**
-     * Generates an keyring instance with entropy.
+     * Generates a keyring instance with entropy.
      * @param entropy A random string to create keyring.
      * @return Keyring
      */
@@ -36,6 +36,78 @@ public class KeyringFactory {
         String address = privateKey.getDerivedAddress();
 
         return createWithSingleKey(address, privateKey.getPrivateKey());
+    }
+
+    /**
+     * Generates a single private key string.
+     * @return String
+     */
+    public static String generateSingleKey() {
+        return generateSingleKey(null);
+    }
+
+    /**
+     * Generates a single private key string with entropy.
+     * @param entropy A random string to create private key.
+     * @return String
+     */
+    public static String generateSingleKey(String entropy) {
+        return PrivateKey.generate(entropy).getPrivateKey();
+    }
+
+    /**
+     * Generates an array of private key strings.
+     * @param num A length of keys.
+     * @return String array
+     */
+    public static String[] generateMultipleKeys(int num) {
+        return generateMultipleKeys(num, null);
+    }
+
+    /**
+     * Generates an array of private key strings with entropy.
+     * @param num A length of keys.
+     * @param entropy A random string to create private key.
+     * @return String array
+     */
+    public static String[] generateMultipleKeys(int num, String entropy) {
+        String[] keyArr = new String[num];
+
+        for(int i=0; i<num; i++) {
+            keyArr[i] = PrivateKey.generate(entropy).getPrivateKey();
+        }
+
+        return keyArr;
+    }
+
+    /**
+     * Generates an list of private key strings.
+     * @param numArr An array containing the number of keys for each role.
+     * @return List
+     */
+    public static List<String[]> generateRolBasedKeys(int[] numArr) {
+        return generateRoleBasedKeys(numArr, null);
+    }
+
+    /**
+     * Generates an list of private key strings.
+     * @param numArr An array containing the number of keys for each role.
+     * @param entropy A random string to create private key.
+     * @return List
+     */
+    public static List<String[]> generateRoleBasedKeys(int[] numArr, String entropy) {
+        String[][] keyArr = new String[3][];
+
+        for(int i=0; i<numArr.length; i++) {
+            int length = numArr[i];
+            String[] arr = new String[length];
+            for(int j=0; j<length; j++) {
+                arr[j] = PrivateKey.generate(entropy).getPrivateKey();
+            }
+            keyArr[i] = arr;
+        }
+
+        return Arrays.asList(keyArr);
     }
 
     /**

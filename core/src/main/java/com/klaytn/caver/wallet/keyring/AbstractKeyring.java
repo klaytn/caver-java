@@ -98,12 +98,33 @@ abstract public class AbstractKeyring {
     }
 
     /**
+     * Encrypts a keyring and returns a KeyStore.(according to KeyStore V4)
+     * This function automatically operates SCRYPT KDF Function
+     * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
+     * @return KeyStore
+     */
+    public KeyStore encrypt(String password) throws CipherException {
+        KeyStoreOption options = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName());
+        return this.encrypt(password, options);
+    }
+
+    /**
      * Encrypts a keyring and returns a KeyStore.(according to KeyStore V3)
      * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
      * @param options The options to use when encrypt a keyring.
      * @return KeyStore
      */
     public KeyStore encryptV3(String password, KeyStoreOption options) throws CipherException {
+        throw new RuntimeException("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
+    }
+
+    /**
+     * Encrypts a keyring and returns a KeyStore.(according to KeyStore V3)
+     * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
+     * @param options The options to use when encrypt a keyring.
+     * @return KeyStore
+     */
+    public KeyStore encryptV3(String password) throws CipherException {
         throw new RuntimeException("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
     }
 

@@ -125,6 +125,18 @@ public class SingleKeyring extends AbstractKeyring{
 
     /**
      * Encrypts a keyring and returns a KeyStore.(according to KeyStore V3)
+     * This function automatically operates SCRYPT KDF Function
+     * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
+     * @return KeyStore
+     */
+    @Override
+    public KeyStore encryptV3(String password) throws CipherException {
+        KeyStoreOption options = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName());
+        return encryptV3(password, options);
+    }
+
+    /**
+     * Encrypts a keyring and returns a KeyStore.(according to KeyStore V3)
      * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
      * @param options The options to use when encrypt a keyring.
      * @return KeyStore

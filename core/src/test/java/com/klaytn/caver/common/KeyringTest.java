@@ -1483,7 +1483,6 @@ public class KeyringTest {
                 assertNull(actualData.getCrypto());
             }
 
-//            boolean isMultiSig = expectedKeyring.getKeys().stream().skip(1).anyMatch(keyArr -> keyArr.length > 0);
             if(expectedKeyring instanceof RoleBasedKeyring) {
                 assertTrue(actualData.getKeyring().get(0) instanceof List);
             } else {
@@ -1709,9 +1708,9 @@ public class KeyringTest {
 
         //CA-KEYRING-096
         @Test
-        public void instanceMethod_singleKey() throws CipherException {
+        public void abstractKeyring_singleKey() throws CipherException {
             String password = "password";
-            SingleKeyring keyring = KeyringFactory.generate();
+            AbstractKeyring keyring = KeyringFactory.generate();
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName(), keyring.getAddress());
 
             KeyStore keyStore = keyring.encrypt(password, option);
@@ -1720,9 +1719,9 @@ public class KeyringTest {
 
         //CA-KEYRING-097
         @Test
-        public void instanceMethod_multipleKey() throws CipherException {
+        public void abstractKeyring_multipleKey() throws CipherException {
             String password = "password";
-            MultipleKeyring keyring = generateMultipleKeyring(3);
+            AbstractKeyring keyring = generateMultipleKeyring(3);
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName(), keyring.getAddress());
 
             KeyStore keyStore = keyring.encrypt(password, option);
@@ -1731,14 +1730,41 @@ public class KeyringTest {
 
         //CA-KEYRING-098
         @Test
-        public void instanceMethod_roleBasedKey() throws CipherException {
+        public void abstractKeyring_roleBasedKey() throws CipherException {
             String password = "password";
-            RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
 
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName(), keyring.getAddress());
 
             KeyStore keyStore = keyring.encrypt(password, option);
             checkValidateKeyStore(keyStore, password, keyring, 4);
+        }
+
+        @Test
+        public void singleKeyring_noOptions() throws CipherException {
+            String password = "password";
+            SingleKeyring singleKeyring = KeyringFactory.generate();
+
+            KeyStore keyStore = singleKeyring.encrypt(password);
+            checkValidateKeyStore(keyStore, password, singleKeyring, 4);
+        }
+
+        @Test
+        public void multipleKeyring_noOptions() throws CipherException {
+            String password = "password";
+            MultipleKeyring singleKeyring = generateMultipleKeyring(3);
+
+            KeyStore keyStore = singleKeyring.encrypt(password);
+            checkValidateKeyStore(keyStore, password, singleKeyring, 4);
+        }
+
+        @Test
+        public void roleBasedKeyring_noOptions() throws CipherException {
+            String password = "password";
+            RoleBasedKeyring singleKeyring = generateRoleBaseKeyring(new int[] {3,4,5});
+
+            KeyStore keyStore = singleKeyring.encrypt(password);
+            checkValidateKeyStore(keyStore, password, singleKeyring, 4);
         }
     }
 
@@ -1831,6 +1857,15 @@ public class KeyringTest {
             checkValidateKeyStore(keyStore, password, keyring, 3);
         }
 
+        @Test
+        public void keyring_single_noOption() throws CipherException {
+            String password = "password";
+            SingleKeyring keyring = KeyringFactory.generate();
+
+            KeyStore keyStore = keyring.encryptV3(password);
+            checkValidateKeyStore(keyStore, password, keyring, 3);
+        }
+
         //CA-KEYRING-104
         @Test
         public void throwException_keyring_multiple() throws CipherException {
@@ -1857,12 +1892,22 @@ public class KeyringTest {
 
         //CA-KEYRING-106
         @Test
-        public void instanceMethod_singleKey() throws CipherException {
+        public void abstractKeyring_singleKey() throws CipherException {
             String password = "password";
-            SingleKeyring keyring = KeyringFactory.generate();
+            AbstractKeyring keyring = KeyringFactory.generate();
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName(), keyring.getAddress());
 
             KeyStore keyStore = keyring.encryptV3(password, option);
+            checkValidateKeyStore(keyStore, password, keyring, 4);
+        }
+
+        //CA-KEYRING-106
+        @Test
+        public void abstractKeyring_singleKey_noOption() throws CipherException {
+            String password = "password";
+            AbstractKeyring keyring = KeyringFactory.generate();
+
+            KeyStore keyStore = keyring.encryptV3(password);
             checkValidateKeyStore(keyStore, password, keyring, 4);
         }
 
@@ -1873,7 +1918,7 @@ public class KeyringTest {
             expectedException.expectMessage("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
 
             String password = "password";
-            MultipleKeyring keyring = generateMultipleKeyring(3);
+            AbstractKeyring keyring = generateMultipleKeyring(3);
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName(), keyring.getAddress());
 
             KeyStore keyStore = keyring.encryptV3(password, option);
@@ -1886,12 +1931,13 @@ public class KeyringTest {
             expectedException.expectMessage("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
 
             String password = "password";
-            RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
 
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName(), keyring.getAddress());
 
             KeyStore keyStore = keyring.encryptV3(password, option);
         }
+
     }
 
     public static class getKeyByRoleTest {

@@ -21,7 +21,7 @@ abstract public class AbstractKeyring {
     }
 
     /**
-     * Signs a transaction hash with all keys in specific role group and return signature list.
+     * Signs a transaction hash with all private keys in specific role group and return signature list.
      * @param txHash The hash of transaction.
      * @param chainId The chainId specific to the network.
      * @param role A number indicating the role of the key.
@@ -30,7 +30,7 @@ abstract public class AbstractKeyring {
     abstract public List<SignatureData> sign(String txHash, int chainId, int role);
 
     /**
-     * Signs a transaction hash with key in specific role group and return signature.
+     * Signs a transaction hash with a private key in specific role group and return signature.
      * @param txHash The hash of transaction.
      * @param chainId The chainId specific to the network.
      * @param role A number indicating the role of the key.
@@ -40,7 +40,7 @@ abstract public class AbstractKeyring {
     abstract public SignatureData sign(String txHash, int chainId, int role, int index);
 
     /**
-     * Signs a hashed data with all keys in specific role group and return MessageSigned instance.
+     * Signs a hashed data with all private keys in specific role group and return MessageSigned instance.
      * @param message The data string to sign
      * @param role A number indicating the role of the key
      * @return MessageSigned
@@ -48,7 +48,7 @@ abstract public class AbstractKeyring {
     abstract public MessageSigned signMessage(String message, int role);
 
     /**
-     * Signs a hashed data with key in specific role group and return MessageSigned instance.
+     * Signs a hashed data with a private key in specific role group and return MessageSigned instance.
      * @param message The data string to sign
      * @param role A number indicating the role of the key
      * @param index The index of the key to be used in the specific role group

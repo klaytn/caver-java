@@ -225,7 +225,7 @@ abstract public class AbstractTransaction {
     }
 
     /**
-     * Signs to the transaction with all keys in the Keyring instance.
+     * Signs using all private keys used in the role defined in the Keyring instance.
      * It sets index and Hasher default value.
      *   - signer : TransactionHasher.getHashForSignature()
      * @param keyring The Keyring instance.
@@ -237,7 +237,7 @@ abstract public class AbstractTransaction {
     }
 
     /**
-     * Signs to the transaction with all keys in the Keyring instance.
+     * Signs using all private keys used in the role defined in the Keyring instance.
      * @param keyring The Keyring instance.
      * @param signer The function to get hash of transaction.
      * @return AbstractTransaction
@@ -313,7 +313,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Appends signatures to the transaction.
-     * @param signatureData KlaySignatureData instance contains ECDSA signature data
+     * @param signatureData SignatureData instance contains ECDSA signature data
      */
     public void appendSignatures(SignatureData signatureData) {
         List<SignatureData> signList = new ArrayList<>();

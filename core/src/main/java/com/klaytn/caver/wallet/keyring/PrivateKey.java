@@ -70,7 +70,7 @@ public class PrivateKey {
      * Signs with transactionHash with key and returns signature
      * @param sigHash The has of transactionHash
      * @param chainId The chainId or network
-     * @return KlaySignatureData
+     * @return SignatureData
      */
     public SignatureData sign(String sigHash, int chainId) {
         ECKeyPair keyPair = ECKeyPair.create(Numeric.toBigInt(privateKey));
@@ -85,7 +85,7 @@ public class PrivateKey {
     /**
      * Signs with hashed data and returns signature
      * @param messageHash The hash of data to sign
-     * @return KlaySignatureData
+     * @return SignatureData
      */
     public SignatureData signMessage(String messageHash) {
         ECKeyPair keyPair = ECKeyPair.create(Numeric.toBigInt(privateKey));

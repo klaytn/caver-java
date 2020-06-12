@@ -121,7 +121,7 @@ public class RoleBasedKeyring extends AbstractKeyring {
         List<List<KeyStore.Crypto>> cryptoList = new ArrayList<>();
 
 
-        for(int i=0; i<AccountKeyRoleBased.MAX_ROLE_BASED_KEY_COUNT; i++) {
+        for(int i = 0; i<AccountKeyRoleBased.ROLE_GROUP_COUNT; i++) {
             PrivateKey[] privateKeys = this.keys.get(i);
             List<KeyStore.Crypto> list = KeyStore.Crypto.createCrypto(privateKeys, password, options);
             cryptoList.add(list);
@@ -161,7 +161,7 @@ public class RoleBasedKeyring extends AbstractKeyring {
 
     /**
      * returns keys by role. If the key of the role passed as parameter is empty, the default key is returned.
-     * @param role A number indicating the role of the key. You can use `caver.wallet.keyring.role`.
+     * @param role A number indicating the role of the key. You can use `AccountRoleBased.RoleGroup`.
      * @return PrivateKey Array
      */
     public PrivateKey[] getKeyByRole(int role) {

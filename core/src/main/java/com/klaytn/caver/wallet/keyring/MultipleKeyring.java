@@ -13,7 +13,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * Representing a Keyring which includes "address" and "private key array"
+ * Representing a Keyring which includes "address" and "private keys array"
  */
 public class MultipleKeyring extends AbstractKeyring{
     /**
@@ -147,7 +147,7 @@ public class MultipleKeyring extends AbstractKeyring{
 
     /**
      * returns keys by role. If the key of the role passed as parameter is empty, the default key is returned.
-     * @param role A number indicating the role of the key. You can use `caver.wallet.keyring.role`.
+     * @param role A number indicating the role of the key. You can use `AccountRoleBased.RoleGroup`.
      * @return PrivateKey Array
      */
     public PrivateKey[] getKeyByRole(int role) {

@@ -208,19 +208,11 @@ public class KeyringContainer {
 //
 //    public AbstractTransaction sign(String address, AbstractTransaction transaction, int index, TransactionHasher hasher) { }
 //
-//    public AbstractTransaction sign(String address, AbstractTransaction transaction) {}
+//    public AbstractTransaction signAsFeePayer(String address, AbstractTransaction transaction) {}
 //
-//    public AbstractTransaction sign(String address, AbstractTransaction transaction, TransactionHasher hasher) {}
-
-//    public AbstractTransaction signAsFeePayer(String address, AbstractTransaction transaction) {}
-
 //    public AbstractTransaction signAsFeePayer(String address, AbstractTransaction transaction, TransactionHasher hasher) {}
-
+//
 //    public AbstractTransaction signAsFeePayer(String address, AbstractTransaction transaction, int index) {}
-
+//
 //    public AbstractTransaction signAsFeePayer(String address, AbstractTransaction transaction, int index, TransactionHasher hasher) {}
-
-//    public AbstractTransaction signAsFeePayer(String address, AbstractTransaction transaction) {}
-
-//    public AbstractTransaction signAsFeePayer(String address, AbstractTransaction transaction, TransactionHasher hasher) {}
 }

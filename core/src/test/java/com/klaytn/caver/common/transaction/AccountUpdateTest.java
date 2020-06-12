@@ -3,7 +3,6 @@ package com.klaytn.caver.common.transaction;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.account.Account;
 import com.klaytn.caver.account.WeightedMultiSigOptions;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.type.AccountUpdate;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
@@ -105,7 +104,7 @@ public class AccountUpdateTest {
                 .setNonce(nonce)
                 .setGasPrice(gasPrice)
                 .setChainId(chainID)
-                .setSignList(signatureData)
+                .setSignatures(signatureData)
                 .setAccount(account)
                 .build();
     }
@@ -132,7 +131,7 @@ public class AccountUpdateTest {
                 .setNonce(nonce)
                 .setGasPrice(gasPrice)
                 .setChainId(chainID)
-                .setSignList(signatureData)
+                .setSignatures(signatureData)
                 .setAccount(account)
                 .build();
     }
@@ -158,7 +157,7 @@ public class AccountUpdateTest {
                 .setNonce(nonce)
                 .setGasPrice(gasPrice)
                 .setChainId(chainID)
-                .setSignList(signatureData)
+                .setSignatures(signatureData)
                 .setAccount(account)
                 .build();
     }
@@ -192,7 +191,7 @@ public class AccountUpdateTest {
                 .setNonce(nonce)
                 .setGasPrice(gasPrice)
                 .setChainId(chainID)
-                .setSignList(signatureData)
+                .setSignatures(signatureData)
                 .setAccount(account)
                 .build();
     }
@@ -239,7 +238,7 @@ public class AccountUpdateTest {
                 .setNonce(nonce)
                 .setGasPrice(gasPrice)
                 .setChainId(chainID)
-                .setSignList(signatureData)
+                .setSignatures(signatureData)
                 .setAccount(account)
                 .build();
     }
@@ -871,7 +870,7 @@ public class AccountUpdateTest {
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setAccount(account)
-                    .setSignList(emptySignature)
+                    .setSignatures(emptySignature)
                     .build();
 
             SignatureData signatureData = new SignatureData(
@@ -902,7 +901,7 @@ public class AccountUpdateTest {
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setAccount(account)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             SignatureData signatureData1 = new SignatureData(
@@ -935,7 +934,7 @@ public class AccountUpdateTest {
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setAccount(account)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             SignatureData signatureData1 = new SignatureData(
@@ -1022,7 +1021,7 @@ public class AccountUpdateTest {
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setAccount(account)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             String expectedRLPEncoded = "0x20f8fa018505d21dba0083015f909440efcb7d744fdc881f698a8ec573999fe63835458201c0f8d5f845820fe9a0f2a83743da6931ce25a29d04f1c51cec8464f0d9d4dabb5acb059aa3fb8c345aa065879e06474669005e02e0b8ca06cba6f8943022305659f8936f1f6109147fddf845820feaa0638f0d712b4b709cadab174dea6da50e5429ea59d78446e810af954af8d67981a0129ad4eb9222e161e9e52be9c2384e1b1ff7566c640bc5b30c054efd64b081e7f845820fe9a0935584330d98f4a8a1cf83bf81ea7a18e33a962ad17b6a9eb8e04e3f5f95179da026804e07b5c105427497e8336300c1435d30ffa8d379dc27e5c1facd966c58db";

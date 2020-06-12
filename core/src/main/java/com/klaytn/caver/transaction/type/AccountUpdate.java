@@ -119,7 +119,7 @@ public class AccountUpdate extends AbstractTransaction {
                 .setGas(gas)
                 .setFrom(from)
                 .setAccount(account)
-                .setSignList(signatureDataList)
+                .setSignatures(signatureDataList)
                 .build();
 
         return accountUpdate;

@@ -1,7 +1,6 @@
 package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.type.Cancel;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
@@ -89,7 +88,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertNotNull(txObj);
@@ -101,7 +100,7 @@ public class CancelTest {
                     .setKlaytnCall(caver.klay())
                     .setGas(gas)
                     .setFrom(from)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             txObj.fillTransaction();
@@ -118,7 +117,7 @@ public class CancelTest {
                     .setGasPrice(Numeric.toBigInt(gasPrice))
                     .setChainId(Numeric.toBigInt(chainID))
                     .setFrom(from)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertNotNull(txObj);
@@ -141,7 +140,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -158,7 +157,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -175,7 +174,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -192,7 +191,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
     }
@@ -301,7 +300,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
@@ -317,7 +316,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             txObj.getRLPEncoding();
@@ -333,7 +332,7 @@ public class CancelTest {
                     .setGas(gas)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             txObj.getRLPEncoding();
@@ -551,7 +550,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(emptySignature)
+                    .setSignatures(emptySignature)
                     .build();
 
             SignatureData signatureData = new SignatureData(
@@ -581,7 +580,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             SignatureData signatureData1 = new SignatureData(
@@ -613,7 +612,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             SignatureData signatureData1 = new SignatureData(
@@ -711,7 +710,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             String[] rlpEncodedString = new String[] {
@@ -760,7 +759,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
@@ -791,7 +790,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
@@ -818,7 +817,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getTransactionHash();
@@ -837,7 +836,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getTransactionHash();
@@ -860,7 +859,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
@@ -887,7 +886,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getSenderTxHash();
@@ -906,7 +905,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getSenderTxHash();
@@ -929,7 +928,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
@@ -956,7 +955,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();
@@ -975,7 +974,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();
@@ -994,7 +993,7 @@ public class CancelTest {
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();

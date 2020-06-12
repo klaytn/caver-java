@@ -1,7 +1,6 @@
 package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.type.SmartContractDeploy;
 import com.klaytn.caver.utils.CodeFormat;
@@ -100,7 +99,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertNotNull(txObj);
@@ -651,7 +650,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
@@ -674,7 +673,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
@@ -697,7 +696,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
@@ -938,7 +937,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(false)
                     .setCodeFormat(codeFormat)
-                    .setSignList(emptySignature)
+                    .setSignatures(emptySignature)
                     .build();
 
             SignatureData signatureData = new SignatureData(
@@ -972,7 +971,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(false)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             SignatureData signatureData1 = new SignatureData(
@@ -1008,7 +1007,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(false)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             SignatureData signatureData1 = new SignatureData(
@@ -1101,7 +1100,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(false)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             String[] rlpEncodedString = new String[] {
@@ -1187,7 +1186,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -1218,7 +1217,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -1243,7 +1242,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getTransactionHash();
@@ -1263,7 +1262,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getTransactionHash();
@@ -1290,7 +1289,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -1315,7 +1314,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getSenderTxHash();
@@ -1335,7 +1334,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getSenderTxHash();
@@ -1362,7 +1361,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
         @Test
@@ -1385,7 +1384,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
             mTxObj.getRLPEncodingForSignature();
         }
@@ -1404,7 +1403,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();
@@ -1424,7 +1423,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();

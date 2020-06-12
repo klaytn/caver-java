@@ -109,7 +109,7 @@ public class ChainDataAnchoring extends AbstractTransaction {
                 .setGas(gas)
                 .setFrom(from)
                 .setInput(input)
-                .setSignList(signatureDataList)
+                .setSignatures(signatureDataList)
                 .build();
 
         return chainDataAnchoring;

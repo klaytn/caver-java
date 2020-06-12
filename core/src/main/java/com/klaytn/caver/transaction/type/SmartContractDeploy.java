@@ -199,7 +199,7 @@ public class SmartContractDeploy extends AbstractTransaction {
                 .setInput(input)
                 .setHumanReadable(humanReadable)
                 .setCodeFormat(codeFormat)
-                .setSignList(signatureDataList)
+                .setSignatures(signatureDataList)
                 .build();
 
         return smartContractDeploy;

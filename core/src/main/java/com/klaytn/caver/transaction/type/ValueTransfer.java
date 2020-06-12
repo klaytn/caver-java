@@ -140,7 +140,7 @@ public class ValueTransfer extends AbstractTransaction {
                 .setTo(to)
                 .setValue(value)
                 .setFrom(from)
-                .setSignList(signatureDataList)
+                .setSignatures(signatureDataList)
                 .build();
 
         return valueTransfer;

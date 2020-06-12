@@ -157,7 +157,7 @@ public class SmartContractExecution extends AbstractTransaction {
                 .setValue(value)
                 .setFrom(from)
                 .setInput(input)
-                .setSignList(signatureDataList)
+                .setSignatures(signatureDataList)
                 .build();
 
         return smartContractExecution;

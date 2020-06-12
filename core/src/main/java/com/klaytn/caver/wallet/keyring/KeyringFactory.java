@@ -125,8 +125,8 @@ public class KeyringFactory {
         }
 
         PrivateKey[] keyArr = Arrays.stream(multipleKey)
-                                                                                .map(PrivateKey::new)
-                                                                                .toArray(PrivateKey[]::new);
+                                    .map(PrivateKey::new)
+                                    .toArray(PrivateKey[]::new);
 
         return new MultipleKeyring(address, keyArr);
     }

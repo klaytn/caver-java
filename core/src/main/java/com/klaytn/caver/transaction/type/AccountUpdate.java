@@ -2,9 +2,6 @@ package com.klaytn.caver.transaction.type;
 
 import com.klaytn.caver.Klay;
 import com.klaytn.caver.account.Account;
-import com.klaytn.caver.account.AccountKeyDecoder;
-import com.klaytn.caver.account.IAccountKey;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.wallet.keyring.SignatureData;

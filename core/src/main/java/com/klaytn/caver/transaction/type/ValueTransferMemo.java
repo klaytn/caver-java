@@ -1,10 +1,10 @@
 package com.klaytn.caver.transaction.type;
 
 import com.klaytn.caver.Klay;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
+import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.web3j.rlp.*;
 import org.web3j.utils.Numeric;
 
@@ -95,7 +95,7 @@ public class ValueTransferMemo extends AbstractTransaction {
      * @param value The amount of KLAY in peb to be transferred.
      * @param input The message data attached to the transaction.
      */
-    public ValueTransferMemo(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures, String to, String value, String input) {
+    public ValueTransferMemo(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String value, String input) {
         super(
                 klaytnCall,
                 TransactionType.TxTypeValueTransferMemo.toString(),
@@ -146,7 +146,7 @@ public class ValueTransferMemo extends AbstractTransaction {
         String input = ((RlpString) values.get(6)).asString();
 
         List<RlpType> senderSignatures = ((RlpList) (values.get(7))).getValues();
-        List<KlaySignatureData> signatureDataList = KlaySignatureData.decodeSignatures(senderSignatures);
+        List<SignatureData> signatureDataList = SignatureData.decodeSignatures(senderSignatures);
 
         ValueTransferMemo valueTransferMemo = new ValueTransferMemo.Builder()
                 .setNonce(nonce)
@@ -156,7 +156,7 @@ public class ValueTransferMemo extends AbstractTransaction {
                 .setValue(value)
                 .setFrom(from)
                 .setInput(input)
-                .setSignList(signatureDataList)
+                .setSignatures(signatureDataList)
                 .build();
 
         return valueTransferMemo;
@@ -173,7 +173,7 @@ public class ValueTransferMemo extends AbstractTransaction {
 
         List<RlpType> signatureRLPList = new ArrayList<>();
 
-        for(KlaySignatureData signatureData : this.getSignatures()) {
+        for(SignatureData signatureData : this.getSignatures()) {
             signatureRLPList.add(signatureData.toRlpList());
         }
 

@@ -1,13 +1,13 @@
 package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.type.SmartContractDeploy;
-import com.klaytn.caver.transaction.type.ValueTransferMemo;
 import com.klaytn.caver.utils.CodeFormat;
-import com.klaytn.caver.wallet.keyring.Keyring;
+import com.klaytn.caver.wallet.keyring.AbstractKeyring;
+import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.PrivateKey;
+import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -60,13 +60,13 @@ public class SmartContractDeployTest {
     static String expectedTransactionHash = "0x523417d946221c4d12b58519580edca43662577df7e107f5ff92f115d4b3d210";
     static String expectedRLPEncoding = "0x28f9027e1f8505d21dba00830dbba0808094d91aec35bea25d379e49cfe2dff5f5775cdac1a3b9020e60806040526000805534801561001457600080fd5b506101ea806100246000396000f30060806040526004361061006d576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd1461007257806342cbb15c1461009d578063767800de146100c8578063b22636271461011f578063d14e62b814610150575b600080fd5b34801561007e57600080fd5b5061008761017d565b6040518082815260200191505060405180910390f35b3480156100a957600080fd5b506100b2610183565b6040518082815260200191505060405180910390f35b3480156100d457600080fd5b506100dd61018b565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34801561012b57600080fd5b5061014e60048036038101908080356000191690602001909291905050506101b1565b005b34801561015c57600080fd5b5061017b600480360381019080803590602001909291905050506101b4565b005b60005481565b600043905090565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b50565b80600081905550505600a165627a7a7230582053c65686a3571c517e2cf4f741d842e5ee6aa665c96ce70f46f9a594794f11eb00298080f847f845820fe9a0018a9f680a74e275f1f83a5c2c45e1313c52432df4595e944240b1511a4f4ba7a02d762c3417f91b81db4907db832cb28cc64df7dca3ea9be64899ab3f4812f016";
 
-    static KlaySignatureData klaySignatureData = new KlaySignatureData(
+    static SignatureData signatureData = new SignatureData(
             Numeric.hexStringToByteArray("0x0fe9"),
             Numeric.hexStringToByteArray("0x018a9f680a74e275f1f83a5c2c45e1313c52432df4595e944240b1511a4f4ba7"),
             Numeric.hexStringToByteArray("0x2d762c3417f91b81db4907db832cb28cc64df7dca3ea9be64899ab3f4812f016")
     );
 
-    public static Keyring generateRoleBaseKeyring(int[] numArr, String address) {
+    public static AbstractKeyring generateRoleBaseKeyring(int[] numArr, String address) {
         String[][] keyArr = new String[3][];
 
         for(int i=0; i<numArr.length; i++) {
@@ -80,7 +80,7 @@ public class SmartContractDeployTest {
 
         List<String[]> arr = Arrays.asList(keyArr);
 
-        return Keyring.createWithRoleBasedKey(address, arr);
+        return KeyringFactory.createWithRoleBasedKey(address, arr);
     }
 
     public static class createInstanceBuilder {
@@ -99,7 +99,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(klaySignatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertNotNull(txObj);
@@ -650,7 +650,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(klaySignatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
@@ -673,7 +673,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(klaySignatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
@@ -696,7 +696,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(klaySignatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
@@ -713,7 +713,7 @@ public class SmartContractDeployTest {
         String expectedRLPEncoding = "0x28f9027e1f8505d21dba00830dbba0808094a94f5374fce5edbc8e2a8697c15331677e6ebf0bb9020e60806040526000805534801561001457600080fd5b506101ea806100246000396000f30060806040526004361061006d576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd1461007257806342cbb15c1461009d578063767800de146100c8578063b22636271461011f578063d14e62b814610150575b600080fd5b34801561007e57600080fd5b5061008761017d565b6040518082815260200191505060405180910390f35b3480156100a957600080fd5b506100b2610183565b6040518082815260200191505060405180910390f35b3480156100d457600080fd5b506100dd61018b565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34801561012b57600080fd5b5061014e60048036038101908080356000191690602001909291905050506101b1565b005b34801561015c57600080fd5b5061017b600480360381019080803590602001909291905050506101b4565b005b60005481565b600043905090565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b50565b80600081905550505600a165627a7a7230582053c65686a3571c517e2cf4f741d842e5ee6aa665c96ce70f46f9a594794f11eb00298080f847f845820fe9a03a6324d855fa9326e52fc09420eb3194334d81b68e4c94847547e1ee681506f8a04eacfc4c04497cdcd79a28c8165ef824686c399ea6453b7e878d69ab6fcece5b";
 
         SmartContractDeploy mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
 
@@ -732,62 +732,50 @@ public class SmartContractDeployTest {
                     .setCodeFormat(codeFormat)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
         @Test
         public void signWithKey_Keyring() throws IOException{
-            mTxObj.signWithKey(coupledKeyring, 0, TransactionHasher::getHashForSignature);
+            mTxObj.sign(coupledKeyring, 0, TransactionHasher::getHashForSignature);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_Keyring_NoIndex() throws IOException {
-            mTxObj.signWithKey(coupledKeyring, TransactionHasher::getHashForSignature);
+            mTxObj.sign(coupledKeyring, TransactionHasher::getHashForSignature);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_Keyring_NoSigner() throws IOException {
-            mTxObj.signWithKey(coupledKeyring, 0);
+            mTxObj.sign(coupledKeyring, 0);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_Keyring_Only() throws IOException {
-            mTxObj.signWithKey(coupledKeyring);
-            assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
-        }
-
-        @Test
-        public void signWithKey_KeyString() throws IOException {
-            mTxObj.signWithKey(privateKey, 0, TransactionHasher::getHashForSignature);
+            mTxObj.sign(coupledKeyring);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_KeyString_NoIndex() throws IOException {
-            mTxObj.signWithKey(privateKey, TransactionHasher::getHashForSignature);
-            assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
-        }
-
-        @Test
-        public void signWithKey_KeyString_NoSigner() throws IOException {
-            mTxObj.signWithKey(privateKey, 0);
+            mTxObj.sign(privateKey, TransactionHasher::getHashForSignature);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_KeyString_Only() throws IOException {
-            mTxObj.signWithKey(privateKey);
+            mTxObj.sign(privateKey);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKey_KlayWalletKey() throws IOException {
-            mTxObj.signWithKey(klaytnWalletKey);
+            mTxObj.sign(klaytnWalletKey);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
@@ -796,16 +784,16 @@ public class SmartContractDeployTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The from address of the transaction is different with the address of the keyring to use");
 
-            mTxObj.signWithKey(deCoupledKeyring);
+            mTxObj.sign(deCoupledKeyring);
         }
 
         @Test
         public void throwException_InvalidIndex() throws IOException {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
-            Keyring role = generateRoleBaseKeyring(new int[]{3,3,3}, from);
-            mTxObj.signWithKey(role, 4);
+            AbstractKeyring role = generateRoleBaseKeyring(new int[]{3,3,3}, from);
+            mTxObj.sign(role, 4);
         }
     }
 
@@ -819,7 +807,7 @@ public class SmartContractDeployTest {
         String expectedRLPEncoding = "0x28f9027e1f8505d21dba00830dbba0808094a94f5374fce5edbc8e2a8697c15331677e6ebf0bb9020e60806040526000805534801561001457600080fd5b506101ea806100246000396000f30060806040526004361061006d576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd1461007257806342cbb15c1461009d578063767800de146100c8578063b22636271461011f578063d14e62b814610150575b600080fd5b34801561007e57600080fd5b5061008761017d565b6040518082815260200191505060405180910390f35b3480156100a957600080fd5b506100b2610183565b6040518082815260200191505060405180910390f35b3480156100d457600080fd5b506100dd61018b565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34801561012b57600080fd5b5061014e60048036038101908080356000191690602001909291905050506101b1565b005b34801561015c57600080fd5b5061017b600480360381019080803590602001909291905050506101b4565b005b60005481565b600043905090565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b50565b80600081905550505600a165627a7a7230582053c65686a3571c517e2cf4f741d842e5ee6aa665c96ce70f46f9a594794f11eb00298080f847f845820fe9a03a6324d855fa9326e52fc09420eb3194334d81b68e4c94847547e1ee681506f8a04eacfc4c04497cdcd79a28c8165ef824686c399ea6453b7e878d69ab6fcece5b";
 
         SmartContractDeploy mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -836,35 +824,35 @@ public class SmartContractDeployTest {
                     .setCodeFormat(codeFormat)
                     .build();
 
-            coupledKeyring = Keyring.createFromPrivateKey(privateKey);
-            deCoupledKeyring = Keyring.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
         @Test
         public void signWithKeys_Keyring() throws IOException {
-            mTxObj.signWithKeys(coupledKeyring, TransactionHasher::getHashForSignature);
+            mTxObj.sign(coupledKeyring, TransactionHasher::getHashForSignature);
             assertEquals(1, mTxObj.getSignatures().size());
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKeys_Keyring_NoSigner() throws IOException {
-            mTxObj.signWithKeys(coupledKeyring);
+            mTxObj.sign(coupledKeyring);
             assertEquals(1, mTxObj.getSignatures().size());
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKeys_KeyString() throws IOException {
-            mTxObj.signWithKeys(privateKey, TransactionHasher::getHashForSignature);
+            mTxObj.sign(privateKey, TransactionHasher::getHashForSignature);
             assertEquals(1, mTxObj.getSignatures().size());
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
 
         @Test
         public void signWithKeys_KeyString_NoSigner() throws IOException {
-            mTxObj.signWithKeys(privateKey, TransactionHasher::getHashForSignature);
+            mTxObj.sign(privateKey, TransactionHasher::getHashForSignature);
             assertEquals(1, mTxObj.getSignatures().size());
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
@@ -874,14 +862,14 @@ public class SmartContractDeployTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The from address of the transaction is different with the address of the keyring to use");
 
-            mTxObj.signWithKeys(deCoupledKeyring);
+            mTxObj.sign(deCoupledKeyring);
         }
 
         @Test
         public void signWithKeys_roleBasedKeyring() throws IOException {
-            Keyring roleBased = generateRoleBaseKeyring(new int[]{3,3,3}, from);
+            AbstractKeyring roleBased = generateRoleBaseKeyring(new int[]{3,3,3}, from);
 
-            mTxObj.signWithKeys(roleBased);
+            mTxObj.sign(roleBased);
             assertEquals(3, mTxObj.getSignatures().size());
         }
     }
@@ -910,7 +898,7 @@ public class SmartContractDeployTest {
 
         @Test
         public void appendSignature() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
@@ -922,13 +910,13 @@ public class SmartContractDeployTest {
 
         @Test
         public void appendSignatureList() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             mTxObj.appendSignatures(list);
@@ -937,7 +925,7 @@ public class SmartContractDeployTest {
 
         @Test
         public void appendSignatureList_EmptySig() {
-            KlaySignatureData emptySignature = KlaySignatureData.getEmptySignature();
+            SignatureData emptySignature = SignatureData.getEmptySignature();
 
             mTxObj = new SmartContractDeploy.Builder()
                     .setNonce(nonce)
@@ -949,16 +937,16 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(false)
                     .setCodeFormat(codeFormat)
-                    .setSignList(emptySignature)
+                    .setSignatures(emptySignature)
                     .build();
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
             mTxObj.appendSignatures(list);
@@ -967,7 +955,7 @@ public class SmartContractDeployTest {
 
         @Test
         public void appendSignature_ExistedSignature() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
@@ -983,16 +971,16 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(false)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
-            KlaySignatureData signatureData1 = new KlaySignatureData(
+            SignatureData signatureData1 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
                     Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData1);
 
             mTxObj.appendSignatures(list);
@@ -1003,7 +991,7 @@ public class SmartContractDeployTest {
 
         @Test
         public void appendSignatureList_ExistedSignature() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
@@ -1019,22 +1007,22 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(false)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
-            KlaySignatureData signatureData1 = new KlaySignatureData(
+            SignatureData signatureData1 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
                     Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
-            KlaySignatureData signatureData2 = new KlaySignatureData(
+            SignatureData signatureData2 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x9a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
                     Numeric.hexStringToByteArray("0xa3ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
-            List<KlaySignatureData> list = new ArrayList<>();
+            List<SignatureData> list = new ArrayList<>();
             list.add(signatureData1);
             list.add(signatureData2);
 
@@ -1060,7 +1048,7 @@ public class SmartContractDeployTest {
 
 
         SmartContractDeploy mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -1080,7 +1068,7 @@ public class SmartContractDeployTest {
 
         @Test
         public void combineSignature() {
-            KlaySignatureData expectedSignature = new KlaySignatureData(
+            SignatureData expectedSignature = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fe9"),
                     Numeric.hexStringToByteArray("0x4fbefaf9da3be278403c0b69861747a4f2f530958c5f3da0b7fed8898aa02a9d"),
                     Numeric.hexStringToByteArray("0x10b441518b74b9cb15d86403a4c59a562a4669bc9c878d77276f0205304c3d85")
@@ -1096,7 +1084,7 @@ public class SmartContractDeployTest {
 
         @Test
         public void combine_multipleSignature() {
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fe9"),
                     Numeric.hexStringToByteArray("0x4fbefaf9da3be278403c0b69861747a4f2f530958c5f3da0b7fed8898aa02a9d"),
                     Numeric.hexStringToByteArray("0x10b441518b74b9cb15d86403a4c59a562a4669bc9c878d77276f0205304c3d85")
@@ -1112,7 +1100,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(false)
                     .setCodeFormat(codeFormat)
-                    .setSignList(signatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             String[] rlpEncodedString = new String[] {
@@ -1120,18 +1108,18 @@ public class SmartContractDeployTest {
                     "0x28f9027e018505d21dba00830dbba080809447a4caa81fe2ed8cc834aafe5b1d7ee3ddedecfab9020e60806040526000805534801561001457600080fd5b506101ea806100246000396000f30060806040526004361061006d576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd1461007257806342cbb15c1461009d578063767800de146100c8578063b22636271461011f578063d14e62b814610150575b600080fd5b34801561007e57600080fd5b5061008761017d565b6040518082815260200191505060405180910390f35b3480156100a957600080fd5b506100b2610183565b6040518082815260200191505060405180910390f35b3480156100d457600080fd5b506100dd61018b565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34801561012b57600080fd5b5061014e60048036038101908080356000191690602001909291905050506101b1565b005b34801561015c57600080fd5b5061017b600480360381019080803590602001909291905050506101b4565b005b60005481565b600043905090565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b50565b80600081905550505600a165627a7a7230582053c65686a3571c517e2cf4f741d842e5ee6aa665c96ce70f46f9a594794f11eb00298080f847f845820feaa04a76af831891d1050d1a0c8e7656b4ab1952ef6a1059bff994edb29a6936a909a06affc6457e9c553c5efb138a7a56dbcbed681a5bae2dceff02848341a61ab9c4"
             };
 
-            KlaySignatureData[] expectedSignature = new KlaySignatureData[] {
-                    new KlaySignatureData(
+            SignatureData[] expectedSignature = new SignatureData[] {
+                    new SignatureData(
                             Numeric.hexStringToByteArray("0x0fe9"),
                             Numeric.hexStringToByteArray("0x4fbefaf9da3be278403c0b69861747a4f2f530958c5f3da0b7fed8898aa02a9d"),
                             Numeric.hexStringToByteArray("0x10b441518b74b9cb15d86403a4c59a562a4669bc9c878d77276f0205304c3d85")
                     ),
-                    new KlaySignatureData(
+                    new SignatureData(
                             Numeric.hexStringToByteArray("0x0fe9"),
                             Numeric.hexStringToByteArray("0x6f59d699a5dd22a653b0ed1e39cbfc52ee468607eec95b195f302680ed7f9815"),
                             Numeric.hexStringToByteArray("0x3b2f3f2a7a9482edfbcc9ee8e003e284b6c4a7ecbc8d361cc486562d4bdda389")
                     ),
-                    new KlaySignatureData(
+                    new SignatureData(
                             Numeric.hexStringToByteArray("0x0fea"),
                             Numeric.hexStringToByteArray("0x4a76af831891d1050d1a0c8e7656b4ab1952ef6a1059bff994edb29a6936a909"),
                             Numeric.hexStringToByteArray("0x6affc6457e9c553c5efb138a7a56dbcbed681a5bae2dceff02848341a61ab9c4")
@@ -1152,7 +1140,7 @@ public class SmartContractDeployTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("Transactions containing different information cannot be combined.");
 
-            KlaySignatureData signatureData = new KlaySignatureData(
+            SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x3d820b27d0997baf16f98df01c7b2b2e9734ad05b2228c4d403c2facff8397f3"),
                     Numeric.hexStringToByteArray("0x1f4a44eeb8b7f0b0019162d1d6b90c401078e56fcd7495e74f7cfcd37e25f017")
@@ -1183,7 +1171,7 @@ public class SmartContractDeployTest {
     public static class getRawTransactionTest {
 
         SmartContractDeploy mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -1198,7 +1186,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(klaySignatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -1214,7 +1202,7 @@ public class SmartContractDeployTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         SmartContractDeploy mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -1229,7 +1217,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(klaySignatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -1254,7 +1242,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(klaySignatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getTransactionHash();
@@ -1274,7 +1262,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(klaySignatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getTransactionHash();
@@ -1286,7 +1274,7 @@ public class SmartContractDeployTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         SmartContractDeploy mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -1301,7 +1289,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(klaySignatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
 
@@ -1326,7 +1314,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(klaySignatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getSenderTxHash();
@@ -1346,7 +1334,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(klaySignatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getSenderTxHash();
@@ -1358,7 +1346,7 @@ public class SmartContractDeployTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         SmartContractDeploy mTxObj;
-        Keyring coupledKeyring, deCoupledKeyring;
+        AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
         @Before
@@ -1373,7 +1361,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(klaySignatureData)
+                    .setSignatures(signatureData)
                     .build();
         }
         @Test
@@ -1396,7 +1384,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(klaySignatureData)
+                    .setSignatures(signatureData)
                     .build();
             mTxObj.getRLPEncodingForSignature();
         }
@@ -1415,7 +1403,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(klaySignatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();
@@ -1435,7 +1423,7 @@ public class SmartContractDeployTest {
                     .setInput(input)
                     .setHumanReadable(humanReadable)
                     .setCodeFormat(codeFormat)
-                    .setSignList(klaySignatureData)
+                    .setSignatures(signatureData)
                     .build();
 
             mTxObj.getRLPEncodingForSignature();

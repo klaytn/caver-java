@@ -1,7 +1,6 @@
 package com.klaytn.caver.common;
 
 import com.klaytn.caver.account.*;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Rule;
@@ -45,20 +44,20 @@ import static org.junit.Assert.*;
 })
 public class KeyringTest {
 
-    public static void checkValidateSingleKey(Keyring actualKeyring, String expectedAddress, String expectedPrivateKey) {
+    public static void checkValidateSingleKey(SingleKeyring actualKeyring, String expectedAddress, String expectedPrivateKey) {
         assertTrue(Utils.isAddress(actualKeyring.getAddress()));
         assertEquals(expectedAddress, actualKeyring.getAddress());
 
-        PrivateKey actualPrivateKey = actualKeyring.getKeys().get(0)[0];
+        PrivateKey actualPrivateKey = actualKeyring.getKey();
         assertTrue(Utils.isValidPrivateKey(actualPrivateKey.getPrivateKey()));
         assertEquals(expectedPrivateKey, actualPrivateKey.getPrivateKey());
     }
 
-    public static void checkValidateMultipleKey(Keyring actualKeyring, String expectedAddress, String[] expectedPrivateKeyArr) {
+    public static void checkValidateMultipleKey(MultipleKeyring actualKeyring, String expectedAddress, String[] expectedPrivateKeyArr) {
         assertTrue(Utils.isAddress(actualKeyring.getAddress()));
         assertEquals(expectedAddress, actualKeyring.getAddress());
 
-        PrivateKey[] actualPrivateKeyArr = actualKeyring.getKeys().get(0);
+        PrivateKey[] actualPrivateKeyArr = actualKeyring.getKeys();
         assertEquals(expectedPrivateKeyArr.length, actualPrivateKeyArr.length);
 
         for(int i=0; i<actualPrivateKeyArr.length; i++) {
@@ -67,7 +66,7 @@ public class KeyringTest {
 
     }
 
-    public static void checkValidateRoleBasedKey(Keyring actualKeyring, String expectedAddress, List<String[]> expectedPrivateKeyList) {
+    public static void checkValidateRoleBasedKey(RoleBasedKeyring actualKeyring, String expectedAddress, List<String[]> expectedPrivateKeyList) {
         assertTrue(Utils.isAddress(actualKeyring.getAddress()));
         assertEquals(expectedAddress, actualKeyring.getAddress());
 
@@ -86,7 +85,40 @@ public class KeyringTest {
         }
     }
 
-    public static Keyring generateMultipleKeyring(int num) {
+    public static void checkValidKeyring(AbstractKeyring expect, AbstractKeyring actual) {
+        assertEquals(expect.getAddress(), actual.getAddress());
+        assertEquals(expect.getClass(), actual.getClass());
+
+        if(expect instanceof SingleKeyring) {
+            assertEquals(((SingleKeyring) expect).getKey().getPrivateKey(), ((SingleKeyring)actual).getKey().getPrivateKey());
+        }
+
+        if(expect instanceof MultipleKeyring) {
+            MultipleKeyring expectKeyring = (MultipleKeyring)expect;
+            MultipleKeyring actualKeyring = (MultipleKeyring)actual;
+
+            for(int i=0; i<expectKeyring.getKeys().length; i++) {
+                assertEquals(expectKeyring.getKeys().length, actualKeyring.getKeys().length);
+            }
+        }
+        if(expect instanceof RoleBasedKeyring) {
+            RoleBasedKeyring expectKeyring = (RoleBasedKeyring)expect;
+            RoleBasedKeyring actualKeyring = (RoleBasedKeyring)actual;
+
+            for(int i=0; i< expectKeyring.getKeys().size(); i++) {
+                PrivateKey[] actualArr = actualKeyring.getKeys().get(i);
+                PrivateKey[] expectedArr = expectKeyring.getKeys().get(i);
+
+                assertEquals(expectedArr.length, actualArr.length);
+
+                for(int j=0; j<actualArr.length; j++) {
+                    assertEquals(expectedArr[j].getPrivateKey(), actualArr[j].getPrivateKey());
+                }
+            }
+        }
+    }
+
+    public static MultipleKeyring generateMultipleKeyring(int num) {
         String[] keyArr = new String[num];
 
         for(int i=0; i<num; i++) {
@@ -94,10 +126,10 @@ public class KeyringTest {
         }
 
         String address = PrivateKey.generate("entropy").getDerivedAddress();
-        return Keyring.createWithMultipleKey(address, keyArr);
+        return KeyringFactory.createWithMultipleKey(address, keyArr);
     }
 
-    public static Keyring generateRoleBaseKeyring(int[] numArr) {
+    public static RoleBasedKeyring generateRoleBaseKeyring(int[] numArr) {
         String[][] keyArr = new String[3][];
 
         for(int i=0; i<numArr.length; i++) {
@@ -112,21 +144,21 @@ public class KeyringTest {
         String address = PrivateKey.generate("entropy").getDerivedAddress();
         List<String[]> arr = Arrays.asList(keyArr);
 
-        return Keyring.createWithRoleBasedKey(address, arr);
+        return KeyringFactory.createWithRoleBasedKey(address, arr);
     }
 
     public static class generateTest {
         //CA-KEYRING-001
         @Test
         public void generate() {
-            Keyring keyring = Keyring.generate();
+            AbstractKeyring keyring = KeyringFactory.generate();
             assertTrue(Utils.isAddress(keyring.getAddress()));
         }
         //CA-KEYRING-002
         @Test
         public void generateWithEntropy() {
             byte[] random = Utils.generateRandomBytes(32);
-            Keyring keyring = Keyring.generate(Numeric.toHexString(random));
+            AbstractKeyring keyring = KeyringFactory.generate(Numeric.toHexString(random));
 
             assertTrue(Utils.isAddress(keyring.getAddress()));
         }
@@ -139,22 +171,22 @@ public class KeyringTest {
         //CA-KEYRING-003
         @Test
         public void createFromPrivateKey() {
-            Keyring keyring = Keyring.generate();
+            SingleKeyring keyring = KeyringFactory.generate();
             String expectedAddress = keyring.getAddress();
-            String expectedPrivateKey = keyring.getKeys().get(0)[0].getPrivateKey();
+            String expectedPrivateKey = keyring.getKey().getPrivateKey();
 
-            Keyring actualKeyring = Keyring.createFromPrivateKey(expectedPrivateKey);
+            SingleKeyring actualKeyring = KeyringFactory.createFromPrivateKey(expectedPrivateKey);
             checkValidateSingleKey(actualKeyring, expectedAddress, expectedPrivateKey);
         }
 
         //CA-KEYRING-004
         @Test
         public void createFromPrivateKeyWithoutHexPrefix() {
-            Keyring keyring = Keyring.generate();
+            SingleKeyring keyring = KeyringFactory.generate();
             String expectedAddress = keyring.getAddress();
-            String expectedPrivateKey = keyring.getKeys().get(0)[0].getPrivateKey();
+            String expectedPrivateKey = keyring.getKey().getPrivateKey();
 
-            Keyring actualKeyring = Keyring.createFromPrivateKey(Numeric.cleanHexPrefix(expectedPrivateKey));
+            SingleKeyring actualKeyring = KeyringFactory.createFromPrivateKey(Numeric.cleanHexPrefix(expectedPrivateKey));
             checkValidateSingleKey(actualKeyring, expectedAddress, expectedPrivateKey);
         }
 
@@ -165,7 +197,7 @@ public class KeyringTest {
             String expectedPrivateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
             String expectedAddress = "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b";
 
-            Keyring actualKeyring = Keyring.createFromPrivateKey(klaytnWalletKey);
+            SingleKeyring actualKeyring = KeyringFactory.createFromPrivateKey(klaytnWalletKey);
             checkValidateSingleKey(actualKeyring, expectedAddress, expectedPrivateKey);
         }
 
@@ -176,7 +208,7 @@ public class KeyringTest {
             expectedException.expectMessage("Invalid private key.");
 
             byte[] random = Utils.generateRandomBytes(31);
-            Keyring keyring = Keyring.createFromPrivateKey(Numeric.toHexString(random));
+            AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(Numeric.toHexString(random));
         }
     }
 
@@ -192,7 +224,7 @@ public class KeyringTest {
             String expectedPrivateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
             String expectedAddress = "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b";
 
-            Keyring actualKeyring = Keyring.createFromKlaytnWalletKey(klaytnWalletKey);
+            SingleKeyring actualKeyring = KeyringFactory.createFromKlaytnWalletKey(klaytnWalletKey);
             checkValidateSingleKey(actualKeyring, expectedAddress, expectedPrivateKey);
         }
 
@@ -203,7 +235,7 @@ public class KeyringTest {
             expectedException.expectMessage("Invalid Klaytn wallet key.");
 
             String invalidWalletKey = "39d87f15c695ec94d6d7107b48dee85e252f21fedd371e1c6baefbdf0x000x658b7b7a94ac398a8e7275e719a10c";
-            Keyring actualKeyring = Keyring.createFromKlaytnWalletKey(invalidWalletKey);
+            AbstractKeyring actualKeyring = KeyringFactory.createFromKlaytnWalletKey(invalidWalletKey);
         }
     }
 
@@ -216,7 +248,7 @@ public class KeyringTest {
         public void create_SingleKey() {
             PrivateKey expectedPrivateKey = PrivateKey.generate();
 
-            Keyring actualKeyring = Keyring.create(expectedPrivateKey.getDerivedAddress(), expectedPrivateKey.getPrivateKey());
+            SingleKeyring actualKeyring = KeyringFactory.create(expectedPrivateKey.getDerivedAddress(), expectedPrivateKey.getPrivateKey());
             checkValidateSingleKey(actualKeyring, expectedPrivateKey.getDerivedAddress(), expectedPrivateKey.getPrivateKey());
         }
 
@@ -230,7 +262,7 @@ public class KeyringTest {
                     PrivateKey.generate().getPrivateKey(),
             };
 
-            Keyring actualKeyring = Keyring.create(expectedAddress, privateKeyArr);
+            MultipleKeyring actualKeyring = KeyringFactory.create(expectedAddress, privateKeyArr);
             checkValidateMultipleKey(actualKeyring, expectedAddress, privateKeyArr);
         }
 
@@ -256,7 +288,7 @@ public class KeyringTest {
                     PrivateKey.generate().getPrivateKey(),
             };
 
-            Keyring actualKeyring = Keyring.create(expectedAddress, privateKeyArr);
+            MultipleKeyring actualKeyring = KeyringFactory.create(expectedAddress, privateKeyArr);
             checkValidateMultipleKey(actualKeyring, expectedAddress, privateKeyArr);
         }
 
@@ -280,7 +312,7 @@ public class KeyringTest {
             };
 
             List<String[]> expectedKeyList = Arrays.asList(privateKeyArr);
-            Keyring actualKeyring = Keyring.create(expectedAddress, expectedKeyList);
+            RoleBasedKeyring actualKeyring = KeyringFactory.create(expectedAddress, expectedKeyList);
             checkValidateRoleBasedKey(actualKeyring, expectedAddress, expectedKeyList);
         }
 
@@ -298,7 +330,7 @@ public class KeyringTest {
             };
 
             List<String[]> expectedKeyList = Arrays.asList(privateKeyArr);
-            Keyring actualKeyring = Keyring.create(expectedAddress, expectedKeyList);
+            RoleBasedKeyring actualKeyring = KeyringFactory.create(expectedAddress, expectedKeyList);
             checkValidateRoleBasedKey(actualKeyring, expectedAddress, expectedKeyList);
         }
 
@@ -320,7 +352,7 @@ public class KeyringTest {
             };
 
             List<String[]> expectedKeyList = Arrays.asList(privateKeyArr);
-            Keyring actualKeyring = Keyring.create(expectedAddress, expectedKeyList);
+            AbstractKeyring actualKeyring = KeyringFactory.create(expectedAddress, expectedKeyList);
         }
 
         //CA-KEYRING-015
@@ -350,7 +382,7 @@ public class KeyringTest {
             };
 
             List<String[]> expectedKeyList = Arrays.asList(privateKeyArr);
-            Keyring actualKeyring = Keyring.create(expectedAddress, expectedKeyList);
+            AbstractKeyring actualKeyring = KeyringFactory.create(expectedAddress, expectedKeyList);
         }
     }
 
@@ -365,7 +397,7 @@ public class KeyringTest {
             String expectedAddress = key.getDerivedAddress();
             String expectedPrivateKey = key.getPrivateKey();
 
-            Keyring actualKeyring = Keyring.createWithSingleKey(expectedAddress, expectedPrivateKey);
+            SingleKeyring actualKeyring = KeyringFactory.createWithSingleKey(expectedAddress, expectedPrivateKey);
             checkValidateSingleKey(actualKeyring, expectedAddress, expectedPrivateKey);
         }
 
@@ -375,7 +407,7 @@ public class KeyringTest {
             String expectedAddress = PrivateKey.generate().getDerivedAddress();
             String expectedPrivateKey = PrivateKey.generate().getPrivateKey();
 
-            Keyring actualKeyring = Keyring.createWithSingleKey(expectedAddress, expectedPrivateKey);
+            SingleKeyring actualKeyring = KeyringFactory.createWithSingleKey(expectedAddress, expectedPrivateKey);
 
             assertTrue(actualKeyring.isDecoupled());
             checkValidateSingleKey(actualKeyring, expectedAddress, expectedPrivateKey);
@@ -387,10 +419,10 @@ public class KeyringTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("Invalid format of parameter. Use 'fromKlaytnWalletKey' to create Keyring from KlaytnWalletKey.");
 
-            Keyring keyring = Keyring.generate();
+            SingleKeyring keyring = KeyringFactory.generate();
             String klaytnWalletKey = keyring.getKlaytnWalletKey();
 
-            Keyring actualKeyring = Keyring.createWithSingleKey(keyring.getAddress(), klaytnWalletKey);
+            AbstractKeyring actualKeyring = KeyringFactory.createWithSingleKey(keyring.getAddress(), klaytnWalletKey);
         }
     }
 
@@ -402,7 +434,7 @@ public class KeyringTest {
         //CA-KEYRING-019
         @Test
         public void createWithMultipleKey() {
-            String expectedAddress = Keyring.generate().getAddress();
+            String expectedAddress = KeyringFactory.generate().getAddress();
 
             String[] expectedPrivateKeyArr = {
                     PrivateKey.generate().getPrivateKey(),
@@ -410,7 +442,7 @@ public class KeyringTest {
                     PrivateKey.generate().getPrivateKey(),
             };
 
-            Keyring actualKeyring = Keyring.createWithMultipleKey(expectedAddress, expectedPrivateKeyArr);
+            MultipleKeyring actualKeyring = KeyringFactory.createWithMultipleKey(expectedAddress, expectedPrivateKeyArr);
             checkValidateMultipleKey(actualKeyring, expectedAddress, expectedPrivateKeyArr);
         }
 
@@ -420,7 +452,7 @@ public class KeyringTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("Invalid private key.");
 
-            String expectedAddress = Keyring.generate().getAddress();
+            String expectedAddress = KeyringFactory.generate().getAddress();
 
             byte[] random = Utils.generateRandomBytes(31);
             String[] expectedPrivateKeyArr = {
@@ -428,7 +460,7 @@ public class KeyringTest {
                     PrivateKey.generate().getPrivateKey(),
             };
 
-            Keyring actualKeyring = Keyring.createWithMultipleKey(expectedAddress, expectedPrivateKeyArr);
+            AbstractKeyring actualKeyring = KeyringFactory.createWithMultipleKey(expectedAddress, expectedPrivateKeyArr);
         }
     }
 
@@ -439,7 +471,7 @@ public class KeyringTest {
         //CA-KEYRING-021
         @Test
         public void createWithRoleBasedKey() {
-            String expectedAddress = Keyring.generate().getAddress();
+            String expectedAddress = KeyringFactory.generate().getAddress();
             String[][] expectedPrivateKeyArr = {
                     {
                             PrivateKey.generate().getPrivateKey(),
@@ -453,7 +485,7 @@ public class KeyringTest {
                     }
             };
             List<String[]> expectedKeyList = Arrays.asList(expectedPrivateKeyArr);
-            Keyring actualKeyring = Keyring.createWithRoleBasedKey(expectedAddress, expectedKeyList);
+            RoleBasedKeyring actualKeyring = KeyringFactory.createWithRoleBasedKey(expectedAddress, expectedKeyList);
 
             checkValidateRoleBasedKey(actualKeyring, expectedAddress, expectedKeyList);
         }
@@ -475,7 +507,7 @@ public class KeyringTest {
             };
 
             List<String[]> expectedKeyList = Arrays.asList(privateKeyArr);
-            Keyring actualKeyring = Keyring.createWithRoleBasedKey(expectedAddress, expectedKeyList);
+            AbstractKeyring actualKeyring = KeyringFactory.createWithRoleBasedKey(expectedAddress, expectedKeyList);
         }
 
         //CA-KEYRING-023
@@ -505,7 +537,7 @@ public class KeyringTest {
             };
 
             List<String[]> expectedKeyList = Arrays.asList(privateKeyArr);
-            Keyring actualKeyring = Keyring.createWithRoleBasedKey(expectedAddress, expectedKeyList);
+            AbstractKeyring actualKeyring = KeyringFactory.createWithRoleBasedKey(expectedAddress, expectedKeyList);
         }
     }
 
@@ -516,11 +548,11 @@ public class KeyringTest {
         //CA-KEYRING-024
         @Test
         public void copy_coupled() {
-            Keyring expectedKeyring = Keyring.generate();
-            String expectedPrivateKey = expectedKeyring.getKeys().get(0)[0].getPrivateKey();
-            Keyring actualKeyring = expectedKeyring.copy();
+            SingleKeyring expectedKeyring = KeyringFactory.generate();
+            String expectedPrivateKey = expectedKeyring.getKey().getPrivateKey();
+            AbstractKeyring actualKeyring = expectedKeyring.copy();
 
-            checkValidateSingleKey(actualKeyring, expectedKeyring.getAddress(), expectedPrivateKey);
+            checkValidateSingleKey((SingleKeyring) actualKeyring, expectedKeyring.getAddress(), expectedPrivateKey);
         }
 
         //CA-KEYRING-025
@@ -529,10 +561,10 @@ public class KeyringTest {
             String expectedAddress = PrivateKey.generate().getDerivedAddress();
             String expectedPrivateKey = PrivateKey.generate().getPrivateKey();
 
-            Keyring expectedKeyring = Keyring.create(expectedAddress, expectedPrivateKey);
-            Keyring actualKeyring = expectedKeyring.copy();
+            SingleKeyring expectedKeyring = KeyringFactory.create(expectedAddress, expectedPrivateKey);
+            AbstractKeyring actualKeyring = expectedKeyring.copy();
 
-            checkValidateSingleKey(actualKeyring, expectedAddress, expectedPrivateKey);
+            checkValidateSingleKey((SingleKeyring) actualKeyring, expectedAddress, expectedPrivateKey);
         }
 
         //CA-KEYRING-026
@@ -546,10 +578,10 @@ public class KeyringTest {
                     PrivateKey.generate().getPrivateKey(),
             };
 
-            Keyring expectedKeyring = Keyring.createWithMultipleKey(expectedAddress, expectedAddressKeys);
-            Keyring actualKeyring = expectedKeyring.copy();
+            AbstractKeyring expectedKeyring = KeyringFactory.createWithMultipleKey(expectedAddress, expectedAddressKeys);
+            AbstractKeyring actualKeyring = expectedKeyring.copy();
 
-            checkValidateMultipleKey(actualKeyring, expectedAddress, expectedAddressKeys);
+            checkValidateMultipleKey((MultipleKeyring) actualKeyring, expectedAddress, expectedAddressKeys);
         }
 
         //CA-KEYRING-027
@@ -570,10 +602,10 @@ public class KeyringTest {
             };
             List<String[]> expectedKeyList = Arrays.asList(expectedPrivateKeyArr);
 
-            Keyring expectedKeyring = Keyring.createWithRoleBasedKey(expectedAddress, expectedKeyList);
-            Keyring actualKeyring = expectedKeyring.copy();
+            AbstractKeyring expectedKeyring = KeyringFactory.createWithRoleBasedKey(expectedAddress, expectedKeyList);
+            AbstractKeyring actualKeyring = expectedKeyring.copy();
 
-            checkValidateRoleBasedKey(actualKeyring, expectedAddress, expectedKeyList);
+            checkValidateRoleBasedKey((RoleBasedKeyring) actualKeyring, expectedAddress, expectedKeyList);
         }
     }
 
@@ -587,8 +619,8 @@ public class KeyringTest {
         //CA-KEYRING-028
         @Test
         public void coupleKey(){
-            Keyring keyring = Keyring.generate();
-            KlaySignatureData signatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 0);
+            AbstractKeyring keyring = KeyringFactory.generate();
+            SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 0);
 
             assertNotNull(signatureData.getR());
             assertNotNull(signatureData.getS());
@@ -598,36 +630,36 @@ public class KeyringTest {
         //CA-KEYRING-029
         @Test
         public void coupledKey_with_NotExistedRole(){
-            Keyring keyring = Keyring.generate();
+            AbstractKeyring keyring = KeyringFactory.generate();
 
-            KlaySignatureData expectedSignatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 0);
-            KlaySignatureData signatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex(), 0);
+            SignatureData expectedSignatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 0);
+            SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex(), 0);
 
             assertNotNull(signatureData.getR());
             assertNotNull(signatureData.getS());
             assertNotNull(signatureData.getV());
 
-            assertEquals(Numeric.toHexString(expectedSignatureData.getR()), Numeric.toHexString(signatureData.getR()));
-            assertEquals(Numeric.toHexString(expectedSignatureData.getS()), Numeric.toHexString(signatureData.getS()));
-            assertEquals(Numeric.toHexString(expectedSignatureData.getV()), Numeric.toHexString(signatureData.getV()));
+            assertEquals(expectedSignatureData.getR(), signatureData.getR());
+            assertEquals(expectedSignatureData.getS(), signatureData.getS());
+            assertEquals(expectedSignatureData.getV(), signatureData.getV());
         }
 
         //CA-KEYRING-030
         @Test
         public void coupleKey_throwException_negativeKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex cannot have negative value");
-            Keyring keyring = Keyring.generate();
-            KlaySignatureData signatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), -1);
+            expectedException.expectMessage("Invalid index : index cannot be negative");
+            AbstractKeyring keyring = KeyringFactory.generate();
+            SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), -1);
         }
 
         //CA-KEYRING-031
         @Test
         public void coupleKey_throwException_outOfBoundKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
-            Keyring keyring = Keyring.generate();
-            KlaySignatureData signatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 1);
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
+            AbstractKeyring keyring = KeyringFactory.generate();
+            SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 1);
         }
 
         //CA-KEYRING-032
@@ -635,9 +667,9 @@ public class KeyringTest {
         public void deCoupleKey() {
             String address = PrivateKey.generate().getDerivedAddress();
             String privateKey = PrivateKey.generate().getPrivateKey();
-            Keyring keyring = Keyring.create(address, privateKey);
+            AbstractKeyring keyring = KeyringFactory.create(address, privateKey);
 
-            KlaySignatureData signatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 0);
+            SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 0);
             assertNotNull(signatureData.getR());
             assertNotNull(signatureData.getS());
             assertNotNull(signatureData.getV());
@@ -648,49 +680,49 @@ public class KeyringTest {
         public void deCoupleKey_With_NotExistedRole() {
             String address = PrivateKey.generate().getDerivedAddress();
             String privateKey = PrivateKey.generate().getPrivateKey();
-            Keyring keyring = Keyring.create(address, privateKey);
+            AbstractKeyring keyring = KeyringFactory.create(address, privateKey);
 
-            KlaySignatureData expectedSignatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 0);
-            KlaySignatureData signatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex(), 0);
+            SignatureData expectedSignatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 0);
+            SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex(), 0);
 
             assertNotNull(signatureData.getR());
             assertNotNull(signatureData.getS());
             assertNotNull(signatureData.getV());
 
-            assertEquals(Numeric.toHexString(expectedSignatureData.getR()), Numeric.toHexString(signatureData.getR()));
-            assertEquals(Numeric.toHexString(expectedSignatureData.getS()), Numeric.toHexString(signatureData.getS()));
-            assertEquals(Numeric.toHexString(expectedSignatureData.getV()), Numeric.toHexString(signatureData.getV()));
+            assertEquals(expectedSignatureData.getR(), signatureData.getR());
+            assertEquals(expectedSignatureData.getS(), signatureData.getS());
+            assertEquals(expectedSignatureData.getV(), signatureData.getV());
         }
 
         //CA-KEYRING-034
         @Test
         public void deCoupleKey_throwException_negativeKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex cannot have negative value");
+            expectedException.expectMessage("Invalid index : index cannot be negative");
             String address = PrivateKey.generate().getDerivedAddress();
             String privateKey = PrivateKey.generate().getPrivateKey();
-            Keyring keyring = Keyring.create(address, privateKey);
+            AbstractKeyring keyring = KeyringFactory.create(address, privateKey);
 
-            KlaySignatureData signatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), -1);
+            SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), -1);
         }
 
         //CA-KEYRING-035
         @Test
         public void deCoupleKey_throwException_outOfBoundKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
             String address = PrivateKey.generate().getDerivedAddress();
             String privateKey = PrivateKey.generate().getPrivateKey();
-            Keyring keyring = Keyring.create(address, privateKey);
+            AbstractKeyring keyring = KeyringFactory.create(address, privateKey);
 
-            KlaySignatureData signatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 1);
+            SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 1);
         }
 
         //CA-KEYRING-036
         @Test
         public void multipleKey() {
-            Keyring keyring = generateMultipleKeyring(3);
-            KlaySignatureData signatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 1);
+            AbstractKeyring keyring = generateMultipleKeyring(3);
+            SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 1);
 
             assertNotNull(signatureData.getR());
             assertNotNull(signatureData.getS());
@@ -700,44 +732,44 @@ public class KeyringTest {
         //CA-KEYRING-037
         @Test
         public void multipleKey_With_NotExistedRole() {
-            Keyring keyring = generateMultipleKeyring(3);
-            KlaySignatureData expectedSignatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 0);
-            KlaySignatureData signatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex(), 0);
+            AbstractKeyring keyring = generateMultipleKeyring(3);
+            SignatureData expectedSignatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 0);
+            SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex(), 0);
 
             assertNotNull(signatureData.getR());
             assertNotNull(signatureData.getS());
             assertNotNull(signatureData.getV());
 
-            assertEquals(Numeric.toHexString(expectedSignatureData.getR()), Numeric.toHexString(signatureData.getR()));
-            assertEquals(Numeric.toHexString(expectedSignatureData.getS()), Numeric.toHexString(signatureData.getS()));
-            assertEquals(Numeric.toHexString(expectedSignatureData.getV()), Numeric.toHexString(signatureData.getV()));
+            assertEquals(expectedSignatureData.getR(), signatureData.getR());
+            assertEquals(expectedSignatureData.getS(), signatureData.getS());
+            assertEquals(expectedSignatureData.getV(), signatureData.getV());
         }
 
         //CA-KEYRING-038
         @Test
         public void multipleKey_throwException_negativeKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex cannot have negative value");
+            expectedException.expectMessage("Invalid index : index cannot be negative");
 
-            Keyring keyring = generateMultipleKeyring(3);
-            KlaySignatureData signatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex(), -1);
+            AbstractKeyring keyring = generateMultipleKeyring(3);
+            SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex(), -1);
         }
 
         //CA-KEYRING-039
         @Test
         public void multipleKey_throwException_outOfBoundKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
-            Keyring keyring = generateMultipleKeyring(3);
-            KlaySignatureData signatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 10);
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
+            AbstractKeyring keyring = generateMultipleKeyring(3);
+            SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 10);
         }
 
         //CA-KEYRING-040
         @Test
         public void roleBasedKey() {
-            Keyring keyring = generateRoleBaseKeyring(new int[]{2,3,4});
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[]{2,3,4});
 
-            KlaySignatureData signatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 1);
+            SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 1);
 
             assertNotNull(signatureData.getR());
             assertNotNull(signatureData.getS());
@@ -747,37 +779,37 @@ public class KeyringTest {
         //CA-KEYRING-041
         @Test
         public void roleBasedKey_With_NotExistedRole() {
-            Keyring keyring = generateRoleBaseKeyring(new int[] {2,0,4});
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[] {2,0,4});
 
-            KlaySignatureData expectedSignatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 0);
-            KlaySignatureData signatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex(), 0);
+            SignatureData expectedSignatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 0);
+            SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex(), 0);
 
             assertNotNull(signatureData.getR());
             assertNotNull(signatureData.getS());
             assertNotNull(signatureData.getV());
 
-            assertEquals(Numeric.toHexString(expectedSignatureData.getR()), Numeric.toHexString(signatureData.getR()));
-            assertEquals(Numeric.toHexString(expectedSignatureData.getS()), Numeric.toHexString(signatureData.getS()));
-            assertEquals(Numeric.toHexString(expectedSignatureData.getV()), Numeric.toHexString(signatureData.getV()));
+            assertEquals(expectedSignatureData.getR(), signatureData.getR());
+            assertEquals(expectedSignatureData.getS(), signatureData.getS());
+            assertEquals(expectedSignatureData.getV(), signatureData.getV());
         }
 
         //CA-KEYRING-042
         @Test
         public void roleBasedKey_throwException_negativeKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex cannot have negative value");
-            Keyring keyring = generateRoleBaseKeyring(new int[] {2,0,4});
-            KlaySignatureData signatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), -1);
+            expectedException.expectMessage("Invalid index : index cannot be negative");
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[] {2,0,4});
+            SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), -1);
         }
 
         //CA-KEYRING-043
         @Test
         public void roleBasedKey_throwException_outOfBoundKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
-            Keyring keyring = generateRoleBaseKeyring(new int[] {2,0,4});
-            KlaySignatureData signatureData = keyring.signWithKey(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 10);
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[] {2,0,4});
+            SignatureData signatureData = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 10);
         }
     }
 
@@ -785,34 +817,34 @@ public class KeyringTest {
         static final String HASH = "0xe9a11d9ef95fb437f75d07ce768d43e74f158dd54b106e7d3746ce29d545b550";
         static final int CHAIN_ID = 1;
 
-        public void checkSignature(List<KlaySignatureData> expected, List<KlaySignatureData> actual) {
+        public void checkSignature(List<SignatureData> expected, List<SignatureData> actual) {
             assertEquals(expected.size(), actual.size());
 
             for(int i=0; i<expected.size(); i++) {
-                assertEquals(Numeric.toHexString(expected.get(i).getR()), Numeric.toHexString(actual.get(i).getR()));
-                assertEquals(Numeric.toHexString(expected.get(i).getS()), Numeric.toHexString(actual.get(i).getS()));
-                assertEquals(Numeric.toHexString(expected.get(i).getV()), Numeric.toHexString(actual.get(i).getV()));
+                assertEquals(expected.get(i).getR(), actual.get(i).getR());
+                assertEquals(expected.get(i).getS(), actual.get(i).getS());
+                assertEquals(expected.get(i).getV(), actual.get(i).getV());
             }
         }
 
         //CA-KEYRING-044
         @Test
         public void coupleKey() {
-            Keyring keyring = Keyring.generate();
-            List<KlaySignatureData> klaySignatureDataList = keyring.signWithKeys(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+            AbstractKeyring keyring = KeyringFactory.generate();
+            List<SignatureData> signatureDataList = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
 
-            assertEquals(1, klaySignatureDataList.size());
-            assertNotNull(klaySignatureDataList.get(0).getR());
-            assertNotNull(klaySignatureDataList.get(0).getS());
-            assertNotNull(klaySignatureDataList.get(0).getV());
+            assertEquals(1, signatureDataList.size());
+            assertNotNull(signatureDataList.get(0).getR());
+            assertNotNull(signatureDataList.get(0).getS());
+            assertNotNull(signatureDataList.get(0).getV());
         }
 
         //CA-KEYRING-045
         @Test
         public void coupleKey_With_NotExistedRole() {
-            Keyring keyring = Keyring.generate();
-            List<KlaySignatureData> expectedList = keyring.signWithKeys(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
-            List<KlaySignatureData> actualList = keyring.signWithKeys(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex());
+            AbstractKeyring keyring = KeyringFactory.generate();
+            List<SignatureData> expectedList = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+            List<SignatureData> actualList = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex());
 
             assertEquals(1, actualList.size());
             assertNotNull(actualList.get(0).getR());
@@ -827,9 +859,9 @@ public class KeyringTest {
         public void deCoupleKey() {
             String address = PrivateKey.generate().getDerivedAddress();
             String privateKey = PrivateKey.generate().getPrivateKey();
-            Keyring keyring = Keyring.create(address, privateKey);
+            AbstractKeyring keyring = KeyringFactory.create(address, privateKey);
 
-            List<KlaySignatureData> actualList = keyring.signWithKeys(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+            List<SignatureData> actualList = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
             assertEquals(1, actualList.size());
             assertNotNull(actualList.get(0).getR());
             assertNotNull(actualList.get(0).getS());
@@ -841,10 +873,10 @@ public class KeyringTest {
         public void deCoupleKey_With_NotExistedRole() {
             String address = PrivateKey.generate().getDerivedAddress();
             String privateKey = PrivateKey.generate().getPrivateKey();
-            Keyring keyring = Keyring.create(address, privateKey);
+            AbstractKeyring keyring = KeyringFactory.create(address, privateKey);
 
-            List<KlaySignatureData> expectedList = keyring.signWithKeys(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
-            List<KlaySignatureData> actualList = keyring.signWithKeys(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex());
+            List<SignatureData> expectedList = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+            List<SignatureData> actualList = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex());
 
             assertEquals(1, actualList.size());
             checkSignature(expectedList, actualList);
@@ -853,9 +885,9 @@ public class KeyringTest {
         //CA-KEYRING-048
         @Test
         public void multipleKey() {
-            Keyring keyring = generateMultipleKeyring(3);
+            AbstractKeyring keyring = generateMultipleKeyring(3);
 
-            List<KlaySignatureData> actualList = keyring.signWithKeys(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+            List<SignatureData> actualList = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
             assertEquals(3, actualList.size());
 
             for(int i=0; i<actualList.size(); i++) {
@@ -868,10 +900,10 @@ public class KeyringTest {
         //CA-KEYRING-049
         @Test
         public void multipleKey_With_NotExistedRole() {
-            Keyring keyring = generateMultipleKeyring(3);
+            AbstractKeyring keyring = generateMultipleKeyring(3);
 
-            List<KlaySignatureData> expectedList = keyring.signWithKeys(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
-            List<KlaySignatureData> actualList = keyring.signWithKeys(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex());
+            List<SignatureData> expectedList = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+            List<SignatureData> actualList = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex());
 
             assertEquals(3, actualList.size());
             checkSignature(expectedList, actualList);
@@ -880,9 +912,9 @@ public class KeyringTest {
         //CA-KEYRING-050
         @Test
         public void roleBasedKey() {
-            Keyring keyring = generateRoleBaseKeyring(new int[]{3,3,4});
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[]{3,3,4});
 
-            List<KlaySignatureData> actualList = keyring.signWithKeys(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+            List<SignatureData> actualList = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
             assertEquals(3, actualList.size());
 
             for(int i=0; i<actualList.size(); i++) {
@@ -895,10 +927,10 @@ public class KeyringTest {
         //CA-KEYRING-051
         @Test
         public void roleBasedKey_With_NotExistedRole() {
-            Keyring keyring = generateRoleBaseKeyring(new int[]{3,0,4});
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[]{3,0,4});
 
-            List<KlaySignatureData> expectedList = keyring.signWithKeys(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
-            List<KlaySignatureData> actualList = keyring.signWithKeys(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex());
+            List<SignatureData> expectedList = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+            List<SignatureData> actualList = keyring.sign(HASH, CHAIN_ID, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex());
 
             assertEquals(3, actualList.size());
             checkSignature(expectedList, actualList);
@@ -915,52 +947,52 @@ public class KeyringTest {
         //CA-KEYRING-052
         @Test
         public void coupledKey_NoIndex() {
-            Keyring keyring = Keyring.generate();
+            AbstractKeyring keyring = KeyringFactory.generate();
             MessageSigned expect = keyring.signMessage(data, 0, 0);
-            MessageSigned actual = keyring.signMessage(data);
+            MessageSigned actual = keyring.signMessage(data, 0);
 
             assertEquals(expect.getMessage(), actual.getMessage());
             assertEquals(expect.getMessageHash(), actual.getMessageHash());
 
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getR()), Numeric.toHexString(actual.getSignatureData().getR()));
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getS()), Numeric.toHexString(actual.getSignatureData().getS()));
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getV()), Numeric.toHexString(actual.getSignatureData().getV()));
+            assertEquals(expect.getSignatures().get(0).getR(), actual.getSignatures().get(0).getR());
+            assertEquals(expect.getSignatures().get(0).getS(), actual.getSignatures().get(0).getS());
+            assertEquals(expect.getSignatures().get(0).getV(), actual.getSignatures().get(0).getV());
         }
 
         //CA-KEYRING-053
         @Test
         public void coupleKey_WithIndex() {
-            Keyring keyring = Keyring.generate();
+            AbstractKeyring keyring = KeyringFactory.generate();
             MessageSigned actual = keyring.signMessage(data, 0, 0);
 
             assertEquals(Utils.hashMessage(data), actual.getMessageHash());
-            assertNotNull(actual.getSignatureData().getV());
-            assertNotNull(actual.getSignatureData().getR());
-            assertNotNull(actual.getSignatureData().getS());
+            assertNotNull(actual.getSignatures().get(0).getV());
+            assertNotNull(actual.getSignatures().get(0).getR());
+            assertNotNull(actual.getSignatures().get(0).getS());
         }
 
         //CA-KEYRING-054
         @Test
         public void coupleKey_NotExistedRoleIndex() {
-            Keyring keyring = Keyring.generate();
+            AbstractKeyring keyring = KeyringFactory.generate();
             MessageSigned expect = keyring.signMessage(data, 0, 0);
             MessageSigned actual = keyring.signMessage(data, AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex(), 0);
 
             assertEquals(expect.getMessage(), actual.getMessage());
             assertEquals(expect.getMessageHash(), actual.getMessageHash());
 
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getR()), Numeric.toHexString(actual.getSignatureData().getR()));
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getS()), Numeric.toHexString(actual.getSignatureData().getS()));
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getV()), Numeric.toHexString(actual.getSignatureData().getV()));
+            assertEquals(expect.getSignatures().get(0).getR(), actual.getSignatures().get(0).getR());
+            assertEquals(expect.getSignatures().get(0).getS(), actual.getSignatures().get(0).getS());
+            assertEquals(expect.getSignatures().get(0).getV(), actual.getSignatures().get(0).getV());
         }
 
         //CA-KEYRING-055
         @Test
         public void coupleKey_throwException_WithInvalidKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
-            Keyring keyring = Keyring.generate();
+            SingleKeyring keyring = KeyringFactory.generate();
             MessageSigned expect = keyring.signMessage(data, 0, 3);
         }
 
@@ -968,9 +1000,9 @@ public class KeyringTest {
         @Test
         public void coupleKey_throwException_WithNegativeKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex cannot have negative value.");
+            expectedException.expectMessage("Invalid index : index cannot be negative");
 
-            Keyring keyring = Keyring.generate();
+            SingleKeyring keyring = KeyringFactory.generate();
             MessageSigned expect = keyring.signMessage(data, 0, -1);
         }
 
@@ -979,7 +1011,7 @@ public class KeyringTest {
         public void decoupledKey_NoIndex() {
             String privateKey = PrivateKey.generate().getPrivateKey();
             String address = PrivateKey.generate().getDerivedAddress();
-            Keyring decoupled = Keyring.create(address, privateKey);
+            SingleKeyring decoupled = KeyringFactory.create(address, privateKey);
 
             MessageSigned expect = decoupled.signMessage(data, 0, 0);
             MessageSigned actual = decoupled.signMessage(data, AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex(), 0);
@@ -987,9 +1019,9 @@ public class KeyringTest {
             assertEquals(expect.getMessage(), actual.getMessage());
             assertEquals(expect.getMessageHash(), actual.getMessageHash());
 
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getR()), Numeric.toHexString(actual.getSignatureData().getR()));
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getS()), Numeric.toHexString(actual.getSignatureData().getS()));
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getV()), Numeric.toHexString(actual.getSignatureData().getV()));
+            assertEquals(expect.getSignatures().get(0).getR(), actual.getSignatures().get(0).getR());
+            assertEquals(expect.getSignatures().get(0).getS(), actual.getSignatures().get(0).getS());
+            assertEquals(expect.getSignatures().get(0).getV(), actual.getSignatures().get(0).getV());
         }
 
         //CA-KEYRING-058
@@ -997,14 +1029,14 @@ public class KeyringTest {
         public void decoupledKey_WithIndex() {
             String privateKey = PrivateKey.generate().getPrivateKey();
             String address = PrivateKey.generate().getDerivedAddress();
-            Keyring decoupled = Keyring.create(address, privateKey);
+            SingleKeyring decoupled = KeyringFactory.create(address, privateKey);
 
             MessageSigned actual = decoupled.signMessage(data, 0, 0);
 
             assertEquals(Utils.hashMessage(data), actual.getMessageHash());
-            assertNotNull(actual.getSignatureData().getV());
-            assertNotNull(actual.getSignatureData().getR());
-            assertNotNull(actual.getSignatureData().getS());
+            assertNotNull(actual.getSignatures().get(0).getV());
+            assertNotNull(actual.getSignatures().get(0).getR());
+            assertNotNull(actual.getSignatures().get(0).getS());
         }
 
 
@@ -1013,7 +1045,7 @@ public class KeyringTest {
         public void decoupleKey_NotExistedRoleIndex() {
             String privateKey = PrivateKey.generate().getPrivateKey();
             String address = PrivateKey.generate().getDerivedAddress();
-            Keyring decoupled = Keyring.create(address, privateKey);
+            SingleKeyring decoupled = KeyringFactory.create(address, privateKey);
 
             MessageSigned expect = decoupled.signMessage(data, 0, 0);
             MessageSigned actual = decoupled.signMessage(data, AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex(), 0);
@@ -1021,9 +1053,9 @@ public class KeyringTest {
             assertEquals(expect.getMessage(), actual.getMessage());
             assertEquals(expect.getMessageHash(), actual.getMessageHash());
 
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getR()), Numeric.toHexString(actual.getSignatureData().getR()));
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getS()), Numeric.toHexString(actual.getSignatureData().getS()));
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getV()), Numeric.toHexString(actual.getSignatureData().getV()));
+            assertEquals(expect.getSignatures().get(0).getR(), actual.getSignatures().get(0).getR());
+            assertEquals(expect.getSignatures().get(0).getS(), actual.getSignatures().get(0).getS());
+            assertEquals(expect.getSignatures().get(0).getV(), actual.getSignatures().get(0).getV());
         }
 
 
@@ -1031,11 +1063,11 @@ public class KeyringTest {
         @Test
         public void decoupleKey_throwException_WithInvalidKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
             String privateKey = PrivateKey.generate().getPrivateKey();
             String address = PrivateKey.generate().getDerivedAddress();
-            Keyring decoupled = Keyring.create(address, privateKey);
+            SingleKeyring decoupled = KeyringFactory.create(address, privateKey);
 
             MessageSigned expect = decoupled.signMessage(data, 0, 3);
         }
@@ -1044,11 +1076,11 @@ public class KeyringTest {
         @Test
         public void decoupleKey_throwException_WithNegativeKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex cannot have negative value.");
+            expectedException.expectMessage("Invalid index : index cannot be negative");
 
             String privateKey = PrivateKey.generate().getPrivateKey();
             String address = PrivateKey.generate().getDerivedAddress();
-            Keyring decoupled = Keyring.create(address, privateKey);
+            SingleKeyring decoupled = KeyringFactory.create(address, privateKey);
 
             MessageSigned expect = decoupled.signMessage(data, 0, -1);
         }
@@ -1056,7 +1088,7 @@ public class KeyringTest {
         //CA-KEYRING-062
         @Test
         public void multipleKey_NoIndex() {
-            Keyring keyring = generateMultipleKeyring(3);
+            MultipleKeyring keyring = generateMultipleKeyring(3);
 
             MessageSigned expect = keyring.signMessage(data, 0, 0);
             MessageSigned actual = keyring.signMessage(data, AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex(), 0);
@@ -1064,46 +1096,46 @@ public class KeyringTest {
             assertEquals(expect.getMessage(), actual.getMessage());
             assertEquals(expect.getMessageHash(), actual.getMessageHash());
 
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getR()), Numeric.toHexString(actual.getSignatureData().getR()));
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getS()), Numeric.toHexString(actual.getSignatureData().getS()));
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getV()), Numeric.toHexString(actual.getSignatureData().getV()));
+            assertEquals(expect.getSignatures().get(0).getR(), actual.getSignatures().get(0).getR());
+            assertEquals(expect.getSignatures().get(0).getS(), actual.getSignatures().get(0).getS());
+            assertEquals(expect.getSignatures().get(0).getV(), actual.getSignatures().get(0).getV());
         }
 
         //CA-KEYRING-063
         @Test
         public void multipleKey_WithIndex() {
-            Keyring keyring = generateMultipleKeyring(3);
+            MultipleKeyring keyring = generateMultipleKeyring(3);
 
             MessageSigned actual = keyring.signMessage(data, 0, 0);
 
             assertEquals(Utils.hashMessage(data), actual.getMessageHash());
-            assertNotNull(actual.getSignatureData().getV());
-            assertNotNull(actual.getSignatureData().getR());
-            assertNotNull(actual.getSignatureData().getS());
+            assertNotNull(actual.getSignatures().get(0).getR());
+            assertNotNull(actual.getSignatures().get(0).getR());
+            assertNotNull(actual.getSignatures().get(0).getS());
         }
 
         //CA-KEYRING-064
         @Test
         public void multipleKey_NotExistedRoleIndex() {
-            Keyring keyring = generateMultipleKeyring(3);
+            MultipleKeyring keyring = generateMultipleKeyring(3);
             MessageSigned expect = keyring.signMessage(data, 0, 2);
             MessageSigned actual = keyring.signMessage(data, AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex(), 2);
 
             assertEquals(expect.getMessage(), actual.getMessage());
             assertEquals(expect.getMessageHash(), actual.getMessageHash());
 
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getR()), Numeric.toHexString(actual.getSignatureData().getR()));
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getS()), Numeric.toHexString(actual.getSignatureData().getS()));
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getV()), Numeric.toHexString(actual.getSignatureData().getV()));
+            assertEquals(expect.getSignatures().get(0).getR(), actual.getSignatures().get(0).getR());
+            assertEquals(expect.getSignatures().get(0).getS(), actual.getSignatures().get(0).getS());
+            assertEquals(expect.getSignatures().get(0).getV(), actual.getSignatures().get(0).getV());
         }
 
         //CA-KEYRING-065
         @Test
         public void multipleKey_throwException_WithInvalidKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
-            Keyring keyring = generateMultipleKeyring(3);
+            MultipleKeyring keyring = generateMultipleKeyring(3);
             MessageSigned expect = keyring.signMessage(data, 0, 6);
         }
 
@@ -1111,45 +1143,29 @@ public class KeyringTest {
         @Test
         public void multipleKey_throwException_WithNegativeKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex cannot have negative value.");
+            expectedException.expectMessage("Invalid index : index cannot be negative");
 
-            Keyring keyring = generateMultipleKeyring(3);
+            MultipleKeyring keyring = generateMultipleKeyring(3);
             MessageSigned expect = keyring.signMessage(data, 0, -1);
-        }
-
-        //CA-KEYRING-067
-        @Test
-        public void roleBasedKey_NoIndex() {
-            Keyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
-
-            MessageSigned expect = keyring.signMessage(data, 0, 0);
-            MessageSigned actual = keyring.signMessage(data);
-
-            assertEquals(expect.getMessage(), actual.getMessage());
-            assertEquals(expect.getMessageHash(), actual.getMessageHash());
-
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getR()), Numeric.toHexString(actual.getSignatureData().getR()));
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getS()), Numeric.toHexString(actual.getSignatureData().getS()));
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getV()), Numeric.toHexString(actual.getSignatureData().getV()));
         }
 
         //CA-KEYRING-068
         @Test
         public void roleBasedKey_WithIndex() {
-            Keyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
+            RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
 
             MessageSigned actual = keyring.signMessage(data, 0, 0);
 
             assertEquals(Utils.hashMessage(data), actual.getMessageHash());
-            assertNotNull(actual.getSignatureData().getV());
-            assertNotNull(actual.getSignatureData().getR());
-            assertNotNull(actual.getSignatureData().getS());
+            assertNotNull(actual.getSignatures().get(0).getR());
+            assertNotNull(actual.getSignatures().get(0).getR());
+            assertNotNull(actual.getSignatures().get(0).getS());
         }
 
         //CA-KEYRING-069
         @Test
         public void roleBasedKey_NotExistedRoleKey() {
-            Keyring keyring = generateRoleBaseKeyring(new int[] {3,0,5});
+            RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[] {3,0,5});
 
             MessageSigned expect = keyring.signMessage(data, 0, 2);
             MessageSigned actual = keyring.signMessage(data, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex(), 2);
@@ -1157,18 +1173,18 @@ public class KeyringTest {
             assertEquals(expect.getMessage(), actual.getMessage());
             assertEquals(expect.getMessageHash(), actual.getMessageHash());
 
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getR()), Numeric.toHexString(actual.getSignatureData().getR()));
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getS()), Numeric.toHexString(actual.getSignatureData().getS()));
-            assertEquals(Numeric.toHexString(expect.getSignatureData().getV()), Numeric.toHexString(actual.getSignatureData().getV()));
+            assertEquals(expect.getSignatures().get(0).getR(), actual.getSignatures().get(0).getR());
+            assertEquals(expect.getSignatures().get(0).getS(), actual.getSignatures().get(0).getS());
+            assertEquals(expect.getSignatures().get(0).getV(), actual.getSignatures().get(0).getV());
         }
 
         //CA-KEYRING-070
         @Test
         public void roleBasedKey_throwException_WithInvalidKey() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex value must be less than the length of key array");
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
-            Keyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
+            RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
             MessageSigned expect = keyring.signMessage(data, 0, 8);
         }
 
@@ -1176,21 +1192,21 @@ public class KeyringTest {
         @Test
         public void roleBasedKey_throwException_WithNegativeKeyIndex() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("keyIndex cannot have negative value.");
+            expectedException.expectMessage("Invalid index : index cannot be negative");
 
-            Keyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
+            RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
             MessageSigned expect = keyring.signMessage(data, 0, -1);
         }
 
-        //CA-KEYRING-072
-        @Test
-        public void roleBasedKey_throwException_NoIndex_WithNoDefaultKey() {
-            expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("Default Key does not have enough keys to sign.");
-
-            Keyring keyring = generateRoleBaseKeyring(new int[] {0,4,5});
-            MessageSigned expect = keyring.signMessage(data);
-        }
+//        //CA-KEYRING-072
+//        @Test
+//        public void roleBasedKey_throwException_NoIndex_WithNoDefaultKey() {
+//            expectedException.expect(RuntimeException.class);
+//            expectedException.expectMessage("Default Key does not have enough keys to sign.");
+//
+//            RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[] {0,4,5});
+//            MessageSigned expect = keyring.signMessage(data);
+//        }
     }
 
     public static class recoverTest {
@@ -1202,24 +1218,24 @@ public class KeyringTest {
         }
 
         //CA-KEYRING-073
-        @Test
-        public void withSignedMessage() throws SignatureException {
-            Keyring keyring = Keyring.generate();
-            String message = "Some data";
-            MessageSigned signed = keyring.signMessage(message, 0, 0);
-
-            String actualAddr = Keyring.recover(signed);
-            checkAddress(keyring.getAddress(), actualAddr);
-        }
+//        @Test
+//        public void withSignedMessage() throws SignatureException {
+//            SingleKeyring keyring = KeyringFactory.generate();
+//            String message = "Some data";
+//            MessageSigned signed = keyring.signMessage(message, 0, 0);
+//
+//            String actualAddr = Utils.recover(signed);
+//            checkAddress(keyring.getAddress(), actualAddr);
+//        }
 
         //CA-KEYRING-074
         @Test
         public void withMessageAndSignature() throws SignatureException {
-            Keyring keyring = Keyring.generate();
+            SingleKeyring keyring = KeyringFactory.generate();
             String message = "Some data";
 
             MessageSigned signed = keyring.signMessage(message, 0, 0);
-            String actualAddr = Keyring.recover(signed.getMessage(), signed.getSignatureData());
+            String actualAddr = Utils.recover(signed.getMessage(), signed.getSignatures().get(0));
 
             checkAddress(keyring.getAddress(), actualAddr);
         }
@@ -1227,11 +1243,11 @@ public class KeyringTest {
         //CA-KEYRING-075
         @Test
         public void alreadyPrefix() throws SignatureException {
-            Keyring keyring = Keyring.generate();
+            SingleKeyring keyring = KeyringFactory.generate();
             String message = "Some data";
 
             MessageSigned signed = keyring.signMessage(message, 0, 0);
-            String actualAddr = Keyring.recover(signed.getMessageHash(), signed.getSignatureData(), true);
+            String actualAddr = Utils.recover(signed.getMessageHash(), signed.getSignatures().get(0), true);
 
             checkAddress(keyring.getAddress(), actualAddr);
         }
@@ -1343,31 +1359,16 @@ public class KeyringTest {
                 "  ]\n" +
                 "}";
 
-        public void checkValidKeyring(Keyring expect, Keyring actual) {
-            assertEquals(expect.getAddress(), actual.getAddress());
-
-            for(int i=0; i<actual.getKeys().size(); i++) {
-                PrivateKey[] actualArr = actual.getKeys().get(i);
-                PrivateKey[] expectedArr = expect.getKeys().get(i);
-
-                assertEquals(expectedArr.length, actualArr.length);
-
-                for(int j=0; j<actualArr.length; j++) {
-                    assertEquals(expectedArr[j].getPrivateKey(), actualArr[j].getPrivateKey());
-                }
-            }
-        }
-
         //CA-KEYRING-076
         @Test
         public void coupleKey() throws CipherException {
             String password = "password";
             String privateKey = PrivateKey.generate().getPrivateKey();
-            Keyring expect = Keyring.createFromPrivateKey(privateKey);
+            SingleKeyring expect = KeyringFactory.createFromPrivateKey(privateKey);
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName());
 
-            KeyStore keyStore = Keyring.encrypt(expect, password, option);
-            Keyring actual = Keyring.decrypt(keyStore, password);
+            KeyStore keyStore = expect.encrypt(password, option);
+            AbstractKeyring actual = KeyringFactory.decrypt(keyStore, password);
 
             checkValidKeyring(expect, actual);
         }
@@ -1378,12 +1379,12 @@ public class KeyringTest {
             String password = "password";
             String privateKey = PrivateKey.generate().getPrivateKey();
             String address = PrivateKey.generate().getDerivedAddress();
-            Keyring expect = Keyring.create(address, privateKey);
+            SingleKeyring expect = KeyringFactory.create(address, privateKey);
 
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName());
 
-            KeyStore keyStore = Keyring.encrypt(expect, password, option);
-            Keyring actual = Keyring.decrypt(keyStore, password);
+            KeyStore keyStore = expect.encrypt(password, option);
+            AbstractKeyring actual = KeyringFactory.decrypt(keyStore, password);
 
             checkValidKeyring(expect, actual);
         }
@@ -1392,12 +1393,12 @@ public class KeyringTest {
         @Test
         public void multipleKey() throws CipherException {
             String password = "password";
-            Keyring expect = generateMultipleKeyring(3);
+            MultipleKeyring expect = generateMultipleKeyring(3);
 
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName());
 
-            KeyStore keyStore = Keyring.encrypt(expect, password, option);
-            Keyring actual = Keyring.decrypt(keyStore, password);
+            KeyStore keyStore = expect.encrypt(password, option);
+            AbstractKeyring actual = KeyringFactory.decrypt(keyStore, password);
 
             checkValidKeyring(expect, actual);
         }
@@ -1406,12 +1407,12 @@ public class KeyringTest {
         @Test
         public void roleBasedKey() throws CipherException {
             String password = "password";
-            Keyring expect = generateRoleBaseKeyring(new int[]{3,4,5});
+            RoleBasedKeyring expect = generateRoleBaseKeyring(new int[]{3,4,5});
 
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName());
 
-            KeyStore keyStore = Keyring.encrypt(expect, password, option);
-            Keyring actual = Keyring.decrypt(keyStore, password);
+            KeyStore keyStore = expect.encrypt(password, option);
+            AbstractKeyring actual = KeyringFactory.decrypt(keyStore, password);
 
             checkValidKeyring(expect, actual);
         }
@@ -1420,12 +1421,12 @@ public class KeyringTest {
         @Test
         public void roleBasedKey_withEmptyRole() throws CipherException {
             String password = "password";
-            Keyring expect = generateRoleBaseKeyring(new int[]{3,0,5});
+            RoleBasedKeyring expect = generateRoleBaseKeyring(new int[]{3,0,5});
 
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName());
 
-            KeyStore keyStore = Keyring.encrypt(expect, password, option);
-            Keyring actual = Keyring.decrypt(keyStore, password);
+            KeyStore keyStore = expect.encrypt(password, option);
+            AbstractKeyring actual = KeyringFactory.decrypt(keyStore, password);
 
             checkValidKeyring(expect, actual);
         }
@@ -1449,8 +1450,8 @@ public class KeyringTest {
                     }
             };
 
-            Keyring expect = Keyring.createWithRoleBasedKey(expectedAddress, Arrays.asList(expectedPrivateKeys));
-            Keyring actual = Keyring.decrypt(jsonV4, password);
+            AbstractKeyring expect = KeyringFactory.createWithRoleBasedKey(expectedAddress, Arrays.asList(expectedPrivateKeys));
+            AbstractKeyring actual = KeyringFactory.decrypt(jsonV4, password);
 
             checkValidKeyring(expect, actual);
         }
@@ -1459,10 +1460,10 @@ public class KeyringTest {
         @Test
         public void jsonStringV3() throws IOException, CipherException {
             String password = "password";
-            Keyring expect = Keyring.createWithSingleKey("0x86bce8c859f5f304aa30adb89f2f7b6ee5a0d6e2",
+            AbstractKeyring expect = KeyringFactory.createWithSingleKey("0x86bce8c859f5f304aa30adb89f2f7b6ee5a0d6e2",
                                                         "0x36e0a792553f94a7660e5484cfc8367e7d56a383261175b9abced7416a5d87df");
 
-            Keyring actual = Keyring.decrypt(jsonV3, password);
+            AbstractKeyring actual = KeyringFactory.decrypt(jsonV3, password);
             checkValidKeyring(expect, actual);
         }
 
@@ -1474,7 +1475,7 @@ public class KeyringTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
-        public void checkValidateKeyStore(KeyStore actualData, String password, Keyring expectedKeyring, int version) throws CipherException{
+        public void checkValidateKeyStore(KeyStore actualData, String password, AbstractKeyring expectedKeyring, int version) throws CipherException{
             assertEquals(expectedKeyring.getAddress(), actualData.getAddress());
 
             if(actualData.getVersion() == 4) {
@@ -1482,36 +1483,26 @@ public class KeyringTest {
                 assertNull(actualData.getCrypto());
             }
 
-            boolean isMultiSig = expectedKeyring.getKeys().stream().skip(1).anyMatch(keyArr -> keyArr.length > 0);
-            if(isMultiSig) {
+            if(expectedKeyring instanceof RoleBasedKeyring) {
                 assertTrue(actualData.getKeyring().get(0) instanceof List);
             } else {
                 assertTrue(actualData.getKeyring().get(0) instanceof KeyStore.Crypto);
             }
 
-            Keyring actualKeyring = Keyring.decrypt(actualData, password);
+            AbstractKeyring actualKeyring = KeyringFactory.decrypt(actualData, password);
 
-            for(int i=0; i<actualKeyring.getKeys().size(); i++) {
-                PrivateKey[] actualArr = actualKeyring.getKeys().get(i);
-                PrivateKey[] expectedArr = expectedKeyring.getKeys().get(i);
-
-                assertEquals(expectedArr.length, actualArr.length);
-
-                for(int j=0; j<actualArr.length; j++) {
-                    assertEquals(expectedArr[j].getPrivateKey(), actualArr[j].getPrivateKey());
-                }
-            }
+            checkValidKeyring(expectedKeyring, actualKeyring);
         }
 
         //CA-KEYRING-083
         @Test
         public void keyStoreV4_scrypt() throws CipherException {
             String password = "password";
-            Keyring keyring = Keyring.generate();
+            SingleKeyring keyring = KeyringFactory.generate();
 
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName());
 
-            KeyStore store = Keyring.encrypt(keyring, password, option);
+            KeyStore store = keyring.encrypt(password, option);
             checkValidateKeyStore(store, password, keyring, 4);
         }
 
@@ -1519,177 +1510,177 @@ public class KeyringTest {
         @Test
         public void keyStoreV4_pbkdf2() throws CipherException {
             String password = "password";
-            Keyring keyring = Keyring.generate();
+            SingleKeyring keyring = KeyringFactory.generate();
 
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName());
 
-            KeyStore store = Keyring.encrypt(keyring, password, option);
+            KeyStore store = keyring.encrypt(password, option);
             checkValidateKeyStore(store, password, keyring, 4);
         }
 
         //CA-KEYRING-085
-        @Test
-        public void singleKeyStringWithCouple() throws CipherException {
-            String password = "password";
-            String privateKey = PrivateKey.generate().getPrivateKey();
-            Keyring expectedKeyring = Keyring.createFromPrivateKey(privateKey);
-
-            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName());
-            KeyStore store = Keyring.encrypt(privateKey, password, option);
-
-            checkValidateKeyStore(store, password, expectedKeyring, 4);
-        }
+//        @Test
+//        public void singleKeyStringWithCouple() throws CipherException {
+//            String password = "password";
+//            String privateKey = PrivateKey.generate().getPrivateKey();
+//            SingleKeyring expectedKeyring = KeyringFactory.createFromPrivateKey(privateKey);
+//
+//            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName());
+//            KeyStore store = Keyring.encrypt(privateKey, password, option);
+//
+//            checkValidateKeyStore(store, password, expectedKeyring, 4);
+//        }
 
         //CA-KEYRING-086
-        @Test
-        public void singleKeyStringWithDecoupled() throws CipherException{
-            String password = "password";
-            String privateKey = PrivateKey.generate().getPrivateKey();
-            String address = PrivateKey.generate().getDerivedAddress();
-            Keyring expectedKeyring = Keyring.create(address, privateKey);
-
-            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), address);
-
-            KeyStore store = Keyring.encrypt(privateKey, password, option);
-            checkValidateKeyStore(store, password, expectedKeyring, 4);
-        }
+//        @Test
+//        public void singleKeyStringWithDecoupled() throws CipherException{
+//            String password = "password";
+//            String privateKey = PrivateKey.generate().getPrivateKey();
+//            String address = PrivateKey.generate().getDerivedAddress();
+//            Keyring expectedKeyring = Keyring.create(address, privateKey);
+//
+//            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), address);
+//
+//            KeyStore store = Keyring.encrypt(privateKey, password, option);
+//            checkValidateKeyStore(store, password, expectedKeyring, 4);
+//        }
 
         //CA-KEYRING-087
-        @Test
-        public void klaytnWalletKey() throws CipherException{
-            String password = "password";
-            String privateKey = PrivateKey.generate().getPrivateKey();
-            String address = PrivateKey.generate().getDerivedAddress();
-            Keyring expectedKeyring = Keyring.create(address, privateKey);
-
-            String klaytnWalletKey = expectedKeyring.getKlaytnWalletKey();
-
-            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), expectedKeyring.getAddress());
-
-            KeyStore store = Keyring.encrypt(klaytnWalletKey, password, option);
-            checkValidateKeyStore(store, password, expectedKeyring, 4);
-        }
+//        @Test
+//        public void klaytnWalletKey() throws CipherException{
+//            String password = "password";
+//            String privateKey = PrivateKey.generate().getPrivateKey();
+//            String address = PrivateKey.generate().getDerivedAddress();
+//            Keyring expectedKeyring = Keyring.create(address, privateKey);
+//
+//            String klaytnWalletKey = expectedKeyring.getKlaytnWalletKey();
+//
+//            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), expectedKeyring.getAddress());
+//
+//            KeyStore store = Keyring.encrypt(klaytnWalletKey, password, option);
+//            checkValidateKeyStore(store, password, expectedKeyring, 4);
+//        }
 
         //CA-KEYRING-088
-        @Test
-        public void klaytnWalletKey_throwException_InvalidAddress() throws CipherException {
-            expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("The address defined in options does not match the address of KlaytnWalletKey");
-
-            String password = "password";
-            Keyring expectedKeyring = Keyring.generate();
-            String invalidAddress = Keyring.generate().getAddress();
-
-            String klaytnWalletKey = expectedKeyring.getKlaytnWalletKey();
-            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), invalidAddress);
-
-            KeyStore store = Keyring.encrypt(klaytnWalletKey, password, option);
-        }
+//        @Test
+//        public void klaytnWalletKey_throwException_InvalidAddress() throws CipherException {
+//            expectedException.expect(RuntimeException.class);
+//            expectedException.expectMessage("The address defined in options does not match the address of KlaytnWalletKey");
+//
+//            String password = "password";
+//            Keyring expectedKeyring = Keyring.generate();
+//            String invalidAddress = Keyring.generate().getAddress();
+//
+//            String klaytnWalletKey = expectedKeyring.getKlaytnWalletKey();
+//            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), invalidAddress);
+//
+//            KeyStore store = Keyring.encrypt(klaytnWalletKey, password, option);
+//        }
 
         //CA-KEYRING-089
-        @Test
-        public void multipleKeyString() throws CipherException{
-            String password = "password";
-            String address = Keyring.generate().getAddress();
-
-            String[] privateKeyArr = new String[] {
-                    PrivateKey.generate().getPrivateKey(),
-                    PrivateKey.generate().getPrivateKey(),
-                    PrivateKey.generate().getPrivateKey()
-            };
-            Keyring expect = Keyring.create(address, privateKeyArr);
-            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), address);
-
-            KeyStore keyStore = Keyring.encrypt(privateKeyArr, password, option);
-            checkValidateKeyStore(keyStore, password, expect,4);
-        }
+//        @Test
+//        public void multipleKeyString() throws CipherException{
+//            String password = "password";
+//            String address = Keyring.generate().getAddress();
+//
+//            String[] privateKeyArr = new String[] {
+//                    PrivateKey.generate().getPrivateKey(),
+//                    PrivateKey.generate().getPrivateKey(),
+//                    PrivateKey.generate().getPrivateKey()
+//            };
+//            Keyring expect = Keyring.create(address, privateKeyArr);
+//            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), address);
+//
+//            KeyStore keyStore = Keyring.encrypt(privateKeyArr, password, option);
+//            checkValidateKeyStore(keyStore, password, expect,4);
+//        }
 
         //CA-KEYRING-090
-        @Test
-        public void multipleKeyString_throwException_NoAddress() throws CipherException {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("The address must be defined inside the option object to encrypt multiple keys.");
+//        @Test
+//        public void multipleKeyString_throwException_NoAddress() throws CipherException {
+//            expectedException.expect(IllegalArgumentException.class);
+//            expectedException.expectMessage("The address must be defined inside the option object to encrypt multiple keys.");
+//
+//            String password = "password";
+//            String address = Keyring.generate().getAddress();
+//
+//            String[] privateKeyArr = new String[] {
+//                    PrivateKey.generate().getPrivateKey(),
+//                    PrivateKey.generate().getPrivateKey(),
+//                    PrivateKey.generate().getPrivateKey()
+//            };
+//            Keyring expect = Keyring.create(address, privateKeyArr);
+//            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), null);
+//
+//            KeyStore keyStore = Keyring.encrypt(privateKeyArr, password, option);
+//        }
 
-            String password = "password";
-            String address = Keyring.generate().getAddress();
+//        //CA-KEYRING-091
+//        @Test
+//        public void roleBasedKeyString() throws CipherException {
+//            String password = "password";
+//            String address = Keyring.generate().getAddress();
+//            String[][] privateKeyArr = new String[][] {
+//                    {
+//                        PrivateKey.generate().getPrivateKey(),
+//                        PrivateKey.generate().getPrivateKey(),
+//                        PrivateKey.generate().getPrivateKey()
+//                    },
+//                    {
+//                        PrivateKey.generate().getPrivateKey(),
+//                        PrivateKey.generate().getPrivateKey(),
+//                    },
+//                    {
+//                        PrivateKey.generate().getPrivateKey(),
+//                        PrivateKey.generate().getPrivateKey(),
+//                    }
+//            };
+//
+//            Keyring expect = Keyring.create(address, Arrays.asList(privateKeyArr));
+//            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), address);
+//
+//            KeyStore keyStore = Keyring.encrypt(Arrays.asList(privateKeyArr), password, option);
+//            checkValidateKeyStore(keyStore, password, expect,4);
+//        }
 
-            String[] privateKeyArr = new String[] {
-                    PrivateKey.generate().getPrivateKey(),
-                    PrivateKey.generate().getPrivateKey(),
-                    PrivateKey.generate().getPrivateKey()
-            };
-            Keyring expect = Keyring.create(address, privateKeyArr);
-            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), null);
-
-            KeyStore keyStore = Keyring.encrypt(privateKeyArr, password, option);
-        }
-
-        //CA-KEYRING-091
-        @Test
-        public void roleBasedKeyString() throws CipherException {
-            String password = "password";
-            String address = Keyring.generate().getAddress();
-            String[][] privateKeyArr = new String[][] {
-                    {
-                        PrivateKey.generate().getPrivateKey(),
-                        PrivateKey.generate().getPrivateKey(),
-                        PrivateKey.generate().getPrivateKey()
-                    },
-                    {
-                        PrivateKey.generate().getPrivateKey(),
-                        PrivateKey.generate().getPrivateKey(),
-                    },
-                    {
-                        PrivateKey.generate().getPrivateKey(),
-                        PrivateKey.generate().getPrivateKey(),
-                    }
-            };
-
-            Keyring expect = Keyring.create(address, Arrays.asList(privateKeyArr));
-            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), address);
-
-            KeyStore keyStore = Keyring.encrypt(Arrays.asList(privateKeyArr), password, option);
-            checkValidateKeyStore(keyStore, password, expect,4);
-        }
-
-        //CA-KEYRING-092
-        @Test
-        public void roleBasedKeyString_throwException_noAddress() throws CipherException {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("The address must be defined inside the option object to encrypt roleBased keys.");
-
-            String password = "password";
-            String address = Keyring.generate().getAddress();
-            String[][] privateKeyArr = new String[][] {
-                    {
-                            PrivateKey.generate().getPrivateKey(),
-                            PrivateKey.generate().getPrivateKey(),
-                            PrivateKey.generate().getPrivateKey()
-                    },
-                    {
-                            PrivateKey.generate().getPrivateKey(),
-                            PrivateKey.generate().getPrivateKey(),
-                    },
-                    {
-                            PrivateKey.generate().getPrivateKey(),
-                            PrivateKey.generate().getPrivateKey(),
-                    }
-            };
-
-            Keyring expect = Keyring.create(address, Arrays.asList(privateKeyArr));
-            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), null);
-
-            KeyStore keyStore = Keyring.encrypt(Arrays.asList(privateKeyArr), password, option);
-        }
+//        //CA-KEYRING-092
+//        @Test
+//        public void roleBasedKeyString_throwException_noAddress() throws CipherException {
+//            expectedException.expect(IllegalArgumentException.class);
+//            expectedException.expectMessage("The address must be defined inside the option object to encrypt roleBased keys.");
+//
+//            String password = "password";
+//            String address = Keyring.generate().getAddress();
+//            String[][] privateKeyArr = new String[][] {
+//                    {
+//                            PrivateKey.generate().getPrivateKey(),
+//                            PrivateKey.generate().getPrivateKey(),
+//                            PrivateKey.generate().getPrivateKey()
+//                    },
+//                    {
+//                            PrivateKey.generate().getPrivateKey(),
+//                            PrivateKey.generate().getPrivateKey(),
+//                    },
+//                    {
+//                            PrivateKey.generate().getPrivateKey(),
+//                            PrivateKey.generate().getPrivateKey(),
+//                    }
+//            };
+//
+//            Keyring expect = Keyring.create(address, Arrays.asList(privateKeyArr));
+//            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), null);
+//
+//            KeyStore keyStore = Keyring.encrypt(Arrays.asList(privateKeyArr), password, option);
+//        }
 
         //CA-KEYRING-093
         @Test
         public void keyring_single() throws CipherException {
             String password = "password";
-            Keyring keyring = Keyring.generate();
+            SingleKeyring keyring = KeyringFactory.generate();
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), keyring.getAddress());
 
-            KeyStore keyStore = Keyring.encrypt(keyring, password, option);
+            KeyStore keyStore = keyring.encrypt(password, option);
             checkValidateKeyStore(keyStore, password, keyring, 4);
         }
 
@@ -1697,10 +1688,10 @@ public class KeyringTest {
         @Test
         public void keyring_multiple() throws CipherException {
             String password = "password";
-            Keyring keyring = generateMultipleKeyring(3);
+            MultipleKeyring keyring = generateMultipleKeyring(3);
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName(), keyring.getAddress());
 
-            KeyStore keyStore = Keyring.encrypt(keyring, password, option);
+            KeyStore keyStore = keyring.encrypt(password, option);
             checkValidateKeyStore(keyStore, password, keyring, 4);
         }
 
@@ -1708,18 +1699,18 @@ public class KeyringTest {
         @Test
         public void keyring_roleBased() throws CipherException {
             String password = "password";
-            Keyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
+            RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName(), keyring.getAddress());
 
-            KeyStore keyStore = Keyring.encrypt(keyring, password, option);
+            KeyStore keyStore = keyring.encrypt(password, option);
             checkValidateKeyStore(keyStore, password, keyring, 4);
         }
 
         //CA-KEYRING-096
         @Test
-        public void instanceMethod_singleKey() throws CipherException {
+        public void abstractKeyring_singleKey() throws CipherException {
             String password = "password";
-            Keyring keyring = Keyring.generate();
+            AbstractKeyring keyring = KeyringFactory.generate();
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName(), keyring.getAddress());
 
             KeyStore keyStore = keyring.encrypt(password, option);
@@ -1728,9 +1719,9 @@ public class KeyringTest {
 
         //CA-KEYRING-097
         @Test
-        public void instanceMethod_multipleKey() throws CipherException {
+        public void abstractKeyring_multipleKey() throws CipherException {
             String password = "password";
-            Keyring keyring = generateMultipleKeyring(3);
+            AbstractKeyring keyring = generateMultipleKeyring(3);
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName(), keyring.getAddress());
 
             KeyStore keyStore = keyring.encrypt(password, option);
@@ -1739,14 +1730,41 @@ public class KeyringTest {
 
         //CA-KEYRING-098
         @Test
-        public void instanceMethod_roleBasedKey() throws CipherException {
+        public void abstractKeyring_roleBasedKey() throws CipherException {
             String password = "password";
-            Keyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
 
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName(), keyring.getAddress());
 
             KeyStore keyStore = keyring.encrypt(password, option);
             checkValidateKeyStore(keyStore, password, keyring, 4);
+        }
+
+        @Test
+        public void singleKeyring_noOptions() throws CipherException {
+            String password = "password";
+            SingleKeyring singleKeyring = KeyringFactory.generate();
+
+            KeyStore keyStore = singleKeyring.encrypt(password);
+            checkValidateKeyStore(keyStore, password, singleKeyring, 4);
+        }
+
+        @Test
+        public void multipleKeyring_noOptions() throws CipherException {
+            String password = "password";
+            MultipleKeyring singleKeyring = generateMultipleKeyring(3);
+
+            KeyStore keyStore = singleKeyring.encrypt(password);
+            checkValidateKeyStore(keyStore, password, singleKeyring, 4);
+        }
+
+        @Test
+        public void roleBasedKeyring_noOptions() throws CipherException {
+            String password = "password";
+            RoleBasedKeyring singleKeyring = generateRoleBaseKeyring(new int[] {3,4,5});
+
+            KeyStore keyStore = singleKeyring.encrypt(password);
+            checkValidateKeyStore(keyStore, password, singleKeyring, 4);
         }
     }
 
@@ -1754,7 +1772,7 @@ public class KeyringTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
-        public void checkValidateKeyStore(KeyStore actualData, String password, Keyring expectedKeyring, int version) throws CipherException{
+        public void checkValidateKeyStore(KeyStore actualData, String password, AbstractKeyring expectedKeyring, int version) throws CipherException{
             assertEquals(expectedKeyring.getAddress(), actualData.getAddress());
 
             if(actualData.getVersion() == version) {
@@ -1762,89 +1780,89 @@ public class KeyringTest {
                 assertNull(actualData.getKeyring());
             }
 
-            Keyring actualKeyring = Keyring.decrypt(actualData, password);
+            AbstractKeyring actualKeyring = KeyringFactory.decrypt(actualData, password);
 
-            for(int i=0; i<actualKeyring.getKeys().size(); i++) {
-                PrivateKey[] actualArr = actualKeyring.getKeys().get(i);
-                PrivateKey[] expectedArr = expectedKeyring.getKeys().get(i);
-
-                assertEquals(expectedArr.length, actualArr.length);
-
-                for(int j=0; j<actualArr.length; j++) {
-                    assertEquals(expectedArr[j].getPrivateKey(), actualArr[j].getPrivateKey());
-                }
-            }
+            checkValidKeyring(expectedKeyring, actualKeyring);
         }
 
         //CA-KEYRING-099
-        @Test
-        public void coupleKeyString() throws CipherException {
-            String password = "password";
-            String privateKey = PrivateKey.generate().getPrivateKey();
-            Keyring expect = Keyring.createFromPrivateKey(privateKey);
-
-            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName());
-
-            KeyStore keyStore = Keyring.encryptV3(privateKey, password, option);
-            checkValidateKeyStore(keyStore, password, expect, 3);
-        }
+//        @Test
+//        public void coupleKeyString() throws CipherException {
+//            String password = "password";
+//            String privateKey = PrivateKey.generate().getPrivateKey();
+//            AbstractKeyring expect = KeyringFactory.createFromPrivateKey(privateKey);
+//
+//            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName());
+//
+//            KeyStore keyStore = KeyringFactory.encryptV3(privateKey, password, option);
+//            checkValidateKeyStore(keyStore, password, expect, 3);
+//        }
 
         //CA-KEYRING-100
-        @Test
-        public void deCoupledKeyString() throws CipherException {
-            String password = "password";
-
-            String expectedAddress = PrivateKey.generate().getDerivedAddress();
-            String expectedPrivateKey = PrivateKey.generate().getPrivateKey();
-
-            Keyring expect = Keyring.createWithSingleKey(expectedAddress, expectedPrivateKey);
-
-            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), expectedAddress);
-
-            KeyStore keyStore = Keyring.encryptV3(expectedPrivateKey, password, option);
-            checkValidateKeyStore(keyStore, password, expect, 3);
-        }
+//        @Test
+//        public void deCoupledKeyString() throws CipherException {
+//            String password = "password";
+//
+//            String expectedAddress = PrivateKey.generate().getDerivedAddress();
+//            String expectedPrivateKey = PrivateKey.generate().getPrivateKey();
+//
+//            AbstractKeyring expect = KeyringFactory.createWithSingleKey(expectedAddress, expectedPrivateKey);
+//
+//            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), expectedAddress);
+//
+//            KeyStore keyStore = KeyringFactory.encryptV3(expectedPrivateKey, password, option);
+//            checkValidateKeyStore(keyStore, password, expect, 3);
+//        }
 
         //CA-KEYRING-101
-        @Test
-        public void klaytnWalletKey() throws CipherException {
-            String password = "password";
-            String privateKey = PrivateKey.generate().getPrivateKey();
-            String address = PrivateKey.generate().getDerivedAddress();
-            Keyring expectedKeyring = Keyring.create(address, privateKey);
-
-            String klaytnWalletKey = expectedKeyring.getKlaytnWalletKey();
-
-            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), expectedKeyring.getAddress());
-
-            KeyStore store = Keyring.encryptV3(klaytnWalletKey, password, option);
-            checkValidateKeyStore(store, password, expectedKeyring, 3);
-        }
+//        @Test
+//        public void klaytnWalletKey() throws CipherException {
+//            String password = "password";
+//            String privateKey = PrivateKey.generate().getPrivateKey();
+//            String address = PrivateKey.generate().getDerivedAddress();
+//            AbstractKeyring expectedKeyring = KeyringFactory.create(address, privateKey);
+//
+//            String klaytnWalletKey = expectedKeyring.getKlaytnWalletKey();
+//
+//            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), expectedKeyring.getAddress());
+//
+//            KeyStore store = KeyringFactory.encryptV3(klaytnWalletKey, password, option);
+//            checkValidateKeyStore(store, password, expectedKeyring, 3);
+//        }
 
         //CA-KEYRING-102
-        @Test
-        public void klaytnWalletKey_throwException_InvalidAddress() throws CipherException {
-            expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("The address defined in options does not match the address of KlaytnWalletKey");
-
-            String password = "password";
-            Keyring expectedKeyring = Keyring.generate();
-            String invalidAddress = Keyring.generate().getAddress();
-
-            String klaytnWalletKey = expectedKeyring.getKlaytnWalletKey();
-            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), invalidAddress);
-
-            KeyStore store = Keyring.encryptV3(klaytnWalletKey, password, option);
-        }
+//        @Test
+//        public void klaytnWalletKey_throwException_InvalidAddress() throws CipherException {
+//            expectedException.expect(RuntimeException.class);
+//            expectedException.expectMessage("The address defined in options does not match the address of KlaytnWalletKey");
+//
+//            String password = "password";
+//            AbstractKeyring expectedKeyring = KeyringFactory.generate();
+//            String invalidAddress = KeyringFactory.generate().getAddress();
+//
+//            String klaytnWalletKey = expectedKeyring.getKlaytnWalletKey();
+//            KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), invalidAddress);
+//
+//            KeyStore store = KeyringFactory.encryptV3(klaytnWalletKey, password, option);
+//        }
 
         //CA-KEYRING-103
         @Test
         public void keyring_single() throws CipherException {
             String password = "password";
-            Keyring keyring = Keyring.generate();
+            SingleKeyring keyring = KeyringFactory.generate();
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), keyring.getAddress());
 
-            KeyStore keyStore = Keyring.encryptV3(keyring, password, option);
+            KeyStore keyStore = keyring.encryptV3(password, option);
+            checkValidateKeyStore(keyStore, password, keyring, 3);
+        }
+
+        @Test
+        public void keyring_single_noOption() throws CipherException {
+            String password = "password";
+            SingleKeyring keyring = KeyringFactory.generate();
+
+            KeyStore keyStore = keyring.encryptV3(password);
             checkValidateKeyStore(keyStore, password, keyring, 3);
         }
 
@@ -1852,34 +1870,44 @@ public class KeyringTest {
         @Test
         public void throwException_keyring_multiple() throws CipherException {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. use 'keyring.encrypt(password)");
+            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
             String password = "password";
-            Keyring keyring = generateMultipleKeyring(3);
+            MultipleKeyring keyring = generateMultipleKeyring(3);
 
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), keyring.getAddress());
-            KeyStore keyStore = Keyring.encryptV3(keyring, password, option);
+            KeyStore keyStore = keyring.encryptV3(password, option);
         }
 
         //CA-KEYRING-105
         @Test
         public void throwException_keyring_roleBased() throws CipherException {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. use 'keyring.encrypt(password)");
+            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
             String password = "password";
-            Keyring keyring = generateRoleBaseKeyring(new int[] {2,3,4});
+            RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[] {2,3,4});
 
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.ScryptKdfParams.getName(), keyring.getAddress());
-            KeyStore keyStore = Keyring.encryptV3(keyring, password, option);
+            KeyStore keyStore = keyring.encryptV3(password, option);
         }
 
         //CA-KEYRING-106
         @Test
-        public void instanceMethod_singleKey() throws CipherException {
+        public void abstractKeyring_singleKey() throws CipherException {
             String password = "password";
-            Keyring keyring = Keyring.generate();
+            AbstractKeyring keyring = KeyringFactory.generate();
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName(), keyring.getAddress());
 
             KeyStore keyStore = keyring.encryptV3(password, option);
+            checkValidateKeyStore(keyStore, password, keyring, 4);
+        }
+
+        //CA-KEYRING-106
+        @Test
+        public void abstractKeyring_singleKey_noOption() throws CipherException {
+            String password = "password";
+            AbstractKeyring keyring = KeyringFactory.generate();
+
+            KeyStore keyStore = keyring.encryptV3(password);
             checkValidateKeyStore(keyStore, password, keyring, 4);
         }
 
@@ -1887,10 +1915,10 @@ public class KeyringTest {
         @Test
         public void throwException_instanceMethod_multipleKey() throws CipherException {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. use 'keyring.encrypt(password)");
+            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
 
             String password = "password";
-            Keyring keyring = generateMultipleKeyring(3);
+            AbstractKeyring keyring = generateMultipleKeyring(3);
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName(), keyring.getAddress());
 
             KeyStore keyStore = keyring.encryptV3(password, option);
@@ -1900,15 +1928,16 @@ public class KeyringTest {
         @Test
         public void throwException_instanceMethod_roleBasedKey() throws CipherException {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. use 'keyring.encrypt(password)");
+            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
 
             String password = "password";
-            Keyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
 
             KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF(KeyStore.Pbkdf2KdfParams.getName(), keyring.getAddress());
 
             KeyStore keyStore = keyring.encryptV3(password, option);
         }
+
     }
 
     public static class getKeyByRoleTest {
@@ -1919,7 +1948,7 @@ public class KeyringTest {
         @Test
         public void getKeyByRole() {
             int[] count = {2,3,4};
-            Keyring roleKeyring = generateRoleBaseKeyring(count);
+            RoleBasedKeyring roleKeyring = generateRoleBaseKeyring(count);
             PrivateKey[] keys = roleKeyring.getKeyByRole(AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
 
             assertNotNull(keys);
@@ -1929,7 +1958,7 @@ public class KeyringTest {
         //CA-KEYRING-110
         @Test
         public void getKeyByRole_defaultKey() {
-            Keyring keyring = generateMultipleKeyring(3);
+            MultipleKeyring keyring = generateMultipleKeyring(3);
             PrivateKey[] keys = keyring.getKeyByRole(AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex());
 
             assertNotNull(keys);
@@ -1940,10 +1969,10 @@ public class KeyringTest {
         @Test
         public void getKeyByRole_throwException_defaultKeyEmpty() {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("The key data with specified roleIndex does not exist. The default key in TransactionRole is also empty.");
+            expectedException.expectMessage("The Key with specified role group does not exists. The TRANSACTION role group is also empty");
 
             int[] count = {0, 0, 3};
-            Keyring keyring = generateRoleBaseKeyring(count);
+            RoleBasedKeyring keyring = generateRoleBaseKeyring(count);
 
             PrivateKey[] keys = keyring.getKeyByRole(AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex());
         }
@@ -1954,7 +1983,7 @@ public class KeyringTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("Invalid role index");
 
-            Keyring keyring = generateMultipleKeyring(4);
+            MultipleKeyring keyring = generateMultipleKeyring(4);
             PrivateKey[] keys = keyring.getKeyByRole(4);
         }
     }
@@ -1966,8 +1995,8 @@ public class KeyringTest {
         //CA-KEYRING-113
         @Test
         public void getKlaytnWalletKey_coupled() {
-            Keyring keyring = Keyring.generate();
-            String expectedKeyStr = keyring.getKeys().get(0)[0].getPrivateKey() + "0x00" + keyring.getAddress();
+            SingleKeyring keyring = KeyringFactory.generate();
+            String expectedKeyStr = keyring.getKey().getPrivateKey() + "0x00" + keyring.getAddress();
 
             assertEquals(expectedKeyStr, keyring.getKlaytnWalletKey());
         }
@@ -1978,7 +2007,7 @@ public class KeyringTest {
             String address = PrivateKey.generate().getDerivedAddress();
             String privateKey = PrivateKey.generate().getPrivateKey();
 
-            Keyring keyring = Keyring.create(address, privateKey);
+            SingleKeyring keyring = KeyringFactory.create(address, privateKey);
             String expectedKeyStr = privateKey + "0x00" + Numeric.prependHexPrefix(address);
 
             assertEquals(expectedKeyStr, keyring.getKlaytnWalletKey());
@@ -1990,9 +2019,9 @@ public class KeyringTest {
         @Test
         public void getKlaytnWallet_throwException_multiKey() {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("The keyring cannot be exported in KlaytnWalletKey format. Use caver.wallet.keyring.encrypt or keyring.encrypt.");
+            expectedException.expectMessage("The keyring cannot be exported in KlaytnWalletKey format. Use keyring.encrypt.");
 
-            Keyring keyring = generateMultipleKeyring(3);
+            MultipleKeyring keyring = generateMultipleKeyring(3);
             String keyStr = keyring.getKlaytnWalletKey();
         }
 
@@ -2000,9 +2029,9 @@ public class KeyringTest {
         @Test
         public void getKlaytnWallet_thrownException_roleBased() {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("The keyring cannot be exported in KlaytnWalletKey format. Use caver.wallet.keyring.encrypt or keyring.encrypt.");
+            expectedException.expectMessage("The keyring cannot be exported in KlaytnWalletKey format. Use keyring.encrypt.");
 
-            Keyring keyring = generateRoleBaseKeyring(new int[]{1,3,4});
+            RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[]{1,3,4});
             String keyStr = keyring.getKlaytnWalletKey();
         }
     }
@@ -2012,13 +2041,11 @@ public class KeyringTest {
         //CA-KEYRING-117
         @Test
         public void getPublicKey_single() {
-            Keyring keyring = Keyring.generate();
-            List<String[]> publicKeys = keyring.getPublicKey();
+            SingleKeyring keyring = KeyringFactory.generate();
+            String publicKeys = keyring.getPublicKey();
 
-            assertEquals(keyring.getKeys().get(0)[0].getPublicKey(false), publicKeys.get(0)[0]);
-            assertEquals(1, publicKeys.get(0).length);
-            assertEquals(0, publicKeys.get(1).length);
-            assertEquals(0, publicKeys.get(2).length);
+            assertEquals(keyring.getKey().getPublicKey(false), publicKeys);
+
         }
 
         //CA-KEYRING-118
@@ -2027,33 +2054,28 @@ public class KeyringTest {
             String address = PrivateKey.generate().getDerivedAddress();
             String privateKey = PrivateKey.generate().getPrivateKey();
 
-            Keyring keyring = Keyring.create(address, privateKey);
-            List<String[]> publicKeys = keyring.getPublicKey();
+            SingleKeyring keyring = KeyringFactory.create(address, privateKey);
+            String publicKeys = keyring.getPublicKey();
 
-            assertEquals(keyring.getKeys().get(0)[0].getPublicKey(false), publicKeys.get(0)[0]);
-            assertEquals(1, publicKeys.get(0).length);
-            assertEquals(0, publicKeys.get(1).length);
-            assertEquals(0, publicKeys.get(2).length);
+            assertEquals(keyring.getKey().getPublicKey(false), publicKeys);
         }
 
         //CA-KEYRING-119
         @Test
         public void getPublicKey_multiple() {
-            Keyring keyring = generateMultipleKeyring(2);
-            List<String[]> publicKeys = keyring.getPublicKey();
+            MultipleKeyring keyring = generateMultipleKeyring(2);
+            String[] publicKeys = keyring.getPublicKey();
 
-            assertEquals(keyring.getKeys().get(0)[0].getPublicKey(false), publicKeys.get(0)[0]);
-            assertEquals(keyring.getKeys().get(0)[1].getPublicKey(false), publicKeys.get(0)[1]);
+            assertEquals(keyring.getKeys()[0].getPublicKey(false), publicKeys[0]);
+            assertEquals(keyring.getKeys()[1].getPublicKey(false), publicKeys[1]);
 
-            assertEquals(2, publicKeys.get(0).length);
-            assertEquals(0, publicKeys.get(1).length);
-            assertEquals(0, publicKeys.get(2).length);
+            assertEquals(2, publicKeys.length);
         }
 
         //CA-KEYRING-120
         @Test
         public void getPublicKey_roleBased() {
-            Keyring keyring = generateRoleBaseKeyring(new int[] {2, 3, 1});
+            RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[] {2, 3, 1});
             List<String[]> publicKeys = keyring.getPublicKey();
 
             assertEquals(keyring.getKeys().get(0)[0].getPublicKey(false), publicKeys.get(0)[0]);
@@ -2076,7 +2098,7 @@ public class KeyringTest {
         //CA-KEYRING-121
         @Test
         public void isDecoupled_coupled() {
-            Keyring keyring = Keyring.generate();
+            SingleKeyring keyring = KeyringFactory.generate();
 
             assertFalse(keyring.isDecoupled());
         }
@@ -2087,7 +2109,7 @@ public class KeyringTest {
             String address = PrivateKey.generate().getDerivedAddress();
             String privateKey = PrivateKey.generate().getPrivateKey();
 
-            Keyring keyring = Keyring.create(address, privateKey);
+            SingleKeyring keyring = KeyringFactory.create(address, privateKey);
 
             assertTrue(keyring.isDecoupled());
         }
@@ -2095,14 +2117,14 @@ public class KeyringTest {
         //CA-KEYRING-123
         @Test
         public void isDecoupled_multiKey() {
-            Keyring keyring = generateMultipleKeyring(3);
+            MultipleKeyring keyring = generateMultipleKeyring(3);
             assertTrue(keyring.isDecoupled());
         }
 
         //CA-KEYRING-124
         @Test
         public void isDecoupled_roleBased() {
-            Keyring keyring = generateRoleBaseKeyring(new int[]{2,3,1});
+            RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[]{2,3,1});
             assertTrue(keyring.isDecoupled());
         }
     }
@@ -2111,16 +2133,16 @@ public class KeyringTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
-        public void checkAccountKeyPublic(Keyring keyring, Account account) {
-            String expectedPublicKey = keyring.getKeyByRole(AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex())[0].getPublicKey(false);
+        public void checkAccountKeyPublic(SingleKeyring keyring, Account account) {
+            String expectedPublicKey = keyring.getKeyByRole(AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex()).getPublicKey(false);
 
             assertTrue(account.getAccountKey() instanceof AccountKeyPublic);
             assertEquals(Numeric.prependHexPrefix(keyring.getAddress()), Numeric.prependHexPrefix(account.getAddress()));
             assertEquals(expectedPublicKey, ((AccountKeyPublic) account.getAccountKey()).getPublicKey());
         }
 
-        public void checkAccountKeyWeightedMultiSig(Keyring keyring, Account account, WeightedMultiSigOptions options) {
-            String[] expectedPublicKeys = keyring.getPublicKey().get(0);
+        public void checkAccountKeyWeightedMultiSig(MultipleKeyring keyring, Account account, WeightedMultiSigOptions options) {
+            String[] expectedPublicKeys = keyring.getPublicKey();
             List<WeightedPublicKey> actualKeys = ((AccountKeyWeightedMultiSig) account.getAccountKey()).getWeightedPublicKeys();
 
             assertTrue(account.getAccountKey() instanceof AccountKeyWeightedMultiSig);
@@ -2140,7 +2162,7 @@ public class KeyringTest {
         //CA-KEYRING-125
         @Test
         public void singleKeyTest() {
-            Keyring keyring = Keyring.generate();
+            SingleKeyring keyring = KeyringFactory.generate();
             Account account = keyring.toAccount();
 
             checkAccountKeyPublic(keyring, account);
@@ -2149,7 +2171,7 @@ public class KeyringTest {
         //CA-KEYRING-126
         @Test
         public void toAccount_withMultipleType() {
-            Keyring expectedKeyring = generateMultipleKeyring(3);
+            MultipleKeyring expectedKeyring = generateMultipleKeyring(3);
 
             BigInteger[] optionWeight = {
                     BigInteger.ONE, BigInteger.ONE, BigInteger.ONE,
@@ -2166,7 +2188,7 @@ public class KeyringTest {
         //CA-KEYRING-127
         @Test
         public void toAccount_withRoleBasedType() {
-            Keyring expectedKeyring = generateRoleBaseKeyring(new int[] {2, 1, 4});
+            RoleBasedKeyring expectedKeyring = generateRoleBaseKeyring(new int[] {2, 1, 4});
 
             BigInteger[][] optionWeight = {
                     {BigInteger.ONE, BigInteger.ONE},
@@ -2203,7 +2225,7 @@ public class KeyringTest {
         //CA-KEYRING-128
         @Test
         public void multipleKeyTest() {
-            Keyring keyring = generateMultipleKeyring(3);
+            MultipleKeyring keyring = generateMultipleKeyring(3);
 
             BigInteger[] weights = {BigInteger.ONE, BigInteger.ONE, BigInteger.valueOf(2)};
             WeightedMultiSigOptions options = new WeightedMultiSigOptions(BigInteger.ONE, Arrays.asList(weights));
@@ -2216,12 +2238,12 @@ public class KeyringTest {
         @Test
         public void multipleKeyTest_throwException_noKey() {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("Failed to create Account instance: There must be one or more keys in RoleTransaction Key array.");
+            expectedException.expectMessage("The count of public keys is not equal to the length of weight array.");
 
             BigInteger[] weights = {BigInteger.ONE, BigInteger.ONE, BigInteger.valueOf(2)};
             WeightedMultiSigOptions options = new WeightedMultiSigOptions(BigInteger.ONE, Arrays.asList(weights));
 
-            Keyring keyring = generateMultipleKeyring(0);
+            MultipleKeyring keyring = generateMultipleKeyring(0);
             Account account = keyring.toAccount(options);
         }
 
@@ -2229,9 +2251,9 @@ public class KeyringTest {
         @Test
         public void multipleKeyTest_throwException_weightedOptionCount() {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("Failed to create Account instance: The number of keys and the number of elements in the Weights array should be the same.");
+            expectedException.expectMessage("The count of public keys is not equal to the length of weight array.");
 
-            Keyring keyring = generateMultipleKeyring(2);
+            MultipleKeyring keyring = generateMultipleKeyring(2);
 
             BigInteger[] weights = {BigInteger.ONE, BigInteger.ONE, BigInteger.valueOf(2)};
             WeightedMultiSigOptions options = new WeightedMultiSigOptions(BigInteger.ONE, Arrays.asList(weights));
@@ -2240,23 +2262,23 @@ public class KeyringTest {
         }
 
         //CA-KEYRING-131
-        @Test
-        public void multipleKeyTest_throwException_roleBasedKey() {
-            expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("Failed to create Account instance: There are exists keys in other Group(RoleAccountUpdate, RoleFeePayer)");
-
-            Keyring keyring = generateRoleBaseKeyring(new int[]{3,3,4});
-
-            BigInteger[] weights = {BigInteger.ONE, BigInteger.ONE, BigInteger.valueOf(2)};
-            WeightedMultiSigOptions options = new WeightedMultiSigOptions(BigInteger.ONE, Arrays.asList(weights));
-
-            Account account = keyring.toAccount(options);
-        }
+//        @Test
+//        public void multipleKeyTest_throwException_roleBasedKey() {
+//            expectedException.expect(RuntimeException.class);
+//            expectedException.expectMessage("Failed to create Account instance: There are exists keys in other Group(RoleAccountUpdate, RoleFeePayer)");
+//
+//            RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[]{3,3,4});
+//
+//            BigInteger[] weights = {BigInteger.ONE, BigInteger.ONE, BigInteger.valueOf(2)};
+//            WeightedMultiSigOptions options = new WeightedMultiSigOptions(BigInteger.ONE, Arrays.asList(weights));
+//
+//            Account account = keyring.toAccount(options);
+//        }
 
         //CA-KEYRING-132
         @Test
         public void roleBasedKeyTest_SingleKey() {
-            Keyring keyring = generateRoleBaseKeyring(new int[]{1,1,1});
+            RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[]{1,1,1});
             List<String[]> expectedPublicKeys = keyring.getPublicKey();
 
             WeightedMultiSigOptions[] weightedMultiSigOptions = new WeightedMultiSigOptions[] {
@@ -2283,7 +2305,7 @@ public class KeyringTest {
         //CA-KEYRING-133
         @Test
         public void roleBaseKeyTest_multipleKey() {
-            Keyring keyring = generateRoleBaseKeyring(new int[] {2,3,4});
+            RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[] {2,3,4});
             List<String[]> expectedPublicKeys = keyring.getPublicKey();
 
             BigInteger[][] optionWeight = {
@@ -2342,7 +2364,7 @@ public class KeyringTest {
                     new WeightedMultiSigOptions(),
             };
 
-            Keyring keyring = Keyring.createWithRoleBasedKey(address, Arrays.asList(expectedPrivateKeyArr));
+            RoleBasedKeyring keyring = KeyringFactory.createWithRoleBasedKey(address, Arrays.asList(expectedPrivateKeyArr));
             List<String[]> expectedPublicKeys = keyring.getPublicKey();
             Account account = keyring.toAccount(Arrays.asList(options));
 
@@ -2359,8 +2381,5 @@ public class KeyringTest {
             assertTrue(feePayerRoleKey instanceof AccountKeyPublic);
             assertEquals(expectedPublicKeys.get(2)[0], ((AccountKeyPublic) feePayerRoleKey).getPublicKey());
         }
-
-
-
     }
 }

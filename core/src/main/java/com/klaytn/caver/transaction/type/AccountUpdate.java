@@ -2,11 +2,9 @@ package com.klaytn.caver.transaction.type;
 
 import com.klaytn.caver.Klay;
 import com.klaytn.caver.account.Account;
-import com.klaytn.caver.account.AccountKeyDecoder;
-import com.klaytn.caver.account.IAccountKey;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.utils.BytesUtils;
+import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.web3j.rlp.*;
 import org.web3j.utils.Numeric;
 
@@ -66,7 +64,7 @@ public class AccountUpdate extends AbstractTransaction {
      * @param signatures A Signature list
      * @param account The Account instance contains AccountKey to be updated to the account.
      */
-    public AccountUpdate(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures, Account account) {
+    public AccountUpdate(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, Account account) {
         super(
                 klaytnCall,
                 TransactionType.TxTypeAccountUpdate.toString(),
@@ -113,7 +111,7 @@ public class AccountUpdate extends AbstractTransaction {
         Account account = Account.createFromRLPEncoding(from, ((RlpString) values.get(4)).asString());
 
         List<RlpType> senderSignatures = ((RlpList) (values.get(5))).getValues();
-        List<KlaySignatureData> signatureDataList = KlaySignatureData.decodeSignatures(senderSignatures);
+        List<SignatureData> signatureDataList = SignatureData.decodeSignatures(senderSignatures);
 
         AccountUpdate accountUpdate = new AccountUpdate.Builder()
                 .setNonce(nonce)
@@ -121,7 +119,7 @@ public class AccountUpdate extends AbstractTransaction {
                 .setGas(gas)
                 .setFrom(from)
                 .setAccount(account)
-                .setSignList(signatureDataList)
+                .setSignatures(signatureDataList)
                 .build();
 
         return accountUpdate;
@@ -138,7 +136,7 @@ public class AccountUpdate extends AbstractTransaction {
 
         List<RlpType> signatureRLPList = new ArrayList<>();
 
-        for(KlaySignatureData signatureData : this.getSignatures()) {
+        for(SignatureData signatureData : this.getSignatures()) {
             signatureRLPList.add(signatureData.toRlpList());
         }
 

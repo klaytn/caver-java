@@ -1,9 +1,9 @@
 package com.klaytn.caver.transaction.type;
 
 import com.klaytn.caver.Klay;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.utils.Utils;
+import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.web3j.rlp.*;
 import org.web3j.utils.Numeric;
 
@@ -89,7 +89,7 @@ public class LegacyTransaction extends AbstractTransaction {
      * @param input Data attached to the transaction, used for transaction execution.
      * @param value The amount of KLAY in peb to be transferred.
      */
-    public LegacyTransaction(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures, String to, String input, String value) {
+    public LegacyTransaction(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String input, String value) {
         super(
                 klaytnCall,
                 TransactionType.TxTypeLegacyTransaction.toString(),
@@ -145,7 +145,7 @@ public class LegacyTransaction extends AbstractTransaction {
             byte[] v = ((RlpString) values.get(6)).getBytes();
             byte[] r = ((RlpString) values.get(7)).getBytes();
             byte[] s = ((RlpString) values.get(8)).getBytes();
-            KlaySignatureData signatureData = new KlaySignatureData(v, r, s);
+            SignatureData signatureData = new SignatureData(v, r, s);
 
             legacyTransaction.appendSignatures(signatureData);
             return legacyTransaction;
@@ -157,10 +157,10 @@ public class LegacyTransaction extends AbstractTransaction {
     /**
      * Appends signatures array to transaction.
      * Legacy transaction cannot have more than one signature, so an error occurs if the transaction already has a signature.
-     * @param signatureData KlaySignatureData instance contains ECDSA signature data
+     * @param signatureData SignatureData instance contains ECDSA signature data
      */
     @Override
-    public void appendSignatures(KlaySignatureData signatureData) {
+    public void appendSignatures(SignatureData signatureData) {
         if(this.getSignatures().size() != 0 && !Utils.isEmptySig(this.getSignatures().get(0))) {
             throw new RuntimeException("Signatures already defined." + TransactionType.TxTypeLegacyTransaction.toString() + " cannot include more than one signature.");
         }
@@ -171,10 +171,10 @@ public class LegacyTransaction extends AbstractTransaction {
     /**
      * Appends signatures array to transaction.
      * Legacy transaction cannot have more than one signature, so an error occurs if the transaction already has a signature.
-     * @param signatureData List of KlaySignatureData contains ECDSA signature data
+     * @param signatureData List of SignatureData contains ECDSA signature data
      */
     @Override
-    public void appendSignatures(List<KlaySignatureData> signatureData) {
+    public void appendSignatures(List<SignatureData> signatureData) {
         if(this.getSignatures().size() != 0 && !Utils.isEmptySig(this.getSignatures())) {
             throw new RuntimeException("Signatures already defined." + TransactionType.TxTypeLegacyTransaction.toString() + " cannot include more than one signature.");
         }
@@ -201,7 +201,7 @@ public class LegacyTransaction extends AbstractTransaction {
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getTo())));
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getValue())));
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getInput())));
-        KlaySignatureData signatureData = this.getSignatures().get(0);
+        SignatureData signatureData = this.getSignatures().get(0);
         rlpTypeList.addAll(signatureData.toRlpList().getValues());
 
         byte[] encoded = RlpEncoder.encode(new RlpList(rlpTypeList));

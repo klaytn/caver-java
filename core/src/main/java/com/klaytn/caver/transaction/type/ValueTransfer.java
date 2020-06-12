@@ -1,10 +1,10 @@
 package com.klaytn.caver.transaction.type;
 
 import com.klaytn.caver.Klay;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
+import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.web3j.rlp.*;
 import org.web3j.utils.Numeric;
 
@@ -82,7 +82,7 @@ public class ValueTransfer extends AbstractTransaction {
      * @param to The account address that will receive the transferred value.
      * @param value The amount of KLAY in peb to be transferred.
      */
-    public ValueTransfer(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<KlaySignatureData> signatures, String to, String value) {
+    public ValueTransfer(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String value) {
         super(
                 klaytnCall,
                 TransactionType.TxTypeValueTransfer.toString(),
@@ -131,7 +131,7 @@ public class ValueTransfer extends AbstractTransaction {
         String from = ((RlpString) values.get(5)).asString();
 
         List<RlpType> senderSignatures = ((RlpList) (values.get(6))).getValues();
-        List<KlaySignatureData> signatureDataList = KlaySignatureData.decodeSignatures(senderSignatures);
+        List<SignatureData> signatureDataList = SignatureData.decodeSignatures(senderSignatures);
 
         ValueTransfer valueTransfer = new ValueTransfer.Builder()
                 .setNonce(nonce)
@@ -140,7 +140,7 @@ public class ValueTransfer extends AbstractTransaction {
                 .setTo(to)
                 .setValue(value)
                 .setFrom(from)
-                .setSignList(signatureDataList)
+                .setSignatures(signatureDataList)
                 .build();
 
         return valueTransfer;
@@ -157,7 +157,7 @@ public class ValueTransfer extends AbstractTransaction {
 
         List<RlpType> signatureRLPList = new ArrayList<>();
 
-        for(KlaySignatureData signatureData : this.getSignatures()) {
+        for(SignatureData signatureData : this.getSignatures()) {
             signatureRLPList.add(signatureData.toRlpList());
         }
 

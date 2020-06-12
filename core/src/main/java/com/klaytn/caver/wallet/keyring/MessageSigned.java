@@ -1,6 +1,6 @@
 package com.klaytn.caver.wallet.keyring;
 
-import com.klaytn.caver.crypto.KlaySignatureData;
+import java.util.List;
 
 /**
  * Represents a signed data info
@@ -12,9 +12,9 @@ public class MessageSigned {
     String messageHash;
 
     /**
-     * ECDSA signature data(V, R, S)
+     * ECDSA signature data(V, R, S) list
      */
-    KlaySignatureData signatureData;
+    List<SignatureData> signatures;
 
     /**
      * Plain message
@@ -24,12 +24,12 @@ public class MessageSigned {
     /**
      * Creates a MessageSigned instance
      * @param messageHash Signed message string
-     * @param signatureData ECDSA signature data
+     * @param signatures ECDSA signature data list
      * @param message Plain message string
      */
-    public MessageSigned(String messageHash, KlaySignatureData signatureData, String message) {
+    public MessageSigned(String messageHash, List<SignatureData> signatures, String message) {
         this.messageHash = messageHash;
-        this.signatureData = signatureData;
+        this.signatures = signatures;
         this.message = message;
     }
 
@@ -43,10 +43,10 @@ public class MessageSigned {
 
     /**
      * Getter function of ECDSA signature data
-     * @return KlaySignatureData
+     * @return SignatureData
      */
-    public KlaySignatureData getSignatureData() {
-        return signatureData;
+    public List<SignatureData> getSignatures() {
+        return signatures;
     }
 
     /**

@@ -34,7 +34,7 @@ public class AccountKeyRoleBased implements IAccountKey{
         }
     }
 
-    public static final int MAX_ROLE_BASED_KEY_COUNT = RoleGroup.values().length;
+    public static final int ROLE_GROUP_COUNT = RoleGroup.values().length;
 
     /**
      * First Key : roleTransaction
@@ -110,7 +110,7 @@ public class AccountKeyRoleBased implements IAccountKey{
         *  - Valid WeightedMultiSigOption : make AccountKeyWeightedMultiSig instance
         *  - Empty WeightedMultiSigOption : make AccountKeyPublicKey instance
         * */
-        if(pubArray.size() > MAX_ROLE_BASED_KEY_COUNT) {
+        if(pubArray.size() > ROLE_GROUP_COUNT) {
             throw new IllegalArgumentException("pubArray must have up to three items");
         }
         if(options.size() != pubArray.size()) {
@@ -160,7 +160,7 @@ public class AccountKeyRoleBased implements IAccountKey{
      * @param accountKeys List of a AccountKey implements IAccountKey interface
      */
     public void setAccountKeys(List<IAccountKey> accountKeys) {
-        if(accountKeys.size() > MAX_ROLE_BASED_KEY_COUNT) throw new RuntimeException("It exceeds maximum role based key count.");
+        if(accountKeys.size() > ROLE_GROUP_COUNT) throw new RuntimeException("It exceeds maximum role based key count.");
         this.accountKeys = accountKeys;
     }
 

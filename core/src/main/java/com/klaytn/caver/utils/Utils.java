@@ -131,6 +131,7 @@ public class Utils {
     public static boolean isEmptySig(List<SignatureData> signatureDataList) {
         SignatureData emptySig = SignatureData.getEmptySignature();
 
+        //if stream is empty, allMatch() returns always true.
         boolean isMatched = signatureDataList.stream().allMatch(emptySig::equals);
 
         return isMatched;

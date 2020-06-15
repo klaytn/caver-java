@@ -280,7 +280,7 @@ public class FeeDelegatedValueTransferMemo extends AbstractFeeDelegatedTransacti
      * @return boolean
      */
     @Override
-    public boolean compareTxField(AbstractTransaction obj, boolean checkSig) {
+    public boolean compareTxField(AbstractFeeDelegatedTransaction obj, boolean checkSig) {
         if(!super.compareTxField(obj, checkSig)) return false;
         if(!(obj instanceof FeeDelegatedValueTransferMemo)) return false;
         FeeDelegatedValueTransferMemo txObj = (FeeDelegatedValueTransferMemo)obj;

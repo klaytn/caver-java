@@ -15,6 +15,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Represents a fee delegated value transfer transaction.
+ * Please refer to https://docs.klaytn.com/klaytn/design/transactions/fee-delegation#txtypefeedelegatedvaluetransfer to see more detail.
+ */
 public class FeeDelegatedValueTransfer extends AbstractFeeDelegatedTransaction {
 
     /**

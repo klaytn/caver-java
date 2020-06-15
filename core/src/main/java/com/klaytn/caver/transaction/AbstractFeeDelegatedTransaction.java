@@ -226,9 +226,9 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
                 if(this.getFeePayer().equals("0x")) {
                     if(!txObj.getFeePayer().equals("0x")) {
                         this.setFeePayer(txObj.getFeePayer());
+                        fillVariable = false;
                     }
                 }
-                fillVariable = false;
             }
 
             // Signatures can only be combined for the same transaction.

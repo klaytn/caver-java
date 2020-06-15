@@ -64,11 +64,8 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
      */
     public AbstractFeeDelegatedTransaction(Builder builder) {
         super(builder);
-        this.feePayer = builder.feePayer;
-
-        if (this.feePayerSignatures != null) {
-            this.feePayerSignatures.addAll(builder.feePayerSignatures);
-        }
+        setFeePayer(builder.feePayer);
+        setFeePayerSignatures(builder.feePayerSignatures);
     }
 
     /**
@@ -86,8 +83,8 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
      */
     public AbstractFeeDelegatedTransaction(Klay klaytnCall, String type, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures) {
         super(klaytnCall, type, from, nonce, gas, gasPrice, chainId, signatures);
-        this.feePayer = feePayer;
-        this.feePayerSignatures = feePayerSignatures;
+        setFeePayer(feePayer);
+        setFeePayerSignatures(feePayerSignatures);
     }
 
     /**
@@ -203,8 +200,7 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
      * @param signatureData List of SignatureData contains ECDSA signature data
      */
     public void appendFeePayerSignatures(List<SignatureData> signatureData) {
-        this.feePayerSignatures.addAll(signatureData);
-        this.feePayerSignatures = refineSignature(this.getFeePayerSignatures());
+        setFeePayerSignatures(signatureData);
     }
 
     /**
@@ -214,13 +210,12 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
      * @param rlpEncoded A List of RLP-encoded transaction strings.
      * @return String
      */
-    public String combineSignature(List<String> rlpEncoded) {
+    public String combineSignatures(List<String> rlpEncoded) {
         boolean fillVariable = false;
 
         // If the signatures are empty, there may be an undefined member variable.
         // In this case, the empty information is filled with the decoded result.
-        boolean isContainsEmptySig = Utils.isEmptySig(this.getSignatures());
-        if(this.getSignatures().size() == 0 || isContainsEmptySig) fillVariable = true;
+        if(this.getFeePayerSignatures().size() == 0 && this.getSignatures().size() == 0) fillVariable = true;
 
         for(String encodedStr : rlpEncoded) {
             AbstractFeeDelegatedTransaction txObj = (AbstractFeeDelegatedTransaction) TransactionDecoder.decode(encodedStr);
@@ -324,5 +319,15 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
      */
     public List<SignatureData> getFeePayerSignatures() {
         return feePayerSignatures;
+    }
+
+    public void setFeePayerSignatures(List<SignatureData> feePayerSignatures) {
+        if(feePayerSignatures != null && feePayerSignatures.size() != 0 && !Utils.isEmptySig(feePayerSignatures)) {
+            if (feePayer.equals("0x")) {
+                throw new IllegalArgumentException("feePayer is missing: feePayer must be defined with feePayerSignatures.");
+            }
+        }
+        this.feePayerSignatures.addAll(feePayerSignatures);
+        this.feePayerSignatures = refineSignature(this.getFeePayerSignatures());
     }
 }

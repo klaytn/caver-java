@@ -145,6 +145,10 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
      * @throws IOException
      */
     public AbstractFeeDelegatedTransaction signAsFeePayer(AbstractKeyring keyring, Function<AbstractFeeDelegatedTransaction, String> hasher) throws IOException {
+        if(this.getFeePayer().equals("0x")) {
+            this.setFeePayer(keyring.getAddress());
+        }
+
         if(!this.getFeePayer().toLowerCase().equals(keyring.getAddress().toLowerCase())) {
             throw new IllegalArgumentException("The feePayer address of the transaction is different with the address of the keyring to use.");
         }
@@ -169,6 +173,10 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
      * @throws IOException
      */
     public AbstractFeeDelegatedTransaction signAsFeePayer(AbstractKeyring keyring, int index, Function<AbstractFeeDelegatedTransaction, String> hasher) throws IOException {
+        if(this.getFeePayer().equals("0x")) {
+            this.setFeePayer(keyring.getAddress());
+        }
+
         if(!this.getFeePayer().toLowerCase().equals(keyring.getAddress().toLowerCase())) {
             throw new IllegalArgumentException("The feePayer address of the transaction is different with the address of the keyring to use.");
         }

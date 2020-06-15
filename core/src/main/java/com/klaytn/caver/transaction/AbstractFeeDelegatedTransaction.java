@@ -90,7 +90,7 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
     /**
      * Signs to the transaction with a single private key as a fee payer.
      * It sets Hasher default value.
-     *   - signer : TransactionHasher.getHashForSignature()
+     *   - signer : TransactionHasher.getHashForFeePayerSignature()
      * @param keyString The private key string.
      * @return AbstractFeeDelegatedTransaction
      * @throws IOException
@@ -115,9 +115,9 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
     }
 
     /**
-     * Signs using all private keys used in the role defined in the Keyring instance as a fee payer.
+     * Sign the transaction as a fee payer using all private keys used as roleFeePayerKey in the Keyring instance.
      * It sets index and Hasher default value.
-     *    - signer : TransactionHasher.getHashForSignature()
+     *    - signer : TransactionHasher.getHashForFeePayerSignature()
      * @param keyring The Keyring instance.
      * @return AbstractFeeDelegatedTransaction
      * @throws IOException
@@ -127,7 +127,7 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
     }
 
     /**
-     * Signs using all private keys used in the role defined in the keyring instance as a fee payer.
+     * Sign the the transaction as a fee payer using a private key at the index among the private keys used as roleFeePayerKey in the Keyring instance.
      * @param keyring The Keyring instance.
      * @param index The index of private key to use in Keyring instance.
      * @return AbstractFeeDelegatedTransaction
@@ -138,7 +138,7 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
     }
 
     /**
-     * Signs using all private keys used in the role defined in the Keyring instance as a fee payer.
+     * Sign the transaction as a fee payer using all private keys used as roleFeePayerKey in the Keyring instance.
      * @param keyring The Keyring instance.
      * @param hasher The function to get hash of transaction.
      * @return AbstractFeeDelegatedTransaction
@@ -161,7 +161,7 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
     }
 
     /**
-     * Signs to the transaction with a private key in the Keyring instance as a fee payer.
+     * Sign the the transaction as a fee payer using a private key at the index among the private keys used as roleFeePayerKey in the Keyring instance.
      * @param keyring The Keyring instance.
      * @param index The index of private key to use in Keyring instance.
      * @param hasher The function to get hash of transaction.

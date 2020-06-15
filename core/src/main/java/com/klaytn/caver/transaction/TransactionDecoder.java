@@ -24,6 +24,8 @@ public class TransactionDecoder {
             return ChainDataAnchoring.decode(rlpBytes);
         } else if(rlpBytes[0] == TransactionType.TxTypeFeeDelegatedValueTransfer.getType()) {
             return FeeDelegatedValueTransfer.decode(rlpBytes);
+        } else if(rlpBytes[0] == TransactionType.TxTypeFeeDelegatedValueTransferMemo.getType()) {
+            return FeeDelegatedValueTransferMemo.decode(rlpBytes);
         } else {
             return LegacyTransaction.decode(rlpBytes);
         }

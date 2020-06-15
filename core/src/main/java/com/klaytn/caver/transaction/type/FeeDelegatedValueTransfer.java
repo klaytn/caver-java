@@ -230,7 +230,6 @@ public class FeeDelegatedValueTransfer extends AbstractFeeDelegatedTransaction {
         this.validateOptionalValues(false);
 
         List<RlpType> senderSignatureRLPList = new ArrayList<>();
-        List<RlpType> feePayerSignatureRLPList = new ArrayList<>();
 
         for(SignatureData signatureData : this.getSignatures()) {
             senderSignatureRLPList.add(signatureData.toRlpList());

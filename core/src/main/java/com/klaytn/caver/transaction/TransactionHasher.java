@@ -10,7 +10,7 @@ public class TransactionHasher {
     }
 
     public static String getHashForFeePayerSignature(AbstractFeeDelegatedTransaction transaction) {
-        String rlpEncoded = transaction.getRLPEncodingForSignature();
+        String rlpEncoded = transaction.getRLPEncodingForFeePayerSignature();
         return Hash.sha3(rlpEncoded);
     }
 }

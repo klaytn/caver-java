@@ -225,8 +225,8 @@ public class FeeDelegatedValueTransfer extends AbstractFeeDelegatedTransaction {
      */
     @Override
     public String getSenderTxHash() {
-//        SenderTxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, txSignatures])
-//        SenderTxHash = keccak256(SenderTxHashRLP)
+        // SenderTxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, txSignatures])
+        // SenderTxHash = keccak256(SenderTxHashRLP)
         this.validateOptionalValues(false);
 
         List<RlpType> senderSignatureRLPList = new ArrayList<>();

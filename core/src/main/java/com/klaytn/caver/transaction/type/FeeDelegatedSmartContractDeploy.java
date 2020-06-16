@@ -156,7 +156,7 @@ public class FeeDelegatedSmartContractDeploy extends AbstractFeeDelegatedTransac
     /**
      * Decodes a RLP-encoded FeeDelegatedSmartContractDeploy string.
      * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractDeploy string.
-     * @return FeeDelegatedValueTransferMemo
+     * @return FeeDelegatedSmartContractDeploy
      */
     public static FeeDelegatedSmartContractDeploy decode(String rlpEncoded) {
         return decode(Numeric.hexStringToByteArray(rlpEncoded));
@@ -165,7 +165,7 @@ public class FeeDelegatedSmartContractDeploy extends AbstractFeeDelegatedTransac
     /**
      * Decodes a RLP-encoded FeeDelegatedSmartContractDeploy byte array.
      * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractDeploy byte array.
-     * @return FeeDelegatedValueTransferMemo
+     * @return FeeDelegatedSmartContractDeploy
      */
     public static FeeDelegatedSmartContractDeploy decode(byte[] rlpEncoded) {
         // TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, humanReadable, codeFormat, txSignatures, feePayer, feePayerSignatures])

@@ -334,7 +334,11 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
     }
 
     public void setFeePayerSignatures(List<SignatureData> feePayerSignatures) {
-        if(feePayerSignatures != null && feePayerSignatures.size() != 0 && !Utils.isEmptySig(feePayerSignatures)) {
+        if(feePayerSignatures == null || feePayerSignatures.size() == 0) {
+            feePayerSignatures = Arrays.asList(SignatureData.getEmptySignature());
+        }
+
+        if(!Utils.isEmptySig(feePayerSignatures)) {
             if (feePayer.equals("0x")) {
                 throw new IllegalArgumentException("feePayer is missing: feePayer must be defined with feePayerSignatures.");
             }

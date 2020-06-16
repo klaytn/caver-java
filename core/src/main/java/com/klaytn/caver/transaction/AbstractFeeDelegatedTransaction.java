@@ -258,8 +258,6 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
      * @return String
      */
     public String getRLPEncodingForFeePayerSignature() {
-        validateOptionalValues(true);
-
         byte[] txRLP = Numeric.hexStringToByteArray(getCommonRLPEncodingForSignature());
 
         List<RlpType> rlpTypeList = new ArrayList<>();

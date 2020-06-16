@@ -222,6 +222,8 @@ public class FeeDelegatedValueTransferMemo extends AbstractFeeDelegatedTransacti
     public String getCommonRLPEncodingForSignature() {
         // SigRLP = encode([encode([type, nonce, gasPrice, gas, to, value, from, input]), chainid, 0, 0])
         // encode([type, nonce, gasPrice, gas, to, value, from, input])
+        this.validateOptionalValues(true);
+
         byte type = (byte)TransactionType.TxTypeFeeDelegatedValueTransferMemo.getType();
 
         List<RlpType> rlpTypeList = new ArrayList<>();
@@ -275,7 +277,7 @@ public class FeeDelegatedValueTransferMemo extends AbstractFeeDelegatedTransacti
 
     /**
      * Check equals txObj passed parameter and Current instance.
-     * @param obj The AbstractTransaction Object to compare
+     * @param obj The AbstractFeeDelegatedTransaction Object to compare
      * @param checkSig Check whether signatures field is equal.
      * @return boolean
      */

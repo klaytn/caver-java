@@ -391,8 +391,6 @@ abstract public class AbstractTransaction {
      * @return String
      */
     public String getRLPEncodingForSignature() {
-        validateOptionalValues(true);
-
         byte[] txRLP = Numeric.hexStringToByteArray(getCommonRLPEncodingForSignature());
 
         List<RlpType> rlpTypeList = new ArrayList<>();

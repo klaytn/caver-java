@@ -335,7 +335,7 @@ public class SmartContractDeploy extends AbstractTransaction {
             to = "0x";
         }
 
-        if(!to.equals("0x") && !Utils.isAddress(to)) {
+        if(!to.equals("0x")) {
             throw new IllegalArgumentException("Invalid address. : " + to);
         }
 

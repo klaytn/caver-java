@@ -298,6 +298,27 @@ public class SmartContractDeployTest {
         }
 
         @Test
+        public void throwException_invalidTo() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("'to' field must be nil('0x') : ");
+
+            String to = "invalid";
+
+            SmartContractDeploy txObj = new SmartContractDeploy.Builder()
+                    .setNonce(nonce)
+                    .setGas(Numeric.toBigInt(gas))
+                    .setGasPrice(Numeric.toBigInt(gasPrice))
+                    .setChainId(Numeric.toBigInt(chainID))
+                    .setValue(Numeric.toBigInt(value))
+                    .setTo(to)
+                    .setFrom(from)
+                    .setInput(input)
+                    .setHumanReadable(humanReadable)
+                    .setCodeFormat(codeFormat)
+                    .build();
+        }
+
+        @Test
         public void throwException_invalidHumanReadable() {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("HumanReadable attribute must set false");
@@ -564,6 +585,29 @@ public class SmartContractDeployTest {
                     codeFormat
             );
             assertNotNull(txObj);
+        }
+
+        @Test
+        public void throwException_invalidTo() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("'to' field must be nil('0x') : ");
+
+            String to = "invalid address";
+
+            SmartContractDeploy txObj = new SmartContractDeploy(
+                    null,
+                    from,
+                    nonce,
+                    gas,
+                    gasPrice,
+                    chainID,
+                    null,
+                    to,
+                    value,
+                    input,
+                    humanReadable,
+                    codeFormat
+            );
         }
 
         @Test

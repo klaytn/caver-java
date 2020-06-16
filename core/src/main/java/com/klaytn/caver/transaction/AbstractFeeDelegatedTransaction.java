@@ -223,7 +223,8 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
 
         // If the signatures are empty, there may be an undefined member variable.
         // In this case, the empty information is filled with the decoded result.
-        if(this.getFeePayerSignatures().size() == 0 && this.getSignatures().size() == 0) fillVariable = true;
+        // At initial state of AbstractFeeDelegateTx Object, feePayerSignature field has one empty signature.
+        if((Utils.isEmptySig(this.getFeePayerSignatures())) || Utils.isEmptySig(this.getSignatures())) fillVariable = true;
 
         for(String encodedStr : rlpEncoded) {
             AbstractFeeDelegatedTransaction txObj = (AbstractFeeDelegatedTransaction) TransactionDecoder.decode(encodedStr);

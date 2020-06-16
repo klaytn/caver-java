@@ -15,6 +15,7 @@ import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -53,6 +54,10 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
         }
 
         public B setFeePayerSignatures(SignatureData data) {
+            if(data == null) {
+                data = SignatureData.getEmptySignature();
+            }
+
             this.feePayerSignatures.add(data);
             return (B) this;
         }

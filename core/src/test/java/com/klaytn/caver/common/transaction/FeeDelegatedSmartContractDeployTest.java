@@ -197,7 +197,7 @@ public class FeeDelegatedSmartContractDeployTest {
         @Test
         public void throwException_invalidTo() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid address.");
+            expectedException.expectMessage("'to' field must be nil('0x') : ");
 
             String to = "invalid Address";
 
@@ -418,7 +418,7 @@ public class FeeDelegatedSmartContractDeployTest {
         @Test
         public void throwException_invalidTo() {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid address.");
+            expectedException.expectMessage("'to' field must be nil('0x') : ");
 
             String to = "invalid Address";
 

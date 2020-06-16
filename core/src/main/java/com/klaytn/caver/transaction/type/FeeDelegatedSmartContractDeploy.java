@@ -388,7 +388,7 @@ public class FeeDelegatedSmartContractDeploy extends AbstractFeeDelegatedTransac
         }
 
         if(!to.equals("0x")) {
-            throw new IllegalArgumentException("Invalid address. : " + to);
+            throw new IllegalArgumentException("'to' field must be nil('0x') : " + to);
         }
 
         this.to = "0x"; // currently "to" field must be nil

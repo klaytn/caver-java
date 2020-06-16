@@ -264,6 +264,8 @@ public class FeeDelegatedSmartContractDeploy extends AbstractFeeDelegatedTransac
     public String getCommonRLPEncodingForSignature() {
         // SigRLP = encode([encode([type, nonce, gasPrice, gas, to, value, from, input, humanReadable, codeFormat]), feePayer, chainid, 0, 0])
         // encode([type, nonce, gasPrice, gas, to, value, from, input, humanReadable, codeFormat])
+        this.validateOptionalValues(true);
+
         byte type = (byte)TransactionType.TxTypeFeeDelegatedSmartContractDeploy.getType();
         List<RlpType> rlpTypeList = new ArrayList<>();
         rlpTypeList.add(RlpString.create(type));

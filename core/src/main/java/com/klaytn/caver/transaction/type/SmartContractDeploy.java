@@ -246,6 +246,8 @@ public class SmartContractDeploy extends AbstractTransaction {
     public String getCommonRLPEncodingForSignature() {
         // SigRLP = encode([encode([type, nonce, gasPrice, gas, to, value, from, input, humanReadable, codeFormat]), chainid, 0, 0])
         // encode([type, nonce, gasPrice, gas, to, value, from, input, humanReadable, codeFormat])
+        this.validateOptionalValues(true);
+
         byte type = (byte)TransactionType.TxTypeSmartContractDeploy.getType();
         List<RlpType> rlpTypeList = new ArrayList<>();
         rlpTypeList.add(RlpString.create(type));

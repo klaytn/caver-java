@@ -154,6 +154,7 @@ public class ChainDataAnchoring extends AbstractTransaction {
     public String getCommonRLPEncodingForSignature() {
         // SigRLP = encode([encode([type, nonce, gasPrice, gas, from, anchoredData]), chainid, 0, 0])
         // encode([type, nonce, gasPrice, gas, from, anchoredData])
+        this.validateOptionalValues(true);
 
         byte type = (byte)TransactionType.TxTypeChainDataAnchoring.getType();
 

@@ -202,6 +202,7 @@ public class ValueTransferMemo extends AbstractTransaction {
     public String getCommonRLPEncodingForSignature() {
         //SigRLP = encode([encode([type, nonce, gasPrice, gas, to, value, from, input]), chainid, 0, 0])
         //encode([type, nonce, gasPrice, gas, to, value, from, input])
+        this.validateOptionalValues(true);
 
         byte type = (byte)TransactionType.TxTypeValueTransferMemo.getType();
 

@@ -26,6 +26,8 @@ public class TransactionDecoder {
             return FeeDelegatedValueTransfer.decode(rlpBytes);
         } else if(rlpBytes[0] == TransactionType.TxTypeFeeDelegatedValueTransferMemo.getType()) {
             return FeeDelegatedValueTransferMemo.decode(rlpBytes);
+        } else if(rlpBytes[0] == TransactionType.TxTypeFeeDelegatedSmartContractDeploy.getType()) {
+            return FeeDelegatedSmartContractDeploy.decode(rlpBytes);
         } else {
             return LegacyTransaction.decode(rlpBytes);
         }

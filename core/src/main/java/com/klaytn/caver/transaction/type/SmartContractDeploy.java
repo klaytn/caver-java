@@ -107,8 +107,6 @@ public class SmartContractDeploy extends AbstractTransaction {
      */
     public SmartContractDeploy(SmartContractDeploy.Builder builder) {
         super(builder);
-        setValue(builder.value);
-
         setTo(builder.to);
         setValue(builder.value);
         setInput(builder.input);

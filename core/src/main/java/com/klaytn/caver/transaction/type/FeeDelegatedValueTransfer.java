@@ -305,6 +305,14 @@ public class FeeDelegatedValueTransfer extends AbstractFeeDelegatedTransaction {
     }
 
     /**
+     * Setter function for value
+     * @param value The amount of KLAY in peb to be transferred.
+     */
+    public void setValue(BigInteger value) {
+        setValue(Numeric.toHexStringWithPrefix(value));
+    }
+
+    /**
      * Getter function for to
      * @return The account address that will receive the transferred value.
      */

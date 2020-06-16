@@ -347,6 +347,14 @@ public class FeeDelegatedValueTransferMemo extends AbstractFeeDelegatedTransacti
     }
 
     /**
+     * Setter function for value
+     * @param value The amount of KLAY in peb to be transferred.
+     */
+    public void setValue(BigInteger value) {
+        setValue(Numeric.toHexStringWithPrefix(value));
+    }
+
+    /**
      * Setter function for input
      * @param input Data attached to the transaction. The message should be passed to this attribute.
      */

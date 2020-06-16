@@ -280,7 +280,7 @@ public class FeeDelegatedValueTransferMemo extends AbstractFeeDelegatedTransacti
      * @return boolean
      */
     @Override
-    public boolean compareTxField(AbstractTransaction obj, boolean checkSig) {
+    public boolean compareTxField(AbstractFeeDelegatedTransaction obj, boolean checkSig) {
         if(!super.compareTxField(obj, checkSig)) return false;
         if(!(obj instanceof FeeDelegatedValueTransferMemo)) return false;
         FeeDelegatedValueTransferMemo txObj = (FeeDelegatedValueTransferMemo)obj;
@@ -344,6 +344,14 @@ public class FeeDelegatedValueTransferMemo extends AbstractFeeDelegatedTransacti
             throw new IllegalArgumentException("Invalid value : " + value);
         }
         this.value = value;
+    }
+
+    /**
+     * Setter function for value
+     * @param value The amount of KLAY in peb to be transferred.
+     */
+    public void setValue(BigInteger value) {
+        setValue(Numeric.toHexStringWithPrefix(value));
     }
 
     /**

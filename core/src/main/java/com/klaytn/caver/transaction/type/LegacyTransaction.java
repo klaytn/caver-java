@@ -260,18 +260,34 @@ public class LegacyTransaction extends AbstractTransaction {
         return true;
     }
 
+    /**
+     * Getter function for to
+     * @return String
+     */
     public String getTo() {
         return to;
     }
 
+    /**
+     * Getter function for input
+     * @return String
+     */
     public String getInput() {
         return input;
     }
 
+    /**
+     * Getter function for value
+     * @return String
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * Setter function for to
+     * @param to The account address that will receive the transferred value.
+     */
     public void setTo(String to) {
         // "to" field in LegacyTransaction allows null
         if(to == null || to.isEmpty()) {
@@ -284,6 +300,10 @@ public class LegacyTransaction extends AbstractTransaction {
         this.to = to;
     }
 
+    /**
+     * Setter function for input
+     * @param input Data attached to the transaction.
+     */
     public void setInput(String input) {
         if(input == null) {
             throw new IllegalArgumentException("input is missing");
@@ -295,6 +315,10 @@ public class LegacyTransaction extends AbstractTransaction {
         this.input = input;
     }
 
+    /**
+     * Setter function for value
+     * @param value The amount of KLAY in peb to be transferred.
+     */
     public void setValue(String value) {
         if(value == null) {
             throw new IllegalArgumentException("value is missing");
@@ -304,5 +328,13 @@ public class LegacyTransaction extends AbstractTransaction {
             throw new IllegalArgumentException("Invalid value : " + value);
         }
         this.value = value;
+    }
+
+    /**
+     * Setter function for value
+     * @param value The amount of KLAY in peb to be transferred.
+     */
+    public void setValue(BigInteger value) {
+        setValue(Numeric.toHexStringWithPrefix(value));
     }
 }

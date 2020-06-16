@@ -266,4 +266,12 @@ public class ValueTransfer extends AbstractTransaction {
         }
         this.value = value;
     }
+
+    /**
+     * Setter function for value
+     * @param value The amount of KLAY in peb to be transferred.
+     */
+    public void setValue(BigInteger value) {
+        setValue(Numeric.toHexStringWithPrefix(value));
+    }
 }

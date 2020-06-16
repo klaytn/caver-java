@@ -19,6 +19,7 @@ import org.web3j.utils.Numeric;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -180,10 +181,7 @@ abstract public class AbstractTransaction {
         setGasPrice(gasPrice);
         setGas(gas);
         setChainId(chainId);
-
-        if(signatures != null) {
-            this.signatures.addAll(signatures);
-        }
+        setSignatures(signatures);
     }
 
     /**
@@ -341,7 +339,7 @@ abstract public class AbstractTransaction {
 
         // If the signatures are empty, there may be an undefined member variable.
         // In this case, the empty information is filled with the decoded result.
-        if(this.getSignatures().size() == 0 || Utils.isEmptySig(this.getSignatures())) fillVariable = true;
+        if(Utils.isEmptySig(this.getSignatures())) fillVariable = true;
 
         for(String encodedStr : rlpEncoded) {
             AbstractTransaction txObj = TransactionDecoder.decode(encodedStr);
@@ -703,5 +701,12 @@ abstract public class AbstractTransaction {
      */
     public void setChainId(BigInteger chainId) {
         setChainId(Numeric.toHexStringWithPrefix(chainId));
+    }
+
+    public void setSignatures(List<SignatureData> signatures) {
+        if(signatures == null || signatures.size() == 0) {
+            signatures = Arrays.asList(SignatureData.getEmptySignature());
+        }
+        appendSignatures(signatures);
     }
 }

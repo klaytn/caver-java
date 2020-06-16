@@ -107,6 +107,7 @@ public class SmartContractDeploy extends AbstractTransaction {
      */
     public SmartContractDeploy(SmartContractDeploy.Builder builder) {
         super(builder);
+
         setTo(builder.to);
         setValue(builder.value);
         setInput(builder.input);
@@ -354,6 +355,14 @@ public class SmartContractDeploy extends AbstractTransaction {
             throw new IllegalArgumentException("Invalid value : " + value);
         }
         this.value = value;
+    }
+
+    /**
+     * Setter function for value
+     * @param value The amount of KLAY in peb to be transferred.
+     */
+    public void setValue(BigInteger value) {
+        setValue(Numeric.toHexStringWithPrefix(value));
     }
 
     /**

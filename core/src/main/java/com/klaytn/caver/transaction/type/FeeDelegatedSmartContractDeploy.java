@@ -319,7 +319,7 @@ public class FeeDelegatedSmartContractDeploy extends AbstractFeeDelegatedTransac
 
     /**
      * Check equals txObj passed parameter and Current instance.
-     * @param obj The AbstractFeeDelegatedTransaction Object to compare
+     * @param txObj The AbstractFeeDelegatedTransaction Object to compare
      * @param checkSig Check whether signatures field is equal.
      * @return boolean
      */

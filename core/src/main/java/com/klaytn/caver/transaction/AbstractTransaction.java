@@ -141,6 +141,10 @@ abstract public class AbstractTransaction {
         }
 
         public B setSignatures(SignatureData sign) {
+            if(sign == null) {
+                sign = SignatureData.getEmptySignature();
+            }
+
             this.signatures.add(sign);
             return (B) this;
         }

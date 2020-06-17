@@ -108,4 +108,16 @@ abstract public class AbstractFeeDelegatedWithRatioTransaction extends AbstractF
 
         this.feeRatio = feeRatio;
     }
+
+    /**
+     * Setter function for feeRatio.
+     * @param feeRatio A fee ratio of the fee payer.
+     */
+    public void setFeeRatio(BigInteger feeRatio) {
+        if(feeRatio == null) {
+            throw new IllegalArgumentException("feeRatio is missing.");
+        }
+        
+        setFeeRatio(Numeric.toHexStringWithPrefix(feeRatio));
+    }
 }

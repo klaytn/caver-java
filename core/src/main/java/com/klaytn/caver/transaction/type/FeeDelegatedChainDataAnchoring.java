@@ -63,7 +63,7 @@ public class FeeDelegatedChainDataAnchoring extends AbstractFeeDelegatedTransact
      * @param gas The maximum amount of gas the transaction is allowed to use.
      * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
      * @param chainId Network ID
-     * @param signatures A Signature list
+     * @param signatures A signature list
      * @param feePayer A fee payer address.
      * @param feePayerSignatures A fee payer signature list.
      * @param input The data of the service chain.
@@ -99,7 +99,7 @@ public class FeeDelegatedChainDataAnchoring extends AbstractFeeDelegatedTransact
      * @return FeeDelegatedChainDataAnchoring
      */
     public static FeeDelegatedChainDataAnchoring decode(byte[] rlpEncoded) {
-        //TxHashRLP = type + encode([nonce, gasPrice, gas, from, anchoredData, txSignatures, feePayer, feePayerSignatures])
+        //TxHashRLP = type + encode([nonce, gasPrice, gas, from, input, txSignatures, feePayer, feePayerSignatures])
         if(rlpEncoded[0] != (byte)TransactionType.TxTypeFeeDelegatedChainDataAnchoring.getType()) {
             throw new IllegalArgumentException("Invalid RLP-encoded tag - " + TransactionType.TxTypeFeeDelegatedChainDataAnchoring.toString());
         }
@@ -144,7 +144,7 @@ public class FeeDelegatedChainDataAnchoring extends AbstractFeeDelegatedTransact
      */
     @Override
     public String getRLPEncoding() {
-        //TxHashRLP = type + encode([nonce, gasPrice, gas, from, anchoredData, txSignatures, feePayer, feePayerSignatures])
+        //TxHashRLP = type + encode([nonce, gasPrice, gas, from, input, txSignatures, feePayer, feePayerSignatures])
         this.validateOptionalValues(false);
 
         List<RlpType> senderSignatureRLPList = new ArrayList<>();
@@ -181,7 +181,7 @@ public class FeeDelegatedChainDataAnchoring extends AbstractFeeDelegatedTransact
      */
     @Override
     public String getCommonRLPEncodingForSignature() {
-        //encode([encode([type, nonce, gasPrice, gas, from, anchoredData]), feePayer, chainid, 0, 0])
+        //encode([encode([type, nonce, gasPrice, gas, from, input]), feePayer, chainid, 0, 0])
         //encode([type, nonce, gasPrice, gas, from, anchoredData])
         this.validateOptionalValues(true);
 
@@ -206,7 +206,7 @@ public class FeeDelegatedChainDataAnchoring extends AbstractFeeDelegatedTransact
      */
     @Override
     public String getSenderTxHash() {
-        //SenderTxHashRLP = type + encode([nonce, gasPrice, gas, from, anchoredData, txSignatures])
+        //SenderTxHashRLP = type + encode([nonce, gasPrice, gas, from, input, txSignatures])
         this.validateOptionalValues(false);
 
         List<RlpType> senderSignatureRLPList = new ArrayList<>();

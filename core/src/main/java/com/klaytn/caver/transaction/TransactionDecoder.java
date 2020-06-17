@@ -32,6 +32,8 @@ public class TransactionDecoder {
             return FeeDelegatedSmartContractExecution.decode(rlpBytes);
         } else if(rlpBytes[0] == TransactionType.TxTypeFeeDelegatedAccountUpdate.getType()) {
             return FeeDelegatedAccountUpdate.decode(rlpBytes);
+        } else if(rlpBytes[0] == TransactionType.TxTypeFeeDelegatedChainDataAnchoring.getType()) {
+            return FeeDelegatedChainDataAnchoring.decode(rlpBytes);
         }
         else {
             return LegacyTransaction.decode(rlpBytes);

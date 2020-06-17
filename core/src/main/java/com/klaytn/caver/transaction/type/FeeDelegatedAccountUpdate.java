@@ -21,7 +21,7 @@ import java.util.List;
 public class FeeDelegatedAccountUpdate extends AbstractFeeDelegatedTransaction {
 
     /**
-     * AccountKey to be updated to the account.
+     * An account instance includes account key to be updated to the account in the network.
      */
     Account account;
 
@@ -65,7 +65,7 @@ public class FeeDelegatedAccountUpdate extends AbstractFeeDelegatedTransaction {
      * @param signatures A Signature list
      * @param feePayer A fee payer address.
      * @param feePayerSignatures A fee payer signature list.
-     * @param account The account Key to be updated to the account.
+     * @param account An account instance includes account key to be updated to the account in the network.
      */
     public FeeDelegatedAccountUpdate(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures, Account account) {
         super(

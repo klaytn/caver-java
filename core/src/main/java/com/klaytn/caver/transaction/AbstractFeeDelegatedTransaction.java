@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * Abstract class that implements common logic for each fee delegated with ratio transaction type.
+ * Abstract class that implements common logic for each fee delegated transaction type.
  */
 abstract public class AbstractFeeDelegatedTransaction extends AbstractTransaction{
 

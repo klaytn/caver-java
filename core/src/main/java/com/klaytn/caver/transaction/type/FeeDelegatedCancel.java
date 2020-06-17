@@ -49,7 +49,7 @@ public class FeeDelegatedCancel extends AbstractFeeDelegatedTransaction {
      * @param gas The maximum amount of gas the transaction is allowed to use.
      * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
      * @param chainId Network ID
-     * @param signatures A Signature list
+     * @param signatures A signature list
      * @param feePayer A fee payer address.
      * @param feePayerSignatures A fee payer signature list.
      * Creates a FeeDelegatedAccountUpdate instance.

@@ -36,7 +36,10 @@ public class TransactionDecoder {
             return FeeDelegatedCancel.decode(rlpBytes);
         } else if(rlpBytes[0] == TransactionType.TxTypeFeeDelegatedChainDataAnchoring.getType()) {
             return FeeDelegatedChainDataAnchoring.decode(rlpBytes);
+        } else if(rlpBytes[0] == TransactionType.TxTypeFeeDelegatedCancelWithRatio.getType()) {
+            return FeeDelegatedCancelWithRatio.decode(rlpBytes);
         }
+
         else {
             return LegacyTransaction.decode(rlpBytes);
         }

@@ -5,8 +5,6 @@ import com.klaytn.caver.account.Account;
 import com.klaytn.caver.account.WeightedMultiSigOptions;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.type.FeeDelegatedAccountUpdate;
-import com.klaytn.caver.transaction.type.FeeDelegatedSmartContractDeploy;
-import com.klaytn.caver.transaction.type.FeeDelegatedSmartContractExecution;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -1455,7 +1452,7 @@ public class FeeDelegatedAccountUpdateTest {
         public void getRLPEncodingForFeePayerSignature() {
             for(ExpectedData expectedData : expectedDataList) {
                 FeeDelegatedAccountUpdate txObj = expectedData.getBuilder().build();
-                assertEquals(expectedData.getExpectedSenderTransactionHash(), txObj.getSenderTxHash());
+                assertEquals(expectedData.getExpectedRLPEncodingForFeePayerSigning(), txObj.getRLPEncodingForFeePayerSignature());
             }
         }
 

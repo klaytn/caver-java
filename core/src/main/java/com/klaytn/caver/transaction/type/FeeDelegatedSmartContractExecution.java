@@ -85,7 +85,7 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
     }
 
     /**
-     *
+     * Creates a FeeDelegatedSmartContractExecution instance.
      * @param klaytnCall Klay RPC instance
      * @param from The address of the sender.
      * @param nonce A value used to uniquely identify a sender’s transaction.

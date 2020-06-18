@@ -4,7 +4,7 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.account.Account;
 import com.klaytn.caver.account.WeightedMultiSigOptions;
 import com.klaytn.caver.transaction.TransactionHasher;
-import com.klaytn.caver.transaction.type.FeeDelegatedAccountUpdate;
+import com.klaytn.caver.transaction.type.FeeDelegatedAccountUpdateWithRatio;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,42 +24,46 @@ import static org.junit.Assert.*;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        FeeDelegatedAccountUpdateTest.createInstance.class,
-        FeeDelegatedAccountUpdateTest.createInstanceBuilder.class,
-        FeeDelegatedAccountUpdateTest.getRLPEncodingTest.class,
-        FeeDelegatedAccountUpdateTest.signAsFeePayer_OneKeyTest.class,
-        FeeDelegatedAccountUpdateTest.signAsFeePayer_AllKeyTest.class,
-        FeeDelegatedAccountUpdateTest.appendFeePayerSignaturesTest.class,
-        FeeDelegatedAccountUpdateTest.combineSignatureTest.class,
-        FeeDelegatedAccountUpdateTest.getRawTransactionTest.class,
-        FeeDelegatedAccountUpdateTest.getTransactionHashTest.class,
-        FeeDelegatedAccountUpdateTest.getSenderTxHashTest.class,
-        FeeDelegatedAccountUpdateTest.getRLPEncodingForFeePayerSignatureTest.class,
+        FeeDelegatedAccountUpdateWithRatioTest.createInstance.class,
+        FeeDelegatedAccountUpdateWithRatioTest.createInstanceBuilder.class,
+        FeeDelegatedAccountUpdateWithRatioTest.getRLPEncodingTest.class,
+        FeeDelegatedAccountUpdateWithRatioTest.signAsFeePayer_OneKeyTest.class,
+        FeeDelegatedAccountUpdateWithRatioTest.signAsFeePayer_AllKeyTest.class,
+        FeeDelegatedAccountUpdateWithRatioTest.appendFeePayerSignaturesTest.class,
+        FeeDelegatedAccountUpdateWithRatioTest.combineSignatureTest.class,
+        FeeDelegatedAccountUpdateWithRatioTest.getRawTransactionTest.class,
+        FeeDelegatedAccountUpdateWithRatioTest.getTransactionHashTest.class,
+        FeeDelegatedAccountUpdateWithRatioTest.getSenderTxHashTest.class,
+        FeeDelegatedAccountUpdateWithRatioTest.getRLPEncodingForFeePayerSignatureTest.class,
 })
-public class FeeDelegatedAccountUpdateTest {
+public class FeeDelegatedAccountUpdateWithRatioTest {
     static Caver caver = Caver.build(Caver.DEFAULT_URL);
 
     static ExpectedData setLegacyData() {
-        String from = "0xac1aec09ef5f8dde6a0baf709ea388bbd7965f72";
+        String from = "0x5c525570f2b8e7e25f3a6b5e17f2cc63b872ece7";
         Account account = Account.createWithAccountKeyLegacy(from);
 
         String gas = "0x493e0";
         String nonce = "0x0";
         String gasPrice = "0x5d21dba00";
+        BigInteger feeRatio = BigInteger.valueOf(30);
+
         SignatureData senderSignatureData = new SignatureData(
-                "0x0fe9",
-                "0xd10f11309a670e133a408b7ebccf277e57af7d0701d5d811daec0dd8025ad961",
-                "0x123e6dc3ca7a3603de954297fdf3d308c7ecdd43023f61121394182316313f82"
+                "0x0fea",
+                "0x8d45728ca7a288d27f70c6b7153624b6c3dabd8f345e63049048b2b1787aae1e",
+                "0x370d2c5cf3cd99dc0a6ecaca75e30cc5e030ea71bf72fada047ace020c7410f0"
         );
-        String feePayer = "0x23bf3d4eb274621e56ce65f6fa05da9e24785bb8";
+
+        String feePayer = "0x294f5bc8fadbd1079b191d9c47e1f217d6c987b4";
+
         SignatureData feePayerSignatureData = new SignatureData(
                 "0x0fe9",
-                "0x6d13eff0efc972b0ecf89c65e502eda4f97ebbd5cbcedcaa99af0c063b0d59cf",
-                "0x4cc0be553bb13a4549eae8f2b140282e1baf29728ae118f2f575e53a25cc305b"
+                "0x550440015be09e0020f3cf6173c862420e2982c77f6a0a43d607b153bb7abd6c",
+                "0x67ca2a849a5e14992d3e9dff3562b1ac9856ff89f383c34645925fec12b3fdf9"
         );
         String chainID = "0x7e3";
 
-        FeeDelegatedAccountUpdate.Builder builder = new FeeDelegatedAccountUpdate.Builder()
+        FeeDelegatedAccountUpdateWithRatio.Builder builder = new FeeDelegatedAccountUpdateWithRatio.Builder()
                 .setFrom(from)
                 .setAccount(account)
                 .setGas(gas)
@@ -67,14 +71,15 @@ public class FeeDelegatedAccountUpdateTest {
                 .setNonce(nonce)
                 .setAccount(account)
                 .setSignatures(senderSignatureData)
+                .setFeeRatio(feeRatio)
                 .setFeePayer(feePayer)
                 .setFeePayerSignatures(feePayerSignatureData)
                 .setChainId(chainID);
 
-        String expectedRLPEncoding = "0x21f8ca808505d21dba00830493e094ac1aec09ef5f8dde6a0baf709ea388bbd7965f728201c0f847f845820fe9a0d10f11309a670e133a408b7ebccf277e57af7d0701d5d811daec0dd8025ad961a0123e6dc3ca7a3603de954297fdf3d308c7ecdd43023f61121394182316313f829423bf3d4eb274621e56ce65f6fa05da9e24785bb8f847f845820fe9a06d13eff0efc972b0ecf89c65e502eda4f97ebbd5cbcedcaa99af0c063b0d59cfa04cc0be553bb13a4549eae8f2b140282e1baf29728ae118f2f575e53a25cc305b";
-        String expectedRLPTransactionHash = "0x4ef87ddc379e003ff736085cd98842c085712b3218402052e318e12da752f810";
-        String expectedRLPSenderTransactionHash = "0xed17e28df6ed7ad8ae1b7fb25e1a81ce03c5b145fd62ea2281c866bd1a39ba43";
-        String expectedRLPEncodingForFeePayerSigning = "0xf840a5e421808505d21dba00830493e094ac1aec09ef5f8dde6a0baf709ea388bbd7965f728201c09423bf3d4eb274621e56ce65f6fa05da9e24785bb88207e38080";
+        String expectedRLPEncoding = "0x22f8cb808505d21dba00830493e0945c525570f2b8e7e25f3a6b5e17f2cc63b872ece78201c01ef847f845820feaa08d45728ca7a288d27f70c6b7153624b6c3dabd8f345e63049048b2b1787aae1ea0370d2c5cf3cd99dc0a6ecaca75e30cc5e030ea71bf72fada047ace020c7410f094294f5bc8fadbd1079b191d9c47e1f217d6c987b4f847f845820fe9a0550440015be09e0020f3cf6173c862420e2982c77f6a0a43d607b153bb7abd6ca067ca2a849a5e14992d3e9dff3562b1ac9856ff89f383c34645925fec12b3fdf9";
+        String expectedRLPTransactionHash = "0xbfc73185429a9b5310dd159d16e44e6d63f2e278bf1aaa12be48827f2dee9d43";
+        String expectedRLPSenderTransactionHash = "0x64e837cb9b7bdc3bffc8c37731ba60de47570da931b817139cf11b4fb1cc3a5e";
+        String expectedRLPEncodingForFeePayerSigning = "0xf841a6e522808505d21dba00830493e0945c525570f2b8e7e25f3a6b5e17f2cc63b872ece78201c01e94294f5bc8fadbd1079b191d9c47e1f217d6c987b48207e38080";
 
         ExpectedData expectedData = new ExpectedData(builder, expectedRLPEncoding, expectedRLPTransactionHash, expectedRLPSenderTransactionHash, expectedRLPEncodingForFeePayerSigning);
 
@@ -82,29 +87,30 @@ public class FeeDelegatedAccountUpdateTest {
     }
 
     static ExpectedData setAccountPublic() {
-        String from = "0xac1aec09ef5f8dde6a0baf709ea388bbd7965f72";
-        String publicKey = "0xd032771e5d927fb568cdf7605496b700277d7b9bcabe7657f45602348964e3963e290efde1cb8d1204659548bd50824cfa4b4d5199c66dbcceb3fb8de7f8b5b9";
+        String from = "0x5c525570f2b8e7e25f3a6b5e17f2cc63b872ece7";
+        String publicKey = "0xa1d2af887950891813bf7d851bce55f47246a5269a5d4be1fc0ab78d78ae0f5a5cce7537f5a3776df303d240c0f730301df6be668907a1106adb0dbbef0beb3c";
         Account account = Account.createWithAccountKeyPublic(from, publicKey);
 
         String gas = "0x493e0";
         String nonce = "0x1";
         String gasPrice = "0x5d21dba00";
+        BigInteger feeRatio = BigInteger.valueOf(30);
         SignatureData senderSignatureData = new SignatureData(
-                "0x0fe9",
-                "0x0e1a3542288951226c66e6e8de320ddef4e0c0d6650baec828998a7ce411fe",
-                "0x52d0766f3b84f35787d2a810f97057d215dcbe070cd890b7ccb8aaa3aac8eacc"
+                "0x0fea",
+                "0x8553a692cd8f86af4d335785468a5b4527ee1a2d0c5e18517fe39375e4e82d85",
+                "0x698db3a07cc81427eb8ea877bb8af33d66abfb29526f58db6997eb99010be4fd"
         );
 
-        String feePayer = "0x23bf3d4eb274621e56ce65f6fa05da9e24785bb8";
+        String feePayer = "0x294f5bc8fadbd1079b191d9c47e1f217d6c987b4";
         SignatureData feePayerSignatureData = new SignatureData(
                 "0x0fea",
-                "0xfaca4cf91418c6fea61e9439620b656c7b0717b058fd8787865f4564a0f9974e",
-                "0x3a483582435426e7b2aeffe3131a678ae54c7aa948fa5442b5ded209ba373221"
+                "0xa44cbc6e30f9df61633ed1714014924b8b614b315288cdfd795c5ba18d36d5d8",
+                "0x011611104f18e3bb3d32508317a0ce6d31f0a71d55e2363b02a47aabbc7bf9d4"
         );
 
         String chainID = "0x7e3";
 
-        FeeDelegatedAccountUpdate.Builder builder = new FeeDelegatedAccountUpdate.Builder()
+        FeeDelegatedAccountUpdateWithRatio.Builder builder = new FeeDelegatedAccountUpdateWithRatio.Builder()
                 .setFrom(from)
                 .setAccount(account)
                 .setGas(gas)
@@ -112,14 +118,15 @@ public class FeeDelegatedAccountUpdateTest {
                 .setNonce(nonce)
                 .setAccount(account)
                 .setSignatures(senderSignatureData)
+                .setFeeRatio(feeRatio)
                 .setFeePayer(feePayer)
                 .setFeePayerSignatures(feePayerSignatureData)
                 .setChainId(chainID);
 
-        String expectedRLPEncoding = "0x21f8ea018505d21dba00830493e094ac1aec09ef5f8dde6a0baf709ea388bbd7965f72a302a103d032771e5d927fb568cdf7605496b700277d7b9bcabe7657f45602348964e396f846f844820fe99f0e1a3542288951226c66e6e8de320ddef4e0c0d6650baec828998a7ce411fea052d0766f3b84f35787d2a810f97057d215dcbe070cd890b7ccb8aaa3aac8eacc9423bf3d4eb274621e56ce65f6fa05da9e24785bb8f847f845820feaa0faca4cf91418c6fea61e9439620b656c7b0717b058fd8787865f4564a0f9974ea03a483582435426e7b2aeffe3131a678ae54c7aa948fa5442b5ded209ba373221";
-        String expectedRLPTransactionHash = "0xe939f967e154f9d3400e9042fb9d0c58bcee914274d883aac8d2fe8aec8d56e9";
-        String expectedRLPSenderTransactionHash = "0x9fee61b7611d069477b9dec87f58cec7ef96d2559e441f7baf3f4468b3669784";
-        String expectedRLPEncodingForFeePayerSigning = "0xf863b847f84521018505d21dba00830493e094ac1aec09ef5f8dde6a0baf709ea388bbd7965f72a302a103d032771e5d927fb568cdf7605496b700277d7b9bcabe7657f45602348964e3969423bf3d4eb274621e56ce65f6fa05da9e24785bb88207e38080";
+        String expectedRLPEncoding = "0x22f8ec018505d21dba00830493e0945c525570f2b8e7e25f3a6b5e17f2cc63b872ece7a302a102a1d2af887950891813bf7d851bce55f47246a5269a5d4be1fc0ab78d78ae0f5a1ef847f845820feaa08553a692cd8f86af4d335785468a5b4527ee1a2d0c5e18517fe39375e4e82d85a0698db3a07cc81427eb8ea877bb8af33d66abfb29526f58db6997eb99010be4fd94294f5bc8fadbd1079b191d9c47e1f217d6c987b4f847f845820feaa0a44cbc6e30f9df61633ed1714014924b8b614b315288cdfd795c5ba18d36d5d8a0011611104f18e3bb3d32508317a0ce6d31f0a71d55e2363b02a47aabbc7bf9d4";
+        String expectedRLPTransactionHash = "0x265ad666c91db8355a620831698b26e6504a5770a5d0d1d7f5a6706ee2387616";
+        String expectedRLPSenderTransactionHash = "0xa9b2afdc79d7a647b1b8d38d552141f785ae8d37448aef1487a4dbd262165da0";
+        String expectedRLPEncodingForFeePayerSigning = "0xf864b848f84622018505d21dba00830493e0945c525570f2b8e7e25f3a6b5e17f2cc63b872ece7a302a102a1d2af887950891813bf7d851bce55f47246a5269a5d4be1fc0ab78d78ae0f5a1e94294f5bc8fadbd1079b191d9c47e1f217d6c987b48207e38080";
 
         ExpectedData expectedData = new ExpectedData(builder, expectedRLPEncoding, expectedRLPTransactionHash, expectedRLPSenderTransactionHash, expectedRLPEncodingForFeePayerSigning);
 
@@ -127,40 +134,41 @@ public class FeeDelegatedAccountUpdateTest {
     }
 
     static ExpectedData setAccountKeyFail() {
-        String from = "0xac1aec09ef5f8dde6a0baf709ea388bbd7965f72";
+        String from = "0x5c525570f2b8e7e25f3a6b5e17f2cc63b872ece7";
         Account account = Account.createWithAccountKeyFail(from);
 
         String gas = "0x186a0";
         String nonce = "0x4";
         String gasPrice = "0x5d21dba00";
+        BigInteger feeRatio = BigInteger.valueOf(30);
         SignatureData[] senderSignatureData = new SignatureData[] {
                 new SignatureData(
+                        "0x0fe9",
+                        "0xfe43c4044a682a0f14489a4dabc94efdbf2838cff255911b059baf53511050e6",
+                        "0x2fde2475ca919e313a6bb5cafe8ed3b61651c8cc6ff939f88c36c11b805d6530"
+                ),
+                new SignatureData(
                         "0x0fea",
-                        "0x31115ed4fdf3cdc9c3071be0c14a992d1ca70b02382b3fadb2428a60f411edcb",
-                        "0x33530406db890a6c144759f72977739edfe2f9718966de52d6dada0a70be27ae"
+                        "0x0b17cb389f0dbc9f65d22255b82a0c440f6033f2cc5ec0deff11da3e2e515d14",
+                        "0x1ba420aa515ac311812724a441e3f772b19536735ced7a0d989c50063d73aa58"
                 ),
                 new SignatureData(
                         "0x0fe9",
-                        "0x2b50229dc8d4c18414d1f8f943658ca22e6c08a57f52e7e77910d01c1bb49286",
-                        "0x795fc16b6327c41593eb9b7ea5bbf2c61e3b4b3e5cd3176d3ebd57007fa4842b"
-                ),
-                new SignatureData(
-                        "0x0fea",
-                        "0xd5e3d18cd12fb36180adad4df5b9f15089ac9f8448e7a7eeb0fc0f6497faa98d",
-                        "0x246503976acea8e9a91e630963eaa344b193fc4e747c1ccaae253083d2695e96"
+                        "0xdc7fac293ee42ef4f113414bc391b8f976c95e10ff364a74a4564b8c9bd6af7a",
+                        "0x4e0513eb4ee7359d631be46f8b7f44c0049b9f4752565b1978fcd2260fc8103d"
                 ),
         };
 
-        String feePayer = "0x23bf3d4eb274621e56ce65f6fa05da9e24785bb8";
+        String feePayer = "0x294f5bc8fadbd1079b191d9c47e1f217d6c987b4";
         SignatureData feePayerSignatureData = new SignatureData(
                 "0x0fea",
-                "0x4dfc5650bf203652b440ba53791f0adc07c2fae0e746efbda2b5117c568474d3",
-                "0x72bea336107273fd0e1624d4f70425bb040e59e8f2b5d856fc22ab898c2b156e"
+                "0x409bdfe4239de15901ca37e54ab632a95cbced6a17ff85203d5c15ae140405f9",
+                "0x464cd266e2a207589508d9d6241e93fe637476e8562e755c4d133875d7afe0dc"
         );
 
         String chainID = "0x7e3";
 
-        FeeDelegatedAccountUpdate.Builder builder = new FeeDelegatedAccountUpdate.Builder()
+        FeeDelegatedAccountUpdateWithRatio.Builder builder = new FeeDelegatedAccountUpdateWithRatio.Builder()
                 .setFrom(from)
                 .setAccount(account)
                 .setGas(gas)
@@ -168,14 +176,15 @@ public class FeeDelegatedAccountUpdateTest {
                 .setNonce(nonce)
                 .setAccount(account)
                 .setSignatures(Arrays.asList(senderSignatureData))
+                .setFeeRatio(feeRatio)
                 .setFeePayer(feePayer)
                 .setFeePayerSignatures(feePayerSignatureData)
                 .setChainId(chainID);
 
-        String expectedRLPEncoding = "0x21f90158048505d21dba00830186a094ac1aec09ef5f8dde6a0baf709ea388bbd7965f728203c0f8d5f845820feaa031115ed4fdf3cdc9c3071be0c14a992d1ca70b02382b3fadb2428a60f411edcba033530406db890a6c144759f72977739edfe2f9718966de52d6dada0a70be27aef845820fe9a02b50229dc8d4c18414d1f8f943658ca22e6c08a57f52e7e77910d01c1bb49286a0795fc16b6327c41593eb9b7ea5bbf2c61e3b4b3e5cd3176d3ebd57007fa4842bf845820feaa0d5e3d18cd12fb36180adad4df5b9f15089ac9f8448e7a7eeb0fc0f6497faa98da0246503976acea8e9a91e630963eaa344b193fc4e747c1ccaae253083d2695e969423bf3d4eb274621e56ce65f6fa05da9e24785bb8f847f845820feaa04dfc5650bf203652b440ba53791f0adc07c2fae0e746efbda2b5117c568474d3a072bea336107273fd0e1624d4f70425bb040e59e8f2b5d856fc22ab898c2b156e";
-        String expectedRLPTransactionHash = "0xd8b8da94309ca9495d16e3d8e04df3a386ba338c5839bdcf8cee7f796b10e1a7";
-        String expectedRLPSenderTransactionHash = "0xed215e3932acb07b94a5b0482f48c04e76e41749f88bfddfa70c7fe2f6daa278";
-        String expectedRLPEncodingForFeePayerSigning = "0xf840a5e421048505d21dba00830186a094ac1aec09ef5f8dde6a0baf709ea388bbd7965f728203c09423bf3d4eb274621e56ce65f6fa05da9e24785bb88207e38080";
+        String expectedRLPEncoding = "0x22f90159048505d21dba00830186a0945c525570f2b8e7e25f3a6b5e17f2cc63b872ece78203c01ef8d5f845820fe9a0fe43c4044a682a0f14489a4dabc94efdbf2838cff255911b059baf53511050e6a02fde2475ca919e313a6bb5cafe8ed3b61651c8cc6ff939f88c36c11b805d6530f845820feaa00b17cb389f0dbc9f65d22255b82a0c440f6033f2cc5ec0deff11da3e2e515d14a01ba420aa515ac311812724a441e3f772b19536735ced7a0d989c50063d73aa58f845820fe9a0dc7fac293ee42ef4f113414bc391b8f976c95e10ff364a74a4564b8c9bd6af7aa04e0513eb4ee7359d631be46f8b7f44c0049b9f4752565b1978fcd2260fc8103d94294f5bc8fadbd1079b191d9c47e1f217d6c987b4f847f845820feaa0409bdfe4239de15901ca37e54ab632a95cbced6a17ff85203d5c15ae140405f9a0464cd266e2a207589508d9d6241e93fe637476e8562e755c4d133875d7afe0dc";
+        String expectedRLPTransactionHash = "0xe36dbee2c9c52a1d108794b69deb56efd40c250ef686b895ee9410b815d7eee4";
+        String expectedRLPSenderTransactionHash = "0xfff1eba87cac6c60316441b05af9cf920612a3471fa188686bc6b8ee7ef120be";
+        String expectedRLPEncodingForFeePayerSigning = "0xf841a6e522048505d21dba00830186a0945c525570f2b8e7e25f3a6b5e17f2cc63b872ece78203c01e94294f5bc8fadbd1079b191d9c47e1f217d6c987b48207e38080";
 
         ExpectedData expectedData = new ExpectedData(builder, expectedRLPEncoding, expectedRLPTransactionHash, expectedRLPSenderTransactionHash, expectedRLPEncodingForFeePayerSigning);
 
@@ -183,12 +192,12 @@ public class FeeDelegatedAccountUpdateTest {
     }
 
     static ExpectedData setAccountKeyWeightedMultiSig() {
-        String from = "0xed2f77b1962805385512c18ad6d66f3dee3def15";
+        String from = "0x5c525570f2b8e7e25f3a6b5e17f2cc63b872ece7";
 
         String[] publicKeyArr = new String[] {
-                "0xac1350e8b234a7dac087e4899d5b30687bd153d181faaf4ef11fea7d1acbecf45669b120fd488cf638f7ea83cfe009d85b949aacd51cde80e3162a17aa5160f7",
-                "0x798096c2691444e7c579e04f13c6edeb122b9e35718c041a51b74ccd5f1a086f2e499900717c718a434b15a989d4c33bae18a65f4c1e6b48f8103478cf1e5ef5",
-                "0xaeb9ab821099f4c5d80caafbc0d1980a1a1a701cab8cd0cca8e2f187263a992d5bbf8ea44a1f9bf577175fdccc953c8b8d1bbeeefdabd839be1fcf89f532f470",
+                "0xabbd10c55f629098d594b5c2b2967198bc5eccdf20a35e4e9c2896b0db6c7a8d1255629bc54d3e52ddfd16202e1820034630c8a2c2a0d4a1561aa1a9a1a9cb2b",
+                "0x1f1d4186a795070bc519c7e297eed00d466106718a8e68abe43d37e65da0254f5968d5f789284099e11fd65b300c97ff6df543ba9b212f18a71e17adf8fbcdeb",
+                "0x1ec395b3de087980e4a6ae2cb6e9d1acb469c0e54577267f2c4a5b4809f9d9118b691c79b8b5a1d07ececa6cfe5c8be0ebd622f240558bd776e4e73fbc57932d",
         };
 
         WeightedMultiSigOptions options = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(BigInteger.ONE, BigInteger.valueOf(2), BigInteger.valueOf(3)));
@@ -197,37 +206,41 @@ public class FeeDelegatedAccountUpdateTest {
         String gas = "0x55730";
         String nonce = "0x2";
         String gasPrice = "0x5d21dba00";
+        BigInteger feeRatio = BigInteger.valueOf(30);
+
         SignatureData senderSignatureData = new SignatureData(
                 "0x0fe9",
-                "0x3665a7ef1b6bc74171c00cca93380e4a28ff01090a28b9e7f861ca5c01cc26ae",
-                "0x0bb148b53761c946bd154506317625aab8b910cf55185d16158e0fef67dd0a6c"
+                "0xc1d45ae52a2de256d3da5086ab7769bccc3611243fdf3b1d0186617e3c782df7",
+                "0x26fcae8a34404ecc1e21a1a1a749c40cf667add4dc99986064d6097a95a59031"
         );
 
-        String feePayer = "0x23bf3d4eb274621e56ce65f6fa05da9e24785bb8";
+        String feePayer = "0x294f5bc8fadbd1079b191d9c47e1f217d6c987b4";
+
         SignatureData feePayerSignatureData = new SignatureData(
-                "0x0fe9",
-                "0xd0275ad7a55bf6b3f30c5cd27a2940ba574f05d9650e41f08dce929a1b7985b3",
-                "0x15576c4473dc7c42df9b1d9f106fbfc8a38646f4adca26f4a14a04ea5bd7351d"
+                "0x0fea",
+                "0x1b14fdbc76f6870943ebef563092324ef8743bf8ee5a7c76fe3faa2d60f74624",
+                "0x707502cd4225aa08f4990c5a564152ec55724d8ce4ea497ac1885c6791432899"
         );
 
         String chainID = "0x7e3";
 
-        FeeDelegatedAccountUpdate.Builder builder = new FeeDelegatedAccountUpdate.Builder()
+        FeeDelegatedAccountUpdateWithRatio.Builder builder = new FeeDelegatedAccountUpdateWithRatio.Builder()
                 .setFrom(from)
                 .setAccount(account)
                 .setGas(gas)
                 .setGasPrice(gasPrice)
                 .setNonce(nonce)
                 .setAccount(account)
-                .setSignatures(Arrays.asList(senderSignatureData))
+                .setSignatures(senderSignatureData)
+                .setFeeRatio(feeRatio)
                 .setFeePayer(feePayer)
                 .setFeePayerSignatures(feePayerSignatureData)
                 .setChainId(chainID);
 
-        String expectedRLPEncoding = "0x21f9013b028505d21dba008305573094ed2f77b1962805385512c18ad6d66f3dee3def15b87204f86f02f86ce301a103ac1350e8b234a7dac087e4899d5b30687bd153d181faaf4ef11fea7d1acbecf4e302a103798096c2691444e7c579e04f13c6edeb122b9e35718c041a51b74ccd5f1a086fe303a102aeb9ab821099f4c5d80caafbc0d1980a1a1a701cab8cd0cca8e2f187263a992df847f845820fe9a03665a7ef1b6bc74171c00cca93380e4a28ff01090a28b9e7f861ca5c01cc26aea00bb148b53761c946bd154506317625aab8b910cf55185d16158e0fef67dd0a6c9423bf3d4eb274621e56ce65f6fa05da9e24785bb8f847f845820fe9a0d0275ad7a55bf6b3f30c5cd27a2940ba574f05d9650e41f08dce929a1b7985b3a015576c4473dc7c42df9b1d9f106fbfc8a38646f4adca26f4a14a04ea5bd7351d";
-        String expectedRLPTransactionHash = "0xd2b7b5487b530e4ae3e164837cef3da078f4ba5ef6fbdafa4498edc83fb5ee45";
-        String expectedRLPSenderTransactionHash = "0x873f2a5f234a276c64a05c8036720db0c0dbf75770a137746952d925b6fff0a1";
-        String expectedRLPEncodingForFeePayerSigning = "0xf8b3b897f89521028505d21dba008305573094ed2f77b1962805385512c18ad6d66f3dee3def15b87204f86f02f86ce301a103ac1350e8b234a7dac087e4899d5b30687bd153d181faaf4ef11fea7d1acbecf4e302a103798096c2691444e7c579e04f13c6edeb122b9e35718c041a51b74ccd5f1a086fe303a102aeb9ab821099f4c5d80caafbc0d1980a1a1a701cab8cd0cca8e2f187263a992d9423bf3d4eb274621e56ce65f6fa05da9e24785bb88207e38080";
+        String expectedRLPEncoding = "0x22f9013c028505d21dba0083055730945c525570f2b8e7e25f3a6b5e17f2cc63b872ece7b87204f86f02f86ce301a103abbd10c55f629098d594b5c2b2967198bc5eccdf20a35e4e9c2896b0db6c7a8de302a1031f1d4186a795070bc519c7e297eed00d466106718a8e68abe43d37e65da0254fe303a1031ec395b3de087980e4a6ae2cb6e9d1acb469c0e54577267f2c4a5b4809f9d9111ef847f845820fe9a0c1d45ae52a2de256d3da5086ab7769bccc3611243fdf3b1d0186617e3c782df7a026fcae8a34404ecc1e21a1a1a749c40cf667add4dc99986064d6097a95a5903194294f5bc8fadbd1079b191d9c47e1f217d6c987b4f847f845820feaa01b14fdbc76f6870943ebef563092324ef8743bf8ee5a7c76fe3faa2d60f74624a0707502cd4225aa08f4990c5a564152ec55724d8ce4ea497ac1885c6791432899";
+        String expectedRLPTransactionHash = "0x797a418893c6f3ac0cad2284707b716ef826e5fd09c5c1a5efddff897acefb1d";
+        String expectedRLPSenderTransactionHash = "0x083d4a460b19988a34dfc1e3e458df84e2c97c8693389a13931a4c740746b746";
+        String expectedRLPEncodingForFeePayerSigning = "0xf8b4b898f89622028505d21dba0083055730945c525570f2b8e7e25f3a6b5e17f2cc63b872ece7b87204f86f02f86ce301a103abbd10c55f629098d594b5c2b2967198bc5eccdf20a35e4e9c2896b0db6c7a8de302a1031f1d4186a795070bc519c7e297eed00d466106718a8e68abe43d37e65da0254fe303a1031ec395b3de087980e4a6ae2cb6e9d1acb469c0e54577267f2c4a5b4809f9d9111e94294f5bc8fadbd1079b191d9c47e1f217d6c987b48207e38080";
 
         ExpectedData expectedData = new ExpectedData(builder, expectedRLPEncoding, expectedRLPTransactionHash, expectedRLPSenderTransactionHash, expectedRLPEncodingForFeePayerSigning);
 
@@ -235,61 +248,60 @@ public class FeeDelegatedAccountUpdateTest {
     }
 
     static ExpectedData setAccountKeyRoleBased() {
-        String from = "0xed2f77b1962805385512c18ad6d66f3dee3def15";
+        String from = "0x5c525570f2b8e7e25f3a6b5e17f2cc63b872ece7";
 
         String[][] publicKeyArr = new String[][] {
                 {
-                        "0xca112896b2025047790bbcc74f48af339f71390b5335b5e657b50ef8f634fb9fb4f7caf09ec53e8ec0d78253c37d30367631ac44c4b4825b9b5a7bfb6b55b5af",
-                        "0xec93c2f3990b61e692467cc2c49b9ff2f595002234c8116bae8807ff0236bd5e99e943b81be279230a218d297069099d873f49b12557ce6ac5bdeee8ddb83665",
-                        "0x99a40e6be991d48c9a5604059517cf489c77d35df64d1ff0233469ff27350652e907ed7a6e1662730d9d22a6b102e44b499dd271802452bd668229db0fc4750c",
+                        "0x82d11080d64faed9b9cc0e50664175012d43491d430ed1c0c6d1e610c71155a9ec310c868f6873c539507602fd5df5a80e09c9a0b541d408fbdbc89553329c4b",
+                        "0xc4a93d90ae50bb1234230b419ea3dcbb196d4619c36cacb1d6494d10832441b9902d8e67b22dd07fc561c07178edde33fe2554661d8c75af20058a2689b82d30",
+                        "0xe7deb2e2b19c1fdb21163d7a3d4e861cdd59fa3df0e0e04420b8173b2545e546e979e26799a016d3f19e86601954e1609226297dd19b735a9e567ff76a4f3499",
                 },
                 {
-                        "0xf890dfeca00111977dd6be8198466099ba6528e40403fe32a9994cd03ad18f3d24f3776a5e445b34b8654d9c56fe2397d8ed4989614dfefb776f038e024436ea",
-                        "0xfeedab225d4008d162e495fef4aba1b315369a140837d1150acecb71bb1c7faaef896b4a3e917824b18626fc86c2ab2f11307870a0ed2e72a2d8cfdaef5509bc",
-                        "0xfff2068f7ab4ae7faed86395647502ec6c8219eebe13858ddaaf01112bf40de6dfe82af9538d96465bf11d49d3d5d56b7868476bfb3a1d930177aa05b0345603",
+                        "0xfc08c1f60bd819090a710397d008f7fe9484d434d61d156074591ab1f8bce6b779432d7e744314e7204a68b6d2827e43ad8cbb7f819c0681d0581217e15ba654",
+                        "0x281f3ae3b67ff556052338e27d9f9ce1d0175cce78b45b98338123a4baa0d2bd5815a4691b39ed893b943f8b2ed3104e3c5d09873df7ef9859070cc1c43b27e1",
+                        "0xd347eec75998b6b5ac6cc9bb77a771a292c533fb043464462f9c37e9f3a84760de8d916eae476155bb09e51a63d557f46a259f6c4b0874acf58e362a1f59979a",
                 },
                 {
-                        "0x3a8547ed514797bac885e5aaf2d8ee7a5b3df542efdf28b3886bd5b925f5231c1f2e0d8c9fedae714a5bd71411cb0ec60d63246b04daeedd3ff4ccd1fc95ecc4",
-                        "0x13c45e4cbb231ba8150e5943a85a0ac9d6e7a347fcbc27833067e6ee0e63346dbf4c3e290296d9ea700f721b4f056582383be954b6a68525aae197a0f5813f73",
-                        "0xc45e5eb35215d1a945ef3790b4689e9644e0b14661bdb2f5d0e3bb1b729f091d054a3c972a93421ccb80e29b0af9ce0c0d7ec5f773b25d7769837114a339c935",
+                        "0x748d779bc3b06f83eb28636e6ab98838cb4b2ceb0c066ec6b5f3161a8f242e82374d599dd1f5296bf42404018fc2c4095cd2046aa7cfd8c11de1376ab1b26e6b",
+                        "0x9e9c3e95386e71835a839c504e19b3ed36d1aff87892b6414b513525f6bd6a422685708d591fe8dc3b410459b90bf74cfbb5fffff26eebc4733aeca45a101536",
+                        "0x1d965ec526e1d588d40b9c99fefa4763f2cebde74103a300778cb7c212474b49f88760495cb258441b19a8fd130aafc4ddc9d0786ab2922272c5f6b0501805a6",
                 }
-
         };
 
-//        WeightedMultiSigOptions options = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(BigInteger.ONE, BigInteger.valueOf(2), BigInteger.valueOf(3)));
         Account account = Account.createWithAccountKeyRoleBased(from, Arrays.asList(publicKeyArr));
 
         String gas = "0x61a80";
         String nonce = "0x3";
         String gasPrice = "0x5d21dba00";
+        BigInteger feeRatio = BigInteger.valueOf(30);
         SignatureData[] senderSignatureData = new SignatureData[] {
                 new SignatureData(
                         "0x0fea",
-                        "0xbedc71cfef422e80c32b752b4ebac9ee9e047f3beea07f1929b3f2543dddfd6d",
-                        "0x5454e3c2164fb6b844ccf74e07ca8420d427a3ca0f2f15b20be6c285ba308f45"
+                        "0xa2a8fe5dc3e5c6d01cde5b11ddd6a9fd8c419c4aa96100162f50e307660979b6",
+                        "0x0e22cdfc93744a70403299e497618b8102f03a34773987ad80ae454fc8f97287"
                 ),
                 new SignatureData(
                         "0x0fea",
-                        "0x66530029fde1835b844505657d15e6457e432744107c3111b998ce1e76a548f6",
-                        "0x2b045a9959d522f738390f47a528045845896bf818e35355367e017bd1f41644"
+                        "0x48d6e5567961fd86fd8cdbd46a81eec5336c76772d6644cb944eb995959af521",
+                        "0x306064709347bc74177595e6f48fbe8665fe6772cdaff4885f640dbb4a820161"
                 ),
                 new SignatureData(
-                        "0x0fea",
-                        "0x15e210db2922121c4a8f1223149846844a1923212892acf66df0d0b3daab8b58",
-                        "0x07680c111780bada54d62c62c8182984e92ec4817d59c313046d1f8030c001e7"
+                        "0x0fe9",
+                        "0x0e335413896be3f75f9accbfee2a99b825a33d2513893d6ade0b18105d110245",
+                        "0x085cfd94bd82c916ddcac4ca41b51d691b48073fa840752c166e470a9db9f7e9"
                 ),
         };
 
-        String feePayer = "0x23bf3d4eb274621e56ce65f6fa05da9e24785bb8";
+        String feePayer = "0x294f5bc8fadbd1079b191d9c47e1f217d6c987b4";
         SignatureData feePayerSignatureData = new SignatureData(
-                "0x0fe9",
-                "0x5801ee7887b401d34888d9141915c167c5bfce429d836c1acbc229b9c6938481",
-                "0x0f4c01747d3e5f6221063d7e74efc5c7d59020a74dce1c7e37e9a78d5d31de44"
+                "0x0fea",
+                "0x7a8af8836035be491b86719c270375ddc1cefc2bcf19f2dfcd00e54173096e86",
+                "0x79d079ba796d28d24168a5eb10556620cc2a222f35691d19ed6ed85c245ffb8f"
         );
 
         String chainID = "0x7e3";
 
-        FeeDelegatedAccountUpdate.Builder builder = new FeeDelegatedAccountUpdate.Builder()
+        FeeDelegatedAccountUpdateWithRatio.Builder builder = new FeeDelegatedAccountUpdateWithRatio.Builder()
                 .setFrom(from)
                 .setAccount(account)
                 .setGas(gas)
@@ -297,29 +309,29 @@ public class FeeDelegatedAccountUpdateTest {
                 .setNonce(nonce)
                 .setAccount(account)
                 .setSignatures(Arrays.asList(senderSignatureData))
+                .setFeeRatio(feeRatio)
                 .setFeePayer(feePayer)
                 .setFeePayerSignatures(feePayerSignatureData)
                 .setChainId(chainID);
 
-        String expectedRLPEncoding = "0x21f902b8038505d21dba0083061a8094ed2f77b1962805385512c18ad6d66f3dee3def15b9016005f9015cb87204f86f01f86ce301a103ca112896b2025047790bbcc74f48af339f71390b5335b5e657b50ef8f634fb9fe301a103ec93c2f3990b61e692467cc2c49b9ff2f595002234c8116bae8807ff0236bd5ee301a10299a40e6be991d48c9a5604059517cf489c77d35df64d1ff0233469ff27350652b87204f86f01f86ce301a102f890dfeca00111977dd6be8198466099ba6528e40403fe32a9994cd03ad18f3de301a102feedab225d4008d162e495fef4aba1b315369a140837d1150acecb71bb1c7faae301a103fff2068f7ab4ae7faed86395647502ec6c8219eebe13858ddaaf01112bf40de6b87204f86f01f86ce301a1023a8547ed514797bac885e5aaf2d8ee7a5b3df542efdf28b3886bd5b925f5231ce301a10313c45e4cbb231ba8150e5943a85a0ac9d6e7a347fcbc27833067e6ee0e63346de301a103c45e5eb35215d1a945ef3790b4689e9644e0b14661bdb2f5d0e3bb1b729f091df8d5f845820feaa0bedc71cfef422e80c32b752b4ebac9ee9e047f3beea07f1929b3f2543dddfd6da05454e3c2164fb6b844ccf74e07ca8420d427a3ca0f2f15b20be6c285ba308f45f845820feaa066530029fde1835b844505657d15e6457e432744107c3111b998ce1e76a548f6a02b045a9959d522f738390f47a528045845896bf818e35355367e017bd1f41644f845820feaa015e210db2922121c4a8f1223149846844a1923212892acf66df0d0b3daab8b58a007680c111780bada54d62c62c8182984e92ec4817d59c313046d1f8030c001e79423bf3d4eb274621e56ce65f6fa05da9e24785bb8f847f845820fe9a05801ee7887b401d34888d9141915c167c5bfce429d836c1acbc229b9c6938481a00f4c01747d3e5f6221063d7e74efc5c7d59020a74dce1c7e37e9a78d5d31de44";
-        String expectedRLPTransactionHash = "0x73540a1b47ec1836dae7657cfb8a7e7ae3e7e5cc54fd33f58b9f7efca6d8692c";
-        String expectedRLPSenderTransactionHash = "0x21a6004af918a61c1f0b6420cb85b329ac65a5cca0a668d207cfd1796470313e";
-        String expectedRLPEncodingForFeePayerSigning = "0xf901a4b90187f9018421038505d21dba0083061a8094ed2f77b1962805385512c18ad6d66f3dee3def15b9016005f9015cb87204f86f01f86ce301a103ca112896b2025047790bbcc74f48af339f71390b5335b5e657b50ef8f634fb9fe301a103ec93c2f3990b61e692467cc2c49b9ff2f595002234c8116bae8807ff0236bd5ee301a10299a40e6be991d48c9a5604059517cf489c77d35df64d1ff0233469ff27350652b87204f86f01f86ce301a102f890dfeca00111977dd6be8198466099ba6528e40403fe32a9994cd03ad18f3de301a102feedab225d4008d162e495fef4aba1b315369a140837d1150acecb71bb1c7faae301a103fff2068f7ab4ae7faed86395647502ec6c8219eebe13858ddaaf01112bf40de6b87204f86f01f86ce301a1023a8547ed514797bac885e5aaf2d8ee7a5b3df542efdf28b3886bd5b925f5231ce301a10313c45e4cbb231ba8150e5943a85a0ac9d6e7a347fcbc27833067e6ee0e63346de301a103c45e5eb35215d1a945ef3790b4689e9644e0b14661bdb2f5d0e3bb1b729f091d9423bf3d4eb274621e56ce65f6fa05da9e24785bb88207e38080";
+        String expectedRLPEncoding = "0x22f902b9038505d21dba0083061a80945c525570f2b8e7e25f3a6b5e17f2cc63b872ece7b9016005f9015cb87204f86f01f86ce301a10382d11080d64faed9b9cc0e50664175012d43491d430ed1c0c6d1e610c71155a9e301a102c4a93d90ae50bb1234230b419ea3dcbb196d4619c36cacb1d6494d10832441b9e301a103e7deb2e2b19c1fdb21163d7a3d4e861cdd59fa3df0e0e04420b8173b2545e546b87204f86f01f86ce301a102fc08c1f60bd819090a710397d008f7fe9484d434d61d156074591ab1f8bce6b7e301a103281f3ae3b67ff556052338e27d9f9ce1d0175cce78b45b98338123a4baa0d2bde301a102d347eec75998b6b5ac6cc9bb77a771a292c533fb043464462f9c37e9f3a84760b87204f86f01f86ce301a103748d779bc3b06f83eb28636e6ab98838cb4b2ceb0c066ec6b5f3161a8f242e82e301a1029e9c3e95386e71835a839c504e19b3ed36d1aff87892b6414b513525f6bd6a42e301a1021d965ec526e1d588d40b9c99fefa4763f2cebde74103a300778cb7c212474b491ef8d5f845820feaa0a2a8fe5dc3e5c6d01cde5b11ddd6a9fd8c419c4aa96100162f50e307660979b6a00e22cdfc93744a70403299e497618b8102f03a34773987ad80ae454fc8f97287f845820feaa048d6e5567961fd86fd8cdbd46a81eec5336c76772d6644cb944eb995959af521a0306064709347bc74177595e6f48fbe8665fe6772cdaff4885f640dbb4a820161f845820fe9a00e335413896be3f75f9accbfee2a99b825a33d2513893d6ade0b18105d110245a0085cfd94bd82c916ddcac4ca41b51d691b48073fa840752c166e470a9db9f7e994294f5bc8fadbd1079b191d9c47e1f217d6c987b4f847f845820feaa07a8af8836035be491b86719c270375ddc1cefc2bcf19f2dfcd00e54173096e86a079d079ba796d28d24168a5eb10556620cc2a222f35691d19ed6ed85c245ffb8f";
+        String expectedRLPTransactionHash = "0xd6f78a65f3de0dc2e4974a739bec097e54543c68beb5106bb1fc24d4290ec318";
+        String expectedRLPSenderTransactionHash = "0x14e68510db84f82075fa367bbd4dada2b1024cb985fce70b4ae72ee9cc421b2a";
+        String expectedRLPEncodingForFeePayerSigning = "0xf901a5b90188f9018522038505d21dba0083061a80945c525570f2b8e7e25f3a6b5e17f2cc63b872ece7b9016005f9015cb87204f86f01f86ce301a10382d11080d64faed9b9cc0e50664175012d43491d430ed1c0c6d1e610c71155a9e301a102c4a93d90ae50bb1234230b419ea3dcbb196d4619c36cacb1d6494d10832441b9e301a103e7deb2e2b19c1fdb21163d7a3d4e861cdd59fa3df0e0e04420b8173b2545e546b87204f86f01f86ce301a102fc08c1f60bd819090a710397d008f7fe9484d434d61d156074591ab1f8bce6b7e301a103281f3ae3b67ff556052338e27d9f9ce1d0175cce78b45b98338123a4baa0d2bde301a102d347eec75998b6b5ac6cc9bb77a771a292c533fb043464462f9c37e9f3a84760b87204f86f01f86ce301a103748d779bc3b06f83eb28636e6ab98838cb4b2ceb0c066ec6b5f3161a8f242e82e301a1029e9c3e95386e71835a839c504e19b3ed36d1aff87892b6414b513525f6bd6a42e301a1021d965ec526e1d588d40b9c99fefa4763f2cebde74103a300778cb7c212474b491e94294f5bc8fadbd1079b191d9c47e1f217d6c987b48207e38080";
 
         ExpectedData expectedData = new ExpectedData(builder, expectedRLPEncoding, expectedRLPTransactionHash, expectedRLPSenderTransactionHash, expectedRLPEncodingForFeePayerSigning);
 
         return expectedData;
     }
 
-
     public static class ExpectedData {
-        FeeDelegatedAccountUpdate.Builder builder;
+        FeeDelegatedAccountUpdateWithRatio.Builder builder;
         String expectedRLPEncoding;
         String expectedTransactionHash;
         String expectedSenderTransactionHash;
         String expectedRLPEncodingForFeePayerSigning;
 
-        public ExpectedData(FeeDelegatedAccountUpdate.Builder builder, String expectedRLPEncoding, String expectedTransactionHash, String expectedSenderTransactionHash, String expectedRLPEncodingForFeePayerSigning) {
+        public ExpectedData(FeeDelegatedAccountUpdateWithRatio.Builder builder, String expectedRLPEncoding, String expectedTransactionHash, String expectedSenderTransactionHash, String expectedRLPEncodingForFeePayerSigning) {
             this.builder = builder;
             this.expectedRLPEncoding = expectedRLPEncoding;
             this.expectedTransactionHash = expectedTransactionHash;
@@ -327,44 +339,24 @@ public class FeeDelegatedAccountUpdateTest {
             this.expectedRLPEncodingForFeePayerSigning = expectedRLPEncodingForFeePayerSigning;
         }
 
-        public FeeDelegatedAccountUpdate.Builder getBuilder() {
+        public FeeDelegatedAccountUpdateWithRatio.Builder getBuilder() {
             return builder;
-        }
-
-        public void setBuilder(FeeDelegatedAccountUpdate.Builder builder) {
-            this.builder = builder;
         }
 
         public String getExpectedRLPEncoding() {
             return expectedRLPEncoding;
         }
 
-        public void setExpectedRLPEncoding(String expectedRLPEncoding) {
-            this.expectedRLPEncoding = expectedRLPEncoding;
-        }
-
         public String getExpectedTransactionHash() {
             return expectedTransactionHash;
-        }
-
-        public void setExpectedTransactionHash(String expectedTransactionHash) {
-            this.expectedTransactionHash = expectedTransactionHash;
         }
 
         public String getExpectedSenderTransactionHash() {
             return expectedSenderTransactionHash;
         }
 
-        public void setExpectedSenderTransactionHash(String expectedSenderTransactionHash) {
-            this.expectedSenderTransactionHash = expectedSenderTransactionHash;
-        }
-
         public String getExpectedRLPEncodingForFeePayerSigning() {
             return expectedRLPEncodingForFeePayerSigning;
-        }
-
-        public void setExpectedRLPEncodingForFeePayerSigning(String expectedRLPEncodingForFeePayerSigning) {
-            this.expectedRLPEncodingForFeePayerSigning = expectedRLPEncodingForFeePayerSigning;
         }
     }
 
@@ -377,8 +369,8 @@ public class FeeDelegatedAccountUpdateTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
-        FeeDelegatedAccountUpdate.Builder builder;
-        FeeDelegatedAccountUpdate txObj;
+        FeeDelegatedAccountUpdateWithRatio.Builder builder;
+        FeeDelegatedAccountUpdateWithRatio txObj;
 
         @Before
         public void preSetup() {
@@ -485,6 +477,36 @@ public class FeeDelegatedAccountUpdateTest {
 
             txObj = builder.setAccount(account).build();
         }
+
+        @Test
+        public void throwException_FeeRatio_invalid() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid type of feeRatio: feeRatio should be number type or hex number string");
+
+            String feeRatio = "invalid fee ratio";
+
+            txObj = builder.setFeeRatio(feeRatio).build();
+        }
+
+        @Test
+        public void throwException_FeeRatio_outOfRange() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid feeRatio: feeRatio is out of range. [1,99]");
+
+            BigInteger feeRatio = BigInteger.valueOf(101);
+
+            txObj = builder.setFeeRatio(feeRatio).build();
+        }
+
+        @Test
+        public void throwException_missingFeeRatio() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("feeRatio is missing.");
+
+            String feeRatio = null;
+
+            txObj = builder.setFeeRatio(feeRatio).build();
+        }
     }
 
     public static class createInstance {
@@ -497,12 +519,13 @@ public class FeeDelegatedAccountUpdateTest {
         String nonce = "0x0";
         String gasPrice = "0x5d21dba00";
         String chainID = "0x7e3";
+        String feeRatio = "0x1e";
 
         Account account = Account.createWithAccountKeyLegacy(from);
 
         @Test
         public void createInstance() {
-            FeeDelegatedAccountUpdate txObj = new FeeDelegatedAccountUpdate(
+            FeeDelegatedAccountUpdateWithRatio txObj = new FeeDelegatedAccountUpdateWithRatio(
                     null,
                     from,
                     nonce,
@@ -512,6 +535,7 @@ public class FeeDelegatedAccountUpdateTest {
                     null,
                     feePayer,
                     null,
+                    feeRatio,
                     account
             );
 
@@ -525,7 +549,7 @@ public class FeeDelegatedAccountUpdateTest {
 
             String from = "invalid Address";
 
-            FeeDelegatedAccountUpdate txObj = new FeeDelegatedAccountUpdate(
+            FeeDelegatedAccountUpdateWithRatio txObj = new FeeDelegatedAccountUpdateWithRatio(
                     null,
                     from,
                     nonce,
@@ -535,6 +559,7 @@ public class FeeDelegatedAccountUpdateTest {
                     null,
                     feePayer,
                     null,
+                    feeRatio,
                     account
             );
         }
@@ -546,7 +571,7 @@ public class FeeDelegatedAccountUpdateTest {
 
             String from = null;
 
-            FeeDelegatedAccountUpdate txObj = new FeeDelegatedAccountUpdate(
+            FeeDelegatedAccountUpdateWithRatio txObj = new FeeDelegatedAccountUpdateWithRatio(
                     null,
                     from,
                     nonce,
@@ -556,6 +581,7 @@ public class FeeDelegatedAccountUpdateTest {
                     null,
                     feePayer,
                     null,
+                    feeRatio,
                     account
             );
         }
@@ -567,7 +593,7 @@ public class FeeDelegatedAccountUpdateTest {
 
             String gas = "invalid gas";
 
-            FeeDelegatedAccountUpdate txObj = new FeeDelegatedAccountUpdate(
+            FeeDelegatedAccountUpdateWithRatio txObj = new FeeDelegatedAccountUpdateWithRatio(
                     null,
                     from,
                     nonce,
@@ -577,6 +603,7 @@ public class FeeDelegatedAccountUpdateTest {
                     null,
                     feePayer,
                     null,
+                    feeRatio,
                     account
             );
         }
@@ -588,7 +615,7 @@ public class FeeDelegatedAccountUpdateTest {
 
             String gas = null;
 
-            FeeDelegatedAccountUpdate txObj = new FeeDelegatedAccountUpdate(
+            FeeDelegatedAccountUpdateWithRatio txObj = new FeeDelegatedAccountUpdateWithRatio(
                     null,
                     from,
                     nonce,
@@ -598,6 +625,7 @@ public class FeeDelegatedAccountUpdateTest {
                     null,
                     feePayer,
                     null,
+                    feeRatio,
                     account
             );
         }
@@ -609,7 +637,7 @@ public class FeeDelegatedAccountUpdateTest {
 
             Account account = null;
 
-            FeeDelegatedAccountUpdate txObj = new FeeDelegatedAccountUpdate(
+            FeeDelegatedAccountUpdateWithRatio txObj = new FeeDelegatedAccountUpdateWithRatio(
                     null,
                     from,
                     nonce,
@@ -619,6 +647,73 @@ public class FeeDelegatedAccountUpdateTest {
                     null,
                     feePayer,
                     null,
+                    feeRatio,
+                    account
+            );
+        }
+
+        @Test
+        public void throwException_FeeRatio_invalid() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid type of feeRatio: feeRatio should be number type or hex number string");
+
+            String feeRatio = "invalid fee ratio";
+
+            FeeDelegatedAccountUpdateWithRatio txObj = new FeeDelegatedAccountUpdateWithRatio(
+                    null,
+                    from,
+                    nonce,
+                    gas,
+                    gasPrice,
+                    chainID,
+                    null,
+                    feePayer,
+                    null,
+                    feeRatio,
+                    account
+            );
+        }
+
+        @Test
+        public void throwException_FeeRatio_outOfRange() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid feeRatio: feeRatio is out of range. [1,99]");
+
+            String feeRatio = Numeric.toHexStringWithPrefix(BigInteger.valueOf(101));
+
+            FeeDelegatedAccountUpdateWithRatio txObj = new FeeDelegatedAccountUpdateWithRatio(
+                    null,
+                    from,
+                    nonce,
+                    gas,
+                    gasPrice,
+                    chainID,
+                    null,
+                    feePayer,
+                    null,
+                    feeRatio,
+                    account
+            );
+        }
+
+        @Test
+        public void throwException_missingFeeRatio() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("feeRatio is missing.");
+
+            String feeRatio = null;
+
+            FeeDelegatedAccountUpdateWithRatio txObj = new FeeDelegatedAccountUpdateWithRatio(
+                    null,
+                    from,
+                    nonce,
+                    gas,
+                    gasPrice,
+                    chainID,
+                    null,
+                    feePayer,
+                    null,
+                    feeRatio,
                     account
             );
         }
@@ -629,7 +724,7 @@ public class FeeDelegatedAccountUpdateTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         List<ExpectedData> expectedDataList;
-        FeeDelegatedAccountUpdate mTxObj;
+        FeeDelegatedAccountUpdateWithRatio mTxObj;
 
         @Before
         public void preSetup() {
@@ -644,7 +739,7 @@ public class FeeDelegatedAccountUpdateTest {
         @Test
         public void getRLPEncoding() {
             for(ExpectedData expectedData : expectedDataList) {
-                FeeDelegatedAccountUpdate txObj = expectedData.getBuilder().build();
+                FeeDelegatedAccountUpdateWithRatio txObj = expectedData.getBuilder().build();
                 assertEquals(expectedData.getExpectedRLPEncoding(), txObj.getRLPEncoding());
             }
         }
@@ -657,7 +752,7 @@ public class FeeDelegatedAccountUpdateTest {
             String nonce = null;
 
             ExpectedData expectedData = setLegacyData();
-            FeeDelegatedAccountUpdate.Builder builder = expectedData.getBuilder();
+            FeeDelegatedAccountUpdateWithRatio.Builder builder = expectedData.getBuilder();
 
             mTxObj = builder.setNonce(nonce).build();
 
@@ -672,7 +767,7 @@ public class FeeDelegatedAccountUpdateTest {
             String gasPrice = null;
 
             ExpectedData expectedData = setLegacyData();
-            FeeDelegatedAccountUpdate.Builder builder = expectedData.getBuilder();
+            FeeDelegatedAccountUpdateWithRatio.Builder builder = expectedData.getBuilder();
 
             mTxObj = builder.setGasPrice(gasPrice).build();
 
@@ -692,26 +787,28 @@ public class FeeDelegatedAccountUpdateTest {
         String gasPrice = "0x19";
         String nonce = "0x4d2";
         String chainID = "0x1";
+        BigInteger feeRatio = BigInteger.valueOf(30);
+
         Account account;
         SingleKeyring keyring;
         String klaytnWalletKey;
 
-        FeeDelegatedAccountUpdate txObj;
+        FeeDelegatedAccountUpdateWithRatio txObj;
 
         SignatureData senderSignature = new SignatureData(
                 "0x26",
-                "0xab69d9adca15d9763c4ce6f98b35256717c6e932007658f19c5a255de9e70dda",
-                "0x26aa676a3a1a6e96aff4a3df2335788d614d54fb4db1c3c48551ce1fa7ac5e52"
+                "0xe5929f96dec2b41343a9e6f0150eef08741fe7dcece88cc5936c49ed19051dc",
+                "0x5a07b07017190e0baba32bdf6352f5a358a2798ed3c56e704a63819b87cf8e3f"
         );
 
-        String expectedRawTx = "0x21f8e48204d219830f424094a94f5374fce5edbc8e2a8697c15331677e6ebf0ba302a1033a514176466fa815ed481ffad09110a2d344f6c9b78c1d14afc351c3a51be33df845f84326a0ab69d9adca15d9763c4ce6f98b35256717c6e932007658f19c5a255de9e70ddaa026aa676a3a1a6e96aff4a3df2335788d614d54fb4db1c3c48551ce1fa7ac5e52945a0043070275d9f6054307ee7348bd660849d90ff845f84326a0f295cd69b4144d9dbc906ba144933d2cc535d9d559f7a92b4672cc5485bf3a60a0784b8060234ffd64739b5fc2f2503939340ab4248feaa6efcf62cb874345fe40";
+        String expectedRawTx = "0x22f8e58204d219830f424094a94f5374fce5edbc8e2a8697c15331677e6ebf0ba302a1033a514176466fa815ed481ffad09110a2d344f6c9b78c1d14afc351c3a51be33d1ef845f84326a00e5929f96dec2b41343a9e6f0150eef08741fe7dcece88cc5936c49ed19051dca05a07b07017190e0baba32bdf6352f5a358a2798ed3c56e704a63819b87cf8e3f945a0043070275d9f6054307ee7348bd660849d90ff845f84326a0cf8d102de7c6b0a41d3f02aefb7e419522341734c98af233408298d0c424c04ba00286f89cab4668f728d7c269997116a49b80cec8776fc64e60588a9268571e35";
 
         @Before
         public void before() {
             PrivateKey sender = new PrivateKey(senderPrivateKey);
             account = Account.createWithAccountKeyPublic(sender.getDerivedAddress(), sender.getPublicKey(false));
 
-            txObj = new FeeDelegatedAccountUpdate.Builder()
+            txObj = new FeeDelegatedAccountUpdateWithRatio.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -720,6 +817,7 @@ public class FeeDelegatedAccountUpdateTest {
                     .setSignatures(senderSignature)
                     .setFeePayer(feePayer)
                     .setAccount(account)
+                    .setFeeRatio(feeRatio)
                     .build();
 
             keyring = KeyringFactory.createWithSingleKey(feePayer, feePayerPrivateKey);
@@ -808,7 +906,7 @@ public class FeeDelegatedAccountUpdateTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
-        FeeDelegatedAccountUpdate mTxObj;
+        FeeDelegatedAccountUpdateWithRatio mTxObj;
         AbstractKeyring singleKeyring, multipleKeyring, roleBasedKeyring;
 
         String senderPrivateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
@@ -819,9 +917,11 @@ public class FeeDelegatedAccountUpdateTest {
         String gasPrice = "0x19";
         String nonce = "0x4d2";
         String chainID = "0x1";
+        String feeRatio = "0x14";
         Account account;
         SingleKeyring keyring;
         String klaytnWalletKey;
+
 
         SignatureData senderSignature = new SignatureData(
                 "0x26",
@@ -837,7 +937,7 @@ public class FeeDelegatedAccountUpdateTest {
 
             account = Account.createWithAccountKeyFail(from);
 
-            mTxObj = new FeeDelegatedAccountUpdate.Builder()
+            mTxObj = new FeeDelegatedAccountUpdateWithRatio.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -846,6 +946,7 @@ public class FeeDelegatedAccountUpdateTest {
                     .setSignatures(senderSignature)
                     .setFeePayer(feePayer)
                     .setAccount(account)
+                    .setFeeRatio(feeRatio)
                     .build();
         }
 
@@ -893,6 +994,7 @@ public class FeeDelegatedAccountUpdateTest {
         String gasPrice = "0x19";
         String nonce = "0x4d2";
         String chainID = "0x1";
+        String feeRatio = "0x1e";
         Account account;
 
         SignatureData senderSignature = new SignatureData(
@@ -901,13 +1003,13 @@ public class FeeDelegatedAccountUpdateTest {
                 "0x26aa676a3a1a6e96aff4a3df2335788d614d54fb4db1c3c48551ce1fa7ac5e52"
         );
 
-        FeeDelegatedAccountUpdate mTxObj;
+        FeeDelegatedAccountUpdateWithRatio mTxObj;
 
         @Before
         public void before() {
             account = Account.createWithAccountKeyFail(from);
 
-            mTxObj = new FeeDelegatedAccountUpdate.Builder()
+            mTxObj = new FeeDelegatedAccountUpdateWithRatio.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -916,10 +1018,9 @@ public class FeeDelegatedAccountUpdateTest {
                     .setSignatures(senderSignature)
                     .setFeePayer(feePayer)
                     .setAccount(account)
+                    .setFeeRatio(feeRatio)
                     .build();
-
         }
-
 
         @Test
         public void appendFeePayerSignature() {
@@ -952,7 +1053,7 @@ public class FeeDelegatedAccountUpdateTest {
         public void appendFeePayerSignatureList_EmptySig() {
             SignatureData emptySignature = SignatureData.getEmptySignature();
 
-            mTxObj = new FeeDelegatedAccountUpdate.Builder()
+            mTxObj = new FeeDelegatedAccountUpdateWithRatio.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -962,6 +1063,7 @@ public class FeeDelegatedAccountUpdateTest {
                     .setFeePayer(feePayer)
                     .setAccount(account)
                     .setFeePayerSignatures(emptySignature)
+                    .setFeeRatio(feeRatio)
                     .build();
 
             SignatureData signatureData = new SignatureData(
@@ -994,7 +1096,7 @@ public class FeeDelegatedAccountUpdateTest {
             List<SignatureData> list = new ArrayList<>();
             list.add(signatureData1);
 
-            mTxObj = new FeeDelegatedAccountUpdate.Builder()
+            mTxObj = new FeeDelegatedAccountUpdateWithRatio.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1003,6 +1105,7 @@ public class FeeDelegatedAccountUpdateTest {
                     .setSignatures(senderSignature)
                     .setFeePayer(feePayer)
                     .setAccount(account)
+                    .setFeeRatio(feeRatio)
                     .setFeePayerSignatures(signatureData)
                     .build();
 
@@ -1032,7 +1135,7 @@ public class FeeDelegatedAccountUpdateTest {
                     Numeric.hexStringToByteArray("0xa3ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
-            mTxObj = new FeeDelegatedAccountUpdate.Builder()
+            mTxObj = new FeeDelegatedAccountUpdateWithRatio.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1041,6 +1144,7 @@ public class FeeDelegatedAccountUpdateTest {
                     .setSignatures(senderSignature)
                     .setFeePayer(feePayer)
                     .setAccount(account)
+                    .setFeeRatio(feeRatio)
                     .setFeePayerSignatures(signatureData)
                     .build();
 
@@ -1061,33 +1165,35 @@ public class FeeDelegatedAccountUpdateTest {
         public ExpectedException expectedException = ExpectedException.none();
 
 
-        String from = "0x9788016d3957e62cc7f3aa7f9f5d801e3277b4eb";
+        String from = "0x610a4bf32905c1dc6e5e61c37165b9aa3a718908";
         String gas = "0x186a0";
         String nonce = "0x1";
         String gasPrice = "0x5d21dba00";
         String chainID = "0x7e3";
+        BigInteger feeRatio = BigInteger.valueOf(30);
         Account account = Account.createWithAccountKeyLegacy(from);
 
-        FeeDelegatedAccountUpdate mTxObj;
+        FeeDelegatedAccountUpdateWithRatio mTxObj;
 
         @Test
         public void combineSignatures() {
-            mTxObj = new FeeDelegatedAccountUpdate.Builder()
+            mTxObj = new FeeDelegatedAccountUpdateWithRatio.Builder()
                     .setNonce(nonce)
                     .setFrom(from)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setAccount(account)
+                    .setFeeRatio(feeRatio)
                     .build();
 
-            String rlpEncoded = "0x21f872018505d21dba00830186a0949788016d3957e62cc7f3aa7f9f5d801e3277b4eb8201c0f847f845820fe9a05e5922bc693162599cca35416a96f44187a7a0ac4851eddf9ad8ec8359aa8878a03e128291576716d0be1ef5a8dba67eb2056fa1495529a77338d9c7a7b4c5e24a80c4c3018080";
+            String rlpEncoded = "0x22f873018505d21dba00830186a094610a4bf32905c1dc6e5e61c37165b9aa3a7189088201c01ef847f845820feaa03f34007147ba1c9184d51b7dfacae768ae00c859b4726ef339502e98d44ec188a03e518e277769ba02d57c8c7fab291abab61e2525735500402e78a1493e48781e80c4c3018080";
             String combined = mTxObj.combineSignatures(Arrays.asList(rlpEncoded));
 
             SignatureData expectedSignatureData = new SignatureData(
-                    "0x0fe9",
-                    "0x5e5922bc693162599cca35416a96f44187a7a0ac4851eddf9ad8ec8359aa8878",
-                    "0x3e128291576716d0be1ef5a8dba67eb2056fa1495529a77338d9c7a7b4c5e24a"
+                    "0x0fea",
+                    "0x3f34007147ba1c9184d51b7dfacae768ae00c859b4726ef339502e98d44ec188",
+                    "0x3e518e277769ba02d57c8c7fab291abab61e2525735500402e78a1493e48781e"
             );
 
             assertEquals(rlpEncoded, combined);
@@ -1097,44 +1203,45 @@ public class FeeDelegatedAccountUpdateTest {
         @Test
         public void combineSignature_multipleSignature() {
             SignatureData senderSignature = new SignatureData(
-                    "0x0fe9",
-                    "0x5e5922bc693162599cca35416a96f44187a7a0ac4851eddf9ad8ec8359aa8878",
-                    "0x3e128291576716d0be1ef5a8dba67eb2056fa1495529a77338d9c7a7b4c5e24a"
+                    "0x0fea",
+                    "0x3f34007147ba1c9184d51b7dfacae768ae00c859b4726ef339502e98d44ec188",
+                    "0x3e518e277769ba02d57c8c7fab291abab61e2525735500402e78a1493e48781e"
             );
 
-            mTxObj = new FeeDelegatedAccountUpdate.Builder()
+            mTxObj = new FeeDelegatedAccountUpdateWithRatio.Builder()
                     .setNonce(nonce)
                     .setFrom(from)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setAccount(account)
+                    .setFeeRatio(feeRatio)
                     .setSignatures(senderSignature)
                     .build();
 
             String[] rlpEncodedStrings = {
-                    "0x21f872018505d21dba00830186a0949788016d3957e62cc7f3aa7f9f5d801e3277b4eb8201c0f847f845820fe9a0dd841ac608f55a20a211599ab73b7cc8cacedb219aca053621b68a7cf1ce1625a055da30e64842b16650ec6fac6972b1344197a299c2f840190bbe01fdc82a447a80c4c3018080",
-                    "0x21f872018505d21dba00830186a0949788016d3957e62cc7f3aa7f9f5d801e3277b4eb8201c0f847f845820feaa0187d11596f3a2c9ef922fee8ebf07aa1c7ce7ae46834c54901436d10b9e0afd8a068094e4e51f2d07b60f14df1ddb75f1afb35ed8061aa51005559beab2cc9cd4c80c4c3018080"
+                    "0x22f873018505d21dba00830186a094610a4bf32905c1dc6e5e61c37165b9aa3a7189088201c01ef847f845820fe9a08094b2512daf27c211292cf2bdecca13733065070d5f61433a5d6702b864ee4aa02e86ee64c66859f8bc0b9c750c8b5ea0cc79a03cdbf9b78ca5db9c4ab6926b2580c4c3018080",
+                    "0x22f873018505d21dba00830186a094610a4bf32905c1dc6e5e61c37165b9aa3a7189088201c01ef847f845820feaa034cda207b780c1defd54138f1d071f5d0e82160decf46c8d182f5f7aac341c32a003e174ed4357afebaa26c5c6c61c660c9bb130027d53f8cafb3a27f54273c3fd80c4c3018080"
             };
 
             String combined = mTxObj.combineSignatures(Arrays.asList(rlpEncodedStrings));
-            String expectedRLPEncoding = "0x21f90100018505d21dba00830186a0949788016d3957e62cc7f3aa7f9f5d801e3277b4eb8201c0f8d5f845820fe9a05e5922bc693162599cca35416a96f44187a7a0ac4851eddf9ad8ec8359aa8878a03e128291576716d0be1ef5a8dba67eb2056fa1495529a77338d9c7a7b4c5e24af845820fe9a0dd841ac608f55a20a211599ab73b7cc8cacedb219aca053621b68a7cf1ce1625a055da30e64842b16650ec6fac6972b1344197a299c2f840190bbe01fdc82a447af845820feaa0187d11596f3a2c9ef922fee8ebf07aa1c7ce7ae46834c54901436d10b9e0afd8a068094e4e51f2d07b60f14df1ddb75f1afb35ed8061aa51005559beab2cc9cd4c80c4c3018080";
+            String expectedRLPEncoding = "0x22f90101018505d21dba00830186a094610a4bf32905c1dc6e5e61c37165b9aa3a7189088201c01ef8d5f845820feaa03f34007147ba1c9184d51b7dfacae768ae00c859b4726ef339502e98d44ec188a03e518e277769ba02d57c8c7fab291abab61e2525735500402e78a1493e48781ef845820fe9a08094b2512daf27c211292cf2bdecca13733065070d5f61433a5d6702b864ee4aa02e86ee64c66859f8bc0b9c750c8b5ea0cc79a03cdbf9b78ca5db9c4ab6926b25f845820feaa034cda207b780c1defd54138f1d071f5d0e82160decf46c8d182f5f7aac341c32a003e174ed4357afebaa26c5c6c61c660c9bb130027d53f8cafb3a27f54273c3fd80c4c3018080";
 
             SignatureData[] expectedSignatureData = new SignatureData[]{
                     new SignatureData(
-                            "0x0fe9",
-                            "0x5e5922bc693162599cca35416a96f44187a7a0ac4851eddf9ad8ec8359aa8878",
-                            "0x3e128291576716d0be1ef5a8dba67eb2056fa1495529a77338d9c7a7b4c5e24a"
+                            "0x0fea",
+                            "0x3f34007147ba1c9184d51b7dfacae768ae00c859b4726ef339502e98d44ec188",
+                            "0x3e518e277769ba02d57c8c7fab291abab61e2525735500402e78a1493e48781e"
                     ),
                     new SignatureData(
                             "0x0fe9",
-                            "0xdd841ac608f55a20a211599ab73b7cc8cacedb219aca053621b68a7cf1ce1625",
-                            "0x55da30e64842b16650ec6fac6972b1344197a299c2f840190bbe01fdc82a447a"
+                            "0x8094b2512daf27c211292cf2bdecca13733065070d5f61433a5d6702b864ee4a",
+                            "0x2e86ee64c66859f8bc0b9c750c8b5ea0cc79a03cdbf9b78ca5db9c4ab6926b25"
                     ),
                     new SignatureData(
                             "0x0fea",
-                            "0x187d11596f3a2c9ef922fee8ebf07aa1c7ce7ae46834c54901436d10b9e0afd8",
-                            "0x68094e4e51f2d07b60f14df1ddb75f1afb35ed8061aa51005559beab2cc9cd4c"
+                            "0x34cda207b780c1defd54138f1d071f5d0e82160decf46c8d182f5f7aac341c32",
+                            "0x03e174ed4357afebaa26c5c6c61c660c9bb130027d53f8cafb3a27f54273c3fd"
                     )
             };
 
@@ -1146,25 +1253,26 @@ public class FeeDelegatedAccountUpdateTest {
 
         @Test
         public void combineSignature_feePayerSignature() {
-            String feePayer = "0x1576dfec8c77f984d627ff5e953ab527c30a3904";
+            String feePayer = "0xa317526534d82b902e86c960e037ede7b83af824";
 
-            mTxObj = new FeeDelegatedAccountUpdate.Builder()
+            mTxObj = new FeeDelegatedAccountUpdateWithRatio.Builder()
                     .setNonce(nonce)
                     .setFrom(from)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFeePayer(feePayer)
                     .setChainId(chainID)
+                    .setFeeRatio(feeRatio)
                     .setAccount(account)
                     .build();
 
-            String rlpEncoded = "0x21f886018505d21dba00830186a0949788016d3957e62cc7f3aa7f9f5d801e3277b4eb8201c0c4c3018080941576dfec8c77f984d627ff5e953ab527c30a3904f847f845820feaa06f06eeeb86c6980bf314a3c4c84a9f610d8ed7055e48d3176f8be8fc7c4c0e2ca0562417d4c1653f0e420c63fb427198f636eb5364b9e95626026fdabedcc33eb8";
+            String rlpEncoded = "0x22f887018505d21dba00830186a094610a4bf32905c1dc6e5e61c37165b9aa3a7189088201c01ec4c301808094a317526534d82b902e86c960e037ede7b83af824f847f845820fe9a071487ff3f9d01d0bbec812339ff775a7129a0311b2039e8cbf113be48f2fa3d9a04d4d0bcb2c9e4468de70645a5a818d9304ec2f8c75497fa092eb3cc8e7fe94d2";
             String combined = mTxObj.combineSignatures(Arrays.asList(rlpEncoded));
 
             SignatureData signatureData = new SignatureData(
-                    "0x0fea",
-                    "0x6f06eeeb86c6980bf314a3c4c84a9f610d8ed7055e48d3176f8be8fc7c4c0e2c",
-                    "0x562417d4c1653f0e420c63fb427198f636eb5364b9e95626026fdabedcc33eb8"
+                    "0x0fe9",
+                    "0x71487ff3f9d01d0bbec812339ff775a7129a0311b2039e8cbf113be48f2fa3d9",
+                    "0x4d4d0bcb2c9e4468de70645a5a818d9304ec2f8c75497fa092eb3cc8e7fe94d2"
             );
             assertEquals(rlpEncoded, combined);
             assertEquals(signatureData, mTxObj.getFeePayerSignatures().get(0));
@@ -1172,47 +1280,48 @@ public class FeeDelegatedAccountUpdateTest {
 
         @Test
         public void combineSignature_multipleFeePayerSignature() {
-            String feePayer = "0x1576dfec8c77f984d627ff5e953ab527c30a3904";
-            SignatureData feePayerSignatureData = new SignatureData(
-                    "0x0fea",
-                    "0x6f06eeeb86c6980bf314a3c4c84a9f610d8ed7055e48d3176f8be8fc7c4c0e2c",
-                    "0x562417d4c1653f0e420c63fb427198f636eb5364b9e95626026fdabedcc33eb8"
+            String feePayer = "0xa317526534d82b902e86c960e037ede7b83af824";
+            SignatureData signatureData = new SignatureData(
+                    "0x0fe9",
+                    "0x71487ff3f9d01d0bbec812339ff775a7129a0311b2039e8cbf113be48f2fa3d9",
+                    "0x4d4d0bcb2c9e4468de70645a5a818d9304ec2f8c75497fa092eb3cc8e7fe94d2"
             );
 
-            mTxObj = new FeeDelegatedAccountUpdate.Builder()
+            mTxObj = new FeeDelegatedAccountUpdateWithRatio.Builder()
                     .setNonce(nonce)
                     .setFrom(from)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFeePayer(feePayer)
                     .setChainId(chainID)
+                    .setFeeRatio(feeRatio)
+                    .setFeePayerSignatures(signatureData)
                     .setAccount(account)
-                    .setFeePayerSignatures(feePayerSignatureData)
                     .build();
 
             String[] rlpEncodedStrings = new String[] {
-                    "0x21f886018505d21dba00830186a0949788016d3957e62cc7f3aa7f9f5d801e3277b4eb8201c0c4c3018080941576dfec8c77f984d627ff5e953ab527c30a3904f847f845820fe9a080eb1d684765851433b6e91c702500436704a2b74bbe9fb0e237b7486fc86504a048975a10ca36aa7b439dc9e8a6b5cfd715476ed57e43619a5ef8a9266d544ad6",
-                    "0x21f886018505d21dba00830186a0949788016d3957e62cc7f3aa7f9f5d801e3277b4eb8201c0c4c3018080941576dfec8c77f984d627ff5e953ab527c30a3904f847f845820fe9a0ec1155a838e74333b6bc2b76bb99098882c3b522e7a850f01151d37b2fac9841a0078a3216312f05e92a732f26fbe084365f37f5523dc1def47c4cea932eaa972a",
+                    "0x22f887018505d21dba00830186a094610a4bf32905c1dc6e5e61c37165b9aa3a7189088201c01ec4c301808094a317526534d82b902e86c960e037ede7b83af824f847f845820fe9a0d7e460da9cd48d780a71a8005b0bb5a6d6009786af55151f3388e42499b70e37a078643c2eca2711a2f776d9558fc2d8cf1a2f905647bbb0ffbab34b046ba9a141",
+                    "0x22f887018505d21dba00830186a094610a4bf32905c1dc6e5e61c37165b9aa3a7189088201c01ec4c301808094a317526534d82b902e86c960e037ede7b83af824f847f845820fe9a03a8484bbfde6d139cc886e9a253648f50b5b435f1049725f1e52da8f2b3ca765a004149af877984cfd0f3756b7e46ea8dd6a5f47de504c852d607adbdb67fa17fa",
             };
 
             String combined = mTxObj.combineSignatures(Arrays.asList(rlpEncodedStrings));
-            String expectedRLPEncoded = "0x21f90114018505d21dba00830186a0949788016d3957e62cc7f3aa7f9f5d801e3277b4eb8201c0c4c3018080941576dfec8c77f984d627ff5e953ab527c30a3904f8d5f845820feaa06f06eeeb86c6980bf314a3c4c84a9f610d8ed7055e48d3176f8be8fc7c4c0e2ca0562417d4c1653f0e420c63fb427198f636eb5364b9e95626026fdabedcc33eb8f845820fe9a080eb1d684765851433b6e91c702500436704a2b74bbe9fb0e237b7486fc86504a048975a10ca36aa7b439dc9e8a6b5cfd715476ed57e43619a5ef8a9266d544ad6f845820fe9a0ec1155a838e74333b6bc2b76bb99098882c3b522e7a850f01151d37b2fac9841a0078a3216312f05e92a732f26fbe084365f37f5523dc1def47c4cea932eaa972a";
+            String expectedRLPEncoded = "0x22f90115018505d21dba00830186a094610a4bf32905c1dc6e5e61c37165b9aa3a7189088201c01ec4c301808094a317526534d82b902e86c960e037ede7b83af824f8d5f845820fe9a071487ff3f9d01d0bbec812339ff775a7129a0311b2039e8cbf113be48f2fa3d9a04d4d0bcb2c9e4468de70645a5a818d9304ec2f8c75497fa092eb3cc8e7fe94d2f845820fe9a0d7e460da9cd48d780a71a8005b0bb5a6d6009786af55151f3388e42499b70e37a078643c2eca2711a2f776d9558fc2d8cf1a2f905647bbb0ffbab34b046ba9a141f845820fe9a03a8484bbfde6d139cc886e9a253648f50b5b435f1049725f1e52da8f2b3ca765a004149af877984cfd0f3756b7e46ea8dd6a5f47de504c852d607adbdb67fa17fa";
 
             SignatureData[] expectedSignatureData = new SignatureData[]{
                     new SignatureData(
-                            "0x0fea",
-                            "0x6f06eeeb86c6980bf314a3c4c84a9f610d8ed7055e48d3176f8be8fc7c4c0e2c",
-                            "0x562417d4c1653f0e420c63fb427198f636eb5364b9e95626026fdabedcc33eb8"
+                            "0x0fe9",
+                            "0x71487ff3f9d01d0bbec812339ff775a7129a0311b2039e8cbf113be48f2fa3d9",
+                            "0x4d4d0bcb2c9e4468de70645a5a818d9304ec2f8c75497fa092eb3cc8e7fe94d2"
                     ),
                     new SignatureData(
                             "0x0fe9",
-                            "0x80eb1d684765851433b6e91c702500436704a2b74bbe9fb0e237b7486fc86504",
-                            "0x48975a10ca36aa7b439dc9e8a6b5cfd715476ed57e43619a5ef8a9266d544ad6"
+                            "0xd7e460da9cd48d780a71a8005b0bb5a6d6009786af55151f3388e42499b70e37",
+                            "0x78643c2eca2711a2f776d9558fc2d8cf1a2f905647bbb0ffbab34b046ba9a141"
                     ),
                     new SignatureData(
                             "0x0fe9",
-                            "0xec1155a838e74333b6bc2b76bb99098882c3b522e7a850f01151d37b2fac9841",
-                            "0x078a3216312f05e92a732f26fbe084365f37f5523dc1def47c4cea932eaa972a"
+                            "0x3a8484bbfde6d139cc886e9a253648f50b5b435f1049725f1e52da8f2b3ca765",
+                            "0x04149af877984cfd0f3756b7e46ea8dd6a5f47de504c852d607adbdb67fa17fa"
                     )
             };
 
@@ -1224,54 +1333,55 @@ public class FeeDelegatedAccountUpdateTest {
 
         @Test
         public void multipleSignature_senderSignature_feePayerSignature() {
-            mTxObj = new FeeDelegatedAccountUpdate.Builder()
+            mTxObj = new FeeDelegatedAccountUpdateWithRatio.Builder()
                     .setNonce(nonce)
                     .setFrom(from)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
+                    .setFeeRatio(feeRatio)
                     .setAccount(account)
                     .build();
 
 
-            String rlpEncodedString = "0x21f90100018505d21dba00830186a0949788016d3957e62cc7f3aa7f9f5d801e3277b4eb8201c0f8d5f845820fe9a05e5922bc693162599cca35416a96f44187a7a0ac4851eddf9ad8ec8359aa8878a03e128291576716d0be1ef5a8dba67eb2056fa1495529a77338d9c7a7b4c5e24af845820fe9a0dd841ac608f55a20a211599ab73b7cc8cacedb219aca053621b68a7cf1ce1625a055da30e64842b16650ec6fac6972b1344197a299c2f840190bbe01fdc82a447af845820feaa0187d11596f3a2c9ef922fee8ebf07aa1c7ce7ae46834c54901436d10b9e0afd8a068094e4e51f2d07b60f14df1ddb75f1afb35ed8061aa51005559beab2cc9cd4c80c4c3018080";
+            String rlpEncodedString = "0x22f90101018505d21dba00830186a094610a4bf32905c1dc6e5e61c37165b9aa3a7189088201c01ef8d5f845820feaa03f34007147ba1c9184d51b7dfacae768ae00c859b4726ef339502e98d44ec188a03e518e277769ba02d57c8c7fab291abab61e2525735500402e78a1493e48781ef845820fe9a08094b2512daf27c211292cf2bdecca13733065070d5f61433a5d6702b864ee4aa02e86ee64c66859f8bc0b9c750c8b5ea0cc79a03cdbf9b78ca5db9c4ab6926b25f845820feaa034cda207b780c1defd54138f1d071f5d0e82160decf46c8d182f5f7aac341c32a003e174ed4357afebaa26c5c6c61c660c9bb130027d53f8cafb3a27f54273c3fd80c4c3018080";
             SignatureData[] expectedSignatures = new SignatureData[] {
                     new SignatureData(
-                            "0x0fe9",
-                            "0x5e5922bc693162599cca35416a96f44187a7a0ac4851eddf9ad8ec8359aa8878",
-                            "0x3e128291576716d0be1ef5a8dba67eb2056fa1495529a77338d9c7a7b4c5e24a"
+                            "0x0fea",
+                            "0x3f34007147ba1c9184d51b7dfacae768ae00c859b4726ef339502e98d44ec188",
+                            "0x3e518e277769ba02d57c8c7fab291abab61e2525735500402e78a1493e48781e"
                     ),
                     new SignatureData(
                             "0x0fe9",
-                            "0xdd841ac608f55a20a211599ab73b7cc8cacedb219aca053621b68a7cf1ce1625",
-                            "0x55da30e64842b16650ec6fac6972b1344197a299c2f840190bbe01fdc82a447a"
+                            "0x8094b2512daf27c211292cf2bdecca13733065070d5f61433a5d6702b864ee4a",
+                            "0x2e86ee64c66859f8bc0b9c750c8b5ea0cc79a03cdbf9b78ca5db9c4ab6926b25"
                     ),
                     new SignatureData(
                             "0x0fea",
-                            "0x187d11596f3a2c9ef922fee8ebf07aa1c7ce7ae46834c54901436d10b9e0afd8",
-                            "0x68094e4e51f2d07b60f14df1ddb75f1afb35ed8061aa51005559beab2cc9cd4c"
+                            "0x34cda207b780c1defd54138f1d071f5d0e82160decf46c8d182f5f7aac341c32",
+                            "0x03e174ed4357afebaa26c5c6c61c660c9bb130027d53f8cafb3a27f54273c3fd"
                     ),
             };
 
             String combined = mTxObj.combineSignatures(Arrays.asList(rlpEncodedString));
 
-            String rlpEncodedStringsWithFeePayerSignatures = "0x21f90114018505d21dba00830186a0949788016d3957e62cc7f3aa7f9f5d801e3277b4eb8201c0c4c3018080941576dfec8c77f984d627ff5e953ab527c30a3904f8d5f845820feaa06f06eeeb86c6980bf314a3c4c84a9f610d8ed7055e48d3176f8be8fc7c4c0e2ca0562417d4c1653f0e420c63fb427198f636eb5364b9e95626026fdabedcc33eb8f845820fe9a080eb1d684765851433b6e91c702500436704a2b74bbe9fb0e237b7486fc86504a048975a10ca36aa7b439dc9e8a6b5cfd715476ed57e43619a5ef8a9266d544ad6f845820fe9a0ec1155a838e74333b6bc2b76bb99098882c3b522e7a850f01151d37b2fac9841a0078a3216312f05e92a732f26fbe084365f37f5523dc1def47c4cea932eaa972a";
+            String rlpEncodedStringsWithFeePayerSignatures = "0x22f90115018505d21dba00830186a094610a4bf32905c1dc6e5e61c37165b9aa3a7189088201c01ec4c301808094a317526534d82b902e86c960e037ede7b83af824f8d5f845820fe9a071487ff3f9d01d0bbec812339ff775a7129a0311b2039e8cbf113be48f2fa3d9a04d4d0bcb2c9e4468de70645a5a818d9304ec2f8c75497fa092eb3cc8e7fe94d2f845820fe9a0d7e460da9cd48d780a71a8005b0bb5a6d6009786af55151f3388e42499b70e37a078643c2eca2711a2f776d9558fc2d8cf1a2f905647bbb0ffbab34b046ba9a141f845820fe9a03a8484bbfde6d139cc886e9a253648f50b5b435f1049725f1e52da8f2b3ca765a004149af877984cfd0f3756b7e46ea8dd6a5f47de504c852d607adbdb67fa17fa";
 
             SignatureData[] expectedFeePayerSignatures = new SignatureData[] {
                     new SignatureData(
-                            "0x0fea",
-                            "0x6f06eeeb86c6980bf314a3c4c84a9f610d8ed7055e48d3176f8be8fc7c4c0e2c",
-                            "0x562417d4c1653f0e420c63fb427198f636eb5364b9e95626026fdabedcc33eb8"
+                            "0x0fe9",
+                            "0x71487ff3f9d01d0bbec812339ff775a7129a0311b2039e8cbf113be48f2fa3d9",
+                            "0x4d4d0bcb2c9e4468de70645a5a818d9304ec2f8c75497fa092eb3cc8e7fe94d2"
                     ),
                     new SignatureData(
                             "0x0fe9",
-                            "0x80eb1d684765851433b6e91c702500436704a2b74bbe9fb0e237b7486fc86504",
-                            "0x48975a10ca36aa7b439dc9e8a6b5cfd715476ed57e43619a5ef8a9266d544ad6"
+                            "0xd7e460da9cd48d780a71a8005b0bb5a6d6009786af55151f3388e42499b70e37",
+                            "0x78643c2eca2711a2f776d9558fc2d8cf1a2f905647bbb0ffbab34b046ba9a141"
                     ),
                     new SignatureData(
                             "0x0fe9",
-                            "0xec1155a838e74333b6bc2b76bb99098882c3b522e7a850f01151d37b2fac9841",
-                            "0x078a3216312f05e92a732f26fbe084365f37f5523dc1def47c4cea932eaa972a"
+                            "0x3a8484bbfde6d139cc886e9a253648f50b5b435f1049725f1e52da8f2b3ca765",
+                            "0x04149af877984cfd0f3756b7e46ea8dd6a5f47de504c852d607adbdb67fa17fa"
                     ),
             };
 
@@ -1293,16 +1403,17 @@ public class FeeDelegatedAccountUpdateTest {
 
             String gas = "0x1000";
 
-            mTxObj = new FeeDelegatedAccountUpdate.Builder()
+            mTxObj = new FeeDelegatedAccountUpdateWithRatio.Builder()
                     .setNonce(nonce)
                     .setFrom(from)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
+                    .setFeeRatio(feeRatio)
                     .setAccount(account)
                     .build();
 
-            String rlpEncoded = "0x21f90114018505d21dba00830186a0949788016d3957e62cc7f3aa7f9f5d801e3277b4eb8201c0c4c3018080941576dfec8c77f984d627ff5e953ab527c30a3904f8d5f845820feaa06f06eeeb86c6980bf314a3c4c84a9f610d8ed7055e48d3176f8be8fc7c4c0e2ca0562417d4c1653f0e420c63fb427198f636eb5364b9e95626026fdabedcc33eb8f845820fe9a080eb1d684765851433b6e91c702500436704a2b74bbe9fb0e237b7486fc86504a048975a10ca36aa7b439dc9e8a6b5cfd715476ed57e43619a5ef8a9266d544ad6f845820fe9a0ec1155a838e74333b6bc2b76bb99098882c3b522e7a850f01151d37b2fac9841a0078a3216312f05e92a732f26fbe084365f37f5523dc1def47c4cea932eaa972a";
+            String rlpEncoded = "0x22f873018505d21dba00830186a094610a4bf32905c1dc6e5e61c37165b9aa3a7189088201c01ef847f845820feaa03f34007147ba1c9184d51b7dfacae768ae00c859b4726ef339502e98d44ec188a03e518e277769ba02d57c8c7fab291abab61e2525735500402e78a1493e48781e80c4c3018080";
             List<String> list = new ArrayList<>();
             list.add(rlpEncoded);
 
@@ -1326,7 +1437,7 @@ public class FeeDelegatedAccountUpdateTest {
         @Test
         public void getRawTransaction() {
             for(ExpectedData expectedData : expectedDataList) {
-                FeeDelegatedAccountUpdate txObj = expectedData.getBuilder().build();
+                FeeDelegatedAccountUpdateWithRatio txObj = expectedData.getBuilder().build();
                 assertEquals(expectedData.getExpectedRLPEncoding(), txObj.getRawTransaction());
             }
         }
@@ -1337,7 +1448,7 @@ public class FeeDelegatedAccountUpdateTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         List<ExpectedData> expectedDataList;
-        FeeDelegatedAccountUpdate mTxObj;
+        FeeDelegatedAccountUpdateWithRatio mTxObj;
 
         @Before
         public void preSetup() {
@@ -1352,7 +1463,7 @@ public class FeeDelegatedAccountUpdateTest {
         @Test
         public void getTransactionHash() {
             for(ExpectedData expectedData : expectedDataList) {
-                FeeDelegatedAccountUpdate txObj = expectedData.getBuilder().build();
+                FeeDelegatedAccountUpdateWithRatio txObj = expectedData.getBuilder().build();
                 assertEquals(expectedData.getExpectedTransactionHash(), txObj.getTransactionHash());
             }
         }
@@ -1387,7 +1498,7 @@ public class FeeDelegatedAccountUpdateTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         List<ExpectedData> expectedDataList;
-        FeeDelegatedAccountUpdate mTxObj;
+        FeeDelegatedAccountUpdateWithRatio mTxObj;
 
         @Before
         public void preSetup() {
@@ -1402,7 +1513,7 @@ public class FeeDelegatedAccountUpdateTest {
         @Test
         public void getSenderTransactionHash() {
             for(ExpectedData expectedData : expectedDataList) {
-                FeeDelegatedAccountUpdate txObj = expectedData.getBuilder().build();
+                FeeDelegatedAccountUpdateWithRatio txObj = expectedData.getBuilder().build();
                 assertEquals(expectedData.getExpectedSenderTransactionHash(), txObj.getSenderTxHash());
             }
         }
@@ -1436,7 +1547,7 @@ public class FeeDelegatedAccountUpdateTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         List<ExpectedData> expectedDataList;
-        FeeDelegatedAccountUpdate mTxObj;
+        FeeDelegatedAccountUpdateWithRatio mTxObj;
 
         @Before
         public void preSetup() {
@@ -1451,7 +1562,7 @@ public class FeeDelegatedAccountUpdateTest {
         @Test
         public void getRLPEncodingForFeePayerSignature() {
             for(ExpectedData expectedData : expectedDataList) {
-                FeeDelegatedAccountUpdate txObj = expectedData.getBuilder().build();
+                FeeDelegatedAccountUpdateWithRatio txObj = expectedData.getBuilder().build();
                 assertEquals(expectedData.getExpectedRLPEncodingForFeePayerSigning(), txObj.getRLPEncodingForFeePayerSignature());
             }
         }

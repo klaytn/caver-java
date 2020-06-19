@@ -2,9 +2,7 @@ package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
-import com.klaytn.caver.transaction.type.FeeDelegatedValueTransferMemo;
 import com.klaytn.caver.transaction.type.FeeDelegatedValueTransferMemoWithRatio;
-import com.klaytn.caver.transaction.type.FeeDelegatedValueTransferWithRatio;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Before;
 import org.junit.Rule;

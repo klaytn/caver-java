@@ -350,6 +350,14 @@ public class FeeDelegatedSmartContractExecutionWithRatio extends AbstractFeeDele
     }
 
     /**
+     * Setter function for value
+     * @param value The amount of KLAY in peb to be transferred.
+     */
+    public void setValue(BigInteger value) {
+        setValue(Numeric.toHexStringWithPrefix(value));
+    }
+
+    /**
      * Setter function for input
      * @param input The data attached to the transaction, used for transaction execution.
      */

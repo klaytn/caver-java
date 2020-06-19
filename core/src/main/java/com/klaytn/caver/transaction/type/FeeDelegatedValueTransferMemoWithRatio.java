@@ -283,7 +283,7 @@ public class FeeDelegatedValueTransferMemoWithRatio extends AbstractFeeDelegated
 
     /**
      * Check equals txObj passed parameter and Current instance.
-     * @param obj The AbstractFeeDelegatedWithRatioTransaction Object to compare
+     * @param txObj The AbstractFeeDelegatedWithRatioTransaction Object to compare
      * @param checkSig Check whether signatures field is equal.
      * @return boolean
      */

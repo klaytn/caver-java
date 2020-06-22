@@ -1,6 +1,6 @@
 package com.klaytn.caver.account;
 
-import com.klaytn.caver.utils.AccountKeyPublicUtils;
+import com.klaytn.caver.utils.Utils;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
@@ -47,7 +47,7 @@ public class WeightedPublicKey {
      * @param publicKey ecc Public key
      */
     public void setPublicKey(String publicKey) {
-        if(!AccountKeyPublicUtils.isValidPublicKey(publicKey)) {
+        if(!Utils.isValidPublicKey(publicKey)) {
             throw new IllegalArgumentException("Invalid Public key format");
         }
         this.publicKey = publicKey;
@@ -81,7 +81,7 @@ public class WeightedPublicKey {
             throw new RuntimeException("weight should be specified for a multisig account");
         }
 
-        String compressedKey = AccountKeyPublicUtils.compressPublicKey(this.publicKey);
+        String compressedKey = Utils.compressPublicKey(this.publicKey);
         return new String[] {Numeric.toHexStringWithPrefix(this.weight), compressedKey};
     }
 }

@@ -1,7 +1,7 @@
 package com.klaytn.caver.common;
 
 import com.klaytn.caver.account.*;
-import com.klaytn.caver.utils.AccountKeyPublicUtils;
+import com.klaytn.caver.utils.Utils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,8 +19,8 @@ public class AccountTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     public void checkPublicKey(String expected, String actual) {
-        expected = AccountKeyPublicUtils.compressPublicKey(expected);
-        actual = AccountKeyPublicUtils.compressPublicKey(actual);
+        expected = Utils.compressPublicKey(expected);
+        actual = Utils.compressPublicKey(actual);
 
         expected = Numeric.cleanHexPrefix(expected);
         actual = Numeric.cleanHexPrefix(actual);

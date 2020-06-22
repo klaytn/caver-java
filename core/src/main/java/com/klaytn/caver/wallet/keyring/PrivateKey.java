@@ -1,6 +1,5 @@
 package com.klaytn.caver.wallet.keyring;
 
-import com.klaytn.caver.utils.AccountKeyPublicUtils;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
 import org.web3j.crypto.ECKeyPair;
@@ -102,7 +101,7 @@ public class PrivateKey {
         BigInteger publicKey = Sign.publicKeyFromPrivate(Numeric.toBigInt(privateKey));
 
         if(compressed) {
-            return AccountKeyPublicUtils.compressPublicKey(Numeric.toHexStringWithPrefixZeroPadded(publicKey, LEN_UNCOMPRESSED_PUBLIC_KEY_STRING));
+            return Utils.compressPublicKey(Numeric.toHexStringWithPrefixZeroPadded(publicKey, LEN_UNCOMPRESSED_PUBLIC_KEY_STRING));
         }
 
         return Numeric.toHexStringNoPrefixZeroPadded(publicKey, LEN_UNCOMPRESSED_PUBLIC_KEY_STRING);

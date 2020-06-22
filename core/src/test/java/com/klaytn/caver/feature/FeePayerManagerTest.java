@@ -22,7 +22,7 @@ import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.tx.manager.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.tx.model.ValueTransferTransaction;
 import com.klaytn.caver.tx.type.TxType;
-import com.klaytn.caver.utils.Convert;
+import com.klaytn.caver.utils.KlayUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -36,7 +36,7 @@ import static org.junit.Assert.assertEquals;
 
 public class FeePayerManagerTest {
 
-    static final BigInteger GAS_PRICE = Convert.toPeb("25", Convert.Unit.STON).toBigInteger();
+    static final BigInteger GAS_PRICE = KlayUnit.toPeb("25", KlayUnit.Unit.STON).toBigInteger();
     static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
     static final BigInteger FEE_RATIO = BigInteger.valueOf(30);
 

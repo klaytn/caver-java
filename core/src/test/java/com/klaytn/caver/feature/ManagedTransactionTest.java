@@ -29,7 +29,7 @@ import com.klaytn.caver.tx.model.AccountUpdateTransaction;
 import com.klaytn.caver.tx.model.SmartContractDeployTransaction;
 import com.klaytn.caver.tx.model.SmartContractExecutionTransaction;
 import com.klaytn.caver.utils.CodeFormat;
-import com.klaytn.caver.utils.Convert;
+import com.klaytn.caver.utils.KlayUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.web3j.crypto.Hash;
@@ -97,14 +97,14 @@ public class ManagedTransactionTest {
     @Test
     public void testValueTransfer() throws Exception {
         ValueTransfer valueTransfer = ValueTransfer.create(caver, transactionManager);
-        KlayTransactionReceipt.TransactionReceipt transactionReceipt = valueTransfer.sendFunds(LUMAN.getAddress(), WAYNE.getAddress(), BigDecimal.ONE, Convert.Unit.PEB, GAS_LIMIT).send();
+        KlayTransactionReceipt.TransactionReceipt transactionReceipt = valueTransfer.sendFunds(LUMAN.getAddress(), WAYNE.getAddress(), BigDecimal.ONE, KlayUnit.Unit.PEB, GAS_LIMIT).send();
         assertEquals("0x1", transactionReceipt.getStatus());
     }
 
     @Test
     public void testValueTransferFlow() {
         ValueTransfer valueTransfer = ValueTransfer.create(caver, transactionManager);
-        valueTransfer.sendFunds(LUMAN.getAddress(), WAYNE.getAddress(), BigDecimal.ONE, Convert.Unit.PEB, GAS_LIMIT).flowable()
+        valueTransfer.sendFunds(LUMAN.getAddress(), WAYNE.getAddress(), BigDecimal.ONE, KlayUnit.Unit.PEB, GAS_LIMIT).flowable()
                 .test()
                 .assertSubscribed()
                 .assertValue(receipt -> receipt.getStatus().equals("0x1"));
@@ -113,7 +113,7 @@ public class ManagedTransactionTest {
     @Test
     public void testValueTransferFuture() throws ExecutionException, InterruptedException {
         ValueTransfer valueTransfer = ValueTransfer.create(caver, transactionManager);
-        KlayTransactionReceipt.TransactionReceipt receipt = valueTransfer.sendFunds(LUMAN.getAddress(), WAYNE.getAddress(), BigDecimal.ONE, Convert.Unit.PEB, GAS_LIMIT).sendAsync().get();
+        KlayTransactionReceipt.TransactionReceipt receipt = valueTransfer.sendFunds(LUMAN.getAddress(), WAYNE.getAddress(), BigDecimal.ONE, KlayUnit.Unit.PEB, GAS_LIMIT).sendAsync().get();
         assertEquals("0x1", receipt.getStatus());
     }
 
@@ -125,7 +125,7 @@ public class ManagedTransactionTest {
                 BRANDON.getAddress(),
                 credentials.getAddress(),
                 BigDecimal.valueOf(0.2),
-                Convert.Unit.KLAY, GAS_LIMIT
+                KlayUnit.Unit.KLAY, GAS_LIMIT
         ).send();
 
         KlayCredentials updateCredential = KlayCredentials.create(Keys.createEcKeyPair());
@@ -142,7 +142,7 @@ public class ManagedTransactionTest {
                 BRANDON.getAddress(),
                 credentials.getAddress(),
                 BigDecimal.valueOf(0.2),
-                Convert.Unit.KLAY, GAS_LIMIT
+                KlayUnit.Unit.KLAY, GAS_LIMIT
         ).send();
 
         KlayCredentials updateCredential = KlayCredentials.create(Keys.createEcKeyPair());
@@ -161,7 +161,7 @@ public class ManagedTransactionTest {
                 BRANDON.getAddress(),
                 credentials.getAddress(),
                 BigDecimal.valueOf(0.2),
-                Convert.Unit.KLAY, GAS_LIMIT
+                KlayUnit.Unit.KLAY, GAS_LIMIT
         ).send();
 
         KlayCredentials updateCredential = KlayCredentials.create(Keys.createEcKeyPair());
@@ -228,7 +228,7 @@ public class ManagedTransactionTest {
                 .build();
 
         ValueTransfer valueTransfer = ValueTransfer.create(caver, transactionManager);
-        KlayTransactionReceipt.TransactionReceipt transactionReceipt = valueTransfer.sendFunds(LUMAN.getAddress(), BRANDON.getAddress(), BigDecimal.ONE, Convert.Unit.PEB, GAS_LIMIT).send();
+        KlayTransactionReceipt.TransactionReceipt transactionReceipt = valueTransfer.sendFunds(LUMAN.getAddress(), BRANDON.getAddress(), BigDecimal.ONE, KlayUnit.Unit.PEB, GAS_LIMIT).send();
         assertEquals("0x1", transactionReceipt.getStatus());
     }
 }

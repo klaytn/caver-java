@@ -25,15 +25,21 @@ import java.math.BigDecimal;
 /**
  * Klaytn unit conversion functions.
  */
-public final class Convert {
-    private Convert() { }
+public final class KlayUnit {
+    private KlayUnit() { }
 
+    public static BigDecimal fromPeb(double number, Unit unit) {return fromPeb(new BigDecimal(number), unit);}
+    
     public static BigDecimal fromPeb(String number, Unit unit) {
         return fromPeb(new BigDecimal(number), unit);
     }
 
     public static BigDecimal fromPeb(BigDecimal number, Unit unit) {
         return number.divide(unit.getpebFactor());
+    }
+
+    public static BigDecimal toPeb(double number, Unit unit) {
+        return toPeb(new BigDecimal(number), unit);
     }
 
     public static BigDecimal toPeb(String number, Unit unit) {

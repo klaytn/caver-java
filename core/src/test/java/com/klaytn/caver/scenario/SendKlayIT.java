@@ -21,7 +21,7 @@ import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.KlaySignTransaction;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.tx.type.TxTypeLegacyTransaction;
-import com.klaytn.caver.utils.Convert;
+import com.klaytn.caver.utils.KlayUnit;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -43,7 +43,7 @@ public class SendKlayIT extends Scenario {
     @Ignore
     public void testTransferKlay() throws Exception {
         BigInteger nonce = getNonce(LUMAN.getAddress());
-        BigInteger value = Convert.toPeb("0.5", Convert.Unit.KLAY).toBigInteger();
+        BigInteger value = KlayUnit.toPeb("0.5", KlayUnit.Unit.KLAY).toBigInteger();
 
         Boolean isUnlock = caver.klay().unlockAccount(LUMAN.getAddress(), "password", BigInteger.valueOf(10))
                 .send().getResult();
@@ -64,7 +64,7 @@ public class SendKlayIT extends Scenario {
     @Ignore
     public void testNodeSignedTransferKlay() throws Exception {
         BigInteger nonce = getNonce(LUMAN.getAddress());
-        BigInteger value = Convert.toPeb("0.5", Convert.Unit.KLAY).toBigInteger();
+        BigInteger value = KlayUnit.toPeb("0.5", KlayUnit.Unit.KLAY).toBigInteger();
 
         Boolean isUnlock = caver.klay().unlockAccount(LUMAN.getAddress(), "password", BigInteger.valueOf(0))
                 .send().getResult();
@@ -90,7 +90,7 @@ public class SendKlayIT extends Scenario {
         BigInteger balance = caver.klay().getBalance(
                 LUMAN.getAddress(),
                 DefaultBlockParameterName.LATEST).sendAsync().get().getValue();
-        assertTrue(balance.compareTo(Convert.toPeb("0.01", Convert.Unit.KLAY).toBigInteger()) > 0);
+        assertTrue(balance.compareTo(KlayUnit.toPeb("0.01", KlayUnit.Unit.KLAY).toBigInteger()) > 0);
 
         byte[] signedTransaction = tx.sign(LUMAN, LOCAL_CHAIN_ID).getValue();
         Bytes32 klaySendTransaction = caver.klay().sendSignedTransaction(Numeric.toHexString(signedTransaction)).sendAsync().get();
@@ -103,7 +103,7 @@ public class SendKlayIT extends Scenario {
     }
 
     private static TxTypeLegacyTransaction createKlayTransaction(BigInteger nonce, String toAddress) {
-        BigInteger value = Convert.toPeb("0.01", Convert.Unit.KLAY).toBigInteger();
+        BigInteger value = KlayUnit.toPeb("0.01", KlayUnit.Unit.KLAY).toBigInteger();
         return TxTypeLegacyTransaction.createTransaction(
                 nonce, GAS_PRICE, GAS_LIMIT, toAddress, value, "");
     }

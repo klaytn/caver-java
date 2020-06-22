@@ -18,7 +18,7 @@ package com.klaytn.caver.tx.model;
 
 import com.klaytn.caver.tx.exception.UnsupportedTxTypeException;
 import com.klaytn.caver.tx.type.TxType;
-import com.klaytn.caver.utils.Convert;
+import com.klaytn.caver.utils.KlayUnit;
 
 import java.math.BigInteger;
 
@@ -26,7 +26,7 @@ public abstract class TransactionTransformer<T extends TransactionTransformer> {
 
     private BigInteger nonce;
     private String from;
-    private BigInteger gasPrice = Convert.toPeb("25", Convert.Unit.STON).toBigInteger();
+    private BigInteger gasPrice = KlayUnit.toPeb("25", KlayUnit.Unit.STON).toBigInteger();
     private BigInteger gasLimit;
     protected boolean feeDelegate;
 

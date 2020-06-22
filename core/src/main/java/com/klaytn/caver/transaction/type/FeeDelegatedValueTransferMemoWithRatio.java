@@ -1,8 +1,7 @@
 package com.klaytn.caver.transaction.type;
 
 import com.klaytn.caver.Klay;
-import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
-import com.klaytn.caver.transaction.AbstractTransaction;
+import com.klaytn.caver.transaction.AbstractFeeDelegatedWithRatioTransaction;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.SignatureData;
@@ -16,10 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Represents a fee delegated smart contract execution transaction.
- * Please refer to https://docs.klaytn.com/klaytn/design/transactions/fee-delegation#txtypefeedelegatedsmartcontractexecution to see more detail.
+ * Represents a fee delegated value transfer memo with ratio transaction.
+ * Please refer to https://docs.klaytn.com/klaytn/design/transactions/partial-fee-delegation#txtypefeedelegatedvaluetransfermemowithratio to see more detail.
  */
-public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTransaction {
+public class FeeDelegatedValueTransferMemoWithRatio extends AbstractFeeDelegatedWithRatioTransaction {
 
     /**
      * The account address that will receive the transferred value.
@@ -29,23 +28,23 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
     /**
      * The amount of KLAY in peb to be transferred.
      */
-    String value = "0x00";
+    String value;
 
     /**
-     * Data attached to the transaction, used for transaction execution.
+     * Data attached to the transaction. The message should be passed to this attribute.
      */
     String input;
 
     /**
-     * FeeDelegatedSmartContractExecution Builder class
+     * FeeDelegatedValueTransferMemo Builder class
      */
-    public static class Builder extends AbstractFeeDelegatedTransaction.Builder<FeeDelegatedSmartContractExecution.Builder> {
+    public static class Builder extends AbstractFeeDelegatedWithRatioTransaction.Builder<FeeDelegatedValueTransferMemoWithRatio.Builder> {
         String to;
-        String value = "0x00";
+        String value;
         String input;
 
         public Builder() {
-            super(TransactionType.TxTypeSmartContractExecution.toString());
+            super(TransactionType.TxTypeFeeDelegatedValueTransferMemo.toString());
         }
 
         public Builder setTo(String to) {
@@ -59,8 +58,7 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
         }
 
         public Builder setValue(BigInteger value) {
-            this.value = Numeric.toHexStringWithPrefix(value);
-            return this;
+            return setValue(Numeric.toHexStringWithPrefix(value));
         }
 
         public Builder setInput(String input) {
@@ -68,16 +66,16 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
             return this;
         }
 
-        public FeeDelegatedSmartContractExecution build() {
-            return new FeeDelegatedSmartContractExecution(this);
+        public FeeDelegatedValueTransferMemoWithRatio build() {
+            return new FeeDelegatedValueTransferMemoWithRatio(this);
         }
     }
 
     /**
-     * Creates a FeeDelegatedSmartContractExecution instance
-     * @param builder FeeDelegatedSmartContractExecution.Builder instance.
+     * Creates a FeeDelegatedValueTransferMemoWithRatio instance.
+     * @param builder FeeDelegatedValueTransferMemoWithRatio.Builder instance.
      */
-    public FeeDelegatedSmartContractExecution(Builder builder) {
+    public FeeDelegatedValueTransferMemoWithRatio(Builder builder) {
         super(builder);
         setTo(builder.to);
         setValue(builder.value);
@@ -85,7 +83,7 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
     }
 
     /**
-     * Creates a FeeDelegatedSmartContractExecution instance.
+     * Creates a FeeDelegatedValueTransferMemoWithRatio instance.
      * @param klaytnCall Klay RPC instance
      * @param from The address of the sender.
      * @param nonce A value used to uniquely identify a sender’s transaction.
@@ -95,14 +93,15 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
      * @param signatures A sender signature list.
      * @param feePayer A fee payer address.
      * @param feePayerSignatures A fee payer signature list.
-     * @param to The account address that will receive the transferred value.
+     * @param feeRatio  A fee ratio of the fee payer.
+     * @param to The account adderss that will receive the transferred value.
      * @param value The amount of KLAY in peb to be transferred.
-     * @param input The data attached to the transaction, used for transaction execution.
+     * @param input The message data attached to the transaction.
      */
-    public FeeDelegatedSmartContractExecution(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures, String to, String value, String input) {
+    public FeeDelegatedValueTransferMemoWithRatio(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, String to, String value, String input) {
         super(
                 klaytnCall,
-                TransactionType.TxTypeFeeDelegatedSmartContractExecution.toString(),
+                TransactionType.TxTypeFeeDelegatedValueTransferMemo.toString(),
                 from,
                 nonce,
                 gas,
@@ -110,7 +109,8 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
                 chainId,
                 signatures,
                 feePayer,
-                feePayerSignatures
+                feePayerSignatures,
+                feeRatio
         );
         setTo(to);
         setValue(value);
@@ -118,23 +118,23 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
     }
 
     /**
-     * Decodes a RLP-encoded FeeDelegatedSmartContractExecution string.
-     * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractExecution string.
-     * @return FeeDelegatedSmartContractExecution
+     * Decodes a RLP-encoded FeeDelegatedValueTransferMemo string.
+     * @param rlpEncoded RLP-encoded FeeDelegatedValueTransferMemo string.
+     * @return FeeDelegatedValueTransferMemo
      */
-    public static FeeDelegatedSmartContractExecution decode(String rlpEncoded) {
+    public static FeeDelegatedValueTransferMemoWithRatio decode(String rlpEncoded) {
         return decode(Numeric.hexStringToByteArray(rlpEncoded));
     }
 
     /**
-     * Decodes a RLP-encoded FeeDelegatedSmartContractExecution string.
-     * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractExecution string.
-     * @return FeeDelegatedSmartContractExecution
+     * Decodes a RLP-encoded FeeDelegatedValueTransferMemo byte array.
+     * @param rlpEncoded RLP-encoded FeeDelegatedValueTransferMemo byte array.
+     * @return FeeDelegatedValueTransferMemo
      */
-    public static FeeDelegatedSmartContractExecution decode(byte[] rlpEncoded) {
-        //TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, txSignatures, feePayer, feePayerSignatures])
-        if(rlpEncoded[0] != (byte)TransactionType.TxTypeFeeDelegatedSmartContractExecution.getType()) {
-            throw new IllegalArgumentException("Invalid RLP-encoded tag - " + TransactionType.TxTypeFeeDelegatedSmartContractExecution.toString());
+    public static FeeDelegatedValueTransferMemoWithRatio decode(byte[] rlpEncoded) {
+        //TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, feeRatio, txSignatures, feePayer, feePayerSignatures])
+        if(rlpEncoded[0] != (byte)TransactionType.TxTypeFeeDelegatedValueTransferMemoWithRatio.getType()) {
+            throw new IllegalArgumentException("Invalid RLP-encoded tag - " + TransactionType.TxTypeFeeDelegatedValueTransferMemoWithRatio.toString());
         }
 
         //remove Tag
@@ -150,29 +150,31 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
         BigInteger value = ((RlpString) values.get(4)).asPositiveBigInteger();
         String from = ((RlpString) values.get(5)).asString();
         String input = ((RlpString) values.get(6)).asString();
+        BigInteger feeRatio = ((RlpString) values.get(7)).asPositiveBigInteger();
 
-        List<RlpType> senderSignatures = ((RlpList) (values.get(7))).getValues();
+        List<RlpType> senderSignatures = ((RlpList) (values.get(8))).getValues();
         List<SignatureData> senderSignList = SignatureData.decodeSignatures(senderSignatures);
 
-        String feePayer = ((RlpString) values.get(8)).asString();
+        String feePayer = ((RlpString) values.get(9)).asString();
 
-        List<RlpType> feePayerSignatures = ((RlpList) (values.get(9))).getValues();
+        List<RlpType> feePayerSignatures = ((RlpList) (values.get(10))).getValues();
         List<SignatureData> feePayerSignList = SignatureData.decodeSignatures(feePayerSignatures);
 
-        FeeDelegatedSmartContractExecution feeDelegatedSmartContractExecution = new FeeDelegatedSmartContractExecution.Builder()
+        FeeDelegatedValueTransferMemoWithRatio feeDelegatedValueTransferMemoWithRatio = new FeeDelegatedValueTransferMemoWithRatio.Builder()
                 .setNonce(nonce)
-                .setGas(gas)
                 .setGasPrice(gasPrice)
+                .setGas(gas)
                 .setTo(to)
                 .setValue(value)
                 .setFrom(from)
                 .setInput(input)
                 .setSignatures(senderSignList)
+                .setFeeRatio(feeRatio)
                 .setFeePayer(feePayer)
                 .setFeePayerSignatures(feePayerSignList)
                 .build();
 
-        return feeDelegatedSmartContractExecution;
+        return feeDelegatedValueTransferMemoWithRatio;
     }
 
     /**
@@ -181,8 +183,8 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
      */
     @Override
     public String getRLPEncoding() {
-        // type + encode([nonce, gasPrice, gas, to, value, from, input, txSignatures, feePayer, feePayerSignatures])
-        this.validateOptionalValues(false);
+        //TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, feeRatio, txSignatures, feePayer, feePayerSignatures])
+        this .validateOptionalValues(false);
 
         List<RlpType> senderSignatureRLPList = new ArrayList<>();
         List<RlpType> feePayerSignatureRLPList = new ArrayList<>();
@@ -203,12 +205,13 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getValue())));
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getFrom())));
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getInput())));
+        rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getFeeRatio())));
         rlpTypeList.add(new RlpList(senderSignatureRLPList));
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getFeePayer())));
         rlpTypeList.add(new RlpList(feePayerSignatureRLPList));
 
         byte[] encodedTransaction = RlpEncoder.encode(new RlpList(rlpTypeList));
-        byte[] type = new byte[] { (byte)TransactionType.TxTypeFeeDelegatedSmartContractExecution.getType() };
+        byte[] type = new byte[] { (byte)TransactionType.TxTypeFeeDelegatedValueTransferMemoWithRatio.getType() };
         byte[] rawTx = BytesUtils.concat(type, encodedTransaction);
 
         return Numeric.toHexString(rawTx);
@@ -220,11 +223,12 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
      */
     @Override
     public String getCommonRLPEncodingForSignature() {
-        //SigFeePayerRLP = encode([encode([type, nonce, gasPrice, gas, to, value, from, input]), feePayer, chainid, 0, 0])
-        // encode([type, nonce, gasPrice, gas, to, value, from, input])
+        //SigFeePayerRLP = encode([encode([type, nonce, gasPrice, gas, to, value, from, input, feeRatio]), feePayer, chainid, 0, 0])
+        //encode([type, nonce, gasPrice, gas, to, value, from, input, feeRatio])
         this.validateOptionalValues(true);
 
-        byte type = (byte)TransactionType.TxTypeFeeDelegatedSmartContractExecution.getType();
+        byte type = (byte)TransactionType.TxTypeFeeDelegatedValueTransferMemoWithRatio.getType();
+
         List<RlpType> rlpTypeList = new ArrayList<>();
         rlpTypeList.add(RlpString.create(type));
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getNonce())));
@@ -234,6 +238,7 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getValue())));
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getFrom())));
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getInput())));
+        rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getFeeRatio())));
 
         byte[] encoded = RlpEncoder.encode(new RlpList(rlpTypeList));
         String encodedStr = Numeric.toHexString(encoded);
@@ -247,8 +252,8 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
      */
     @Override
     public String getSenderTxHash() {
-        // SenderTxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, txSignatures])
-        // SenderTxHash = keccak256(SenderTxHashRLP)
+        //SenderTxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, feeRatio, txSignatures])
+        //SenderTxHash = keccak256(SenderTxHashRLP)
         this.validateOptionalValues(false);
 
         List<RlpType> senderSignatureRLPList = new ArrayList<>();
@@ -265,10 +270,11 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getValue())));
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getFrom())));
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getInput())));
+        rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getFeeRatio())));
         rlpTypeList.add(new RlpList(senderSignatureRLPList));
 
         byte[] encodedTransaction = RlpEncoder.encode(new RlpList(rlpTypeList));
-        byte[] type = new byte[] { (byte)TransactionType.TxTypeFeeDelegatedSmartContractExecution.getType() };
+        byte[] type = new byte[] { (byte)TransactionType.TxTypeFeeDelegatedValueTransferMemoWithRatio.getType() };
         byte[] rawTx = BytesUtils.concat(type, encodedTransaction);
 
         return Numeric.toHexString(Hash.sha3(rawTx));
@@ -276,19 +282,19 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
 
     /**
      * Check equals txObj passed parameter and Current instance.
-     * @param obj The AbstractFeeDelegatedTransaction Object to compare
+     * @param txObj The AbstractFeeDelegatedWithRatioTransaction Object to compare
      * @param checkSig Check whether signatures field is equal.
      * @return boolean
      */
     @Override
-    public boolean compareTxField(AbstractFeeDelegatedTransaction obj, boolean checkSig) {
-        if(!super.compareTxField(obj, checkSig)) return false;
-        if(!(obj instanceof FeeDelegatedSmartContractExecution)) return false;
-        FeeDelegatedSmartContractExecution txObj = (FeeDelegatedSmartContractExecution)obj;
+    public boolean compareTxField(AbstractFeeDelegatedWithRatioTransaction txObj, boolean checkSig) {
+        if(!super.compareTxField(txObj, checkSig)) return false;
+        if(!(txObj instanceof FeeDelegatedValueTransferMemoWithRatio)) return false;
+        FeeDelegatedValueTransferMemoWithRatio feeDelegatedValueTransferMemoWithRatio = (FeeDelegatedValueTransferMemoWithRatio)txObj;
 
-        if(!this.getTo().toLowerCase().equals(txObj.getTo().toLowerCase())) return false;
-        if(!Numeric.toBigInt(this.getValue()).equals(Numeric.toBigInt(txObj.getValue()))) return false;
-        if(!this.getInput().equals(txObj.getInput())) return false;
+        if(!this.getTo().toLowerCase().equals(feeDelegatedValueTransferMemoWithRatio.getTo().toLowerCase())) return false;
+        if(!Numeric.toBigInt(this.getValue()).equals(Numeric.toBigInt(feeDelegatedValueTransferMemoWithRatio.getValue()))) return false;
+        if(!this.getInput().equals(feeDelegatedValueTransferMemoWithRatio.getInput())) return false;
 
         return true;
     }
@@ -329,7 +335,6 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
         if(!Utils.isAddress(to)) {
             throw new IllegalArgumentException("Invalid address. : " + to);
         }
-
         this.to = to;
     }
 
@@ -345,13 +350,20 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
         if(!Utils.isNumber(value)) {
             throw new IllegalArgumentException("Invalid value : " + value);
         }
+        this.value = value;
+    }
 
-        this.value = Numeric.prependHexPrefix(value);
+    /**
+     * Setter function for value
+     * @param value The amount of KLAY in peb to be transferred.
+     */
+    public void setValue(BigInteger value) {
+        setValue(Numeric.toHexStringWithPrefix(value));
     }
 
     /**
      * Setter function for input
-     * @param input The data attached to the transaction, used for transaction execution.
+     * @param input Data attached to the transaction. The message should be passed to this attribute.
      */
     public void setInput(String input) {
         if(input == null) {

@@ -42,6 +42,12 @@ public class TransactionDecoder {
             return FeeDelegatedChainDataAnchoringWithRatio.decode(rlpBytes);
         } else if(rlpBytes[0] == TransactionType.TxTypeFeeDelegatedAccountUpdateWithRatio.getType()) {
             return FeeDelegatedAccountUpdateWithRatio.decode(rlpBytes);
+        } else if(rlpBytes[0] == TransactionType.TxTypeFeeDelegatedSmartContractExecutionWithRatio.getType()) {
+            return FeeDelegatedSmartContractExecutionWithRatio.decode(rlpBytes);
+        } else if(rlpBytes[0] == TransactionType.TxTypeFeeDelegatedValueTransferMemoWithRatio.getType()) {
+            return FeeDelegatedValueTransferMemoWithRatio.decode(rlpBytes);
+        } else if(rlpBytes[0] == TransactionType.TxTypeFeeDelegatedSmartContractDeployWithRatio.getType()) {
+            return FeeDelegatedSmartContractDeployWithRatio.decode(rlpBytes);
         }
         else {
             return LegacyTransaction.decode(rlpBytes);

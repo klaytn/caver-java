@@ -44,6 +44,8 @@ public class TransactionDecoder {
             return FeeDelegatedAccountUpdateWithRatio.decode(rlpBytes);
         } else if(rlpBytes[0] == TransactionType.TxTypeFeeDelegatedSmartContractExecutionWithRatio.getType()) {
             return FeeDelegatedSmartContractExecutionWithRatio.decode(rlpBytes);
+        } else if(rlpBytes[0] == TransactionType.TxTypeFeeDelegatedValueTransferMemoWithRatio.getType()) {
+            return FeeDelegatedValueTransferMemoWithRatio.decode(rlpBytes);
         } else if(rlpBytes[0] == TransactionType.TxTypeFeeDelegatedSmartContractDeployWithRatio.getType()) {
             return FeeDelegatedSmartContractDeployWithRatio.decode(rlpBytes);
         }

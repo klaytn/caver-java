@@ -78,7 +78,7 @@ abstract public class AbstractKeyring {
      * @return List
      */
     public List<SignatureData> sign(String txHash, String chainId, int role) {
-        if(Utils.isNumber(chainId)) throw new IllegalArgumentException("Invalid chainId : " + chainId);
+        if(!Utils.isNumber(chainId)) throw new IllegalArgumentException("Invalid chainId : " + chainId);
 
         return sign(txHash, Numeric.toBigInt(chainId).intValue(), role);
     }
@@ -92,7 +92,7 @@ abstract public class AbstractKeyring {
      * @return SignatureData
      */
     public SignatureData sign(String txHash, String chainId, int role, int index) {
-        if(Utils.isNumber(chainId)) throw new IllegalArgumentException("Invalid chainId : " + chainId);
+        if(!Utils.isNumber(chainId)) throw new IllegalArgumentException("Invalid chainId : " + chainId);
 
         return sign(txHash, Numeric.toBigInt(chainId).intValue(), role, index);
     }

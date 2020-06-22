@@ -1,14 +1,19 @@
 package com.klaytn.caver.wallet;
 
+import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
+import com.klaytn.caver.transaction.AbstractTransaction;
+import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.MessageSigned;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Represents a Keyring container which manages keyring
@@ -199,20 +204,119 @@ public class KeyringContainer {
         return keyring.signMessage(data, role, index);
     }
 
+    /**
+     * Signs the transaction using all keys in the Keyring instance corresponding to the address.
+     * @param address An address of keyring in KeyringContainer.
+     * @param transaction A transaction object.
+     * @return AbstractTransaction
+     * @throws IOException
+     */
+    public AbstractTransaction sign(String address, AbstractTransaction transaction) throws IOException {
+        return sign(address, transaction, TransactionHasher::getHashForSignature);
+    }
 
-//    public AbstractTransaction sign(String address, AbstractTransaction transaction) { }
-//
-//    public AbstractTransaction sign(String address, AbstractTransaction transaction, TransactionHasher hasher) { }
-//
-//    public AbstractTransaction sign(String address, AbstractTransaction transaction, int index) {}
-//
-//    public AbstractTransaction sign(String address, AbstractTransaction transaction, int index, TransactionHasher hasher) { }
-//
-//    public AbstractTransaction signAsFeePayer(String address, AbstractTransaction transaction) {}
-//
-//    public AbstractTransaction signAsFeePayer(String address, AbstractTransaction transaction, TransactionHasher hasher) {}
-//
-//    public AbstractTransaction signAsFeePayer(String address, AbstractTransaction transaction, int index) {}
-//
-//    public AbstractTransaction signAsFeePayer(String address, AbstractTransaction transaction, int index, TransactionHasher hasher) {}
+    /**
+     * Signs the transaction using all keys in the Keyring instance corresponding to the address.
+     * @param address An address of keyring in KeyringContainer.
+     * @param transaction A transaction object.
+     * @param hasher A function to return hash of transaction.
+     * @return AbstractTransaction
+     * @throws IOException
+     */
+    public AbstractTransaction sign(String address, AbstractTransaction transaction, Function<AbstractTransaction, String> hasher) throws  IOException{
+        AbstractKeyring keyring = this.getKeyring(address);
+        if(keyring == null) {
+            throw new NullPointerException("Failed to find keyring from wallet with address");
+        }
+
+        return transaction.sign(keyring, hasher);
+    }
+
+    /**
+     * Signs the transaction using one key in the keyring instance corresponding to the address.
+     * @param address An address of keyring in KeyringContainer.
+     * @param transaction A transaction object.
+     * @param index An index of key to use for signing.
+     * @return AbstractTransaction
+     * @throws IOException
+     */
+    public AbstractTransaction sign(String address, AbstractTransaction transaction, int index) throws IOException {
+        return sign(address, transaction, index, TransactionHasher::getHashForSignature);
+    }
+
+    /**
+     * Signs the transaction using one key in the keyring instance corresponding to the address.
+     * @param address An address of keyring in KeyringContainer.
+     * @param transaction A transaction object.
+     * @param index An index of key to use for signing.
+     * @param hasher A function to return hash of transaction.
+     * @return AbstractTransaction
+     * @throws IOException
+     */
+    public AbstractTransaction sign(String address, AbstractTransaction transaction, int index, Function<AbstractTransaction, String> hasher) throws IOException {
+        AbstractKeyring keyring = this.getKeyring(address);
+        if(keyring == null) {
+            throw new NullPointerException("Failed to find keyring from wallet with address");
+        }
+
+        return transaction.sign(keyring, index, hasher);
+    }
+
+    /**
+     * Signs the FeeDelegatedTransaction using all keys in the keyring instance corresponding to the address.
+     * @param address An address of keyring in KeyringContainer.
+     * @param transaction A FeeDelegatedTransaction object.
+     * @return AbstractFeeDelegatedTransaction
+     * @throws IOException
+     */
+    public AbstractFeeDelegatedTransaction signAsFeePayer(String address, AbstractFeeDelegatedTransaction transaction) throws IOException {
+        return signAsFeePayer(address, transaction, TransactionHasher::getHashForFeePayerSignature);
+    }
+
+    /**
+     * Signs the FeeDelegatedTransaction using all keys in the keyring instance corresponding to the address.
+     * @param address An address of keyring in KeyringContainer.
+     * @param transaction A FeeDelegatedTransaction object.
+     * @param hasher A function to return hash of transaction.
+     * @return AbstractFeeDelegatedTransaction
+     * @throws IOException
+     */
+    public AbstractFeeDelegatedTransaction signAsFeePayer(String address, AbstractFeeDelegatedTransaction transaction, Function<AbstractFeeDelegatedTransaction, String> hasher) throws IOException {
+        AbstractKeyring keyring = this.getKeyring(address);
+        if(keyring == null) {
+            throw new NullPointerException("Failed to find keyring from wallet with address");
+        }
+
+        return transaction.signAsFeePayer(keyring, hasher);
+    }
+
+    /**
+     * Signs the FeeDelegatedTransaction using one key in the keyring corresponding to the address.
+     * @param address An address of keyring in KeyringContainer.
+     * @param transaction A FeeDelegatedTransaction object.
+     * @param index An index of key to use for signing.
+     * @return AbstractFeeDelegatedTransaction
+     * @throws IOException
+     */
+    public AbstractFeeDelegatedTransaction signAsFeePayer(String address, AbstractFeeDelegatedTransaction transaction, int index) throws IOException {
+        return signAsFeePayer(address, transaction, index, TransactionHasher::getHashForFeePayerSignature);
+    }
+
+    /**
+     * Signs the FeeDelegatedTransaction using one key in the keyring corresponding to the address.
+     * @param address An address of keyring in KeyringContainer.
+     * @param transaction A FeeDelegatedTransaction object.
+     * @param index An index of key to user for signing
+     * @param hasher A function to return hash of transaction.
+     * @return AbstractFeeDelegatedTransaction
+     * @throws IOException
+     */
+    public AbstractFeeDelegatedTransaction signAsFeePayer(String address, AbstractFeeDelegatedTransaction transaction, int index, Function<AbstractFeeDelegatedTransaction, String> hasher) throws IOException {
+        AbstractKeyring keyring = this.getKeyring(address);
+        if(keyring == null) {
+            throw new NullPointerException("Failed to find keyring from wallet with address");
+        }
+
+        return transaction.signAsFeePayer(keyring, index, hasher);
+    }
 }

@@ -1,5 +1,12 @@
 package com.klaytn.caver.common;
 
+import com.klaytn.caver.account.AccountKeyRoleBased;
+import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
+import com.klaytn.caver.transaction.AbstractTransaction;
+import com.klaytn.caver.transaction.TransactionHasher;
+import com.klaytn.caver.transaction.type.AccountUpdate;
+import com.klaytn.caver.transaction.type.FeeDelegatedValueTransfer;
+import com.klaytn.caver.transaction.type.ValueTransfer;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.KeyringContainer;
 import com.klaytn.caver.wallet.keyring.*;
@@ -9,6 +16,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -60,6 +68,43 @@ public class KeyringContainerTest {
             }
         }
     }
+
+    static ValueTransfer generateValueTransfer(AbstractKeyring keyring) {
+        return new ValueTransfer.Builder()
+                .setFrom(keyring.getAddress())
+                .setTo(keyring.getAddress())
+                .setValue("0x1")
+                .setChainId("0x7e3")
+                .setNonce("0x0")
+                .setGas("0x15f90")
+                .setGasPrice("0x5d21dba00")
+                .build();
+    }
+
+    static FeeDelegatedValueTransfer generateFeeDelegatedValueTransfer(AbstractKeyring keyring) {
+        return new FeeDelegatedValueTransfer.Builder()
+                .setFrom(keyring.getAddress())
+                .setTo(keyring.getAddress())
+                .setValue("0x1")
+                .setChainId("0x7e3")
+                .setNonce("0x0")
+                .setGas("0x15f90")
+                .setGasPrice("0x5d21dba00")
+                .build();
+    }
+
+    static AccountUpdate generateAccountUpdate(RoleBasedKeyring keyring) {
+        return new AccountUpdate.Builder()
+                .setFrom(keyring.getAddress())
+                .setAccount(keyring.toAccount())
+                .setChainId("0x7E3")
+                .setNonce("0x0")
+                .setGas("0x15f90")
+                .setGasPrice("0x5d21dba00")
+                .build();
+    }
+
+
 
     public static class generateTest {
         public void checkAddress(List<String> expectedAddress, KeyringContainer container) {
@@ -548,5 +593,316 @@ public class KeyringContainerTest {
             assertEquals(expectedData.getSignatures().get(0).getS(), actualData.getSignatures().get(0).getS());
             assertEquals(expectedData.getSignatures().get(0).getV(), actualData.getSignatures().get(0).getV());
         }
+    }
+
+    public static class signTest {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        @Test
+        public void sign_withIndex_singleKeyring() throws IOException {
+            KeyringContainer container = new KeyringContainer();
+            SingleKeyring singleKeyring = KeyringFactory.generate();
+
+            container.add(singleKeyring);
+            ValueTransfer valueTransfer = generateValueTransfer(singleKeyring);
+
+            container.sign(singleKeyring.getAddress(), valueTransfer, 0);
+            SignatureData expectedSig = singleKeyring.sign(TransactionHasher.getHashForSignature(valueTransfer), valueTransfer.getChainId(), 0, 0);
+
+            assertEquals(1, valueTransfer.getSignatures().size());
+            assertEquals(expectedSig, valueTransfer.getSignatures().get(0));
+        }
+
+        @Test
+        public void sign_withIndex_multipleKeyring() throws IOException {
+            KeyringContainer container = new KeyringContainer();
+
+            String address = PrivateKey.generate().getDerivedAddress();
+            String[] multipleKey = KeyringFactory.generateMultipleKeys(3);
+            MultipleKeyring multipleKeyring = KeyringFactory.createWithMultipleKey(address, multipleKey);
+
+            ValueTransfer valueTransfer = generateValueTransfer(multipleKeyring);
+
+            AbstractKeyring keyring = container.add(multipleKeyring);
+            container.sign(multipleKeyring.getAddress(), valueTransfer, 1);
+
+            SignatureData expectedSig = keyring.sign(TransactionHasher.getHashForSignature(valueTransfer), valueTransfer.getChainId(), 0, 1);
+
+            assertEquals(1, valueTransfer.getSignatures().size());
+            assertEquals(expectedSig, valueTransfer.getSignatures().get(0));
+        }
+
+        @Test
+        public void sign_withIndex_roleBasedKeyring() throws IOException {
+            KeyringContainer container = new KeyringContainer();
+
+            String address = PrivateKey.generate().getDerivedAddress();
+            List<String[]> roleBasedKey = KeyringFactory.generateRoleBasedKeys(new int[]{4,5,6}, "entropy");
+            RoleBasedKeyring roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(address, roleBasedKey);
+
+            ValueTransfer valueTransfer = generateValueTransfer(roleBasedKeyring);
+
+            AbstractKeyring keyring = container.add(roleBasedKeyring);
+            container.sign(keyring.getAddress(), valueTransfer, 2);
+
+            SignatureData expectedSig = keyring.sign(TransactionHasher.getHashForSignature(valueTransfer), valueTransfer.getChainId(), 0, 2);
+
+            assertEquals(1, valueTransfer.getSignatures().size());
+            assertEquals(expectedSig, valueTransfer.getSignatures().get(0));
+        }
+
+        @Test
+        public void sign_withIndex_accountUpdate() throws IOException {
+            KeyringContainer container = new KeyringContainer();
+
+            String address = PrivateKey.generate().getDerivedAddress();
+            List<String[]> roleBasedKey = KeyringFactory.generateRoleBasedKeys(new int[]{4,5,6}, "entropy");
+            RoleBasedKeyring roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(address, roleBasedKey);
+
+            AccountUpdate accountUpdate = generateAccountUpdate(roleBasedKeyring);
+            AbstractKeyring keyring = container.add(roleBasedKeyring);
+            container.sign(keyring.getAddress(), accountUpdate, 2);
+
+            SignatureData expectedSig = roleBasedKeyring.sign(TransactionHasher.getHashForSignature(accountUpdate), accountUpdate.getChainId(), 1, 2);
+
+            assertEquals(1, accountUpdate.getSignatures().size());
+            assertEquals(expectedSig, accountUpdate.getSignatures().get(0));
+        }
+
+        @Test
+        public void throwException_withIndex_notExistedKeyring() throws IOException {
+            expectedException.expect(NullPointerException.class);
+            expectedException.expectMessage("Failed to find keyring from wallet with address");
+
+            KeyringContainer container = new KeyringContainer();
+
+            String address = "0x1234567890123456789012345678901234567890";
+
+            ValueTransfer valueTransfer = generateValueTransfer(KeyringFactory.generate());
+            container.sign(address, valueTransfer, 0);
+        }
+
+        @Test
+        public void sign_singleKeyring() throws IOException {
+            KeyringContainer container = new KeyringContainer();
+            AbstractKeyring keyring = container.add(KeyringFactory.generate());
+
+            ValueTransfer valueTransfer = generateValueTransfer(keyring);
+            container.sign(keyring.getAddress(), valueTransfer);
+
+            assertEquals(1, valueTransfer.getSignatures().size());
+        }
+
+        @Test
+        public void sign_multipleKeyring() throws IOException {
+            String address = PrivateKey.generate().getDerivedAddress();
+            String[] multipleKey = KeyringFactory.generateMultipleKeys(3);
+            MultipleKeyring multipleKeyring = KeyringFactory.createWithMultipleKey(address, multipleKey);
+
+            KeyringContainer container = new KeyringContainer();
+            AbstractKeyring keyring = container.add(multipleKeyring);
+
+
+            ValueTransfer valueTransfer = generateValueTransfer(keyring);
+            container.sign(keyring.getAddress(), valueTransfer);
+
+            assertEquals(3, valueTransfer.getSignatures().size());
+        }
+
+        @Test
+        public void sign_roleBasedKeyring() throws IOException {
+            String address = PrivateKey.generate().getDerivedAddress();
+            List<String[]> roleBasedKey = KeyringFactory.generateRoleBasedKeys(new int[]{4,5,6}, "entropy");
+            RoleBasedKeyring roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(address, roleBasedKey);
+
+            KeyringContainer container = new KeyringContainer();
+            AbstractKeyring keyring = container.add(roleBasedKeyring);
+
+            ValueTransfer valueTransfer = generateValueTransfer(keyring);
+            container.sign(keyring.getAddress(), valueTransfer);
+
+            assertEquals(4, valueTransfer.getSignatures().size());
+        }
+
+        @Test
+        public void sign_customHasher() throws IOException {
+            KeyringContainer container = new KeyringContainer();
+            AbstractKeyring keyring = container.add(KeyringFactory.generate());
+
+            ValueTransfer valueTransfer = generateValueTransfer(keyring);
+            container.sign(keyring.getAddress(), valueTransfer, (AbstractTransaction tx) -> {
+                return "0xd4aab6590bdb708d1d3eafe95a967dafcd2d7cde197e512f3f0b8158e7b65fd1";
+            });
+
+            List<SignatureData> expected = keyring.sign("0xd4aab6590bdb708d1d3eafe95a967dafcd2d7cde197e512f3f0b8158e7b65fd1", valueTransfer.getChainId(), AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+            assertEquals(expected.get(0), valueTransfer.getSignatures().get(0));
+        }
+
+        @Test
+        public void sign_AccountUpdateTx() throws IOException {
+            KeyringContainer container = new KeyringContainer();
+
+            String address = PrivateKey.generate().getDerivedAddress();
+            List<String[]> roleBasedKey = KeyringFactory.generateRoleBasedKeys(new int[]{4,5,6}, "entropy");
+            RoleBasedKeyring roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(address, roleBasedKey);
+
+            container.add(roleBasedKeyring);
+            AccountUpdate tx = generateAccountUpdate(roleBasedKeyring);
+
+            container.sign(address, tx);
+            assertEquals(5, tx.getSignatures().size());
+        }
+
+        @Test
+        public void throwException_notExistKeyring() throws IOException {
+            expectedException.expect(NullPointerException.class);
+            expectedException.expectMessage("Failed to find keyring from wallet with address");
+
+            KeyringContainer container = new KeyringContainer();
+            String address = "0x1234567890123456789012345678901234567890";
+
+            ValueTransfer valueTransfer = generateValueTransfer(KeyringFactory.generate());
+            container.sign(address, valueTransfer);
+        }
+    }
+
+    public static class signAsFeePayerTest {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        @Test
+        public void signAsFeePayer_withIndex_singleKeyring() throws IOException {
+            KeyringContainer container = new KeyringContainer();
+            SingleKeyring singleKeyring = KeyringFactory.generate();
+
+            container.add(singleKeyring);
+            FeeDelegatedValueTransfer feeDelegatedValueTransfer = generateFeeDelegatedValueTransfer(singleKeyring);
+
+            container.signAsFeePayer(singleKeyring.getAddress(), feeDelegatedValueTransfer, 0);
+            SignatureData expectedSig = singleKeyring.sign(TransactionHasher.getHashForFeePayerSignature(feeDelegatedValueTransfer), feeDelegatedValueTransfer.getChainId(), 2, 0);
+
+            assertEquals(1, feeDelegatedValueTransfer.getFeePayerSignatures().size());
+            assertEquals(expectedSig, feeDelegatedValueTransfer.getFeePayerSignatures().get(0));
+        }
+
+        @Test
+        public void signAsFeePayer_withIndex_multipleKeyring() throws IOException {
+            KeyringContainer container = new KeyringContainer();
+
+            String address = PrivateKey.generate().getDerivedAddress();
+            String[] multipleKey = KeyringFactory.generateMultipleKeys(3);
+            MultipleKeyring multipleKeyring = KeyringFactory.createWithMultipleKey(address, multipleKey);
+
+            FeeDelegatedValueTransfer feeDelegatedValueTransfer = generateFeeDelegatedValueTransfer(multipleKeyring);
+
+            AbstractKeyring keyring = container.add(multipleKeyring);
+            container.signAsFeePayer(keyring.getAddress(), feeDelegatedValueTransfer, 1);
+
+            SignatureData expectedSig = keyring.sign(TransactionHasher.getHashForFeePayerSignature(feeDelegatedValueTransfer), feeDelegatedValueTransfer.getChainId(), 2, 1);
+
+            assertEquals(1, feeDelegatedValueTransfer.getFeePayerSignatures().size());
+            assertEquals(expectedSig, feeDelegatedValueTransfer.getFeePayerSignatures().get(0));
+        }
+
+        @Test
+        public void signAsFeePayer_withIndex_roleBasedKeyring() throws IOException {
+            KeyringContainer container = new KeyringContainer();
+
+            String address = PrivateKey.generate().getDerivedAddress();
+            List<String[]> roleBasedKey = KeyringFactory.generateRoleBasedKeys(new int[]{4,5,6}, "entropy");
+            RoleBasedKeyring roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(address, roleBasedKey);
+
+            FeeDelegatedValueTransfer feeDelegatedValueTransfer = generateFeeDelegatedValueTransfer(roleBasedKeyring);
+
+            AbstractKeyring keyring = container.add(roleBasedKeyring);
+            container.signAsFeePayer(keyring.getAddress(), feeDelegatedValueTransfer, 1);
+
+            SignatureData expectedSig = keyring.sign(TransactionHasher.getHashForFeePayerSignature(feeDelegatedValueTransfer), feeDelegatedValueTransfer.getChainId(), 2, 1);
+
+            assertEquals(1, feeDelegatedValueTransfer.getFeePayerSignatures().size());
+            assertEquals(expectedSig, feeDelegatedValueTransfer.getFeePayerSignatures().get(0));
+        }
+
+        @Test
+        public void throwException_withIndex_notExistedKeyring() throws IOException {
+            expectedException.expect(NullPointerException.class);
+            expectedException.expectMessage("Failed to find keyring from wallet with address");
+
+            KeyringContainer container = new KeyringContainer();
+
+            String address = "0x1234567890123456789012345678901234567890";
+
+            FeeDelegatedValueTransfer feeDelegatedValueTransfer = generateFeeDelegatedValueTransfer(KeyringFactory.generate());
+            container.signAsFeePayer(address, feeDelegatedValueTransfer, 0);
+        }
+
+        @Test
+        public void signAsFeePayer_singleKeyring() throws IOException {
+            KeyringContainer container = new KeyringContainer();
+            AbstractKeyring keyring = container.add(KeyringFactory.generate());
+
+            FeeDelegatedValueTransfer valueTransfer = generateFeeDelegatedValueTransfer(keyring);
+            container.signAsFeePayer(keyring.getAddress(), valueTransfer);
+
+            assertEquals(1, valueTransfer.getSignatures().size());
+        }
+
+        @Test
+        public void signAsFeePayer_multipleKeyring() throws IOException {
+            String address = PrivateKey.generate().getDerivedAddress();
+            String[] multipleKey = KeyringFactory.generateMultipleKeys(3);
+            MultipleKeyring multipleKeyring = KeyringFactory.createWithMultipleKey(address, multipleKey);
+
+            KeyringContainer container = new KeyringContainer();
+            AbstractKeyring keyring = container.add(multipleKeyring);
+
+            FeeDelegatedValueTransfer valueTransfer = generateFeeDelegatedValueTransfer(keyring);
+            container.signAsFeePayer(keyring.getAddress(), valueTransfer);
+
+            assertEquals(3, valueTransfer.getFeePayerSignatures().size());
+        }
+
+        @Test
+        public void signAsFeePayer_roleBasedKeyring() throws IOException {
+            String address = PrivateKey.generate().getDerivedAddress();
+            List<String[]> roleBasedKey = KeyringFactory.generateRoleBasedKeys(new int[]{4,5,6}, "entropy");
+            RoleBasedKeyring roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(address, roleBasedKey);
+
+            KeyringContainer container = new KeyringContainer();
+            AbstractKeyring keyring = container.add(roleBasedKeyring);
+
+            FeeDelegatedValueTransfer valueTransfer = generateFeeDelegatedValueTransfer(keyring);
+            container.signAsFeePayer(keyring.getAddress(), valueTransfer);
+
+            assertEquals(6, valueTransfer.getFeePayerSignatures().size());
+        }
+
+        @Test
+        public void signAsFeePayer_customHasher() throws IOException {
+            KeyringContainer container = new KeyringContainer();
+            AbstractKeyring keyring = container.add(KeyringFactory.generate());
+
+            FeeDelegatedValueTransfer valueTransfer = generateFeeDelegatedValueTransfer(keyring);
+            container.signAsFeePayer(keyring.getAddress(), valueTransfer, (AbstractFeeDelegatedTransaction tx) -> {
+                return "0xd4aab6590bdb708d1d3eafe95a967dafcd2d7cde197e512f3f0b8158e7b65fd1";
+            });
+
+            List<SignatureData> expected = keyring.sign("0xd4aab6590bdb708d1d3eafe95a967dafcd2d7cde197e512f3f0b8158e7b65fd1", valueTransfer.getChainId(), AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex());
+            assertEquals(expected.get(0), valueTransfer.getFeePayerSignatures().get(0));
+        }
+
+        @Test
+        public void throwException_notExistKeyring() throws IOException {
+            expectedException.expect(NullPointerException.class);
+            expectedException.expectMessage("Failed to find keyring from wallet with address");
+
+            KeyringContainer container = new KeyringContainer();
+            String address = "0x1234567890123456789012345678901234567890";
+
+            ValueTransfer valueTransfer = generateValueTransfer(KeyringFactory.generate());
+            container.sign(address, valueTransfer);
+        }
+
     }
 }

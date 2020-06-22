@@ -258,7 +258,7 @@ abstract public class AbstractTransaction {
         }
 
         this.fillTransaction();
-        int role = this.type.startsWith("AccountUpdate") ? AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex() : AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex();
+        int role = this.type.contains("AccountUpdate") ? AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex() : AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex();
 
         String hash = signer.apply(this);
         List<SignatureData> sigList = keyring.sign(hash, Numeric.toBigInt(this.chainId).intValue(), role);

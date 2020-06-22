@@ -107,18 +107,18 @@ public class FeeDelegatedValueTransferWithRatio extends AbstractFeeDelegatedWith
     }
 
     /**
-     * Decodes a RLP-encoded FeeDelegatedSmartContractExecutionWithRatio string.
-     * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractExecutionWithRatio string.
-     * @return FeeDelegatedSmartContractExecutionWithRatio
+     * Decodes a RLP-encoded FeeDelegatedValueTransferWithRatio string.
+     * @param rlpEncoded RLP-encoded FeeDelegatedValueTransferWithRatio string.
+     * @return FeeDelegatedValueTransferWithRatio
      */
     public static FeeDelegatedValueTransferWithRatio decode(String rlpEncoded) {
         return decode(Numeric.hexStringToByteArray(rlpEncoded));
     }
 
     /**
-     * Decodes a RLP-encoded FeeDelegatedSmartContractExecutionWithRatio string.
-     * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractExecutionWithRatio string.
-     * @return FeeDelegatedSmartContractExecutionWithRatio
+     * Decodes a RLP-encoded FeeDelegatedValueTransferWithRatio string.
+     * @param rlpEncoded RLP-encoded FeeDelegatedValueTransferWithRatio string.
+     * @return FeeDelegatedValueTransferWithRatio
      */
     public static FeeDelegatedValueTransferWithRatio decode(byte[] rlpEncoded) {
         //TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, feeRatio, txSignatures, feePayer, feePayerSignatures])

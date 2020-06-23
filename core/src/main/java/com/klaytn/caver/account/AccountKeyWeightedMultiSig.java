@@ -1,7 +1,7 @@
 package com.klaytn.caver.account;
 
-import com.klaytn.caver.utils.AccountKeyPublicUtils;
 import com.klaytn.caver.utils.BytesUtils;
+import com.klaytn.caver.utils.Utils;
 import org.web3j.rlp.*;
 import org.web3j.utils.Numeric;
 
@@ -134,7 +134,7 @@ public class AccountKeyWeightedMultiSig implements IAccountKey {
             List<RlpType> rlpWeightedPublicKey = new ArrayList<>();
 
             BigInteger weight = item.weight;
-            String compressedKey = AccountKeyPublicUtils.compressPublicKey(item.getPublicKey());
+            String compressedKey = Utils.compressPublicKey(item.getPublicKey());
             rlpWeightedPublicKey.addAll(Arrays.asList(
                     RlpString.create(weight),
                     RlpString.create(Numeric.hexStringToByteArray(compressedKey))

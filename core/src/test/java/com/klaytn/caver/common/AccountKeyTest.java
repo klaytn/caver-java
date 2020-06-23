@@ -2,6 +2,7 @@ package com.klaytn.caver.common;
 
 import com.klaytn.caver.account.*;
 import com.klaytn.caver.utils.AccountKeyPublicUtils;
+import com.klaytn.caver.utils.Utils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -307,7 +308,7 @@ public class AccountKeyTest {
 
                 String publicKey = actualAccount.getWeightedPublicKeys().get(i).getPublicKey();
                 if(AccountKeyPublicUtils.isCompressedPublicKey(publicKey)) {
-                    publicKey = AccountKeyPublicUtils.decompressPublicKey(publicKey);
+                    publicKey = Utils.decompressPublicKey(publicKey);
                 }
                 assertEquals(expectedPublicKey[i], publicKey);
             }
@@ -527,8 +528,8 @@ public class AccountKeyTest {
         }
 
         public void checkPublicKey(String expected, String actual) {
-            expected = AccountKeyPublicUtils.compressPublicKey(expected);
-            actual = AccountKeyPublicUtils.compressPublicKey(actual);
+            expected = Utils.compressPublicKey(expected);
+            actual = Utils.compressPublicKey(actual);
 
             expected = Numeric.cleanHexPrefix(expected);
             actual = Numeric.cleanHexPrefix(actual);

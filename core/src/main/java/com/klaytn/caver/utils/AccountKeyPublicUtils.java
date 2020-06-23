@@ -73,7 +73,7 @@ public class AccountKeyPublicUtils {
      */
     public static ECPoint getECPoint(String key) {
         if(isUncompressedPublicKey(key)) {
-            key = compressPublicKey(key);
+            key = Utils.compressPublicKey(key);
         }
 
         String noPrefixPublicKey = Numeric.cleanHexPrefix(key);
@@ -150,7 +150,7 @@ public class AccountKeyPublicUtils {
             String x = noPrefixKey.substring(0, 64);
             String y = noPrefixKey.substring(64);
 
-            if(validateXYPoint(x, y)) {
+            if(!validateXYPoint(x, y)) {
                 throw new RuntimeException("Invalid public key.");
             }
             return true;
@@ -158,69 +158,4 @@ public class AccountKeyPublicUtils {
         return false;
     }
 
-    /**
-     * Check if th given public key is valid.
-     * It also check both compressed and uncompressed key.
-     * @param publicKey public key
-     * @return valid or not
-     */
-    public static boolean isValidPublicKey(String publicKey) {
-        String noPrefixPubKey = Numeric.cleanHexPrefix(publicKey);
-        ECPoint point = null;
-        boolean result;
-        if(noPrefixPubKey.length() != 66 && noPrefixPubKey.length() != 128) {
-            return false;
-        }
-
-        //Compressed Format
-        if(noPrefixPubKey.length() == 66) {
-                if(!noPrefixPubKey.startsWith("02") && !noPrefixPubKey.startsWith("03")) {
-                return false;
-            }
-            result = validateXYPoint(publicKey);
-        } else { // Decompressed Format
-            String x = noPrefixPubKey.substring(0, 64);
-            String y = noPrefixPubKey.substring(64);
-
-            result = validateXYPoint(x, y);
-        }
-
-        return result;
-    }
-
-    /**
-     * Convert a compressed public key to an uncompressed format.
-     * Given public key has already uncompressed format, it will return
-     * @param compressedPublicKey public key string(uncompressed or compressed)
-     * @return uncompressed public key string
-     */
-    public static String decompressPublicKey(String compressedPublicKey) {
-        if(isUncompressedPublicKey(compressedPublicKey)) {
-            return compressedPublicKey;
-        }
-
-        ECPoint ecPoint = getECPoint(compressedPublicKey);
-        String pointXY = Numeric.toHexStringWithPrefixZeroPadded(ecPoint.getAffineXCoord().toBigInteger(), 64) +
-                Numeric.toHexStringNoPrefixZeroPadded(ecPoint.getAffineYCoord().toBigInteger(), 64);
-        return pointXY;
-    }
-
-    /**
-     * Convert an uncompressed public key to a compressed public key
-     * Given public key has already compressed format, it will return.
-     * @param publicKey public key string(uncompressed or compressed)
-     * @return compressed public key
-     */
-    public static String compressPublicKey(String publicKey) {
-        if(isCompressedPublicKey(publicKey)){
-            return publicKey;
-        }
-
-        BigInteger publicKeyBN = Numeric.toBigInt(publicKey);
-        String noPrefixKey = Numeric.cleanHexPrefix(publicKey);
-
-        String publicKeyX = noPrefixKey.substring(0, 64);
-        String pubKeyYPrefix = publicKeyBN.testBit(0) ? "03" : "02";
-        return pubKeyYPrefix + publicKeyX;
-    }
 }

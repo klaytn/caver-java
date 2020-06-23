@@ -1,6 +1,5 @@
 package com.klaytn.caver.utils;
 
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.bouncycastle.math.ec.ECPoint;
 import org.web3j.crypto.ECDSASignature;
@@ -9,27 +8,21 @@ import org.web3j.crypto.Keys;
 import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.SignatureException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
 public class Utils {
-    public static final int LENGTH_ADDRESS_String = 40;
+    public static final int LENGTH_ADDRESS_STRING = 40;
     public static final int LENGTH_PRIVATE_KEY_STRING = 64;
-    private static final Pattern HEX_STRING = Pattern.compile("^[0-9A-Fa-f]*$");
 
-    public static boolean isValidPrivateKey(String privateKey) {
-        String noHexPrefixKey = Numeric.cleanHexPrefix(privateKey);
-        if(noHexPrefixKey.length() != LENGTH_PRIVATE_KEY_STRING && HEX_STRING.matcher(noHexPrefixKey).matches()) {
-            return false;
-        }
-
-        ECPoint point = Sign.publicPointFromPrivate(Numeric.toBigInt(privateKey));
-        return point.isValid();
-    }
-
+    /**
+     * Check if string has address format.
+     * @param input An address string.
+     * @return boolean
+     */
     public static boolean isAddress(String input) {
         String cleanInput = Numeric.cleanHexPrefix(input);
 
@@ -39,30 +32,29 @@ public class Utils {
             return false;
         }
 
-        return cleanInput.length() == LENGTH_ADDRESS_String && HEX_STRING.matcher(cleanInput).matches();
+        return cleanInput.length() == LENGTH_ADDRESS_STRING && isHex(input);
     }
 
-    public static boolean isHex(String input) {
-        String cleanInput = Numeric.cleanHexPrefix(input);
-
-        return HEX_STRING.matcher(cleanInput).matches();
-    }
-
-    public static boolean isHexStrict(String input) {
-        String cleanInput = Numeric.cleanHexPrefix(input);
-
-        return input.startsWith("0x") && HEX_STRING.matcher(cleanInput).matches();
-    }
-
-    public static boolean isNumber(String input) {
-        try {
-            Numeric.toBigInt(input);
-        } catch (NumberFormatException e) {
+    /**
+     * Check if string has PrivateKey format.
+     * @param privateKey A key string.
+     * @return boolean
+     */
+    public static boolean isValidPrivateKey(String privateKey) {
+        String noHexPrefixKey = Numeric.cleanHexPrefix(privateKey);
+        if(noHexPrefixKey.length() != LENGTH_PRIVATE_KEY_STRING && isHex(privateKey)) {
             return false;
         }
-        return true;
+
+        ECPoint point = Sign.publicPointFromPrivate(Numeric.toBigInt(privateKey));
+        return point.isValid();
     }
 
+    /**
+     * Check if string has Klaytn wallet key format.
+     * @param key A key string.
+     * @return boolean
+     */
     public static boolean isKlaytnWalletKey(String key) {
         //0x{private key}0x{type}0x{address in hex}
         //[0] = privateKey
@@ -89,6 +81,89 @@ public class Utils {
         return true;
     }
 
+    /**
+     * Check if the given public key is valid.
+     * It also check both compressed and uncompressed key.
+     * @param publicKey public key
+     * @return valid or not
+     */
+    public static boolean isValidPublicKey(String publicKey) {
+        String noPrefixPubKey = Numeric.cleanHexPrefix(publicKey);
+        ECPoint point = null;
+        boolean result;
+        if(noPrefixPubKey.length() != 66 && noPrefixPubKey.length() != 128) {
+            return false;
+        }
+
+        //Compressed Format
+        if(noPrefixPubKey.length() == 66) {
+            if(!noPrefixPubKey.startsWith("02") && !noPrefixPubKey.startsWith("03")) {
+                return false;
+            }
+            result = AccountKeyPublicUtils.validateXYPoint(publicKey);
+        } else { // Decompressed Format
+            String x = noPrefixPubKey.substring(0, 64);
+            String y = noPrefixPubKey.substring(64);
+
+            result = AccountKeyPublicUtils.validateXYPoint(x, y);
+        }
+
+        return result;
+    }
+
+    /**
+     * Convert a compressed public key to an uncompressed format.
+     * Given public key has already uncompressed format, it will return
+     * @param compressedPublicKey public key string(uncompressed or compressed)
+     * @return uncompressed public key string
+     */
+    public static String decompressPublicKey(String compressedPublicKey) {
+        if(AccountKeyPublicUtils.isUncompressedPublicKey(compressedPublicKey)) {
+            return compressedPublicKey;
+        }
+
+        ECPoint ecPoint = AccountKeyPublicUtils.getECPoint(compressedPublicKey);
+        String pointXY = Numeric.toHexStringWithPrefixZeroPadded(ecPoint.getAffineXCoord().toBigInteger(), 64) +
+                Numeric.toHexStringNoPrefixZeroPadded(ecPoint.getAffineYCoord().toBigInteger(), 64);
+        return pointXY;
+    }
+
+    /**
+     * Convert an uncompressed public key to a compressed public key
+     * Given public key has already compressed format, it will return.
+     * @param publicKey public key string(uncompressed or compressed)
+     * @return compressed public key
+     */
+    public static String compressPublicKey(String publicKey) {
+        if(AccountKeyPublicUtils.isCompressedPublicKey(publicKey)){
+            return publicKey;
+        }
+
+        BigInteger publicKeyBN = Numeric.toBigInt(publicKey);
+        String noPrefixKey = Numeric.cleanHexPrefix(publicKey);
+
+        String publicKeyX = noPrefixKey.substring(0, 64);
+        String pubKeyYPrefix = publicKeyBN.testBit(0) ? "03" : "02";
+        return pubKeyYPrefix + publicKeyX;
+    }
+
+    /**
+     * Hashing message with added prefix("\x19Klaytn Signed Message:\n").
+     * @param message A message to hash.
+     * @return String
+     */
+    public static String hashMessage(String message) {
+        final String preamble = "\\x19Klaytn Signed Message:\\n";
+
+        String klaytnMessage =  preamble + message.length() + message;
+        return Hash.sha3(klaytnMessage);
+    }
+
+    /**
+     * Parse a klaytn wallet key string.
+     * @param key klaytn wallet key string
+     * @return String array
+     */
     public static String[] parseKlaytnWalletKey(String key) {
         if(!isKlaytnWalletKey(key)) {
             throw new IllegalArgumentException("Invalid Klaytn wallet key.");
@@ -108,33 +183,122 @@ public class Utils {
         return arr;
     }
 
-    public static String hashMessage(String message) {
-        final String preamble = "\\x19Klaytn Signed Message:\\n";
-
-        String klaytnMessage =  preamble + message.length() + message;
-        return Hash.sha3(klaytnMessage);
+    /**
+     * Check if string has hex format.
+     * @param input A hex string
+     * @return boolean
+     */
+    public static boolean isHex(String input) {
+        Pattern pattern = Pattern.compile("^(-0x|0x)?[0-9A-Fa-f]*$");
+        return pattern.matcher(input).matches();
     }
 
-    public static byte[] generateRandomBytes(int size) {
-        byte[] bytes = new byte[size];
-        SecureRandomUtils.secureRandom().nextBytes(bytes);
-        return bytes;
+    /**
+     * Check if string has hex format with "0x" prefix.
+     * @param input A hex string
+     * @return boolean
+     */
+    public static boolean isHexStrict(String input) {
+        Pattern pattern = Pattern.compile("^(-)?0x[0-9A-Fa-f]*$");
+        return pattern.matcher(input).matches();
     }
 
-    public static boolean isEmptySig(SignatureData signatureData) {
-        SignatureData emptySig = SignatureData.getEmptySignature();
-
-        return emptySig.equals(signatureData);
+    /**
+     * Add hex prefix("0x").
+     * @param str A hex string
+     * @return String
+     */
+    public static String addHexPrefix(String str) {
+        return Numeric.prependHexPrefix(str);
     }
 
+    /**
+     * Remove hex prefix("0x").
+     * @param str A hex string
+     * @return String
+     */
+    public static String stripHexPrefix(String str) {
+        return Numeric.cleanHexPrefix(str);
+    }
 
-    public static boolean isEmptySig(List<SignatureData> signatureDataList) {
-        SignatureData emptySig = SignatureData.getEmptySignature();
+    /**
+     * Converts amount to peb amount.
+     * @param num The amount to convert.
+     * @param unit Th unit to convert from.
+     * @return String
+     */
+    public static String convertToPeb(String num, String unit) {
+        return convertToPeb(new BigDecimal(num), KlayUnit.fromString(unit));
+    }
 
-        //if stream is empty, allMatch() returns always true.
-        boolean isMatched = signatureDataList.stream().allMatch(emptySig::equals);
+    /**
+     * Converts amount to peb amount.
+     * @param num The amount to convert.
+     * @param unit Th unit to convert from.
+     * @return String
+     */
+    public static String convertToPeb(BigDecimal num, String unit) {
+        return convertToPeb(num, KlayUnit.fromString(unit));
+    }
 
-        return isMatched;
+    /**
+     * Converts amount to peb amount.
+     * @param num The amount to convert.
+     * @param unit Th unit to convert from.
+     * @return String
+     */
+    public static String convertToPeb(String num, KlayUnit unit) {
+        return convertToPeb(new BigDecimal(num), unit);
+    }
+
+    /**
+     * Converts amount to peb amount.
+     * @param num The amount to convert.
+     * @param unit Th unit to convert from.
+     * @return String
+     */
+    public static String convertToPeb(BigDecimal num, KlayUnit unit) {
+        return num.multiply(unit.getPebFactor()).toString();
+    }
+
+    /**
+     * Converts peb amount to specific unit amount.
+     * @param num The peb amount
+     * @param unit The unit to convert to
+     * @return String
+     */
+    public static String convertFromPeb(String num, String unit) {
+        return convertFromPeb(new BigDecimal(num), KlayUnit.fromString(unit));
+    }
+
+    /**
+     * Converts peb amount to specific unit amount.
+     * @param num The peb amount
+     * @param unit The unit to convert to
+     * @return String
+     */
+    public static String convertFromPeb(BigDecimal num, String unit) {
+        return convertFromPeb(num, KlayUnit.fromString(unit));
+    }
+
+    /**
+     * Converts peb amount to specific unit amount.
+     * @param num The peb amount
+     * @param unit The unit to convert to
+     * @return String
+     */
+    public static String convertFromPeb(String num, KlayUnit unit) {
+        return convertFromPeb(new BigDecimal(num), unit).toString();
+    }
+
+    /**
+     * Converts peb amount to specific unit amount.
+     * @param num The peb amount
+     * @param unit The unit to convert to
+     * @return String
+     */
+    public static String convertFromPeb(BigDecimal num, KlayUnit unit) {
+        return num.divide(unit.getPebFactor()).toString();
     }
 
     /**
@@ -191,5 +355,98 @@ public class Utils {
             throw new SignatureException("Could not recover public key from signature");
         }
         return Numeric.prependHexPrefix(Keys.getAddress(key));
+    }
+
+    /**
+     * Check if string has hex number format.
+     * @param input A hex number format string
+     * @return boolean
+     */
+    public static boolean isNumber(String input) {
+        try {
+            Numeric.toBigInt(input);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check if SignatureData instance has empty signature.
+     * @param signatureData A SignatureData instance.
+     * @return boolean
+     */
+    public static boolean isEmptySig(SignatureData signatureData) {
+        SignatureData emptySig = SignatureData.getEmptySignature();
+
+        return emptySig.equals(signatureData);
+    }
+
+    /**
+     * Check if elements in SignatureData list has empty signature
+     * @param signatureDataList A List of SignatureData
+     * @return boolean
+     */
+    public static boolean isEmptySig(List<SignatureData> signatureDataList) {
+        SignatureData emptySig = SignatureData.getEmptySignature();
+
+        //if stream is empty, allMatch() returns always true.
+        boolean isMatched = signatureDataList.stream().allMatch(emptySig::equals);
+
+        return isMatched;
+    }
+
+    /**
+     * Generate random bytes
+     * @param size A size to generate random byte
+     * @return byte array
+     */
+    public static byte[] generateRandomBytes(int size) {
+        byte[] bytes = new byte[size];
+        SecureRandomUtils.secureRandom().nextBytes(bytes);
+        return bytes;
+    }
+
+    public enum KlayUnit {
+        peb("peb", 0),
+        kpeb("kpeb", 3),
+        Mpeb("Mpeb", 6),
+        Gpeb("Gpeb", 9),
+        ston("ston", 9),
+        uKLAY("uKLAY", 12),
+        mKLAY("mKLAY", 15),
+        KLAY("KLAY", 18),
+        kKLAY("kKLAY", 21),
+        MKLAY("MKLAY", 24),
+        GKLAY("GKLAY", 27),
+        TKLAY("TKLAY", 30);
+
+        private String unit;
+        private BigDecimal pebFactor;
+
+        KlayUnit(String unit, int factor) {
+            this.unit = unit;
+            this.pebFactor = BigDecimal.TEN.pow(factor);
+        }
+
+        public BigDecimal getPebFactor() {
+            return pebFactor;
+        }
+
+        @Override
+        public String toString() {
+            return unit;
+        }
+
+        public static KlayUnit fromString(String unitName) {
+            if (unitName != null) {
+                for (KlayUnit unit : KlayUnit.values()) {
+                    if (unitName.equals(unit.unit)) {
+                        return unit;
+                    }
+                }
+            }
+            return KlayUnit.valueOf(unitName);
+        }
     }
 }

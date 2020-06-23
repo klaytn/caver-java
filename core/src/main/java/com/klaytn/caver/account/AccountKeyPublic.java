@@ -2,6 +2,7 @@ package com.klaytn.caver.account;
 
 import com.klaytn.caver.utils.AccountKeyPublicUtils;
 import com.klaytn.caver.utils.BytesUtils;
+import com.klaytn.caver.utils.Utils;
 import org.web3j.rlp.RlpDecoder;
 import org.web3j.rlp.RlpEncoder;
 import org.web3j.rlp.RlpList;
@@ -93,7 +94,7 @@ public class AccountKeyPublic implements IAccountKey{
 
         try {
             //Get decompressed Public Key and ECC Point validation Check in toDecompressPublicKeyXY()
-            String publicKey = AccountKeyPublicUtils.decompressPublicKey(compressedPubKey);
+            String publicKey = Utils.decompressPublicKey(compressedPubKey);
             return new AccountKeyPublic(publicKey);
         } catch (Exception e) {
             throw new RuntimeException("There is an error while decoding process.");
@@ -106,7 +107,7 @@ public class AccountKeyPublic implements IAccountKey{
      */
     @Override
     public String getRLPEncoding() {
-        String compressedKey = AccountKeyPublicUtils.compressPublicKey(this.publicKey);
+        String compressedKey = Utils.compressPublicKey(this.publicKey);
         byte[] encodedPubKey = RlpEncoder.encode(RlpString.create(Numeric.hexStringToByteArray(compressedKey)));
         byte[] type = Numeric.hexStringToByteArray(AccountKeyPublic.getType());
 
@@ -120,7 +121,7 @@ public class AccountKeyPublic implements IAccountKey{
     public String[] getXYPoint() {
         String key = this.getPublicKey();
         if (AccountKeyPublicUtils.isCompressedPublicKey(this.getPublicKey())) {
-            key = AccountKeyPublicUtils.decompressPublicKey(this.getPublicKey());
+            key = Utils.decompressPublicKey(this.getPublicKey());
         }
 
         String noPrefixKeyStr = Numeric.cleanHexPrefix(key);
@@ -153,7 +154,7 @@ public class AccountKeyPublic implements IAccountKey{
      * @param publicKey ECC public key(compressed or uncompressed format)
      */
     public void setPublicKey(String publicKey) {
-        if(!AccountKeyPublicUtils.isValidPublicKey(publicKey)) {
+        if(!Utils.isValidPublicKey(publicKey)) {
             throw new RuntimeException("Invalid Public Key format");
         }
 

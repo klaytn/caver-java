@@ -25,10 +25,8 @@ import java.math.BigDecimal;
 /**
  * Klaytn unit conversion functions.
  */
-public final class KlayUnit {
-    private KlayUnit() { }
-
-    public static BigDecimal fromPeb(double number, Unit unit) {return fromPeb(new BigDecimal(number), unit);}
+public final class Convert {
+    private Convert() { }
     
     public static BigDecimal fromPeb(String number, Unit unit) {
         return fromPeb(new BigDecimal(number), unit);
@@ -36,10 +34,6 @@ public final class KlayUnit {
 
     public static BigDecimal fromPeb(BigDecimal number, Unit unit) {
         return number.divide(unit.getpebFactor());
-    }
-
-    public static BigDecimal toPeb(double number, Unit unit) {
-        return toPeb(new BigDecimal(number), unit);
     }
 
     public static BigDecimal toPeb(String number, Unit unit) {
@@ -83,7 +77,7 @@ public final class KlayUnit {
         public static Unit fromString(String name) {
             if (name != null) {
                 for (Unit unit : Unit.values()) {
-                    if (name.equalsIgnoreCase(unit.name)) {
+                    if (name.equals(unit.name)) {
                         return unit;
                     }
                 }

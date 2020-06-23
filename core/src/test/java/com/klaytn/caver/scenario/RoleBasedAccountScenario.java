@@ -15,7 +15,7 @@ import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.AccountUpdateTransaction;
 import com.klaytn.caver.tx.model.KlayRawTransaction;
 import com.klaytn.caver.tx.model.TransactionTransformer;
-import com.klaytn.caver.utils.KlayUnit;
+import com.klaytn.caver.utils.Convert;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -218,7 +218,7 @@ public class RoleBasedAccountScenario extends Scenario {
                 BRANDON.getAddress(),
                 address,
                 BigDecimal.valueOf(1),
-                KlayUnit.Unit.KLAY, GAS_LIMIT
+                Convert.Unit.KLAY, GAS_LIMIT
         ).send();
 
         assertEquals("0x1", transactionReceipt.getStatus());

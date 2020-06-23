@@ -20,7 +20,7 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.ValueTransferTransaction;
-import com.klaytn.caver.utils.KlayUnit;
+import com.klaytn.caver.utils.Convert;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -70,7 +70,7 @@ public class Accounts {
         ValueTransferTransaction valueTransferTransaction = ValueTransferTransaction.create(
                 KLAY_PROVIDER.getAddress(),
                 testCredential.getAddress(),
-                KlayUnit.toPeb("100", KlayUnit.Unit.KLAY).toBigInteger(),
+                Convert.toPeb("100", Convert.Unit.KLAY).toBigInteger(),
                 BigInteger.valueOf(4_300_000)
         );
         transactionManager.executeTransaction(valueTransferTransaction);

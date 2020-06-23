@@ -25,7 +25,7 @@ import com.klaytn.caver.tx.account.AccountKeyPublic;
 import com.klaytn.caver.tx.account.AccountKeyRoleBased;
 import com.klaytn.caver.tx.account.AccountKeyWeightedMultiSig;
 import com.klaytn.caver.tx.model.AccountUpdateTransaction;
-import com.klaytn.caver.utils.KlayUnit;
+import com.klaytn.caver.utils.Convert;
 import org.junit.Test;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
@@ -49,7 +49,7 @@ public class AccountKeyIT extends Scenario {
                 BRANDON.getAddress(),
                 credentials.getAddress(),
                 BigDecimal.valueOf(0.2),
-                KlayUnit.Unit.KLAY, GAS_LIMIT
+                Convert.Unit.KLAY, GAS_LIMIT
         ).send();
         setUpAccount();
 

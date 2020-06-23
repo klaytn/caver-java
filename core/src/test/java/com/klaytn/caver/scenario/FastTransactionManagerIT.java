@@ -24,7 +24,7 @@ import com.klaytn.caver.methods.response.Callback;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.tx.ValueTransfer;
 import com.klaytn.caver.tx.manager.*;
-import com.klaytn.caver.utils.KlayUnit;
+import com.klaytn.caver.utils.Convert;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -151,7 +151,7 @@ public class FastTransactionManagerIT extends Scenario {
 
     private RemoteCall<KlayTransactionReceipt.TransactionReceipt> createTransaction(
             ValueTransfer valueTransfer) {
-        return valueTransfer.sendFunds(BRANDON.getAddress(), LUMAN.getAddress(), BigDecimal.ONE, KlayUnit.Unit.PEB, GAS_LIMIT);
+        return valueTransfer.sendFunds(BRANDON.getAddress(), LUMAN.getAddress(), BigDecimal.ONE, Convert.Unit.PEB, GAS_LIMIT);
     }
 
 }

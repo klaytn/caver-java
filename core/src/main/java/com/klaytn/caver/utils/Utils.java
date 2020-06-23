@@ -227,8 +227,8 @@ public class Utils {
      * @param unit Th unit to convert from.
      * @return BigDecimal
      */
-    public static BigDecimal convertToPeb(double num, String unit) {
-        return KlayUnit.toPeb(num, KlayUnit.Unit.fromString(unit));
+    public static String convertToPeb(String num, String unit) {
+        return Convert.toPeb(num, Convert.Unit.fromString(unit)).toString();
     }
 
     /**
@@ -237,8 +237,8 @@ public class Utils {
      * @param unit Th unit to convert from.
      * @return BigDecimal
      */
-    public static BigDecimal convertToPeb(double num, KlayUnit.Unit unit) {
-        return KlayUnit.toPeb(num, unit);
+    public static String convertToPeb(String num, Convert.Unit unit) {
+        return Convert.toPeb(num, unit).toString();
     }
 
     /**
@@ -247,8 +247,8 @@ public class Utils {
      * @param unit Th unit to convert from.
      * @return BigDecimal
      */
-    public static BigDecimal convertToPeb(String num, String unit) {
-        return KlayUnit.toPeb(num, KlayUnit.Unit.fromString(unit));
+    public static String convertToPeb(BigDecimal num, String unit) {
+        return Convert.toPeb(num, Convert.Unit.fromString(unit)).toString();
     }
 
     /**
@@ -257,28 +257,8 @@ public class Utils {
      * @param unit Th unit to convert from.
      * @return BigDecimal
      */
-    public static BigDecimal convertToPeb(String num, KlayUnit.Unit unit) {
-        return KlayUnit.toPeb(num, unit);
-    }
-
-    /**
-     * Converts amount to peb amount.
-     * @param num The amount to convert.
-     * @param unit Th unit to convert from.
-     * @return BigDecimal
-     */
-    public static BigDecimal convertToPeb(BigDecimal num, String unit) {
-        return KlayUnit.toPeb(num, KlayUnit.Unit.fromString(unit));
-    }
-
-    /**
-     * Converts amount to peb amount.
-     * @param num The amount to convert.
-     * @param unit Th unit to convert from.
-     * @return BigDecimal
-     */
-    public static BigDecimal convertToPeb(BigDecimal num, KlayUnit.Unit unit) {
-        return KlayUnit.toPeb(num, unit);
+    public static String convertToPeb(BigDecimal num, Convert.Unit unit) {
+        return Convert.toPeb(num, unit).toString();
     }
 
     /**
@@ -287,8 +267,8 @@ public class Utils {
      * @param unit The unit to convert to
      * @return BigDecimal
      */
-    public static BigDecimal convertFromPeb(double num, String unit) {
-        return KlayUnit.fromPeb(num, KlayUnit.Unit.fromString(unit));
+    public static String convertFromPeb(String num, String unit) {
+        return Convert.fromPeb(num, Convert.Unit.fromString(unit)).toString();
     }
 
     /**
@@ -297,8 +277,8 @@ public class Utils {
      * @param unit The unit to convert to
      * @return BigDecimal
      */
-    public static BigDecimal convertFromPeb(double num, KlayUnit.Unit unit) {
-        return KlayUnit.fromPeb(num, unit);
+    public static String convertFromPeb(String num, Convert.Unit unit) {
+        return Convert.fromPeb(num, unit).toString();
     }
 
     /**
@@ -307,8 +287,8 @@ public class Utils {
      * @param unit The unit to convert to
      * @return BigDecimal
      */
-    public static BigDecimal convertFromPeb(String num, String unit) {
-        return KlayUnit.fromPeb(num, KlayUnit.Unit.fromString(unit));
+    public static String convertFromPeb(BigDecimal num, String unit) {
+        return Convert.fromPeb(num, Convert.Unit.fromString(unit)).toString();
     }
 
     /**
@@ -317,28 +297,8 @@ public class Utils {
      * @param unit The unit to convert to
      * @return BigDecimal
      */
-    public static BigDecimal convertFromPeb(String num, KlayUnit.Unit unit) {
-        return KlayUnit.fromPeb(num, unit);
-    }
-
-    /**
-     * Converts peb amount to specific unit amount.
-     * @param num The peb amount
-     * @param unit The unit to convert to
-     * @return BigDecimal
-     */
-    public static BigDecimal convertFromPeb(BigDecimal num, String unit) {
-        return KlayUnit.fromPeb(num, KlayUnit.Unit.fromString(unit));
-    }
-
-    /**
-     * Converts peb amount to specific unit amount.
-     * @param num The peb amount
-     * @param unit The unit to convert to
-     * @return BigDecimal
-     */
-    public static BigDecimal convertFromPeb(BigDecimal num, KlayUnit.Unit unit) {
-        return KlayUnit.fromPeb(num, unit);
+    public static String convertFromPeb(BigDecimal num, Convert.Unit unit) {
+        return Convert.fromPeb(num, unit).toString();
     }
 
     /**

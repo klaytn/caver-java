@@ -23,7 +23,7 @@ package com.klaytn.caver.tx;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.tx.manager.TransactionManager;
-import com.klaytn.caver.utils.KlayUnit;
+import com.klaytn.caver.utils.Convert;
 import com.klaytn.caver.tx.model.TransactionTransformer;
 
 import java.math.BigInteger;
@@ -33,7 +33,7 @@ import java.math.BigInteger;
  */
 public abstract class ManagedTransaction {
 
-    public static final BigInteger GAS_PRICE = KlayUnit.toPeb("25", KlayUnit.Unit.STON).toBigInteger();
+    public static final BigInteger GAS_PRICE = Convert.toPeb("25", Convert.Unit.STON).toBigInteger();
 
     protected Caver caver;
 

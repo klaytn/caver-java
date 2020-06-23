@@ -23,7 +23,7 @@ import com.klaytn.caver.tx.ValueTransfer;
 import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.SmartContractDeployTransaction;
 import com.klaytn.caver.utils.CodeFormat;
-import com.klaytn.caver.utils.KlayUnit;
+import com.klaytn.caver.utils.Convert;
 import com.klaytn.caver.wallet.KlayWalletUtils;
 import org.junit.Test;
 import org.web3j.utils.Numeric;
@@ -53,7 +53,7 @@ public class FeePayerManagerIT extends Scenario {
                 BRANDON.getAddress(),
                 credentials.getAddress(),
                 BigDecimal.valueOf(0.1),
-                KlayUnit.Unit.KLAY, GAS_LIMIT
+                Convert.Unit.KLAY, GAS_LIMIT
         );
 
         SmartContractDeployTransaction smartContractDeploy = SmartContractDeployTransaction.create(

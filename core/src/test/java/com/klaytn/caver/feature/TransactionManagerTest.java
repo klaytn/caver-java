@@ -26,7 +26,7 @@ import com.klaytn.caver.tx.manager.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.*;
 import com.klaytn.caver.utils.CodeFormat;
-import com.klaytn.caver.utils.KlayUnit;
+import com.klaytn.caver.utils.Convert;
 import com.klaytn.caver.wallet.WalletManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,7 +72,7 @@ public class TransactionManagerTest {
     public void testAccountUpdate() throws Exception {
         KlayCredentials credentials = KlayCredentials.create(Keys.createEcKeyPair());
         ValueTransfer.create(caver, BRANDON, LOCAL_CHAIN_ID)
-                .sendFunds(BRANDON.getAddress(), credentials.getAddress(), BigDecimal.valueOf(0.2), KlayUnit.Unit.KLAY, GAS_LIMIT).send();
+                .sendFunds(BRANDON.getAddress(), credentials.getAddress(), BigDecimal.valueOf(0.2), Convert.Unit.KLAY, GAS_LIMIT).send();
         TransactionManager updateTransactionManager = new TransactionManager.Builder(caver, credentials)
                 .setTransactionReceiptProcessor(new PollingTransactionReceiptProcessor(caver, 1000, 15))
                 .setChaindId(LOCAL_CHAIN_ID)

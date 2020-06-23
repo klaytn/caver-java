@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.methods.response.KlayAccountKey;
 import com.klaytn.caver.tx.account.AccountKey;
-import com.klaytn.caver.utils.KlayUnit;
+import com.klaytn.caver.utils.Convert;
 import org.web3j.utils.Numeric;
 
 import java.math.BigDecimal;
@@ -28,7 +28,7 @@ import java.math.BigInteger;
 
 public class Transaction implements TestComponent {
     public static int DEFAULT_CHAIN_ID = 2019;
-    public static BigInteger DEFAULT_GAS_PRICE = KlayUnit.toPeb("25", KlayUnit.Unit.STON).toBigInteger();
+    public static BigInteger DEFAULT_GAS_PRICE = Convert.toPeb("25", Convert.Unit.STON).toBigInteger();
 
     private InnerTransaction tx;
     private String deployedAddress;

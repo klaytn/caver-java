@@ -31,7 +31,7 @@ import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.AccountUpdateTransaction;
 import com.klaytn.caver.tx.model.SmartContractDeployTransaction;
 import com.klaytn.caver.utils.CodeFormat;
-import com.klaytn.caver.utils.KlayUnit;
+import com.klaytn.caver.utils.Convert;
 import junit.framework.TestCase;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -121,7 +121,7 @@ public class RpcTest {
 
     private static KlayTransactionReceipt.TransactionReceipt sendValue() throws Exception {
         return ValueTransfer.create(caver, BRANDON, LOCAL_CHAIN_ID)
-                .sendFunds(BRANDON.getAddress(), testCredentials.getAddress(), BigDecimal.ONE, KlayUnit.Unit.KLAY, GAS_LIMIT)
+                .sendFunds(BRANDON.getAddress(), testCredentials.getAddress(), BigDecimal.ONE, Convert.Unit.KLAY, GAS_LIMIT)
                 .send();
     }
 

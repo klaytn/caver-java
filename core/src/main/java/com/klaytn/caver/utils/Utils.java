@@ -1,5 +1,6 @@
 package com.klaytn.caver.utils;
 
+import com.klaytn.caver.Klay;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.bouncycastle.math.ec.ECPoint;
 import org.web3j.crypto.ECDSASignature;
@@ -228,17 +229,7 @@ public class Utils {
      * @return BigDecimal
      */
     public static String convertToPeb(String num, String unit) {
-        return Convert.toPeb(num, Convert.Unit.fromString(unit)).toString();
-    }
-
-    /**
-     * Converts amount to peb amount.
-     * @param num The amount to convert.
-     * @param unit Th unit to convert from.
-     * @return BigDecimal
-     */
-    public static String convertToPeb(String num, Convert.Unit unit) {
-        return Convert.toPeb(num, unit).toString();
+        return convertToPeb(new BigDecimal(num), KLAYUnit.fromString(unit));
     }
 
     /**
@@ -248,7 +239,7 @@ public class Utils {
      * @return BigDecimal
      */
     public static String convertToPeb(BigDecimal num, String unit) {
-        return Convert.toPeb(num, Convert.Unit.fromString(unit)).toString();
+        return convertToPeb(num, KLAYUnit.fromString(unit));
     }
 
     /**
@@ -257,8 +248,20 @@ public class Utils {
      * @param unit Th unit to convert from.
      * @return BigDecimal
      */
-    public static String convertToPeb(BigDecimal num, Convert.Unit unit) {
-        return Convert.toPeb(num, unit).toString();
+    public static String convertToPeb(String num, KLAYUnit unit) {
+        return convertToPeb(new BigDecimal(num), unit);
+    }
+
+
+
+    /**
+     * Converts amount to peb amount.
+     * @param num The amount to convert.
+     * @param unit Th unit to convert from.
+     * @return BigDecimal
+     */
+    public static String convertToPeb(BigDecimal num, KLAYUnit unit) {
+        return num.multiply(unit.getPebFactor()).toString();
     }
 
     /**
@@ -268,17 +271,7 @@ public class Utils {
      * @return BigDecimal
      */
     public static String convertFromPeb(String num, String unit) {
-        return Convert.fromPeb(num, Convert.Unit.fromString(unit)).toString();
-    }
-
-    /**
-     * Converts peb amount to specific unit amount.
-     * @param num The peb amount
-     * @param unit The unit to convert to
-     * @return BigDecimal
-     */
-    public static String convertFromPeb(String num, Convert.Unit unit) {
-        return Convert.fromPeb(num, unit).toString();
+        return convertFromPeb(new BigDecimal(num), KLAYUnit.fromString(unit));
     }
 
     /**
@@ -288,7 +281,7 @@ public class Utils {
      * @return BigDecimal
      */
     public static String convertFromPeb(BigDecimal num, String unit) {
-        return Convert.fromPeb(num, Convert.Unit.fromString(unit)).toString();
+        return convertFromPeb(num, KLAYUnit.fromString(unit));
     }
 
     /**
@@ -297,8 +290,18 @@ public class Utils {
      * @param unit The unit to convert to
      * @return BigDecimal
      */
-    public static String convertFromPeb(BigDecimal num, Convert.Unit unit) {
-        return Convert.fromPeb(num, unit).toString();
+    public static String convertFromPeb(String num, KLAYUnit unit) {
+        return convertFromPeb(new BigDecimal(num), unit).toString();
+    }
+
+    /**
+     * Converts peb amount to specific unit amount.
+     * @param num The peb amount
+     * @param unit The unit to convert to
+     * @return BigDecimal
+     */
+    public static String convertFromPeb(BigDecimal num, KLAYUnit unit) {
+        return num.divide(unit.getPebFactor()).toString();
     }
 
     /**
@@ -407,5 +410,46 @@ public class Utils {
         return bytes;
     }
 
+    public enum KLAYUnit {
+        peb("peb", 0),
+        kpeb("kpeb", 3),
+        Mpeb("Mpeb", 6),
+        Gpeb("Gpeb", 9),
+        ston("ston", 9),
+        uKLAY("uKLAY", 12),
+        mKLAY("mKLAY", 15),
+        KLAY("KLAY", 18),
+        kKLAY("kKLAY", 21),
+        MKLAY("MKLAY", 24),
+        GKLAY("GKLAY", 27),
+        TKLAY("TKLAY", 30);
 
+        private String unit;
+        private BigDecimal pebFactor;
+
+        KLAYUnit(String unit, int factor) {
+            this.unit = unit;
+            this.pebFactor = BigDecimal.TEN.pow(factor);
+        }
+
+        public BigDecimal getPebFactor() {
+            return pebFactor;
+        }
+
+        @Override
+        public String toString() {
+            return unit;
+        }
+
+        public static KLAYUnit fromString(String unitName) {
+            if (unitName != null) {
+                for (KLAYUnit unit : KLAYUnit.values()) {
+                    if (unitName.equals(unit.unit)) {
+                        return unit;
+                    }
+                }
+            }
+            return KLAYUnit.valueOf(unitName);
+        }
+    }
 }

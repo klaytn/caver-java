@@ -150,7 +150,7 @@ public class AccountKeyPublicUtils {
             String x = noPrefixKey.substring(0, 64);
             String y = noPrefixKey.substring(64);
 
-            if(validateXYPoint(x, y)) {
+            if(!validateXYPoint(x, y)) {
                 throw new RuntimeException("Invalid public key.");
             }
             return true;

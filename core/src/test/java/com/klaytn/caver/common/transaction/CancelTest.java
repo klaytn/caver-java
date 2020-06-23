@@ -670,7 +670,7 @@ public class CancelTest {
                     .build();
 
             String rlpEncoded = "0x38f869018505d21dba00830dbba094504a835246e030d70ded9027f9f5a0aefcd45143f847f845820feaa00382dcd275a9657d8fc3c4dc1509ad975f083184e3d34779dc6bef10e0e973c8a059d5deb0f4c06a35a8024506159864ffc46dd08d91d5ac16fa69e92fb2d6b9ae";
-            String combined = mTxObj.combineSignatures(Arrays.asList(rlpEncoded));
+            String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncoded));
 
             assertEquals(expectedRLPEncoded, combined);
             assertEquals(expectedSignature, mTxObj.getSignatures().get(0));
@@ -718,7 +718,7 @@ public class CancelTest {
                     "0x38f869018505d21dba00830dbba094504a835246e030d70ded9027f9f5a0aefcd45143f847f845820feaa0dccd060bd76582d221f6fe7e02e70877a25b65d80fed13b69b5c79d7c4520912a07572c5c68daf7094a17105eb6e5fed1b102bfe4ca737d62b51f921f7663fb2bd"
             };
 
-            String combined = mTxObj.combineSignatures(Arrays.asList(rlpEncodedString));
+            String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedString));
             assertEquals(expectedRLPEncoded, combined);
             assertEquals(expectedSignature[0], mTxObj.getSignatures().get(0));
             assertEquals(expectedSignature[1], mTxObj.getSignatures().get(1));
@@ -742,7 +742,7 @@ public class CancelTest {
 
             String rlpEncoded = "0x38f869018505d21dba00830dbba094504a835246e030d70ded9027f9f5a0aefcd45143f847f845820feaa05a3a7910ce495e316da1394f197cdadd95dbb6954d803052b9f62ce993c0ec3ca00934f8dda9666d759e511a5658de1db36faefb35e76a5e237d87ba8c3b9bb700";
 
-            mTxObj.combineSignatures(Arrays.asList(rlpEncoded));
+            mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncoded));
         }
     }
 

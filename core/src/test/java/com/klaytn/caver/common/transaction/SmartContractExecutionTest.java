@@ -1031,7 +1031,7 @@ public class SmartContractExecutionTest {
             };
             List<String> list = Arrays.asList(rlpEncodedString);
 
-            String combined = mTxObj.combineSignatures(list);
+            String combined = mTxObj.combineSignedRawTransactions(list);
             assertEquals(expectedRLPEncoded, combined);
             assertEquals(expectedSignature[0], mTxObj.getSignatures().get(0));
             assertEquals(expectedSignature[1], mTxObj.getSignatures().get(1));
@@ -1067,7 +1067,7 @@ public class SmartContractExecutionTest {
             List<String> list = new ArrayList<>();
             list.add(rlpEncoded);
 
-            mTxObj.combineSignatures(list);
+            mTxObj.combineSignedRawTransactions(list);
         }
     }
 

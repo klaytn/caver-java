@@ -2,8 +2,6 @@ package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
-import com.klaytn.caver.transaction.type.FeeDelegatedCancelWithRatio;
-import com.klaytn.caver.transaction.type.FeeDelegatedValueTransfer;
 import com.klaytn.caver.transaction.type.FeeDelegatedValueTransferWithRatio;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Before;
@@ -1163,7 +1161,7 @@ public class FeeDelegatedValueTransferWithRatioTest {
 
             String rlpEncoded = "0x0af886018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a9431e7c5218f810af8ad1e50bf207de0cfb5bd45261ef847f845820feaa0a832e241979ee7a3e08b49d7a7e8f8029982ee5502c7f970a8fe2676fe1b1084a044ded5739de93803b37790bb323f5020de50850b7b7cdc9a6a2e23a29a8cc14580c4c3018080";
 
-            String combined = mTxObj.combineSignatures(Arrays.asList(rlpEncoded));
+            String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncoded));
 
             SignatureData expectedSignatureData = new SignatureData(
                     "0x0fea",
@@ -1201,7 +1199,7 @@ public class FeeDelegatedValueTransferWithRatioTest {
                     "0x0af886018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a9431e7c5218f810af8ad1e50bf207de0cfb5bd45261ef847f845820feaa02944c25a5dc2fe12d365743413ee4f4c133c3f0c142629cadff486679408b86ea05d633f11b2dde9cf51bc596565ca18a7f0f92b9d3447ce4f622188563299217e80c4c3018080",
             };
 
-            String combined = mTxObj.combineSignatures(Arrays.asList(rlpEncodedStrings));
+            String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedStrings));
             String expectedRLPEncoding = "0x0af90114018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a9431e7c5218f810af8ad1e50bf207de0cfb5bd45261ef8d5f845820feaa0a832e241979ee7a3e08b49d7a7e8f8029982ee5502c7f970a8fe2676fe1b1084a044ded5739de93803b37790bb323f5020de50850b7b7cdc9a6a2e23a29a8cc145f845820feaa0df06077618ef021174af72c807ac968ab6b8549ca997432df73a1fe3612ed226a052684b175ec8fb45506e6f809ec0c879afa62e5cc1e64bd91e16a58a6aa09667f845820feaa02944c25a5dc2fe12d365743413ee4f4c133c3f0c142629cadff486679408b86ea05d633f11b2dde9cf51bc596565ca18a7f0f92b9d3447ce4f622188563299217e80c4c3018080";
 
             SignatureData[] expectedSignatureData = new SignatureData[]{
@@ -1242,7 +1240,7 @@ public class FeeDelegatedValueTransferWithRatioTest {
                     .build();
 
             String rlpEncoded = "0x0af89a018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a9431e7c5218f810af8ad1e50bf207de0cfb5bd45261ec4c30180809412dbe69692cb021bc1f161dd5abc0507bd1493cef847f845820fe9a00c438aba938ee678761ccde71696518d40ed0669c420aaedf66952af0f4eafaaa029354a82fe53b4971b745acd837e0182b7df7e03c6e77821e508669b6a0a6390";
-            String combined = mTxObj.combineSignatures(Arrays.asList(rlpEncoded));
+            String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncoded));
 
             SignatureData signatureData = new SignatureData(
                     "0x0fe9",
@@ -1280,7 +1278,7 @@ public class FeeDelegatedValueTransferWithRatioTest {
                     "0x0af89a018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a9431e7c5218f810af8ad1e50bf207de0cfb5bd45261ec4c30180809412dbe69692cb021bc1f161dd5abc0507bd1493cef847f845820fe9a0b6a124f371122cb3ac5c98c1d0a94ce41d87387b05fce8cfc244c152ab580ffda0121e3c11516f67cda27ade771a7166b93cdbd2beeba39302bd240ee1d9432060",
             };
 
-            String combined = mTxObj.combineSignatures(Arrays.asList(rlpEncodedStrings));
+            String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedStrings));
             String expectedRLPEncoded = "0x0af90128018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a9431e7c5218f810af8ad1e50bf207de0cfb5bd45261ec4c30180809412dbe69692cb021bc1f161dd5abc0507bd1493cef8d5f845820fe9a00c438aba938ee678761ccde71696518d40ed0669c420aaedf66952af0f4eafaaa029354a82fe53b4971b745acd837e0182b7df7e03c6e77821e508669b6a0a6390f845820feaa015a95b922f43aad929329b13a42c3b00760eb0cabebd19cc0c7935db7d46da9ca02e4d9aa62bc12e40405d8209abbd40b65ba90eb6ff63b4e9260180c3a17525e0f845820fe9a0b6a124f371122cb3ac5c98c1d0a94ce41d87387b05fce8cfc244c152ab580ffda0121e3c11516f67cda27ade771a7166b93cdbd2beeba39302bd240ee1d9432060";
 
             SignatureData[] expectedSignatureData = new SignatureData[]{
@@ -1339,7 +1337,7 @@ public class FeeDelegatedValueTransferWithRatioTest {
                     ),
             };
 
-            String combined = mTxObj.combineSignatures(Arrays.asList(rlpEncodedString));
+            String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedString));
 
             String rlpEncodedStringsWithFeePayerSignatures = "0x0af90128018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a9431e7c5218f810af8ad1e50bf207de0cfb5bd45261ec4c30180809412dbe69692cb021bc1f161dd5abc0507bd1493cef8d5f845820fe9a00c438aba938ee678761ccde71696518d40ed0669c420aaedf66952af0f4eafaaa029354a82fe53b4971b745acd837e0182b7df7e03c6e77821e508669b6a0a6390f845820feaa015a95b922f43aad929329b13a42c3b00760eb0cabebd19cc0c7935db7d46da9ca02e4d9aa62bc12e40405d8209abbd40b65ba90eb6ff63b4e9260180c3a17525e0f845820fe9a0b6a124f371122cb3ac5c98c1d0a94ce41d87387b05fce8cfc244c152ab580ffda0121e3c11516f67cda27ade771a7166b93cdbd2beeba39302bd240ee1d9432060";
 
@@ -1361,7 +1359,7 @@ public class FeeDelegatedValueTransferWithRatioTest {
                     ),
             };
 
-            combined = mTxObj.combineSignatures(Arrays.asList(rlpEncodedStringsWithFeePayerSignatures));
+            combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedStringsWithFeePayerSignatures));
 
             assertEquals(expectedSignatures[0], mTxObj.getSignatures().get(0));
             assertEquals(expectedSignatures[1], mTxObj.getSignatures().get(1));
@@ -1394,7 +1392,7 @@ public class FeeDelegatedValueTransferWithRatioTest {
             List<String> list = new ArrayList<>();
             list.add(rlpEncoded);
 
-            mTxObj.combineSignatures(list);
+            mTxObj.combineSignedRawTransactions(list);
         }
     }
 

@@ -744,7 +744,7 @@ public class LegacyTransactionTest {
             String rlpEncoded = "0xf8673a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae0180820feaa0ade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6ea038160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e";
             List<String> rlpList = new ArrayList<>();
             rlpList.add(rlpEncoded);
-            String combined = legacyTransaction.combineSignatures(rlpList);
+            String combined = legacyTransaction.combineSignedRawTransactions(rlpList);
 
             assertEquals(rlpEncoded, combined);
         }
@@ -771,7 +771,7 @@ public class LegacyTransactionTest {
             String rlpEncoded = "0xf8673a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae0180820feaa0ade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6ea038160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e";
             List<String> rlpList = new ArrayList<>();
             rlpList.add(rlpEncoded);
-            String combined = legacyTransaction.combineSignatures(rlpList);
+            String combined = legacyTransaction.combineSignedRawTransactions(rlpList);
 
             assertEquals(rlpEncoded, combined);
         }
@@ -812,7 +812,7 @@ public class LegacyTransactionTest {
             List<String> rlpList = new ArrayList<>();
             rlpList.add(rlpEncoded);
 
-            legacyTransaction.combineSignatures(rlpList);
+            legacyTransaction.combineSignedRawTransactions(rlpList);
         }
 
         @Test
@@ -841,7 +841,7 @@ public class LegacyTransactionTest {
             List<String> rlpList = new ArrayList<>();
             rlpList.add(rlpEncoded);
 
-            legacyTransaction.combineSignatures(rlpList);
+            legacyTransaction.combineSignedRawTransactions(rlpList);
         }
     }
 

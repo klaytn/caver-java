@@ -999,7 +999,7 @@ public class AccountUpdateTest {
             String rlpEncoded = "0x20f86c018505d21dba0083015f909440efcb7d744fdc881f698a8ec573999fe63835458201c0f847f845820fe9a0f2a83743da6931ce25a29d04f1c51cec8464f0d9d4dabb5acb059aa3fb8c345aa065879e06474669005e02e0b8ca06cba6f8943022305659f8936f1f6109147fdd";
             List<String> list = new ArrayList<>();
             list.add(rlpEncoded);
-            String combined = mTxObj.combineSignatures(list);
+            String combined = mTxObj.combineSignedRawTransactions(list);
 
             assertEquals(rlpEncoded, combined);
             assertEquals(expectedSignature, mTxObj.getSignatures().get(0));
@@ -1049,7 +1049,7 @@ public class AccountUpdateTest {
                     "0x20f86c018505d21dba0083015f909440efcb7d744fdc881f698a8ec573999fe63835458201c0f847f845820fe9a0935584330d98f4a8a1cf83bf81ea7a18e33a962ad17b6a9eb8e04e3f5f95179da026804e07b5c105427497e8336300c1435d30ffa8d379dc27e5c1facd966c58db"
             };
 
-            String combined = mTxObj.combineSignatures(Arrays.asList(rlpEncodedString));
+            String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedString));
             assertEquals(expectedRLPEncoded, combined);
             assertEquals(expectedSignature[0], mTxObj.getSignatures().get(0));
             assertEquals(expectedSignature[1], mTxObj.getSignatures().get(1));
@@ -1082,7 +1082,7 @@ public class AccountUpdateTest {
             List<String> list = new ArrayList<>();
             list.add(rlpEncoded);
 
-            mTxObj.combineSignatures(list);
+            mTxObj.combineSignedRawTransactions(list);
         }
     }
 

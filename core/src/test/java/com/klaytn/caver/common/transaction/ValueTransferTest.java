@@ -917,7 +917,7 @@ public class ValueTransferTest {
             String rlpEncoded = "0x08f87f3a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae01947d0104ac150f749d36bb34999bcade9f2c0bd2e6f847f845820feaa03d820b27d0997baf16f98df01c7b2b2e9734ad05b2228c4d403c2facff8397f3a01f4a44eeb8b7f0b0019162d1d6b90c401078e56fcd7495e74f7cfcd37e25f017";
             List<String> list = new ArrayList<>();
             list.add(rlpEncoded);
-            String combined = mValueTransfer.combineSignatures(list);
+            String combined = mValueTransfer.combineSignedRawTransactions(list);
 
             assertEquals(expectedSignature, mValueTransfer.getSignatures().get(0));
         }
@@ -966,7 +966,7 @@ public class ValueTransferTest {
                     "0x08f87f3a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae01947d0104ac150f749d36bb34999bcade9f2c0bd2e6f847f845820fe9a0c9845154419b26dcb7700b4856c38f6e272004654ac3f38e9663134863600c52a05671961420adee43ee4538cba0200e82ff3c939c81e7d6f977660546b06d6914"
             };
 
-            String combined = mValueTransfer.combineSignatures(Arrays.asList(rlpEncodedString));
+            String combined = mValueTransfer.combineSignedRawTransactions(Arrays.asList(rlpEncodedString));
             assertEquals(expectedRLPEncoded, combined);
             assertEquals(expectedSignature[0], mValueTransfer.getSignatures().get(0));
             assertEquals(expectedSignature[1], mValueTransfer.getSignatures().get(1));
@@ -1001,7 +1001,7 @@ public class ValueTransferTest {
             List<String> list = new ArrayList<>();
             list.add(rlpEncoded);
 
-            mValueTransfer.combineSignatures(list);
+            mValueTransfer.combineSignedRawTransactions(list);
         }
     }
 

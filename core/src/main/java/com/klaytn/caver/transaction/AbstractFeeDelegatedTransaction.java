@@ -226,7 +226,7 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
      * @param rlpEncoded A List of RLP-encoded transaction strings.
      * @return String
      */
-    public String combineSignatures(List<String> rlpEncoded) {
+    public String combineSignedRawTransactions(List<String> rlpEncoded) {
         boolean fillVariable = false;
 
         // If the signatures are empty, there may be an undefined member variable.

@@ -1294,7 +1294,7 @@ public class FeeDelegatedValueTransferMemoWithRatioTest {
 
             String rlpEncoded = "0x12f88c018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94ceca418cc3ed540c8d16675fe600d703154e379f8568656c6c6f1ef847f845820feaa050edf44854ee83c3ea396614796a19b9ebe4714b6fde40f52ce02b8e7a32be22a01fbbd3dd81af0eadc375e390fd468d9574a76a826cc02abe55f1d1176da4286d80c4c3018080";
 
-            String combined = mTxObj.combineSignatures(Arrays.asList(rlpEncoded));
+            String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncoded));
 
             SignatureData expectedSignatureData = new SignatureData(
                     "0x0fea",
@@ -1333,7 +1333,7 @@ public class FeeDelegatedValueTransferMemoWithRatioTest {
                     "0x12f88c018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94ceca418cc3ed540c8d16675fe600d703154e379f8568656c6c6f1ef847f845820feaa0f1e794e5f0a28afce80bd9a89883ed55f96a8d45b03ae8355524a0000eac8a2ea0202e179034aefcadcc7a25360c3bb88f1a572c5912e5031bac11d466ebb6727e80c4c3018080",
             };
 
-            String combined = mTxObj.combineSignatures(Arrays.asList(rlpEncodedStrings));
+            String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedStrings));
             String expectedRLPEncoding = "0x12f9011a018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94ceca418cc3ed540c8d16675fe600d703154e379f8568656c6c6f1ef8d5f845820feaa050edf44854ee83c3ea396614796a19b9ebe4714b6fde40f52ce02b8e7a32be22a01fbbd3dd81af0eadc375e390fd468d9574a76a826cc02abe55f1d1176da4286df845820fe9a03c5bdf4fba47ee89e3072d2c707efb241aef04cb2c7b9771bea2ffd62c2b3807a05d7be6df572fdb60f68a3250da5794a983f609991561d31a9189f0d7212de88cf845820feaa0f1e794e5f0a28afce80bd9a89883ed55f96a8d45b03ae8355524a0000eac8a2ea0202e179034aefcadcc7a25360c3bb88f1a572c5912e5031bac11d466ebb6727e80c4c3018080";
 
             SignatureData[] expectedSignatureData = new SignatureData[]{
@@ -1375,7 +1375,7 @@ public class FeeDelegatedValueTransferMemoWithRatioTest {
                     .build();
 
             String rlpEncoded = "0x12f8a0018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94ceca418cc3ed540c8d16675fe600d703154e379f8568656c6c6f1ec4c301808094188375ff24b14775e1c13d382c2d1ef3a27ca614f847f845820fe9a05610e0b35da77d24c009fd6040a43ee70248b60b91892611a0cf36ef185399a2a05fc451b5b9e90453e8fcdf797e1a0875746ddfe1fdcc6617a21eb8e35b328f76";
-            String combined = mTxObj.combineSignatures(Arrays.asList(rlpEncoded));
+            String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncoded));
 
             SignatureData signatureData = new SignatureData(
                     "0x0fe9",
@@ -1414,7 +1414,7 @@ public class FeeDelegatedValueTransferMemoWithRatioTest {
                     "0x12f8a0018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94ceca418cc3ed540c8d16675fe600d703154e379f8568656c6c6f1ec4c301808094188375ff24b14775e1c13d382c2d1ef3a27ca614f847f845820fe9a09913be30cc8b8c68fd4745f6b04ede43e272496c9245bc0784339cdff8b3c008a02e3b652fa111946ea868e29714370822220dec6c4bfabfcaf1f023df800217d2",
             };
 
-            String combined = mTxObj.combineSignatures(Arrays.asList(rlpEncodedStrings));
+            String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedStrings));
             String expectedRLPEncoded = "0x12f9012e018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94ceca418cc3ed540c8d16675fe600d703154e379f8568656c6c6f1ec4c301808094188375ff24b14775e1c13d382c2d1ef3a27ca614f8d5f845820fe9a05610e0b35da77d24c009fd6040a43ee70248b60b91892611a0cf36ef185399a2a05fc451b5b9e90453e8fcdf797e1a0875746ddfe1fdcc6617a21eb8e35b328f76f845820feaa0defc41992109af25e9956cbe7d593cd3f65dd2bf1e8f71d7ac1799451a90c062a03487aacf56a6f5f4719e51778ac5fac00e6994b0327ffa5edf99d879116e6e5af845820fe9a09913be30cc8b8c68fd4745f6b04ede43e272496c9245bc0784339cdff8b3c008a02e3b652fa111946ea868e29714370822220dec6c4bfabfcaf1f023df800217d2";
 
             SignatureData[] expectedSignatureData = new SignatureData[]{
@@ -1474,7 +1474,7 @@ public class FeeDelegatedValueTransferMemoWithRatioTest {
                     ),
             };
 
-            String combined = mTxObj.combineSignatures(Arrays.asList(rlpEncodedString));
+            String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedString));
 
             String rlpEncodedStringsWithFeePayerSignatures = "0x12f9012e018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94ceca418cc3ed540c8d16675fe600d703154e379f8568656c6c6f1ec4c301808094188375ff24b14775e1c13d382c2d1ef3a27ca614f8d5f845820fe9a05610e0b35da77d24c009fd6040a43ee70248b60b91892611a0cf36ef185399a2a05fc451b5b9e90453e8fcdf797e1a0875746ddfe1fdcc6617a21eb8e35b328f76f845820feaa0defc41992109af25e9956cbe7d593cd3f65dd2bf1e8f71d7ac1799451a90c062a03487aacf56a6f5f4719e51778ac5fac00e6994b0327ffa5edf99d879116e6e5af845820fe9a09913be30cc8b8c68fd4745f6b04ede43e272496c9245bc0784339cdff8b3c008a02e3b652fa111946ea868e29714370822220dec6c4bfabfcaf1f023df800217d2";
 
@@ -1496,7 +1496,7 @@ public class FeeDelegatedValueTransferMemoWithRatioTest {
                     ),
             };
 
-            combined = mTxObj.combineSignatures(Arrays.asList(rlpEncodedStringsWithFeePayerSignatures));
+            combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedStringsWithFeePayerSignatures));
 
             assertEquals(expectedSignatures[0], mTxObj.getSignatures().get(0));
             assertEquals(expectedSignatures[1], mTxObj.getSignatures().get(1));
@@ -1530,7 +1530,7 @@ public class FeeDelegatedValueTransferMemoWithRatioTest {
             List<String> list = new ArrayList<>();
             list.add(rlpEncoded);
 
-            mTxObj.combineSignatures(list);
+            mTxObj.combineSignedRawTransactions(list);
         }
     }
 

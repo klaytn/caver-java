@@ -181,7 +181,7 @@ public class UtilsTest {
         }
 
         @Test
-        public void alreadyDecompressedKey() {
+        public void alreadyCompressedKey() {
             String expectedCompressed = PrivateKey.generate().getPublicKey(true);
             String actualCompressed = Utils.compressPublicKey(expectedCompressed);
             assertTrue(Utils.isValidPublicKey(actualCompressed));

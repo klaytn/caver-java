@@ -1,6 +1,5 @@
 package com.klaytn.caver.utils;
 
-import com.klaytn.caver.Klay;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.bouncycastle.math.ec.ECPoint;
 import org.web3j.crypto.ECDSASignature;
@@ -229,7 +228,7 @@ public class Utils {
      * @return BigDecimal
      */
     public static String convertToPeb(String num, String unit) {
-        return convertToPeb(new BigDecimal(num), KLAYUnit.fromString(unit));
+        return convertToPeb(new BigDecimal(num), KlayUnit.fromString(unit));
     }
 
     /**
@@ -239,7 +238,7 @@ public class Utils {
      * @return BigDecimal
      */
     public static String convertToPeb(BigDecimal num, String unit) {
-        return convertToPeb(num, KLAYUnit.fromString(unit));
+        return convertToPeb(num, KlayUnit.fromString(unit));
     }
 
     /**
@@ -248,7 +247,7 @@ public class Utils {
      * @param unit Th unit to convert from.
      * @return BigDecimal
      */
-    public static String convertToPeb(String num, KLAYUnit unit) {
+    public static String convertToPeb(String num, KlayUnit unit) {
         return convertToPeb(new BigDecimal(num), unit);
     }
 
@@ -260,7 +259,7 @@ public class Utils {
      * @param unit Th unit to convert from.
      * @return BigDecimal
      */
-    public static String convertToPeb(BigDecimal num, KLAYUnit unit) {
+    public static String convertToPeb(BigDecimal num, KlayUnit unit) {
         return num.multiply(unit.getPebFactor()).toString();
     }
 
@@ -271,7 +270,7 @@ public class Utils {
      * @return BigDecimal
      */
     public static String convertFromPeb(String num, String unit) {
-        return convertFromPeb(new BigDecimal(num), KLAYUnit.fromString(unit));
+        return convertFromPeb(new BigDecimal(num), KlayUnit.fromString(unit));
     }
 
     /**
@@ -281,7 +280,7 @@ public class Utils {
      * @return BigDecimal
      */
     public static String convertFromPeb(BigDecimal num, String unit) {
-        return convertFromPeb(num, KLAYUnit.fromString(unit));
+        return convertFromPeb(num, KlayUnit.fromString(unit));
     }
 
     /**
@@ -290,7 +289,7 @@ public class Utils {
      * @param unit The unit to convert to
      * @return BigDecimal
      */
-    public static String convertFromPeb(String num, KLAYUnit unit) {
+    public static String convertFromPeb(String num, KlayUnit unit) {
         return convertFromPeb(new BigDecimal(num), unit).toString();
     }
 
@@ -300,7 +299,7 @@ public class Utils {
      * @param unit The unit to convert to
      * @return BigDecimal
      */
-    public static String convertFromPeb(BigDecimal num, KLAYUnit unit) {
+    public static String convertFromPeb(BigDecimal num, KlayUnit unit) {
         return num.divide(unit.getPebFactor()).toString();
     }
 
@@ -361,8 +360,8 @@ public class Utils {
     }
 
     /**
-     * Check if string has number format.
-     * @param input A number format string
+     * Check if string has hex number format.
+     * @param input A hex number format string
      * @return boolean
      */
     public static boolean isNumber(String input) {
@@ -410,7 +409,7 @@ public class Utils {
         return bytes;
     }
 
-    public enum KLAYUnit {
+    public enum KlayUnit {
         peb("peb", 0),
         kpeb("kpeb", 3),
         Mpeb("Mpeb", 6),
@@ -427,7 +426,7 @@ public class Utils {
         private String unit;
         private BigDecimal pebFactor;
 
-        KLAYUnit(String unit, int factor) {
+        KlayUnit(String unit, int factor) {
             this.unit = unit;
             this.pebFactor = BigDecimal.TEN.pow(factor);
         }
@@ -441,15 +440,15 @@ public class Utils {
             return unit;
         }
 
-        public static KLAYUnit fromString(String unitName) {
+        public static KlayUnit fromString(String unitName) {
             if (unitName != null) {
-                for (KLAYUnit unit : KLAYUnit.values()) {
+                for (KlayUnit unit : KlayUnit.values()) {
                     if (unitName.equals(unit.unit)) {
                         return unit;
                     }
                 }
             }
-            return KLAYUnit.valueOf(unitName);
+            return KlayUnit.valueOf(unitName);
         }
     }
 }

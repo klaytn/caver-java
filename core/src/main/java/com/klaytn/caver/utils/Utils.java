@@ -82,7 +82,7 @@ public class Utils {
     }
 
     /**
-     * Check if th given public key is valid.
+     * Check if the given public key is valid.
      * It also check both compressed and uncompressed key.
      * @param publicKey public key
      * @return valid or not
@@ -225,7 +225,7 @@ public class Utils {
      * Converts amount to peb amount.
      * @param num The amount to convert.
      * @param unit Th unit to convert from.
-     * @return BigDecimal
+     * @return String
      */
     public static String convertToPeb(String num, String unit) {
         return convertToPeb(new BigDecimal(num), KlayUnit.fromString(unit));
@@ -235,7 +235,7 @@ public class Utils {
      * Converts amount to peb amount.
      * @param num The amount to convert.
      * @param unit Th unit to convert from.
-     * @return BigDecimal
+     * @return String
      */
     public static String convertToPeb(BigDecimal num, String unit) {
         return convertToPeb(num, KlayUnit.fromString(unit));
@@ -245,19 +245,17 @@ public class Utils {
      * Converts amount to peb amount.
      * @param num The amount to convert.
      * @param unit Th unit to convert from.
-     * @return BigDecimal
+     * @return String
      */
     public static String convertToPeb(String num, KlayUnit unit) {
         return convertToPeb(new BigDecimal(num), unit);
     }
 
-
-
     /**
      * Converts amount to peb amount.
      * @param num The amount to convert.
      * @param unit Th unit to convert from.
-     * @return BigDecimal
+     * @return String
      */
     public static String convertToPeb(BigDecimal num, KlayUnit unit) {
         return num.multiply(unit.getPebFactor()).toString();
@@ -267,7 +265,7 @@ public class Utils {
      * Converts peb amount to specific unit amount.
      * @param num The peb amount
      * @param unit The unit to convert to
-     * @return BigDecimal
+     * @return String
      */
     public static String convertFromPeb(String num, String unit) {
         return convertFromPeb(new BigDecimal(num), KlayUnit.fromString(unit));
@@ -277,7 +275,7 @@ public class Utils {
      * Converts peb amount to specific unit amount.
      * @param num The peb amount
      * @param unit The unit to convert to
-     * @return BigDecimal
+     * @return String
      */
     public static String convertFromPeb(BigDecimal num, String unit) {
         return convertFromPeb(num, KlayUnit.fromString(unit));
@@ -287,7 +285,7 @@ public class Utils {
      * Converts peb amount to specific unit amount.
      * @param num The peb amount
      * @param unit The unit to convert to
-     * @return BigDecimal
+     * @return String
      */
     public static String convertFromPeb(String num, KlayUnit unit) {
         return convertFromPeb(new BigDecimal(num), unit).toString();
@@ -297,7 +295,7 @@ public class Utils {
      * Converts peb amount to specific unit amount.
      * @param num The peb amount
      * @param unit The unit to convert to
-     * @return BigDecimal
+     * @return String
      */
     public static String convertFromPeb(BigDecimal num, KlayUnit unit) {
         return num.divide(unit.getPebFactor()).toString();

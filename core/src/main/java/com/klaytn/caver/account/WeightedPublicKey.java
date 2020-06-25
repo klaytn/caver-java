@@ -1,10 +1,19 @@
 package com.klaytn.caver.account;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.klaytn.caver.utils.Utils;
 import org.web3j.utils.Numeric;
 
+import java.io.IOException;
 import java.math.BigInteger;
 
+@JsonDeserialize(using = WeightedPublicKey.WeightedPublicKeyDeserializer.class)
+@JsonSerialize(using = WeightedPublicKey.WeightedPublicKeySerializer.class)
 public class WeightedPublicKey {
 
     /**
@@ -83,5 +92,40 @@ public class WeightedPublicKey {
 
         String compressedKey = Utils.compressPublicKey(this.publicKey);
         return new String[] {Numeric.toHexStringWithPrefix(this.weight), compressedKey};
+    }
+
+    public static class WeightedPublicKeySerializer extends JsonSerializer<WeightedPublicKey> {
+        @Override
+        public void serialize(WeightedPublicKey weightedPublicKey, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
+            jsonGenerator.writeStartObject();
+
+            jsonGenerator.writeFieldName("weight");
+            jsonGenerator.writeNumber(weightedPublicKey.weight);
+
+            String decompressedKey = Utils.decompressPublicKey(weightedPublicKey.publicKey);
+            String stripHexKey = Utils.stripHexPrefix(decompressedKey);
+            jsonGenerator.writeFieldName("key");
+            jsonGenerator.writeStartObject();
+            jsonGenerator.writeStringField("x", Utils.addHexPrefix(stripHexKey.substring(0, 64)));
+            jsonGenerator.writeStringField("y", Utils.addHexPrefix(stripHexKey.substring(64)));
+            jsonGenerator.writeEndObject();
+
+            jsonGenerator.writeEndObject();
+        }
+    }
+
+    public static class WeightedPublicKeyDeserializer extends JsonDeserializer<WeightedPublicKey> {
+        @Override
+        public WeightedPublicKey deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            JsonNode node = p.getCodec().readTree(p);
+            BigInteger weight = node.get("weight").bigIntegerValue();
+
+            JsonNode key = node.get("key");
+            String x = key.get("x").asText();
+            String y = key.get("y").asText();
+
+            String publicKey = x + Utils.stripHexPrefix(y);
+            return new WeightedPublicKey(publicKey, weight);
+        }
     }
 }

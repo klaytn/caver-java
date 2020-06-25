@@ -1,7 +1,13 @@
 package com.klaytn.caver.account;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.web3j.utils.Numeric;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -9,6 +15,7 @@ import java.util.Arrays;
  * the smart contract account always fails.
  * If an account has the key AccountKeyFail, the tx validation process always fails.
  */
+@JsonSerialize(using = AccountKeyFail.AccountKeyFailSerializer.class)
 public class AccountKeyFail implements IAccountKey{
     /**
      * AccountKeyFail's RLP-Encoded data
@@ -63,5 +70,21 @@ public class AccountKeyFail implements IAccountKey{
      */
     public static String getType() {
         return TYPE;
+    }
+
+    public static class AccountKeyFailSerializer extends JsonSerializer<AccountKeyFail> {
+        @Override
+        public void serialize(AccountKeyFail value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {
+            gen.writeStartObject();
+
+            gen.writeFieldName("keyType");
+            gen.writeNumber(Numeric.toBigInt(getType()));
+
+            gen.writeFieldName("key");
+            gen.writeStartObject();
+            gen.writeEndObject();
+
+            gen.writeEndObject();
+        }
     }
 }

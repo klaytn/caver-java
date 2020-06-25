@@ -1,7 +1,14 @@
 package com.klaytn.caver.account;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.klaytn.caver.tx.account.AccountKeyRoleBased;
 import org.web3j.utils.Numeric;
+
+import java.io.IOException;
 
 /**
  * AccountKeyNil represents an empty key. If an account tries to having an AccountKeyNil object,
@@ -10,6 +17,7 @@ import org.web3j.utils.Numeric;
  * field of the TxTypeAccountUpdate transaction would be: [AccountKeyNil, NewKey, AccountKeyNil]
  * Then, only the RoleAccountUpdate key is updated. Other roles are not updated.
  */
+@JsonSerialize(using = AccountKeyNil.AccountKeyNilSerializer.class)
 public class AccountKeyNil implements IAccountKey{
 
     /**
@@ -59,6 +67,23 @@ public class AccountKeyNil implements IAccountKey{
      */
     public static String getType() {
         return Numeric.toHexString(RLP);
+    }
+
+
+    public static class AccountKeyNilSerializer extends JsonSerializer<AccountKeyNil> {
+        @Override
+        public void serialize(AccountKeyNil value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {
+            gen.writeStartObject();
+
+            gen.writeFieldName("keyType");
+            gen.writeNumber(0);
+
+            gen.writeFieldName("key");
+            gen.writeStartObject();
+            gen.writeEndObject();
+
+            gen.writeEndObject();
+        }
     }
 
 

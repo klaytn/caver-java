@@ -21,6 +21,7 @@
 package com.klaytn.caver.scenario;
 
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.base.Accounts;
 import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.fee.FeePayerManager;
 import com.klaytn.caver.methods.response.Bytes32;
@@ -28,6 +29,7 @@ import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.tx.type.TxType;
 import com.klaytn.caver.utils.Convert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.Response;
 import org.web3j.tx.gas.StaticGasProvider;
@@ -57,6 +59,11 @@ public class Scenario {
     Caver caver;
 
     public Scenario() {
+    }
+
+    @BeforeClass
+    public static void allSetup() {
+        Accounts.fillUpKlayToAccount();
     }
 
     @Before

@@ -4,6 +4,7 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.methods.response.KlayAccount;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
+import com.klaytn.caver.scenario.Scenario;
 import com.klaytn.caver.tx.gas.DefaultGasProvider;
 import com.klaytn.caver.kct.KIP7;
 import com.klaytn.caver.tx.manager.TransactionManager;
@@ -21,7 +22,7 @@ import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static org.junit.Assert.*;
 
 
-public class KIP7Test {
+public class KIP7Test extends Scenario {
     private static final String ContractName = "TestKIP7Contract";
     private static final String ContractSymbol = "TKCP";
     private static final BigInteger ContractDecimal = BigInteger.valueOf(18);

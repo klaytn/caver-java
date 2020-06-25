@@ -21,6 +21,7 @@ import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.ValueTransferTransaction;
 import com.klaytn.caver.utils.Convert;
+import org.junit.BeforeClass;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -52,7 +53,12 @@ public class Accounts {
             "0x9d0dcbe163be73163348e7f96accb2b9e1e9dcf6"
     );
 
-    static {
+//    static {
+//        List<KlayCredentials> testCredentials = new ArrayList<>(Arrays.asList(LUMAN, WAYNE, BRANDON, FEE_PAYER));
+//        fillUpKlay(testCredentials);
+//    }
+
+    public static void fillUpKlayToAccount() {
         List<KlayCredentials> testCredentials = new ArrayList<>(Arrays.asList(LUMAN, WAYNE, BRANDON, FEE_PAYER));
         fillUpKlay(testCredentials);
     }

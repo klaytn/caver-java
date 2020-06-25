@@ -28,6 +28,7 @@ import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterNumber;
 import org.web3j.protocol.core.Request;
+import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Async;
 import org.web3j.utils.Numeric;
 
@@ -55,6 +56,10 @@ public class JsonRpc2_0Klay implements Klay {
             ScheduledExecutorService scheduledExecutorService,
             Admin web3j) {
         this.web3jService = web3jService;
+
+        //https://stackoverflow.com/questions/45838774/java-io-ioexception-unexpected-end-of-stream-on-connection-in-android
+        ((HttpService)this.web3jService).addHeader("Connection", "close");
+
         //this.web3jRx = new JsonRpc2_0Rx(this, scheduledExecutorService);
         this.blockTime = pollingInterval;
         this.scheduledExecutorService = scheduledExecutorService;

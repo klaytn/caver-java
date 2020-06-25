@@ -75,15 +75,11 @@ public class Accounts {
         TransactionManager transactionManager
                 = new TransactionManager.Builder(caver, KLAY_PROVIDER).setChaindId(LOCAL_CHAIN_ID).build();
         for (KlayCredentials testCredential : testCredentials) {
-            feedToEach(transactionManager, testCredential, caver);
+            feedToEach(transactionManager, testCredential);
         }
     }
 
-    private static void feedToEach(TransactionManager transactionManager, KlayCredentials testCredential, Caver caver) throws IOException {
-
-        GetNonceProcessor getNonceProcessor = new GetNonceProcessor(caver);
-        BigInteger nonce = getNonceProcessor.getNonce(KLAY_PROVIDER);
-
+    private static void feedToEach(TransactionManager transactionManager, KlayCredentials testCredential) throws IOException {
         ValueTransferTransaction valueTransferTransaction = ValueTransferTransaction.create(
                 KLAY_PROVIDER.getAddress(),
                 testCredential.getAddress(),
@@ -91,7 +87,6 @@ public class Accounts {
                 BigInteger.valueOf(4_300_000)
         );
 
-        valueTransferTransaction.nonce(nonce);
         transactionManager.executeTransaction(valueTransferTransaction);
     }
 }

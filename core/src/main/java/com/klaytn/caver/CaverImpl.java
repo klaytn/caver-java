@@ -16,6 +16,7 @@
 
 package com.klaytn.caver;
 
+import okhttp3.OkHttpClient;
 import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.admin.JsonRpc2_0Admin;
@@ -35,8 +36,16 @@ public class CaverImpl implements Caver {
         this(DEFAULT_URL);
     }
 
+    static OkHttpClient createHttpServiceObject() {
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                .retryOnConnectionFailure(true)
+                .build();
+
+        return httpClient;
+    }
+
     CaverImpl(String url) {
-        this(new HttpService(url));
+        this(new HttpService(url, createHttpServiceObject()));
     }
 
     CaverImpl(Web3jService web3jService) {

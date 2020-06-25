@@ -17,6 +17,7 @@
 package com.klaytn.caver.feature;
 
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.base.Accounts;
 import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.tx.Account;
@@ -44,7 +45,7 @@ import static com.klaytn.caver.base.Accounts.*;
 import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static org.junit.Assert.assertEquals;
 
-public class ManagedTransactionTest {
+public class ManagedTransactionTest extends Accounts {
     private static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
     private static final byte[] PAYLOAD = Numeric.hexStringToByteArray("0x60806040526000805534801561001457600080fd5b50610116806100246000396000f3006080604052600436106053576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd14605857806342cbb15c146080578063d14e62b81460a8575b600080fd5b348015606357600080fd5b50606a60d2565b6040518082815260200191505060405180910390f35b348015608b57600080fd5b50609260d8565b6040518082815260200191505060405180910390f35b34801560b357600080fd5b5060d06004803603810190808035906020019092919050505060e0565b005b60005481565b600043905090565b80600081905550505600a165627a7a7230582064856de85a2706463526593b08dd790054536042ef66d3204018e6790a2208d10029");
 

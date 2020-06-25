@@ -43,7 +43,7 @@ import static junit.framework.TestCase.fail;
 /**
  * Common methods and settings used across scenarios
  */
-public class Scenario {
+public class Scenario extends Accounts{
 
     static final BigInteger GAS_PRICE = Convert.toPeb("25", Convert.Unit.STON).toBigInteger();
     static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
@@ -59,11 +59,6 @@ public class Scenario {
     Caver caver;
 
     public Scenario() {
-    }
-
-    @BeforeClass
-    public static void allSetup() {
-        Accounts.fillUpKlayToAccount();
     }
 
     @Before

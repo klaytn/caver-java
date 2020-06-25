@@ -17,6 +17,7 @@
 package com.klaytn.caver.feature;
 
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.base.Accounts;
 import com.klaytn.caver.fee.FeePayerManager;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.tx.manager.PollingTransactionReceiptProcessor;
@@ -34,7 +35,7 @@ import static com.klaytn.caver.base.Accounts.*;
 import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static org.junit.Assert.assertEquals;
 
-public class FeePayerManagerTest {
+public class FeePayerManagerTest extends Accounts {
 
     static final BigInteger GAS_PRICE = Convert.toPeb("25", Convert.Unit.STON).toBigInteger();
     static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);

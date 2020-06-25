@@ -17,6 +17,7 @@
 package com.klaytn.caver.feature;
 
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.base.Accounts;
 import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.tx.SmartContract;
@@ -42,7 +43,7 @@ import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertEquals;
 
-public class TransactionManagerTest {
+public class TransactionManagerTest extends Accounts {
 
     private final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
     private Caver caver;

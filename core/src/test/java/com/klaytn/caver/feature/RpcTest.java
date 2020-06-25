@@ -17,6 +17,7 @@
 package com.klaytn.caver.feature;
 
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.base.Accounts;
 import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.request.KlayFilter;
@@ -56,7 +57,7 @@ import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static com.klaytn.caver.base.LocalValues.LOCAL_NETWORK_ID;
 import static junit.framework.TestCase.*;
 
-public class RpcTest {
+public class RpcTest extends Accounts {
     private static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
 
     private static Caver caver;

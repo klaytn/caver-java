@@ -53,11 +53,7 @@ public class Accounts {
             "0x9d0dcbe163be73163348e7f96accb2b9e1e9dcf6"
     );
 
-//    static {
-//        List<KlayCredentials> testCredentials = new ArrayList<>(Arrays.asList(LUMAN, WAYNE, BRANDON, FEE_PAYER));
-//        fillUpKlay(testCredentials);
-//    }
-
+    @BeforeClass
     public static void fillUpKlayToAccount() {
         List<KlayCredentials> testCredentials = new ArrayList<>(Arrays.asList(LUMAN, WAYNE, BRANDON, FEE_PAYER));
         fillUpKlay(testCredentials);

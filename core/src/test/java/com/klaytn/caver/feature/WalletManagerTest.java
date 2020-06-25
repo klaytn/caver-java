@@ -16,6 +16,7 @@
 
 package com.klaytn.caver.feature;
 
+import com.klaytn.caver.base.Accounts;
 import com.klaytn.caver.wallet.WalletManager;
 import com.klaytn.caver.wallet.exception.CredentialNotFoundException;
 import org.junit.Test;
@@ -24,7 +25,7 @@ import static com.klaytn.caver.base.Accounts.BRANDON;
 import static com.klaytn.caver.base.Accounts.LUMAN;
 import static org.junit.Assert.assertEquals;
 
-public class WalletManagerTest {
+public class WalletManagerTest extends Accounts {
 
     @Test
     public void testDefaultWhenOnlyOne() throws CredentialNotFoundException {

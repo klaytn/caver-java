@@ -1,6 +1,7 @@
 package com.klaytn.caver.feature;
 
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.base.Accounts;
 import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.methods.response.KlayAccount;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
@@ -22,7 +23,7 @@ import static com.klaytn.caver.base.Accounts.*;
 import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static org.junit.Assert.*;
 
-public class KIP17Test extends Scenario {
+public class KIP17Test extends Accounts {
     private static final String sContractName = "NFTTest";
     private static final String sContractSymbol = "NFT";
     private static final String sTokenURI = "https://game.example/item-id-8u5h2m.json";

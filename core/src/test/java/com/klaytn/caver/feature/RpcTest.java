@@ -24,6 +24,7 @@ import com.klaytn.caver.methods.request.KlayFilter;
 import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.Boolean;
 import com.klaytn.caver.methods.response.*;
+import com.klaytn.caver.scenario.Scenario;
 import com.klaytn.caver.tx.Account;
 import com.klaytn.caver.tx.SmartContract;
 import com.klaytn.caver.tx.ValueTransfer;
@@ -57,7 +58,7 @@ import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static com.klaytn.caver.base.LocalValues.LOCAL_NETWORK_ID;
 import static junit.framework.TestCase.*;
 
-public class RpcTest extends Accounts {
+public class RpcTest extends Scenario {
     private static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
 
     private static Caver caver;
@@ -79,7 +80,7 @@ public class RpcTest extends Accounts {
     }
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void preSetUp() throws Exception {
         caver = Caver.build(Caver.DEFAULT_URL);
         KlayTransactionReceipt.TransactionReceipt receipt = getTransactionReceipt();
         testBlock = getTestBlock(receipt);

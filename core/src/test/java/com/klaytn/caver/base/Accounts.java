@@ -18,11 +18,14 @@ package com.klaytn.caver.base;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.crypto.KlayCredentials;
+import com.klaytn.caver.methods.response.Quantity;
+import com.klaytn.caver.tx.manager.GetNonceProcessor;
 import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.ValueTransferTransaction;
 import com.klaytn.caver.utils.Convert;
 import org.junit.BeforeClass;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +45,7 @@ public class Accounts {
     public static KlayCredentials FEE_PAYER;
 
     @BeforeClass
-    public static void fillUpKlayToAccount() {
+    public static void fillUpKlayToAccount() throws IOException {
         LUMAN = KlayCredentials.create(
                 "0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3",
                 "0x2c8ad0ea2e0781db8b8c9242e07de3a5beabb71a"
@@ -67,22 +70,28 @@ public class Accounts {
         fillUpKlay(testCredentials);
     }
 
-    private static void fillUpKlay(List<KlayCredentials> testCredentials) {
+    private static void fillUpKlay(List<KlayCredentials> testCredentials) throws IOException {
         Caver caver = Caver.build(Caver.DEFAULT_URL);
         TransactionManager transactionManager
                 = new TransactionManager.Builder(caver, KLAY_PROVIDER).setChaindId(LOCAL_CHAIN_ID).build();
         for (KlayCredentials testCredential : testCredentials) {
-            feedToEach(transactionManager, testCredential);
+            feedToEach(transactionManager, testCredential, caver);
         }
     }
 
-    private static void feedToEach(TransactionManager transactionManager, KlayCredentials testCredential) {
+    private static void feedToEach(TransactionManager transactionManager, KlayCredentials testCredential, Caver caver) throws IOException {
+
+        GetNonceProcessor getNonceProcessor = new GetNonceProcessor(caver);
+        BigInteger nonce = getNonceProcessor.getNonce(KLAY_PROVIDER);
+
         ValueTransferTransaction valueTransferTransaction = ValueTransferTransaction.create(
                 KLAY_PROVIDER.getAddress(),
                 testCredential.getAddress(),
                 Convert.toPeb("100", Convert.Unit.KLAY).toBigInteger(),
                 BigInteger.valueOf(4_300_000)
         );
+
+        valueTransferTransaction.nonce(nonce);
         transactionManager.executeTransaction(valueTransferTransaction);
     }
 }

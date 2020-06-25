@@ -44,7 +44,7 @@ import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertEquals;
 
-public class TransactionManagerTest extends Scenario {
+public class TransactionManagerTest extends Accounts {
 
     private final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
     private Caver caver;

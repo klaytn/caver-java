@@ -23,7 +23,7 @@ import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static org.junit.Assert.*;
 
 
-public class KIP7Test extends Scenario {
+public class KIP7Test extends Accounts {
     private static final String ContractName = "TestKIP7Contract";
     private static final String ContractSymbol = "TKCP";
     private static final BigInteger ContractDecimal = BigInteger.valueOf(18);

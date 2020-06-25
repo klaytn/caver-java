@@ -19,8 +19,8 @@ pull_klaytn_image: &pull_klaytn_image
   run:
     name: "Pull and tag Klaytn image"
     command: |
-          docker pull kjhman21/dev:v1.0.0
-          docker image tag kjhman21/dev:v1.0.0 klaytn
+          docker pull klaytn/build_base:latest
+          docker image tag klaytn/build_base:latest klaytn
 
 start_test_newwork: &start_test_newwork
   run:

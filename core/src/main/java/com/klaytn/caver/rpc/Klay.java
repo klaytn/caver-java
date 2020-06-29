@@ -655,6 +655,10 @@ public class Klay {
     
     public Request<?, KlaySignTransaction> signTransaction(AbstractTransaction transaction) {
 
+        if(Utils.isEmptySig(transaction.getSignatures())) {
+            transaction.getSignatures().remove(0);
+        }
+
         return new Request<>(
                 "klay_signTransaction",
                 Arrays.asList(transaction),
@@ -663,6 +667,10 @@ public class Klay {
     }
 
     public Request<?, KlaySignTransaction> signTransactionAsFeePayer(AbstractFeeDelegatedTransaction transaction) {
+        if(Utils.isEmptySig(transaction.getSignatures())) {
+            transaction.getSignatures().remove(0);
+        }
+
         return new Request<>(
                 "klay_signTransactionAsFeePayer",
                 Arrays.asList(transaction),

@@ -1,11 +1,15 @@
 package com.klaytn.caver.wallet.keyring;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.klaytn.caver.utils.Utils;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
 import org.web3j.rlp.RlpType;
 import org.web3j.utils.Bytes;
 import org.web3j.utils.Numeric;
 
+import javax.rmi.CORBA.Util;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -169,6 +173,7 @@ public class SignatureData {
      * Getter function for V.
      * @return String
      */
+    @JsonIgnore
     public String getV() {
         return v;
     }
@@ -177,6 +182,7 @@ public class SignatureData {
      * Getter function for R.
      * @return String
      */
+    @JsonIgnore
     public String getR() {
         return r;
     }
@@ -185,8 +191,30 @@ public class SignatureData {
      * Getter function for S.
      * @return String
      */
+    @JsonIgnore
     public String getS() {
         return s;
+    }
+
+    @JsonProperty("v")
+    public String getTrimZeroV() {
+        String v = Utils.stripHexPrefix(getV());
+        v =  v.replaceFirst("^0+(?!$)", "");
+        return Utils.addHexPrefix(v);
+    }
+
+    @JsonProperty("r")
+    public String getTrimZeroR() {
+        String r = Utils.stripHexPrefix(getR());
+        r =  r.replaceFirst("^0+(?!$)", "");
+        return Utils.addHexPrefix(r);
+    }
+
+    @JsonProperty("s")
+    public String getTrimZeroS() {
+        String s = Utils.stripHexPrefix(getS());
+        s =  s.replaceFirst("^0+(?!$)", "");
+        return Utils.addHexPrefix(s);
     }
 
     /**

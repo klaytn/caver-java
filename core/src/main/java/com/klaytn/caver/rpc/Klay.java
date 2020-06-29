@@ -91,22 +91,46 @@ public class Klay {
         );
     }
 
-    public Request<?, KlayAccount> getAccount(String address) {
+
+    /**
+     * Returns the account information of a given address.
+     * There are two different account types in Klaytn: Externally Owned Account (EOA) and Smart Contract Account.
+     * It sets blockTag to "LATEST"
+     * @param address The account address.
+     * @return AccountResponse
+     */
+    public Request<?, AccountResponse> getAccount(String address) {
         return getAccount(address, DefaultBlockParameterName.LATEST);
     }
 
-    public Request<?, KlayAccount> getAccount(String address, Quantity blockNumber) {
+    /**
+     * Returns the account information of a given address.
+     * There are two different account types in Klaytn: Externally Owned Account (EOA) and Smart Contract Account.
+     * @param address The account address.
+     * @param blockNumber The integer block number
+     * @return AccountResponse
+     */
+    public Request<?, AccountResponse> getAccount(String address, BigInteger blockNumber) {
+        String hexBlockNumber = Numeric.toHexStringWithPrefix(blockNumber);
+
         return new Request<>(
                 "klay_getAccount",
                 Arrays.asList(
                         address,
-                        blockNumber.getValue()
+                        hexBlockNumber
                 ),
                 web3jService,
-                KlayAccount.class);
+                AccountResponse.class);
     }
 
-    public Request<?, KlayAccount> getAccount(String address, DefaultBlockParameter blockTag) {
+    /**
+     * Returns the account information of a given address.
+     * There are two different account types in Klaytn: Externally Owned Account (EOA) and Smart Contract Account.
+     * @param address Address
+     * @param blockTag the string "latest", "earliest" or "pending"
+     * @return AccountResponse - Each account type has different attributes.
+     */
+    public Request<?, AccountResponse> getAccount(String address, DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_getAccount",
                 Arrays.asList(

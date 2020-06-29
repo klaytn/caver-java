@@ -138,25 +138,48 @@ public class Klay {
                         blockTag
                 ),
                 web3jService,
-                KlayAccount.class);
+                AccountResponse.class);
     }
 
-    public Request<?, KlayAccountKey> getAccountKey(String address) {
+    /**
+     * Returns the account key of the Externally Owned Account (EOA) of a given address.
+     * If the account has AccountKeyLegacy or the account of the given address is a Smart Contract Account, it will return an empty key value.
+     * It sets block tag to "LATEST".
+     * @param address The account address
+     * @return AccountKeyResponse
+     */
+    public Request<?, AccountKeyResponse> getAccountKey(String address) {
         return getAccountKey(address, DefaultBlockParameterName.LATEST);
     }
 
-    public Request<?, KlayAccountKey> getAccountKey(String address, Quantity blockNumber) {
+    /**
+     * Returns the account key of the Externally Owned Account (EOA) of a given address.
+     * If the account has AccountKeyLegacy or the account of the given address is a Smart Contract Account, it will return an empty key value.
+     * @param address The account address
+     * @param blockNumber The hex integer block number.
+     * @return AccountKeyResponse
+     */
+    public Request<?, AccountKeyResponse> getAccountKey(String address, BigInteger blockNumber) {
+        String hexBlockNumber = Numeric.toHexStringWithPrefix(blockNumber);
+
         return new Request<>(
                 "klay_getAccountKey",
                 Arrays.asList(
                         address,
-                        blockNumber.getValue()
+                        hexBlockNumber
                 ),
                 web3jService,
-                KlayAccountKey.class);
+                AccountKeyResponse.class);
     }
 
-    public Request<?, KlayAccountKey> getAccountKey(String address, DefaultBlockParameter blockTag) {
+    /**
+     * Returns the account key of the Externally Owned Account (EOA) of a given address.
+     * If the account has AccountKeyLegacy or the account of the given address is a Smart Contract Account, it will return an empty key value.
+     * @param address The account address
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return AccountKeyResponse
+     */
+    public Request<?, AccountKeyResponse> getAccountKey(String address, DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_getAccountKey",
                 Arrays.asList(

@@ -1,5 +1,6 @@
 package com.klaytn.caver.transaction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.klaytn.caver.Klay;
 import com.klaytn.caver.account.AccountKeyRoleBased;
 import com.klaytn.caver.utils.Utils;
@@ -265,6 +266,7 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
      * Returns a RLP-encoded transaction string for making fee payer's signature.
      * @return String
      */
+    @JsonIgnore
     public String getRLPEncodingForFeePayerSignature() {
         byte[] txRLP = Numeric.hexStringToByteArray(getCommonRLPEncodingForSignature());
 
@@ -332,6 +334,7 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
      * Getter function for feePayerSignatures
      * @return List
      */
+    @JsonIgnore
     public List<SignatureData> getFeePayerSignatures() {
         return feePayerSignatures;
     }

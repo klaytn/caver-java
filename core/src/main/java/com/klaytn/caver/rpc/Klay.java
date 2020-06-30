@@ -1,19 +1,19 @@
 package com.klaytn.caver.rpc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.account.IAccountKey;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.request.KlayFilter;
 import com.klaytn.caver.methods.request.KlayLogFilter;
-import com.klaytn.caver.methods.response.*;
 import com.klaytn.caver.methods.response.Boolean;
+import com.klaytn.caver.methods.response.*;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
 import com.klaytn.caver.transaction.AbstractTransaction;
-import com.klaytn.caver.tx.account.AccountKey;
-import org.web3j.protocol.ObjectMapperFactory;
+import com.klaytn.caver.utils.Utils;
 import org.web3j.protocol.Web3jService;
-import org.web3j.protocol.core.*;
+import org.web3j.protocol.core.DefaultBlockParameter;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.DefaultBlockParameterNumber;
+import org.web3j.protocol.core.Request;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
@@ -27,29 +27,32 @@ public class Klay {
         this.web3jService = web3jService;
     }
 
-
+    /**
+     * Returns true if the account associated with the address is created. It returns false otherwise.
+     * It sets block tag to "LATEST"
+     * @param address The account address
+     * @return Boolean - The existence of an input address
+     */
     public Request<?, Boolean> accountCreated(String address) {
         return accountCreated(address, DefaultBlockParameterName.LATEST);
     }
 
+    /**
+     * Returns true if the account associated with the address is created. It returns false otherwise.
+     * @param address The account address
+     * @param blockNumber The block number.
+     * @return Boolean - The existence of an input address
+     */
+    public Request<?, Boolean> accountCreated(String address, long blockNumber) {
+        DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
 
-    public Request<?, Boolean> accountCreated(String address, Quantity blockNumber) {
-        return new Request<>(
-                "klay_accountCreated",
-                Arrays.asList(
-                        address,
-                        blockNumber.getValue()
-                ),
-                web3jService,
-                Boolean.class
-        );
+        return accountCreated(address, blockParameterNumber);
     }
 
     /**
      * Returns true if the account associated with the address is created. It returns false otherwise.
-     *
-     * @param address The address
-     * @param defaultBlockParameter The string "latest", "earliest" or "pending"
+     * @param address The account address.
+     * @param blockTag The string "latest", "earliest" or "pending"
      * @return Boolean - The existence of an input address
      */
     public Request<?, Boolean> accountCreated(String address, DefaultBlockParameter blockTag) {
@@ -64,6 +67,10 @@ public class Klay {
         );
     }
 
+    /**
+     * Returns a list of addresses owned by client.
+     * @return Addresses - Addresses owned by the client.
+     */
     public Request<?, Addresses> getAccounts() {
         return new Request<>(
                 "klay_accounts",
@@ -72,9 +79,12 @@ public class Klay {
                 Addresses.class);
     }
 
-    public Request<?, Bytes> encodeAccountKey(IAccountKey accountKey) throws JsonProcessingException {
-        ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
-        String json = objectMapper.writeValueAsString(accountKey);
+    /**
+     * Encodes an account key using the RLP encoding scheme.
+     * @param accountKey Account Key Object
+     * @return Bytes
+     */
+    public Request<?, Bytes> encodeAccountKey(IAccountKey accountKey) {
         return new Request<>(
                 "klay_encodeAccountKey",
                 Arrays.asList(accountKey),
@@ -82,6 +92,11 @@ public class Klay {
                 Bytes.class);
     }
 
+    /**
+     * Decodes an RLP encoded account key.
+     * @param encodedAccountKey RLP encoded account key
+     * @return AccountKeyResponse
+     */
     public Request<?, AccountKeyResponse> decodeAccountKey(String encodedAccountKey) {
         return new Request<>(
                 "klay_decodeAccountKey",
@@ -95,7 +110,7 @@ public class Klay {
     /**
      * Returns the account information of a given address.
      * There are two different account types in Klaytn: Externally Owned Account (EOA) and Smart Contract Account.
-     * It sets blockTag to "LATEST"
+     * It sets block tag to "LATEST"
      * @param address The account address.
      * @return AccountResponse
      */
@@ -107,28 +122,21 @@ public class Klay {
      * Returns the account information of a given address.
      * There are two different account types in Klaytn: Externally Owned Account (EOA) and Smart Contract Account.
      * @param address The account address.
-     * @param blockNumber The integer block number
+     * @param blockNumber The block number..
      * @return AccountResponse
      */
-    public Request<?, AccountResponse> getAccount(String address, BigInteger blockNumber) {
-        String hexBlockNumber = Numeric.toHexStringWithPrefix(blockNumber);
+    public Request<?, AccountResponse> getAccount(String address, long blockNumber) {
+        DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
 
-        return new Request<>(
-                "klay_getAccount",
-                Arrays.asList(
-                        address,
-                        hexBlockNumber
-                ),
-                web3jService,
-                AccountResponse.class);
+        return getAccount(address, blockParameterNumber);
     }
 
     /**
      * Returns the account information of a given address.
      * There are two different account types in Klaytn: Externally Owned Account (EOA) and Smart Contract Account.
-     * @param address Address
-     * @param blockTag the string "latest", "earliest" or "pending"
-     * @return AccountResponse - Each account type has different attributes.
+     * @param address The account address
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return AccountResponse
      */
     public Request<?, AccountResponse> getAccount(String address, DefaultBlockParameter blockTag) {
         return new Request<>(
@@ -156,20 +164,13 @@ public class Klay {
      * Returns the account key of the Externally Owned Account (EOA) of a given address.
      * If the account has AccountKeyLegacy or the account of the given address is a Smart Contract Account, it will return an empty key value.
      * @param address The account address
-     * @param blockNumber The hex integer block number.
+     * @param blockNumber The block number..
      * @return AccountKeyResponse
      */
-    public Request<?, AccountKeyResponse> getAccountKey(String address, BigInteger blockNumber) {
-        String hexBlockNumber = Numeric.toHexStringWithPrefix(blockNumber);
+    public Request<?, AccountKeyResponse> getAccountKey(String address, long blockNumber) {
+        DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
 
-        return new Request<>(
-                "klay_getAccountKey",
-                Arrays.asList(
-                        address,
-                        hexBlockNumber
-                ),
-                web3jService,
-                AccountKeyResponse.class);
+        return getAccountKey(address, blockParameterNumber);
     }
 
     /**
@@ -187,24 +188,37 @@ public class Klay {
                         blockTag.getValue()
                 ),
                 web3jService,
-                KlayAccountKey.class);
+                AccountKeyResponse.class);
     }
 
+    /**
+     * Returns the balance of the account of given address.
+     * It sets block tag to "LATEST".
+     * @param address The account address to check for balance.
+     * @return Quantity
+     */
     public Request<?, Quantity> getBalance(String address) {
         return getBalance(address, DefaultBlockParameterName.LATEST);
     }
 
-    public Request<?, Quantity> getBalance(String address, Quantity blockNumber) {
-        return new Request<>(
-                "klay_getBalance",
-                Arrays.asList(
-                        address,
-                        blockNumber.getValue()
-                ),
-                web3jService,
-                Quantity.class);
+    /**
+     * Returns the balance of the account of given address.
+     * @param address The account address to check for balance.
+     * @param blockNumber The block number..
+     * @return Quantity
+     */
+    public Request<?, Quantity> getBalance(String address, long blockNumber) {
+        DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
+
+        return getBalance(address, blockParameterNumber);
     }
 
+    /**
+     * Returns the balance of the account of given address.
+     * @param address The account address to check for balance.
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return Quantity
+     */
     public Request<?, Quantity> getBalance(String address, DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_getBalance",
@@ -216,21 +230,35 @@ public class Klay {
                 Quantity.class);
     }
 
+    /**
+     * Returns code at a given address.
+     * It sets block tag to "LATEST"
+     * @param address The account address
+     * @return Bytes
+     */
     public Request<?, Bytes> getCode(String address) {
         return getCode(address, DefaultBlockParameterName.LATEST);
     }
 
-    public Request<?, Bytes> getCode(String address, Quantity blockNumber) {
-        return new Request<>(
-                "klay_getCode",
-                Arrays.asList(
-                        address,
-                        blockNumber.getValue()
-                ),
-                web3jService,
-                Bytes.class);
+
+    /**
+     * Returns code at a given address.
+     * @param address The account address
+     * @param blockNumber The block number.
+     * @return Bytes
+     */
+    public Request<?, Bytes> getCode(String address, long blockNumber) {
+        DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
+
+        return getCode(address, blockParameterNumber);
     }
 
+    /**
+     * Returns code at a given address.
+     * @param address The account address
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return Bytes
+     */
     public Request<?, Bytes> getCode(String address, DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_getCode",
@@ -242,21 +270,34 @@ public class Klay {
                 Bytes.class);
     }
 
+    /**
+     * Returns the number of transactions sent from an address.
+     * It sets block tag to "LATEST".
+     * @param address The account address
+     * @return Quantity
+     */
     public Request<?, Quantity> getTransactionCount(String address) {
         return getTransactionCount(address, DefaultBlockParameterName.LATEST);
     }
 
-    public Request<?, Quantity> getTransactionCount(String address, Quantity blockNumber) {
-        return new Request<>(
-                "klay_getTransactionCount",
-                Arrays.asList(
-                        address,
-                        blockNumber.getValue()
-                ),
-                web3jService,
-                Quantity.class);
+    /**
+     * Returns the number of transactions sent from an address.
+     * @param address The account address
+     * @param blockNumber The block number.
+     * @return Quantity
+     */
+    public Request<?, Quantity> getTransactionCount(String address, long blockNumber) {
+        DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
+
+        return getTransactionCount(address, blockParameterNumber);
     }
 
+    /**
+     * Returns the number of transaction sent from an address
+     * @param address The account address
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return Quantity
+     */
     public Request<?, Quantity> getTransactionCount(String address, DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_getTransactionCount",
@@ -268,21 +309,37 @@ public class Klay {
                 Quantity.class);
     }
 
+    /**
+     * Returns true if an input account has a non-empty codeHash at the time of a specific block number.
+     * It returns false if the account is an EOA or a smart contract account which doesn't have codeHash.
+     * It sets block tag to "LATEST".
+     * @param address The account address
+     * @return Boolean
+     */
     public Request<?, Boolean> isContractAccount(String address) {
         return isContractAccount(address, DefaultBlockParameterName.LATEST);
     }
 
-    public Request<?, Boolean> isContractAccount(String address, Quantity blockNumber) {
-        return new Request<>(
-                "klay_isContractAccount",
-                Arrays.asList(
-                        address,
-                        blockNumber.getValue()
-                ),
-                web3jService,
-                Boolean.class);
+    /**
+     * Returns true if an input account has a non-empty codeHash at the time of a specific block number.
+     * It returns false if the account is an EOA or a smart contract account which doesn't have codeHash.
+     * @param address The account address
+     * @param blockNumber The block number..
+     * @return Boolean
+     */
+    public Request<?, Boolean> isContractAccount(String address, long blockNumber) {
+        DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
+
+        return isContractAccount(address, blockParameterNumber);
     }
 
+    /**
+     * Returns true if an input account has a non-empty codeHash at the time of a specific block number.
+     * It returns false if the account is an EOA or a smart contract account which doesn't have codeHash.
+     * @param address The account address
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return Boolean
+     */
     public Request<?, Boolean> isContractAccount(String address, DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_isContractAccount",
@@ -294,6 +351,13 @@ public class Klay {
                 Boolean.class);
     }
 
+    /**
+     * The sign method calculates a Klaytn-specific signature.
+     * NOTE : The address to sign with must be unlocked.
+     * @param address The account address
+     * @param message The message to sign.
+     * @return Bytes
+     */
     public Request<?, Bytes> sign(String address, String message) {
         return new Request<>(
                 "klay_sign",
@@ -305,7 +369,10 @@ public class Klay {
                 Bytes.class);
     }
 
-    
+    /**
+     * Returns the number of most recent block.
+     * @return Quantity
+     */
     public Request<?, Quantity> getBlockNumber() {
         return new Request<>(
                 "klay_blockNumber",
@@ -314,11 +381,44 @@ public class Klay {
                 Quantity.class);
     }
 
-    public Request<?, KlayBlock> getBlockByNumber(DefaultBlockParameter defaultBlockParameter) {
-        return getBlockByNumber(defaultBlockParameter, true);
+    /**
+     * Returns information about a block by block number.
+     * It set "isFullTransaction" param to true.
+     * @param blockNumber The block number.
+     * @return KlayBlock
+     */
+    public Request<?, KlayBlock> getBlockByNumber(long blockNumber) {
+        return getBlockByNumber(blockNumber, true);
     }
 
-    
+    /**
+     * Returns information about a block by block number.
+     * It set "isFullTransaction" param to true.
+     * @param blockNumber The block number.
+     * @param isFullTransaction If true it returns the full transaction objects, if false only the hashes of the transactions.
+     * @return KlayBlock
+     */
+    public Request<?, KlayBlock> getBlockByNumber(long blockNumber, boolean isFullTransaction) {
+        DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
+        return getBlockByNumber(blockParameterNumber, isFullTransaction);
+    }
+
+    /**
+     * Returns information about a block by block number.
+     * It set "isFullTransaction" param to true.
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return KlayBlock
+     */
+    public Request<?, KlayBlock> getBlockByNumber(DefaultBlockParameter blockTag) {
+        return getBlockByNumber(blockTag, true);
+    }
+
+    /**
+     * Returns information about a block by block number.
+     * @param defaultBlockParameter The string "latest", "earliest" or "pending"
+     * @param isFullTransaction If true it returns the full transaction objects, if false only the hashes of the transactions.
+     * @return KlayBlock
+     */
     public Request<?, KlayBlock> getBlockByNumber(DefaultBlockParameter defaultBlockParameter, boolean isFullTransaction) {
         return new Request<>(
                 "klay_getBlockByNumber",
@@ -327,23 +427,22 @@ public class Klay {
                 KlayBlock.class);
     }
 
-    public Request<?, KlayBlock> getBlockByNumber(Quantity blockNumber) {
-        return getBlockByNumber(blockNumber, true);
-    }
-
-
-    public Request<?, KlayBlock> getBlockByNumber(Quantity blockNumber, boolean isFullTransaction) {
-        return new Request<>(
-                "klay_getBlockByNumber",
-                Arrays.asList(blockNumber, isFullTransaction),
-                web3jService,
-                KlayBlock.class);
-    }
-
+    /**
+     * Returns information about a block by block number.
+     * It set "isFullTransaction" param to true.
+     * @param blockHash The hash of block.
+     * @return KlayBlock
+     */
     public Request<?, KlayBlock> getBlockByHash(String blockHash) {
         return getBlockByHash(blockHash, true);
     }
-    
+
+    /**
+     * Returns information about a block by block number.
+     * @param blockHash The hash of block.
+     * @param isFullTransaction If true it returns the full transaction objects, if false only the hashes of the transactions.
+     * @return KlayBlock
+     */
     public Request<?, KlayBlock> getBlockByHash(String blockHash, boolean isFullTransaction) {
         return new Request<>(
                 "klay_getBlockByHash",
@@ -352,7 +451,11 @@ public class Klay {
                 KlayBlock.class);
     }
 
-    
+    /**
+     * Returns receipts included in a block identified by block hash.
+     * @param blockHash The hash of block.
+     * @return BlockReceipt
+     */
     public Request<?, BlockReceipts> getBlockReceipts(String blockHash) {
         return new Request<>(
                 "klay_getBlockReceipts",
@@ -361,7 +464,21 @@ public class Klay {
                 BlockReceipts.class);
     }
 
-    
+    /**
+     * Returns the number of transactions in a block matching the given block number.
+     * @param blockNumber The block number.
+     * @return Quantity
+     */
+    public Request<?, Quantity> getTransactionCountByNumber(long blockNumber) {
+        DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
+        return getTransactionCountByNumber(blockParameterNumber);
+    }
+
+    /**
+     * Returns the number of transactions in a block matching the given block number.
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return Quantity
+     */
     public Request<?, Quantity> getTransactionCountByNumber(DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_getBlockTransactionCountByNumber",
@@ -370,15 +487,11 @@ public class Klay {
                 Quantity.class);
     }
 
-    public Request<?, Quantity> getTransactionCountByNumber(Quantity blockNumber) {
-        return new Request<>(
-                "klay_getBlockTransactionCountByNumber",
-                Arrays.asList(blockNumber),
-                web3jService,
-                Quantity.class);
-    }
-
-    
+    /**
+     * Returns the number of transactions in a block from a block matching the given block hash.
+     * @param blockHash The hash of a block
+     * @return Quantity
+     */
     public Request<?, Quantity> getTransactionCountByHash(String blockHash) {
         return new Request<>(
                 "klay_getBlockTransactionCountByHash",
@@ -387,7 +500,11 @@ public class Klay {
                 Quantity.class);
     }
 
-    
+    /**
+     * Returns a block with consensus information matched by the given hash.
+     * @param blockHash The hash of a block.
+     * @return KlayBlockWithConsensusInfo
+     */
     public Request<?, KlayBlockWithConsensusInfo> getBlockWithConsensusInfoByHash(String blockHash) {
         return new Request<>(
                 "klay_getBlockWithConsensusInfoByHash",
@@ -396,7 +513,22 @@ public class Klay {
                 KlayBlockWithConsensusInfo.class);
     }
 
-    
+    /**
+     * Returns a block with consensus information matched by the given block number.
+     * @param blockNumber The block number.
+     * @return KlayBlockWithConsensusInfo
+     */
+    public Request<?, KlayBlockWithConsensusInfo> getBlockWithConsensusInfoByNumber(long blockNumber) {
+        DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
+
+        return getBlockWithConsensusInfoByNumber(blockParameterNumber);
+    }
+
+    /**
+     * Returns a block with consensus information matched by the given block number.
+     * @param blockTag The string "latest", "earliest"
+     * @return KlayBlockWithConsensusInfo
+     */
     public Request<?, KlayBlockWithConsensusInfo> getBlockWithConsensusInfoByNumber(DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_getBlockWithConsensusInfoByNumber",
@@ -405,19 +537,34 @@ public class Klay {
                 KlayBlockWithConsensusInfo.class);
     }
 
-    public Request<?, KlayBlockWithConsensusInfo> getBlockWithConsensusInfoByNumber(Quantity blockNumber) {
-        return new Request<>(
-                "klay_getBlockWithConsensusInfoByNumber",
-                Arrays.asList(blockNumber),
-                web3jService,
-                KlayBlockWithConsensusInfo.class);
-    }
-
-
+    /**
+     * Returns a list of all validators in the committee at the specified block.
+     * If the parameter is not set, returns a list of all validators in the committee at the latest block.
+     * It sets block tag to "LATEST".
+     * @return Addresses
+     */
     public Request<?, Addresses> getCommittee() {
         return getCommittee(DefaultBlockParameterName.LATEST);
     }
 
+    /**
+     * Returns a list of all validators in the committee at the specified block.
+     * If the parameter is not set, returns a list of all validators in the committee at the latest block.
+     * @param blockNumber The block number.
+     * @return Addresses
+     */
+    public Request<?, Addresses> getCommittee(long blockNumber) {
+        DefaultBlockParameterNumber parameterNumber = new DefaultBlockParameterNumber(blockNumber);
+
+        return getCommittee(parameterNumber);
+    }
+
+    /**
+     * Returns a list of all validators in the committee at the specified block.
+     * If the parameter is not set, returns a list of all validators in the committee at the latest block.
+     * @param blockTag The string "latest", "earliest"
+     * @return Addresses
+     */
     public Request<?, Addresses> getCommittee(DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_getCommittee",
@@ -427,19 +574,34 @@ public class Klay {
         );
     }
 
-    public Request<?, Addresses> getCommittee(Quantity blockNumber) {
-        return new Request<>(
-                "klay_getCommittee",
-                Arrays.asList(blockNumber),
-                web3jService,
-                Addresses.class
-        );
-    }
-
+    /**
+     * Returns the size of the committee at the specified block.
+     * If the parameter is not set, returns the size of the committee at the latest block.
+     * It sets block tag to "LATEST".
+     * @return Quantity
+     */
     public Request<?, Quantity> getCommitteeSize() {
         return getCommitteeSize(DefaultBlockParameterName.LATEST);
     }
-    
+
+    /**
+     * Returns the size of the committee at the specified block.
+     * If the parameter is not set, returns the size of the committee at the latest block.
+     * @param blockNumber The block number.
+     * @return Quantity
+     */
+    public Request<?, Quantity> getCommitteeSize(long blockNumber) {
+        DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
+
+        return getCommitteeSize(blockParameterNumber);
+    }
+
+    /**
+     * Returns the size of the committee at the specified block.
+     * If the parameter is not set, returns the size of the committee at the latest block.
+     * @param blockTag The string "earliest" or "latest".
+     * @return
+     */
     public Request<?, Quantity> getCommitteeSize(DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_getCommitteeSize",
@@ -449,25 +611,33 @@ public class Klay {
         );
     }
 
-    public Request<?, Quantity> getCommitteeSize(Quantity blockNumber) {
-        return new Request<>(
-                "klay_getCommitteeSize",
-                Arrays.asList(blockNumber),
-                web3jService,
-                Quantity.class
-        );
+    /**
+     * Returns a list of all validators of the council at the specified block.
+     * If the parameter is not set, returns a list of all validators of the council at the latest block.
+     * It set to block tag to "LATEST".
+     * @return Addresses
+     */
+    public Request<?, Addresses> getCouncil() {
+        return getCouncil(DefaultBlockParameterName.LATEST);
     }
 
-    public Request<?, Addresses> getCouncil(Quantity blockNumber) {
-        return new Request<>(
-                "klay_getCouncil",
-                Arrays.asList(blockNumber),
-                web3jService,
-                Addresses.class
-        );
+    /**
+     * Returns a list of all validators of the council at the specified block.
+     * If the parameter is not set, returns a list of all validators of the council at the latest block.
+     * @param blockNumber The block number.
+     * @return Addresses
+     */
+    public Request<?, Addresses> getCouncil(long blockNumber) {
+        DefaultBlockParameterNumber number = new DefaultBlockParameterNumber(blockNumber);
+        return getCouncil(number);
     }
 
-    
+    /**
+     * Returns a list of all validators of the council at the specified block.
+     * If the parameter is not set, returns a list of all validators of the council at the latest block.
+     * @param blockTag The string "earliest" or "latest".
+     * @return Addresses
+     */
     public Request<?, Addresses> getCouncil(DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_getCouncil",
@@ -477,11 +647,34 @@ public class Klay {
         );
     }
 
+    /**
+     * Returns the size of the council at the specified block.
+     * If the parameter is not set, returns the size of the council at the latest block.
+     * It sets block tag to "LATEST".
+     * @return Quantity
+     */
     public Request<?, Quantity> getCouncilSize() {
         return getCouncilSize(DefaultBlockParameterName.LATEST);
     }
 
+    /**
+     * Returns the size of the council at the specified block.
+     * If the parameter is not set, returns the size of the council at the latest block.
+     * @param blockNumber The block number
+     * @return Quantity
+     */
+    public Request<?, Quantity> getCouncilSize(long blockNumber) {
+        DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
 
+        return getCouncilSize(blockParameterNumber);
+    }
+
+    /**
+     * Returns the size of the council at the specified block.
+     * If the parameter is not set, returns the size of the council at the latest block.
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return Quantity
+     */
     public Request<?, Quantity> getCouncilSize(DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_getCouncilSize",
@@ -491,29 +684,27 @@ public class Klay {
         );
     }
 
-    public Request<?, Quantity> getCouncilSize(Quantity blockNumber) {
-        return new Request<>(
-                "klay_getCouncilSize",
-                Arrays.asList(blockNumber),
-                web3jService,
-                Quantity.class
-        );
-    }
-
+    /**
+     * Returns the value from a storage position at a given address.
+     * @param address The account address.
+     * @param position Integer of the position in the storage.
+     * @param blockNumber The block number.
+     * @return Bytes
+     */
     public Request<?, Bytes> getStorageAt(
-            String address, DefaultBlockParameterNumber position, Quantity blockNumber) {
-        return new Request<>(
-                "klay_getStorageAt",
-                Arrays.asList(
-                        address,
-                        position,
-                        blockNumber.getValue()
-                ),
-                web3jService,
-                Bytes.class);
+            String address, DefaultBlockParameterNumber position, long blockNumber) {
+        DefaultBlockParameterNumber defaultBlockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
+
+        return getStorageAt(address, position, blockNumber);
     }
 
-
+    /**
+     * Returns the value from a storage position at a given address.
+     * @param address The account address.
+     * @param position Integer of the position in the storage.
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return Bytes
+     */
     public Request<?, Bytes> getStorageAt(
             String address, DefaultBlockParameterNumber position, DefaultBlockParameter blockTag) {
         return new Request<>(
@@ -527,7 +718,10 @@ public class Klay {
                 Bytes.class);
     }
 
-    
+    /**
+     * Returns an object with data about the sync status or false.
+     * @return KlaySyncing
+     */
     public Request<?, KlaySyncing> isSyncing() {
         return new Request<>(
                 "klay_syncing",
@@ -536,6 +730,10 @@ public class Klay {
                 KlaySyncing.class);
     }
 
+    /**
+     * Returns the chain ID of the chain.
+     * @return Quantity
+     */
     public Request<?, Quantity> getChainID() {
         return new Request<>(
                 "klay_chainID",
@@ -544,19 +742,24 @@ public class Klay {
                 Quantity.class);
     }
 
+    /**
+     * Executes a new message call immediately without creating a transaction on the block chain.
+     * It returns data or an error object of JSON RPC if error occurs.
+     * It sets block tag to "LATEST".
+     * @param callObject The transaction call object.
+     * @return Bytes
+     */
     public Request<?, Bytes> call(CallObject callObject) {
         return call(callObject, DefaultBlockParameterName.LATEST);
     }
 
-
-    public Request<?, Bytes> call(CallObject callObject, DefaultBlockParameter blockTag) {
-        return new Request<>(
-                "klay_call",
-                Arrays.asList(callObject, blockTag),
-                web3jService,
-                Bytes.class);
-    }
-
+    /**
+     * Executes a new message call immediately without creating a transaction on the block chain.
+     * It returns data or an error object of JSON RPC if error occurs.
+     * @param callObject The transaction call object.
+     * @param blockNumber The block number.
+     * @return Bytes
+     */
     public Request<?, Bytes> call(CallObject callObject, Quantity blockNumber) {
         return new Request<>(
                 "klay_call",
@@ -565,15 +768,58 @@ public class Klay {
                 Bytes.class);
     }
 
-    
-    public Request<?, Quantity> estimateGas(CallObject callObject) {
+    /**
+     * Executes a new message call immediately without creating a transaction on the block chain.
+     * It returns data or an error object of JSON RPC if error occurs.
+     * @param callObject The transaction call object.
+     * @param blockTag the string "latest", "earliest" or "pending"
+     * @return Bytes
+     */
+    public Request<?, Bytes> call(CallObject callObject, DefaultBlockParameter blockTag) {
         return new Request<>(
-                "klay_estimateGas",
-                Arrays.asList(callObject),
+                "klay_call",
+                Arrays.asList(callObject, blockTag),
                 web3jService,
-                Quantity.class);
+                Bytes.class);
     }
 
+    /**
+     * Generates and returns an estimate of how much gas is necessary to allow the transaction to complete.
+     * The transaction will not be added to the blockchain. Note that the estimate may be significantly more
+     * than the amount of gas actually used by the transaction, for a variety of reasons including Klaytn Virtual
+     * Machine mechanics and node performance.
+     * It sets block tag to "LATEST"
+     * @param callObject The transaction call object.
+     * @return Quantity
+     */
+    public Request<?, Quantity> estimateGas(CallObject callObject) {
+        return estimateGas(callObject, DefaultBlockParameterName.LATEST);
+    }
+
+    /**
+     * Generates and returns an estimate of how much gas is necessary to allow the transaction to complete.
+     * The transaction will not be added to the blockchain. Note that the estimate may be significantly more
+     * than the amount of gas actually used by the transaction, for a variety of reasons including Klaytn Virtual
+     * Machine mechanics and node performance.
+     * @param callObject The transaction call object.
+     * @param blockNumber The block number
+     * @return Quantity
+     */
+    public Request<?, Quantity> estimateGas(CallObject callObject, long blockNumber) {
+        DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
+
+        return estimateGas(callObject, blockParameterNumber);
+    }
+
+    /**
+     * Generates and returns an estimate of how much gas is necessary to allow the transaction to complete.
+     * The transaction will not be added to the blockchain. Note that the estimate may be significantly more
+     * than the amount of gas actually used by the transaction, for a variety of reasons including Klaytn Virtual
+     * Machine mechanics and node performance.
+     * @param callObject The transaction call object.
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return Quantity
+     */
     public Request<?, Quantity> estimateGas(CallObject callObject, DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_estimateGas",
@@ -582,19 +828,37 @@ public class Klay {
                 Quantity.class);
     }
 
-    public Request<?, Quantity> estimateGas(CallObject callObject, Quantity blockNumber) {
-        return new Request<>(
-                "klay_estimateGas",
-                Arrays.asList(callObject, blockNumber),
-                web3jService,
-                Quantity.class);
-    }
-
+    /**
+     * Generates and returns an estimate of how much computation cost spent to execute the transaction.
+     * Klaytn limits the computation cost of a transaction to 100000000 currently not to take too much time
+     * by a single transaction. The transaction will not be added to the blockchain like klay_estimateGas.
+     * @param callObject The transaction call object.
+     * @return Quantity
+     */
     public Request<?, Quantity> estimateComputationCost(CallObject callObject) {
         return estimateComputationCost(callObject, DefaultBlockParameterName.LATEST);
     }
 
+    /**
+     * Generates and returns an estimate of how much computation cost spent to execute the transaction.
+     * Klaytn limits the computation cost of a transaction to 100000000 currently not to take too much time
+     * by a single transaction. The transaction will not be added to the blockchain like klay_estimateGas.
+     * @param callObject The transaction call object.
+     * @param blockNumber The block number
+     * @return Quantity
+     */
+    public Request<?, Quantity> estimateComputationCost(CallObject callObject, long blockNumber) {
+        return estimateComputationCost(callObject, new DefaultBlockParameterNumber(blockNumber));
+    }
 
+    /**
+     * Generates and returns an estimate of how much computation cost spent to execute the transaction.
+     * Klaytn limits the computation cost of a transaction to 100000000 currently not to take too much time
+     * by a single transaction. The transaction will not be added to the blockchain like klay_estimateGas.
+     * @param callObject The transaction call object.
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return Quantity
+     */
     public Request<?, Quantity> estimateComputationCost(CallObject callObject, DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_estimateComputationCost",
@@ -603,32 +867,42 @@ public class Klay {
                 Quantity.class);
     }
 
-    public Request<?, Quantity> estimateComputationCost(CallObject callObject, Quantity blockNumber) {
-        return new Request<>(
-                "klay_estimateComputationCost",
-                Arrays.asList(callObject, blockNumber),
-                web3jService,
-                Quantity.class);
-    }
+    /**
+     * Returns information about a transaction by block hash and transaction index position.
+     * @param blockHash The hash of a block.
+     * @param index Integer of the transaction index position.
+     * @return KlayTransaction
+     */
+    public Request<?, KlayTransaction> getTransactionByBlockHashAndIndex(String blockHash, long index) {
+        DefaultBlockParameterNumber indexNumber = new DefaultBlockParameterNumber(index);
 
-    
-    public Request<?, KlayTransaction> getTransactionByBlockHashAndIndex(String blockHash, DefaultBlockParameterNumber index) {
         return new Request<>(
                 "klay_getTransactionByBlockHashAndIndex",
-                Arrays.asList(blockHash, index),
+                Arrays.asList(blockHash, indexNumber),
                 web3jService,
                 KlayTransaction.class);
     }
 
-    public Request<?, KlayTransaction> getTransactionByBlockNumberAndIndex(Quantity blockNumber, DefaultBlockParameterNumber index) {
-        return new Request<>(
-                "klay_getTransactionByBlockNumberAndIndex",
-                Arrays.asList(blockNumber, index),
-                web3jService,
-                KlayTransaction.class);
+    /**
+     * Returns information about a transaction by block number and transaction index position.
+     * @param blockNumber The block number
+     * @param index The transaction index position.
+     * @return KlayTransaction
+     */
+    public Request<?, KlayTransaction> getTransactionByBlockNumberAndIndex(long blockNumber, long index) {
+        return getTransactionByBlockNumberAndIndex(
+                new DefaultBlockParameterNumber(blockNumber),
+                new DefaultBlockParameterNumber(index)
+        );
     }
 
 
+    /**
+     * Returns information about a transaction by block number and transaction index position.
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @param index The transaction index position.
+     * @return KlayTransaction
+     */
     public Request<?, KlayTransaction> getTransactionByBlockNumberAndIndex(DefaultBlockParameter blockTag, DefaultBlockParameterNumber index) {
         return new Request<>(
                 "klay_getTransactionByBlockNumberAndIndex",
@@ -637,7 +911,11 @@ public class Klay {
                 KlayTransaction.class);
     }
 
-    
+    /**
+     * Returns the information about a transaction requested by transaction hash.
+     * @param txHash The hash of a transaction
+     * @return KlayTransaction
+     */
     public Request<?, KlayTransaction> getTransactionByHash(String txHash) {
         return new Request<>(
                 "klay_getTransactionByHash",
@@ -646,16 +924,27 @@ public class Klay {
                 KlayTransaction.class);
     }
 
-    
-    public Request<?, KlayTransaction> getTransactionBySenderTxHash(String txHash) {
+    /**
+     * Returns the information about a transaction requested by sender transaction hash.
+     * Please note that this API returns correct result only if indexing feature is enabled by --sendertxhashindexing.
+     * This can be checked by call klay_isSenderTxHashIndexingEnabled.
+     * @param senderTxHash The hash of a transaction before signing of feePayer(senderTransactionHash)
+     * @return KlayTransaction
+     */
+    public Request<?, KlayTransaction> getTransactionBySenderTxHash(String senderTxHash) {
         return new Request<>(
                 "klay_getTransactionBySenderTxHash",
-                Arrays.asList(txHash),
+                Arrays.asList(senderTxHash),
                 web3jService,
                 KlayTransaction.class);
     }
 
-    
+    /**
+     * Returns the receipt of a transaction by transaction hash.
+     * NOTE: The receipt is not available for pending transactions.
+     * @param transactionHash The hash of a transaction.
+     * @return KlayTransactionReceipt
+     */
     public Request<?, KlayTransactionReceipt> getTransactionReceipt(String transactionHash) {
         return new Request<>(
                 "klay_getTransactionReceipt",
@@ -664,7 +953,11 @@ public class Klay {
                 KlayTransactionReceipt.class);
     }
 
-    
+    /**
+     * Returns the receipt of a transaction by sender transaction hash.
+     * @param transactionHash The hash of a transaction before signing of feePayer(senderTransactionHash).
+     * @return KlayTransactionReceipt
+     */
     public Request<?, KlayTransactionReceipt> getTransactionReceiptBySenderTxHash(String transactionHash) {
         return new Request<>(
                 "klay_getTransactionReceiptBySenderTxHash",
@@ -673,7 +966,11 @@ public class Klay {
                 KlayTransactionReceipt.class);
     }
 
-    
+    /**
+     * Creates a new message call transaction or a contract creation for signed transactions.
+     * @param signedTransactionData The signed transaction data.
+     * @return Bytes32
+     */
     public Request<?, Bytes32> sendRawTransaction(String signedTransactionData) {
         return new Request<>(
                 "klay_sendRawTransaction",
@@ -682,7 +979,12 @@ public class Klay {
                 Bytes32.class);
     }
 
-    
+    /**
+     * Constructs a transaction with given parameters, signs the transaction with a sender's private key and propagates the transaction to Klaytn network.
+     * NOTE: The address to sign with must be unlocked.
+     * @param transaction The object inherits AbstractTransaction.
+     * @return Bytes32
+     */
     public Request<?, Bytes32> sendTransaction(AbstractTransaction transaction) {
         return new Request<>(
                 "klay_sendTransaction",
@@ -691,6 +993,13 @@ public class Klay {
                 Bytes32.class);
     }
 
+    /**
+     * Constructs a transaction with given parameters, signs the transaction with a fee payer's private key and propagates the transaction to Klaytn network.
+     * This API supports only fee delegated type (including partial fee delegated type) transactions.
+     * NOTE: The fee payer address to sign with must be unlocked.
+     * @param transaction The object inherits AbstractFeeDelegatedTransaction.
+     * @return Bytes32
+     */
     public Request<?, Bytes32> sendTransactionAsFeePayer(AbstractFeeDelegatedTransaction transaction) {
         return new Request<>(
                 "klay_sendTransactionAsFeePayer",
@@ -699,9 +1008,14 @@ public class Klay {
                 Bytes32.class);
     }
 
-    
+    /**
+     * Constructs a transaction with given parameters and signs the transaction with a sender's private key.
+     * This method can be used either to generate a sender signature or to make a final raw transaction that is ready to submit to Klaytn network.
+     * NOTE: The address to sign with must be unlocked.
+     * @param transaction The object inherits AbstractTransaction.
+     * @return KlaySignTransaction
+     */
     public Request<?, KlaySignTransaction> signTransaction(AbstractTransaction transaction) {
-
         if(Utils.isEmptySig(transaction.getSignatures())) {
             transaction.getSignatures().remove(0);
         }
@@ -713,6 +1027,15 @@ public class Klay {
                 KlaySignTransaction.class);
     }
 
+    /**
+     * Constructs a transaction with given parameters and signs the transaction with a fee payer's private key.
+     * This method can be used either to generate a fee payer signature or to make a final raw transaction that is ready to submit to Klaytn network.
+     * In case you just want to extract the fee-payer signature, simply take the feePayerSignatures from the result.
+     * Note that the raw transaction is not final if the sender's signature is not attached (that is, signatures in tx is empty).
+     * NOTE: The fee payer address to sign with must be unlocked.
+     * @param transaction The object inherits AbstractFeeDelegatedTransaction.
+     * @return KlaySignTransaction
+     */
     public Request<?, KlaySignTransaction> signTransactionAsFeePayer(AbstractFeeDelegatedTransaction transaction) {
         if(Utils.isEmptySig(transaction.getSignatures())) {
             transaction.getSignatures().remove(0);
@@ -725,14 +1048,24 @@ public class Klay {
                 KlaySignTransaction.class);
     }
 
-    public Request<?, ?> getDecodedAnchoringTransaction(String hash) {
-        return null;
+    /**
+     * Returns the decoded anchored data in the transaction for the given transaction hash.
+     * @param hash The hash of transaction
+     * @return ChainDataAnchoringResponse
+     */
+    public Request<?, ChainDataAnchoringResponse> getDecodedAnchoringTransaction(String hash) {
+        return new Request<>(
+                "klay_getDecodedAnchoringTransactionByHash",
+                Arrays.asList(hash),
+                web3jService,
+                ChainDataAnchoringResponse.class
+        );
     }
 
-    
-
-
-    
+    /**
+     * Returns the current client version of a Klaytn node.
+     * @return Bytes
+     */
     public Request<?, Bytes> getClientVersion() {
         return new Request<>(
                 "klay_clientVersion",
@@ -741,7 +1074,11 @@ public class Klay {
                 Bytes.class);
     }
 
-    
+    /**
+     * Returns the current price per gas in peb.
+     * NOTE: This API has different behavior from Ethereum's and returns a gas price of Klaytn instead of suggesting a gas price as in Ethereum.
+     * @return Quantity
+     */
     public Request<?, Quantity> getGasPrice() {
         return new Request<>(
                 "klay_gasPrice",
@@ -750,29 +1087,42 @@ public class Klay {
                 Quantity.class);
     }
 
+    /**
+     * Returns the unit price of the given block in peb.
+     * It returns latest unit price.
+     * NOTE: This API has different behavior from Ethereum's and returns a gas price of Klaytn instead of suggesting a gas price as in Ethereum.
+     * @return Quantity
+     */
     public Request<?, Quantity> getGasPriceAt() {
-        return getGasPriceAt(DefaultBlockParameterName.LATEST);
-    }
-    
-    public Request<?, Quantity> getGasPriceAt(DefaultBlockParameter defaultBlockParameter) {
         return new Request<>(
                 "klay_gasPriceAt",
-                Arrays.asList(defaultBlockParameter),
+                Collections.<String>emptyList(),
                 web3jService,
                 Quantity.class
         );
     }
 
-    public Request<?, Quantity> getGasPriceAt(Quantity blockNumber) {
+    /**
+     * Returns the unit price of the given block in peb.
+     * NOTE: This API has different behavior from Ethereum's and returns a gas price of Klaytn instead of suggesting a gas price as in Ethereum.
+     * @param blockNumber The block number.
+     * @return Quantity
+     */
+    public Request<?, Quantity> getGasPriceAt(long blockNumber) {
+        DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
+
         return new Request<>(
                 "klay_gasPriceAt",
-                Arrays.asList(blockNumber),
+                Arrays.asList(blockParameterNumber),
                 web3jService,
                 Quantity.class
         );
     }
 
-    
+    /**
+     * Returns true if the node is writing blockchain data in parallel manner. It is enabled by default.
+     * @return Boolean
+     */
     public Request<?, Boolean> isParallelDBWrite() {
         return new Request<>(
                 "klay_isParallelDBWrite",
@@ -781,7 +1131,11 @@ public class Klay {
                 Boolean.class);
     }
 
-    
+    /**
+     * Returns true if the node is indexing sender transaction hash to transaction hash mapping information.
+     * It is disabled by default and can be enabled by --sendertxhashindexing.
+     * @return Boolean
+     */
     public Request<?, Boolean> isSenderTxHashIndexingEnabled() {
         return new Request<>(
                 "klay_isSenderTxHashIndexingEnabled",
@@ -790,7 +1144,10 @@ public class Klay {
                 Boolean.class);
     }
 
-    
+    /**
+     * Returns the Klaytn protocol version of the node.
+     * @return Bytes
+     */
     public Request<?, Bytes> getProtocolVersion() {
         return new Request<>(
                 "klay_protocolVersion",
@@ -799,7 +1156,11 @@ public class Klay {
                 Bytes.class);
     }
 
-    
+    /**
+     * Returns the reward base of the current node.
+     * Reward base is the address of the account where the block rewards goes to. It is only required for CNs.
+     * @return Bytes20
+     */
     public Request<?, Bytes20> getRewardbase() {
         return new Request<>(
                 "klay_rewardbase",
@@ -808,7 +1169,11 @@ public class Klay {
                 Bytes20.class);
     }
 
-    
+    /**
+     * Returns true if the node is using write through caching.
+     * If enabled, block bodies and receipts are cached when they are written to persistent storage. It is false by default.
+     * @return Boolean
+     */
     public Request<?, Boolean> writeThroughCaching() {
         return new Request<>(
                 "klay_writeThroughCaching",
@@ -817,34 +1182,51 @@ public class Klay {
                 Boolean.class);
     }
 
-    
-    public Request<?, KlayLogs> getFilterChanges(BigInteger filterId) {
+    /**
+     * Polling method for a filter, which returns an array of logs which occurred since last poll.
+     * @param filterId The filter id.
+     * @return KlayLogs
+     */
+    public Request<?, KlayLogs> getFilterChanges(String filterId) {
         return new Request<>(
                 "klay_getFilterChanges",
-                Arrays.asList(Numeric.toHexStringWithPrefix(filterId)),
+                Arrays.asList(filterId),
                 web3jService,
                 KlayLogs.class);
     }
 
-    
-    public Request<?, KlayLogs> getFilterLogs(BigInteger filterId) {
+    /**
+     * Returns an array of all logs matching filter with given id, which has been obtained using klay_newFilter.
+     * Note that filter ids returned by other filter creation functions, such as klay_newBlockFilter or klay_newPendingTransactionFilter, cannot be used with this function.
+     * @param filterId The filter id.
+     * @return KlayLogs
+     */
+    public Request<?, KlayLogs> getFilterLogs(String filterId) {
         return new Request<>(
                 "klay_getFilterLogs",
-                Arrays.asList(Numeric.toHexStringWithPrefix(filterId)),
+                Arrays.asList(filterId),
                 web3jService,
                 KlayLogs.class);
     }
 
-    
-    public Request<?, KlayLogs> getLogs(KlayLogFilter filter) {
+    /**
+     * Returns an array of all logs matching a given filter object.
+     * @param filter The filter options
+     * @return KlayLogs
+     */
+    public Request<?, KlayLogs> getLogs(KlayLogFilter filterOption) {
         return new Request<>(
                 "klay_getLogs",
-                Arrays.asList(filter),
+                Arrays.asList(filterOption),
                 web3jService,
                 KlayLogs.class);
     }
 
-    
+    /**
+     * Creates a filter in the node, to notify when a new block arrives.
+     * To check if the state has changed, call klay_getFilterChanges.
+     * @return Quantity
+     */
     public Request<?, Quantity> newBlockFilter() {
         return new Request<>(
                 "klay_newBlockFilter",
@@ -853,16 +1235,26 @@ public class Klay {
                 Quantity.class);
     }
 
-    
-    public Request<?, Quantity> newFilter(KlayFilter filter) {
+    /**
+     * Creates a filter object, based on filter options, to notify when the state changes (logs).
+     * To check if the state has changed, call getFilterChanges.
+     * To obtain all logs matching the filter created by klay_newFilter, call getFilterLogs(String).
+     * @param filterOption The filter option.
+     * @return Quantity
+     */
+    public Request<?, Quantity> newFilter(KlayFilter filterOption) {
         return new Request<>(
                 "klay_newFilter",
-                Arrays.asList(filter),
+                Arrays.asList(filterOption),
                 web3jService,
                 Quantity.class);
     }
 
-    
+    /**
+     * Creates a filter in the node, to notify when new pending transactions arrive.
+     * To check if the state has changed, call klay_getFilterChanges.
+     * @return Quantity
+     */
     public Request<?, Quantity> newPendingTransactionFilter() {
         return new Request<>(
                 "klay_newPendingTransactionFilter",
@@ -871,16 +1263,25 @@ public class Klay {
                 Quantity.class);
     }
 
-    
-    public Request<?, Boolean> uninstallFilter(BigInteger filterId) {
+    /**
+     * Uninstalls a filter with given id. Should always be called when watch is no longer needed.
+     * Additionally, filters timeout when they are not requested with klay_getFilterChanges for a period of time.
+     * @param filterId A filter id.
+     * @return Boolean
+     */
+    public Request<?, Boolean> uninstallFilter(String filterId) {
         return new Request<>(
                 "klay_uninstallFilter",
-                Arrays.asList(Numeric.toHexStringWithPrefix(filterId)),
+                Arrays.asList(filterId),
                 web3jService,
                 Boolean.class);
     }
 
-    
+    /**
+     * Returns Keccak-256 (not the standardized SHA3-256) of the given data.
+     * @param data The data to convert into a SHA3 hash.
+     * @return Bytes
+     */
     public Request<?, Bytes> sha3(String data) {
         return new Request<>(
                 "klay_sha3",

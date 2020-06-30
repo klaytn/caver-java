@@ -22,11 +22,34 @@ pull_klaytn_image: &pull_klaytn_image
           docker pull klaytn/build_base:latest
           docker image tag klaytn/build_base:latest klaytn
 
-start_test_newwork: &start_test_newwork
+check_test_network: &check_test_network
+  run:
+    name: "Check test network"
+    command: |
+        MAXRETRY=60
+        RETRY=0
+        while [ $RETRY -lt $MAXRETRY ]
+        do
+            if curl --fail -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"rpc_modules","params":[],"id":1}' http://localhost:8551 2>/dev/null; then
+                echo "Klaytn RPC server is up"
+                break
+            else
+                echo "wait for Klyatn RPC server..."
+                sleep 1
+            fi
+            RETRY=$(($RETRY+1))
+        done
+        if [ $RETRY -eq $MAXRETRY ]; then
+            echo "failed to connect Klaytn RPC server"
+            exit 1
+        fi
+
+start_test_network: &start_test_network
   run:
     name: "Start test network"
     working_directory: .circleci/images
-    command: docker-compose up -d
+    command: |
+        docker-compose up -d
 
 build_test: &build_test
   run:
@@ -41,7 +64,8 @@ jobs:
     steps:
       - checkout
       - *pull_klaytn_image
-      - *start_test_newwork
+      - *start_test_network
+      - *check_test_network
       - run:
           name: "Check rc version"
           command: |
@@ -62,7 +86,8 @@ jobs:
     steps:
       - checkout
       - *pull_klaytn_image
-      - *start_test_newwork
+      - *start_test_network
+      - *check_test_network
       - run:
           name: "Change to Android version"
           command: |
@@ -187,7 +212,8 @@ jobs:
       #     at: ~/
       - checkout
       - *pull_klaytn_image
-      - *start_test_newwork
+      - *start_test_network
+      - *check_test_network
       - run:
           name: "Check rc version"
           command: |
@@ -214,7 +240,8 @@ jobs:
           at: ~/
       - checkout
       - *pull_klaytn_image
-      - *start_test_newwork
+      - *start_test_network
+      - *check_test_network
       - run:
           name: "Publish android version"
           command: |

@@ -24,7 +24,7 @@ import org.web3j.protocol.http.HttpService;
 /**
  * JSON-RPC 2.0 factory implementation.
  */
-public class CaverImpl implements Caver {
+public class CaverImpl extends Caver {
 
     private Web3jService service;
     private Admin web3j;
@@ -32,7 +32,7 @@ public class CaverImpl implements Caver {
     private Net net;
 
     CaverImpl() {
-        this(DEFAULT_URL);
+        this(Caver.DEFAULT_URL);
     }
 
     CaverImpl(String url) {
@@ -40,6 +40,7 @@ public class CaverImpl implements Caver {
     }
 
     CaverImpl(Web3jService web3jService) {
+        super(web3jService);
         service = web3jService;
         web3j = new JsonRpc2_0Admin(service);
         klay = new JsonRpc2_0Klay(service, web3j);

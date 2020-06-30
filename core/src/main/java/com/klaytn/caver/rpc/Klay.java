@@ -21,8 +21,16 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class Klay {
+
+    /**
+     * JSON-RPC service instance.
+     */
     protected final Web3jService web3jService;
 
+    /**
+     * Creates a Klay instance
+     * @param web3jService JSON-RPC service instance.
+     */
     public Klay(Web3jService web3jService) {
         this.web3jService = web3jService;
     }

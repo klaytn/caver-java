@@ -16,16 +16,61 @@
 
 package com.klaytn.caver;
 
+import com.klaytn.caver.rpc.RPC;
+import com.klaytn.caver.wallet.KeyringContainer;
+import okhttp3.OkHttpClient;
 import org.web3j.protocol.Web3jService;
+import org.web3j.protocol.http.HttpService;
 
 /**
  * Core Caverj JSON-RPC API.
  */
-public interface Caver {
+public class Caver {
 
-    String DEFAULT_URL = "http://localhost:8551";
-    String MAINNET_URL = "https://api.cypress.klaytn.net:8651";
-    String BAOBAB_URL = "https://api.baobab.klaytn.net:8651";
+    public static String DEFAULT_URL = "http://localhost:8551";
+    public static String MAINNET_URL = "https://api.cypress.klaytn.net:8651";
+    public static String BAOBAB_URL = "https://api.baobab.klaytn.net:8651";
+
+    /**
+     * JSON-RPC Klay API
+     */
+    Klay klay;
+
+    /**
+     * JSON-RPC Net API
+     */
+    Net net;
+
+    /**
+     * The JSON-RPC API instance
+     */
+    public RPC rpc;
+
+    /**
+     * The KeyringContainer instance.
+     */
+    public KeyringContainer wallet;
+
+    public Caver() {
+        this(new HttpService(DEFAULT_URL));
+    }
+
+    /**
+     * Creates a Caver instance
+     * @param url JSON-RPC request URL
+     */
+    public Caver(String url) {
+        this(new HttpService(url));
+    }
+
+    /**
+     * Creates a Caver instance
+     * @param service Web3jService
+     */
+    public Caver(Web3jService service) {
+        rpc = new RPC(service);
+        wallet = new KeyringContainer();
+    }
 
     /**
      * Construct a new Caverj instance.
@@ -33,7 +78,7 @@ public interface Caver {
      * @param service Web3jService
      * @return new Caverj instance
      */
-    static Caver build(Web3jService service) {
+    public static Caver build(Web3jService service) {
         return new CaverImpl(service);
     }
 
@@ -43,7 +88,7 @@ public interface Caver {
      * @param url Klaytn url
      * @return new Caverj instance
      */
-    static Caver build(String url) {
+    public static Caver build(String url) {
         return new CaverImpl(url);
     }
 
@@ -52,11 +97,39 @@ public interface Caver {
      *
      * @return new Caverj instance
      */
-    static Caver build() {
+    public static Caver build() {
         return Caver.build(DEFAULT_URL);
     }
 
-    Klay klay();
+    /**
+     * Getter for RPC
+     * @return RPC
+     */
+    public RPC getRpc() {
+        return rpc;
+    }
 
-    Net net();
+    /**
+     * Getter for Wallet
+     * @return KeyringContainer
+     */
+    public KeyringContainer getWallet() {
+        return wallet;
+    }
+
+    /**
+     * Getter for klay
+     * @return Klay
+     */
+    public Klay klay() {
+        return klay;
+    };
+
+    /**
+     * Getter for Net
+     * @return Net
+     */
+    public Net net() {
+        return net;
+    };
 }

@@ -78,6 +78,8 @@ public class KlaySignTransaction extends Response<KlaySignTransaction.SignTransa
             private String to;
             private String value;
             private String input;
+            private String feePayer;
+            private String feeRatio;
             private String v;
             private String r;
             private String s;
@@ -90,6 +92,21 @@ public class KlaySignTransaction extends Response<KlaySignTransaction.SignTransa
                 this.to = to;
                 this.value = value;
                 this.input = input;
+                this.v = v;
+                this.r = r;
+                this.s = s;
+                this.hash = hash;
+            }
+
+            public SignTransactionResult(String nonce, String gasPrice, String gas, String to, String value, String input, String feePayer, String feeRatio, String v, String r, String s, String hash) {
+                this.nonce = nonce;
+                this.gasPrice = gasPrice;
+                this.gas = gas;
+                this.to = to;
+                this.value = value;
+                this.input = input;
+                this.feePayer = feePayer;
+                this.feeRatio = feeRatio;
                 this.v = v;
                 this.r = r;
                 this.s = s;
@@ -137,6 +154,14 @@ public class KlaySignTransaction extends Response<KlaySignTransaction.SignTransa
 
             public String getHash() {
                 return hash;
+            }
+
+            public String getFeePayer() {
+                return feePayer;
+            }
+
+            public String getFeeRatio() {
+                return feeRatio;
             }
 
             @Override

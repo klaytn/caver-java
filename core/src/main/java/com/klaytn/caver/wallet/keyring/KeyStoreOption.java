@@ -12,7 +12,7 @@ public class KeyStoreOption {
     /**
      * Key derivation algorithm option.
      */
-    KeyStore.KdfParams kdfParams;
+    KeyStore.IKdfParams kdfParams;
 
     /**
      * An Address used to create a KeyStore with a decoupled Key.
@@ -25,7 +25,7 @@ public class KeyStoreOption {
      * @param kdfParams Key derivation algorithm option.
      * @param address An address.
      */
-    public KeyStoreOption(KeyStore.CipherParams cipherParams, KeyStore.KdfParams kdfParams, String address) {
+    public KeyStoreOption(KeyStore.CipherParams cipherParams, KeyStore.IKdfParams kdfParams, String address) {
         this.cipherParams = cipherParams;
         this.kdfParams = kdfParams;
         this.address = address;
@@ -48,7 +48,7 @@ public class KeyStoreOption {
      * @return KeyStoreOption
      */
     public static KeyStoreOption getDefaultOptionWithKDF(String kdfName, String address) {
-        KeyStore.KdfParams kdfParams;
+        KeyStore.IKdfParams kdfParams;
         if (kdfName.equals(KeyStore.ScryptKdfParams.getName())) {
             kdfParams = new KeyStore.ScryptKdfParams();
         } else if (kdfName.equals(KeyStore.Pbkdf2KdfParams.getName())) {
@@ -71,7 +71,7 @@ public class KeyStoreOption {
      * Getter function of KdfParams.
      * @return KeyStore.KdfParams
      */
-    public KeyStore.KdfParams getKdfParams() {
+    public KeyStore.IKdfParams getKdfParams() {
         return kdfParams;
     }
 
@@ -95,7 +95,7 @@ public class KeyStoreOption {
      * Setter function of KdfParams.
      * @param kdfParams KeyStore.KdfParams.
      */
-    public void setKdfParams(KeyStore.KdfParams kdfParams) {
+    public void setKdfParams(KeyStore.IKdfParams kdfParams) {
         this.kdfParams = kdfParams;
     }
 

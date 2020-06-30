@@ -240,10 +240,10 @@ public class RpcTest extends Accounts {
             RpcTest.unlockAccount(klayProviderKeyring.getAddress(), "mypassword");
             RpcTest.unlockAccount(feePayerKeyring.getAddress(), "mypassword");
 
-            Caver caver = Caver.build(Caver.DEFAULT_URL);
+            Caver caver = new Caver(Caver.DEFAULT_URL);
 
             ValueTransfer valueTransfer = new ValueTransfer.Builder()
-                    .setKlaytnCall(caver.klay())
+                    .setKlaytnCall(caver.rpc.getKlay())
                     .setFrom(klayProviderKeyring.getAddress())
                     .setTo(feePayerKeyring.getAddress())
                     .setValue(Convert.toPeb("100", Convert.Unit.KLAY).toBigInteger())
@@ -326,10 +326,10 @@ public class RpcTest extends Accounts {
             RpcTest.unlockAccount(klayProviderKeyring.getAddress(), "mypassword");
             RpcTest.unlockAccount(feePayerKeyring.getAddress(), "mypassword");
 
-            Caver caver = Caver.build(Caver.DEFAULT_URL);
+            Caver caver = new Caver(Caver.DEFAULT_URL);
 
             ValueTransfer valueTransfer = new ValueTransfer.Builder()
-                    .setKlaytnCall(caver.klay())
+                    .setKlaytnCall(caver.rpc.getKlay())
                     .setFrom(klayProviderKeyring.getAddress())
                     .setTo(feePayerKeyring.getAddress())
                     .setValue(Convert.toPeb("100", Convert.Unit.KLAY).toBigInteger())

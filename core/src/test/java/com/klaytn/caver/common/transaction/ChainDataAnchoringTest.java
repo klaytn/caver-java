@@ -40,7 +40,7 @@ import static org.junit.Assert.assertEquals;
 })
 public class ChainDataAnchoringTest {
 
-    static Caver caver = Caver.build(Caver.DEFAULT_URL);
+    static Caver caver = new Caver(Caver.DEFAULT_URL);
 
     static String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
     static String from = "0xa94f5374Fce5edBC8E2a8697C15331677e6EbF0B";
@@ -99,7 +99,7 @@ public class ChainDataAnchoringTest {
         @Test
         public void BuilderWithRPCTest() throws IOException {
             ChainDataAnchoring txObj = new ChainDataAnchoring.Builder()
-                    .setKlaytnCall(caver.klay())
+                    .setKlaytnCall(caver.rpc.getKlay())
                     .setGas(gas)
                     .setFrom(from)
                     .setInput(input)

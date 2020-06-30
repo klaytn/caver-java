@@ -37,7 +37,7 @@ import static org.junit.Assert.*;
         FeeDelegatedAccountUpdateTest.getRLPEncodingForFeePayerSignatureTest.class,
 })
 public class FeeDelegatedAccountUpdateTest {
-    static Caver caver = Caver.build(Caver.DEFAULT_URL);
+    static Caver caver = new Caver(Caver.DEFAULT_URL);
 
     static ExpectedData setLegacyData() {
         String from = "0xac1aec09ef5f8dde6a0baf709ea388bbd7965f72";
@@ -397,7 +397,7 @@ public class FeeDelegatedAccountUpdateTest {
             String gasPrice = null;
             String chainId = null;
             txObj = builder
-                    .setKlaytnCall(caver.klay())
+                    .setKlaytnCall(caver.rpc.getKlay())
                     .setNonce(nonce)
                     .setGasPrice(gasPrice)
                     .setChainId(chainId)

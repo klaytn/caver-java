@@ -1,6 +1,6 @@
 package com.klaytn.caver.transaction.type;
 
-import com.klaytn.caver.Klay;
+import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.utils.BytesUtils;

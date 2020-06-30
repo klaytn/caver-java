@@ -26,7 +26,7 @@ check_test_network: &check_test_network
   run:
     name: "Check test network"
     command: |
-        MAXRETRY=60
+        MAXRETRY=300
         RETRY=0
         while [ $RETRY -lt $MAXRETRY ]
         do
@@ -35,9 +35,9 @@ check_test_network: &check_test_network
                 break
             else
                 echo "wait for Klyatn RPC server..."
-                sleep 1
+                sleep 5
             fi
-            RETRY=$(($RETRY+1))
+            RETRY=$(($RETRY+5))
         done
         if [ $RETRY -eq $MAXRETRY ]; then
             echo "failed to connect Klaytn RPC server"

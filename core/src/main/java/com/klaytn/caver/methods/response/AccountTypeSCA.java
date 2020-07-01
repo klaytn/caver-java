@@ -1,6 +1,6 @@
 package com.klaytn.caver.methods.response;
 
-public class AccountTypeSCA implements AccountType {
+public class AccountTypeSCA implements IAccountType {
     private String balance;
     private String codeFormat;
     private String codeHash;
@@ -21,7 +21,7 @@ public class AccountTypeSCA implements AccountType {
 
     @Override
     public AccType getType() {
-        return AccType.CONTRACT;
+        return AccType.SCA;
     }
 
     public String getBalance() {

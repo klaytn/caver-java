@@ -17,13 +17,13 @@
 package com.klaytn.caver.methods.response;
 
 
-public interface AccountType {
+public interface IAccountType {
 
     AccType getType();
 
     enum AccType {
         EOA(0x1),
-        CONTRACT(0x2);
+        SCA(0x2);
 
         int accType;
 
@@ -33,7 +33,7 @@ public interface AccountType {
 
         public static AccType getType(int keyType) {
             if (EOA.accType == keyType) return EOA;
-            return CONTRACT;
+            return SCA;
         }
 
         public int getAccType() {

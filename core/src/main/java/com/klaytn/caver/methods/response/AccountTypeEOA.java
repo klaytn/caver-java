@@ -1,6 +1,6 @@
 package com.klaytn.caver.methods.response;
 
-public class AccountTypeEOA implements AccountType {
+public class AccountTypeEOA implements IAccountType {
     private String balance;
 
     private boolean humanReadable;

@@ -9,9 +9,6 @@ public class AccountTypeEOA implements AccountType {
 
     private String nonce;
 
-    public AccountTypeEOA() {
-    }
-
     public AccountTypeEOA(String balance, boolean humanReadable, AccountKey.AccountKeyData key, String nonce) {
         this.balance = balance;
         this.humanReadable = humanReadable;

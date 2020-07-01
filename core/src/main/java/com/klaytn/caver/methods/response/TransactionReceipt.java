@@ -203,9 +203,6 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
          */
         private String value;
 
-        public TransactionReceiptData() {
-        }
-
         public TransactionReceiptData(String blockHash, String blockNumber, String codeFormat, String contractAddress, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, String from, String gas, String gasPrice, String gasUsed, boolean humanReadable, String key, String input, List<KlayLogs.Log> logs, String logsBloom, String nonce, String senderTxHash, List<SignatureData> signatures, String status, String to, String transactionIndex, String transactionHash, String txError, String type, String typeInt, String value) {
             this.blockHash = blockHash;
             this.blockNumber = blockNumber;

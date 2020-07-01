@@ -25,9 +25,6 @@ public class AccountKey extends Response<AccountKey.AccountKeyData> {
             this.accountKey = accountKey;
         }
 
-        public AccountKeyData() {
-        }
-
         public String getType() {
             return type;
         }

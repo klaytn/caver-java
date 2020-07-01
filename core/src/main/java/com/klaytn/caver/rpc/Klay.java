@@ -388,9 +388,9 @@ public class Klay {
      * Returns information about a block by block number.
      * It set "isFullTransaction" param to true.
      * @param blockNumber The block number.
-     * @return KlayBlock
+     * @return Block
      */
-    public Request<?, KlayBlock> getBlockByNumber(long blockNumber) {
+    public Request<?, Block> getBlockByNumber(long blockNumber) {
         return getBlockByNumber(blockNumber, true);
     }
 
@@ -399,9 +399,9 @@ public class Klay {
      * It set "isFullTransaction" param to true.
      * @param blockNumber The block number.
      * @param isFullTransaction If true it returns the full transaction objects, if false only the hashes of the transactions.
-     * @return KlayBlock
+     * @return Block
      */
-    public Request<?, KlayBlock> getBlockByNumber(long blockNumber, boolean isFullTransaction) {
+    public Request<?, Block> getBlockByNumber(long blockNumber, boolean isFullTransaction) {
         DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
         return getBlockByNumber(blockParameterNumber, isFullTransaction);
     }
@@ -412,7 +412,7 @@ public class Klay {
      * @param blockTag The string "latest", "earliest" or "pending"
      * @return KlayBlock
      */
-    public Request<?, KlayBlock> getBlockByNumber(DefaultBlockParameter blockTag) {
+    public Request<?, Block> getBlockByNumber(DefaultBlockParameter blockTag) {
         return getBlockByNumber(blockTag, true);
     }
 
@@ -420,23 +420,23 @@ public class Klay {
      * Returns information about a block by block number.
      * @param defaultBlockParameter The string "latest", "earliest" or "pending"
      * @param isFullTransaction If true it returns the full transaction objects, if false only the hashes of the transactions.
-     * @return KlayBlock
+     * @return Block
      */
-    public Request<?, KlayBlock> getBlockByNumber(DefaultBlockParameter defaultBlockParameter, boolean isFullTransaction) {
+    public Request<?, Block> getBlockByNumber(DefaultBlockParameter defaultBlockParameter, boolean isFullTransaction) {
         return new Request<>(
                 "klay_getBlockByNumber",
                 Arrays.asList(defaultBlockParameter, isFullTransaction),
                 web3jService,
-                KlayBlock.class);
+                Block.class);
     }
 
     /**
      * Returns information about a block by block number.
      * It set "isFullTransaction" param to true.
      * @param blockHash The hash of block.
-     * @return KlayBlock
+     * @return Block
      */
-    public Request<?, KlayBlock> getBlockByHash(String blockHash) {
+    public Request<?, Block> getBlockByHash(String blockHash) {
         return getBlockByHash(blockHash, true);
     }
 
@@ -444,14 +444,14 @@ public class Klay {
      * Returns information about a block by block number.
      * @param blockHash The hash of block.
      * @param isFullTransaction If true it returns the full transaction objects, if false only the hashes of the transactions.
-     * @return KlayBlock
+     * @return Block
      */
-    public Request<?, KlayBlock> getBlockByHash(String blockHash, boolean isFullTransaction) {
+    public Request<?, Block> getBlockByHash(String blockHash, boolean isFullTransaction) {
         return new Request<>(
                 "klay_getBlockByHash",
                 Arrays.asList(blockHash, isFullTransaction),
                 web3jService,
-                KlayBlock.class);
+                Block.class);
     }
 
     /**

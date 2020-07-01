@@ -153,7 +153,7 @@ public class Klay {
     }
 
     /**
-     * Returns the account key of the Externally Owned Account (EOA) of a given address.
+     * Returns AccountKey of a given address.
      * If the account has AccountKeyLegacy or the account of the given address is a Smart Contract Account, it will return an empty key value.
      * It sets block tag to "LATEST".
      * @param address The account address
@@ -164,7 +164,7 @@ public class Klay {
     }
 
     /**
-     * Returns the account key of the Externally Owned Account (EOA) of a given address.
+     * Returns AccountKey of a given address.
      * If the account has AccountKeyLegacy or the account of the given address is a Smart Contract Account, it will return an empty key value.
      * @param address The account address
      * @param blockNumber The block number..
@@ -177,7 +177,7 @@ public class Klay {
     }
 
     /**
-     * Returns the account key of the Externally Owned Account (EOA) of a given address.
+     * Returns AccountKey of a given address.
      * If the account has AccountKeyLegacy or the account of the given address is a Smart Contract Account, it will return an empty key value.
      * @param address The account address
      * @param blockTag The string "latest", "earliest" or "pending"
@@ -207,7 +207,7 @@ public class Klay {
     /**
      * Returns the balance of the account of given address.
      * @param address The account address to check for balance.
-     * @param blockNumber The block number..
+     * @param blockNumber The block number.
      * @return Quantity
      */
     public Request<?, Quantity> getBalance(String address, long blockNumber) {

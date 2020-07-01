@@ -45,7 +45,7 @@ check_test_network: &check_test_network
       fi
 
 
-start_test_newwork: &start_test_network
+start_test_network: &start_test_network
   run:
     name: "Start test network"
     working_directory: .circleci/images
@@ -241,7 +241,7 @@ jobs:
           at: ~/
       - checkout
       - *pull_klaytn_image
-      - *start_test_newwork
+      - *start_test_network
       - run:
           name: "Publish android version"
           command: |

@@ -14,18 +14,18 @@ import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 
-public class AccountKeyResponse extends Response<AccountKeyResponse.AccountKey> {
-    @JsonDeserialize(using = AccountKeyResponse.AccountKeyDeserializer.class)
-    public static class AccountKey {
+public class AccountKey extends Response<AccountKey.AccountKeyData> {
+    @JsonDeserialize(using = AccountKey.AccountKeyDeserializer.class)
+    public static class AccountKeyData {
         private String type;
         private IAccountKey accountKey;
 
-        public AccountKey(String type, IAccountKey accountKey) {
+        public AccountKeyData(String type, IAccountKey accountKey) {
             this.type = type;
             this.accountKey = accountKey;
         }
 
-        public AccountKey() {
+        public AccountKeyData() {
         }
 
         public String getType() {
@@ -45,7 +45,7 @@ public class AccountKeyResponse extends Response<AccountKeyResponse.AccountKey> 
         }
     }
 
-    public static class AccountKeyDeserializer extends JsonDeserializer<AccountKeyResponse.AccountKey> {
+    public static class AccountKeyDeserializer extends JsonDeserializer<AccountKeyData> {
 
         private static ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
 
@@ -66,12 +66,12 @@ public class AccountKeyResponse extends Response<AccountKeyResponse.AccountKey> 
         }
 
         @Override
-        public AccountKey deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+        public AccountKeyData deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
             JsonNode root = p.getCodec().readTree(p);
             String type = Numeric.toHexStringWithPrefixZeroPadded(root.get("keyType").bigIntegerValue(), 2);
 
             IAccountKey accountKey = decode(root, type);
-            return new AccountKey(type, accountKey);
+            return new AccountKeyData(type, accountKey);
         }
     }
 }

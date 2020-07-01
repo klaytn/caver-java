@@ -12,13 +12,13 @@ import org.web3j.protocol.core.Response;
 import java.io.IOException;
 
 
-public class AccountResponse extends Response<AccountResponse.Account> {
-    @JsonDeserialize(using = Account.AccountDeserializer.class)
-    public static class Account {
+public class Account extends Response<Account.AccountData> {
+    @JsonDeserialize(using = AccountData.AccountDeserializer.class)
+    public static class AccountData {
         int accType;
         private AccountType account;
 
-        public Account(int accType, AccountType account) {
+        public AccountData(int accType, AccountType account) {
             this.accType = accType;
             this.account = account;
         }
@@ -52,15 +52,15 @@ public class AccountResponse extends Response<AccountResponse.Account> {
             }
         }
 
-        public static class AccountDeserializer extends JsonDeserializer<Account> {
+        public static class AccountDeserializer extends JsonDeserializer<AccountData> {
             @Override
-            public Account deserialize(
+            public AccountData deserialize(
                     JsonParser jsonParser,
                     DeserializationContext deserializationContext) throws IOException {
                 JsonNode node = jsonParser.getCodec().readTree(jsonParser);
                 JsonNode key = node.get("account");
                 AccountType.Key accType = AccountType.Key.getType(node.get("accType").intValue());
-                return new Account(accType.getKeyType(), AccountDecoder.decode(accType, key));
+                return new AccountData(accType.getKeyType(), AccountDecoder.decode(accType, key));
             }
         }
     }

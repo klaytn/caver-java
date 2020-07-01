@@ -10,13 +10,8 @@ import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.utils.Utils;
 import org.web3j.protocol.Web3jService;
-import org.web3j.protocol.core.DefaultBlockParameter;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.DefaultBlockParameterNumber;
-import org.web3j.protocol.core.Request;
-import org.web3j.utils.Numeric;
+import org.web3j.protocol.core.*;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -105,12 +100,12 @@ public class Klay {
      * @param encodedAccountKey RLP encoded account key
      * @return AccountKeyResponse
      */
-    public Request<?, AccountKeyResponse> decodeAccountKey(String encodedAccountKey) {
+    public Request<?, AccountKey> decodeAccountKey(String encodedAccountKey) {
         return new Request<>(
                 "klay_decodeAccountKey",
                 Arrays.asList(encodedAccountKey),
                 web3jService,
-                AccountKeyResponse.class
+                AccountKey.class
         );
     }
 
@@ -122,7 +117,7 @@ public class Klay {
      * @param address The account address.
      * @return AccountResponse
      */
-    public Request<?, AccountResponse> getAccount(String address) {
+    public Request<?, Account> getAccount(String address) {
         return getAccount(address, DefaultBlockParameterName.LATEST);
     }
 
@@ -133,7 +128,7 @@ public class Klay {
      * @param blockNumber The block number..
      * @return AccountResponse
      */
-    public Request<?, AccountResponse> getAccount(String address, long blockNumber) {
+    public Request<?, Account> getAccount(String address, long blockNumber) {
         DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
 
         return getAccount(address, blockParameterNumber);
@@ -146,7 +141,7 @@ public class Klay {
      * @param blockTag The string "latest", "earliest" or "pending"
      * @return AccountResponse
      */
-    public Request<?, AccountResponse> getAccount(String address, DefaultBlockParameter blockTag) {
+    public Request<?, Account> getAccount(String address, DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_getAccount",
                 Arrays.asList(
@@ -154,7 +149,7 @@ public class Klay {
                         blockTag
                 ),
                 web3jService,
-                AccountResponse.class);
+                Account.class);
     }
 
     /**
@@ -164,7 +159,7 @@ public class Klay {
      * @param address The account address
      * @return AccountKeyResponse
      */
-    public Request<?, AccountKeyResponse> getAccountKey(String address) {
+    public Request<?, AccountKey> getAccountKey(String address) {
         return getAccountKey(address, DefaultBlockParameterName.LATEST);
     }
 
@@ -175,7 +170,7 @@ public class Klay {
      * @param blockNumber The block number..
      * @return AccountKeyResponse
      */
-    public Request<?, AccountKeyResponse> getAccountKey(String address, long blockNumber) {
+    public Request<?, AccountKey> getAccountKey(String address, long blockNumber) {
         DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
 
         return getAccountKey(address, blockParameterNumber);
@@ -188,7 +183,7 @@ public class Klay {
      * @param blockTag The string "latest", "earliest" or "pending"
      * @return AccountKeyResponse
      */
-    public Request<?, AccountKeyResponse> getAccountKey(String address, DefaultBlockParameter blockTag) {
+    public Request<?, AccountKey> getAccountKey(String address, DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_getAccountKey",
                 Arrays.asList(
@@ -196,7 +191,7 @@ public class Klay {
                         blockTag.getValue()
                 ),
                 web3jService,
-                AccountKeyResponse.class);
+                AccountKey.class);
     }
 
     /**

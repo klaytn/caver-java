@@ -459,12 +459,12 @@ public class Klay {
      * @param blockHash The hash of block.
      * @return BlockReceipt
      */
-    public Request<?, BlockReceipts> getBlockReceipts(String blockHash) {
+    public Request<?, BlockTransactionReceipts> getBlockReceipts(String blockHash) {
         return new Request<>(
                 "klay_getBlockReceipts",
                 Arrays.asList(blockHash),
                 web3jService,
-                BlockReceipts.class);
+                BlockTransactionReceipts.class);
     }
 
     /**

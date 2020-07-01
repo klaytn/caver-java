@@ -19,25 +19,25 @@ package com.klaytn.caver.methods.response;
 
 public interface AccountType {
 
-    AccountType.Key getType();
+    AccType getType();
 
-    enum Key {
+    enum AccType {
         EOA(0x1),
         CONTRACT(0x2);
 
-        int keyType;
+        int accType;
 
-        Key(int keyType) {
-            this.keyType = keyType;
+        AccType(int accType) {
+            this.accType = accType;
         }
 
-        public static AccountType.Key getType(int keyType) {
-            if (EOA.keyType == keyType) return EOA;
+        public static AccType getType(int keyType) {
+            if (EOA.accType == keyType) return EOA;
             return CONTRACT;
         }
 
-        public int getKeyType() {
-            return keyType;
+        public int getAccType() {
+            return accType;
         }
     }
 

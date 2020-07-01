@@ -20,8 +20,8 @@ public class AccountTypeSCA implements AccountType {
     }
 
     @Override
-    public Key getType() {
-        return Key.CONTRACT;
+    public AccType getType() {
+        return AccType.CONTRACT;
     }
 
     public String getBalance() {

@@ -44,8 +44,8 @@ public class Account extends Response<Account.AccountData> {
 
             private static ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
 
-            public static AccountType decode(AccountType.Key keyType, JsonNode key) throws IOException {
-                if (keyType == AccountType.Key.EOA) {
+            public static AccountType decode(AccountType.AccType keyType, JsonNode key) throws IOException {
+                if (keyType == AccountType.AccType.EOA) {
                     return objectMapper.readValue(key.toString(), AccountTypeEOA.class);
                 }
                 return objectMapper.readValue(key.toString(), AccountSmartContract.class);
@@ -59,8 +59,8 @@ public class Account extends Response<Account.AccountData> {
                     DeserializationContext deserializationContext) throws IOException {
                 JsonNode node = jsonParser.getCodec().readTree(jsonParser);
                 JsonNode key = node.get("account");
-                AccountType.Key accType = AccountType.Key.getType(node.get("accType").intValue());
-                return new AccountData(accType.getKeyType(), AccountDecoder.decode(accType, key));
+                AccountType.AccType accType = AccountType.AccType.getType(node.get("accType").intValue());
+                return new AccountData(accType.getAccType(), AccountDecoder.decode(accType, key));
             }
         }
     }

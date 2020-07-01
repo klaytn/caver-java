@@ -46,8 +46,8 @@ public class AccountEOA implements AccountType {
     }
 
     @Override
-    public Key getType() {
-        return Key.EOA;
+    public AccType getType() {
+        return AccType.EOA;
     }
 
     @Override

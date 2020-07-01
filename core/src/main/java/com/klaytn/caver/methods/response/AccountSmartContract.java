@@ -61,8 +61,8 @@ public class AccountSmartContract implements AccountType {
     }
 
     @Override
-    public AccountType.Key getType() {
-        return Key.CONTRACT;
+    public AccType getType() {
+        return AccType.CONTRACT;
     }
 
     @Override

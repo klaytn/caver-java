@@ -17,8 +17,8 @@ public class AccountTypeEOA implements AccountType {
     }
 
     @Override
-    public Key getType() {
-        return Key.EOA;
+    public AccType getType() {
+        return AccType.EOA;
     }
 
     public String getBalance() {

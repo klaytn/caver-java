@@ -81,8 +81,8 @@ public class KlayAccount extends Response<KlayAccount.Account> {
 
         private static ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
 
-        public static AccountType decode(AccountType.Key keyType, JsonNode key) throws IOException {
-            if (keyType == AccountType.Key.EOA) {
+        public static AccountType decode(AccountType.AccType keyType, JsonNode key) throws IOException {
+            if (keyType == AccountType.AccType.EOA) {
                 return objectMapper.readValue(key.toString(), AccountEOA.class);
             }
             return objectMapper.readValue(key.toString(), AccountSmartContract.class);
@@ -97,8 +97,8 @@ public class KlayAccount extends Response<KlayAccount.Account> {
                 DeserializationContext deserializationContext) throws IOException {
             JsonNode node = jsonParser.getCodec().readTree(jsonParser);
             JsonNode key = node.get("account");
-            AccountType.Key accType = AccountType.Key.getType(node.get("accType").intValue());
-            return new Account(AccountDecoder.decode(accType, key), accType.getKeyType());
+            AccountType.AccType accType = AccountType.AccType.getType(node.get("accType").intValue());
+            return new Account(AccountDecoder.decode(accType, key), accType.getAccType());
         }
     }
 }

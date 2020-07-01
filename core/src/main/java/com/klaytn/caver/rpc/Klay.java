@@ -1018,7 +1018,7 @@ public class Klay {
      * @param transaction The object inherits AbstractTransaction.
      * @return KlaySignTransaction
      */
-    public Request<?, KlaySignTransaction> signTransaction(AbstractTransaction transaction) {
+    public Request<?, SignTransaction> signTransaction(AbstractTransaction transaction) {
         if(Utils.isEmptySig(transaction.getSignatures())) {
             transaction.getSignatures().remove(0);
         }
@@ -1027,7 +1027,7 @@ public class Klay {
                 "klay_signTransaction",
                 Arrays.asList(transaction),
                 web3jService,
-                KlaySignTransaction.class);
+                SignTransaction.class);
     }
 
     /**
@@ -1039,7 +1039,7 @@ public class Klay {
      * @param transaction The object inherits AbstractFeeDelegatedTransaction.
      * @return KlaySignTransaction
      */
-    public Request<?, KlaySignTransaction> signTransactionAsFeePayer(AbstractFeeDelegatedTransaction transaction) {
+    public Request<?, SignTransaction> signTransactionAsFeePayer(AbstractFeeDelegatedTransaction transaction) {
         if(Utils.isEmptySig(transaction.getSignatures())) {
             transaction.getSignatures().remove(0);
         }
@@ -1048,7 +1048,7 @@ public class Klay {
                 "klay_signTransactionAsFeePayer",
                 Arrays.asList(transaction),
                 web3jService,
-                KlaySignTransaction.class);
+                SignTransaction.class);
     }
 
     /**

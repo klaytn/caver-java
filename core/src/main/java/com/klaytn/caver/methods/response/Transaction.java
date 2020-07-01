@@ -127,6 +127,9 @@ public class Transaction extends Response<Transaction.TransactionData> {
          */
         private String value;
 
+        public TransactionData() {
+        }
+
         public TransactionData(String blockHash, String blockNumber, String codeFormat, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, String from, String gas, String gasPrice, String hash, boolean humanReadable, String key, String input, String nonce, String senderTxHash, List<SignatureData> signatures, String to, String transactionIndex, String type, String typeInt, String value) {
             this.blockHash = blockHash;
             this.blockNumber = blockNumber;

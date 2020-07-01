@@ -217,7 +217,7 @@ public class RpcTest extends Accounts {
 
             valueTransfer.sign(klayProviderKeyring);
 
-            KlaySignTransaction signTransaction = klay.signTransaction(valueTransfer).send();
+            SignTransaction signTransaction = klay.signTransaction(valueTransfer).send();
             assertEquals(signTransaction.getResult().getRaw(), valueTransfer.getRLPEncoding());
         }
     }
@@ -272,7 +272,7 @@ public class RpcTest extends Accounts {
                     .build();
             valueTransfer.signAsFeePayer(feePayerKeyring);
 
-            KlaySignTransaction signTransaction = klay.signTransactionAsFeePayer(valueTransfer).send();
+            SignTransaction signTransaction = klay.signTransactionAsFeePayer(valueTransfer).send();
 
             assertEquals(signTransaction.getResult().getRaw(), valueTransfer.getRLPEncoding());
 
@@ -303,7 +303,7 @@ public class RpcTest extends Accounts {
                     .build();
 
             valueTransfer.signAsFeePayer(feePayerKeyring);
-            KlaySignTransaction signTransaction = klay.signTransactionAsFeePayer(valueTransfer).send();
+            SignTransaction signTransaction = klay.signTransactionAsFeePayer(valueTransfer).send();
             assertEquals(valueTransfer.getRLPEncoding(), signTransaction.getResult().getRaw());
         }
     }

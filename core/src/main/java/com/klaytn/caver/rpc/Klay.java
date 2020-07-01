@@ -1056,12 +1056,12 @@ public class Klay {
      * @param hash The hash of transaction
      * @return ChainDataAnchoringResponse
      */
-    public Request<?, ChainDataAnchoringResponse> getDecodedAnchoringTransaction(String hash) {
+    public Request<?, DecodeAnchoringTransaction> getDecodedAnchoringTransaction(String hash) {
         return new Request<>(
                 "klay_getDecodedAnchoringTransactionByHash",
                 Arrays.asList(hash),
                 web3jService,
-                ChainDataAnchoringResponse.class
+                DecodeAnchoringTransaction.class
         );
     }
 

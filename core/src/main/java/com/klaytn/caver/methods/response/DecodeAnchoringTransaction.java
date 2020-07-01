@@ -3,9 +3,9 @@ package com.klaytn.caver.methods.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.web3j.protocol.core.Response;
 
-public class ChainDataAnchoringResponse extends Response<ChainDataAnchoringResponse.ChainDataAnchoringData> {
+public class DecodeAnchoringTransaction extends Response<DecodeAnchoringTransaction.AnchoredChainData> {
 
-    public static class ChainDataAnchoringData {
+    public static class AnchoredChainData {
         @JsonProperty("TxHash")
         private String txHash;
 
@@ -30,10 +30,7 @@ public class ChainDataAnchoringResponse extends Response<ChainDataAnchoringRespo
         @JsonProperty("BlockCount")
         private int blockCount;
 
-        public ChainDataAnchoringData() {
-        }
-
-        public ChainDataAnchoringData(String txHash, int txCount, String stateRootHash, String receiptHash, String parentHash, int blockNumber, String blockHash, int blockCount) {
+        public AnchoredChainData(String txHash, int txCount, String stateRootHash, String receiptHash, String parentHash, int blockNumber, String blockHash, int blockCount) {
             this.txHash = txHash;
             this.txCount = txCount;
             this.stateRootHash = stateRootHash;

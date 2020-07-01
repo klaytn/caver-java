@@ -207,7 +207,7 @@ public class KeyStore {
         /**
          * Key derivation option to derive key.
          */
-        private KeyStore.KdfParams kdfparams;
+        private IKdfParams kdfparams;
 
         /**
          * Message authentication Code(MAC) when checking valid decryption key from KeyStore.
@@ -321,7 +321,7 @@ public class KeyStore {
             byte[] derivedKey;
 
             //Check KDF Algorithm
-            KeyStore.KdfParams kdfParams = crypto.getKdfparams();
+            IKdfParams kdfParams = crypto.getKdfparams();
             //SCRYPT
             if (kdfParams instanceof KeyStore.ScryptKdfParams) {
                 KeyStore.ScryptKdfParams scryptKdfParams =
@@ -508,7 +508,7 @@ public class KeyStore {
          * Getter function for KdfParams.
          * @return KeyStore.KdfParams
          */
-        public KeyStore.KdfParams getKdfparams() {
+        public IKdfParams getKdfparams() {
             return kdfparams;
         }
 
@@ -528,7 +528,7 @@ public class KeyStore {
         //  @JsonDeserialize(using = KdfParamsDeserialiser.class)
         // Also add the following to the ObjectMapperFactory
         // objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
-        public void setKdfparams(KeyStore.KdfParams kdfparams) {
+        public void setKdfparams(IKdfParams kdfparams) {
             this.kdfparams = kdfparams;
         }
 
@@ -629,7 +629,7 @@ public class KeyStore {
     /**
      * Represents an interface to implement kdf algorithm option
      */
-    interface KdfParams {
+    interface IKdfParams {
 
         /**
          * Getter function for derived key length
@@ -647,7 +647,7 @@ public class KeyStore {
     /**
      * Represent a PBKDF2 parameter Class used in Key derivation
      */
-    public static class Pbkdf2KdfParams implements KeyStore.KdfParams {
+    public static class Pbkdf2KdfParams implements IKdfParams {
         /**
          * PBKDF2 name used in KeyStore
          */
@@ -783,7 +783,7 @@ public class KeyStore {
     /**
      * Represent a Scrypt parameter Class used in Key derivation
      */
-    public static class ScryptKdfParams implements KeyStore.KdfParams {
+    public static class ScryptKdfParams implements IKdfParams {
         /**
          * The scrypt algorithm name used in KeyStore
          */
@@ -946,7 +946,7 @@ public class KeyStore {
      */
     // If we need to work with MyEtherWallet we'll need to use this deserializer, see the
     // following issue https://github.com/kvhnuke/etherwallet/issues/269
-    static class KdfParamsDeserialiser extends JsonDeserializer<KeyStore.KdfParams> {
+    static class KdfParamsDeserialiser extends JsonDeserializer<IKdfParams> {
 
         /**
          * deserialize KdfParams in KeyStore
@@ -956,13 +956,13 @@ public class KeyStore {
          * @throws IOException
          */
         @Override
-        public KeyStore.KdfParams deserialize(
+        public IKdfParams deserialize(
                 JsonParser jsonParser, DeserializationContext deserializationContext)
                 throws IOException {
 
             ObjectMapper objectMapper = (ObjectMapper) jsonParser.getCodec();
             ObjectNode root = objectMapper.readTree(jsonParser);
-            KeyStore.KdfParams kdfParams;
+            IKdfParams kdfParams;
 
             // it would be preferable to detect the class to use based on the kdf parameter in the
             // container object instance

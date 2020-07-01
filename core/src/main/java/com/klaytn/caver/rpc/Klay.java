@@ -506,22 +506,22 @@ public class Klay {
     /**
      * Returns a block with consensus information matched by the given hash.
      * @param blockHash The hash of a block.
-     * @return KlayBlockWithConsensusInfo
+     * @return BlockWithConsensusInfo
      */
-    public Request<?, KlayBlockWithConsensusInfo> getBlockWithConsensusInfoByHash(String blockHash) {
+    public Request<?, BlockWithConsensusInfo> getBlockWithConsensusInfoByHash(String blockHash) {
         return new Request<>(
                 "klay_getBlockWithConsensusInfoByHash",
                 Arrays.asList(blockHash),
                 web3jService,
-                KlayBlockWithConsensusInfo.class);
+                BlockWithConsensusInfo.class);
     }
 
     /**
      * Returns a block with consensus information matched by the given block number.
      * @param blockNumber The block number.
-     * @return KlayBlockWithConsensusInfo
+     * @return BlockWithConsensusInfo
      */
-    public Request<?, KlayBlockWithConsensusInfo> getBlockWithConsensusInfoByNumber(long blockNumber) {
+    public Request<?, BlockWithConsensusInfo> getBlockWithConsensusInfoByNumber(long blockNumber) {
         DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
 
         return getBlockWithConsensusInfoByNumber(blockParameterNumber);
@@ -530,14 +530,14 @@ public class Klay {
     /**
      * Returns a block with consensus information matched by the given block number.
      * @param blockTag The string "latest", "earliest"
-     * @return KlayBlockWithConsensusInfo
+     * @return BlockWithConsensusInfo
      */
-    public Request<?, KlayBlockWithConsensusInfo> getBlockWithConsensusInfoByNumber(DefaultBlockParameter blockTag) {
+    public Request<?, BlockWithConsensusInfo> getBlockWithConsensusInfoByNumber(DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_getBlockWithConsensusInfoByNumber",
                 Arrays.asList(blockTag),
                 web3jService,
-                KlayBlockWithConsensusInfo.class);
+                BlockWithConsensusInfo.class);
     }
 
     /**

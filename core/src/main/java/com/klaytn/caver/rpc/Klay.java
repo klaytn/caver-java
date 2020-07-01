@@ -1054,7 +1054,7 @@ public class Klay {
     /**
      * Returns the decoded anchored data in the transaction for the given transaction hash.
      * @param hash The hash of transaction
-     * @return ChainDataAnchoringResponse
+     * @return DecodeAnchoringTransaction
      */
     public Request<?, DecodeAnchoringTransaction> getDecodedAnchoringTransaction(String hash) {
         return new Request<>(

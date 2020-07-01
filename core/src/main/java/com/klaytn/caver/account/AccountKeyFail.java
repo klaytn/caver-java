@@ -72,6 +72,9 @@ public class AccountKeyFail implements IAccountKey{
         return TYPE;
     }
 
+    /**
+     * Serialize class to AccountKeyFail object into JSON.
+     */
     public static class AccountKeyFailSerializer extends JsonSerializer<AccountKeyFail> {
         @Override
         public void serialize(AccountKeyFail value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {

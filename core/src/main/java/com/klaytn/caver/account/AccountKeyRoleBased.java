@@ -224,6 +224,9 @@ public class AccountKeyRoleBased implements IAccountKey{
         return this.getAccountKeys().get(RoleGroup.FEE_PAYER.getIndex());
     }
 
+    /**
+     * Serializer class to AccountKeyRoleBased into JSON.
+     */
     public static class AccountKeyRoleBasedSerializer extends JsonSerializer<AccountKeyRoleBased> {
         @Override
         public void serialize(AccountKeyRoleBased accountKeyRoleBased, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
@@ -231,8 +234,7 @@ public class AccountKeyRoleBased implements IAccountKey{
 
             jsonGenerator.writeFieldName("keyType");
             jsonGenerator.writeNumber(Numeric.toBigInt(getType()));
-
-//            jsonGenerator.writeFieldName("key");
+            
             jsonGenerator.writeArrayFieldStart("key");
             for(IAccountKey accountKey : accountKeyRoleBased.getAccountKeys()) {
                 jsonGenerator.writeObject(accountKey);
@@ -243,6 +245,9 @@ public class AccountKeyRoleBased implements IAccountKey{
         }
     }
 
+    /**
+     * Deserialize class to JSON to AccountKeyRoleBased
+     */
     public static class AccountKeyRoleBasedDeserializer extends JsonDeserializer<AccountKeyRoleBased> {
 
         private static ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();

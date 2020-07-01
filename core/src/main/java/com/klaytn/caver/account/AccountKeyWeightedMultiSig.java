@@ -185,6 +185,9 @@ public class AccountKeyWeightedMultiSig implements IAccountKey {
         return TYPE;
     }
 
+    /**
+     * Serialize class to AccountKeyWeightedMultiSig into JSON.
+     */
     public static class AccountKeyWeightedMultiSigSerializer extends JsonSerializer<AccountKeyWeightedMultiSig> {
         @Override
         public void serialize(AccountKeyWeightedMultiSig accountKeyWeightedMultiSig, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
@@ -210,6 +213,9 @@ public class AccountKeyWeightedMultiSig implements IAccountKey {
         }
     }
 
+    /**
+     * Deserialize class to JSON to AccountKeyWeightedMultiSig.
+     */
     public static class AccountKeyWeightedMultiSigDeserializer extends JsonDeserializer<AccountKeyWeightedMultiSig> {
 
         private static ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();

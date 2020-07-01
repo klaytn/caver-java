@@ -874,25 +874,25 @@ public class Klay {
      * Returns information about a transaction by block hash and transaction index position.
      * @param blockHash The hash of a block.
      * @param index Integer of the transaction index position.
-     * @return KlayTransaction
+     * @return Transaction
      */
-    public Request<?, KlayTransaction> getTransactionByBlockHashAndIndex(String blockHash, long index) {
+    public Request<?, Transaction> getTransactionByBlockHashAndIndex(String blockHash, long index) {
         DefaultBlockParameterNumber indexNumber = new DefaultBlockParameterNumber(index);
 
         return new Request<>(
                 "klay_getTransactionByBlockHashAndIndex",
                 Arrays.asList(blockHash, indexNumber),
                 web3jService,
-                KlayTransaction.class);
+                Transaction.class);
     }
 
     /**
      * Returns information about a transaction by block number and transaction index position.
      * @param blockNumber The block number
      * @param index The transaction index position.
-     * @return KlayTransaction
+     * @return Transaction
      */
-    public Request<?, KlayTransaction> getTransactionByBlockNumberAndIndex(long blockNumber, long index) {
+    public Request<?, Transaction> getTransactionByBlockNumberAndIndex(long blockNumber, long index) {
         return getTransactionByBlockNumberAndIndex(
                 new DefaultBlockParameterNumber(blockNumber),
                 new DefaultBlockParameterNumber(index)
@@ -904,27 +904,27 @@ public class Klay {
      * Returns information about a transaction by block number and transaction index position.
      * @param blockTag The string "latest", "earliest" or "pending"
      * @param index The transaction index position.
-     * @return KlayTransaction
+     * @return Transaction
      */
-    public Request<?, KlayTransaction> getTransactionByBlockNumberAndIndex(DefaultBlockParameter blockTag, DefaultBlockParameterNumber index) {
+    public Request<?, Transaction> getTransactionByBlockNumberAndIndex(DefaultBlockParameter blockTag, DefaultBlockParameterNumber index) {
         return new Request<>(
                 "klay_getTransactionByBlockNumberAndIndex",
                 Arrays.asList(blockTag, index),
                 web3jService,
-                KlayTransaction.class);
+                Transaction.class);
     }
 
     /**
      * Returns the information about a transaction requested by transaction hash.
      * @param txHash The hash of a transaction
-     * @return KlayTransaction
+     * @return Transaction
      */
-    public Request<?, KlayTransaction> getTransactionByHash(String txHash) {
+    public Request<?, Transaction> getTransactionByHash(String txHash) {
         return new Request<>(
                 "klay_getTransactionByHash",
                 Arrays.asList(txHash),
                 web3jService,
-                KlayTransaction.class);
+                Transaction.class);
     }
 
     /**
@@ -932,41 +932,41 @@ public class Klay {
      * Please note that this API returns correct result only if indexing feature is enabled by --sendertxhashindexing.
      * This can be checked by call klay_isSenderTxHashIndexingEnabled.
      * @param senderTxHash The hash of a transaction before signing of feePayer(senderTransactionHash)
-     * @return KlayTransaction
+     * @return Transaction
      */
-    public Request<?, KlayTransaction> getTransactionBySenderTxHash(String senderTxHash) {
+    public Request<?, Transaction> getTransactionBySenderTxHash(String senderTxHash) {
         return new Request<>(
                 "klay_getTransactionBySenderTxHash",
                 Arrays.asList(senderTxHash),
                 web3jService,
-                KlayTransaction.class);
+                Transaction.class);
     }
 
     /**
      * Returns the receipt of a transaction by transaction hash.
      * NOTE: The receipt is not available for pending transactions.
      * @param transactionHash The hash of a transaction.
-     * @return KlayTransactionReceipt
+     * @return TransactionReceipt
      */
-    public Request<?, KlayTransactionReceipt> getTransactionReceipt(String transactionHash) {
+    public Request<?, TransactionReceipt> getTransactionReceipt(String transactionHash) {
         return new Request<>(
                 "klay_getTransactionReceipt",
                 Arrays.asList(transactionHash),
                 web3jService,
-                KlayTransactionReceipt.class);
+                TransactionReceipt.class);
     }
 
     /**
      * Returns the receipt of a transaction by sender transaction hash.
      * @param transactionHash The hash of a transaction before signing of feePayer(senderTransactionHash).
-     * @return KlayTransactionReceipt
+     * @return TransactionReceipt
      */
-    public Request<?, KlayTransactionReceipt> getTransactionReceiptBySenderTxHash(String transactionHash) {
+    public Request<?, TransactionReceipt> getTransactionReceiptBySenderTxHash(String transactionHash) {
         return new Request<>(
                 "klay_getTransactionReceiptBySenderTxHash",
                 Arrays.asList(transactionHash),
                 web3jService,
-                KlayTransactionReceipt.class);
+                TransactionReceipt.class);
     }
 
     /**

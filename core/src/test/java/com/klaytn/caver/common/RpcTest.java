@@ -335,7 +335,7 @@ public class RpcTest extends Accounts {
             String txHash = klay.sendRawTransaction(valueTransfer.getRawTransaction()).send().getResult();
 
             for(int i=0; i< 30; i++) {
-                KlayTransactionReceipt transactionReceipt = klay.getTransactionReceipt(txHash).send();
+                TransactionReceipt transactionReceipt = klay.getTransactionReceipt(txHash).send();
                 if(transactionReceipt == null) {
                     Thread.sleep(1000);
                 } else {

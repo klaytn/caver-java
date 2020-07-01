@@ -1,5 +1,6 @@
 package com.klaytn.caver.methods.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -42,11 +43,6 @@ public class Block extends Response<Block.BlockData> {
         private String parentHash;
 
         /**
-         * The number of transactions made by the sender prior to this one.
-         */
-        private String nonce;
-
-        /**
          * The bloom filter for the logs of the block. null when its pending block
          */
         private String logsBloom;
@@ -67,19 +63,19 @@ public class Block extends Response<Block.BlockData> {
         private String receiptsRoot;
 
         /**
-         * The address of the beneficiary to whom the mining rewards were given
+         * The address of the beneficiary to whom the block rewards were given.
          */
-        private String miner;
+        private String reward;
 
         /**
-         * Integer of the difficulty for this block
+         * Former difficulty. Always 1 in the BFT consensus engine
          */
-        private String difficulty;
+        private String blockScore;
 
         /**
-         * Integer of the total difficulty of the chain until this block
+         * Integer of the total blockScore of the chain until this block.
          */
-        private String totalDifficulty;
+        private String totalBlockScore;
 
         /**
          * The "extra data" field of this block
@@ -90,11 +86,6 @@ public class Block extends Response<Block.BlockData> {
          * Integer the size of this block in bytes
          */
         private String size;
-
-        /**
-         * The maximum gas allowed in this block
-         */
-        private String gasLimit;
 
         /**
          * The total used gas by all transactions in this block
@@ -126,36 +117,28 @@ public class Block extends Response<Block.BlockData> {
          */
         private String voteData;
 
-        /**
-         * The address of the beneficiary to whom the block rewards were given.
-         */
-        private String reward;
-
         public BlockData() {
         }
 
-        public BlockData(String number, String hash, String parentHash, String nonce, String logsBloom, String transactionsRoot, String stateRoot, String receiptsRoot, String miner, String difficulty, String totalDifficulty, String extraData, String size, String gasLimit, String gasUsed, String timestamp, String timestampFoS, List transactions, String governanceData, String voteData, String reward) {
+        public BlockData(String number, String hash, String parentHash, String logsBloom, String transactionsRoot, String stateRoot, String receiptsRoot, String reward, String blockScore, String totalBlockScore, String extraData, String size, String gasUsed, String timestamp, String timestampFoS, List transactions, String governanceData, String voteData) {
             this.number = number;
             this.hash = hash;
             this.parentHash = parentHash;
-            this.nonce = nonce;
             this.logsBloom = logsBloom;
             this.transactionsRoot = transactionsRoot;
             this.stateRoot = stateRoot;
             this.receiptsRoot = receiptsRoot;
-            this.miner = miner;
-            this.difficulty = difficulty;
-            this.totalDifficulty = totalDifficulty;
+            this.reward = reward;
+            this.blockScore = blockScore;
+            this.totalBlockScore = totalBlockScore;
             this.extraData = extraData;
             this.size = size;
-            this.gasLimit = gasLimit;
             this.gasUsed = gasUsed;
             this.timestamp = timestamp;
             this.timestampFoS = timestampFoS;
             this.transactions = transactions;
             this.governanceData = governanceData;
             this.voteData = voteData;
-            this.reward = reward;
         }
 
         public String getNumber() {
@@ -180,14 +163,6 @@ public class Block extends Response<Block.BlockData> {
 
         public void setParentHash(String parentHash) {
             this.parentHash = parentHash;
-        }
-
-        public String getNonce() {
-            return nonce;
-        }
-
-        public void setNonce(String nonce) {
-            this.nonce = nonce;
         }
 
         public String getLogsBloom() {
@@ -222,30 +197,6 @@ public class Block extends Response<Block.BlockData> {
             this.receiptsRoot = receiptsRoot;
         }
 
-        public String getMiner() {
-            return miner;
-        }
-
-        public void setMiner(String miner) {
-            this.miner = miner;
-        }
-
-        public String getDifficulty() {
-            return difficulty;
-        }
-
-        public void setDifficulty(String difficulty) {
-            this.difficulty = difficulty;
-        }
-
-        public String getTotalDifficulty() {
-            return totalDifficulty;
-        }
-
-        public void setTotalDifficulty(String totalDifficulty) {
-            this.totalDifficulty = totalDifficulty;
-        }
-
         public String getExtraData() {
             return extraData;
         }
@@ -260,14 +211,6 @@ public class Block extends Response<Block.BlockData> {
 
         public void setSize(String size) {
             this.size = size;
-        }
-
-        public String getGasLimit() {
-            return gasLimit;
-        }
-
-        public void setGasLimit(String gasLimit) {
-            this.gasLimit = gasLimit;
         }
 
         public String getGasUsed() {
@@ -326,6 +269,22 @@ public class Block extends Response<Block.BlockData> {
 
         public void setReward(String reward) {
             this.reward = reward;
+        }
+
+        public String getBlockScore() {
+            return blockScore;
+        }
+
+        public void setBlockScore(String blockScore) {
+            this.blockScore = blockScore;
+        }
+
+        public String getTotalBlockScore() {
+            return totalBlockScore;
+        }
+
+        public void setTotalBlockScore(String totalBlockScore) {
+            this.totalBlockScore = totalBlockScore;
         }
     }
 

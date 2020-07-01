@@ -1219,7 +1219,7 @@ public class Klay {
 
     /**
      * Returns an array of all logs matching a given filter object.
-     * @param filter The filter options
+     * @param filterOption The filter options
      * @return KlayLogs
      */
     public Request<?, KlayLogs> getLogs(KlayLogFilter filterOption) {

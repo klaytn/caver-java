@@ -1,18 +1,15 @@
 package com.klaytn.caver.methods.response;
 
-public class AccountTypeSCA implements AccountType {
+public class AccountTypeSCA implements IAccountType {
     private String balance;
     private String codeFormat;
     private String codeHash;
     private boolean humanReadable;
-    private AccountKeyResponse.AccountKey key;
+    private AccountKey.AccountKeyData key;
     private String nonce;
     private String storageRoot;
 
-    public AccountTypeSCA() {
-    }
-
-    public AccountTypeSCA(String balance, String codeFormat, String codeHash, boolean humanReadable, AccountKeyResponse.AccountKey key, String nonce, String storageRoot) {
+    public AccountTypeSCA(String balance, String codeFormat, String codeHash, boolean humanReadable, AccountKey.AccountKeyData key, String nonce, String storageRoot) {
         this.balance = balance;
         this.codeFormat = codeFormat;
         this.codeHash = codeHash;
@@ -23,8 +20,8 @@ public class AccountTypeSCA implements AccountType {
     }
 
     @Override
-    public Key getType() {
-        return Key.CONTRACT;
+    public AccType getType() {
+        return AccType.SCA;
     }
 
     public String getBalance() {
@@ -59,11 +56,11 @@ public class AccountTypeSCA implements AccountType {
         this.humanReadable = humanReadable;
     }
 
-    public AccountKeyResponse.AccountKey getKey() {
+    public AccountKey.AccountKeyData getKey() {
         return key;
     }
 
-    public void setKey(AccountKeyResponse.AccountKey key) {
+    public void setKey(AccountKey.AccountKeyData key) {
         this.key = key;
     }
 

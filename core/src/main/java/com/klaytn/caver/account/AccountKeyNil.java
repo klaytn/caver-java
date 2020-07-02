@@ -69,7 +69,9 @@ public class AccountKeyNil implements IAccountKey{
         return Numeric.toHexString(RLP);
     }
 
-
+    /**
+     * Serialize class to AccountKeyNil object into JSON.
+     */
     public static class AccountKeyNilSerializer extends JsonSerializer<AccountKeyNil> {
         @Override
         public void serialize(AccountKeyNil value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {

@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 /**
  * Response from request of Account type: Externally Owned Account
  */
-public class AccountEOA implements AccountType {
+public class AccountEOA implements IAccountType {
 
     private String balance;
     private boolean humanReadable;
@@ -46,8 +46,8 @@ public class AccountEOA implements AccountType {
     }
 
     @Override
-    public Key getType() {
-        return Key.EOA;
+    public AccType getType() {
+        return AccType.EOA;
     }
 
     @Override

@@ -1,20 +1,15 @@
 package com.klaytn.caver.methods.response;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
-public class AccountTypeEOA implements AccountType {
+public class AccountTypeEOA implements IAccountType {
     private String balance;
 
     private boolean humanReadable;
 
-    private AccountKeyResponse.AccountKey key;
+    private AccountKey.AccountKeyData key;
 
     private String nonce;
 
-    public AccountTypeEOA() {
-    }
-
-    public AccountTypeEOA(String balance, boolean humanReadable, AccountKeyResponse.AccountKey key, String nonce) {
+    public AccountTypeEOA(String balance, boolean humanReadable, AccountKey.AccountKeyData key, String nonce) {
         this.balance = balance;
         this.humanReadable = humanReadable;
         this.key = key;
@@ -22,8 +17,8 @@ public class AccountTypeEOA implements AccountType {
     }
 
     @Override
-    public Key getType() {
-        return Key.EOA;
+    public AccType getType() {
+        return AccType.EOA;
     }
 
     public String getBalance() {
@@ -42,11 +37,11 @@ public class AccountTypeEOA implements AccountType {
         this.humanReadable = humanReadable;
     }
 
-    public AccountKeyResponse.AccountKey getKey() {
+    public AccountKey.AccountKeyData getKey() {
         return key;
     }
 
-    public void setKey(AccountKeyResponse.AccountKey key) {
+    public void setKey(AccountKey.AccountKeyData key) {
         this.key = key;
     }
 

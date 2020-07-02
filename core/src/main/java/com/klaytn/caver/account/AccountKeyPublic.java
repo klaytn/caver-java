@@ -170,6 +170,9 @@ public class AccountKeyPublic implements IAccountKey{
         this.publicKey = publicKey;
     }
 
+    /**
+     * Serialize class to AccountKeyPublic into JSON.
+     */
     public static class AccountKeyPublicSerializer extends JsonSerializer<AccountKeyPublic> {
         @Override
         public void serialize(AccountKeyPublic accountKeyPublic, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
@@ -190,6 +193,9 @@ public class AccountKeyPublic implements IAccountKey{
         }
     }
 
+    /**
+     * Deserialize class to JSON to AccountKeyPublic.
+     */
     public static class AccountKeyPublicDeserializer extends JsonDeserializer<AccountKeyPublic> {
         @Override
         public AccountKeyPublic deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {

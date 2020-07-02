@@ -80,6 +80,9 @@ public class AccountKeyLegacy implements IAccountKey{
         return TYPE;
     }
 
+    /**
+     * Serialize class to AccountKeyLegacy object into JSON.
+     */
     public static class AccountKeyLegacySerializer extends JsonSerializer<AccountKeyLegacy> {
         @Override
         public void serialize(AccountKeyLegacy value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {

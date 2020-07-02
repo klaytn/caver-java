@@ -1,7 +1,6 @@
 package com.klaytn.caver.transaction.response;
 
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
 

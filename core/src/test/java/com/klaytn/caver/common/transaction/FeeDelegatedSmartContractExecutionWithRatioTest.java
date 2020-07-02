@@ -37,7 +37,7 @@ import static org.junit.Assert.assertEquals;
         FeeDelegatedSmartContractExecutionWithRatioTest.getRLPEncodingForFeePayerSignatureTest.class,
 })
 public class FeeDelegatedSmartContractExecutionWithRatioTest {
-    static Caver caver = Caver.build(Caver.DEFAULT_URL);
+    static Caver caver = new Caver(Caver.DEFAULT_URL);
     static String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
     static String feePayerPrivateKey = "0xb9d5558443585bca6f225b935950e3f6e69f9da8a5809a83f51c3365dff53936";
 
@@ -107,7 +107,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String chainId = null;
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setKlaytnCall(caver.klay())
+                    .setKlaytnCall(caver.rpc.getKlay())
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)

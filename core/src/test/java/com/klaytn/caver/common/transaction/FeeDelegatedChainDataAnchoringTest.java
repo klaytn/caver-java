@@ -35,7 +35,7 @@ import static org.junit.Assert.*;
         FeeDelegatedChainDataAnchoringTest.getRLPEncodingForFeePayerSignatureTest.class,
 })
 public class FeeDelegatedChainDataAnchoringTest {
-    static Caver caver = Caver.build(Caver.DEFAULT_URL);
+    static Caver caver = new Caver(Caver.DEFAULT_URL);
 
     static String from = "0xa94f5374Fce5edBC8E2a8697C15331677e6EbF0B";
     static String feePayer = "0x33f524631e573329a550296F595c820D6c65213f";
@@ -96,7 +96,7 @@ public class FeeDelegatedChainDataAnchoringTest {
 
 
             FeeDelegatedChainDataAnchoring txObj = new FeeDelegatedChainDataAnchoring.Builder()
-                    .setKlaytnCall(caver.klay())
+                    .setKlaytnCall(caver.rpc.getKlay())
                     .setNonce(nonce)
                     .setGasPrice(gasPrice)
                     .setGas(gas)
@@ -118,7 +118,7 @@ public class FeeDelegatedChainDataAnchoringTest {
         @Test
         public void BuilderTestWithBigInteger() throws IOException {
             FeeDelegatedChainDataAnchoring txObj = new FeeDelegatedChainDataAnchoring.Builder()
-                    .setKlaytnCall(caver.klay())
+                    .setKlaytnCall(caver.rpc.getKlay())
                     .setNonce(Numeric.toBigInt(nonce))
                     .setGasPrice(Numeric.toBigInt(gasPrice))
                     .setGas(Numeric.toBigInt(gas))

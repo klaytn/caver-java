@@ -60,7 +60,7 @@ public class ValueTransferTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
-        Caver caver = Caver.build(Caver.DEFAULT_URL);
+        Caver caver = new Caver(Caver.DEFAULT_URL);
         String nonce = "0x4D2";
         String gas = "0xf4240";
         String gasPrice = "0x19";
@@ -87,7 +87,7 @@ public class ValueTransferTest {
         @Test
         public void BuilderWithRPCTest() throws IOException{
             ValueTransfer valueTransfer = new ValueTransfer.Builder()
-                    .setKlaytnCall(caver.klay())
+                    .setKlaytnCall(caver.rpc.getKlay())
                     .setGas(gas)
                     .setTo(to)
                     .setValue(value)

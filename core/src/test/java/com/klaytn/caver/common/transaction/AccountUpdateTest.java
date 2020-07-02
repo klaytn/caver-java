@@ -336,7 +336,7 @@ public class AccountUpdateTest {
         @Test
         public void BuilderWithRPCTest() throws IOException {
             AccountUpdate txObj = new AccountUpdate.Builder()
-                    .setKlaytnCall(Caver.build(Caver.DEFAULT_URL).klay())
+                    .setKlaytnCall(new Caver(Caver.DEFAULT_URL).rpc.getKlay())
                     .setGas(gas)
                     .setFrom(from)
                     .setAccount(account)

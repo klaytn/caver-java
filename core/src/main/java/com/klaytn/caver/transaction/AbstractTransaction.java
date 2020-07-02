@@ -3,7 +3,7 @@ package com.klaytn.caver.transaction;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.klaytn.caver.Klay;
+import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.account.AccountKeyRoleBased;
 import com.klaytn.caver.transaction.type.LegacyTransaction;
 import com.klaytn.caver.transaction.type.TransactionType;

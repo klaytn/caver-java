@@ -80,11 +80,11 @@ public class LegacyTransactionTest {
             String input = "0x31323334";
             String value = "0x0a";
 
-            Caver caver = Caver.build(Caver.DEFAULT_URL);
+            Caver caver = new Caver(Caver.DEFAULT_URL);
             AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(privateKey);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction(
-                    caver.klay(),
+                    caver.rpc.getKlay(),
                     keyring.getAddress(),
                     nonce,
                     gas,
@@ -236,11 +236,11 @@ public class LegacyTransactionTest {
             String input = "0x31323334";
             String value = "0x0a";
 
-            Caver caver = Caver.build(Caver.DEFAULT_URL);
+            Caver caver = new Caver(Caver.DEFAULT_URL);
             AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(privateKey);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setKlaytnCall(caver.klay())
+                    .setKlaytnCall(caver.rpc.getKlay())
                     .setGas(gas)
                     .setInput(input)
                     .setValue(value)

@@ -1,13 +1,22 @@
 package com.klaytn.caver.account;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
+import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.rlp.*;
 import org.web3j.utils.Numeric;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -16,6 +25,8 @@ import java.util.List;
  * WeightedPublicKeys contains a slice of {weight and key}. To be a valid tx for an account associated
  * with AccountKeyWeightedMultiSig, the weighted sum of signed public keys should be larger than the threshold.
  */
+@JsonDeserialize(using = AccountKeyWeightedMultiSig.AccountKeyWeightedMultiSigDeserializer.class)
+@JsonSerialize(using = AccountKeyWeightedMultiSig.AccountKeyWeightedMultiSigSerializer.class)
 public class AccountKeyWeightedMultiSig implements IAccountKey {
 
     /**
@@ -172,5 +183,62 @@ public class AccountKeyWeightedMultiSig implements IAccountKey {
      */
     public static String getType() {
         return TYPE;
+    }
+
+    /**
+     * Serialize class to AccountKeyWeightedMultiSig into JSON.
+     */
+    public static class AccountKeyWeightedMultiSigSerializer extends JsonSerializer<AccountKeyWeightedMultiSig> {
+        @Override
+        public void serialize(AccountKeyWeightedMultiSig accountKeyWeightedMultiSig, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
+            jsonGenerator.writeStartObject(); // Start Object
+
+            jsonGenerator.writeFieldName("keyType");
+            jsonGenerator.writeNumber(Numeric.toBigInt(getType()));
+
+            jsonGenerator.writeObjectFieldStart("key");
+
+            jsonGenerator.writeFieldName("threshold");
+            jsonGenerator.writeNumber(accountKeyWeightedMultiSig.getThreshold());
+
+            jsonGenerator.writeArrayFieldStart("keys");
+            for(WeightedPublicKey weightedPublicKey : accountKeyWeightedMultiSig.getWeightedPublicKeys()) {
+                jsonGenerator.writeObject(weightedPublicKey);
+            }
+            jsonGenerator.writeEndArray(); //end of keys array
+
+            jsonGenerator.writeEndObject(); // end of key
+
+            jsonGenerator.writeEndObject(); // End Object
+        }
+    }
+
+    /**
+     * Deserialize class to JSON to AccountKeyWeightedMultiSig.
+     */
+    public static class AccountKeyWeightedMultiSigDeserializer extends JsonDeserializer<AccountKeyWeightedMultiSig> {
+
+        private static ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
+
+        @Override
+        public AccountKeyWeightedMultiSig deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            JsonNode node = p.getCodec().readTree(p);
+            byte type = (byte)node.get("keyType").intValue();
+
+            JsonNode key = node.get("key");
+            BigInteger threshold = key.get("threshold").bigIntegerValue();
+
+            JsonNode keys = key.get("keys");
+            Iterator<JsonNode> iterator = keys.iterator();
+            List<WeightedPublicKey> weightedPublicKeyList = new ArrayList<>();
+
+            while(iterator.hasNext()) {
+                JsonNode jsonNode = iterator.next();
+                WeightedPublicKey weightedPublicKey = (WeightedPublicKey) objectMapper.readValue(jsonNode.toString(), WeightedPublicKey.class);
+                weightedPublicKeyList.add(weightedPublicKey);
+            }
+
+            return new AccountKeyWeightedMultiSig(threshold, weightedPublicKeyList);
+        }
     }
 }

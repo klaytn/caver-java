@@ -51,7 +51,7 @@ public interface Klay {
     /**
      * Returns the account information of a given address. There are three different account types in
      * Klaytn: Legacy Account, Externally Owned Account (EOA), and Smart Contract Account. See Klaytn
-     * {@link AccountType}.
+     * {@link IAccountType}.
      *
      * @param address               Address
      * @param defaultBlockParameter Integer block number, or the string "latest", "earliest" or "pending"

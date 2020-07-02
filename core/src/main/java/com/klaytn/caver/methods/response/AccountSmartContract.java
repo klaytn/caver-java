@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 /**
  * Response from request of Account type: Smart Contract Account
  */
-public class AccountSmartContract implements AccountType {
+public class AccountSmartContract implements IAccountType {
 
     private String balance;
     private String codeFormat;
@@ -61,8 +61,8 @@ public class AccountSmartContract implements AccountType {
     }
 
     @Override
-    public AccountType.Key getType() {
-        return Key.CONTRACT;
+    public AccType getType() {
+        return AccType.SCA;
     }
 
     @Override

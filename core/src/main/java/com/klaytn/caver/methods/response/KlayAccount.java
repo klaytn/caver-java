@@ -32,18 +32,18 @@ public class KlayAccount extends Response<KlayAccount.Account> {
     @JsonDeserialize(using = KlayAccount.AccountDeserializer.class)
     public static class Account {
 
-        private AccountType account;
+        private IAccountType account;
         private int accType;
 
         public Account() {
         }
 
-        public Account(AccountType account, int accType) {
+        public Account(IAccountType account, int accType) {
             this.account = account;
             this.accType = accType;
         }
 
-        public AccountType getAccount() {
+        public IAccountType getAccount() {
             return account;
         }
 
@@ -81,8 +81,8 @@ public class KlayAccount extends Response<KlayAccount.Account> {
 
         private static ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
 
-        public static AccountType decode(AccountType.Key keyType, JsonNode key) throws IOException {
-            if (keyType == AccountType.Key.EOA) {
+        public static IAccountType decode(IAccountType.AccType keyType, JsonNode key) throws IOException {
+            if (keyType == IAccountType.AccType.EOA) {
                 return objectMapper.readValue(key.toString(), AccountEOA.class);
             }
             return objectMapper.readValue(key.toString(), AccountSmartContract.class);
@@ -97,8 +97,8 @@ public class KlayAccount extends Response<KlayAccount.Account> {
                 DeserializationContext deserializationContext) throws IOException {
             JsonNode node = jsonParser.getCodec().readTree(jsonParser);
             JsonNode key = node.get("account");
-            AccountType.Key accType = AccountType.Key.getType(node.get("accType").intValue());
-            return new Account(AccountDecoder.decode(accType, key), accType.getKeyType());
+            IAccountType.AccType accType = IAccountType.AccType.getType(node.get("accType").intValue());
+            return new Account(AccountDecoder.decode(accType, key), accType.getAccType());
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.klaytn.caver.transaction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.klaytn.caver.Klay;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.SignatureData;
@@ -85,8 +87,14 @@ abstract public class AbstractFeeDelegatedWithRatioTransaction extends AbstractF
      * Getter function for feeRatio.
      * @return String
      */
+    @JsonIgnore
     public String getFeeRatio() {
         return feeRatio;
+    }
+
+    @JsonProperty("feeRatio")
+    public BigInteger getFeeRatioInteger() {
+        return Numeric.toBigInt(feeRatio);
     }
 
     /**

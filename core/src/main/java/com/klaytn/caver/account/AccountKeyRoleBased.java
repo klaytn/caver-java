@@ -1,16 +1,27 @@
 package com.klaytn.caver.account;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.klaytn.caver.utils.BytesUtils;
+import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.rlp.*;
 import org.web3j.utils.Numeric;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * AccountKeyRoleBased represents a role-based key.
  */
+@JsonDeserialize(using = AccountKeyRoleBased.AccountKeyRoleBasedDeserializer.class)
+@JsonSerialize(using = AccountKeyRoleBased.AccountKeyRoleBasedSerializer.class)
 public class AccountKeyRoleBased implements IAccountKey{
 
     /**
@@ -211,5 +222,72 @@ public class AccountKeyRoleBased implements IAccountKey{
      */
     public IAccountKey getRoleFeePayerKey() {
         return this.getAccountKeys().get(RoleGroup.FEE_PAYER.getIndex());
+    }
+
+    /**
+     * Serializer class to AccountKeyRoleBased into JSON.
+     */
+    public static class AccountKeyRoleBasedSerializer extends JsonSerializer<AccountKeyRoleBased> {
+        @Override
+        public void serialize(AccountKeyRoleBased accountKeyRoleBased, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
+            jsonGenerator.writeStartObject();
+
+            jsonGenerator.writeFieldName("keyType");
+            jsonGenerator.writeNumber(Numeric.toBigInt(getType()));
+            
+            jsonGenerator.writeArrayFieldStart("key");
+            for(IAccountKey accountKey : accountKeyRoleBased.getAccountKeys()) {
+                jsonGenerator.writeObject(accountKey);
+            }
+            jsonGenerator.writeEndArray();
+
+            jsonGenerator.writeEndObject();
+        }
+    }
+
+    /**
+     * Deserialize class to JSON to AccountKeyRoleBased
+     */
+    public static class AccountKeyRoleBasedDeserializer extends JsonDeserializer<AccountKeyRoleBased> {
+
+        private static ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
+
+        public static IAccountKey decode(JsonNode accountKeyJson) throws IOException {
+            String type = Numeric.toHexStringWithPrefixZeroPadded(accountKeyJson.get("keyType").bigIntegerValue(), 2);
+            IAccountKey accountKey = null;
+
+            if(type.equals(AccountKeyPublic.getType())) {
+                accountKey = objectMapper.readValue(accountKeyJson.toString(), AccountKeyPublic.class);
+            } else if(type.equals(AccountKeyWeightedMultiSig.getType())) {
+                accountKey = objectMapper.readValue(accountKeyJson.toString(), AccountKeyWeightedMultiSig.class);
+            } else if(type.equals(AccountKeyLegacy.getType())){
+                accountKey = new AccountKeyLegacy();
+            } else if(type.equals(AccountKeyFail.getType())) {
+                accountKey = new AccountKeyFail();
+            } else {
+                accountKey = new AccountKeyNil();
+            }
+
+            return accountKey;
+        }
+
+        @Override
+        public AccountKeyRoleBased deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            JsonNode root = p.getCodec().readTree(p);
+            String type = Numeric.toHexStringWithPrefixZeroPadded(root.get("keyType").bigIntegerValue(), 2);
+
+            JsonNode key = root.get("key");
+            Iterator<JsonNode> iterator = key.iterator();
+
+            List<IAccountKey> accountKeyList = new ArrayList<>();
+
+            while(iterator.hasNext()) {
+                JsonNode node = iterator.next();
+                IAccountKey accountKey = decode(node);
+                accountKeyList.add(accountKey);
+            }
+
+            return new AccountKeyRoleBased(accountKeyList);
+        }
     }
 }

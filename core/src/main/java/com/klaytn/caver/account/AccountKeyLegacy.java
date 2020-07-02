@@ -1,8 +1,14 @@
 package com.klaytn.caver.account;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.klaytn.caver.tx.account.AccountKey;
 import org.web3j.utils.Numeric;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -14,6 +20,7 @@ import java.util.Arrays;
  * The address is the sender
  *
  */
+@JsonSerialize(using = AccountKeyLegacy.AccountKeyLegacySerializer.class)
 public class AccountKeyLegacy implements IAccountKey{
 
     /**
@@ -71,5 +78,24 @@ public class AccountKeyLegacy implements IAccountKey{
      */
     public static String getType() {
         return TYPE;
+    }
+
+    /**
+     * Serialize class to AccountKeyLegacy object into JSON.
+     */
+    public static class AccountKeyLegacySerializer extends JsonSerializer<AccountKeyLegacy> {
+        @Override
+        public void serialize(AccountKeyLegacy value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {
+            gen.writeStartObject();
+
+            gen.writeFieldName("keyType");
+            gen.writeNumber(Numeric.toBigInt(getType()));
+
+            gen.writeFieldName("key");
+            gen.writeStartObject();
+            gen.writeEndObject();
+
+            gen.writeEndObject();
+        }
     }
 }

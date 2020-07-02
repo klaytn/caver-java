@@ -1,5 +1,8 @@
 package com.klaytn.caver.transaction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.klaytn.caver.Klay;
 import com.klaytn.caver.account.AccountKeyRoleBased;
 import com.klaytn.caver.transaction.type.LegacyTransaction;
@@ -18,21 +21,22 @@ import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 abstract public class AbstractTransaction {
 
     /**
      * Klay RPC instance
      */
+    @JsonIgnore
     private Klay klaytnCall = null;
 
     /**
      * Transaction's type string
      */
+    @JsonIgnore
     private String type;
 
     /**
@@ -192,12 +196,14 @@ abstract public class AbstractTransaction {
      * Returns the RLP-encoded string of this transaction (i.e., rawTransaction).
      * @return String
      */
+    @JsonIgnore
     public abstract String getRLPEncoding();
 
     /**
      * Returns the RLP-encoded string to make the signature of this transaction.
      * @return String
      */
+    @JsonIgnore
     public abstract String getCommonRLPEncodingForSignature();
 
     /**
@@ -370,6 +376,7 @@ abstract public class AbstractTransaction {
      * Returns a RawTransaction(RLP-encoded transaction string)
      * @return String
      */
+    @JsonIgnore
     public String getRawTransaction() {
         return this.getRLPEncoding();
     }
@@ -378,6 +385,7 @@ abstract public class AbstractTransaction {
      * Returns a hash string of transaction
      * @return String
      */
+    @JsonIgnore
     public String getTransactionHash() {
         return Hash.sha3(this.getRLPEncoding());
     }
@@ -386,6 +394,7 @@ abstract public class AbstractTransaction {
      * Returns a senderTxHash of transaction
      * @return String
      */
+    @JsonIgnore
     public String getSenderTxHash() {
         return this.getTransactionHash();
     }
@@ -394,6 +403,7 @@ abstract public class AbstractTransaction {
      * Returns an RLP-encoded transaction string for making signature.
      * @return String
      */
+    @JsonIgnore
     public String getRLPEncodingForSignature() {
         byte[] txRLP = Numeric.hexStringToByteArray(getCommonRLPEncodingForSignature());
 
@@ -571,6 +581,7 @@ abstract public class AbstractTransaction {
      * Getter function for chain id
      * @return String
      */
+    @JsonIgnore
     public String getChainId() {
         return chainId;
     }
@@ -710,5 +721,10 @@ abstract public class AbstractTransaction {
             signatures = Arrays.asList(SignatureData.getEmptySignature());
         }
         appendSignatures(signatures);
+    }
+
+    @JsonProperty("typeInt")
+    public int getKeyType() {
+        return TransactionType.valueOf(this.getType()).getType();
     }
 }

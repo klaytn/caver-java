@@ -1,5 +1,11 @@
 package com.klaytn.caver.account;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.klaytn.caver.utils.AccountKeyPublicUtils;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
@@ -9,6 +15,7 @@ import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
 import org.web3j.utils.Numeric;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 
@@ -21,6 +28,8 @@ import java.util.Arrays;
  * account's public key
  *
  */
+@JsonDeserialize(using = AccountKeyPublic.AccountKeyPublicDeserializer.class)
+@JsonSerialize(using = AccountKeyPublic.AccountKeyPublicSerializer.class)
 public class AccountKeyPublic implements IAccountKey{
 
     /**
@@ -159,5 +168,45 @@ public class AccountKeyPublic implements IAccountKey{
         }
 
         this.publicKey = publicKey;
+    }
+
+    /**
+     * Serialize class to AccountKeyPublic into JSON.
+     */
+    public static class AccountKeyPublicSerializer extends JsonSerializer<AccountKeyPublic> {
+        @Override
+        public void serialize(AccountKeyPublic accountKeyPublic, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
+            jsonGenerator.writeStartObject();
+
+            jsonGenerator.writeFieldName("keyType");
+            jsonGenerator.writeNumber(Numeric.toBigInt(getType()));
+
+            String[] xy = accountKeyPublic.getXYPoint();
+
+            jsonGenerator.writeFieldName("key");
+            jsonGenerator.writeStartObject();
+            jsonGenerator.writeStringField("x", Utils.addHexPrefix(xy[OFFSET_X_POINT]));
+            jsonGenerator.writeStringField("y", Utils.addHexPrefix(xy[OFFSET_Y_POINT]));
+            jsonGenerator.writeEndObject();
+
+            jsonGenerator.writeEndObject();
+        }
+    }
+
+    /**
+     * Deserialize class to JSON to AccountKeyPublic.
+     */
+    public static class AccountKeyPublicDeserializer extends JsonDeserializer<AccountKeyPublic> {
+        @Override
+        public AccountKeyPublic deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            JsonNode node = p.getCodec().readTree(p);
+            byte type = (byte)node.get("keyType").intValue();
+
+            JsonNode key = node.get("key");
+            String x = key.get("x").asText();
+            String y = key.get("y").asText();
+
+            return AccountKeyPublic.fromXYPoint(x, y);
+        }
     }
 }

@@ -32,15 +32,15 @@ public class Caver {
     public static String BAOBAB_URL = "https://api.baobab.klaytn.net:8651";
 
     /**
-     * @deprecated This field type replaced by {@link com.klaytn.caver.rpc.Klay}
-     * @see RPC
+     * @deprecated This field type replaced by {@link #rpc}
+     * @see #getRpc()
      */
     @Deprecated
     Klay klay;
 
     /**
-     * @deprecated This field type replaced by {@link com.klaytn.caver.rpc.Net}
-     * @see RPC
+     * @deprecated This field type replaced by {@link #rpc}
+     * @see #getRpc()
      */
     @Deprecated
     Net net;
@@ -77,10 +77,7 @@ public class Caver {
     }
 
     /**
-     * Construct a new Caverj instance.
-     *
-     * @param service Web3jService
-     * @return new Caverj instance
+     * @deprecated This method deprecated. {@link #Caver(Web3jService)}
      */
     @Deprecated
     public static Caver build(Web3jService service) {
@@ -88,10 +85,7 @@ public class Caver {
     }
 
     /**
-     * Construct a new Caverj instance which is connected to {@code url} node.
-     *
-     * @param url Klaytn url
-     * @return new Caverj instance
+     * @deprecated This method deprecated. {@link #Caver(String)}
      */
     @Deprecated
     public static Caver build(String url) {
@@ -99,9 +93,7 @@ public class Caver {
     }
 
     /**
-     * Construct a new Caverj instance which is connected to local node.
-     *
-     * @return new Caverj instance
+     * @deprecated This method deprecated. {@link #Caver()}
      */
     @Deprecated
     public static Caver build() {
@@ -125,8 +117,7 @@ public class Caver {
     }
 
     /**
-     * Getter for klay
-     * @return Klay
+     * @deprecated This method replaced by using {@link #getRpc()} and get Klay object.
      */
     @Deprecated
     public Klay klay() {
@@ -134,8 +125,7 @@ public class Caver {
     };
 
     /**
-     * Getter for Net
-     * @return Net
+     * @deprecated This method replaced by using {@link #getRpc()} and get Net object.
      */
     @Deprecated
     public Net net() {

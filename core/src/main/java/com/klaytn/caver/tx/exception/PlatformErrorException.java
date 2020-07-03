@@ -20,6 +20,9 @@ import com.klaytn.caver.CaverException;
 import com.klaytn.caver.ErrorType;
 import org.web3j.protocol.core.Response;
 
+/**
+ * @deprecated This class is deprecated since caver-java:1.5.0
+ */
 @Deprecated
 public class PlatformErrorException extends CaverException {
     public PlatformErrorException(Response.Error error) {

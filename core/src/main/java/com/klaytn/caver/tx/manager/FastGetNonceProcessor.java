@@ -22,6 +22,9 @@ import com.klaytn.caver.crypto.KlayCredentials;
 import java.io.IOException;
 import java.math.BigInteger;
 
+/**
+ * @deprecated This class is deprecated since caver-java:1.5.0
+ */
 @Deprecated
 public class FastGetNonceProcessor extends GetNonceProcessor {
 

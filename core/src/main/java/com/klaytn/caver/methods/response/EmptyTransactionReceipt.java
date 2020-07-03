@@ -28,8 +28,7 @@ import org.web3j.tx.response.QueuingTransactionReceiptProcessor;
 import java.util.List;
 
 /**
- * An empty transaction receipt object containing only the transaction hash. This is to support the
- * {@link QueuingTransactionReceiptProcessor} and {@link NoOpProcessor}.
+ * @deprecated This class is deprecated since caver-java:1.5.0
  */
 @Deprecated
 public class EmptyTransactionReceipt extends KlayTransactionReceipt.TransactionReceipt {

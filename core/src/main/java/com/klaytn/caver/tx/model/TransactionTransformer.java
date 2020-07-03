@@ -22,6 +22,9 @@ import com.klaytn.caver.utils.Convert;
 
 import java.math.BigInteger;
 
+/**
+ * @deprecated This class is deprecated since caver-java:1.5.0
+ */
 @Deprecated
 public abstract class TransactionTransformer<T extends TransactionTransformer> {
 

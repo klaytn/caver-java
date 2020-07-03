@@ -52,9 +52,8 @@ import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
 /**
- * Solidity contract type abstraction for interacting with smart contracts via native Java types.
+ * @deprecated This class is deprecated since caver-java:1.5.0
  */
 @Deprecated
 @SuppressWarnings("WeakerAccess")

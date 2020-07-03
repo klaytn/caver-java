@@ -40,6 +40,9 @@ import org.web3j.protocol.exceptions.TransactionException;
 import java.io.IOException;
 import java.util.Set;
 
+/**
+ * @deprecated This class is deprecated since caver-java:1.5.0
+ */
 @Deprecated
 public class TransactionManager {
 

@@ -24,6 +24,9 @@ import org.web3j.protocol.core.DefaultBlockParameterName;
 import java.io.IOException;
 import java.math.BigInteger;
 
+/**
+ * @deprecated This class is deprecated since caver-java:1.5.0
+ */
 @Deprecated
 public class GetNonceProcessor {
     protected final Caver caver;

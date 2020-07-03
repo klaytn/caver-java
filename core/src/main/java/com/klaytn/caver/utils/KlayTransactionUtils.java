@@ -21,6 +21,9 @@ import org.web3j.utils.Numeric;
 
 import java.util.Arrays;
 
+/**
+ * @deprecated This class is deprecated since caver-java:1.5.0
+ */
 @Deprecated
 public class KlayTransactionUtils {
     

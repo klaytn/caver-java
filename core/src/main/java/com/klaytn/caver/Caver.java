@@ -32,14 +32,14 @@ public class Caver {
     public static String BAOBAB_URL = "https://api.baobab.klaytn.net:8651";
 
     /**
-     * @deprecated This field deprecated. Using <code>caver.rpc.klay</code>
+     * @deprecated Please use <code>caver.rpc.klay</code> instead.
      * @see RPC#klay
      */
     @Deprecated
     Klay klay;
 
     /**
-     * @deprecated This field deprecated. Using <code>caver.rpc.net</code>
+     * @deprecated Please use <code>caver.rpc.net</code> instead.
      * @see RPC#net
      */
     @Deprecated
@@ -77,7 +77,7 @@ public class Caver {
     }
 
     /**
-     * @deprecated This method deprecated. {@link #Caver(Web3jService)}
+     * @deprecated Please use {@link #Caver(Web3jService)} instead.
      */
     @Deprecated
     public static Caver build(Web3jService service) {
@@ -85,7 +85,7 @@ public class Caver {
     }
 
     /**
-     * @deprecated This method deprecated. {@link #Caver(String)}
+     * @deprecated Please use {@link #Caver(String)} instead.
      */
     @Deprecated
     public static Caver build(String url) {
@@ -93,7 +93,7 @@ public class Caver {
     }
 
     /**
-     * @deprecated This method deprecated. {@link #Caver()}
+     * @deprecated Please use {@link #Caver()} instead.
      */
     @Deprecated
     public static Caver build() {
@@ -117,7 +117,8 @@ public class Caver {
     }
 
     /**
-     * @deprecated This method replaced by using {@link #getRpc()} and get Klay object.
+     * @deprecated Please use <code>caver.rpc.klay</code> instead.
+     * @see RPC#klay
      */
     @Deprecated
     public Klay klay() {
@@ -125,7 +126,8 @@ public class Caver {
     };
 
     /**
-     * @deprecated This method replaced by using {@link #getRpc()} and get Net object.
+     * @deprecated Please use <code>caver.rpc.net</code> instead.
+     * @see RPC#net
      */
     @Deprecated
     public Net net() {

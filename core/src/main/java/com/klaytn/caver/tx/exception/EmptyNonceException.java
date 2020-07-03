@@ -20,6 +20,9 @@ import com.klaytn.caver.ErrorCode;
 import com.klaytn.caver.ErrorType;
 import com.klaytn.caver.UncheckedCaverException;
 
+/**
+ * @deprecated This class is deprecated since caver-java:1.5.0
+ */
 @Deprecated
 public class EmptyNonceException extends UncheckedCaverException{
 

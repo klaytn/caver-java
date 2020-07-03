@@ -25,7 +25,9 @@ import org.web3j.crypto.Sign;
 
 import java.math.BigInteger;
 
-
+/**
+ * @deprecated This class is deprecated since caver-java:1.5.0
+ */
 @Deprecated
 public class KlaySignatureDataUtils {
     /**

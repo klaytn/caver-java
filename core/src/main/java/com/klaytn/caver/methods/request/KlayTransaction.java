@@ -25,6 +25,9 @@ import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 
+/**
+ * @deprecated This class is deprecated since caver-java:1.5.0
+ */
 @Deprecated
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class KlayTransaction {

@@ -16,6 +16,9 @@
 
 package com.klaytn.caver;
 
+/**
+ * @deprecated This class is deprecated since caver-java:1.5.0
+ */
 @Deprecated
 public class UncheckedCaverException extends RuntimeException {
     private final ErrorType type;

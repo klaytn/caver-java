@@ -32,15 +32,15 @@ public class Caver {
     public static String BAOBAB_URL = "https://api.baobab.klaytn.net:8651";
 
     /**
-     * @deprecated This field type replaced by {@link #rpc}
-     * @see #getRpc()
+     * @deprecated This field deprecated. Using <code>caver.rpc.klay</code>
+     * @see RPC#klay
      */
     @Deprecated
     Klay klay;
 
     /**
-     * @deprecated This field type replaced by {@link #rpc}
-     * @see #getRpc()
+     * @deprecated This field deprecated. Using <code>caver.rpc.net</code>
+     * @see RPC#net
      */
     @Deprecated
     Net net;

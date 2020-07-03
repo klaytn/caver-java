@@ -28,10 +28,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * TxTypeChainDataAnchoringTransaction is a transaction for anchoring child chain data.
- * This transaction is generated and submitted by a servicechain.
- * Submitting transactions of this type via RPC is prohibited.
+ * @deprecated This class replaced by {@link com.klaytn.caver.transaction.type.ChainDataAnchoring}
  */
+@Deprecated
 public class TxTypeChainDataAnchoringTransaction extends AbstractTxType {
 
     /**

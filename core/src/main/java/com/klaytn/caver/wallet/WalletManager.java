@@ -23,6 +23,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * @deprecated This class replaced by {@link com.klaytn.caver.wallet.KeyringContainer}
+ * @see com.klaytn.caver.wallet.keyring.KeyringFactory
+ * @see com.klaytn.caver.wallet.keyring.AbstractKeyring
+ */
+@Deprecated
 public class WalletManager {
 
     private Optional<String> defaultAddress = Optional.empty();

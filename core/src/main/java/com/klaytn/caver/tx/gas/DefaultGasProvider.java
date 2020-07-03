@@ -27,6 +27,7 @@ import org.web3j.tx.gas.StaticGasProvider;
 
 import java.math.BigInteger;
 
+@Deprecated
 public class DefaultGasProvider extends StaticGasProvider {
     public static final BigInteger GAS_LIMIT = SmartContract.GAS_LIMIT;
     public static final BigInteger GAS_PRICE = ManagedTransaction.GAS_PRICE;

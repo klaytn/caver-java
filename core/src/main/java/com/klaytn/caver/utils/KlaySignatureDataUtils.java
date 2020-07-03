@@ -26,7 +26,11 @@ import org.web3j.crypto.Sign;
 import java.math.BigInteger;
 
 
+@Deprecated
 public class KlaySignatureDataUtils {
+    /**
+     * @deprecated This method replaced by {@link com.klaytn.caver.wallet.keyring.SignatureData#makeEIP155Signature(int)}
+     */
     public static KlaySignatureData createEip155KlaySignatureData(
             Sign.SignatureData signatureData, int chainId) {
         int v = (signatureData.getV() + chainId * 2) + 8;

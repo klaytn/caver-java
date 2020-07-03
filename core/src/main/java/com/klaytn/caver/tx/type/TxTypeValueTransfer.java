@@ -28,8 +28,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * ValueTransferTransaction transfers KLAY only.
+ * @deprecated This class replaced by {@link com.klaytn.caver.transaction.type.ValueTransfer}
  */
+@Deprecated
 public class TxTypeValueTransfer extends AbstractTxType {
 
     protected TxTypeValueTransfer(BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to, BigInteger value, String from) {

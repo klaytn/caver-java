@@ -31,8 +31,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * TxTypeFeeDelegatedAccountUpdate updates the key of the account. The transaction fee is paid by the fee payer
+ * @deprecated This class replaced by {@link com.klaytn.caver.transaction.type.FeeDelegatedAccountUpdate}
  */
+@Deprecated
 public class TxTypeFeeDelegatedAccountUpdate extends TxTypeFeeDelegate {
 
     /**

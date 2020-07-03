@@ -23,7 +23,10 @@ import org.web3j.protocol.http.HttpService;
 
 /**
  * JSON-RPC 2.0 factory implementation.
+ * @deprecated This class replaced by {@link com.klaytn.caver.rpc.RPC}
+ * @see com.klaytn.caver.Caver
  */
+@Deprecated
 public class CaverImpl extends Caver {
 
     private Web3jService service;

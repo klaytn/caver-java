@@ -19,8 +19,9 @@ package com.klaytn.caver.methods.response;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
- * Response from request of Account type: Externally Owned Account
+ * @deprecated This class replaced by {@link com.klaytn.caver.methods.response.AccountTypeEOA}
  */
+@Deprecated
 public class AccountEOA implements IAccountType {
 
     private String balance;

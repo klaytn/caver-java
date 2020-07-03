@@ -56,6 +56,7 @@ import java.util.stream.Collectors;
 /**
  * Solidity contract type abstraction for interacting with smart contracts via native Java types.
  */
+@Deprecated
 @SuppressWarnings("WeakerAccess")
 public class SmartContract extends ManagedTransaction {
 

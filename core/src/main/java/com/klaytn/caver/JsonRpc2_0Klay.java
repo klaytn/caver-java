@@ -36,6 +36,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.ScheduledExecutorService;
 
+/**
+ * @deprecated This class replaced by {@link com.klaytn.caver.rpc.Klay}
+ * @see com.klaytn.caver.rpc.RPC
+ */
+@Deprecated
 public class JsonRpc2_0Klay implements Klay {
 
     public static final int DEFAULT_BLOCK_TIME = 1 * 1000;

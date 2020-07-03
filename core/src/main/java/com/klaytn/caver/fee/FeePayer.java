@@ -35,6 +35,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * @deprecated This class replaced by {@link com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction}
+ * @see com.klaytn.caver.transaction.AbstractFeeDelegatedWithRatioTransaction
+ */
+@Deprecated
 public class FeePayer {
 
     final static String EMPTY_FEE_PAYER_ADDRESS = "0x";

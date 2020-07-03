@@ -28,6 +28,10 @@ import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.AccountUpdateTransaction;
 import org.web3j.protocol.core.RemoteCall;
 
+/**
+ * @deprecated This class replaced by {@link com.klaytn.caver.transaction.type.AccountUpdate}
+ */
+@Deprecated
 public class Account extends ManagedTransaction {
 
     private Account(Caver caver, TransactionManager transactionManager) {

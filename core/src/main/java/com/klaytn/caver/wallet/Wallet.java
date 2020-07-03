@@ -45,6 +45,12 @@ import java.util.*;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * @deprecated please see below class and function
+ * {@link com.klaytn.caver.wallet.keyring.AbstractKeyring#encrypt(String)}
+ * {@link com.klaytn.caver.wallet.keyring.KeyringFactory#decrypt(String, String)}
+ */
+@Deprecated
 public class Wallet {
 
     static final int PRIVATE_KEY_SIZE = 32;

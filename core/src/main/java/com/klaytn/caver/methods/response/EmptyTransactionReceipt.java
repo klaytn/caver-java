@@ -31,6 +31,7 @@ import java.util.List;
  * An empty transaction receipt object containing only the transaction hash. This is to support the
  * {@link QueuingTransactionReceiptProcessor} and {@link NoOpProcessor}.
  */
+@Deprecated
 public class EmptyTransactionReceipt extends KlayTransactionReceipt.TransactionReceipt {
 
     public EmptyTransactionReceipt(String transactionHash) {

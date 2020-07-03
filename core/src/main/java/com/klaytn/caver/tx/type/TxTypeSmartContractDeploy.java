@@ -28,8 +28,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * TxTypeSmartContractDeploy deploys a smart contract to the given address.
+ * @deprecated This class replaced by {@link com.klaytn.caver.transaction.type.SmartContractDeploy}
  */
+@Deprecated
 public class TxTypeSmartContractDeploy extends AbstractTxType {
 
     /**

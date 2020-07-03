@@ -17,8 +17,9 @@
 package com.klaytn.caver.tx.account;
 
 /**
- * An account key represents the key structure associated with an account.
+ * @deprecated This interface replaced by {@link com.klaytn.caver.account.IAccountKey}
  */
+@Deprecated
 public interface AccountKey {
     Type getType();
 

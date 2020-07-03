@@ -16,6 +16,7 @@
 
 package com.klaytn.caver;
 
+@Deprecated
 public class UncheckedCaverException extends RuntimeException {
     private final ErrorType type;
     private final int code;

@@ -26,6 +26,10 @@ import org.web3j.protocol.exceptions.TransactionException;
 
 import java.io.IOException;
 
+/**
+ * @deprecated This class replaced by {@link com.klaytn.caver.transaction.response.NoOpTransactionReceiptProcessor}
+ */
+@Deprecated
 public class NoOpTransactionReceiptProcessor extends TransactionReceiptProcessor {
 
     public NoOpTransactionReceiptProcessor(Caver caver) {

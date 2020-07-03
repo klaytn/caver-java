@@ -24,6 +24,7 @@ import org.web3j.protocol.core.DefaultBlockParameterName;
 import java.io.IOException;
 import java.math.BigInteger;
 
+@Deprecated
 public class GetNonceProcessor {
     protected final Caver caver;
 

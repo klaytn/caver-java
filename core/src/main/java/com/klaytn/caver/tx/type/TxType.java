@@ -23,9 +23,8 @@ import org.web3j.rlp.RlpType;
 
 import java.util.List;
 
-/**
- * This interface
- */
+
+@Deprecated
 public interface TxType {
 
     /**

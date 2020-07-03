@@ -25,6 +25,7 @@ import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 
+@Deprecated
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class KlayTransaction {
 

@@ -28,8 +28,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * TxTypeFeeDelegatedSmartContractDeploy deploys a smart contract. The fee is paid by the fee payer.
+ * @deprecated This class replaced by {@link com.klaytn.caver.transaction.type.FeeDelegatedSmartContractDeploy}
  */
+@Deprecated
 public class TxTypeFeeDelegatedSmartContractDeploy extends TxTypeFeeDelegate {
 
     /**

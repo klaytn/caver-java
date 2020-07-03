@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+@Deprecated
 public class KlayRawTransaction {
     private byte[] value;
     private Set<KlaySignatureData> signatureData;

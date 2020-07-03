@@ -16,6 +16,7 @@
 
 package com.klaytn.caver.tx.manager;
 
+@Deprecated
 public abstract class ErrorHandler {
     public abstract void exception(Exception exception);
 }

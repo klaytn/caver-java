@@ -29,9 +29,9 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * A block object with consensus information (a proposer and a list of committee members),
- * or null when no block was found
+ * @deprecated This class replaced by {@link BlockWithConsensusInfo}
  */
+@Deprecated
 public class KlayBlockWithConsensusInfo extends Response<KlayBlockWithConsensusInfo.Block> {
 
     @Override

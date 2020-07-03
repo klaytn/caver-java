@@ -20,6 +20,10 @@ import com.klaytn.caver.tx.type.*;
 
 import java.math.BigInteger;
 
+/**
+ * This class replaced by {@link com.klaytn.caver.transaction.type.ValueTransfer}
+ */
+@Deprecated
 public class ValueTransferTransaction extends TransactionTransformer<ValueTransferTransaction> {
 
     private String to;

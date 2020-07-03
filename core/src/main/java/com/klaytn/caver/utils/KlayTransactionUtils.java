@@ -21,6 +21,7 @@ import org.web3j.utils.Numeric;
 
 import java.util.Arrays;
 
+@Deprecated
 public class KlayTransactionUtils {
     
     public static TxType.Type getType(byte[] rawTransaction) {

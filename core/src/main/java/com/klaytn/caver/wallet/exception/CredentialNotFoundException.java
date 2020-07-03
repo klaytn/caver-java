@@ -20,7 +20,7 @@ import com.klaytn.caver.CaverException;
 import com.klaytn.caver.ErrorCode;
 import com.klaytn.caver.ErrorType;
 
-
+@Deprecated
 public class CredentialNotFoundException extends CaverException {
 
     public CredentialNotFoundException() {

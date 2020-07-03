@@ -28,8 +28,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * TxTypeAccountUpdate updates the key of the account.
+ * @deprecated This class replaced by {@link com.klaytn.caver.transaction.type.AccountUpdate}
  */
+@Deprecated
 public class TxTypeAccountUpdate extends AbstractTxType {
 
     /**

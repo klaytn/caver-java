@@ -33,11 +33,9 @@ import java.math.BigInteger;
 import java.util.*;
 
 /**
- * This class provides skeletal implementations for various transaction types.
- * Instance variables in this class are common fields of all transactions.
- * Most of transaction types override {@link #rlpValues() rlpValues()} method
- * to process their own rlp encoding process.
+ * @deprecated This class replaced by {@link com.klaytn.caver.transaction.AbstractTransaction}
  */
+@Deprecated
 public abstract class AbstractTxType implements TxType {
 
     /**

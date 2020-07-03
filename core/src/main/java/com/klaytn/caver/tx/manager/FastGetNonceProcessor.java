@@ -22,6 +22,7 @@ import com.klaytn.caver.crypto.KlayCredentials;
 import java.io.IOException;
 import java.math.BigInteger;
 
+@Deprecated
 public class FastGetNonceProcessor extends GetNonceProcessor {
 
     private volatile BigInteger nonce = BigInteger.valueOf(-1);

@@ -40,6 +40,7 @@ import org.web3j.protocol.exceptions.TransactionException;
 import java.io.IOException;
 import java.util.Set;
 
+@Deprecated
 public class TransactionManager {
 
     private Caver caver;

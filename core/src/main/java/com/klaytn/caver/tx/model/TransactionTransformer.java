@@ -22,6 +22,7 @@ import com.klaytn.caver.utils.Convert;
 
 import java.math.BigInteger;
 
+@Deprecated
 public abstract class TransactionTransformer<T extends TransactionTransformer> {
 
     private BigInteger nonce;

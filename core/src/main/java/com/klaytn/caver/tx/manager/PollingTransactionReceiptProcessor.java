@@ -27,6 +27,10 @@ import org.web3j.protocol.exceptions.TransactionException;
 import java.io.IOException;
 import java.util.Optional;
 
+/**
+ * This class replaced by {@link com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor}
+ */
+@Deprecated
 public class PollingTransactionReceiptProcessor extends TransactionReceiptProcessor {
 
     private final long sleepDuration;

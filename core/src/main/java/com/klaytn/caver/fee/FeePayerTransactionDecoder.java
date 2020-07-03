@@ -23,6 +23,9 @@ import org.web3j.utils.Numeric;
 import java.util.HashMap;
 import java.util.function.Function;
 
+/**
+ * @deprecated This class replaced by {@link com.klaytn.caver.transaction.TransactionDecoder}
+ */
 public class FeePayerTransactionDecoder {
     private static HashMap<TxType.Type, Function<byte[], TxTypeFeeDelegate>> typeMap
             = new HashMap<TxType.Type, Function<byte[], TxTypeFeeDelegate>>() {

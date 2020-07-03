@@ -30,6 +30,11 @@ import org.web3j.protocol.core.Request;
 
 import java.math.BigInteger;
 
+/**
+ * @deprecated This interface replaced by {@link com.klaytn.caver.rpc.Klay}
+ * @see com.klaytn.caver.rpc.RPC
+ */
+@Deprecated
 public interface Klay {
 
     /**

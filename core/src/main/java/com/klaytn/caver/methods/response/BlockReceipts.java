@@ -21,7 +21,7 @@ import org.web3j.protocol.core.Response;
 import java.util.List;
 
 /**
- * List of {@link KlayTransactionReceipt.TransactionReceipt}.
+ * @deprecated This class replaced by {@link BlockTransactionReceipts}
  */
 public class BlockReceipts extends Response<List<KlayTransactionReceipt.TransactionReceipt>> {
 }

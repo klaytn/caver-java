@@ -16,6 +16,7 @@
 
 package com.klaytn.caver;
 
+@Deprecated
 public class CaverException extends Exception {
     private final ErrorType type;
     private final int code;

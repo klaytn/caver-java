@@ -16,6 +16,7 @@
 
 package com.klaytn.caver;
 
+@Deprecated
 public enum ErrorType {
     TXERROR, PLATFORM, CAVER
 }

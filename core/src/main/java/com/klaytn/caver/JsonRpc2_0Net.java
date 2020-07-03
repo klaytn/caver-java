@@ -25,6 +25,11 @@ import org.web3j.protocol.core.Request;
 
 import java.util.Collections;
 
+/**
+ * @deprecated This class replaced by {@link com.klaytn.caver.rpc.Net}
+ * @see com.klaytn.caver.rpc.RPC
+ */
+@Deprecated
 public class JsonRpc2_0Net implements Net {
 
     protected final Web3jService web3jService;

@@ -25,8 +25,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * AccountKeyRoleBased represents a role-based key.
+ * @deprecated This class replaced by {@link com.klaytn.caver.account.AccountKeyRoleBased}
  */
+@Deprecated
 public class AccountKeyRoleBased implements AccountKey {
 
     /**

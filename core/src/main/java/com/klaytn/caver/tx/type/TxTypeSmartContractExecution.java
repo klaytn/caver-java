@@ -28,8 +28,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * TxTypeSmartContractExecution executes a smart contract with the given data.
+ * @deprecated This class replaced by {@link com.klaytn.caver.transaction.type.SmartContractExecution}
  */
+@Deprecated
 public class TxTypeSmartContractExecution extends AbstractTxType {
 
     /**

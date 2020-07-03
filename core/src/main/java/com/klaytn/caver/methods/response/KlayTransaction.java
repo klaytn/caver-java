@@ -36,14 +36,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * A transaction object, or null when no transaction was found.
- * Transaction object returned by:
- * <ul>
- * <li>klay_getTransactionByHash</li>
- * <li>klay_getTransactionByBlockHashAndIndex</li>
- * <li>klay_getTransactionByBlockNumberAndIndex</li>
- * </ul>
+ * @deprecated This class replaced by {@link com.klaytn.caver.methods.response.Transaction}
  */
+@Deprecated
 public class KlayTransaction extends Response<KlayTransaction.Transaction> {
 
     public Optional<Transaction> getTransaction() {

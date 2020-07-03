@@ -24,6 +24,10 @@ import com.klaytn.caver.tx.type.TxTypeFeeDelegatedAccountUpdateWithRatio;
 
 import java.math.BigInteger;
 
+/**
+ * @deprecated This class replaced by {@link com.klaytn.caver.transaction.type.AccountUpdate}
+ */
+@Deprecated
 public class AccountUpdateTransaction extends TransactionTransformer<AccountUpdateTransaction> {
 
     private AccountKey accountKey;

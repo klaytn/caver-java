@@ -34,11 +34,13 @@ public class Caver {
     /**
      * JSON-RPC Klay API
      */
+    @Deprecated
     Klay klay;
 
     /**
      * JSON-RPC Net API
      */
+    @Deprecated
     Net net;
 
     /**
@@ -78,6 +80,7 @@ public class Caver {
      * @param service Web3jService
      * @return new Caverj instance
      */
+    @Deprecated
     public static Caver build(Web3jService service) {
         return new CaverImpl(service);
     }
@@ -88,6 +91,7 @@ public class Caver {
      * @param url Klaytn url
      * @return new Caverj instance
      */
+    @Deprecated
     public static Caver build(String url) {
         return new CaverImpl(url);
     }
@@ -97,6 +101,7 @@ public class Caver {
      *
      * @return new Caverj instance
      */
+    @Deprecated
     public static Caver build() {
         return Caver.build(DEFAULT_URL);
     }
@@ -121,6 +126,7 @@ public class Caver {
      * Getter for klay
      * @return Klay
      */
+    @Deprecated
     public Klay klay() {
         return klay;
     };
@@ -129,6 +135,7 @@ public class Caver {
      * Getter for Net
      * @return Net
      */
+    @Deprecated
     public Net net() {
         return net;
     };

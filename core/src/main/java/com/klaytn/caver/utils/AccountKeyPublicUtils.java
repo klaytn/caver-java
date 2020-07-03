@@ -41,6 +41,7 @@ public class AccountKeyPublicUtils {
      * @param publicKey uncompressed public key biginteger
      * @return compressed public key string
      */
+    @Deprecated
     public static String toCompressedPublicKey(BigInteger publicKey) {
         String hexStringPublicKey = Numeric.toHexStringNoPrefixZeroPadded(publicKey, 128);
         String publicKeyX = hexStringPublicKey.substring(0, 64);
@@ -53,6 +54,7 @@ public class AccountKeyPublicUtils {
      * @param compressedPublicKey compressed public key
      * @return AccountKeyPublic(caver.tx.account.AccountKeyPublic)
      */
+    @Deprecated
     public static AccountKeyPublic decompressKey(String compressedPublicKey) {
         boolean yBit = Numeric.cleanHexPrefix(compressedPublicKey).substring(0, 2).equals("03");
         BigInteger xBN = Numeric.toBigInt(compressedPublicKey.substring(2));

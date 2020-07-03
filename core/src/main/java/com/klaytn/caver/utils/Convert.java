@@ -24,7 +24,11 @@ import java.math.BigDecimal;
 
 /**
  * Klaytn unit conversion functions.
+ * @deprecated This class replaced by {@link com.klaytn.caver.utils.Utils}
+ * @see com.klaytn.caver.utils.Utils#convertFromPeb(String, String)
+ * @see com.klaytn.caver.utils.Utils#convertToPeb(String, String)
  */
+@Deprecated
 public final class Convert {
     private Convert() { }
     

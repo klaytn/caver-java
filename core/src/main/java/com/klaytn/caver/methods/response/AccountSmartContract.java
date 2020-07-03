@@ -19,7 +19,7 @@ package com.klaytn.caver.methods.response;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
- * Response from request of Account type: Smart Contract Account
+ * @deprecated This class replaced by {@link com.klaytn.caver.methods.response.AccountTypeSCA}
  */
 public class AccountSmartContract implements IAccountType {
 

@@ -29,8 +29,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * TxTypeLegacyTransaction represents a type of transactions existed previously in Klaytn.
+ * @deprecated This class replaced by {@link com.klaytn.caver.transaction.type.LegacyTransaction}
  */
+@Deprecated
 public class TxTypeLegacyTransaction extends AbstractTxType {
 
     /**

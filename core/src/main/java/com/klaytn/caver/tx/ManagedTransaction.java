@@ -31,6 +31,7 @@ import java.math.BigInteger;
 /**
  * Generic transaction manager.
  */
+@Deprecated
 public abstract class ManagedTransaction {
 
     public static final BigInteger GAS_PRICE = Convert.toPeb("25", Convert.Unit.STON).toBigInteger();

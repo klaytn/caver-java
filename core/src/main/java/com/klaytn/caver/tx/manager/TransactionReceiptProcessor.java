@@ -27,6 +27,7 @@ import org.web3j.protocol.exceptions.TransactionException;
 import java.io.IOException;
 import java.util.Optional;
 
+@Deprecated
 public abstract class TransactionReceiptProcessor {
 
     private final Caver caver;

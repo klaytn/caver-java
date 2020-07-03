@@ -16,6 +16,7 @@
 
 package com.klaytn.caver;
 
+@Deprecated
 public enum ErrorCode {
     EMPTY_NONCE(0x00, "empty nonce"),
     CREDENTIAL_NOT_FOUND(0x01, "credential not found"),

@@ -33,7 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.methods.response.AccountKey}
+ * @deprecated Please use {@link com.klaytn.caver.methods.response.AccountKey} instead.
  */
 @Deprecated
 public class KlayAccountKey extends Response<KlayAccountKey.AccountKeyValue> {

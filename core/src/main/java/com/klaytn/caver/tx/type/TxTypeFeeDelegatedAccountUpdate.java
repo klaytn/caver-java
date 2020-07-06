@@ -31,7 +31,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.transaction.type.FeeDelegatedAccountUpdate}
+ * @deprecated Please use {@link com.klaytn.caver.transaction.type.FeeDelegatedAccountUpdate} instead.
  */
 @Deprecated
 public class TxTypeFeeDelegatedAccountUpdate extends TxTypeFeeDelegate {

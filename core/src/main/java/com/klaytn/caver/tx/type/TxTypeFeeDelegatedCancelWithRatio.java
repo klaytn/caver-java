@@ -28,7 +28,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.transaction.type.FeeDelegatedCancelWithRatio}
+ * @deprecated Please use {@link com.klaytn.caver.transaction.type.FeeDelegatedCancelWithRatio} instead.
  */
 @Deprecated
 public class TxTypeFeeDelegatedCancelWithRatio extends TxTypeFeeDelegate {

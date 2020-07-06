@@ -39,7 +39,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.methods.response.Block}
+ * @deprecated Please use {@link com.klaytn.caver.methods.response.Block} instead.
  */
 @Deprecated
 public class KlayBlock extends Response<KlayBlock.Block> {

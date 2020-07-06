@@ -17,7 +17,7 @@
 package com.klaytn.caver.tx.account;
 
 /**
- * @deprecated This interface replaced by {@link com.klaytn.caver.account.IAccountKey}
+ * @deprecated Please use {@link com.klaytn.caver.account.IAccountKey} instead.
  */
 @Deprecated
 public interface AccountKey {

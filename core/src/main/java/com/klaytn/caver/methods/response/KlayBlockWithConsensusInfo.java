@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * @deprecated This class replaced by {@link BlockWithConsensusInfo}
+ * @deprecated Please use {@link BlockWithConsensusInfo} instead.
  */
 @Deprecated
 public class KlayBlockWithConsensusInfo extends Response<KlayBlockWithConsensusInfo.Block> {

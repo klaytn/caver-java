@@ -23,7 +23,7 @@ import com.klaytn.caver.methods.response.Quantity;
 import org.web3j.protocol.core.Request;
 
 /**
- * @deprecated This interface replaced by {@link com.klaytn.caver.rpc.Net}
+ * @deprecated Please use {@link com.klaytn.caver.rpc.Net} instead.
  * @see com.klaytn.caver.rpc.RPC
  */
 @Deprecated

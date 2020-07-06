@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.transaction.TransactionDecoder}
+ * @deprecated Please use {@link com.klaytn.caver.transaction.TransactionDecoder} instead.
  */
 public class FeePayerTransactionDecoder {
     private static HashMap<TxType.Type, Function<byte[], TxTypeFeeDelegate>> typeMap

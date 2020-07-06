@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor}
+ * @deprecated Please use {@link com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor} instead.
  */
 @Deprecated
 public class PollingTransactionReceiptProcessor extends TransactionReceiptProcessor {

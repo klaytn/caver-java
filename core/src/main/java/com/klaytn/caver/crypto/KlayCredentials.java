@@ -30,7 +30,7 @@ import java.util.*;
 import static com.klaytn.caver.wallet.KlayWalletUtils.*;
 
 /**
- * @deprecated This class replaced by KeyringClass
+ * @deprecated Please use KeyringClass instead.
  * @see com.klaytn.caver.wallet.keyring.AbstractKeyring
  */
 @Deprecated

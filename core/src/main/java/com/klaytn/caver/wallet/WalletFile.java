@@ -37,7 +37,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.wallet.keyring.KeyStore}
+ * @deprecated Please use {@link com.klaytn.caver.wallet.keyring.KeyStore} instead.
  */
 @Deprecated
 public class WalletFile {

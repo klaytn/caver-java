@@ -21,7 +21,7 @@ import org.web3j.utils.Numeric;
 import java.util.Arrays;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.account.AccountKeyLegacy}
+ * @deprecated Please use {@link com.klaytn.caver.account.AccountKeyLegacy} instead.
  */
 @Deprecated
 public class AccountKeyLegacy implements AccountKey {

@@ -29,7 +29,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.transaction.type.LegacyTransaction}
+ * @deprecated Please use {@link com.klaytn.caver.transaction.type.LegacyTransaction} instead.
  */
 @Deprecated
 public class TxTypeLegacyTransaction extends AbstractTxType {

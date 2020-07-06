@@ -26,7 +26,7 @@ import org.web3j.protocol.core.Request;
 import java.util.Collections;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.rpc.Net}
+ * @deprecated Please use {@link com.klaytn.caver.rpc.Net} instead.
  * @see com.klaytn.caver.rpc.RPC
  */
 @Deprecated

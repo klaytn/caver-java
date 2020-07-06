@@ -22,7 +22,7 @@ import org.web3j.protocol.admin.JsonRpc2_0Admin;
 import org.web3j.protocol.http.HttpService;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.rpc.RPC}
+ * @deprecated Please use {@link com.klaytn.caver.rpc.RPC} instead.
  * @see com.klaytn.caver.Caver
  */
 @Deprecated

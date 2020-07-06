@@ -28,7 +28,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.transaction.type.Cancel}
+ * @deprecated Please use {@link com.klaytn.caver.transaction.type.Cancel} instead.
  */
 @Deprecated
 public class TxTypeCancel extends AbstractTxType {

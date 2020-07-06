@@ -32,7 +32,7 @@ import java.util.Optional;
 import java.util.concurrent.*;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.transaction.response.QueuingTransactionReceiptProcessor}
+ * @deprecated Please use {@link com.klaytn.caver.transaction.response.QueuingTransactionReceiptProcessor} instead.
  */
 @Deprecated
 public class QueuingTransactionReceiptProcessor extends TransactionReceiptProcessor {

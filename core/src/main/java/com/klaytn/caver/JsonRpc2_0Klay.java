@@ -37,7 +37,7 @@ import java.util.Collections;
 import java.util.concurrent.ScheduledExecutorService;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.rpc.Klay}
+ * @deprecated Please use {@link com.klaytn.caver.rpc.Klay} instead.
  * @see com.klaytn.caver.rpc.RPC
  */
 @Deprecated

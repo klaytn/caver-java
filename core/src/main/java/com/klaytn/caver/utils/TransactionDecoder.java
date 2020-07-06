@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.transaction.TransactionDecoder}
+ * @deprecated Please use {@link com.klaytn.caver.transaction.TransactionDecoder} instead.
  */
 @Deprecated
 public class TransactionDecoder {

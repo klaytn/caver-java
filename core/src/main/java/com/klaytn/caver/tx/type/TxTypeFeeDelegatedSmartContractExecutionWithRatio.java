@@ -28,7 +28,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.transaction.type.FeeDelegatedSmartContractExecutionWithRatio}
+ * @deprecated Please use {@link com.klaytn.caver.transaction.type.FeeDelegatedSmartContractExecutionWithRatio} instead.
  */
 @Deprecated
 public class TxTypeFeeDelegatedSmartContractExecutionWithRatio extends TxTypeFeeDelegate {

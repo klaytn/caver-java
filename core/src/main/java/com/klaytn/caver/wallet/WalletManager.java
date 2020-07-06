@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.wallet.KeyringContainer}
+ * @deprecated Please use {@link com.klaytn.caver.wallet.KeyringContainer} instead.
  * @see com.klaytn.caver.wallet.keyring.KeyringFactory
  * @see com.klaytn.caver.wallet.keyring.AbstractKeyring
  */

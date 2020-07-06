@@ -22,7 +22,7 @@ import java.util.*;
 import java.util.function.Function;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.account.AccountKeyDecoder}
+ * @deprecated Please use {@link com.klaytn.caver.account.AccountKeyDecoder} instead.
  */
 @Deprecated
 public class AccountKeyDecoder {

@@ -28,7 +28,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.account.AccountKeyPublic}
+ * @deprecated Please use {@link com.klaytn.caver.account.AccountKeyPublic} instead.
  */
 @Deprecated
 public class AccountKeyPublic implements AccountKey {

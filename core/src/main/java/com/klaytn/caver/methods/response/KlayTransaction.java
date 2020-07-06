@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.methods.response.Transaction}
+ * @deprecated Please use {@link com.klaytn.caver.methods.response.Transaction} instead.
  */
 @Deprecated
 public class KlayTransaction extends Response<KlayTransaction.Transaction> {

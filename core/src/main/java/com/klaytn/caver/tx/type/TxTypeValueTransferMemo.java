@@ -28,7 +28,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.transaction.type.ValueTransferMemo}
+ * @deprecated Please use {@link com.klaytn.caver.transaction.type.ValueTransferMemo} instead.
  */
 @Deprecated
 public class TxTypeValueTransferMemo extends AbstractTxType {

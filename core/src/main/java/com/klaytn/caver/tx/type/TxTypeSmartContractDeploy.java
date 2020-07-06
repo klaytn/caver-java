@@ -28,7 +28,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.transaction.type.SmartContractDeploy}
+ * @deprecated Please use {@link com.klaytn.caver.transaction.type.SmartContractDeploy} instead.
  */
 @Deprecated
 public class TxTypeSmartContractDeploy extends AbstractTxType {

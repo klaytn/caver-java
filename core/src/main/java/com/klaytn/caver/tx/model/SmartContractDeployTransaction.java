@@ -24,7 +24,7 @@ import com.klaytn.caver.tx.type.TxTypeSmartContractDeploy;
 import java.math.BigInteger;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.transaction.type.SmartContractDeploy}
+ * @deprecated Please use {@link com.klaytn.caver.transaction.type.SmartContractDeploy} instead.
  */
 @Deprecated
 public class SmartContractDeployTransaction extends TransactionTransformer<SmartContractDeployTransaction> {

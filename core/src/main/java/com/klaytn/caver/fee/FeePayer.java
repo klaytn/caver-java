@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction}
+ * @deprecated Please use {@link com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction} instead.
  * @see com.klaytn.caver.transaction.AbstractFeeDelegatedWithRatioTransaction
  */
 @Deprecated

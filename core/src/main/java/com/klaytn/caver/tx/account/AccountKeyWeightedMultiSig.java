@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.account.AccountKeyWeightedMultiSig}
+ * @deprecated Please use {@link com.klaytn.caver.account.AccountKeyWeightedMultiSig} instead.
  */
 @Deprecated
 public class AccountKeyWeightedMultiSig implements AccountKey {

@@ -33,7 +33,7 @@ import java.math.BigInteger;
 import java.util.*;
 
 /**
- * @deprecated This class replaced by {@link com.klaytn.caver.transaction.AbstractTransaction}
+ * @deprecated Please use {@link com.klaytn.caver.transaction.AbstractTransaction} instead.
  */
 @Deprecated
 public abstract class AbstractTxType implements TxType {

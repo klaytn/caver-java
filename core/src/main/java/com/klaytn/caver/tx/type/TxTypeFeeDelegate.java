@@ -34,8 +34,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * This interface represents which is fee delegated transaction type
+ * @deprecated Please use {@link com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction} instead.
+ * @see com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction
+ * @see com.klaytn.caver.transaction.AbstractFeeDelegatedWithRatioTransaction
  */
+@Deprecated
 public abstract class TxTypeFeeDelegate extends AbstractTxType {
     final static String EMPTY_FEE_PAYER_ADDRESS = "0x";
     final static int DEFAULT_FEE_RATIO = 100;

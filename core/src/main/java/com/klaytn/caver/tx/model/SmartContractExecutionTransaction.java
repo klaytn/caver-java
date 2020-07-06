@@ -23,6 +23,10 @@ import com.klaytn.caver.tx.type.TxTypeSmartContractExecution;
 
 import java.math.BigInteger;
 
+/**
+ * @deprecated Please use {@link com.klaytn.caver.transaction.type.SmartContractExecution} instead.
+ */
+@Deprecated
 public class SmartContractExecutionTransaction extends TransactionTransformer<SmartContractExecutionTransaction> {
 
     private String recipient;

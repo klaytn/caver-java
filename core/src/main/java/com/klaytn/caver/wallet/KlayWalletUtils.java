@@ -41,6 +41,9 @@ import java.util.regex.Pattern;
 
 import static org.web3j.crypto.Hash.sha256;
 
+/**
+ * @deprecated This class is deprecated since caver-java:1.5.0
+ */
 public class KlayWalletUtils {
 
     public static final int ADDRESS_HEX_SIZE = 40;

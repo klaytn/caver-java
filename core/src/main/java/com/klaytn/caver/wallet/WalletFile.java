@@ -36,6 +36,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * @deprecated Please use {@link com.klaytn.caver.wallet.keyring.KeyStore} instead.
+ */
+@Deprecated
 public class WalletFile {
     private String address;
     private WalletFile.Crypto crypto;

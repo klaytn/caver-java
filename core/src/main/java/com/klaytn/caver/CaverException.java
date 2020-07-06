@@ -16,6 +16,10 @@
 
 package com.klaytn.caver;
 
+/**
+ * @deprecated This class is deprecated since caver-java:1.5.0
+ */
+@Deprecated
 public class CaverException extends Exception {
     private final ErrorType type;
     private final int code;

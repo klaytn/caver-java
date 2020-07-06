@@ -36,8 +36,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * A transaction receipt object, or null when no receipt was found
+ * @deprecated Please use {@link com.klaytn.caver.methods.response.TransactionReceipt} instead.
  */
+@Deprecated
 public class KlayTransactionReceipt extends Response<KlayTransactionReceipt.TransactionReceipt> {
 
     public Optional<TransactionReceipt> getTransactionReceipt() {

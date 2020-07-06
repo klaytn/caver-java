@@ -23,6 +23,10 @@ import com.klaytn.caver.tx.type.TxTypeFeeDelegatedCancelWithRatio;
 
 import java.math.BigInteger;
 
+/**
+ * @deprecated Please use {@link com.klaytn.caver.transaction.type.Cancel} instead.
+ */
+@Deprecated
 public class CancelTransaction extends TransactionTransformer<CancelTransaction> {
 
     private BigInteger feeRatio;

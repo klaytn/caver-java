@@ -31,6 +31,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @deprecated Please use {@link com.klaytn.caver.wallet.keyring.SignatureData} instead.
+ */
+@Deprecated
 public class KlaySignatureData {
     private byte[] v;
     private byte[] r;

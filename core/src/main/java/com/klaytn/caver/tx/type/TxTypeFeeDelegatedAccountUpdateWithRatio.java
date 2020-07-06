@@ -31,9 +31,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * TxTypeFeeDelegatedAccountUpdateWithRatio updates the key of the account.
- * The given ratio of the transaction fee is paid by the fee payer.
+ * @deprecated Please use {@link com.klaytn.caver.transaction.type.FeeDelegatedAccountUpdateWithRatio} instead.
  */
+@Deprecated
 public class TxTypeFeeDelegatedAccountUpdateWithRatio extends TxTypeFeeDelegate {
 
     /**

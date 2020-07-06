@@ -27,6 +27,10 @@ import org.web3j.protocol.core.Response;
 
 import java.io.IOException;
 
+/**
+ * @deprecated This class replaced by {@link com.klaytn.caver.methods.response.Account}
+ */
+@Deprecated
 public class KlayAccount extends Response<KlayAccount.Account> {
 
     @JsonDeserialize(using = KlayAccount.AccountDeserializer.class)

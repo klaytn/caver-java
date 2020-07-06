@@ -28,8 +28,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * TxTypeFeeDelegatedValueTransferWithRatio is a value transfer transaction with a fee payer and its ratio.
+ * @deprecated Please use {@link com.klaytn.caver.transaction.type.FeeDelegatedValueTransferWithRatio} instead.
  */
+@Deprecated
 public class TxTypeFeeDelegatedValueTransferWithRatio extends TxTypeFeeDelegate {
 
     /**

@@ -29,8 +29,9 @@ import com.klaytn.caver.tx.model.TransactionTransformer;
 import java.math.BigInteger;
 
 /**
- * Generic transaction manager.
+ * @deprecated This class is deprecated since caver-java:1.5.0
  */
+@Deprecated
 public abstract class ManagedTransaction {
 
     public static final BigInteger GAS_PRICE = Convert.toPeb("25", Convert.Unit.STON).toBigInteger();

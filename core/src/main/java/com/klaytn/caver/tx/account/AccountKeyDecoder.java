@@ -21,6 +21,10 @@ import org.web3j.utils.Numeric;
 import java.util.*;
 import java.util.function.Function;
 
+/**
+ * @deprecated Please use {@link com.klaytn.caver.account.AccountKeyDecoder} instead.
+ */
+@Deprecated
 public class AccountKeyDecoder {
     private static HashMap<AccountKey.Type, Function<byte[], AccountKey>> typeMap = new HashMap<AccountKey.Type, Function<byte[], AccountKey>>(){
         {

@@ -23,8 +23,11 @@ package com.klaytn.caver.utils;
 import java.math.BigDecimal;
 
 /**
- * Klaytn unit conversion functions.
+ * @deprecated Please use {@link com.klaytn.caver.utils.Utils} instead.
+ * @see com.klaytn.caver.utils.Utils#convertFromPeb(String, String)
+ * @see com.klaytn.caver.utils.Utils#convertToPeb(String, String)
  */
+@Deprecated
 public final class Convert {
     private Convert() { }
     

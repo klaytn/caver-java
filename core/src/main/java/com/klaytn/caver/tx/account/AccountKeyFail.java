@@ -21,10 +21,9 @@ import org.web3j.utils.Numeric;
 import java.util.Arrays;
 
 /**
- * AccountKeyFail is used for smart contract accounts so that a transaction sent from
- * the smart contract account always fails.
- * If an account has the key AccountKeyFail, the tx validation process always fails.
+ * @deprecated Please use {@link com.klaytn.caver.account.AccountKeyFail} instaed.
  */
+@Deprecated
 public class AccountKeyFail implements AccountKey {
 
     private static byte[] RLP = new byte[]{(byte) 0x03, (byte) 0xc0};

@@ -28,14 +28,9 @@ import java.math.BigInteger;
 import java.util.Arrays;
 
 /**
- * AccountKeyPublic is used for accounts having one public key.
- * If an account has an AccountKeyPublic object, the tx validation process is done like below:
- * <ul>
- * <li> Get the public key derived from ecrecover(txhash, txsig) </li>
- * <li> Check that the derived public key is the same as the corresponding </li>
- * <li> account's public key </li>
- * </ul>
+ * @deprecated Please use {@link com.klaytn.caver.account.AccountKeyPublic} instead.
  */
+@Deprecated
 public class AccountKeyPublic implements AccountKey {
 
     private String x;

@@ -32,13 +32,17 @@ public class Caver {
     public static String BAOBAB_URL = "https://api.baobab.klaytn.net:8651";
 
     /**
-     * JSON-RPC Klay API
+     * @deprecated Please use <code>caver.rpc.klay</code> instead.
+     * @see RPC#klay
      */
+    @Deprecated
     Klay klay;
 
     /**
-     * JSON-RPC Net API
+     * @deprecated Please use <code>caver.rpc.net</code> instead.
+     * @see RPC#net
      */
+    @Deprecated
     Net net;
 
     /**
@@ -73,30 +77,25 @@ public class Caver {
     }
 
     /**
-     * Construct a new Caverj instance.
-     *
-     * @param service Web3jService
-     * @return new Caverj instance
+     * @deprecated Please use {@link #Caver(Web3jService)} instead.
      */
+    @Deprecated
     public static Caver build(Web3jService service) {
         return new CaverImpl(service);
     }
 
     /**
-     * Construct a new Caverj instance which is connected to {@code url} node.
-     *
-     * @param url Klaytn url
-     * @return new Caverj instance
+     * @deprecated Please use {@link #Caver(String)} instead.
      */
+    @Deprecated
     public static Caver build(String url) {
         return new CaverImpl(url);
     }
 
     /**
-     * Construct a new Caverj instance which is connected to local node.
-     *
-     * @return new Caverj instance
+     * @deprecated Please use {@link #Caver()} instead.
      */
+    @Deprecated
     public static Caver build() {
         return Caver.build(DEFAULT_URL);
     }
@@ -118,17 +117,19 @@ public class Caver {
     }
 
     /**
-     * Getter for klay
-     * @return Klay
+     * @deprecated Please use <code>caver.rpc.klay</code> instead.
+     * @see RPC#klay
      */
+    @Deprecated
     public Klay klay() {
         return klay;
     };
 
     /**
-     * Getter for Net
-     * @return Net
+     * @deprecated Please use <code>caver.rpc.net</code> instead.
+     * @see RPC#net
      */
+    @Deprecated
     public Net net() {
         return net;
     };

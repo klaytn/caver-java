@@ -28,9 +28,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * TxTypeFeeDelegatedValueTransfer is a value transfer transaction with a fee payer.
- * The fee payer address can be different from the sender.
+ * @deprecated Please use {@link com.klaytn.caver.transaction.type.FeeDelegatedValueTransfer} instead.
  */
+@Deprecated
 public class TxTypeFeeDelegatedValueTransfer extends TxTypeFeeDelegate {
 
     protected TxTypeFeeDelegatedValueTransfer(BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to,

@@ -21,14 +21,9 @@ import org.web3j.utils.Numeric;
 import java.util.Arrays;
 
 /**
- * AccountKeyLegacy represents a key of legacy account types. If an account has AccountKeyLegacy,
- * the tx validation process is done like below (as Ethereum did):
- * <ul>
- * <li> Get the public key from ecrecover(txhash, txsig) </li>
- * <li> Get the address of the public key </li>
- * <li> The address is the sender </li>
- * </ul>
+ * @deprecated Please use {@link com.klaytn.caver.account.AccountKeyLegacy} instead.
  */
+@Deprecated
 public class AccountKeyLegacy implements AccountKey {
 
     private static byte[] RLP = new byte[]{(byte) 0x01, (byte) 0xc0};

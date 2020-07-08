@@ -28,8 +28,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * TxTypeCancel cancels the transaction with the same nonce in the txpool.
+ * @deprecated Please use {@link com.klaytn.caver.transaction.type.Cancel} instead.
  */
+@Deprecated
 public class TxTypeCancel extends AbstractTxType {
     protected TxTypeCancel(
             BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String from) {

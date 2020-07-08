@@ -39,8 +39,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A block object, or null when no block was found
+ * @deprecated Please use {@link com.klaytn.caver.methods.response.Block} instead.
  */
+@Deprecated
 public class KlayBlock extends Response<KlayBlock.Block> {
 
     @Override

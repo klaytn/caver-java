@@ -21,13 +21,9 @@ import org.web3j.utils.Numeric;
 import java.util.Arrays;
 
 /**
- * AccountKeyNil represents an empty key. If an account tries to having an AccountKeyNil object,
- * the transaction will be failed. AccountKeyNil is only used only for TxTypeAccountUpdate transactions
- * with role-based keys. For example, if an account tries to update RoleAccountUpdate key only, the key
- * field of the TxTypeAccountUpdate transaction would be: [AccountKeyNil, NewKey, AccountKeyNil]
- * Then, only the RoleAccountUpdate key is updated. Other roles are not updated. Refer to the
- * {@link AccountKeyRoleBased} for more detail.
+ * @deprecated Please use {@link com.klaytn.caver.account.AccountKeyNil} instead.
  */
+@Deprecated
 public class AccountKeyNil implements AccountKey {
 
     public static byte[] RLP = new byte[]{(byte) 0x80};

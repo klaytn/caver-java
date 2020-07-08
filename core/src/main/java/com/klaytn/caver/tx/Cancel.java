@@ -28,6 +28,10 @@ import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.CancelTransaction;
 import org.web3j.protocol.core.RemoteCall;
 
+/**
+ * @deprecated This class is deprecated since caver-java:1.5.0
+ */
+@Deprecated
 public class Cancel extends ManagedTransaction {
 
     private Cancel(Caver caver, TransactionManager transactionManager) {

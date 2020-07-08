@@ -28,9 +28,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * TxTypeFeeDelegatedValueTransferMemoWithRatio transfers KLAY with a data.
- * The given ratio of the transaction fee is paid by the fee payer.
+ * @deprecated Please use {@link com.klaytn.caver.transaction.type.FeeDelegatedValueTransferMemoWithRatio} instead.
  */
+@Deprecated
 public class TxTypeFeeDelegatedValueTransferMemoWithRatio extends TxTypeFeeDelegate {
 
     /**

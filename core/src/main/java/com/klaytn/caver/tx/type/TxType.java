@@ -24,8 +24,9 @@ import org.web3j.rlp.RlpType;
 import java.util.List;
 
 /**
- * This interface
+ * @deprecated This interface is deprecated since caver-java:1.5.0
  */
+@Deprecated
 public interface TxType {
 
     /**

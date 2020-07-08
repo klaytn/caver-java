@@ -23,6 +23,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @deprecated This class is deprecated since caver-java:1.5.0
+ */
+@Deprecated
 public class KlayRawTransaction {
     private byte[] value;
     private Set<KlaySignatureData> signatureData;

@@ -23,11 +23,14 @@ package com.klaytn.caver.utils;
 import java.math.BigDecimal;
 
 /**
- * Klaytn unit conversion functions.
+ * @deprecated Please use {@link com.klaytn.caver.utils.Utils} instead.
+ * @see com.klaytn.caver.utils.Utils#convertFromPeb(String, String)
+ * @see com.klaytn.caver.utils.Utils#convertToPeb(String, String)
  */
+@Deprecated
 public final class Convert {
     private Convert() { }
-
+    
     public static BigDecimal fromPeb(String number, Unit unit) {
         return fromPeb(new BigDecimal(number), unit);
     }
@@ -50,8 +53,8 @@ public final class Convert {
         MPEB("Mpeb", 6),
         GPEB("Gpeb", 9),
         STON("Ston", 9),
-        UKLAY("uKLAY", 12),
-        MKALY("mKLAY", 15),
+        uKLAY("uKLAY", 12),
+        mKLAY("mKLAY", 15),
         KLAY("KLAY", 18),
         KKLAY("kKLAY", 21),
         MKLAY("MKLAY", 24),
@@ -77,7 +80,7 @@ public final class Convert {
         public static Unit fromString(String name) {
             if (name != null) {
                 for (Unit unit : Unit.values()) {
-                    if (name.equalsIgnoreCase(unit.name)) {
+                    if (name.equals(unit.name)) {
                         return unit;
                     }
                 }

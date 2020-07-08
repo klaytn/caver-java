@@ -33,6 +33,10 @@ import org.web3j.utils.Numeric;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+/**
+ * @deprecated This class is deprecated since caver-java:1.5.0
+ */
+@Deprecated
 public class ValueTransfer extends ManagedTransaction {
 
     public static final BigInteger GAS_LIMIT = BigInteger.valueOf(21000);

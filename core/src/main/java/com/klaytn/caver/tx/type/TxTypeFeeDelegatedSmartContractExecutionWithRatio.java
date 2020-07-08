@@ -28,9 +28,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * TxTypeFeeDelegatedSmartContractExecutionWithRatio executes a smart contract with the given data.
- * The given ratio of the transaction fee is paid by the fee payer.
+ * @deprecated Please use {@link com.klaytn.caver.transaction.type.FeeDelegatedSmartContractExecutionWithRatio} instead.
  */
+@Deprecated
 public class TxTypeFeeDelegatedSmartContractExecutionWithRatio extends TxTypeFeeDelegate {
 
     /**

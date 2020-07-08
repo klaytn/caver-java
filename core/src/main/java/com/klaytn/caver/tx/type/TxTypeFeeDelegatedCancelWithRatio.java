@@ -28,9 +28,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * TxTypeFeeDelegatedCancelWithRatio cancels the transaction with the same nonce in the txpool.
- * The given ratio of the transaction fee is paid by the fee payer.
+ * @deprecated Please use {@link com.klaytn.caver.transaction.type.FeeDelegatedCancelWithRatio} instead.
  */
+@Deprecated
 public class TxTypeFeeDelegatedCancelWithRatio extends TxTypeFeeDelegate {
 
     /**

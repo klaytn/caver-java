@@ -18,13 +18,13 @@
  * Modified and improved for the caver-java development.
  */
 
-package com.klaytn.caver.wallet;
+package com.klaytn.caver.utils;
 
 import org.web3j.crypto.LinuxSecureRandom;
 
 import java.security.SecureRandom;
 
-final class SecureRandomUtils {
+public final class SecureRandomUtils {
 
     private static final SecureRandom SECURE_RANDOM;
 
@@ -35,7 +35,7 @@ final class SecureRandomUtils {
         SECURE_RANDOM = new SecureRandom();
     }
 
-    static SecureRandom secureRandom() {
+    public static SecureRandom secureRandom() {
         return SECURE_RANDOM;
     }
 

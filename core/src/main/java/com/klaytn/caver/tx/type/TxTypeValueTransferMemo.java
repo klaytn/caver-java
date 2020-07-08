@@ -28,8 +28,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * TxTypeValueTransferMemo transfers KLAY with a memo.
+ * @deprecated Please use {@link com.klaytn.caver.transaction.type.ValueTransferMemo} instead.
  */
+@Deprecated
 public class TxTypeValueTransferMemo extends AbstractTxType {
 
     /**

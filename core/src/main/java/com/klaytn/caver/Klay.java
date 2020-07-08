@@ -30,6 +30,11 @@ import org.web3j.protocol.core.Request;
 
 import java.math.BigInteger;
 
+/**
+ * @deprecated Please use {@link com.klaytn.caver.rpc.Klay} instead.
+ * @see com.klaytn.caver.rpc.RPC
+ */
+@Deprecated
 public interface Klay {
 
     /**
@@ -51,7 +56,7 @@ public interface Klay {
     /**
      * Returns the account information of a given address. There are three different account types in
      * Klaytn: Legacy Account, Externally Owned Account (EOA), and Smart Contract Account. See Klaytn
-     * {@link AccountType}.
+     * {@link IAccountType}.
      *
      * @param address               Address
      * @param defaultBlockParameter Integer block number, or the string "latest", "earliest" or "pending"

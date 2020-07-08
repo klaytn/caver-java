@@ -37,6 +37,10 @@ import org.web3j.protocol.exceptions.TransactionException;
 
 import java.io.IOException;
 
+/**
+ * @deprecated Please use {@link com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction} instad.
+ * @see com.klaytn.caver.transaction.AbstractFeeDelegatedWithRatioTransaction
+ */
 public class FeePayerManager {
 
     private Caver caver;

@@ -16,6 +16,10 @@
 
 package com.klaytn.caver.tx.manager;
 
+/**
+ * @deprecated This class is deprecated since caver-java:1.5.0
+ */
+@Deprecated
 public abstract class ErrorHandler {
     public abstract void exception(Exception exception);
 }

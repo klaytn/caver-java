@@ -29,6 +29,11 @@ import java.util.*;
 
 import static com.klaytn.caver.wallet.KlayWalletUtils.*;
 
+/**
+ * @deprecated Please use KeyringClass instead.
+ * @see com.klaytn.caver.wallet.keyring.AbstractKeyring
+ */
+@Deprecated
 public class KlayCredentials {
     private final List<ECKeyPair> ecKeyPairForTransactionList;
     private final List<ECKeyPair> ecKeyPairForUpdateList;

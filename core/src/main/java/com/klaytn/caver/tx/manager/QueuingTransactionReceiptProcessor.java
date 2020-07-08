@@ -31,6 +31,10 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.*;
 
+/**
+ * @deprecated Please use {@link com.klaytn.caver.transaction.response.QueuingTransactionReceiptProcessor} instead.
+ */
+@Deprecated
 public class QueuingTransactionReceiptProcessor extends TransactionReceiptProcessor {
 
     public static final int DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH = 15;

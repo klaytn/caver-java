@@ -28,10 +28,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * AccountKeyWeightedMultiSig is an account key type containing a threshold and WeightedPublicKeys.
- * WeightedPublicKeys contains a slice of {weight and key}. To be a valid tx for an account associated
- * with AccountKeyWeightedMultiSig, the weighted sum of signed public keys should be larger than the threshold.
+ * @deprecated Please use {@link com.klaytn.caver.account.AccountKeyWeightedMultiSig} instead.
  */
+@Deprecated
 public class AccountKeyWeightedMultiSig implements AccountKey {
 
     /**

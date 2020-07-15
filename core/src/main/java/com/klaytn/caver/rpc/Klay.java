@@ -791,42 +791,14 @@ public class Klay {
      * The transaction will not be added to the blockchain. Note that the estimate may be significantly more
      * than the amount of gas actually used by the transaction, for a variety of reasons including Klaytn Virtual
      * Machine mechanics and node performance.
-     * It sets block tag to "LATEST"
-     * @param callObject The transaction call object.
-     * @return Quantity
-     */
-    public Request<?, Quantity> estimateGas(CallObject callObject) {
-        return estimateGas(callObject, DefaultBlockParameterName.LATEST);
-    }
-
-    /**
-     * Generates and returns an estimate of how much gas is necessary to allow the transaction to complete.
-     * The transaction will not be added to the blockchain. Note that the estimate may be significantly more
-     * than the amount of gas actually used by the transaction, for a variety of reasons including Klaytn Virtual
-     * Machine mechanics and node performance.
-     * @param callObject The transaction call object.
-     * @param blockNumber The block number
-     * @return Quantity
-     */
-    public Request<?, Quantity> estimateGas(CallObject callObject, long blockNumber) {
-        DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
-
-        return estimateGas(callObject, blockParameterNumber);
-    }
-
-    /**
-     * Generates and returns an estimate of how much gas is necessary to allow the transaction to complete.
-     * The transaction will not be added to the blockchain. Note that the estimate may be significantly more
-     * than the amount of gas actually used by the transaction, for a variety of reasons including Klaytn Virtual
-     * Machine mechanics and node performance.
      * @param callObject The transaction call object.
      * @param blockTag The string "latest", "earliest" or "pending"
      * @return Quantity
      */
-    public Request<?, Quantity> estimateGas(CallObject callObject, DefaultBlockParameter blockTag) {
+    public Request<?, Quantity> estimateGas(CallObject callObject) {
         return new Request<>(
                 "klay_estimateGas",
-                Arrays.asList(callObject, blockTag),
+                Arrays.asList(callObject),
                 web3jService,
                 Quantity.class);
     }
@@ -836,36 +808,13 @@ public class Klay {
      * Klaytn limits the computation cost of a transaction to 100000000 currently not to take too much time
      * by a single transaction. The transaction will not be added to the blockchain like klay_estimateGas.
      * @param callObject The transaction call object.
-     * @return Quantity
-     */
-    public Request<?, Quantity> estimateComputationCost(CallObject callObject) {
-        return estimateComputationCost(callObject, DefaultBlockParameterName.LATEST);
-    }
-
-    /**
-     * Generates and returns an estimate of how much computation cost spent to execute the transaction.
-     * Klaytn limits the computation cost of a transaction to 100000000 currently not to take too much time
-     * by a single transaction. The transaction will not be added to the blockchain like klay_estimateGas.
-     * @param callObject The transaction call object.
-     * @param blockNumber The block number
-     * @return Quantity
-     */
-    public Request<?, Quantity> estimateComputationCost(CallObject callObject, long blockNumber) {
-        return estimateComputationCost(callObject, new DefaultBlockParameterNumber(blockNumber));
-    }
-
-    /**
-     * Generates and returns an estimate of how much computation cost spent to execute the transaction.
-     * Klaytn limits the computation cost of a transaction to 100000000 currently not to take too much time
-     * by a single transaction. The transaction will not be added to the blockchain like klay_estimateGas.
-     * @param callObject The transaction call object.
      * @param blockTag The string "latest", "earliest" or "pending"
      * @return Quantity
      */
-    public Request<?, Quantity> estimateComputationCost(CallObject callObject, DefaultBlockParameter blockTag) {
+    public Request<?, Quantity> estimateComputationCost(CallObject callObject) {
         return new Request<>(
                 "klay_estimateComputationCost",
-                Arrays.asList(callObject, blockTag),
+                Arrays.asList(callObject),
                 web3jService,
                 Quantity.class);
     }

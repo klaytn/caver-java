@@ -792,7 +792,6 @@ public class Klay {
      * than the amount of gas actually used by the transaction, for a variety of reasons including Klaytn Virtual
      * Machine mechanics and node performance.
      * @param callObject The transaction call object.
-     * @param blockTag The string "latest", "earliest" or "pending"
      * @return Quantity
      */
     public Request<?, Quantity> estimateGas(CallObject callObject) {
@@ -808,7 +807,6 @@ public class Klay {
      * Klaytn limits the computation cost of a transaction to 100000000 currently not to take too much time
      * by a single transaction. The transaction will not be added to the blockchain like klay_estimateGas.
      * @param callObject The transaction call object.
-     * @param blockTag The string "latest", "earliest" or "pending"
      * @return Quantity
      */
     public Request<?, Quantity> estimateComputationCost(CallObject callObject) {

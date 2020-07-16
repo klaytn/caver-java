@@ -15,54 +15,52 @@ import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.exceptions.TransactionException;
 
 import java.io.IOException;
-import java.math.BigInteger;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class Contract {
     Caver caver;
 
     String abi;
-    String binaryData;
     String contractAddress;
 
     Map<String, ContractMethod> methods;
     Map<String, ContractEvent> events;
     ContractMethod constructor;
 
+    public Contract(Caver caver, String abi) throws IOException{
+        this(caver, abi, null);
+    }
+
     public Contract(Caver caver, String abi, String contractAddress) throws IOException{
-        this(caver,abi, null, contractAddress);
+        setAbi(abi);
+        setCaver(caver);
+        setContractAddress(contractAddress);
     }
 
-    public Contract(Caver caver, String abi, String binaryData, String contractAddress) throws IOException {
-        this.caver = caver;
-        this.abi = abi;
-        this.binaryData = binaryData;
-        this.contractAddress = contractAddress;
-        init(abi);
+    public Contract deploy(ContractDeployParam deployParam, SendOptions sendOptions) throws IOException, TransactionException {
+        return deploy(deployParam, sendOptions, new PollingTransactionReceiptProcessor(caver, 1000, 15));
     }
 
-    public Contract deploy(ContractDeployParam params) throws IOException, TransactionException {
-        return deploy(params, new PollingTransactionReceiptProcessor(caver, 1000, 15));
-    }
-
-    public Contract deploy(ContractDeployParam params, TransactionReceiptProcessor processor) throws IOException, TransactionException {
+    public Contract deploy(ContractDeployParam params, SendOptions sendOptions, TransactionReceiptProcessor processor) throws IOException, TransactionException {
         List<Type> deployParams = params.getDeployParams();
         this.constructor.checkTypeValid(deployParams);
 
         String encodedParams = ABI.encodeParameter(deployParams);
-        String input = params.getBinaryData() + encodedParams;
+        String input = params.getBytecode() + encodedParams;
 
         SmartContractDeploy smartContractDeploy = new SmartContractDeploy.Builder()
                 .setKlaytnCall(caver.rpc.klay)
-                .setFrom(params.getFrom())
+                .setFrom(sendOptions.getFrom())
                 .setInput(input)
                 .setCodeFormat(CodeFormat.EVM)
                 .setHumanReadable(false)
-                .setGas(params.getGas())
-                .setGasPrice(params.getGasPrice())
+                .setGas(sendOptions.getGas())
                 .build();
 
-        caver.wallet.sign(params.getFrom(), smartContractDeploy);
+        caver.wallet.sign(sendOptions.getFrom(), smartContractDeploy);
 
         Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractDeploy.getRawTransaction()).send();
         TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());
@@ -72,29 +70,8 @@ public class Contract {
         return this;
     }
 
-    private void init(String abi) throws IOException {
-        ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
-
-        methods = new HashMap<>();
-        events = new HashMap<>();
-
-        JsonNode root = objectMapper.readTree(abi);
-        Iterator<JsonNode> iterator = root.iterator();
-
-        while(iterator.hasNext()) {
-            JsonNode element = iterator.next();
-            if(element.get("type").asText().equals("function")) {
-                ContractMethod method = objectMapper.readValue(element.toString(), ContractMethod.class);
-                method.setCaver(caver);
-                methods.put(method.getName(), method);
-            } else if(element.get("type").asText().equals("event")) {
-                ContractEvent event = objectMapper.readValue(element.toString(), ContractEvent.class);
-                events.put(event.getName(), event);
-            } else if(element.get("type").asText().equals("constructor")) {
-                ContractMethod method = objectMapper.readValue(element.toString(), ContractMethod.class);
-                this.constructor = method;
-            }
-        }
+    public ContractMethod getMethod(String methodName) {
+        return this.getMethods().get(methodName);
     }
 
     public Caver getCaver() {
@@ -103,10 +80,6 @@ public class Contract {
 
     public String getAbi() {
         return abi;
-    }
-
-    public String getBinaryData() {
-        return binaryData;
     }
 
     public String getContractAddress() {
@@ -127,18 +100,23 @@ public class Contract {
 
     public void setCaver(Caver caver) {
         this.caver = caver;
+
+        if(this.methods != null && this.methods.size() != 0) {
+            this.getMethods().values().forEach(value -> value.setCaver(caver));
+        }
     }
 
-    public void setAbi(String abi) {
+    public void setAbi(String abi) throws IOException {
         this.abi = abi;
-    }
-
-    public void setBinaryData(String binaryData) {
-        this.binaryData = binaryData;
+        init(this.abi);
     }
 
     public void setContractAddress(String contractAddress) {
         this.contractAddress = contractAddress;
+
+        if(this.methods != null && this.methods.size() != 0) {
+            this.getMethods().values().forEach(value -> value.setContractAddress(contractAddress));
+        }
     }
 
     public void setMethods(Map<String, ContractMethod> methods) {
@@ -151,5 +129,31 @@ public class Contract {
 
     public void setConstructor(ContractMethod constructor) {
         this.constructor = constructor;
+    }
+
+    private void init(String abi) throws IOException {
+        ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
+
+        methods = new HashMap<>();
+        events = new HashMap<>();
+
+        JsonNode root = objectMapper.readTree(abi);
+        Iterator<JsonNode> iterator = root.iterator();
+
+        while(iterator.hasNext()) {
+            JsonNode element = iterator.next();
+            if(element.get("type").asText().equals("function")) {
+                ContractMethod method = objectMapper.readValue(element.toString(), ContractMethod.class);
+                method.setSignature(ABI.buildFunctionSignature(method));
+                methods.put(method.getName(), method);
+            } else if(element.get("type").asText().equals("event")) {
+                ContractEvent event = objectMapper.readValue(element.toString(), ContractEvent.class);
+                event.setSignature(ABI.buildEventSignature(event));
+                events.put(event.getName(), event);
+            } else if(element.get("type").asText().equals("constructor")) {
+                ContractMethod method = objectMapper.readValue(element.toString(), ContractMethod.class);
+                this.constructor = method;
+            }
+        }
     }
 }

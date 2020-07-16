@@ -12,8 +12,10 @@ import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.transaction.type.SmartContractExecution;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Type;
+import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.gas.DefaultGasProvider;
+import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -29,21 +31,22 @@ public class ContractMethod {
     List<ContractIOType> inputs;
     List<ContractIOType> outputs;
     String signature;
+    String contractAddress;
 
     public ContractMethod() {
     }
 
-    public ContractMethod(Caver caver, String type, String name, List<ContractIOType> inputs, List<ContractIOType> outputs, String signature) {
+    public ContractMethod(Caver caver, String type, String name, List<ContractIOType> inputs, List<ContractIOType> outputs, String signature, String contractAddress) {
         this.caver = caver;
         this.type = type;
         this.name = name;
         this.inputs = inputs;
         this.outputs = outputs;
         this.signature = signature;
+        this.contractAddress = contractAddress;
     }
 
-    public List<Type> call(String from, String contractAddress, Type... argument) throws IOException, ClassNotFoundException {
-        List params = Arrays.asList(argument);
+    public List<Type> call(List<Type> arguments, SendOptions options) throws IOException, ClassNotFoundException {
         List<TypeReference<Type>> resultParams = new ArrayList<>();
 
         for(ContractIOType ioType: this.outputs) {
@@ -51,37 +54,41 @@ public class ContractMethod {
             resultParams.add(TypeReference.create(cls));
         }
 
-        checkTypeValid(params);
+        checkTypeValid(arguments);
 
-        String encodedFunction = ABI.encodeFunctionCall(this, params);
+        String encodedFunction = ABI.encodeFunctionCall(this, arguments);
         Bytes response = caver.rpc.klay.call(
-                new CallObject(from, contractAddress, null, null, null, encodedFunction)
-        ).send();
+                new CallObject(
+                        options.from,
+                        this.getContractAddress(),
+                        Numeric.toBigInt(options.getGas()),
+                        null,
+                        Numeric.toBigInt(options.getValue()),
+                        encodedFunction
+                )).send();
 
         String encodedResult = response.getResult();
         return ABI.decodeReturnParameters(encodedResult, resultParams);
     }
 
-    public TransactionReceipt.TransactionReceiptData send(ContractExecuteParam param) throws IOException, TransactionException {
-        return send(param, new PollingTransactionReceiptProcessor(caver, 1000, 15));
+    public TransactionReceipt.TransactionReceiptData send(List<Type> argument, SendOptions options) throws IOException, TransactionException {
+        return send(argument, options, new PollingTransactionReceiptProcessor(caver, 1000, 15));
     }
 
-    public TransactionReceipt.TransactionReceiptData send(ContractExecuteParam param, TransactionReceiptProcessor processor) throws IOException, TransactionException {
-        List params = param.getParams();
-        checkTypeValid(params);
+    public TransactionReceipt.TransactionReceiptData send(List<Type> argument, SendOptions options, TransactionReceiptProcessor processor) throws IOException, TransactionException {
+        checkTypeValid(argument);
 
-        String encodedFunction = ABI.encodeFunctionCall(this, params);
+        String encodedFunction = ABI.encodeFunctionCall(this, argument);
 
         SmartContractExecution smartContractExecution = new SmartContractExecution.Builder()
                 .setKlaytnCall(caver.rpc.klay)
-                .setFrom(param.getFrom())
-                .setTo(param.getContractAddress())
+                .setFrom(options.getFrom())
+                .setTo(this.getContractAddress())
                 .setInput(encodedFunction)
-                .setGas(DefaultGasProvider.GAS_LIMIT)
-                .setGasPrice(param.getGasPrice())
+                .setGas(options.getGas())
                 .build();
 
-        caver.wallet.sign(param.getFrom(), smartContractExecution);
+        caver.wallet.sign(options.getFrom(), smartContractExecution);
         Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractExecution.getRawTransaction()).send();
 
         TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());
@@ -92,15 +99,15 @@ public class ContractMethod {
         return ABI.encodeFunctionCall(this, Arrays.asList(argument));
     }
 
-    public String estimateGas(String from, BigInteger gas, String contractAddress, Type... argument) throws IOException {
-        List params = Arrays.asList(argument);
-        String data = ABI.encodeFunctionCall(this, params);
-        CallObject callObject = new CallObject(from, contractAddress, gas, null, null, data);
+    public String estimateGas(List<Type> argument, SendOptions options) throws IOException {
+        String data = ABI.encodeFunctionCall(this, argument);
+        CallObject callObject = new CallObject(options.getFrom(), this.getContractAddress(), Numeric.toBigInt(options.getGas()), null, Numeric.toBigInt(options.getValue()), data);
 
         Quantity estimateGas = caver.rpc.klay.estimateGas(callObject).send();
         if(estimateGas.hasError()) {
             throw new IOException(estimateGas.getError().getMessage());
         }
+
         return estimateGas.getResult();
     }
 
@@ -123,47 +130,55 @@ public class ContractMethod {
         return caver;
     }
 
-    public void setCaver(Caver caver) {
-        this.caver = caver;
-    }
-
     public String getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public List<ContractIOType> getInputs() {
         return inputs;
-    }
-
-    public void setInputs(List<ContractIOType> inputs) {
-        this.inputs = inputs;
     }
 
     public List<ContractIOType> getOutputs() {
         return outputs;
     }
 
-    public void setOutputs(List<ContractIOType> outputs) {
-        this.outputs = outputs;
-    }
-
     public String getSignature() {
         return signature;
     }
 
+    public String getContractAddress() {
+        return contractAddress;
+    }
+
+    public void setCaver(Caver caver) {
+        this.caver = caver;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setInputs(List<ContractIOType> inputs) {
+        this.inputs = inputs;
+    }
+
+    public void setOutputs(List<ContractIOType> outputs) {
+        this.outputs = outputs;
+    }
+
     public void setSignature(String signature) {
         this.signature = signature;
+    }
+
+    public void setContractAddress(String contractAddress) {
+        this.contractAddress = contractAddress;
     }
 }

@@ -31,15 +31,7 @@ public class ABI {
     }
 
     public static String encodeFunctionSignature(ContractMethod method) {
-        StringBuilder result = new StringBuilder();
-        result.append(method.getName());
-        result.append("(");
-        String params = method.getInputs().stream()
-                .map(ContractIOType::getType)
-                .collect(Collectors.joining(","));
-        result.append(params);
-        result.append(")");
-        return encodeFunctionSignature(result.toString());
+        return encodeFunctionSignature(buildFunctionSignature(method));
     }
 
     public static String encodeFunctionSignature(String functionSig) {
@@ -48,22 +40,40 @@ public class ABI {
         return Numeric.toHexString(hash).substring(0, 10);
     }
 
-    public static String encodeEventSignature(ContractEvent event) {
+    public static String buildFunctionSignature(ContractMethod method) {
         StringBuilder result = new StringBuilder();
-        result.append(event.getName());
+        result.append(method.getName());
         result.append("(");
-        String params = event.getInputs().stream()
+        String params = method.getInputs().stream()
                 .map(ContractIOType::getType)
                 .collect(Collectors.joining(","));
         result.append(params);
         result.append(")");
-        return encodeEventSignature(result.toString());
+
+        return result.toString();
     }
 
-    public static String encodeEventSignature(String eventString) {
-        byte[] input = eventString.getBytes();
+    public static String encodeEventSignature(ContractEvent event) {
+        return encodeEventSignature(buildEventSignature(event));
+    }
+
+    public static String encodeEventSignature(String eventSig) {
+        byte[] input = eventSig.getBytes();
         byte[] hash = Hash.sha3(input);
         return Numeric.toHexString(hash);
+    }
+
+    public static String buildEventSignature(ContractEvent method) {
+        StringBuilder result = new StringBuilder();
+        result.append(method.getName());
+        result.append("(");
+        String params = method.getInputs().stream()
+                .map(ContractIOType::getType)
+                .collect(Collectors.joining(","));
+        result.append(params);
+        result.append(")");
+
+        return result.toString();
     }
 
     public static String encodeParameter(List<Type> parameters) {

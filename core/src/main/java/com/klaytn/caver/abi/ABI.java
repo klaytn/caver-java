@@ -103,9 +103,7 @@ public class ABI {
     }
 
     public static Type decodeParameter(String solidityType, String encoded) throws ClassNotFoundException {
-        String web3Type = ContractIOType.buildTypeName(solidityType);
-
-        return decodeParameters(Arrays.asList(web3Type), encoded).get(0);
+        return decodeParameters(Arrays.asList(solidityType), encoded).get(0);
     }
 
     public static List<Type> decodeParameters(List<String> solidityTypeList, String encoded) throws ClassNotFoundException {

@@ -12,13 +12,10 @@ import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.transaction.type.SmartContractExecution;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Type;
-import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.exceptions.TransactionException;
-import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,13 +44,6 @@ public class ContractMethod {
     }
 
     public List<Type> call(List<Type> arguments, SendOptions options) throws IOException, ClassNotFoundException {
-        List<TypeReference<Type>> resultParams = new ArrayList<>();
-
-        for(ContractIOType ioType: this.outputs) {
-            Class cls = Class.forName(ioType.getJavaType());
-            resultParams.add(TypeReference.create(cls));
-        }
-
         checkTypeValid(arguments);
 
         String encodedFunction = ABI.encodeFunctionCall(this, arguments);
@@ -68,7 +58,7 @@ public class ContractMethod {
                 )).send();
 
         String encodedResult = response.getResult();
-        return ABI.decodeReturnParameters(encodedResult, resultParams);
+        return ABI.decodeParameters(this, encodedResult);
     }
 
     public TransactionReceipt.TransactionReceiptData send(List<Type> argument, SendOptions options) throws IOException, TransactionException {
@@ -95,8 +85,8 @@ public class ContractMethod {
         return receipt;
     }
 
-    public String encodeABI(Type... argument) {
-        return ABI.encodeFunctionCall(this, Arrays.asList(argument));
+    public String encodeABI(List<Type> argument) {
+        return ABI.encodeFunctionCall(this, argument);
     }
 
     public String estimateGas(List<Type> argument, SendOptions options) throws IOException {

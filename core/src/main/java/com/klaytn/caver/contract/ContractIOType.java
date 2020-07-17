@@ -35,7 +35,7 @@ public class ContractIOType {
         this.javaType = buildTypeName(type);
     }
 
-    private static String buildTypeName(String typeDeclaration) {
+    public static String buildTypeName(String typeDeclaration) {
         String regex = "(\\w+)(?:\\[(.*?)\\])(?:\\[(.*?)\\])?";
         Pattern pattern = Pattern.compile(regex);
 

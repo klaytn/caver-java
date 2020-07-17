@@ -10,20 +10,21 @@ import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ABI {
     public static String encodeFunctionCall(ContractMethod method, List<Type> params) {
         String methodId = encodeFunctionSignature(method);
-        String encodedParams = encodeParameter(params);
+        String encodedParams = encodeParameters(params);
 
         return methodId + encodedParams;
     }
 
     public static String encodeFunctionCall(String functionSig, List<Type> params) {
         String methodId = encodeFunctionSignature(functionSig);
-        String encodedParams = encodeParameter(params);
+        String encodedParams = encodeParameters(params);
 
         return methodId + encodedParams;
     }
@@ -74,7 +75,11 @@ public class ABI {
         return result.toString();
     }
 
-    public static String encodeParameter(List<Type> parameters) {
+    public static String encodeParameter(Type parameter) {
+        return encodeParameters(Arrays.asList(parameter));
+    }
+
+    public static String encodeParameters(List<Type> parameters) {
 
         int dynamicDataOffset = getLength(parameters) * Type.MAX_BYTE_LENGTH;
         StringBuilder result = new StringBuilder();
@@ -85,8 +90,6 @@ public class ABI {
 
             if (isDynamic(parameter)) {
                 String encodedDataOffset = TypeEncoder.encode(new Uint(BigInteger.valueOf(dynamicDataOffset)));
-//                String encodedDataOffset = TypeEncoder.encodeNumeric(
-//                        new Uint(BigInteger.valueOf(dynamicDataOffset)));
                 result.append(encodedDataOffset);
                 dynamicData.append(encodedValue);
                 dynamicDataOffset += encodedValue.length() >> 1;
@@ -99,8 +102,32 @@ public class ABI {
         return result.toString();
     }
 
-    public static List<Type> decodeReturnParameters(String rawData, List<TypeReference<Type>> params) {
-        return FunctionReturnDecoder.decode(rawData, params);
+    public static Type decodeParameter(String solidityType, String encoded) throws ClassNotFoundException {
+        String web3Type = ContractIOType.buildTypeName(solidityType);
+
+        return decodeParameters(Arrays.asList(web3Type), encoded).get(0);
+    }
+
+    public static List<Type> decodeParameters(List<String> solidityTypeList, String encoded) throws ClassNotFoundException {
+        List<TypeReference<Type>> params = new ArrayList<>();
+
+        for(String solType : solidityTypeList) {
+            Class web3TypeClass = Class.forName(ContractIOType.buildTypeName(solType));
+            params.add(TypeReference.create(web3TypeClass));
+        }
+
+        return FunctionReturnDecoder.decode(encoded, params);
+    }
+
+    public static List<Type> decodeParameters(ContractMethod method, String encoded) throws ClassNotFoundException {
+        List<TypeReference<Type>> resultParams = new ArrayList<>();
+
+        for(ContractIOType ioType: method.getOutputs()) {
+            Class cls = Class.forName(ioType.getJavaType());
+            resultParams.add(TypeReference.create(cls));
+        }
+
+        return FunctionReturnDecoder.decode(encoded, resultParams);
     }
 
     public static EventValues decodeLog(List<ContractIOType> inputs, String data, List<String> topics) throws ClassNotFoundException {
@@ -116,7 +143,7 @@ public class ABI {
             }
         }
 
-        List<Type> nonIndexedValues = decodeReturnParameters(data, nonIndexedList);
+        List<Type> nonIndexedValues = FunctionReturnDecoder.decode(data, nonIndexedList);
         List<Type> indexedValues = new ArrayList<>();
 
         for(int i=0; i < indexedList.size(); i++) {

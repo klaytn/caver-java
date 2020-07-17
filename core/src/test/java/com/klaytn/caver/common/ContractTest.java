@@ -1,17 +1,20 @@
 package com.klaytn.caver.common;
 
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.contract.Contract;
-import com.klaytn.caver.contract.ContractDeployParam;
-import com.klaytn.caver.contract.SendOptions;
+import com.klaytn.caver.abi.ABI;
+import com.klaytn.caver.contract.*;
+import com.klaytn.caver.methods.request.KlayLogFilter;
+import com.klaytn.caver.methods.response.KlayLogs;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import org.junit.Test;
+import org.web3j.abi.EventValues;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Uint;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint8;
+import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.gas.DefaultGasProvider;
 
@@ -678,21 +681,6 @@ public class ContractTest {
             "      \"type\": \"function\"\n" +
             "    }\n" +
             "  ]";
-
-    @Test
-    public void call() throws IOException, ClassNotFoundException {
-        Caver caver = new Caver(Caver.DEFAULT_URL);
-
-        String contractAddress = "0x9055460fbff8d86a42db71210ec68d5290637fe4";
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
-
-        List<Type> params = Arrays.asList(new Address(BRANDON.getAddress()));
-
-        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
-        List<Type> list = contract.getMethod("balanceOf").call(params, sendOptions);
-        System.out.println(list.get(0).getValue());
-    }
-
     @Test
     public void deploy() throws IOException, TransactionException {
         Caver caver = new Caver(Caver.DEFAULT_URL);
@@ -721,11 +709,25 @@ public class ContractTest {
     }
 
     @Test
+    public void call() throws IOException, ClassNotFoundException {
+        Caver caver = new Caver(Caver.DEFAULT_URL);
+
+        String contractAddress = "0x40d1a8756e3a8e6e7cea3bd20443d8cf5a954d74";
+        Contract contract = new Contract(caver, jsonObj, contractAddress);
+
+        List<Type> params = Arrays.asList(new Address(BRANDON.getAddress()));
+
+        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
+        List<Type> list = contract.getMethod("balanceOf").call(params, sendOptions);
+        System.out.println(list.get(0).getValue());
+    }
+
+    @Test
     public void send() throws IOException, TransactionException, ClassNotFoundException {
         Caver caver = new Caver(Caver.DEFAULT_URL);
         caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
 
-        String contractAddress = "0x9055460fbff8d86a42db71210ec68d5290637fe4";
+        String contractAddress = "0x40d1a8756e3a8e6e7cea3bd20443d8cf5a954d74";
         Contract contract = new Contract(caver, jsonObj, contractAddress);
 
         BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
@@ -760,5 +762,27 @@ public class ContractTest {
 
         SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
         contract.getMethod("transfer").estimateGas(sendParams, sendOptions);
+    }
+
+    @Test
+    public void getPastEvent() throws IOException, ClassNotFoundException {
+        Caver caver = new Caver(Caver.DEFAULT_URL);
+
+        String contractAddress = "0x40d1a8756e3a8e6e7cea3bd20443d8cf5a954d74";
+        Contract contract = new Contract(caver, jsonObj, contractAddress);
+
+        KlayLogFilter filter = new KlayLogFilter(DefaultBlockParameterName.EARLIEST, DefaultBlockParameterName.LATEST, contractAddress, null);
+
+        KlayLogs logs = contract.getPastEvent("Transfer", filter);
+
+        ContractEvent event = contract.getEvent("Transfer");
+        List<ContractIOType> contractIOTypes = event.getInputs();
+
+        List<KlayLogs.LogResult> logResults = logs.getLogs();
+
+        KlayLogs.LogObject logObject = (KlayLogs.LogObject)logResults.get(0);
+        KlayLogs.Log log = logObject.get();
+
+        EventValues eventValues = ABI.decodeLog(contractIOTypes, log.getData(), log.getTopics());
     }
 }

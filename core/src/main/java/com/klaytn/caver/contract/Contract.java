@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.abi.ABI;
-import com.klaytn.caver.methods.request.KlayFilter;
 import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.KlayLogs;
@@ -51,7 +50,7 @@ public class Contract {
         List<Type> deployParams = params.getDeployParams();
         this.constructor.checkTypeValid(deployParams);
 
-        String encodedParams = ABI.encodeParameter(deployParams);
+        String encodedParams = ABI.encodeParameters(deployParams);
         String input = params.getBytecode() + encodedParams;
 
         SmartContractDeploy smartContractDeploy = new SmartContractDeploy.Builder()

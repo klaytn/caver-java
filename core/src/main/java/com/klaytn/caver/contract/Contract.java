@@ -4,7 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.abi.ABI;
+import com.klaytn.caver.methods.request.KlayFilter;
+import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.Bytes32;
+import com.klaytn.caver.methods.response.KlayLogs;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
@@ -70,8 +73,21 @@ public class Contract {
         return this;
     }
 
+    public KlayLogs getPastEvent(String eventName, KlayLogFilter filterOption) throws IOException {
+        ContractEvent event = getEvent(eventName);
+        filterOption.addSingleTopic(ABI.encodeEventSignature(event));
+
+        KlayLogs logs = caver.rpc.klay.getLogs(filterOption).send();
+
+        return logs;
+    }
+
     public ContractMethod getMethod(String methodName) {
         return this.getMethods().get(methodName);
+    }
+
+    public ContractEvent getEvent(String eventName) {
+        return this.getEvents().get(eventName);
     }
 
     public Caver getCaver() {

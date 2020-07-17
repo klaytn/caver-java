@@ -3,15 +3,13 @@ package com.klaytn.caver.abi;
 import com.klaytn.caver.contract.ContractEvent;
 import com.klaytn.caver.contract.ContractIOType;
 import com.klaytn.caver.contract.ContractMethod;
-import org.web3j.abi.FunctionEncoder;
-import org.web3j.abi.FunctionReturnDecoder;
-import org.web3j.abi.TypeEncoder;
-import org.web3j.abi.TypeReference;
+import org.web3j.abi.*;
 import org.web3j.abi.datatypes.*;
 import org.web3j.crypto.Hash;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -103,6 +101,31 @@ public class ABI {
 
     public static List<Type> decodeReturnParameters(String rawData, List<TypeReference<Type>> params) {
         return FunctionReturnDecoder.decode(rawData, params);
+    }
+
+    public static EventValues decodeLog(List<ContractIOType> inputs, String data, List<String> topics) throws ClassNotFoundException {
+        List<TypeReference<Type>> indexedList = new ArrayList<>();
+        List<TypeReference<Type>> nonIndexedList = new ArrayList<>();
+
+        for(ContractIOType input: inputs) {
+            Class cls = Class.forName(input.getJavaType());
+            if(input.isIndexed()) {
+                indexedList.add(TypeReference.create(cls));
+            } else {
+                nonIndexedList.add(TypeReference.create(cls));
+            }
+        }
+
+        List<Type> nonIndexedValues = decodeReturnParameters(data, nonIndexedList);
+        List<Type> indexedValues = new ArrayList<>();
+
+        for(int i=0; i < indexedList.size(); i++) {
+            Type value = FunctionReturnDecoder.decodeIndexedValue(
+                    topics.get(i + 1), indexedList.get(i));
+            indexedValues.add(value);
+        }
+
+        return new EventValues(indexedValues, nonIndexedValues);
     }
 
     private static int getLength(List<Type> parameters) {

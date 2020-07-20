@@ -12,15 +12,23 @@ import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.transaction.type.SmartContractDeploy;
 import com.klaytn.caver.utils.CodeFormat;
+import com.klaytn.caver.utils.Utils;
+import io.reactivex.Flowable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import org.web3j.abi.EventValues;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.protocol.ObjectMapperFactory;
+import org.web3j.protocol.core.Request;
+import org.web3j.protocol.core.methods.response.EthSubscribe;
+import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.exceptions.TransactionException;
+import org.web3j.protocol.websocket.WebSocketService;
+import org.web3j.protocol.websocket.events.LogNotification;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Contract {
     Caver caver;
@@ -71,6 +79,42 @@ public class Contract {
         this.setContractAddress(contractAddress);
         return this;
     }
+
+    public Disposable once(String eventName, List paramsOption, Consumer<LogNotification> callback) {
+        Map options = new HashMap<>();
+        List topics = new ArrayList();
+
+        String eventSignature = ABI.encodeEventSignature(this.getEvent(eventName));
+        topics.add(eventSignature);
+
+        for(int i=0; i<paramsOption.size(); i++) {
+            if(paramsOption.get(i) instanceof Type) {
+                String encoded = ABI.encodeParameter((Type)paramsOption.get(i));
+                topics.add(Utils.addHexPrefix(encoded));
+            } else if(paramsOption.get(i) instanceof List) {
+                List<Type> optionTopicList = (List<Type>) paramsOption.get(i);
+                List<String> arr = optionTopicList.stream()
+                                                .map(ABI::encodeParameter)
+                                                .map(Utils::addHexPrefix)
+                                                .collect(Collectors.toList());
+                topics.add(arr);
+            }
+        }
+
+        options.put("address", getContractAddress());
+        options.put("topics", topics);
+
+        final Request<?, EthSubscribe> subscribeRequest = new Request<>(
+                "klay_subscribe",
+                Arrays.asList("logs", options),
+                this.caver.rpc.getWeb3jService(),
+                EthSubscribe.class
+        );
+
+        final Flowable<LogNotification> events = this.caver.rpc.getWeb3jService().subscribe(subscribeRequest, "klay_unsubscribe", LogNotification.class);
+        return events.take(1).subscribe(callback);
+    }
+
 
     public KlayLogs getPastEvent(String eventName, KlayLogFilter filterOption) throws IOException {
         ContractEvent event = getEvent(eventName);

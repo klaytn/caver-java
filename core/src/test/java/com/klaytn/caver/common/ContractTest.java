@@ -1,12 +1,18 @@
 package com.klaytn.caver.common;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.abi.ABI;
 import com.klaytn.caver.contract.*;
+import com.klaytn.caver.methods.request.KlayFilter;
 import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.KlayLogs;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
+import io.reactivex.Flowable;
+import io.reactivex.Single;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import org.junit.Test;
 import org.web3j.abi.EventValues;
 import org.web3j.abi.datatypes.Address;
@@ -14,14 +20,21 @@ import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Uint;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint8;
+import org.web3j.protocol.ObjectMapperFactory;
+import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.Request;
+import org.web3j.protocol.core.methods.response.EthSubscribe;
 import org.web3j.protocol.exceptions.TransactionException;
+import org.web3j.protocol.websocket.WebSocketService;
+import org.web3j.protocol.websocket.events.LogNotification;
+import org.web3j.protocol.websocket.events.NewHeadsNotification;
 import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.List;
+import java.net.ConnectException;
+import java.util.*;
 
 import static com.klaytn.caver.base.Accounts.BRANDON;
 import static com.klaytn.caver.base.Accounts.LUMAN;
@@ -780,9 +793,51 @@ public class ContractTest {
 
         List<KlayLogs.LogResult> logResults = logs.getLogs();
 
+
         KlayLogs.LogObject logObject = (KlayLogs.LogObject)logResults.get(0);
         KlayLogs.Log log = logObject.get();
 
         EventValues eventValues = ABI.decodeLog(contractIOTypes, log.getData(), log.getTopics());
     }
+
+    @Test
+    public void onceTest() throws IOException, TransactionException {
+        WebSocketService web3jService = new WebSocketService("ws://localhost:8552", false);
+        Caver caver = new Caver(web3jService);
+        web3jService.connect();
+
+        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
+
+        String contractAddress = "0x126f040b2538fb72bc75daa5d404d048c5a4e4f0";
+        Contract contract = new Contract(caver, jsonObj, contractAddress);
+
+        List options = new ArrayList();
+        options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
+
+        Disposable disposable = contract.once("Transfer", options, event -> {
+            System.out.println("Event is fired!!!" + event.getParams().getResult().getTopics());
+        });
+
+        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
+        List<Type> sendParams = Arrays.asList(
+                new Address(LUMAN.getAddress()),
+                new Uint(amount)
+        );
+
+        SendOptions sendOptions = new SendOptions(BRANDON.getAddress(), DefaultGasProvider.GAS_LIMIT);
+        TransactionReceipt.TransactionReceiptData receiptData = contract.getMethod("transfer").send(sendParams, sendOptions);
+
+        sendParams = Arrays.asList(
+                new Address(BRANDON.getAddress()),
+                new Uint(amount)
+        );
+
+        sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
+        receiptData = contract.getMethod("transfer").send(sendParams, sendOptions);
+
+
+        web3jService.close();
+    }
+
 }

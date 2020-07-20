@@ -16,14 +16,11 @@ import com.klaytn.caver.utils.Utils;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import org.web3j.abi.EventValues;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.response.EthSubscribe;
-import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.exceptions.TransactionException;
-import org.web3j.protocol.websocket.WebSocketService;
 import org.web3j.protocol.websocket.events.LogNotification;
 
 import java.io.IOException;
@@ -31,35 +28,88 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Contract {
+
+    /**
+     * A caver instance.
+     */
     Caver caver;
 
+    /**
+     * A contract ABI(Application Binary interface) json string.
+     */
     String abi;
+
+    /**
+     * A contract address.
+     */
     String contractAddress;
 
+    /**
+     * The map where method name string and ContractMethod mapped.
+     */
     Map<String, ContractMethod> methods;
+
+    /**
+     * The map where event name string and ContractEvent mapped.
+     */
     Map<String, ContractEvent> events;
+
+    /**
+     * The ContractMethod instance related Contract's constructor.
+     */
     ContractMethod constructor;
 
+    /**
+     * Creates a Contract instance.
+     * @param caver A Caver instance.
+     * @param abi A contract's ABI(Application Binary interface) json string.
+     * @throws IOException
+     */
     public Contract(Caver caver, String abi) throws IOException{
         this(caver, abi, null);
     }
 
+    /**
+     * Creates a Contract instance.
+     * @param caver A Caver instance
+     * @param abi A contract's ABI(Application Binary Interface) json string.
+     * @param contractAddress
+     * @throws IOException
+     */
     public Contract(Caver caver, String abi, String contractAddress) throws IOException{
         setAbi(abi);
         setCaver(caver);
         setContractAddress(contractAddress);
     }
 
+    /**
+     * Deploy a contract.
+     * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor instance.
+     * @param deployParam A DeployParam instance.
+     * @param sendOptions A SendOption instance.
+     * @return Contract
+     * @throws IOException
+     * @throws TransactionException
+     */
     public Contract deploy(ContractDeployParam deployParam, SendOptions sendOptions) throws IOException, TransactionException {
         return deploy(deployParam, sendOptions, new PollingTransactionReceiptProcessor(caver, 1000, 15));
     }
 
-    public Contract deploy(ContractDeployParam params, SendOptions sendOptions, TransactionReceiptProcessor processor) throws IOException, TransactionException {
-        List<Type> deployParams = params.getDeployParams();
+    /**
+     * Deploy a contract
+     * @param deployParam A DeployParam instance.
+     * @param sendOptions A SendOption instance.
+     * @param processor A TransactionReceiptProcessor instance.
+     * @return Contract
+     * @throws IOException
+     * @throws TransactionException
+     */
+    public Contract deploy(ContractDeployParam deployParam, SendOptions sendOptions, TransactionReceiptProcessor processor) throws IOException, TransactionException {
+        List<Type> deployParams = deployParam.getDeployParams();
         this.constructor.checkTypeValid(deployParams);
 
         String encodedParams = ABI.encodeParameters(deployParams);
-        String input = params.getBytecode() + encodedParams;
+        String input = deployParam.getBytecode() + encodedParams;
 
         SmartContractDeploy smartContractDeploy = new SmartContractDeploy.Builder()
                 .setKlaytnCall(caver.rpc.klay)
@@ -80,6 +130,13 @@ public class Contract {
         return this;
     }
 
+    /**
+     * Subscribes to an event and unsubscribes immediately after the first event or error.
+     * @param eventName The name of the event in the contract.
+     * @param paramsOption The filter events by indexed parameters.
+     * @param callback The callback function that handled to returned data.
+     * @return Disposable instance that able to unsubscribe.
+     */
     public Disposable once(String eventName, List paramsOption, Consumer<LogNotification> callback) {
         Map options = new HashMap<>();
         List topics = new ArrayList();
@@ -115,7 +172,13 @@ public class Contract {
         return events.take(1).subscribe(callback);
     }
 
-
+    /**
+     * Get past events for this contract.
+     * @param eventName The name of the event in the contract.
+     * @param filterOption The KlayLogFilter instance to filter event.
+     * @return KlayLogs
+     * @throws IOException
+     */
     public KlayLogs getPastEvent(String eventName, KlayLogFilter filterOption) throws IOException {
         ContractEvent event = getEvent(eventName);
         filterOption.addSingleTopic(ABI.encodeEventSignature(event));
@@ -125,71 +188,139 @@ public class Contract {
         return logs;
     }
 
+    /**
+     * Returns the ContractMethod instance corresponding to the method name.
+     * @param methodName The method name.
+     * @return ContractMethod
+     */
     public ContractMethod getMethod(String methodName) {
         return this.getMethods().get(methodName);
     }
 
+    /**
+     * Returns the ContractEvent instance corresponding to the event name.
+     * @param eventName The event name.
+     * @return ContractEvent
+     */
     public ContractEvent getEvent(String eventName) {
         return this.getEvents().get(eventName);
     }
 
+    /**
+     * Getter function for caver.
+     * @return Caver
+     */
     public Caver getCaver() {
         return caver;
     }
 
+    /**
+     * Getter function for contract's abi.
+     * @return String
+     */
     public String getAbi() {
         return abi;
     }
 
+    /**
+     * Getter function for contract address.
+     * @return String
+     */
     public String getContractAddress() {
         return contractAddress;
     }
 
+    /**
+     * Getter function for methods.
+     * @return Map
+     */
     public Map<String, ContractMethod> getMethods() {
         return methods;
     }
 
+    /**
+     * Getter function for events.
+     * @return Map
+     */
     public Map<String, ContractEvent> getEvents() {
         return events;
     }
 
+    /**
+     * Getter function for Contract's constructor function info.
+     * @return ContractMethod.
+     */
     public ContractMethod getConstructor() {
         return constructor;
     }
 
+    /**
+     * Setter function for Caver.
+     * @param caver The Caver instance.
+     */
     public void setCaver(Caver caver) {
         this.caver = caver;
 
+        //When Caver instance changes, the caver instance of each ContractMethod is also replaced.
         if(this.methods != null && this.methods.size() != 0) {
             this.getMethods().values().forEach(value -> value.setCaver(caver));
         }
     }
 
+    /**
+     * Setter function for contract's abi.
+     * @param abi The abi json string.
+     * @throws IOException
+     */
     public void setAbi(String abi) throws IOException {
         this.abi = abi;
+
+        //When abi changes, It newly set a "methods" and "events".
         init(this.abi);
     }
 
+    /**
+     * Setter function for contract address.
+     * @param contractAddress The contract address.
+     */
     public void setContractAddress(String contractAddress) {
         this.contractAddress = contractAddress;
 
+        //When contract address changes, the contract address of each ContractMethod is also replaced.
         if(this.methods != null && this.methods.size() != 0) {
             this.getMethods().values().forEach(value -> value.setContractAddress(contractAddress));
         }
     }
 
+    /**
+     * Setter function for methods.
+     * @param methods The map where method name string and ContractMethod mapped.
+     */
     public void setMethods(Map<String, ContractMethod> methods) {
         this.methods = methods;
     }
 
+    /**
+     * Setter function for events.
+     * @param events The map where event name string and ContractEvent mapped.
+     */
     public void setEvents(Map<String, ContractEvent> events) {
         this.events = events;
     }
 
+    /**
+     * Setter function for constructor.
+     * @param constructor The ContractMethod instance related Contract's constructor.
+     */
     public void setConstructor(ContractMethod constructor) {
         this.constructor = constructor;
     }
 
+    /**
+     * Parse ABI json string and generate the mapped data related to method and event.
+     * @param abi The contract's ABI(Application Binary Interface) json string.
+     * @throws IOException
+     */
     private void init(String abi) throws IOException {
         ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
 

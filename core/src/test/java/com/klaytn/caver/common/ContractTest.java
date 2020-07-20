@@ -802,9 +802,9 @@ public class ContractTest {
 
     @Test
     public void onceTest() throws IOException, TransactionException {
-        WebSocketService web3jService = new WebSocketService("ws://localhost:8552", false);
-        Caver caver = new Caver(web3jService);
-        web3jService.connect();
+        WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
+        Caver caver = new Caver(webSocketService);
+        webSocketService.connect();
 
         caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
         caver.wallet.add(KeyringFactory.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
@@ -837,7 +837,7 @@ public class ContractTest {
         receiptData = contract.getMethod("transfer").send(sendParams, sendOptions);
 
 
-        web3jService.close();
+        webSocketService.close();
     }
 
 }

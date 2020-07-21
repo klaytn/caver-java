@@ -91,7 +91,7 @@ public class Contract {
      * @throws IOException
      * @throws TransactionException
      */
-    public Contract deploy(ContractDeployParam deployParam, SendOptions sendOptions) throws IOException, TransactionException {
+    public Contract deploy(ContractDeployParams deployParam, SendOptions sendOptions) throws IOException, TransactionException {
         return deploy(deployParam, sendOptions, new PollingTransactionReceiptProcessor(caver, 1000, 15));
     }
 
@@ -104,7 +104,7 @@ public class Contract {
      * @throws IOException
      * @throws TransactionException
      */
-    public Contract deploy(ContractDeployParam deployParam, SendOptions sendOptions, TransactionReceiptProcessor processor) throws IOException, TransactionException {
+    public Contract deploy(ContractDeployParams deployParam, SendOptions sendOptions, TransactionReceiptProcessor processor) throws IOException, TransactionException {
         List<Type> deployParams = deployParam.getDeployParams();
         this.constructor.checkTypeValid(deployParams);
 

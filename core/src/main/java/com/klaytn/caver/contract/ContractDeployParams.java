@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Representing a parameters need to deploy smart contract.
  */
-public class ContractDeployParam {
+public class ContractDeployParams {
 
     /**
      * A smart contract binary data.
@@ -25,7 +25,7 @@ public class ContractDeployParam {
      * @param bytecode A smart contract binary data.
      * @param deployParams A List of smart contract constructor parameter.
      */
-    public ContractDeployParam(String bytecode, List<Type> deployParams) {
+    public ContractDeployParams(String bytecode, List<Type> deployParams) {
         this.bytecode = bytecode;
         this.deployParams = deployParams;
     }

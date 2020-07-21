@@ -1,18 +1,13 @@
 package com.klaytn.caver.common;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.abi.ABI;
 import com.klaytn.caver.contract.*;
-import com.klaytn.caver.methods.request.KlayFilter;
 import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.KlayLogs;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
-import io.reactivex.Flowable;
-import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import org.junit.Test;
 import org.web3j.abi.EventValues;
 import org.web3j.abi.datatypes.Address;
@@ -20,20 +15,13 @@ import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Uint;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint8;
-import org.web3j.protocol.ObjectMapperFactory;
-import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.Request;
-import org.web3j.protocol.core.methods.response.EthSubscribe;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.protocol.websocket.WebSocketService;
-import org.web3j.protocol.websocket.events.LogNotification;
-import org.web3j.protocol.websocket.events.NewHeadsNotification;
 import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.net.ConnectException;
 import java.util.*;
 
 import static com.klaytn.caver.base.Accounts.BRANDON;
@@ -713,7 +701,7 @@ public class ContractTest {
 
 
         SendOptions options = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
-        ContractDeployParam contractDeployParam = new ContractDeployParam(BINARY, deployParams);
+        ContractDeployParams contractDeployParam = new ContractDeployParams(BINARY, deployParams);
 
         Contract contract = new Contract(caver, jsonObj);
         contract.deploy(contractDeployParam, options);

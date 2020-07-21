@@ -73,7 +73,7 @@ public class Contract {
      * Creates a Contract instance.
      * @param caver A Caver instance
      * @param abi A contract's ABI(Application Binary Interface) json string.
-     * @param contractAddress
+     * @param contractAddress An address string of contract deployed on Klaytn.
      * @throws IOException
      */
     public Contract(Caver caver, String abi, String contractAddress) throws IOException{

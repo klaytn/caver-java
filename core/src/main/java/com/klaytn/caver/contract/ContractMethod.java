@@ -43,7 +43,7 @@ public class ContractMethod {
     List<ContractIOType> inputs;
 
     /**
-     * The list of ContractIOTYpe contains to function return value information.
+     * The list of ContractIOType contains to function return value information.
      */
     List<ContractIOType> outputs;
 

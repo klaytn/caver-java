@@ -106,7 +106,11 @@ public class Contract {
      */
     public Contract deploy(ContractDeployParams deployParam, SendOptions sendOptions, TransactionReceiptProcessor processor) throws IOException, TransactionException {
         List<Type> deployParams = deployParam.getDeployParams();
-        this.constructor.checkTypeValid(deployParams);
+
+        if(constructor != null) {
+            this.constructor.checkTypeValid(deployParams);
+        }
+
 
         String encodedParams = ABI.encodeParameters(deployParams);
         String input = deployParam.getBytecode() + encodedParams;

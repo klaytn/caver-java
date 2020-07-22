@@ -1,6 +1,6 @@
 buildscript {
     ext.javapoetVersion = '1.7.0'
-    ext.web3jVersion = '4.2.0'
+    ext.web3jVersion = '4.6.1'
     ext.picocliVersion = '3.0.0'
     ext.junitVersion = '4.12'
     ext.slf4jVersion = '1.7.25'

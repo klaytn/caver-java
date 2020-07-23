@@ -22,6 +22,7 @@ package com.klaytn.caver.utils;
 
 import com.klaytn.caver.crypto.KlaySignatureData;
 import org.web3j.crypto.Sign;
+import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 
@@ -35,7 +36,7 @@ public class KlaySignatureDataUtils {
      */
     public static KlaySignatureData createEip155KlaySignatureData(
             Sign.SignatureData signatureData, int chainId) {
-        int v = (signatureData.getV() + chainId * 2) + 8;
+        int v = (Numeric.toBigInt(signatureData.getV()).intValue() + chainId * 2) + 8;
         return new KlaySignatureData(BigInteger.valueOf(v).toByteArray(), signatureData.getR(), signatureData.getS());
     }
 

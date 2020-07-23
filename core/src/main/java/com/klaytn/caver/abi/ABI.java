@@ -180,8 +180,7 @@ public class ABI {
         List<TypeReference<Type>> params = new ArrayList<>();
 
         for(String solType : solidityTypeList) {
-            Class web3TypeClass = Class.forName(ContractIOType.buildTypeName(solType));
-            params.add(TypeReference.create(web3TypeClass));
+            params.add(TypeReference.makeTypeReference(solType));
         }
 
         return FunctionReturnDecoder.decode(encoded, params);
@@ -198,8 +197,7 @@ public class ABI {
         List<TypeReference<Type>> resultParams = new ArrayList<>();
 
         for(ContractIOType ioType: method.getOutputs()) {
-            Class cls = Class.forName(ioType.getJavaType());
-            resultParams.add(TypeReference.create(cls));
+            resultParams.add(TypeReference.makeTypeReference(ioType.getType()));
         }
 
         return FunctionReturnDecoder.decode(encoded, resultParams);
@@ -218,11 +216,10 @@ public class ABI {
         List<TypeReference<Type>> nonIndexedList = new ArrayList<>();
 
         for(ContractIOType input: inputs) {
-            Class cls = Class.forName(input.getJavaType());
             if(input.isIndexed()) {
-                indexedList.add(TypeReference.create(cls));
+                indexedList.add(TypeReference.makeTypeReference(input.getType()));
             } else {
-                nonIndexedList.add(TypeReference.create(cls));
+                nonIndexedList.add(TypeReference.makeTypeReference(input.getType()));
             }
         }
 

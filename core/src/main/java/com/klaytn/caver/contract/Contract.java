@@ -61,6 +61,11 @@ public class Contract {
     ContractMethod constructor;
 
     /**
+     * The default send option. When you execute call() or send() without SendOptions, defaultSendOptions will be used.
+     */
+    SendOptions defaultSendOptions;
+
+    /**
      * Creates a Contract instance.
      * @param caver A Caver instance.
      * @param abi A contract's ABI(Application Binary interface) json string.
@@ -273,6 +278,14 @@ public class Contract {
     }
 
     /**
+     * Getter function for DefaultSendOptions
+     * @return SendOptions
+     */
+    public SendOptions getDefaultSendOptions() {
+        return defaultSendOptions;
+    }
+
+    /**
      * Setter function for Caver.
      * @param caver The Caver instance.
      */
@@ -306,7 +319,7 @@ public class Contract {
 
         //When contract address changes, the contract address of each ContractMethod is also replaced.
         if(this.methods != null && this.methods.size() != 0) {
-            this.getMethods().values().forEach(value -> value.setContractAddress(contractAddress));
+            this.getMethods().values().forEach(value -> value.setContractAddress(this.contractAddress));
         }
     }
 
@@ -332,6 +345,18 @@ public class Contract {
      */
     public void setConstructor(ContractMethod constructor) {
         this.constructor = constructor;
+    }
+
+    /**
+     * Setter function for defaultSendOption
+     * @param defaultSendOptions The sendOptions to set DefaultSendOptions field.
+     */
+    public void setDefaultSendOptions(SendOptions defaultSendOptions) {
+        this.defaultSendOptions = defaultSendOptions;
+
+        if(this.methods != null && this.methods.size() != 0) {
+            this.getMethods().values().forEach(value -> value.setDefaultSendOptions(this.defaultSendOptions));
+        }
     }
 
     /**

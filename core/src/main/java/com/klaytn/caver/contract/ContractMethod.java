@@ -61,6 +61,11 @@ public class ContractMethod {
     String contractAddress;
 
     /**
+     * The default send option. When you execute call() or send() without SendOptions, defaultSendOptions will be used.
+     */
+    SendOptions defaultSendOptions;
+
+    /**
      * Creates a ContractMethod instance.
      */
     public ContractMethod() {
@@ -88,6 +93,22 @@ public class ContractMethod {
 
     /**
      * Execute smart contract method in the EVM without sending any transaction.
+     * It is used defaultSendOption field to sendOptions
+     * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
+     * @return List
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
+    public List<Type> call(List<Object> arguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        return call(arguments, null);
+    }
+
+    /**
+     * Execute smart contract method in the EVM without sending any transaction.
      * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
      * @param options An option to execute smart contract method.
      * @return List
@@ -99,6 +120,13 @@ public class ContractMethod {
 
         if(arguments != null) {
             functionParams.addAll(arguments);
+        }
+
+        if(options == null) {
+            if(getDefaultSendOptions() == null) {
+                throw new NullPointerException("Default SendOptions instance is not existed. Please set default SendOptions instance through contract's setDefaultSendOptions.");
+            }
+            options = getDefaultSendOptions();
         }
 
         // Check the parameter type defined in function and the parameter type passed are the same.
@@ -121,12 +149,34 @@ public class ContractMethod {
 
     /**
      * Send a transaction to smart contract and execute its method.
+     * It is used defaultSendOption field to sendOptions
+     * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
+     * @return TransactionReceiptData
+     * @throws IOException
+     * @throws TransactionException
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public TransactionReceipt.TransactionReceiptData send(List<Object> arguments) throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        return send(arguments, null, new PollingTransactionReceiptProcessor(caver, 1000, 15));
+    }
+
+    /**
+     * Send a transaction to smart contract and execute its method.
      * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
      * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
      * @param options An option to execute smart contract method.
      * @return TransactionReceiptData
      * @throws IOException
      * @throws TransactionException
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
      */
     public TransactionReceipt.TransactionReceiptData send(List<Object> arguments, SendOptions options) throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         return send(arguments, options, new PollingTransactionReceiptProcessor(caver, 1000, 15));
@@ -140,6 +190,11 @@ public class ContractMethod {
      * @return TransactionReceiptData
      * @throws IOException
      * @throws TransactionException
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
      */
     public TransactionReceipt.TransactionReceiptData send(List<Object> arguments, SendOptions options, TransactionReceiptProcessor processor) throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         List<Object> functionParams = new ArrayList<>();
@@ -147,6 +202,14 @@ public class ContractMethod {
         if(arguments != null) {
             functionParams.addAll(arguments);
         }
+
+        if(options == null) {
+            if(getDefaultSendOptions() == null) {
+                throw new NullPointerException("Default SendOptions instance is not existed. Please set default SendOptions instance through contract's setDefaultSendOptions.");
+            }
+            options = getDefaultSendOptions();
+        }
+
 
         checkTypeValid(functionParams);
 
@@ -171,6 +234,11 @@ public class ContractMethod {
      * Encodes the ABI for this method. It returns 32-bit function signature hash plus the encoded passed parameters.
      * @param arguments A List of parameter that solidity wrapper type
      * @return The encoded ABI byte code to send via a transaction or call.
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
      */
     public String encodeABI(List<Object> arguments) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         return ABI.encodeFunctionCall(this, arguments);
@@ -182,6 +250,11 @@ public class ContractMethod {
      * @param options An option to execute smart contract method.
      * @return String
      * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
      */
     public String estimateGas(List<Object> arguments, SendOptions options) throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         String data = ABI.encodeFunctionCall(this, arguments);
@@ -264,6 +337,14 @@ public class ContractMethod {
     }
 
     /**
+     * Getter function for DefaultSendOptions
+     * @return SendOptions
+     */
+    public SendOptions getDefaultSendOptions() {
+        return defaultSendOptions;
+    }
+
+    /**
      * Setter function for Caver.
      * @param caver The Caver instance.
      */
@@ -317,5 +398,13 @@ public class ContractMethod {
      */
     public void setContractAddress(String contractAddress) {
         this.contractAddress = contractAddress;
+    }
+
+    /**
+     * Setter function for defaultSendOption
+     * @param defaultSendOptions The sendOptions to set DefaultSendOptions field.
+     */
+    public void setDefaultSendOptions(SendOptions defaultSendOptions) {
+        this.defaultSendOptions = defaultSendOptions;
     }
 }

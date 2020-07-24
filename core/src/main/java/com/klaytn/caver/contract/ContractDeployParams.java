@@ -18,14 +18,14 @@ public class ContractDeployParams {
     /**
      * A List of smart contract constructor parameter.
      */
-    List<Type> deployParams;
+    List<Object> deployParams;
 
     /**
      * Creates a ContractDeployParam instance.
      * @param bytecode A smart contract binary data.
      * @param deployParams A List of smart contract constructor parameter.
      */
-    public ContractDeployParams(String bytecode, List<Type> deployParams) {
+    public ContractDeployParams(String bytecode, List<Object> deployParams) {
         this.bytecode = bytecode;
         this.deployParams = deployParams;
     }
@@ -42,7 +42,7 @@ public class ContractDeployParams {
      * Getter function for deployParams.
      * @return List
      */
-    public List<Type> getDeployParams() {
+    public List<Object> getDeployParams() {
         return deployParams;
     }
 
@@ -62,7 +62,7 @@ public class ContractDeployParams {
      * Setter function for deployParams.
      * @param deployParams A List of smart contract constructor parameter.
      */
-    public void setDeployParams(List<Type> deployParams) {
+    public void setDeployParams(List<Object> deployParams) {
         this.deployParams = deployParams;
     }
 }

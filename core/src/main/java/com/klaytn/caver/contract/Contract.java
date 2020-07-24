@@ -24,6 +24,7 @@ import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.protocol.websocket.events.LogNotification;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -91,7 +92,7 @@ public class Contract {
      * @throws IOException
      * @throws TransactionException
      */
-    public Contract deploy(ContractDeployParams deployParam, SendOptions sendOptions) throws IOException, TransactionException {
+    public Contract deploy(ContractDeployParams deployParam, SendOptions sendOptions) throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         return deploy(deployParam, sendOptions, new PollingTransactionReceiptProcessor(caver, 1000, 15));
     }
 
@@ -104,15 +105,14 @@ public class Contract {
      * @throws IOException
      * @throws TransactionException
      */
-    public Contract deploy(ContractDeployParams deployParam, SendOptions sendOptions, TransactionReceiptProcessor processor) throws IOException, TransactionException {
-        List<Type> deployParams = deployParam.getDeployParams();
+    public Contract deploy(ContractDeployParams deployParam, SendOptions sendOptions, TransactionReceiptProcessor processor) throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        String encodedParams = "";
 
-        if(constructor != null) {
-            this.constructor.checkTypeValid(deployParams);
+        if(this.getConstructor() != null) {
+            this.getConstructor().checkTypeValid(deployParam.getDeployParams());
+            encodedParams = ABI.encodeParameters(this.getConstructor(), deployParam.getDeployParams());
         }
 
-
-        String encodedParams = ABI.encodeParameters(deployParams);
         String input = deployParam.getBytecode() + encodedParams;
 
         SmartContractDeploy smartContractDeploy = new SmartContractDeploy.Builder()
@@ -141,24 +141,30 @@ public class Contract {
      * @param callback The callback function that handled to returned data.
      * @return Disposable instance that able to unsubscribe.
      */
-    public Disposable once(String eventName, List paramsOption, Consumer<LogNotification> callback) {
+    public Disposable once(String eventName, List paramsOption, Consumer<LogNotification> callback) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Map options = new HashMap<>();
         List topics = new ArrayList();
 
-        String eventSignature = ABI.encodeEventSignature(this.getEvent(eventName));
+        ContractEvent event = this.getEvent(eventName);
+
+        String eventSignature = ABI.encodeEventSignature(event);
         topics.add(eventSignature);
 
         for(int i=0; i<paramsOption.size(); i++) {
-            if(paramsOption.get(i) instanceof Type) {
-                String encoded = ABI.encodeParameter((Type)paramsOption.get(i));
+            String eventType = event.getInputs().get(i).getType();
+
+            if(paramsOption.get(i) instanceof List) {
+                List<Object> filter = (List<Object>)paramsOption.get(i);
+                List<String> topic = new ArrayList<>();
+
+                for(int j=0; j<filter.size(); j++) {
+                    String encoded = (ABI.encodeParameter(eventType, filter.get(j)));
+                    topic.add(Utils.addHexPrefix(encoded));
+                }
+                topics.add(topic);
+            } else {
+                String encoded = ABI.encodeParameter(eventType, paramsOption.get(i));
                 topics.add(Utils.addHexPrefix(encoded));
-            } else if(paramsOption.get(i) instanceof List) {
-                List<Type> optionTopicList = (List<Type>) paramsOption.get(i);
-                List<String> arr = optionTopicList.stream()
-                                                .map(ABI::encodeParameter)
-                                                .map(Utils::addHexPrefix)
-                                                .collect(Collectors.toList());
-                topics.add(arr);
             }
         }
 

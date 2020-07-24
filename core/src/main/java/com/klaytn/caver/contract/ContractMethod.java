@@ -15,6 +15,9 @@ import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -91,9 +94,15 @@ public class ContractMethod {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public List<Type> call(List<Type> arguments, SendOptions options) throws IOException, ClassNotFoundException {
+    public List<Type> call(List<Object> arguments, SendOptions options) throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        List<Object> functionParams = new ArrayList<>();
+
+        if(arguments != null) {
+            functionParams.addAll(arguments);
+        }
+
         // Check the parameter type defined in function and the parameter type passed are the same.
-        checkTypeValid(arguments);
+        checkTypeValid(functionParams);
 
         String encodedFunction = ABI.encodeFunctionCall(this, arguments);
         Bytes response = caver.rpc.klay.call(
@@ -113,29 +122,35 @@ public class ContractMethod {
     /**
      * Send a transaction to smart contract and execute its method.
      * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
-     * @param argument A List of parameter that solidity wrapper type to call smart contract method.
+     * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
      * @param options An option to execute smart contract method.
      * @return TransactionReceiptData
      * @throws IOException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData send(List<Type> argument, SendOptions options) throws IOException, TransactionException {
-        return send(argument, options, new PollingTransactionReceiptProcessor(caver, 1000, 15));
+    public TransactionReceipt.TransactionReceiptData send(List<Object> arguments, SendOptions options) throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        return send(arguments, options, new PollingTransactionReceiptProcessor(caver, 1000, 15));
     }
 
     /**
      * Send a transaction to smart contract and execute its method.
-     * @param argument A List of parameter that solidity wrapper type to call smart contract method.
+     * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
      * @param options An option to execute smart contract method.
      * @param processor A TransactionReceiptProcessor to get receipt.
      * @return TransactionReceiptData
      * @throws IOException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData send(List<Type> argument, SendOptions options, TransactionReceiptProcessor processor) throws IOException, TransactionException {
-        checkTypeValid(argument);
+    public TransactionReceipt.TransactionReceiptData send(List<Object> arguments, SendOptions options, TransactionReceiptProcessor processor) throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        List<Object> functionParams = new ArrayList<>();
 
-        String encodedFunction = ABI.encodeFunctionCall(this, argument);
+        if(arguments != null) {
+            functionParams.addAll(arguments);
+        }
+
+        checkTypeValid(functionParams);
+
+        String encodedFunction = ABI.encodeFunctionCall(this, arguments);
 
         SmartContractExecution smartContractExecution = new SmartContractExecution.Builder()
                 .setKlaytnCall(caver.rpc.klay)
@@ -154,22 +169,22 @@ public class ContractMethod {
 
     /**
      * Encodes the ABI for this method. It returns 32-bit function signature hash plus the encoded passed parameters.
-     * @param argument A List of parameter that solidity wrapper type
+     * @param arguments A List of parameter that solidity wrapper type
      * @return The encoded ABI byte code to send via a transaction or call.
      */
-    public String encodeABI(List<Type> argument) {
-        return ABI.encodeFunctionCall(this, argument);
+    public String encodeABI(List<Object> arguments) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        return ABI.encodeFunctionCall(this, arguments);
     }
 
     /**
      * Estimate the gas to execute the contract's method.
-     * @param argument A List of parameter that solidity wrapper type
+     * @param arguments A List of parameter that solidity wrapper type
      * @param options An option to execute smart contract method.
      * @return String
      * @throws IOException
      */
-    public String estimateGas(List<Type> argument, SendOptions options) throws IOException {
-        String data = ABI.encodeFunctionCall(this, argument);
+    public String estimateGas(List<Object> arguments, SendOptions options) throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        String data = ABI.encodeFunctionCall(this, arguments);
         CallObject callObject = new CallObject(options.getFrom(), this.getContractAddress(), Numeric.toBigInt(options.getGas()), null, Numeric.toBigInt(options.getValue()), data);
 
         Quantity estimateGas = caver.rpc.klay.estimateGas(callObject).send();
@@ -186,18 +201,9 @@ public class ContractMethod {
      *   - check defined parameter solidity type and parameter solidity wrapper type.
      * @param types A List of parameter that solidity wrapper type
      */
-    public void checkTypeValid(List<Type> types) {
+    public void checkTypeValid(List<Object> types) {
         if(types.size() != inputs.size()) {
             throw new IllegalArgumentException("Not matched passed parameter count.");
-        }
-
-        for(int i=0; i<types.size(); i++) {
-            Type type = types.get(i);
-            String solidityType = inputs.get(i).getType();
-
-            if(!type.getTypeAsString().equals(solidityType)) {
-                throw new IllegalArgumentException("Not matched parameter : " + getInputs().get(i).type + " " + getInputs().get(i).name + " You should use " + inputs.get(i).getJavaType());
-            }
         }
     }
 

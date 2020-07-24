@@ -127,11 +127,33 @@ public class ABI {
         return result.toString();
     }
 
+    /**
+     * Encodes a parameter based on its type to its ABI representation.
+     * @param solidityType A solidity type to encode.
+     * @param value A value to encode
+     * @return String
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
     public static String encodeParameter(String solidityType, Object value) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         Type type = TypeDecoder.instantiateType(solidityType, value);
         return encodeParameter(type);
     }
 
+    /**
+     * Encodes a parameters based on its type to its ABI representation.
+     * @param method A ContractMethod instance that contains to solidity type
+     * @param values A List of value to encode
+     * @return String
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
     public static String encodeParameters(ContractMethod method, List<Object> values) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         List<String> solTypeList = new ArrayList<>();
         for(ContractIOType type : method.getInputs()) {
@@ -141,7 +163,17 @@ public class ABI {
         return encodeParameters(solTypeList, values);
     }
 
-
+    /**
+     * Encodes a parameters based on its type to its ABI representation.
+     * @param solidityTypes A list of solidity type to encode
+     * @param values A List of value to encode
+     * @return
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
     public static String encodeParameters(List<String> solidityTypes, List<Object> values) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         List<Type> typeList = new ArrayList<>();
         for(int i=0; i < solidityTypes.size(); i++) {

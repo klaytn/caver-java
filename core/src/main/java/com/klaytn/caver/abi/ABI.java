@@ -8,6 +8,7 @@ import org.web3j.abi.datatypes.*;
 import org.web3j.crypto.Hash;
 import org.web3j.utils.Numeric;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,11 +26,16 @@ public class ABI {
      * @param params A List of method parameter.
      * @return String
      */
-    public static String encodeFunctionCall(ContractMethod method, List<Type> params) {
-        String methodId = encodeFunctionSignature(method);
-        String encodedParams = encodeParameters(params);
+    public static String encodeFunctionCall(ContractMethod method, List<Object> params) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        String functionSignature = ABI.buildFunctionSignature(method);
 
-        return methodId + encodedParams;
+        List<String> solTypeList = new ArrayList();
+
+        for (ContractIOType contractIOType : method.getInputs()) {
+            solTypeList.add(contractIOType.getType());
+        }
+
+        return encodeFunctionCall(functionSignature, solTypeList, params);
     }
 
     /**
@@ -38,9 +44,9 @@ public class ABI {
      * @param params A List of method parameter.
      * @return String
      */
-    public static String encodeFunctionCall(String functionSig, List<Type> params) {
+    public static String encodeFunctionCall(String functionSig, List<String> solTypeList, List<Object> params) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         String methodId = encodeFunctionSignature(functionSig);
-        String encodedParams = encodeParameters(params);
+        String encodedParams = encodeParameters(solTypeList, params);
 
         return methodId + encodedParams;
     }
@@ -121,6 +127,31 @@ public class ABI {
         return result.toString();
     }
 
+    public static String encodeParameter(String solidityType, Object value) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        Type type = TypeDecoder.instantiateType(solidityType, value);
+        return encodeParameter(type);
+    }
+
+    public static String encodeParameters(ContractMethod method, List<Object> values) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        List<String> solTypeList = new ArrayList<>();
+        for(ContractIOType type : method.getInputs()) {
+            solTypeList.add(type.getType());
+        }
+
+        return encodeParameters(solTypeList, values);
+    }
+
+
+    public static String encodeParameters(List<String> solidityTypes, List<Object> values) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        List<Type> typeList = new ArrayList<>();
+        for(int i=0; i < solidityTypes.size(); i++) {
+            Type type = TypeDecoder.instantiateType(solidityTypes.get(i), values.get(i));
+            typeList.add(type);
+        }
+
+        return encodeParameters(typeList);
+    }
+
     /**
      * Encodes a parameter based on its type to its ABI representation.
      * @param parameter A parameter that wrapped solidity type wrapper.
@@ -136,7 +167,6 @@ public class ABI {
      * @return String
      */
     public static String encodeParameters(List<Type> parameters) {
-
         int dynamicDataOffset = getLength(parameters) * Type.MAX_BYTE_LENGTH;
         StringBuilder result = new StringBuilder();
         StringBuilder dynamicData = new StringBuilder();

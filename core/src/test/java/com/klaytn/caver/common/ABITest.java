@@ -143,9 +143,10 @@ public class ABITest {
         @Test
         public void encodeUtf8StringType() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
             assertEquals(
-                    ("000000000000000000000000000000000000000000000000000000000000000d"
+                    ("0000000000000000000000000000000000000000000000000000000000000020"
+                            + "000000000000000000000000000000000000000000000000000000000000000d"
                             + "48656c6c6f2c20776f726c642100000000000000000000000000000000000000"),
-                    ABI.encodeParameter("string", "Hello, world!".getBytes()));
+                    ABI.encodeParameter("string", "Hello, world!"));
         }
 
         @Test

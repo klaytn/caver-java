@@ -3,6 +3,7 @@ package com.klaytn.caver.contract;
 
 import org.web3j.abi.datatypes.Type;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,8 +27,8 @@ public class ContractDeployParams {
      * @param deployParams A List of smart contract constructor parameter.
      */
     public ContractDeployParams(String bytecode, List<Object> deployParams) {
-        this.bytecode = bytecode;
-        this.deployParams = deployParams;
+        setBytecode(bytecode);
+        setDeployParams(deployParams);
     }
 
     /**
@@ -63,6 +64,9 @@ public class ContractDeployParams {
      * @param deployParams A List of smart contract constructor parameter.
      */
     public void setDeployParams(List<Object> deployParams) {
-        this.deployParams = deployParams;
+        this.deployParams = new ArrayList<>();
+        if(deployParams != null) {
+            this.deployParams.addAll(deployParams);
+        }
     }
 }

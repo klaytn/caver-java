@@ -204,6 +204,10 @@ public class Contract {
      * @return ContractMethod
      */
     public ContractMethod getMethod(String methodName) {
+        ContractMethod contractMethod = this.getMethods().get(methodName);
+        if(contractMethod == null) {
+            throw new NullPointerException(methodName + " method is not exist.");
+        }
         return this.getMethods().get(methodName);
     }
 
@@ -213,6 +217,10 @@ public class Contract {
      * @return ContractEvent
      */
     public ContractEvent getEvent(String eventName) {
+        ContractEvent contractEvent = this.getEvents().get(eventName);
+        if(contractEvent == null) {
+            throw new NullPointerException(eventName + " event is not exist.");
+        }
         return this.getEvents().get(eventName);
     }
 

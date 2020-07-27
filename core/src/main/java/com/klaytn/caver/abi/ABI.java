@@ -27,7 +27,7 @@ public class ABI {
      * @return String
      */
     public static String encodeFunctionCall(ContractMethod method, List<Object> params) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        String functionSignature = ABI.buildFunctionSignature(method);
+        String functionSignature = ABI.buildFunctionString(method);
 
         List<String> solTypeList = new ArrayList();
 
@@ -57,26 +57,26 @@ public class ABI {
      * @return String
      */
     public static String encodeFunctionSignature(ContractMethod method) {
-        return encodeFunctionSignature(buildFunctionSignature(method));
+        return encodeFunctionSignature(buildFunctionString(method));
     }
 
     /**
      * Encodes a function signature.
-     * @param functionSig A function signature string.
+     * @param functionName A function name string.
      * @return String
      */
-    public static String encodeFunctionSignature(String functionSig) {
-        byte[] input = functionSig.getBytes();
+    public static String encodeFunctionSignature(String functionName) {
+        byte[] input = functionName.getBytes();
         byte[] hash = Hash.sha3(input);
         return Numeric.toHexString(hash).substring(0, 10);
     }
 
     /**
-     * Build a function signature.
+     * Build a function name string.
      * @param method A ContractMethod instance.
      * @return String
      */
-    public static String buildFunctionSignature(ContractMethod method) {
+    public static String buildFunctionString(ContractMethod method) {
         StringBuilder result = new StringBuilder();
         result.append(method.getName());
         result.append("(");
@@ -95,26 +95,26 @@ public class ABI {
      * @return String
      */
     public static String encodeEventSignature(ContractEvent event) {
-        return encodeEventSignature(buildEventSignature(event));
+        return encodeEventSignature(buildEventString(event));
     }
 
     /**
      * Encodes a event signature.
-     * @param eventSig A event signature.
+     * @param eventName A event signature.
      * @return String
      */
-    public static String encodeEventSignature(String eventSig) {
-        byte[] input = eventSig.getBytes();
+    public static String encodeEventSignature(String eventName) {
+        byte[] input = eventName.getBytes();
         byte[] hash = Hash.sha3(input);
         return Numeric.toHexString(hash);
     }
 
     /**
-     * Build a event signature.
+     * Build a event name string.
      * @param event A ContractEvent instance
      * @return String
      */
-    public static String buildEventSignature(ContractEvent event) {
+    public static String buildEventString(ContractEvent event) {
         StringBuilder result = new StringBuilder();
         result.append(event.getName());
         result.append("(");
@@ -167,7 +167,7 @@ public class ABI {
      * Encodes a parameters based on its type to its ABI representation.
      * @param solidityTypes A list of solidity type to encode
      * @param values A List of value to encode
-     * @return
+     * @return String
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
      * @throws InstantiationException

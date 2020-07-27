@@ -23,8 +23,14 @@ public class SendOptions {
     /**
      * The amount of KLAY in peb to be transferred.
      */
-    String value;
+    String value = "0x0";
 
+    /**
+     * Creates a SendOption instance.
+     */
+    public SendOptions() {
+
+    }
     /**
      * Creates a SendOption instance.
      * It sets value to 0x0.
@@ -98,15 +104,13 @@ public class SendOptions {
      * @param from The address of the sender
      */
     public void setFrom(String from) {
-        if(from == null) {
-            throw new IllegalArgumentException("from is missing.");
-        }
+        if(from != null) {
+            if(!Utils.isAddress(from)) {
+                throw new IllegalArgumentException("Invalid address. : " + from);
+            }
 
-        if(!Utils.isAddress(from)) {
-            throw new IllegalArgumentException("Invalid address. : " + from);
+            this.from = from;
         }
-
-        this.from = from;
     }
 
     /**
@@ -114,15 +118,13 @@ public class SendOptions {
      * @param gas The maximum amount of gas the transaction is allowed to use.
      */
     public void setGas(String gas) {
-        //Gas value must be set.
-        if(gas == null || gas.isEmpty() || gas.equals("0x")) {
-            throw new IllegalArgumentException("gas is missing.");
-        }
+        if (gas != null) {
+            if(!Utils.isNumber(gas)) {
+                throw new IllegalArgumentException("Invalid gas. : "  + gas);
+            }
 
-        if(!Utils.isNumber(gas)) {
-            throw new IllegalArgumentException("Invalid gas. : "  + gas);
+            this.gas = gas;
         }
-        this.gas = gas;
     }
 
     /**
@@ -130,7 +132,9 @@ public class SendOptions {
      * @param gas The maximum amount of gas the transaction is allowed to use.
      */
     public void setGas(BigInteger gas) {
-        setGas(Numeric.toHexStringWithPrefix(gas));
+        if(gas != null) {
+            setGas(Numeric.toHexStringWithPrefix(gas));
+        }
     }
 
     /**
@@ -138,15 +142,15 @@ public class SendOptions {
      * @param value The amount of KLAY in peb to be transferred.
      */
     public void setValue(String value) {
-        if(value == null) {
-            throw new IllegalArgumentException("value is missing.");
+        if(value != null) {
+            if(!Utils.isNumber(value)) {
+                throw new IllegalArgumentException("Invalid value : " + value);
+            }
+
+            this.value = Numeric.prependHexPrefix(value);
         }
 
-        if(!Utils.isNumber(value)) {
-            throw new IllegalArgumentException("Invalid value : " + value);
-        }
-
-        this.value = Numeric.prependHexPrefix(value);
+        this.value = "0x0";
     }
 
     /**
@@ -154,6 +158,10 @@ public class SendOptions {
      * @param value The amount of KLAY in peb to be transferred.
      */
     public void setValue(BigInteger value) {
-        setValue(Numeric.toHexStringWithPrefix(value));
+        if(value != null) {
+            setValue(Numeric.toHexStringWithPrefix(value));
+        }
+
+        this.value = "0x0";
     }
 }

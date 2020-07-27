@@ -16,7 +16,6 @@ import com.klaytn.caver.utils.Utils;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import org.web3j.abi.datatypes.Type;
 import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.response.EthSubscribe;
@@ -26,7 +25,6 @@ import org.web3j.protocol.websocket.events.LogNotification;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Contract {
 
@@ -86,6 +84,7 @@ public class Contract {
         setAbi(abi);
         setCaver(caver);
         setContractAddress(contractAddress);
+        setDefaultSendOptions(new SendOptions());
     }
 
     /**
@@ -377,11 +376,11 @@ public class Contract {
             JsonNode element = iterator.next();
             if(element.get("type").asText().equals("function")) {
                 ContractMethod method = objectMapper.readValue(element.toString(), ContractMethod.class);
-                method.setSignature(ABI.buildFunctionSignature(method));
+                method.setSignature(ABI.buildFunctionString(method));
                 methods.put(method.getName(), method);
             } else if(element.get("type").asText().equals("event")) {
                 ContractEvent event = objectMapper.readValue(element.toString(), ContractEvent.class);
-                event.setSignature(ABI.buildEventSignature(event));
+                event.setSignature(ABI.buildEventString(event));
                 events.put(event.getName(), event);
             } else if(element.get("type").asText().equals("constructor")) {
                 ContractMethod method = objectMapper.readValue(element.toString(), ContractMethod.class);

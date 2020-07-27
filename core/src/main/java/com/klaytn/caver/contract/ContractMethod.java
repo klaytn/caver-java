@@ -10,12 +10,14 @@ import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.transaction.type.SmartContractExecution;
+import com.klaytn.caver.utils.Utils;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -93,55 +95,28 @@ public class ContractMethod {
 
     /**
      * Execute smart contract method in the EVM without sending any transaction.
-     * It is used defaultSendOption field to sendOptions
+     * When creating CallObject, it need not to fill 'data', 'to' fields.
+     * The 'data', 'to' fields automatically filled in call() method.
      * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
-     * @return List
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
-     */
-    public List<Type> call(List<Object> arguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-        return call(arguments, null);
-    }
-
-    /**
-     * Execute smart contract method in the EVM without sending any transaction.
-     * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
-     * @param options An option to execute smart contract method.
+     * @param callObject A CallObject instance to 'call' smart contract method.
      * @return List
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public List<Type> call(List<Object> arguments, SendOptions options) throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public List<Type> call(List<Object> arguments, CallObject callObject) throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         List<Object> functionParams = new ArrayList<>();
 
         if(arguments != null) {
             functionParams.addAll(arguments);
         }
 
-        if(options == null) {
-            if(getDefaultSendOptions() == null) {
-                throw new NullPointerException("Default SendOptions instance is not existed. Please set default SendOptions instance through contract's setDefaultSendOptions.");
-            }
-            options = getDefaultSendOptions();
-        }
-
         // Check the parameter type defined in function and the parameter type passed are the same.
         checkTypeValid(functionParams);
 
         String encodedFunction = ABI.encodeFunctionCall(this, arguments);
-        Bytes response = caver.rpc.klay.call(
-                new CallObject(
-                        options.from,
-                        this.getContractAddress(),
-                        Numeric.toBigInt(options.getGas()),
-                        null,
-                        Numeric.toBigInt(options.getValue()),
-                        encodedFunction
-                )).send();
+        callObject.setData(encodedFunction);
+        callObject.setTo(this.getContractAddress());
+        Bytes response = caver.rpc.klay.call(callObject).send();
 
         String encodedResult = response.getResult();
         return ABI.decodeParameters(this, encodedResult);
@@ -203,13 +178,10 @@ public class ContractMethod {
             functionParams.addAll(arguments);
         }
 
-        if(options == null) {
-            if(getDefaultSendOptions() == null) {
-                throw new NullPointerException("Default SendOptions instance is not existed. Please set default SendOptions instance through contract's setDefaultSendOptions.");
-            }
-            options = getDefaultSendOptions();
-        }
-
+        //Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
+        //Passed parameter "options" has higher priority than "defaultSendOption" field.
+        SendOptions sendOptions = makeSendOption(options);
+        checkSendOption(sendOptions);
 
         checkTypeValid(functionParams);
 
@@ -217,13 +189,14 @@ public class ContractMethod {
 
         SmartContractExecution smartContractExecution = new SmartContractExecution.Builder()
                 .setKlaytnCall(caver.rpc.klay)
-                .setFrom(options.getFrom())
+                .setFrom(sendOptions.getFrom())
                 .setTo(this.getContractAddress())
                 .setInput(encodedFunction)
-                .setGas(options.getGas())
+                .setGas(sendOptions.getGas())
+                .setValue(sendOptions.getValue())
                 .build();
 
-        caver.wallet.sign(options.getFrom(), smartContractExecution);
+        caver.wallet.sign(sendOptions.getFrom(), smartContractExecution);
         Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractExecution.getRawTransaction()).send();
 
         TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());
@@ -406,5 +379,50 @@ public class ContractMethod {
      */
     public void setDefaultSendOptions(SendOptions defaultSendOptions) {
         this.defaultSendOptions = defaultSendOptions;
+    }
+
+    /**
+     * Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
+     * Passed parameter "options" has higher priority than "defaultSendOption" field.
+     * @param sendOption SendOptions instance
+     * @return SendOption
+     */
+    public SendOptions makeSendOption(SendOptions sendOption) {
+        SendOptions defaultSendOption = this.getDefaultSendOptions();
+        String from = defaultSendOption.getFrom();
+        String gas = defaultSendOption.getGas();
+        String value = defaultSendOption.getValue();
+
+        if(sendOption != null) {
+            if(sendOption.getFrom() != null) {
+                from = sendOption.getFrom();
+            }
+            if(sendOption.getGas() != null) {
+                gas = sendOption.getGas();
+            }
+            if(!sendOption.getValue().equals("0x0")) {
+                value = sendOption.getValue();
+            }
+        }
+
+        return new SendOptions(from, gas, value);
+    }
+
+    /**
+     * Before executing SmartContractExecution transaction, check SendOptions field is valid.
+     * @param options SendOption instance.
+     */
+    private void checkSendOption(SendOptions options) {
+        if(options.getFrom() == null || !Utils.isAddress(options.getFrom())) {
+            throw new IllegalArgumentException("Invalid 'from' parameter : " + options.getFrom());
+        }
+
+        if(options.getGas() == null || !Utils.isNumber(options.getGas())) {
+            throw new IllegalArgumentException("Invalid 'gas' parameter : " + options.getGas());
+        }
+
+        if(options.getValue() == null || !Utils.isNumber(options.getValue())) {
+            throw new IllegalArgumentException("Invalid 'value' parameter : " + options.getValue());
+        }
     }
 }

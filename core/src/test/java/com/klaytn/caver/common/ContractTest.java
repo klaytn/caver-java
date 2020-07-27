@@ -3,6 +3,7 @@ package com.klaytn.caver.common;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.abi.ABI;
 import com.klaytn.caver.contract.*;
+import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.KlayLogs;
 import com.klaytn.caver.methods.response.TransactionReceipt;
@@ -26,6 +27,7 @@ import org.web3j.protocol.websocket.WebSocketService;
 import org.web3j.protocol.websocket.events.Log;
 import org.web3j.protocol.websocket.events.LogNotification;
 import org.web3j.tx.gas.DefaultGasProvider;
+import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -760,7 +762,8 @@ public class ContractTest {
         SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
 
         List<Object> callParams = Arrays.asList(BRANDON.getAddress());
-        List<Type> list = contract.getMethod("balanceOf").call(callParams, sendOptions);
+
+        List<Type> list = contract.getMethod("balanceOf").call(callParams, CallObject.createCallObject());
         BigInteger balance = ((Uint256)list.get(0)).getValue();
 
         BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
@@ -844,37 +847,14 @@ public class ContractTest {
         Caver caver = new Caver(Caver.DEFAULT_URL);
 
         Contract contract = new Contract(caver, jsonObj, contractAddress);
-        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
+        CallObject callObject = CallObject.createCallObject(
+                LUMAN.getAddress(),
+                null,
+                null,
+                null,
+                null);
 
-        List<Type> result = contract.getMethod("symbol").call(null, sendOptions);
-
-        Utf8String symbol = (Utf8String)result.get(0);
-        assertEquals("KCT", symbol.getValue());
-    }
-
-    @Test
-    public void callWithDefaultSendOptions() throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        Caver caver = new Caver(Caver.DEFAULT_URL);
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
-        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
-
-        contract.setDefaultSendOptions(sendOptions);
-
-        List<Type> result = contract.getMethod("symbol").call(null);
-
-        Utf8String symbol = (Utf8String)result.get(0);
-        assertEquals("KCT", symbol.getValue());
-    }
-
-    @Test
-    public void callWithNotSetDefaultSendOptions() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-        expectedException.expect(NullPointerException.class);
-        expectedException.expectMessage("Default SendOptions instance is not existed. Please set default SendOptions instance through contract's setDefaultSendOptions.");
-
-        Caver caver = new Caver(Caver.DEFAULT_URL);
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
-
-        List<Type> result = contract.getMethod("symbol").call(null);
+        List<Type> result = contract.getMethod("symbol").call(null, CallObject.createCallObject());
 
         Utf8String symbol = (Utf8String)result.get(0);
         assertEquals("KCT", symbol.getValue());
@@ -889,10 +869,10 @@ public class ContractTest {
         SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
 
         List<Object> callParams = Arrays.asList(BRANDON.getAddress());
-        List<Type> list = contract.getMethod("balanceOf").call(callParams, sendOptions);
+        List<Type> list = contract.getMethod("balanceOf").call(callParams, CallObject.createCallObject());
         BigInteger balance = ((Uint256)list.get(0)).getValue();
 
-        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
+        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));
         List<Object> functionParams = Arrays.asList(
                 BRANDON.getAddress(),
                 amount
@@ -900,53 +880,92 @@ public class ContractTest {
 
         TransactionReceipt.TransactionReceiptData receiptData = contract.getMethod("transfer").send(functionParams, sendOptions);
 
-        List<Type> result = contract.getMethod("balanceOf").call(callParams, sendOptions);
+        List<Type> result = contract.getMethod("balanceOf").call(callParams, CallObject.createCallObject());
         assertEquals(balance.add(amount), ((Uint256)result.get(0)).getValue());
     }
 
     @Test
-    public void sendWithDefaultSendOptions() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public void sendWithInvalidFrom() throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("Invalid 'from' parameter");
         Caver caver = new Caver(Caver.DEFAULT_URL);
         caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
 
         Contract contract = new Contract(caver, jsonObj, contractAddress);
-        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
-        contract.setDefaultSendOptions(sendOptions);
+        SendOptions sendOptions = new SendOptions(null, DefaultGasProvider.GAS_LIMIT);
 
-        List<Object> callParams = Arrays.asList(BRANDON.getAddress());
-        List<Type> list = contract.getMethod("balanceOf").call(callParams);
-        BigInteger balance = ((Uint256)list.get(0)).getValue();
-
-        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
+        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));
         List<Object> functionParams = Arrays.asList(
                 BRANDON.getAddress(),
                 amount
         );
 
-        TransactionReceipt.TransactionReceiptData receiptData = contract.getMethod("transfer").send(functionParams);
-
-        List<Type> result = contract.getMethod("balanceOf").call(callParams, sendOptions);
-        assertEquals(balance.add(amount), ((Uint256)result.get(0)).getValue());
+        TransactionReceipt.TransactionReceiptData receiptData = contract.getMethod("transfer").send(functionParams, sendOptions);
     }
 
     @Test
-    public void sendWithNotSetDefaultSendOptions() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
-        expectedException.expect(NullPointerException.class);
-        expectedException.expectMessage("Default SendOptions instance is not existed. Please set default SendOptions instance through contract's setDefaultSendOptions.");
-
+    public void sendWithInvalidGas() throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("Invalid 'gas' parameter");
         Caver caver = new Caver(Caver.DEFAULT_URL);
         caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
 
         Contract contract = new Contract(caver, jsonObj, contractAddress);
+        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), (String)null);
 
-
-        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
+        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));
         List<Object> functionParams = Arrays.asList(
                 BRANDON.getAddress(),
                 amount
         );
 
-        TransactionReceipt.TransactionReceiptData receiptData = contract.getMethod("transfer").send(functionParams);
+        TransactionReceipt.TransactionReceiptData receiptData = contract.getMethod("transfer").send(functionParams, sendOptions);
+    }
+
+    @Test
+    public void makeSendOptionsOnlyDefaultOption() throws IOException{
+        Caver caver = new Caver(Caver.DEFAULT_URL);
+        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+
+        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        contract.getDefaultSendOptions().setFrom(LUMAN.getAddress());
+        contract.getDefaultSendOptions().setGas(DefaultGasProvider.GAS_LIMIT);
+
+        SendOptions combineOptions = contract.getMethod("transfer").makeSendOption(null);
+        assertEquals(LUMAN.getAddress(), combineOptions.getFrom());
+        assertEquals(Numeric.toHexStringWithPrefix(DefaultGasProvider.GAS_LIMIT), combineOptions.getGas());
+        assertEquals("0x0", combineOptions.getValue());
+    }
+
+    @Test
+    public void makeSendOptionNoDefaultOption() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        Caver caver = new Caver(Caver.DEFAULT_URL);
+        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+
+        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        SendOptions options = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
+
+        SendOptions combineOptions = contract.getMethod("transfer").makeSendOption(options);
+        assertEquals(LUMAN.getAddress(), combineOptions.getFrom());
+        assertEquals(Numeric.toHexStringWithPrefix(DefaultGasProvider.GAS_LIMIT), combineOptions.getGas());
+        assertEquals("0x0", combineOptions.getValue());
+    }
+
+    @Test
+    public void makeSendOptionCombineOptions() throws IOException {
+        Caver caver = new Caver(Caver.DEFAULT_URL);
+        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+
+        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        contract.getDefaultSendOptions().setFrom(BRANDON.getAddress());
+
+        SendOptions options = new SendOptions();
+        options.setGas(DefaultGasProvider.GAS_LIMIT);
+
+        SendOptions combineOptions = contract.getMethod("transfer").makeSendOption(options);
+        assertEquals(BRANDON.getAddress(), combineOptions.getFrom());
+        assertEquals(Numeric.toHexStringWithPrefix(DefaultGasProvider.GAS_LIMIT), combineOptions.getGas());
+        assertEquals("0x0", combineOptions.getValue());
     }
 
     @Test

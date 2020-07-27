@@ -25,10 +25,12 @@ public class SendOptions {
      */
     String value = "0x0";
 
+    /**
+     * Creates a SendOption instance.
+     */
     public SendOptions() {
 
     }
-
     /**
      * Creates a SendOption instance.
      * It sets value to 0x0.

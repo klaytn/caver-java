@@ -23,7 +23,11 @@ public class SendOptions {
     /**
      * The amount of KLAY in peb to be transferred.
      */
-    String value;
+    String value = "0x0";
+
+    public SendOptions() {
+
+    }
 
     /**
      * Creates a SendOption instance.

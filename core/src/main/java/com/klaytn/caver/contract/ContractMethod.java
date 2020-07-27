@@ -16,6 +16,7 @@ import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -122,12 +123,9 @@ public class ContractMethod {
             functionParams.addAll(arguments);
         }
 
-        if(options == null) {
-            if(getDefaultSendOptions() == null) {
-                throw new NullPointerException("Default SendOptions instance is not existed. Please set default SendOptions instance through contract's setDefaultSendOptions.");
-            }
-            options = getDefaultSendOptions();
-        }
+        //Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
+        //Passed parameter "options" has higher priority than "defaultSendOption" field.
+        SendOptions sendOptions = makeSendOption(options);
 
         // Check the parameter type defined in function and the parameter type passed are the same.
         checkTypeValid(functionParams);
@@ -135,11 +133,11 @@ public class ContractMethod {
         String encodedFunction = ABI.encodeFunctionCall(this, arguments);
         Bytes response = caver.rpc.klay.call(
                 new CallObject(
-                        options.from,
+                        sendOptions.getFrom(),
                         this.getContractAddress(),
-                        Numeric.toBigInt(options.getGas()),
+                        Numeric.toBigInt(sendOptions.getGas()),
                         null,
-                        Numeric.toBigInt(options.getValue()),
+                        Numeric.toBigInt(sendOptions.getValue()),
                         encodedFunction
                 )).send();
 
@@ -203,13 +201,9 @@ public class ContractMethod {
             functionParams.addAll(arguments);
         }
 
-        if(options == null) {
-            if(getDefaultSendOptions() == null) {
-                throw new NullPointerException("Default SendOptions instance is not existed. Please set default SendOptions instance through contract's setDefaultSendOptions.");
-            }
-            options = getDefaultSendOptions();
-        }
-
+        //Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
+        //Passed parameter "options" has higher priority than "defaultSendOption" field.
+        SendOptions sendOptions = makeSendOption(options);
 
         checkTypeValid(functionParams);
 
@@ -217,13 +211,14 @@ public class ContractMethod {
 
         SmartContractExecution smartContractExecution = new SmartContractExecution.Builder()
                 .setKlaytnCall(caver.rpc.klay)
-                .setFrom(options.getFrom())
+                .setFrom(sendOptions.getFrom())
                 .setTo(this.getContractAddress())
                 .setInput(encodedFunction)
-                .setGas(options.getGas())
+                .setGas(sendOptions.getGas())
+                .setValue(sendOptions.getValue())
                 .build();
 
-        caver.wallet.sign(options.getFrom(), smartContractExecution);
+        caver.wallet.sign(sendOptions.getFrom(), smartContractExecution);
         Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractExecution.getRawTransaction()).send();
 
         TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());
@@ -406,5 +401,32 @@ public class ContractMethod {
      */
     public void setDefaultSendOptions(SendOptions defaultSendOptions) {
         this.defaultSendOptions = defaultSendOptions;
+    }
+
+    /**
+     * Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
+     * Passed parameter "options" has higher priority than "defaultSendOption" field.
+     * @param sendOption SendOptions instance
+     * @return SendOption
+     */
+    public SendOptions makeSendOption(SendOptions sendOption) {
+        SendOptions defaultSendOption = this.getDefaultSendOptions();
+        String from = defaultSendOption.getFrom();
+        String gas = defaultSendOption.getGas();
+        String value = defaultSendOption.getValue();
+
+        if(sendOption != null) {
+            if(sendOption.getFrom() != null) {
+                from = sendOption.getFrom();
+            }
+            if(sendOption.getGas() != null) {
+                gas = sendOption.getGas();
+            }
+            if(!sendOption.getValue().equals("0x0")) {
+                value = sendOption.getValue();
+            }
+        }
+
+        return new SendOptions(from, gas, value);
     }
 }

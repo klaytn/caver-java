@@ -148,9 +148,11 @@ public class SendOptions {
             }
 
             this.value = Numeric.prependHexPrefix(value);
+        } else {
+            this.value = "0x0";
         }
 
-        this.value = "0x0";
+
     }
 
     /**
@@ -160,8 +162,8 @@ public class SendOptions {
     public void setValue(BigInteger value) {
         if(value != null) {
             setValue(Numeric.toHexStringWithPrefix(value));
+        } else {
+            this.value = "0x0";
         }
-
-        this.value = "0x0";
     }
 }

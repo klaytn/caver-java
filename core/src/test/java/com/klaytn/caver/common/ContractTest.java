@@ -849,12 +849,12 @@ public class ContractTest {
         Contract contract = new Contract(caver, jsonObj, contractAddress);
         CallObject callObject = CallObject.createCallObject(
                 LUMAN.getAddress(),
-                null,
+                contractAddress,
                 null,
                 null,
                 null);
 
-        List<Type> result = contract.getMethod("symbol").call(null, CallObject.createCallObject());
+        List<Type> result = contract.getMethod("symbol").call(null, callObject);
 
         Utf8String symbol = (Utf8String)result.get(0);
         assertEquals("KCT", symbol.getValue());

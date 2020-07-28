@@ -11,6 +11,8 @@ import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.transaction.type.SmartContractExecution;
 import com.klaytn.caver.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
@@ -67,6 +69,9 @@ public class ContractMethod {
      */
     SendOptions defaultSendOptions;
 
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContractMethod.class);
+
     /**
      * Creates a ContractMethod instance.
      */
@@ -114,6 +119,10 @@ public class ContractMethod {
         checkTypeValid(functionParams);
 
         String encodedFunction = ABI.encodeFunctionCall(this, arguments);
+
+        if(callObject.getData() != null || callObject.getTo() != null) {
+            LOGGER.warn("'to' and 'data' field in CallObject will overwrite.");
+        }
         callObject.setData(encodedFunction);
         callObject.setTo(this.getContractAddress());
         Bytes response = caver.rpc.klay.call(callObject).send();

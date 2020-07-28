@@ -238,9 +238,14 @@ public class ContractMethod {
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    public String estimateGas(List<Object> arguments, SendOptions options) throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        String data = ABI.encodeFunctionCall(this, arguments);
-        CallObject callObject = new CallObject(options.getFrom(), this.getContractAddress(), Numeric.toBigInt(options.getGas()), null, Numeric.toBigInt(options.getValue()), data);
+    public String estimateGas(List<Object> arguments, CallObject callObject) throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        String encodedFunction = ABI.encodeFunctionCall(this, arguments);
+
+        if(callObject.getData() != null || callObject.getTo() != null) {
+            LOGGER.warn("'to' and 'data' field in CallObject will overwrite.");
+        }
+        callObject.setData(encodedFunction);
+        callObject.setTo(this.getContractAddress());
 
         Quantity estimateGas = caver.rpc.klay.estimateGas(callObject).send();
         if(estimateGas.hasError()) {

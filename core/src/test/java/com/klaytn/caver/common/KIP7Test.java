@@ -81,8 +81,8 @@ public class KIP7Test {
         @Test
         public void decimals(){
             try {
-                String decimals = kip7contract.decimals();
-                assertEquals(BigInteger.valueOf(CONTRACT_DECIMALS), Numeric.toBigInt(decimals));
+                int decimals = kip7contract.decimals();
+                assertEquals(CONTRACT_DECIMALS, decimals);
             } catch (Exception e) {
                 e.printStackTrace();
                 fail();
@@ -93,8 +93,8 @@ public class KIP7Test {
         @Test
         public void totalSupply(){
             try {
-                String totalSupply = kip7contract.totalSupply();
-                assertEquals(CONTRACT_INITIAL_SUPPLY, Numeric.toBigInt(totalSupply));
+                BigInteger totalSupply = kip7contract.totalSupply();
+                assertEquals(CONTRACT_INITIAL_SUPPLY, totalSupply);
             } catch (Exception e) {
                 e.printStackTrace();
                 fail();
@@ -239,14 +239,14 @@ public class KIP7Test {
         @Test
         public void burn() {
             try {
-                String totalSupply = kip7contract.totalSupply();
+                BigInteger totalSupply = kip7contract.totalSupply();
 
                 SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), (String)null);
                 String burnAmount = Utils.convertToPeb("100", "KLAY");
                 kip7contract.burn(new BigInteger(burnAmount), sendOptions);
 
-                String afterSupply = kip7contract.totalSupply();
-                assertEquals(Numeric.toBigInt(afterSupply), Numeric.toBigInt(totalSupply).subtract(new BigInteger(burnAmount)));
+                BigInteger afterSupply = kip7contract.totalSupply();
+                assertEquals(afterSupply, totalSupply.subtract(new BigInteger(burnAmount)));
             } catch (Exception e) {
                 e.printStackTrace();
                 fail();
@@ -256,7 +256,7 @@ public class KIP7Test {
         @Test
         public void burnFrom() {
             try {
-                String beforeBalance = kip7contract.balanceOf(LUMAN.getAddress());
+                BigInteger beforeBalance = kip7contract.balanceOf(LUMAN.getAddress());
 
                 SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), (String)null);
                 String burnAmount = Utils.convertToPeb("100", "KLAY");
@@ -264,9 +264,9 @@ public class KIP7Test {
                 kip7contract.approve(BRANDON.getAddress(), Numeric.toBigInt(burnAmount), sendOptions);
 
                 kip7contract.burnFrom(LUMAN.getAddress(), new BigInteger(burnAmount), new SendOptions(BRANDON.getAddress(), (String)null));
-                String afterBalance = kip7contract.balanceOf(LUMAN.getAddress());
+                BigInteger afterBalance = kip7contract.balanceOf(LUMAN.getAddress());
 
-                assertEquals(Numeric.toBigInt(afterBalance), Numeric.toBigInt(beforeBalance).subtract(new BigInteger(burnAmount)));
+                assertEquals(afterBalance, beforeBalance.subtract(new BigInteger(burnAmount)));
             } catch (Exception e) {
                 e.printStackTrace();
                 fail();
@@ -283,15 +283,15 @@ public class KIP7Test {
         @Test
         public void mint() {
             try {
-                String beforeTotalSupply = kip7contract.totalSupply();
+                BigInteger beforeTotalSupply = kip7contract.totalSupply();
 
                 SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), (String)null);
                 String mintAmount = Utils.convertToPeb("100", "KLAY");
 
                 kip7contract.mint(LUMAN.getAddress(), new BigInteger(mintAmount), sendOptions);
 
-                String afterTotalSupply = kip7contract.totalSupply();
-                assertEquals(Numeric.toBigInt(afterTotalSupply), Numeric.toBigInt(beforeTotalSupply).add(new BigInteger(mintAmount)));
+                BigInteger afterTotalSupply = kip7contract.totalSupply();
+                assertEquals(afterTotalSupply, beforeTotalSupply.add(new BigInteger(mintAmount)));
             } catch (Exception e) {
                 e.printStackTrace();
                 fail();
@@ -364,8 +364,8 @@ public class KIP7Test {
         @Test
         public void allowance() {
             try {
-                String allowance = kip7contract.allowance(LUMAN.getAddress(), WAYNE.getAddress());
-                assertEquals(Numeric.toBigInt(allowance), BigInteger.ZERO);
+                BigInteger allowance = kip7contract.allowance(LUMAN.getAddress(), WAYNE.getAddress());
+                assertEquals(allowance, BigInteger.ZERO);
             } catch (Exception e) {
                 e.printStackTrace();
                 fail();
@@ -375,15 +375,15 @@ public class KIP7Test {
         @Test
         public void approve() {
             try {
-                String allowance = kip7contract.allowance(LUMAN.getAddress(), BRANDON.getAddress());
+                BigInteger allowance = kip7contract.allowance(LUMAN.getAddress(), BRANDON.getAddress());
 
                 SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), (String)null);
                 BigInteger approveAmount = BigInteger.TEN.multiply(BigInteger.TEN.pow(CONTRACT_DECIMALS)); // 10 * 10^18
 
                 kip7contract.approve(BRANDON.getAddress(), approveAmount, sendOptions);
 
-                String afterAllowance = kip7contract.allowance(LUMAN.getAddress(), BRANDON.getAddress());
-                assertEquals(Numeric.toBigInt(afterAllowance), Numeric.toBigInt(allowance).add(approveAmount));
+                BigInteger afterAllowance = kip7contract.allowance(LUMAN.getAddress(), BRANDON.getAddress());
+                assertEquals(afterAllowance, allowance.add(approveAmount));
             } catch (Exception e) {
                 e.printStackTrace();
                 fail();
@@ -393,15 +393,15 @@ public class KIP7Test {
         @Test
         public void transfer() {
             try {
-                String beforeBalance = kip7contract.balanceOf(BRANDON.getAddress());
+                BigInteger beforeBalance = kip7contract.balanceOf(BRANDON.getAddress());
 
                 SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), (String)null);
                 BigInteger transferAmount = BigInteger.TEN.multiply(BigInteger.TEN.pow(CONTRACT_DECIMALS)); // 10 * 10^18
 
                 kip7contract.transfer(BRANDON.getAddress(), transferAmount, sendOptions);
 
-                String afterBalance = kip7contract.balanceOf(BRANDON.getAddress());
-                assertEquals(Numeric.toBigInt(afterBalance), Numeric.toBigInt(beforeBalance).add(transferAmount));
+                BigInteger afterBalance = kip7contract.balanceOf(BRANDON.getAddress());
+                assertEquals(afterBalance, beforeBalance.add(transferAmount));
             } catch (Exception e) {
                 e.printStackTrace();
                 fail();
@@ -419,12 +419,12 @@ public class KIP7Test {
 
                 //Test
                 kip7contract.approve(BRANDON.getAddress(), allowAmount, ownerOptions);
-                String preBalance = kip7contract.balanceOf(WAYNE.getAddress());
+                BigInteger preBalance = kip7contract.balanceOf(WAYNE.getAddress());
 
                 kip7contract.transferFrom(LUMAN.getAddress(), WAYNE.getAddress(), allowAmount, allowanceOptions);
-                String afterBalance = kip7contract.balanceOf(WAYNE.getAddress());
+                BigInteger afterBalance = kip7contract.balanceOf(WAYNE.getAddress());
 
-                assertEquals(Numeric.toBigInt(afterBalance), Numeric.toBigInt(preBalance).add(allowAmount));
+                assertEquals(afterBalance, preBalance.add(allowAmount));
             } catch (Exception e) {
                 e.printStackTrace();
                 fail();
@@ -437,15 +437,15 @@ public class KIP7Test {
             BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(CONTRACT_DECIMALS));
 
             try {
-                String beforeBalance = kip7contract.balanceOf(BRANDON.getAddress());
+                BigInteger beforeBalance = kip7contract.balanceOf(BRANDON.getAddress());
 
                 SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), (String)null);
                 BigInteger transferAmount = BigInteger.TEN.multiply(BigInteger.TEN.pow(CONTRACT_DECIMALS)); // 10 * 10^18
 
                 kip7contract.safeTransfer(BRANDON.getAddress(), transferAmount, sendOptions);
 
-                String afterBalance = kip7contract.balanceOf(BRANDON.getAddress());
-                assertEquals(Numeric.toBigInt(afterBalance), Numeric.toBigInt(beforeBalance).add(transferAmount));
+                BigInteger afterBalance = kip7contract.balanceOf(BRANDON.getAddress());
+                assertEquals(afterBalance, beforeBalance.add(transferAmount));
             } catch (Exception e) {
                 e.printStackTrace();
                 fail();
@@ -458,15 +458,15 @@ public class KIP7Test {
             BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(CONTRACT_DECIMALS));
             String data = "buffered data";
             try {
-                String beforeBalance = kip7contract.balanceOf(BRANDON.getAddress());
+                BigInteger beforeBalance = kip7contract.balanceOf(BRANDON.getAddress());
 
                 SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), (String)null);
                 BigInteger transferAmount = BigInteger.TEN.multiply(BigInteger.TEN.pow(CONTRACT_DECIMALS)); // 10 * 10^18
 
                 kip7contract.safeTransfer(BRANDON.getAddress(), transferAmount, data, sendOptions);
 
-                String afterBalance = kip7contract.balanceOf(BRANDON.getAddress());
-                assertEquals(Numeric.toBigInt(afterBalance), Numeric.toBigInt(beforeBalance).add(transferAmount));
+                BigInteger afterBalance = kip7contract.balanceOf(BRANDON.getAddress());
+                assertEquals(afterBalance, beforeBalance.add(transferAmount));
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -485,12 +485,12 @@ public class KIP7Test {
 
                 //Test
                 kip7contract.approve(BRANDON.getAddress(), allowAmount, ownerOptions);
-                String preBalance = kip7contract.balanceOf(WAYNE.getAddress());
+                BigInteger preBalance = kip7contract.balanceOf(WAYNE.getAddress());
 
                 kip7contract.safeTransferFrom(LUMAN.getAddress(), WAYNE.getAddress(), allowAmount, allowanceOptions);
-                String afterBalance = kip7contract.balanceOf(WAYNE.getAddress());
+                BigInteger afterBalance = kip7contract.balanceOf(WAYNE.getAddress());
 
-                assertEquals(Numeric.toBigInt(afterBalance), Numeric.toBigInt(preBalance).add(allowAmount));
+                assertEquals(afterBalance, preBalance.add(allowAmount));
             } catch (Exception e) {
                 e.printStackTrace();
                 fail();
@@ -509,12 +509,12 @@ public class KIP7Test {
 
                 //Test
                 kip7contract.approve(BRANDON.getAddress(), allowAmount, ownerOptions);
-                String preBalance = kip7contract.balanceOf(WAYNE.getAddress());
+                BigInteger preBalance = kip7contract.balanceOf(WAYNE.getAddress());
 
                 kip7contract.safeTransferFrom(LUMAN.getAddress(), WAYNE.getAddress(), allowAmount, data, allowanceOptions);
-                String afterBalance = kip7contract.balanceOf(WAYNE.getAddress());
+                BigInteger afterBalance = kip7contract.balanceOf(WAYNE.getAddress());
 
-                assertEquals(Numeric.toBigInt(afterBalance), Numeric.toBigInt(preBalance).add(allowAmount));
+                assertEquals(afterBalance, preBalance.add(allowAmount));
             } catch (Exception e) {
                 e.printStackTrace();
                 fail();

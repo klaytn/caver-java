@@ -90,28 +90,6 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Estimates the gas to execute the contract's method.
-     * @param kip7 A KIP7 instance.
-     * @param functionName A KIP7 contract's method.
-     * @param callObject A CallObject instance to execute estimateGas
-     * @param arguments A arguments to execute contract's method.
-     * @return BigInteger
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
-     */
-    public static BigInteger estimateGas(KIP7 kip7, String functionName, CallObject callObject, List<Object> arguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-        String gas = kip7.getMethod(functionName).estimateGas(arguments, callObject);
-        BigDecimal bigDecimal = new BigDecimal(Numeric.toBigInt(gas));
-        BigInteger gasInteger = bigDecimal.multiply(new BigDecimal(1.5)).toBigInteger();
-
-        return gasInteger;
-    }
-
-    /**
      * Copy instance
      * @return KIP7
      */
@@ -201,11 +179,11 @@ public class KIP7 extends Contract {
      * @throws InvocationTargetException
      * @throws ClassNotFoundException
      */
-    public String decimals() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public int decimals() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         CallObject callObject = CallObject.createCallObject();
         List<Type> result = this.getMethod(FUNCTION_DECIMALS).call(null, callObject);
 
-        return Numeric.toHexStringWithPrefix((BigInteger)result.get(0).getValue());
+        return ((BigInteger)result.get(0).getValue()).intValue();
     }
 
     /**
@@ -218,11 +196,11 @@ public class KIP7 extends Contract {
      * @throws InvocationTargetException
      * @throws ClassNotFoundException
      */
-    public String totalSupply() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public BigInteger totalSupply() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         CallObject callObject = CallObject.createCallObject();
         List<Type> result = this.getMethod(FUNCTION_TOTAL_SUPPLY).call(null, callObject);
 
-        return Numeric.toHexStringWithPrefix((BigInteger)result.get(0).getValue());
+        return (BigInteger)result.get(0).getValue();
     }
 
     /**
@@ -236,12 +214,11 @@ public class KIP7 extends Contract {
      * @throws InvocationTargetException
      * @throws ClassNotFoundException
      */
-    public String balanceOf(String account) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public BigInteger balanceOf(String account) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         CallObject callObject = CallObject.createCallObject();
         List<Type> result = this.getMethod(FUNCTION_BALANCE_OF).call(Arrays.asList(account), callObject);
 
-        BigInteger value = (BigInteger)result.get(0).getValue();
-        return Numeric.toHexStringWithPrefix(value);
+        return (BigInteger)result.get(0).getValue();
     }
 
     /**
@@ -256,12 +233,11 @@ public class KIP7 extends Contract {
      * @throws InvocationTargetException
      * @throws ClassNotFoundException
      */
-    public String allowance(String owner, String spender) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public BigInteger allowance(String owner, String spender) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         CallObject callObject = CallObject.createCallObject();
         List<Type> result = this.getMethod(FUNCTION_ALLOWANCE).call(Arrays.asList(owner, spender), callObject);
 
-        BigInteger value = (BigInteger)result.get(0).getValue();
-        return Numeric.toHexStringWithPrefix(value);
+        return (BigInteger)result.get(0).getValue();
     }
 
     /**
@@ -989,5 +965,27 @@ public class KIP7 extends Contract {
         }
 
         return newSendOptions;
+    }
+
+    /**
+     * Estimates the gas to execute the contract's method.
+     * @param kip7 A KIP7 instance.
+     * @param functionName A KIP7 contract's method.
+     * @param callObject A CallObject instance to execute estimateGas
+     * @param arguments A arguments to execute contract's method.
+     * @return BigInteger
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
+    private static BigInteger estimateGas(KIP7 kip7, String functionName, CallObject callObject, List<Object> arguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        String gas = kip7.getMethod(functionName).estimateGas(arguments, callObject);
+        BigDecimal bigDecimal = new BigDecimal(Numeric.toBigInt(gas));
+        BigInteger gasInteger = bigDecimal.multiply(new BigDecimal(1.5)).toBigInteger();
+
+        return gasInteger;
     }
 }

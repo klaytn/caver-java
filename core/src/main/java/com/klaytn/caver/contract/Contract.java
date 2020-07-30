@@ -384,7 +384,7 @@ public class Contract {
 
                 ContractMethod existedMethod = this.methods.get(newMethod.getName());
                 if(existedMethod != null) {
-                    boolean isWarning = existedMethod.getNextContractMethod().stream().anyMatch(contractMethod -> {
+                    boolean isWarning = existedMethod.getNextContractMethods().stream().anyMatch(contractMethod -> {
                         return contractMethod.getInputs().size() == newMethod.getInputs().size();
                     });
 
@@ -392,7 +392,7 @@ public class Contract {
                         LOGGER.warn("An overloaded function with the same number of parameters may not be executed normally.");
                     }
 
-                    existedMethod.getNextContractMethod().add(newMethod);
+                    existedMethod.getNextContractMethods().add(newMethod);
                 } else {
                     methods.put(newMethod.getName(), newMethod);
                 }

@@ -67,7 +67,7 @@ public class ContractMethod {
     SendOptions defaultSendOptions;
 
 
-    List<ContractMethod> nextContractMethod = new ArrayList<>();
+    List<ContractMethod> nextContractMethods = new ArrayList<>();
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContractMethod.class);
@@ -336,8 +336,8 @@ public class ContractMethod {
         return defaultSendOptions;
     }
 
-    public List<ContractMethod> getNextContractMethod() {
-        return nextContractMethod;
+    public List<ContractMethod> getNextContractMethods() {
+        return nextContractMethods;
     }
 
     /**
@@ -404,8 +404,8 @@ public class ContractMethod {
         this.defaultSendOptions = defaultSendOptions;
     }
 
-    public void setNextContractMethod(List<ContractMethod> nextContractMethod) {
-        this.nextContractMethod = nextContractMethod;
+    public void setNextContractMethods(List<ContractMethod> nextContractMethods) {
+        this.nextContractMethods = nextContractMethods;
     }
 
     /**
@@ -458,7 +458,7 @@ public class ContractMethod {
         ContractMethod matchedMethod = null;
 
         if(this.getInputs().size() != arguments.size()) {
-            for(ContractMethod method : this.getNextContractMethod()) {
+            for(ContractMethod method : this.getNextContractMethods()) {
                 if(method.getInputs().size() == arguments.size()) {
                     matchedMethod = method;
                     break;

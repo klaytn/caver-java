@@ -2,13 +2,13 @@ package com.klaytn.caver.kct.kip7;
 
 import java.math.BigInteger;
 
-public class KIP7DeployParam {
+public class KIP7DeployParams {
     String name;
     String symbol;
     int decimals;
     BigInteger initialSupply;
 
-    public KIP7DeployParam(String name, String symbol, int decimals, BigInteger initialSupply) {
+    public KIP7DeployParams(String name, String symbol, int decimals, BigInteger initialSupply) {
         this.name = name;
         this.symbol = symbol;
         this.decimals = decimals;

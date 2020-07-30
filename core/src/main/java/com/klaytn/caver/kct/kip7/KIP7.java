@@ -78,7 +78,7 @@ public class KIP7 extends Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public static KIP7 deploy(Caver caver, KIP7DeployParam tokenInfo, String deployer) throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public static KIP7 deploy(Caver caver, KIP7DeployParams tokenInfo, String deployer) throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         List deployArgument = Arrays.asList(tokenInfo.getName(), tokenInfo.getSymbol(), tokenInfo.getDecimals(), tokenInfo.getInitialSupply());
         ContractDeployParams contractDeployParams = new ContractDeployParams(KIP7ConstantData.BINARY, deployArgument);
         SendOptions sendOptions = new SendOptions(deployer, BigInteger.valueOf(4000000));

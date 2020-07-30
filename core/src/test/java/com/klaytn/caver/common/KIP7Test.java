@@ -3,7 +3,7 @@ package com.klaytn.caver.common;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.kct.kip7.KIP7;
-import com.klaytn.caver.kct.kip7.KIP7DeployParam;
+import com.klaytn.caver.kct.kip7.KIP7DeployParams;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
@@ -43,7 +43,7 @@ public class KIP7Test {
         caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
         caver.wallet.add(KeyringFactory.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
 
-        KIP7DeployParam kip7DeployParam = new KIP7DeployParam(CONTRACT_NAME, CONTRACT_SYMBOL, CONTRACT_DECIMALS, CONTRACT_INITIAL_SUPPLY);
+        KIP7DeployParams kip7DeployParam = new KIP7DeployParams(CONTRACT_NAME, CONTRACT_SYMBOL, CONTRACT_DECIMALS, CONTRACT_INITIAL_SUPPLY);
         SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(45000));
         kip7contract = KIP7.deploy(caver, kip7DeployParam, LUMAN.getAddress());
     }

@@ -12,6 +12,7 @@ import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
@@ -62,6 +63,14 @@ public class KIP7 extends Contract {
         return kip7;
     }
 
+    public static BigInteger estimateGas(KIP7 kip7, String functionName, CallObject object, List<Object> arguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        String gas = kip7.getMethod(functionName).estimateGas(arguments, object);
+        BigDecimal bigDecimal = new BigDecimal(Numeric.toBigInt(gas));
+        BigInteger gasInteger = bigDecimal.multiply(new BigDecimal(1.5)).toBigInteger();
+
+        return gasInteger;
+    }
+
     @Override
     public KIP7 clone() {
         try {
@@ -106,14 +115,14 @@ public class KIP7 extends Contract {
         CallObject callObject = CallObject.createCallObject();
         List<Type> result = this.getMethod(FUNCTION_DECIMALS).call(null, callObject);
 
-        return (String)result.get(0).getValue();
+        return Numeric.toHexStringWithPrefix((BigInteger)result.get(0).getValue());
     }
 
     public String totalSupply() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         CallObject callObject = CallObject.createCallObject();
         List<Type> result = this.getMethod(FUNCTION_TOTAL_SUPPLY).call(null, callObject);
 
-        return (String)result.get(0).getValue();
+        return Numeric.toHexStringWithPrefix((BigInteger)result.get(0).getValue());
     }
 
     public String balanceOf(String account) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
@@ -153,141 +162,192 @@ public class KIP7 extends Contract {
         return (boolean)result.get(0).getValue();
     }
 
-    public TransactionReceipt.TransactionReceiptData approve(String spender, BigInteger amount) {
-        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_APPROVE).send(Arrays.asList(spender, amount));
+    public TransactionReceipt.TransactionReceiptData approve(String spender, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return approve(spender, amount, this.getDefaultSendOptions());
+    }
+
+    public TransactionReceipt.TransactionReceiptData approve(String spender, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_APPROVE, Arrays.asList(spender, amount));
+
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_APPROVE).send(Arrays.asList(spender, amount), sendOptions);
         return receiptData;
     }
 
-    public TransactionReceipt.TransactionReceiptData approve(String spender, BigInteger amount, SendOptions sendParam) {
-        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_APPROVE).send(Arrays.asList(spender, amount), sendParam);
+    public TransactionReceipt.TransactionReceiptData transfer(String recipient, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return transfer(recipient, amount, this.getDefaultSendOptions());
+    }
+
+    public TransactionReceipt.TransactionReceiptData transfer(String recipient, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_TRANSFER, Arrays.asList(recipient, amount));
+
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_TRANSFER).send(Arrays.asList(recipient, amount), sendOptions);
         return receiptData;
     }
 
-    public TransactionReceipt.TransactionReceiptData transfer(String recipient, BigInteger amount) {
-        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_TRANSFER).send(Arrays.asList(recipient, amount));
+    public TransactionReceipt.TransactionReceiptData transferFrom(String sender, String recipient, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return transferFrom(sender, recipient, amount, this.getDefaultSendOptions());
+    }
+
+    public TransactionReceipt.TransactionReceiptData transferFrom(String sender, String recipient, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_TRANSFER_FROM, Arrays.asList(sender, recipient, amount));
+
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_TRANSFER_FROM).send(Arrays.asList(sender, recipient, amount), sendOptions);
         return receiptData;
     }
 
-    public TransactionReceipt.TransactionReceiptData transfer(String recipient, BigInteger amount, SendOptions sendParam) {
-        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_TRANSFER).send(Arrays.asList(recipient, amount), sendParam);
+    public TransactionReceipt.TransactionReceiptData safeTransfer(String recipient, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return safeTransfer(recipient, amount, this.getDefaultSendOptions());
+    }
+
+    public TransactionReceipt.TransactionReceiptData safeTransfer(String recipient, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_SAFE_TRANSFER, Arrays.asList(recipient, amount));
+
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_SAFE_TRANSFER).send(Arrays.asList(recipient, amount), sendOptions);
         return receiptData;
     }
 
-    public TransactionReceipt.TransactionReceiptData transferFrom(String sender, String recipient, BigInteger amount) {
-        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_TRANSFER).send(Arrays.asList(recipient, amount));
+    public TransactionReceipt.TransactionReceiptData safeTransfer(String recipient, BigInteger amount, String data) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return safeTransfer(recipient, amount, data, this.getDefaultSendOptions());
+    }
+
+    public TransactionReceipt.TransactionReceiptData safeTransfer(String recipient, BigInteger amount, String data, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_SAFE_TRANSFER, Arrays.asList(recipient, amount, data));
+
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_SAFE_TRANSFER).send(Arrays.asList(recipient, amount, data), sendOptions);
         return receiptData;
     }
 
-    public TransactionReceipt.TransactionReceiptData transferFrom(String sender, String recipient, BigInteger amount, SendOptions sendParam) {
-        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_TRANSFER).send(Arrays.asList(recipient, amount), sendParam);
+    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String sender, String recipient, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return safeTransferFrom(sender, recipient, amount, this.getDefaultSendOptions());
+    }
+
+    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String sender, String recipient, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_SAFE_TRANSFER_FROM, Arrays.asList(sender, recipient, amount));
+
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_SAFE_TRANSFER_FROM).send(Arrays.asList(sender, recipient, amount), sendOptions);
         return receiptData;
     }
 
-    public TransactionReceipt.TransactionReceiptData safeTransfer(String recipient, BigInteger amount) {
-        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_TRANSFER).send(Arrays.asList(recipient, amount));
+    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String sender, String recipient, BigInteger amount, String data) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return safeTransferFrom(sender, recipient, amount, data, this.getDefaultSendOptions());
+    }
+
+    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String sender, String recipient, BigInteger amount, String data, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_SAFE_TRANSFER_FROM, Arrays.asList(sender, recipient, amount, data));
+
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_SAFE_TRANSFER_FROM).send(Arrays.asList(sender, recipient, amount, data), sendOptions);
         return receiptData;
     }
 
-    public TransactionReceipt.TransactionReceiptData safeTransfer(String recipient, BigInteger amount, SendOptions sendParam) {
-        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_TRANSFER).send(Arrays.asList(recipient, amount), sendParam);
+    public TransactionReceipt.TransactionReceiptData mint(String account, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return mint(account, amount, this.getDefaultSendOptions());
+    }
+
+    public TransactionReceipt.TransactionReceiptData mint(String account, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_MINT, Arrays.asList(account, amount));
+
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_MINT).send(Arrays.asList(account, amount), sendOptions);
         return receiptData;
     }
 
-    public TransactionReceipt.TransactionReceiptData safeTransfer(String recipient, BigInteger amount, String data) {
-        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_TRANSFER).send(Arrays.asList(recipient, amount, data));
+    public TransactionReceipt.TransactionReceiptData addMinter(String account) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return addMinter(account, this.getDefaultSendOptions());
+    }
+
+    public TransactionReceipt.TransactionReceiptData addMinter(String account, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_ADD_MINTER, Arrays.asList(account));
+
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_ADD_MINTER).send(Arrays.asList(account), sendOptions);
         return receiptData;
     }
 
-    public TransactionReceipt.TransactionReceiptData safeTransfer(String recipient, BigInteger amount, String data, SendOptions sendParam) {
-        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_TRANSFER).send(Arrays.asList(recipient, amount, data), sendParam);
+    public TransactionReceipt.TransactionReceiptData renounceMinter() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return renounceMinter(this.getDefaultSendOptions());
+    }
+
+    public TransactionReceipt.TransactionReceiptData renounceMinter(SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_RENOUNCE_MINTER, null);
+
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_ADD_MINTER).send(Arrays.asList(sendOptions));
         return receiptData;
     }
 
-    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String sender, String recipient, BigInteger amount) {
-
+    public TransactionReceipt.TransactionReceiptData burn(BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return burn(amount, this.getDefaultSendOptions());
     }
 
-    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String sender, String recipient, BigInteger amount, SendOptions sendParam) {
+    public TransactionReceipt.TransactionReceiptData burn(BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_BURN, Arrays.asList(amount));
 
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_BURN).send(Arrays.asList(amount), sendOptions);
+        return receiptData;
     }
 
-    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String sender, String recipient, BigInteger amount, String data) {
-
+    public TransactionReceipt.TransactionReceiptData burnFrom(String account, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return burnFrom(account, amount, this.getDefaultSendOptions());
     }
 
-    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String sender, String recipient, BigInteger amount, String data, SendOptions sendParam) {
+    public TransactionReceipt.TransactionReceiptData burnFrom(String account, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_BURN_FROM, Arrays.asList(account, amount));
 
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_BURN_FROM).send(Arrays.asList(account, amount), sendOptions);
+        return receiptData;
     }
 
-    public TransactionReceipt.TransactionReceiptData mint(String account, BigInteger amount) {
-
+    public TransactionReceipt.TransactionReceiptData addPauser(String account) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return addPauser(account, this.getDefaultSendOptions());
     }
 
-    public TransactionReceipt.TransactionReceiptData mint(String account, BigInteger amount, SendOptions sendParam) {
+    public TransactionReceipt.TransactionReceiptData addPauser(String account, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_ADD_PAUSER, Arrays.asList(account));
 
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_ADD_PAUSER).send(Arrays.asList(account), sendOptions);
+        return receiptData;
     }
 
-    public TransactionReceipt.TransactionReceiptData addMinter(String account) {
-
+    public TransactionReceipt.TransactionReceiptData pause() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return pause(this.getDefaultSendOptions());
     }
 
-    public TransactionReceipt.TransactionReceiptData addMinter(String account, SendOptions sendParam) {
+    public TransactionReceipt.TransactionReceiptData pause(SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_PAUSE, null);
 
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_PAUSE).send(null, sendOptions);
+        return receiptData;
     }
 
-    public TransactionReceipt.TransactionReceiptData renounceMinter() {
-
+    public TransactionReceipt.TransactionReceiptData unpause() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return unpause(this.getDefaultSendOptions());
     }
 
-    public TransactionReceipt.TransactionReceiptData renounceMinter(SendOptions sendParam) {
+    public TransactionReceipt.TransactionReceiptData unpause(SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_PAUSE, null);
 
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_UNPAUSE).send(null, sendOptions);
+        return receiptData;
     }
 
-    public TransactionReceipt.TransactionReceiptData burn(BigInteger amount) {
-
+    public TransactionReceipt.TransactionReceiptData renouncePauser() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return renouncePauser(this.getDefaultSendOptions());
     }
 
-    public TransactionReceipt.TransactionReceiptData burn(BigInteger amount, SendOptions sendParam) {
+    public TransactionReceipt.TransactionReceiptData renouncePauser(SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_RENOUNCE_PAUSER, null);
 
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_RENOUNCE_PAUSER).send(null, sendOptions);
+        return receiptData;
     }
 
-    public TransactionReceipt.TransactionReceiptData burnFrom(String account, BigInteger amount) {
+    private static SendOptions determineSendOptions(KIP7 kip7, SendOptions sendOptions, String functionName, List<Object> argument) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        SendOptions newSendOptions = null;
+        if(sendOptions.getGas() == null) {
+            CallObject callObject = CallObject.createCallObject(sendOptions.getFrom());
+            BigInteger gas = estimateGas(kip7, functionName, callObject, argument);
+            newSendOptions = new SendOptions(sendOptions.getFrom(), gas);
+        } else {
+            newSendOptions = sendOptions;
+        }
 
-    }
-
-    public TransactionReceipt.TransactionReceiptData burnFrom(String account, BigInteger amount, SendOptions sendParam) {
-
-    }
-
-    public TransactionReceipt.TransactionReceiptData addPauser(String account) {
-
-    }
-
-    public TransactionReceipt.TransactionReceiptData addPauser(String account, SendOptions sendParam) {
-
-    }
-
-    public TransactionReceipt.TransactionReceiptData pause() {
-
-    }
-
-    public TransactionReceipt.TransactionReceiptData pause(SendOptions sendParam) {
-
-    }
-
-    public TransactionReceipt.TransactionReceiptData unpause() {
-
-    }
-
-    public TransactionReceipt.TransactionReceiptData unpause(SendOptions sendParam) {
-
-    }
-
-    public TransactionReceipt.TransactionReceiptData renouncePauser() {
-
-    }
-
-    public TransactionReceipt.TransactionReceiptData renouncePauser(SendOptions sendParam) {
-
+        return newSendOptions;
     }
 }

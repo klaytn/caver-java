@@ -956,14 +956,31 @@ public class KIP7 extends Contract {
 
     private static SendOptions determineSendOptions(KIP7 kip7, SendOptions sendOptions, String functionName, List<Object> argument) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         SendOptions newSendOptions = null;
-        if(sendOptions.getGas() == null) {
-            CallObject callObject = CallObject.createCallObject(sendOptions.getFrom());
-            BigInteger gas = estimateGas(kip7, functionName, callObject, argument);
-            newSendOptions = new SendOptions(sendOptions.getFrom(), gas);
-        } else {
-            newSendOptions = sendOptions;
+
+        String from = kip7.getDefaultSendOptions().getFrom();
+        String gas = kip7.getDefaultSendOptions().getGas();
+        String value = kip7.getDefaultSendOptions().getValue();
+
+        if(sendOptions.getFrom() != null) {
+            from = sendOptions.getFrom();
         }
 
+        if(sendOptions.getGas() == null) {
+            //If passed gas fields in sendOptions and defaultSendOptions is null, it estimate gas.
+            if(gas == null) {
+                CallObject callObject = CallObject.createCallObject(sendOptions.getFrom());
+                BigInteger estimateGas = estimateGas(kip7, functionName, callObject, argument);
+                gas = Numeric.toHexStringWithPrefix(estimateGas);
+            }
+        } else {
+            gas = sendOptions.getGas();
+        }
+
+        if(!sendOptions.getValue().equals("0x0")) {
+            value = sendOptions.getValue();
+        }
+
+        newSendOptions = new SendOptions(from, gas, value);
         return newSendOptions;
     }
 

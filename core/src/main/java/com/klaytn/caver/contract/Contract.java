@@ -16,6 +16,8 @@ import com.klaytn.caver.utils.Utils;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.response.EthSubscribe;
@@ -62,6 +64,8 @@ public class Contract {
      * The default send option. When you execute call() or send() without SendOptions, defaultSendOptions will be used.
      */
     SendOptions defaultSendOptions;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Contract.class);
 
     /**
      * Creates a Contract instance.
@@ -375,12 +379,27 @@ public class Contract {
         while(iterator.hasNext()) {
             JsonNode element = iterator.next();
             if(element.get("type").asText().equals("function")) {
-                ContractMethod method = objectMapper.readValue(element.toString(), ContractMethod.class);
-                method.setSignature(ABI.buildFunctionString(method));
-                methods.put(method.getName(), method);
+                ContractMethod newMethod = objectMapper.readValue(element.toString(), ContractMethod.class);
+                newMethod.setSignature(ABI.encodeFunctionSignature(newMethod));
+
+                ContractMethod existedMethod = this.methods.get(newMethod.getName());
+                if(existedMethod != null) {
+                    boolean isWarning = existedMethod.getNextContractMethod().stream().anyMatch(contractMethod -> {
+                        return contractMethod.getInputs().size() == newMethod.getInputs().size();
+                    });
+
+                    if(existedMethod.getInputs().size() == newMethod.getInputs().size() || isWarning) {
+                        LOGGER.warn("An overloaded function with the same number of parameters may not be executed normally.");
+                    }
+
+                    existedMethod.getNextContractMethod().add(newMethod);
+                } else {
+                    methods.put(newMethod.getName(), newMethod);
+                }
+
             } else if(element.get("type").asText().equals("event")) {
                 ContractEvent event = objectMapper.readValue(element.toString(), ContractEvent.class);
-                event.setSignature(ABI.buildEventString(event));
+                event.setSignature(ABI.encodeEventSignature(event));
                 events.put(event.getName(), event);
             } else if(element.get("type").asText().equals("constructor")) {
                 ContractMethod method = objectMapper.readValue(element.toString(), ContractMethod.class);

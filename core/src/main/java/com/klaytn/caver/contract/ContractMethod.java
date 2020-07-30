@@ -15,13 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.protocol.exceptions.TransactionException;
-import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -70,6 +67,9 @@ public class ContractMethod {
     SendOptions defaultSendOptions;
 
 
+    List<ContractMethod> nextContractMethod = new ArrayList<>();
+
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ContractMethod.class);
 
     /**
@@ -115,10 +115,9 @@ public class ContractMethod {
             functionParams.addAll(arguments);
         }
 
-        // Check the parameter type defined in function and the parameter type passed are the same.
-        checkTypeValid(functionParams);
+        ContractMethod matchedMethod = findMatchedInstance(functionParams);
 
-        String encodedFunction = ABI.encodeFunctionCall(this, arguments);
+        String encodedFunction = ABI.encodeFunctionCall(matchedMethod, arguments);
 
         if(callObject.getData() != null || callObject.getTo() != null) {
             LOGGER.warn("'to' and 'data' field in CallObject will overwrite.");
@@ -128,7 +127,7 @@ public class ContractMethod {
         Bytes response = caver.rpc.klay.call(callObject).send();
 
         String encodedResult = response.getResult();
-        return ABI.decodeParameters(this, encodedResult);
+        return ABI.decodeParameters(matchedMethod, encodedResult);
     }
 
     /**
@@ -192,9 +191,9 @@ public class ContractMethod {
         SendOptions sendOptions = makeSendOption(options);
         checkSendOption(sendOptions);
 
-        checkTypeValid(functionParams);
+        ContractMethod matchedMethod = findMatchedInstance(functionParams);
 
-        String encodedFunction = ABI.encodeFunctionCall(this, arguments);
+        String encodedFunction = ABI.encodeFunctionCall(matchedMethod, arguments);
 
         SmartContractExecution smartContractExecution = new SmartContractExecution.Builder()
                 .setKlaytnCall(caver.rpc.klay)
@@ -229,7 +228,7 @@ public class ContractMethod {
     /**
      * Estimate the gas to execute the contract's method.
      * @param arguments A List of parameter that solidity wrapper type
-     * @param options An option to execute smart contract method.
+     * @param callObject An option to execute smart contract method.
      * @return String
      * @throws IOException
      * @throws ClassNotFoundException
@@ -239,7 +238,13 @@ public class ContractMethod {
      * @throws InvocationTargetException
      */
     public String estimateGas(List<Object> arguments, CallObject callObject) throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        String encodedFunction = ABI.encodeFunctionCall(this, arguments);
+        List<Object> functionParams = new ArrayList<>();
+
+        if(arguments != null) {
+            functionParams.addAll(arguments);
+        }
+
+        String encodedFunction = ABI.encodeFunctionCall(this, functionParams);
 
         if(callObject.getData() != null || callObject.getTo() != null) {
             LOGGER.warn("'to' and 'data' field in CallObject will overwrite.");
@@ -331,6 +336,10 @@ public class ContractMethod {
         return defaultSendOptions;
     }
 
+    public List<ContractMethod> getNextContractMethod() {
+        return nextContractMethod;
+    }
+
     /**
      * Setter function for Caver.
      * @param caver The Caver instance.
@@ -395,6 +404,10 @@ public class ContractMethod {
         this.defaultSendOptions = defaultSendOptions;
     }
 
+    public void setNextContractMethod(List<ContractMethod> nextContractMethod) {
+        this.nextContractMethod = nextContractMethod;
+    }
+
     /**
      * Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
      * Passed parameter "options" has higher priority than "defaultSendOption" field.
@@ -438,5 +451,27 @@ public class ContractMethod {
         if(options.getValue() == null || !Utils.isNumber(options.getValue())) {
             throw new IllegalArgumentException("Invalid 'value' parameter : " + options.getValue());
         }
+    }
+
+    private ContractMethod findMatchedInstance(List arguments) {
+        // Check the parameter type defined in function and the parameter type passed are the same.
+        ContractMethod matchedMethod = null;
+
+        if(this.getInputs().size() != arguments.size()) {
+            for(ContractMethod method : this.getNextContractMethod()) {
+                if(method.getInputs().size() == arguments.size()) {
+                    matchedMethod = method;
+                    break;
+                }
+            }
+        } else {
+            matchedMethod = this;
+        }
+
+        if(matchedMethod == null) {
+            throw new IllegalArgumentException("Cannot find method with passed parameters.");
+        }
+
+        return matchedMethod;
     }
 }

@@ -44,14 +44,40 @@ public class KIP7 extends Contract {
     private static final String FUNCTION_TRANSFER_FROM = "transferFrom";
     private static final String FUNCTION_UNPAUSE = "unpause";
 
+    /**
+     * Creates a KIP7 instance.
+     * @param caver A Caver instance.
+     * @throws IOException
+     */
     public KIP7(Caver caver) throws IOException {
         super(caver, KIP7ConstantData.ABI);
     }
 
+    /**
+     * Creates a KIP7 instance
+     * @param caver A Caver instance
+     * @param contractAddress A contract address
+     * @throws IOException
+     */
     public KIP7(Caver caver, String contractAddress) throws IOException {
         super(caver, KIP7ConstantData.ABI, contractAddress);
     }
 
+    /**
+     * Deploy KIP7 contract.
+     * It must add deployer's keyring in caver.wallet.
+     * @param caver A Caver instance
+     * @param tokenInfo The KIP7 contract's deploy parameter values
+     * @param deployer A deployer's address
+     * @return KIP7
+     * @throws IOException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public static KIP7 deploy(Caver caver, KIP7DeployParam tokenInfo, String deployer) throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         List deployArgument = Arrays.asList(tokenInfo.getName(), tokenInfo.getSymbol(), tokenInfo.getDecimals(), tokenInfo.getInitialSupply());
         ContractDeployParams contractDeployParams = new ContractDeployParams(KIP7ConstantData.BINARY, deployArgument);
@@ -63,14 +89,32 @@ public class KIP7 extends Contract {
         return kip7;
     }
 
-    public static BigInteger estimateGas(KIP7 kip7, String functionName, CallObject object, List<Object> arguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-        String gas = kip7.getMethod(functionName).estimateGas(arguments, object);
+    /**
+     * Estimates the gas to execute the contract's method.
+     * @param kip7 A KIP7 instance.
+     * @param functionName A KIP7 contract's method.
+     * @param callObject A CallObject instance to execute estimateGas
+     * @param arguments A arguments to execute contract's method.
+     * @return BigInteger
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
+    public static BigInteger estimateGas(KIP7 kip7, String functionName, CallObject callObject, List<Object> arguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        String gas = kip7.getMethod(functionName).estimateGas(arguments, callObject);
         BigDecimal bigDecimal = new BigDecimal(Numeric.toBigInt(gas));
         BigInteger gasInteger = bigDecimal.multiply(new BigDecimal(1.5)).toBigInteger();
 
         return gasInteger;
     }
 
+    /**
+     * Copy instance
+     * @return KIP7
+     */
     @Override
     public KIP7 clone() {
         try {
@@ -81,6 +125,11 @@ public class KIP7 extends Contract {
         return null;
     }
 
+    /**
+     * Copy instance with token address
+     * @param tokenAddress A KIP7 token address
+     * @return KIP7
+     */
     public KIP7 clone(String tokenAddress) {
         try {
             return new KIP7(this.getCaver(), tokenAddress);
@@ -90,6 +139,17 @@ public class KIP7 extends Contract {
         return null;
     }
 
+    /**
+     * Call method "supportsInterface" in KIP-13 standard contract.
+     * @param interfaceId interface identifier
+     * @return boolean
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
     public boolean supportInterface(String interfaceId) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         CallObject callObject = CallObject.createCallObject();
         List<Type> result = this.getMethod(FUNCTION_SUPPORTS_INTERFACE).call(Arrays.asList(interfaceId), callObject);
@@ -97,6 +157,16 @@ public class KIP7 extends Contract {
         return (boolean)result.get(0).getValue();
     }
 
+    /**
+     * Call method "name" in KIP-7 standard contract.
+     * @return String
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
     public String name() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         CallObject callObject = CallObject.createCallObject();
         List<Type> result = this.getMethod(FUNCTION_NAME).call(null, callObject);
@@ -104,6 +174,16 @@ public class KIP7 extends Contract {
         return (String)result.get(0).getValue();
     }
 
+    /**
+     * Call method "symbol" in KIP-7 standard contract.
+     * @return String
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
     public String symbol() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         CallObject callObject = CallObject.createCallObject();
         List<Type> result = this.getMethod(FUNCTION_SYMBOL).call(null, callObject);
@@ -111,6 +191,16 @@ public class KIP7 extends Contract {
         return (String)result.get(0).getValue();
     }
 
+    /**
+     * Call method "decimals" in KIP-7 standard contract.
+     * @return String
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
     public String decimals() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         CallObject callObject = CallObject.createCallObject();
         List<Type> result = this.getMethod(FUNCTION_DECIMALS).call(null, callObject);
@@ -118,6 +208,16 @@ public class KIP7 extends Contract {
         return Numeric.toHexStringWithPrefix((BigInteger)result.get(0).getValue());
     }
 
+    /**
+     * Call method "totalSupply" in KIP-7 standard contract.
+     * @return String
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
     public String totalSupply() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         CallObject callObject = CallObject.createCallObject();
         List<Type> result = this.getMethod(FUNCTION_TOTAL_SUPPLY).call(null, callObject);
@@ -125,6 +225,17 @@ public class KIP7 extends Contract {
         return Numeric.toHexStringWithPrefix((BigInteger)result.get(0).getValue());
     }
 
+    /**
+     * Call method "balanceOf" in KIP-7 standard contract.
+     * @param account An address for whom to query the balance
+     * @return String
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
     public String balanceOf(String account) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         CallObject callObject = CallObject.createCallObject();
         List<Type> result = this.getMethod(FUNCTION_BALANCE_OF).call(Arrays.asList(account), callObject);
@@ -133,6 +244,18 @@ public class KIP7 extends Contract {
         return Numeric.toHexStringWithPrefix(value);
     }
 
+    /**
+     * Call method "allowance" in KIP-7 standard contract.
+     * @param owner The account allowed `spender` to withdraw the tokens from the account.
+     * @param spender The address is approved to withdraw the tokens.
+     * @return String
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
     public String allowance(String owner, String spender) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         CallObject callObject = CallObject.createCallObject();
         List<Type> result = this.getMethod(FUNCTION_ALLOWANCE).call(Arrays.asList(owner, spender), callObject);
@@ -141,6 +264,17 @@ public class KIP7 extends Contract {
         return Numeric.toHexStringWithPrefix(value);
     }
 
+    /**
+     * Call method "isMinter" in KIP-7 standard contract.
+     * @param account The account to check the minting permission
+     * @return boolean
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
     public boolean isMinter(String account) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         CallObject callObject = CallObject.createCallObject();
         List<Type> result = this.getMethod(FUNCTION_IS_MINTER).call(Arrays.asList(account), callObject);
@@ -148,6 +282,17 @@ public class KIP7 extends Contract {
         return (boolean)result.get(0).getValue();
     }
 
+    /**
+     * Call method "isPauser" in KIP-7 standard contract.
+     * @param account The account to check the pausing permission
+     * @return boolean
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
     public boolean isPauser(String account) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         CallObject callObject = CallObject.createCallObject();
         List<Type> result = this.getMethod(FUNCTION_IS_PAUSER).call(Arrays.asList(account), callObject);
@@ -155,6 +300,16 @@ public class KIP7 extends Contract {
         return (boolean)result.get(0).getValue();
     }
 
+    /**
+     * Call method "paused" in KIP-7 standard contract.
+     * @return boolean
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
     public boolean paused() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         CallObject callObject = CallObject.createCallObject();
         List<Type> result = this.getMethod(FUNCTION_PAUSED).call(null, callObject);
@@ -162,10 +317,40 @@ public class KIP7 extends Contract {
         return (boolean)result.get(0).getValue();
     }
 
+    /**
+     * Execute a method "approve" in KIP-7 standard contract.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param spender The address is approved to withdraw the tokens.
+     * @param amount Amount the token amount will be approved.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData approve(String spender, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         return approve(spender, amount, this.getDefaultSendOptions());
     }
 
+    /**
+     * Execute a method "approve" in KIP-7 standard contract.
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param spender The address is approved to withdraw the tokens.
+     * @param amount Amount the token amount will be approved.
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData approve(String spender, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_APPROVE, Arrays.asList(spender, amount));
 
@@ -173,10 +358,40 @@ public class KIP7 extends Contract {
         return receiptData;
     }
 
+    /**
+     * Execute a method "transfer" in KIP-7 standard contract.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param recipient The address of the account to receive the token.
+     * @param amount The token amount will be transferred.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData transfer(String recipient, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         return transfer(recipient, amount, this.getDefaultSendOptions());
     }
 
+    /**
+     * Execute a method "transfer" in KIP-7 standard contract.
+     * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param recipient The address of the account to receive the token.
+     * @param amount The token amount will be transferred.
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData transfer(String recipient, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_TRANSFER, Arrays.asList(recipient, amount));
 
@@ -184,10 +399,42 @@ public class KIP7 extends Contract {
         return receiptData;
     }
 
+    /**
+     * Execute a method "transferFrom" in KIP-7 standard contract.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param sender The current owner of the tokens.
+     * @param recipient The address of the account to receive the token.
+     * @param amount The token amount will be transferred.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData transferFrom(String sender, String recipient, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         return transferFrom(sender, recipient, amount, this.getDefaultSendOptions());
     }
 
+    /**
+     * Execute a method "transferFrom" in KIP-7 standard contract.
+     * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param sender The current owner of the tokens.
+     * @param recipient The address of the account to receive the token.
+     * @param amount The token amount will be transferred.
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData transferFrom(String sender, String recipient, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_TRANSFER_FROM, Arrays.asList(sender, recipient, amount));
 
@@ -195,10 +442,40 @@ public class KIP7 extends Contract {
         return receiptData;
     }
 
+    /**
+     * Execute a method "safeTransfer" in KIP-7 standard contract.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param recipient The address of the account to receive the token.
+     * @param amount The token amount will be transferred.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData safeTransfer(String recipient, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         return safeTransfer(recipient, amount, this.getDefaultSendOptions());
     }
 
+    /**
+     * Execute a method "safeTransfer" in KIP-7 standard contract.
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param recipient The address of the account to receive the token.
+     * @param amount The token amount will be transferred.
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData safeTransfer(String recipient, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_SAFE_TRANSFER, Arrays.asList(recipient, amount));
 
@@ -206,10 +483,42 @@ public class KIP7 extends Contract {
         return receiptData;
     }
 
+    /**
+     * Execute a method "safeTransfer" in KIP-7 standard contract.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param recipient The address of the account to receive the token.
+     * @param amount The token amount will be transferred.
+     * @param data Additional data with no specified format, sent in call to `_to`
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData safeTransfer(String recipient, BigInteger amount, String data) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         return safeTransfer(recipient, amount, data, this.getDefaultSendOptions());
     }
 
+    /**
+     * Execute a method "safeTransfer" in KIP-7 standard contract.
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param recipient The address of the account to receive the token.
+     * @param amount The token amount will be transferred.
+     * @param data Additional data with no specified format, sent in call to `_to`
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData safeTransfer(String recipient, BigInteger amount, String data, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_SAFE_TRANSFER, Arrays.asList(recipient, amount, data));
 
@@ -217,10 +526,42 @@ public class KIP7 extends Contract {
         return receiptData;
     }
 
+    /**
+     * Execute a method "safeTransfer" in KIP-7 standard contract.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param sender The current owner of the tokens.
+     * @param recipient The address of the account to receive the token.
+     * @param amount The token amount will be transferred.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData safeTransferFrom(String sender, String recipient, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         return safeTransferFrom(sender, recipient, amount, this.getDefaultSendOptions());
     }
 
+    /**
+     * Execute a method "safeTransfer" in KIP-7 standard contract.
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param sender The current owner of the tokens.
+     * @param recipient The address of the account to receive the token.
+     * @param amount The token amount will be transferred.
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData safeTransferFrom(String sender, String recipient, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_SAFE_TRANSFER_FROM, Arrays.asList(sender, recipient, amount));
 
@@ -228,10 +569,44 @@ public class KIP7 extends Contract {
         return receiptData;
     }
 
+    /**
+     * Execute a method "safeTransferFrom" in KIP-7 standard contract.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param sender The current owner of the tokens.
+     * @param recipient The address of the account to receive the token.
+     * @param amount The token amount will be transferred.
+     * @param data Additional data with no specified format, sent in call to `_to`
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData safeTransferFrom(String sender, String recipient, BigInteger amount, String data) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         return safeTransferFrom(sender, recipient, amount, data, this.getDefaultSendOptions());
     }
 
+    /**
+     * Execute a method "safeTransferFrom" in KIP-7 standard contract.
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param sender The current owner of the tokens.
+     * @param recipient The address of the account to receive the token.
+     * @param amount The token amount will be transferred.
+     * @param data Additional data with no specified format, sent in call to `_to`
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData safeTransferFrom(String sender, String recipient, BigInteger amount, String data, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_SAFE_TRANSFER_FROM, Arrays.asList(sender, recipient, amount, data));
 
@@ -239,10 +614,42 @@ public class KIP7 extends Contract {
         return receiptData;
     }
 
+    /**
+     * Execute a method "mint" in KIP-7 standard contract.
+     * Caller must have "Minter" Permission.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param account The account that will receive the minted token
+     * @param amount The token amount to mint
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData mint(String account, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         return mint(account, amount, this.getDefaultSendOptions());
     }
 
+    /**
+     * Execute a method "mint" in KIP-7 standard contract.
+     * Caller must have "Minter" Permission.
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param account The account that will receive the minted token
+     * @param amount The token amount to mint
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData mint(String account, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_MINT, Arrays.asList(account, amount));
 
@@ -250,10 +657,41 @@ public class KIP7 extends Contract {
         return receiptData;
     }
 
+    /**
+     * Execute a method "addMinter" in KIP-7 standard contract.
+     * Caller must have "Minter" Permission.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param account The account to be given the minting permission
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData addMinter(String account) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         return addMinter(account, this.getDefaultSendOptions());
     }
 
+    /**
+     * Execute a method "addMinter" in KIP-7 standard contract.
+     * Caller must have "Minter" Permission.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param account The account to be given the minting permission
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData addMinter(String account, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_ADD_MINTER, Arrays.asList(account));
 
@@ -261,10 +699,39 @@ public class KIP7 extends Contract {
         return receiptData;
     }
 
+    /**
+     * Execute a method "renounceMinter" in KIP-7 standard contract.
+     * Caller must have "Minter" Permission.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData renounceMinter() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         return renounceMinter(this.getDefaultSendOptions());
     }
 
+    /**
+     * Execute a method "renounceMinter" in KIP-7 standard contract.
+     * Caller must have "Minter" Permission.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData renounceMinter(SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_RENOUNCE_MINTER, null);
 
@@ -272,10 +739,38 @@ public class KIP7 extends Contract {
         return receiptData;
     }
 
+    /**
+     * Execute a method "burn" in KIP-7 standard contract.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param amount The token amount to be burned
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData burn(BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         return burn(amount, this.getDefaultSendOptions());
     }
 
+    /**
+     * Execute a method "burn" in KIP-7 standard contract.
+     * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param amount The token amount to be burned
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData burn(BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_BURN, Arrays.asList(amount));
 
@@ -283,10 +778,41 @@ public class KIP7 extends Contract {
         return receiptData;
     }
 
+    /**
+     * Execute a method "burnFrom" in KIP-7 standard contract.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param account The account will be deducted is the The token amount to be burned
+     * @param amount The token amount to be burned
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData burnFrom(String account, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         return burnFrom(account, amount, this.getDefaultSendOptions());
     }
 
+    /**
+     * Execute a method "burnFrom" in KIP-7 standard contract.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param account The account will be deducted is the The token amount to be burned
+     * @param amount The token amount to be burned
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData burnFrom(String account, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_BURN_FROM, Arrays.asList(account, amount));
 
@@ -294,10 +820,40 @@ public class KIP7 extends Contract {
         return receiptData;
     }
 
+    /**
+     * Execute a method "addPauser" in KIP-7 standard contract.
+     * Caller must have Pauser permission.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param account The account to be given the pausing permission
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData addPauser(String account) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         return addPauser(account, this.getDefaultSendOptions());
     }
 
+    /**
+     * Execute a method "addPauser" in KIP-7 standard contract.
+     * Caller must have Pauser permission.
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param account The account to be given the pausing permission
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData addPauser(String account, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_ADD_PAUSER, Arrays.asList(account));
 
@@ -305,10 +861,38 @@ public class KIP7 extends Contract {
         return receiptData;
     }
 
+    /**
+     * Execute a method "pause" in KIP-7 standard contract.
+     * Caller must have Pauser permission.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData pause() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         return pause(this.getDefaultSendOptions());
     }
 
+    /**
+     * Execute a method "pause" in KIP-7 standard contract.
+     * Caller must have Pauser permission.
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData pause(SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_PAUSE, null);
 
@@ -316,10 +900,38 @@ public class KIP7 extends Contract {
         return receiptData;
     }
 
+    /**
+     * Execute a method "unpause" in KIP-7 standard contract.
+     * Caller must have Pauser permission.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData unpause() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         return unpause(this.getDefaultSendOptions());
     }
 
+    /**
+     * Execute a method "unpause" in KIP-7 standard contract.
+     * Caller must have Pauser permission.
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData unpause(SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_PAUSE, null);
 
@@ -327,10 +939,38 @@ public class KIP7 extends Contract {
         return receiptData;
     }
 
+    /**
+     * Execute a method "unpause" in KIP-7 standard contract.
+     * Caller must have Pauser permission.
+     * It will use default sendOptions in contract instance to passed sendOptions
+     * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData renouncePauser() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         return renouncePauser(this.getDefaultSendOptions());
     }
 
+    /**
+     * Execute a method "unpause" in KIP-7 standard contract.
+     * Caller must have Pauser permission.
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
     public TransactionReceipt.TransactionReceiptData renouncePauser(SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_RENOUNCE_PAUSER, null);
 

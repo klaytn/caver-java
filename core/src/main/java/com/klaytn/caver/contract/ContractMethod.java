@@ -247,7 +247,7 @@ public class ContractMethod {
         String encodedFunction = ABI.encodeFunctionCall(this, functionParams);
 
         if(callObject.getData() != null || callObject.getTo() != null) {
-            LOGGER.warn("'to' and 'data' field in CallObject will overwrite.");
+            LOGGER.warn("The 'to' and 'data' fields of the CallObject will be overwritten.");
         }
         callObject.setData(encodedFunction);
         callObject.setTo(this.getContractAddress());

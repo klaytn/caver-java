@@ -5,28 +5,31 @@ import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.kct.kip7.KIP7;
 import com.klaytn.caver.kct.kip7.KIP7DeployParam;
 import com.klaytn.caver.methods.response.TransactionReceipt;
-import com.klaytn.caver.tx.gas.DefaultGasProvider;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.web3j.abi.datatypes.Bytes;
-import org.web3j.abi.datatypes.Type;
-import org.web3j.abi.datatypes.generated.Bytes32;
-import org.web3j.abi.datatypes.generated.Uint256;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.klaytn.caver.base.Accounts.*;
 import static org.junit.Assert.*;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        KIP7Test.ConstructorTest.class,
+        KIP7Test.PausableTest.class,
+        KIP7Test.BurnableTest.class,
+        KIP7Test.MintableTest.class,
+        KIP7Test.CommonTest.class
+})
 public class KIP7Test {
 
     public static KIP7 kip7contract;
@@ -342,7 +345,7 @@ public class KIP7Test {
         }
     }
 
-    public static class commonTest {
+    public static class CommonTest {
         @BeforeClass
         public static void init() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
             KIP7Test.deployContract();

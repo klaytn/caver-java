@@ -981,8 +981,7 @@ public class ContractTest {
                 BRANDON.getAddress(),
                 amount
         );
-
-        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
+        
         String gas = contract.getMethod("transfer").estimateGas(sendParams, CallObject.createCallObject());
 
         assertEquals("0x5a58", gas);

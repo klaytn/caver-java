@@ -5,6 +5,7 @@ import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.kct.kip7.KIP7;
 import com.klaytn.caver.kct.kip7.KIP7DeployParam;
 import com.klaytn.caver.methods.response.TransactionReceipt;
+import com.klaytn.caver.tx.gas.DefaultGasProvider;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import org.junit.Before;
@@ -511,6 +512,43 @@ public class KIP7Test {
                 String afterBalance = kip7contract.balanceOf(WAYNE.getAddress());
 
                 assertEquals(Numeric.toBigInt(afterBalance), Numeric.toBigInt(preBalance).add(allowAmount));
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void supportsInterface() {
+            final String INTERFACE_ID_KIP13 = "0x01ffc9a7";
+            final String INTERFACE_ID_KIP7_PAUSABLE = "0x4d5507ff";
+            final String INTERFACE_ID_KIP7_BURNABLE = "0x3b5a0bf8";
+            final String INTERFACE_ID_KIP7_MINTABLE = "0xeab83e20";
+            final String INTERFACE_ID_KIP7_METADATA  = "0xa219a025";
+            final String INTERFACE_ID_KIP7  = "0x65787371";
+            final String INTERFACE_ID_FALSE = "0xFFFFFFFF";
+
+            try {
+                boolean isSupported_KIP13 = kip7contract.supportInterface(INTERFACE_ID_KIP13);
+                assertTrue(isSupported_KIP13);
+
+                boolean isSupported_KIP7_PAUSABLE = kip7contract.supportInterface(INTERFACE_ID_KIP7_PAUSABLE);
+                assertTrue(isSupported_KIP7_PAUSABLE);
+
+                boolean isSupported_KIP7_BURNABLE = kip7contract.supportInterface(INTERFACE_ID_KIP7_BURNABLE);
+                assertTrue(isSupported_KIP7_BURNABLE);
+
+                boolean isSupported_KIP7_MINTABLE = kip7contract.supportInterface(INTERFACE_ID_KIP7_MINTABLE);
+                assertTrue(isSupported_KIP7_MINTABLE);
+
+                boolean isSupported_KIP7_METADATA = kip7contract.supportInterface(INTERFACE_ID_KIP7_METADATA);
+                assertTrue(isSupported_KIP7_METADATA);
+
+                boolean isSupported_KIP7 = kip7contract.supportInterface(INTERFACE_ID_KIP7);
+                assertTrue(isSupported_KIP7);
+
+                boolean isSupported_FALSE = kip7contract.supportInterface(INTERFACE_ID_FALSE);
+                assertFalse(isSupported_FALSE);
             } catch (Exception e) {
                 e.printStackTrace();
                 fail();

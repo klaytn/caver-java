@@ -277,7 +277,7 @@ public class KIP17 extends Contract {
     /**
      * Call method "getApproved" in KIP-17 standard contract.
      * @param tokenId The identifier of NFT
-     * @return boolean
+     * @return String
      * @throws NoSuchMethodException
      * @throws IOException
      * @throws InstantiationException

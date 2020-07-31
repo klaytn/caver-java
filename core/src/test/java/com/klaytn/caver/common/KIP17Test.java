@@ -2,9 +2,11 @@ package com.klaytn.caver.common;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.contract.SendOptions;
+import com.klaytn.caver.kct.KIP7;
 import com.klaytn.caver.kct.kip17.KIP17;
 import com.klaytn.caver.kct.kip17.KIP17DeployParams;
 import com.klaytn.caver.methods.response.TransactionReceipt;
+import com.klaytn.caver.tx.gas.DefaultGasProvider;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import org.junit.Before;
@@ -13,6 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.web3j.protocol.exceptions.TransactionException;
+import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -636,6 +639,51 @@ public class KIP17Test {
 
                 kip17Contract.setApproveForAll(BRANDON.getAddress(), false, ownerOption);
                 assertFalse(kip17Contract.isApprovedForAll(LUMAN.getAddress(), BRANDON.getAddress()));
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void supportsInterface() {
+            final String INTERFACE_ID_KIP13 = "0x01ffc9a7";
+            final String INTERFACE_ID_KIP17  = "0x80ac58cd";
+            final String INTERFACE_ID_KIP17_PAUSABLE = "0x4d5507ff";
+            final String INTERFACE_ID_KIP17_BURNABLE = "0x42966c68";
+            final String INTERFACE_ID_KIP17_MINTABLE = "0xeab83e20";
+            final String INTERFACE_ID_KIP17_METADATA = "0x5b5e139f";
+            final String INTERFACE_ID_KIP17_METADATA_MINTABLE = "0xfac27f46";
+            final String INTERFACE_ID_KIP17_ENUMERABLE = "0x780e9d63";
+            final String INTERFACE_ID_FALSE = "0xFFFFFFFF";
+
+            try {
+                boolean isSupported_KIP13 = kip17Contract.supportInterface(INTERFACE_ID_KIP13);
+                assertTrue(isSupported_KIP13);
+
+                boolean isSupported_KIP17_PAUSABLE = kip17Contract.supportInterface(INTERFACE_ID_KIP17_PAUSABLE);
+                assertTrue(isSupported_KIP17_PAUSABLE);
+
+                boolean isSupported_KIP17_BURNABLE = kip17Contract.supportInterface(INTERFACE_ID_KIP17_BURNABLE);
+                assertTrue(isSupported_KIP17_BURNABLE);
+
+                boolean isSupported_KIP17_MINTABLE = kip17Contract.supportInterface(INTERFACE_ID_KIP17_MINTABLE);
+                assertTrue(isSupported_KIP17_MINTABLE);
+
+                boolean isSupported_KIP17_METADATA = kip17Contract.supportInterface(INTERFACE_ID_KIP17_METADATA);
+                assertTrue(isSupported_KIP17_METADATA);
+
+                boolean isSupported_KIP17_METADATA_MINTABLE = kip17Contract.supportInterface(INTERFACE_ID_KIP17_METADATA_MINTABLE);
+                assertTrue(isSupported_KIP17_METADATA_MINTABLE);
+
+                boolean isSupported_KIP17_ENUMERABLE = kip17Contract.supportInterface(INTERFACE_ID_KIP17_ENUMERABLE);
+                assertTrue(isSupported_KIP17_ENUMERABLE);
+
+                boolean isSupported_KIP17 = kip17Contract.supportInterface(INTERFACE_ID_KIP17);
+                assertTrue(isSupported_KIP17);
+
+                boolean isSupported_FALSE = kip17Contract.supportInterface(INTERFACE_ID_FALSE);
+                assertFalse(isSupported_FALSE);
             } catch (Exception e) {
                 e.printStackTrace();
                 fail();

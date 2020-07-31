@@ -70,7 +70,7 @@ public class KIP17 extends Contract {
      * Deploy KIP17 contract
      * It must add deployer's keyring in caver.wallet.
      * @param caver A Caver instance.
-     * @param tokenInfo The KIP17 contract's deploy parameter values.
+     * @param tokenInfo The KIP-17 contract's deploy parameter values.
      * @param deployer A deployer's address.
      * @return KIP17
      * @throws IOException

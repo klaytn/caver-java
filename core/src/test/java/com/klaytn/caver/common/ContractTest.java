@@ -1255,7 +1255,7 @@ public class ContractTest {
         EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("to", Arrays.asList(WAYNE.getAddress(), BRANDON.getAddress()));
         EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter, indexedParameter), null);
 
-        Disposable disposable = contract.once("allEvent", eventFilterOptions, event -> {
+        Disposable disposable = contract.once("allEvents", eventFilterOptions, event -> {
             log[0] = event;
         });
 

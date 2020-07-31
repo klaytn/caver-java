@@ -159,8 +159,6 @@ public class Contract {
             }
         } else {
             ContractEvent event = this.getEvent(eventName);
-            String eventSignature = ABI.encodeEventSignature(event);
-
             if(paramsOption.getTopics() == null || paramsOption.getTopics().size() == 0) {
                 topics = EventFilterOptions.convertsTopic(event, paramsOption);
             } else {

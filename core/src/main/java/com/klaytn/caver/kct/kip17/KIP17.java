@@ -285,11 +285,11 @@ public class KIP17 extends Contract {
      * @throws InvocationTargetException
      * @throws ClassNotFoundException
      */
-    public boolean getApproved(BigInteger tokenId) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public String getApproved(BigInteger tokenId) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         CallObject callObject = CallObject.createCallObject();
 
         List<Type> result = this.getMethod(FUNCTION_GET_APPROVED).call(Arrays.asList(tokenId), callObject);
-        return (boolean)result.get(0).getValue();
+        return (String)result.get(0).getValue();
     }
 
     /**

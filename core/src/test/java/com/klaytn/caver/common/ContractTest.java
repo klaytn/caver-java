@@ -8,6 +8,7 @@ import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.KlayLogs;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
+import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -22,6 +23,8 @@ import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.abi.datatypes.generated.Uint8;
 import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.Request;
+import org.web3j.protocol.core.methods.response.EthSubscribe;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.protocol.websocket.WebSocketService;
 import org.web3j.protocol.websocket.events.Log;
@@ -34,8 +37,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.*;
 
-import static com.klaytn.caver.base.Accounts.BRANDON;
-import static com.klaytn.caver.base.Accounts.LUMAN;
+import static com.klaytn.caver.base.Accounts.*;
 import static org.junit.Assert.*;
 
 public class ContractTest {
@@ -1033,7 +1035,11 @@ public class ContractTest {
         options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
 
         final LogNotification[] log = {null};
-        Disposable disposable = contract.once("Transfer", options, event -> {
+
+        EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("from", Arrays.asList(LUMAN.getAddress()));
+        EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter), null);
+
+        Disposable disposable = contract.once("Transfer", eventFilterOptions, event -> {
             log[0] = event;
         });
 
@@ -1046,7 +1052,7 @@ public class ContractTest {
         SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
         TransactionReceipt.TransactionReceiptData receiptData = contract.getMethod("transfer").send(sendParams, sendOptions);
 
-        while(!disposable.isDisposed()) {}
+        while(!disposable.isDisposed());
 
         assertEquals(3, log[0].getParams().getResult().getTopics().size());
         assertEquals("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", log[0].getParams().getResult().getTopics().get(0));
@@ -1054,6 +1060,222 @@ public class ContractTest {
         assertEquals("0x000000000000000000000000e97f27e9a5765ce36a7b919b1cb6004c7209217e", log[0].getParams().getResult().getTopics().get(2));
 
         webSocketService.close();
+
     }
 
+    @Test
+    public void onceTest2() throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
+        Caver caver = new Caver(webSocketService);
+        webSocketService.connect();
+
+        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
+
+        Contract contract = new Contract(caver, jsonObj, contractAddress);
+
+        List options = new ArrayList();
+        options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
+
+        final LogNotification[] log = {null};
+
+        EventFilterOptions.IndexedParameter indexedParameter1 = new EventFilterOptions.IndexedParameter("to", Arrays.asList(BRANDON.getAddress()));
+        EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter1), null);
+
+        Disposable disposable = contract.once("Transfer", eventFilterOptions, event -> {
+            log[0] = event;
+        });
+
+        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
+        List<Object> sendParams = Arrays.asList(
+                BRANDON.getAddress(),
+                amount
+        );
+
+        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
+        TransactionReceipt.TransactionReceiptData receiptData = contract.getMethod("transfer").send(sendParams, sendOptions);
+
+        while(!disposable.isDisposed());
+
+        assertEquals(3, log[0].getParams().getResult().getTopics().size());
+        assertEquals("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", log[0].getParams().getResult().getTopics().get(0));
+        assertEquals("0x0000000000000000000000002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a", log[0].getParams().getResult().getTopics().get(1));
+        assertEquals("0x000000000000000000000000e97f27e9a5765ce36a7b919b1cb6004c7209217e", log[0].getParams().getResult().getTopics().get(2));
+
+        webSocketService.close();
+
+    }
+
+    @Test
+    public void onceTest_multiOptions() throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
+        Caver caver = new Caver(webSocketService);
+        webSocketService.connect();
+
+        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
+
+        Contract contract = new Contract(caver, jsonObj, contractAddress);
+
+        List options = new ArrayList();
+        options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
+
+        final LogNotification[] log = {null};
+
+        EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("from", Arrays.asList(LUMAN.getAddress()));
+        EventFilterOptions.IndexedParameter indexedParameter1 = new EventFilterOptions.IndexedParameter("to", Arrays.asList(BRANDON.getAddress()));
+        EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter, indexedParameter1), null);
+
+        Disposable disposable = contract.once("Transfer", eventFilterOptions, event -> {
+            log[0] = event;
+        });
+
+        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
+        List<Object> sendParams = Arrays.asList(
+                BRANDON.getAddress(),
+                amount
+        );
+
+        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
+        TransactionReceipt.TransactionReceiptData receiptData = contract.getMethod("transfer").send(sendParams, sendOptions);
+
+        while(!disposable.isDisposed());
+
+        assertEquals(3, log[0].getParams().getResult().getTopics().size());
+        assertEquals("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", log[0].getParams().getResult().getTopics().get(0));
+        assertEquals("0x0000000000000000000000002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a", log[0].getParams().getResult().getTopics().get(1));
+        assertEquals("0x000000000000000000000000e97f27e9a5765ce36a7b919b1cb6004c7209217e", log[0].getParams().getResult().getTopics().get(2));
+
+        webSocketService.close();
+
+    }
+
+    @Test
+    public void onceTest4_OR_Options() throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
+        Caver caver = new Caver(webSocketService);
+        webSocketService.connect();
+
+        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
+
+        Contract contract = new Contract(caver, jsonObj, contractAddress);
+
+        List options = new ArrayList();
+        options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
+
+        final LogNotification[] log = {null};
+
+        EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("from", Arrays.asList(LUMAN.getAddress(), BRANDON.getAddress()));
+        EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter, indexedParameter), null);
+
+        Disposable disposable = contract.once("Transfer", eventFilterOptions, event -> {
+            log[0] = event;
+        });
+
+        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
+        List<Object> sendParams = Arrays.asList(
+                BRANDON.getAddress(),
+                amount
+        );
+
+        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
+        TransactionReceipt.TransactionReceiptData receiptData = contract.getMethod("transfer").send(sendParams, sendOptions);
+
+        while(!disposable.isDisposed());
+
+        assertEquals(3, log[0].getParams().getResult().getTopics().size());
+        assertEquals("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", log[0].getParams().getResult().getTopics().get(0));
+        assertEquals("0x0000000000000000000000002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a", log[0].getParams().getResult().getTopics().get(1));
+        assertEquals("0x000000000000000000000000e97f27e9a5765ce36a7b919b1cb6004c7209217e", log[0].getParams().getResult().getTopics().get(2));
+
+        webSocketService.close();
+
+    }
+
+    @Test
+    public void onceTest5_OR_Options2() throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
+        Caver caver = new Caver(webSocketService);
+        webSocketService.connect();
+
+        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
+
+        Contract contract = new Contract(caver, jsonObj, contractAddress);
+
+        List options = new ArrayList();
+        options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
+
+        final LogNotification[] log = {null};
+
+        EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("to", Arrays.asList(WAYNE.getAddress(), BRANDON.getAddress()));
+        EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter, indexedParameter), null);
+
+        Disposable disposable = contract.once("Transfer", eventFilterOptions, event -> {
+            log[0] = event;
+        });
+
+        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
+        List<Object> sendParams = Arrays.asList(
+                WAYNE.getAddress(),
+                amount
+        );
+
+        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
+        TransactionReceipt.TransactionReceiptData receiptData = contract.getMethod("transfer").send(sendParams, sendOptions);
+
+        while(!disposable.isDisposed());
+
+        assertEquals(3, log[0].getParams().getResult().getTopics().size());
+        assertEquals("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", log[0].getParams().getResult().getTopics().get(0));
+        assertEquals("0x0000000000000000000000002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a", log[0].getParams().getResult().getTopics().get(1));
+        assertEquals("0x0000000000000000000000003cd93ba290712e6d28ac98f2b820faf799ae8fdb", log[0].getParams().getResult().getTopics().get(2));
+
+        webSocketService.close();
+
+    }
+
+    @Test
+    public void onceTest_allEvents() throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
+        Caver caver = new Caver(webSocketService);
+        webSocketService.connect();
+
+        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
+
+        Contract contract = new Contract(caver, jsonObj, contractAddress);
+
+        List options = new ArrayList();
+        options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
+
+        final LogNotification[] log = {null};
+
+        EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("to", Arrays.asList(WAYNE.getAddress(), BRANDON.getAddress()));
+        EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter, indexedParameter), null);
+
+        Disposable disposable = contract.once("allEvents", eventFilterOptions, event -> {
+            log[0] = event;
+        });
+
+        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
+        List<Object> sendParams = Arrays.asList(
+                WAYNE.getAddress(),
+                amount
+        );
+
+        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
+        TransactionReceipt.TransactionReceiptData receiptData = contract.getMethod("transfer").send(sendParams, sendOptions);
+
+        while(!disposable.isDisposed());
+
+        assertEquals(3, log[0].getParams().getResult().getTopics().size());
+        assertEquals("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", log[0].getParams().getResult().getTopics().get(0));
+        assertEquals("0x0000000000000000000000002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a", log[0].getParams().getResult().getTopics().get(1));
+        assertEquals("0x0000000000000000000000003cd93ba290712e6d28ac98f2b820faf799ae8fdb", log[0].getParams().getResult().getTopics().get(2));
+
+        webSocketService.close();
+
+    }
 }

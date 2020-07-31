@@ -24,6 +24,11 @@ import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.protocol.core.RemoteCall;
 import org.web3j.tx.gas.ContractGasProvider;
 
+/**
+ * @deprecated Please use {@link com.klaytn.caver.kct.kip17.KIP17} instead.
+ * @see com.klaytn.caver.kct.kip17.KIP17
+ */
+@Deprecated
 public class KIP17 extends SmartContract {
     /*
      * The ABI and bytecode below are built via the following command.

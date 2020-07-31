@@ -850,9 +850,9 @@ public class KIP17 extends Contract {
      * @throws ClassNotFoundException
      */
     public TransactionReceipt.TransactionReceiptData addPauser(String account, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
-        SendOptions sendOption = determineSendOptions(this, sendParam, FUNCTION_ADD_PAUSER, null);
+        SendOptions sendOption = determineSendOptions(this, sendParam, FUNCTION_ADD_PAUSER, Arrays.asList(account));
 
-        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_ADD_PAUSER).send(null, sendOption);
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_ADD_PAUSER).send(Arrays.asList(account), sendOption);
         return receiptData;
     }
 

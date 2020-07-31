@@ -25,7 +25,6 @@ public class EventFilterOptions {
 
         Object[] topics = new Object[indexed+1];
         topics[0] = ABI.encodeEventSignature(event);
-//        topics.add(ABI.encodeEventSignature(event));
         for(IndexedParameter indexedParameter : filterOption) {
             int index = 0;
             ContractIOType contractIOType = null;
@@ -46,10 +45,8 @@ public class EventFilterOptions {
 
             List<String> topicValue = indexedParameter.makeTopic(contractIOType.getType());
             if(topicValue.size() == 1) {
-//                topics.add(index+1, topicValue.get(0));
                 topics[index+1] = topicValue.get(0);
             } else {
-//                topics.add(index+1, topicValue);
                 topics[index+1] = topicValue;
             }
         }

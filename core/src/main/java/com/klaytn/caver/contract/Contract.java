@@ -153,7 +153,7 @@ public class Contract {
 
         List topics = null;
 
-        if(eventName.equals("allEvent")) {
+        if(eventName.equals("allEvents")) {
             if(paramsOption != null) {
                 LOGGER.warn("If eventName has 'allEvent', passed paramOption will be ignored.");
             }

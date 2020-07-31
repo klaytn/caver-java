@@ -142,9 +142,18 @@ public class AccountKeyWeightedMultiSig implements IAccountKey {
 
         List<RlpType> rlpWeightedPublicKeyList = new ArrayList<>();
         for(WeightedPublicKey item : this.weightedPublicKeys) {
+
+            if(item.getPublicKey() == null) {
+                throw new RuntimeException("public key should be specified for a multisig account");
+            }
+
+            if(item.getWeight() == null) {
+                throw new RuntimeException("weight should be specified for a multisig account");
+            }
+
             List<RlpType> rlpWeightedPublicKey = new ArrayList<>();
 
-            BigInteger weight = item.weight;
+            BigInteger weight = item.getWeight();
             String compressedKey = Utils.compressPublicKey(item.getPublicKey());
             rlpWeightedPublicKey.addAll(Arrays.asList(
                     RlpString.create(weight),

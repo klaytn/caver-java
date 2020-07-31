@@ -45,7 +45,7 @@ public class KIP7 extends Contract {
     private static final String FUNCTION_UNPAUSE = "unpause";
 
     /**
-     * Creates a KIP-7 instance.
+     * Creates a KIP7 instance.
      * @param caver A Caver instance.
      * @throws IOException
      */
@@ -54,7 +54,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Creates a KIP-7 instance
+     * Creates a KIP7 instance
      * @param caver A Caver instance
      * @param contractAddress A contract address
      * @throws IOException
@@ -986,7 +986,7 @@ public class KIP7 extends Contract {
 
     /**
      * Estimates the gas to execute the contract's method.
-     * @param kip7 A KIP-7 instance.
+     * @param kip7 A KIP7 instance.
      * @param functionName A KIP-7 contract's method.
      * @param callObject A CallObject instance to execute estimateGas
      * @param arguments A arguments to execute contract's method.

@@ -12,7 +12,6 @@ import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.transaction.type.SmartContractDeploy;
 import com.klaytn.caver.utils.CodeFormat;
-import com.klaytn.caver.utils.Utils;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -149,30 +148,23 @@ public class Contract {
      * @param callback The callback function that handled to returned data.
      * @return Disposable instance that able to unsubscribe.
      */
-    public Disposable once(String eventName, List paramsOption, Consumer<LogNotification> callback) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public Disposable once(String eventName, EventFilterOptions paramsOption, Consumer<LogNotification> callback) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Map options = new HashMap<>();
-        List topics = new ArrayList();
 
-        ContractEvent event = this.getEvent(eventName);
+        List topics = null;
 
-        String eventSignature = ABI.encodeEventSignature(event);
-        topics.add(eventSignature);
+        if(eventName.equals("allEvent")) {
+            if(paramsOption != null) {
+                LOGGER.warn("If eventName has 'allEvent', passed paramOption will be ignored.");
+            }
+        } else {
+            ContractEvent event = this.getEvent(eventName);
+            String eventSignature = ABI.encodeEventSignature(event);
 
-        for(int i=0; i<paramsOption.size(); i++) {
-            String eventType = event.getInputs().get(i).getType();
-
-            if(paramsOption.get(i) instanceof List) {
-                List<Object> filter = (List<Object>)paramsOption.get(i);
-                List<String> topic = new ArrayList<>();
-
-                for(int j=0; j<filter.size(); j++) {
-                    String encoded = (ABI.encodeParameter(eventType, filter.get(j)));
-                    topic.add(Utils.addHexPrefix(encoded));
-                }
-                topics.add(topic);
+            if(paramsOption.getTopics() == null || paramsOption.getTopics().size() == 0) {
+                topics = EventFilterOptions.convertsTopic(event, paramsOption);
             } else {
-                String encoded = ABI.encodeParameter(eventType, paramsOption.get(i));
-                topics.add(Utils.addHexPrefix(encoded));
+                topics = paramsOption.getTopics();
             }
         }
 

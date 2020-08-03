@@ -73,7 +73,7 @@ public class PrivateKey {
         ECKeyPair keyPair = ECKeyPair.create(Numeric.toBigInt(privateKey));
         Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(sigHash), keyPair, false);
 
-        SignatureData signData = new SignatureData(new byte[]{signatureData.getV()}, signatureData.getR(), signatureData.getS());
+        SignatureData signData = new SignatureData(signatureData.getV(), signatureData.getR(), signatureData.getS());
         signData.makeEIP155Signature(chainId);
 
         return signData;
@@ -88,7 +88,7 @@ public class PrivateKey {
         ECKeyPair keyPair = ECKeyPair.create(Numeric.toBigInt(privateKey));
         Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(messageHash), keyPair, false);
 
-        SignatureData signData = new SignatureData(new byte[]{signatureData.getV()}, signatureData.getR(), signatureData.getS());
+        SignatureData signData = new SignatureData(signatureData.getV(), signatureData.getR(), signatureData.getS());
         return signData;
     }
 

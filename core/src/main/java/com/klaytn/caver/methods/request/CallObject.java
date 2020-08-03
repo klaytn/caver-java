@@ -72,6 +72,19 @@ public class CallObject {
         return new CallObject(from, to, gas, gasPrice, value, data);
     }
 
+    public static CallObject createCallObject(String from, String to, BigInteger gas,
+                                              BigInteger gasPrice, BigInteger value) {
+        return createCallObject(from, to, gas, gasPrice, value, null);
+    }
+
+    public static CallObject createCallObject(String from) {
+        return createCallObject(from, null, null, null, null, null);
+    }
+
+    public static CallObject createCallObject() {
+        return createCallObject(null, null, null, null, null, null);
+    }
+
     public String getFrom() {
         return from;
     }
@@ -94,6 +107,30 @@ public class CallObject {
 
     public String getData() {
         return data;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
+    public void setTo(String to) {
+        this.to = to;
+    }
+
+    public void setGasLimit(BigInteger gasLimit) {
+        this.gasLimit = gasLimit;
+    }
+
+    public void setGasPrice(BigInteger gasPrice) {
+        this.gasPrice = gasPrice;
+    }
+
+    public void setValue(BigInteger value) {
+        this.value = value;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
     private static String convert(BigInteger value) {

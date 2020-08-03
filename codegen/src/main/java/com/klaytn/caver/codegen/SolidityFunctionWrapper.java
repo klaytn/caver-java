@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.*;
-import org.web3j.abi.datatypes.generated.AbiTypes;
+import org.web3j.abi.datatypes.AbiTypes;
 import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.methods.response.AbiDefinition;

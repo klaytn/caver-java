@@ -51,6 +51,12 @@ public class ABI {
         return methodId + encodedParams;
     }
 
+    /**
+     * Encodes a function call.
+     * @param functionName A function name.
+     * @param params A List of method parameter that wrapped solidity type wrapper class
+     * @return String
+     */
     public static String encodeFunctionCall(String functionName, List<Type> params) {
         String functionId = ABI.encodeFunctionSignature(ABI.buildFunctionString(functionName, params));
         String encodedArguments = ABI.encodeParameters(params);

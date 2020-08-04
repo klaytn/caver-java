@@ -247,9 +247,7 @@ public class ContractMethod {
         SendOptions sendOptions = makeSendOption(options);
         checkSendOption(sendOptions);
 
-        ContractMethod matchedMethod = findMatchedInstance(functionParams);
-
-        String functionId = ABI.encodeFunctionSignature(matchedMethod);
+        String functionId = ABI.encodeFunctionSignature(ABI.buildFunctionString(this.getName(), wrapperArguments));
         String encodedArguments = ABI.encodeParameters(wrapperArguments);
 
         String encodedFunction = functionId + encodedArguments;
@@ -264,7 +262,7 @@ public class ContractMethod {
                 .build();
 
         caver.wallet.sign(sendOptions.getFrom(), smartContractExecution);
-        Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractExecution.getRawTransaction()).send();
+        Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractExecution).send();
 
         TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());
         return receipt;

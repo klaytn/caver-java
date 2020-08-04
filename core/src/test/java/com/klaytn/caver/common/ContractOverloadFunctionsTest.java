@@ -6,7 +6,6 @@ import com.klaytn.caver.contract.ContractDeployParams;
 import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
-import org.intellij.lang.annotations.Language;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.web3j.abi.datatypes.Address;

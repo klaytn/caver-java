@@ -89,6 +89,16 @@ public class ABI {
         return result.toString();
     }
 
+    public static String buildFunctionString(String methodName, List<Type> parameters) {
+        StringBuilder result = new StringBuilder();
+        result.append(methodName);
+        result.append("(");
+        String params = parameters.stream().map(Type::getTypeAsString).collect(Collectors.joining(","));
+        result.append(params);
+        result.append(")");
+        return result.toString();
+    }
+
     /**
      * Encodes a event signature.
      * @param event A ContractEvent instance.

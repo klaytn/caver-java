@@ -379,7 +379,7 @@ public class Contract {
                     });
 
                     if(existedMethod.getInputs().size() == newMethod.getInputs().size() || isWarning) {
-                        LOGGER.warn("An overloaded function with the same number of parameters may not be executed normally.");
+                        LOGGER.warn("An overloaded function with the same number of parameters may not be executed normally. Please use *withSolidityWrapper methods in ContractMethod class.");
                     }
 
                     existedMethod.getNextContractMethods().add(newMethod);

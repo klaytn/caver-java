@@ -150,7 +150,7 @@ public class ContractMethod {
     /**
      * Send a transaction to smart contract and execute its method.
      * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
-     * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
+     * @param arguments A List of parameter to call smart contract method.
      * @param options An option to execute smart contract method.
      * @return TransactionReceiptData
      * @throws IOException
@@ -167,7 +167,7 @@ public class ContractMethod {
 
     /**
      * Send a transaction to smart contract and execute its method.
-     * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
+     * @param arguments A List of parameter to call smart contract method.
      * @param options An option to execute smart contract method.
      * @param processor A TransactionReceiptProcessor to get receipt.
      * @return TransactionReceiptData
@@ -212,6 +212,65 @@ public class ContractMethod {
     }
 
     /**
+     * Send a transaction to smart contract and execute its method using solidity type wrapper class.
+     * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param wrapperArguments A List of parameter that wrapped solidity wrapper class.
+     * @param options An option to execute smart contract method.
+     * @return TransactionReceiptData
+     * @throws IOException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityWrapper(List<Type> wrapperArguments, SendOptions options) throws IOException, TransactionException {
+        return sendWithSolidityWrapper(wrapperArguments, options, new PollingTransactionReceiptProcessor(caver, 1000, 15));
+    }
+
+    /**
+     * Send a transaction to smart contract and execute its method using solidity type wrapper class.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param wrapperArguments A List of parameter that wrapped solidity wrapper class.
+     * @param options An option to execute smart contract method.
+     * @param processor A TransactionReceiptProcessor to get receipt.
+     * @return TransactionReceiptData
+     * @throws IOException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityWrapper(List<Type> wrapperArguments, SendOptions options, TransactionReceiptProcessor processor) throws IOException, TransactionException {
+        List<Type> functionParams = new ArrayList<>();
+
+        if(wrapperArguments != null) {
+            functionParams.addAll(wrapperArguments);
+        }
+
+        //Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
+        //Passed parameter "options" has higher priority than "defaultSendOption" field.
+        SendOptions sendOptions = makeSendOption(options);
+        checkSendOption(sendOptions);
+
+        ContractMethod matchedMethod = findMatchedInstance(functionParams);
+
+        String functionId = ABI.encodeFunctionSignature(matchedMethod);
+        String encodedArguments = ABI.encodeParameters(wrapperArguments);
+
+        String encodedFunction = functionId + encodedArguments;
+
+        SmartContractExecution smartContractExecution = new SmartContractExecution.Builder()
+                .setKlaytnCall(caver.rpc.klay)
+                .setFrom(sendOptions.getFrom())
+                .setTo(this.getContractAddress())
+                .setInput(encodedFunction)
+                .setGas(sendOptions.getGas())
+                .setValue(sendOptions.getValue())
+                .build();
+
+        caver.wallet.sign(sendOptions.getFrom(), smartContractExecution);
+        Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractExecution.getRawTransaction()).send();
+
+        TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());
+        return receipt;
+    }
+
+    /**
      * Encodes the ABI for this method. It returns 32-bit function signature hash plus the encoded passed parameters.
      * @param arguments A List of parameter that solidity wrapper type
      * @return The encoded ABI byte code to send via a transaction or call.
@@ -222,7 +281,9 @@ public class ContractMethod {
      * @throws InvocationTargetException
      */
     public String encodeABI(List<Object> arguments) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        return ABI.encodeFunctionCall(this, arguments);
+        ContractMethod matchedMethod = findMatchedInstance(arguments);
+
+        return ABI.encodeFunctionCall(matchedMethod, arguments);
     }
 
     /**

@@ -51,6 +51,13 @@ public class ABI {
         return methodId + encodedParams;
     }
 
+    public static String encodeFunctionCall(String functionName, List<Type> params) {
+        String functionId = ABI.encodeFunctionSignature(ABI.buildFunctionString(functionName, params));
+        String encodedArguments = ABI.encodeParameters(params);
+
+        return functionId + encodedArguments;
+    }
+
     /**
      * Encodes a function signature.
      * @param method A ContractMethod instance.

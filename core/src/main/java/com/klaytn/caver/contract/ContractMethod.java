@@ -102,7 +102,7 @@ public class ContractMethod {
      * Execute smart contract method in the EVM without sending any transaction.
      * When creating CallObject, it need not to fill 'data', 'to' fields.
      * The 'data', 'to' fields automatically filled in call() method.
-     * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
+     * @param arguments A List of parameter to call smart contract method.
      * @param callObject A CallObject instance to 'call' smart contract method.
      * @return List
      * @throws IOException
@@ -131,9 +131,40 @@ public class ContractMethod {
     }
 
     /**
+     * Execute smart contract method in the EVM without sending any transaction.
+     * When creating CallObject, it need not to fill 'data', 'to' fields.
+     * The 'data', 'to' fields automatically filled in call() method.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
+     * @param callObject A CallObject instance to 'call' smart contract method.
+     * @return List
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public List<Type> callWithSolidityWrapper(List<Type> arguments, CallObject callObject) throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        List<Type> functionParams = new ArrayList<>();
+
+        if(arguments != null) {
+            functionParams.addAll(arguments);
+        }
+
+        String encodedFunction = this.encodeABIWithSolidityWrapper(arguments);
+
+        if(callObject.getData() != null || callObject.getTo() != null) {
+            LOGGER.warn("'to' and 'data' field in CallObject will overwrite.");
+        }
+        callObject.setData(encodedFunction);
+        callObject.setTo(this.getContractAddress());
+        Bytes response = caver.rpc.klay.call(callObject).send();
+
+        String encodedResult = response.getResult();
+        return ABI.decodeParameters(this, encodedResult);
+    }
+
+    /**
      * Send a transaction to smart contract and execute its method.
      * It is used defaultSendOption field to sendOptions
-     * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
+     * @param arguments A List of parameter to call smart contract method.
      * @return TransactionReceiptData
      * @throws IOException
      * @throws TransactionException
@@ -247,10 +278,7 @@ public class ContractMethod {
         SendOptions sendOptions = makeSendOption(options);
         checkSendOption(sendOptions);
 
-        String functionId = ABI.encodeFunctionSignature(ABI.buildFunctionString(this.getName(), wrapperArguments));
-        String encodedArguments = ABI.encodeParameters(wrapperArguments);
-
-        String encodedFunction = functionId + encodedArguments;
+        String encodedFunction = this.encodeABIWithSolidityWrapper(wrapperArguments);
 
         SmartContractExecution smartContractExecution = new SmartContractExecution.Builder()
                 .setKlaytnCall(caver.rpc.klay)
@@ -270,7 +298,7 @@ public class ContractMethod {
 
     /**
      * Encodes the ABI for this method. It returns 32-bit function signature hash plus the encoded passed parameters.
-     * @param arguments A List of parameter that solidity wrapper type
+     * @param arguments A List of parameter
      * @return The encoded ABI byte code to send via a transaction or call.
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
@@ -282,6 +310,16 @@ public class ContractMethod {
         ContractMethod matchedMethod = findMatchedInstance(arguments);
 
         return ABI.encodeFunctionCall(matchedMethod, arguments);
+    }
+
+    /**
+     * Encodes the ABI for this method. It returns 32-bit function signature hash plus the encoded passed parameters.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param arguments A List of parameter that solidity wrapper class
+     * @return The encoded ABI byte code to send via a transaction or call.
+     */
+    public String encodeABIWithSolidityWrapper(List<Type> arguments) {
+        return ABI.encodeFunctionCall(this.getName(), arguments);
     }
 
     /**

@@ -209,6 +209,21 @@ public class ContractMethod {
 
     /**
      * Send a transaction to smart contract and execute its method using solidity type wrapper class.
+     * It is used defaultSendOption field to sendOptions
+     * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param wrapperArguments A List of parameter that wrapped solidity wrapper class.
+     * @param options An option to execute smart contract method.
+     * @return TransactionReceiptData
+     * @throws IOException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityWrapper(List<Type> wrapperArguments) throws IOException, TransactionException {
+        return sendWithSolidityWrapper(wrapperArguments, null, new PollingTransactionReceiptProcessor(caver, 1000, 15));
+    }
+
+    /**
+     * Send a transaction to smart contract and execute its method using solidity type wrapper class.
      * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
      * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
      * @param wrapperArguments A List of parameter that wrapped solidity wrapper class.

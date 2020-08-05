@@ -301,7 +301,7 @@ public class ContractMethod {
 
     /**
      * Encodes the ABI for this method. It returns 32-bit function signature hash plus the encoded passed parameters.
-     * @param arguments A List of parameter to execute smart contract method.
+     * @param arguments A List of parameter to encode function signature and parameters
      * @return The encoded ABI byte code to send via a transaction or call.
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException

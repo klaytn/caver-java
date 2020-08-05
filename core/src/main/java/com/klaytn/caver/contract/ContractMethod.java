@@ -120,7 +120,7 @@ public class ContractMethod {
         }
 
         ContractMethod matchedMethod = findMatchedInstance(functionParams);
-        String encodedFunction = ABI.encodeFunctionCall(matchedMethod, arguments);
+        String encodedFunction = ABI.encodeFunctionCall(matchedMethod, functionParams);
 
         return callFunction(matchedMethod, encodedFunction, callObject);
     }
@@ -144,7 +144,7 @@ public class ContractMethod {
         }
 
         ContractMethod matchedMethod = findMatchedInstanceWithSolidityWrapper(functionParams);
-        String encodedFunction = ABI.encodeFunctionCallWithSolidityWrapper(matchedMethod, arguments);
+        String encodedFunction = ABI.encodeFunctionCallWithSolidityWrapper(matchedMethod, functionParams);
 
         return callFunction(matchedMethod, encodedFunction, callObject);
     }
@@ -206,7 +206,7 @@ public class ContractMethod {
         }
 
         ContractMethod matchedMethod = findMatchedInstance(functionParams);
-        String encodedFunction = ABI.encodeFunctionCall(matchedMethod, arguments);
+        String encodedFunction = ABI.encodeFunctionCall(matchedMethod, functionParams);
 
         return sendTransaction(matchedMethod, options, encodedFunction, processor);
     }

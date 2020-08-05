@@ -439,7 +439,7 @@ public class KIP17Test {
 
                 BigInteger preBalance = kip17Contract.balanceOf(LUMAN.getAddress());
 
-                BigInteger tokenId = BigInteger.ZERO;
+                BigInteger tokenId = BigInteger.valueOf(100000);
                 SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), (String)null);
                 kip17Contract.mint(LUMAN.getAddress(), tokenId, sendOptions);
 

@@ -107,6 +107,10 @@ public class ContractMethod {
      * @return List
      * @throws IOException
      * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
      */
     public List<Type> call(List<Object> arguments, CallObject callObject) throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         List<Object> functionParams = new ArrayList<>();
@@ -140,7 +144,7 @@ public class ContractMethod {
         }
 
         ContractMethod matchedMethod = findMatchedInstanceWithSolidityWrapper(functionParams);
-        String encodedFunction = ABI.encodeFunctionCall(matchedMethod.getName(), arguments);
+        String encodedFunction = ABI.encodeFunctionCallWithSolidityWrapper(matchedMethod, arguments);
 
         return callTransaction(encodedFunction, callObject);
     }
@@ -252,7 +256,7 @@ public class ContractMethod {
             functionParams.addAll(wrapperArguments);
         }
         ContractMethod matchedMethod = findMatchedInstanceWithSolidityWrapper(functionParams);
-        String encodedFunction = ABI.encodeFunctionCall(matchedMethod.getName(), functionParams);
+        String encodedFunction = ABI.encodeFunctionCallWithSolidityWrapper(matchedMethod, functionParams);
 
         return sendTransaction(options, encodedFunction, processor);
     }
@@ -281,7 +285,7 @@ public class ContractMethod {
      */
     public String encodeABIWithSolidityWrapper(List<Type> arguments) {
         ContractMethod matchedMethod = this.findMatchedInstanceWithSolidityWrapper(arguments);
-        return ABI.encodeFunctionCall(matchedMethod.getName(), arguments);
+        return ABI.encodeFunctionCallWithSolidityWrapper(matchedMethod, arguments);
     }
 
     /**

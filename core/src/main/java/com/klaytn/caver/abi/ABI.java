@@ -52,16 +52,16 @@ public class ABI {
     }
 
     /**
-     * Encodes a function call.
-     * @param functionName A function name.
-     * @param params A List of method parameter that wrapped solidity type wrapper class
+     * Encodes a function call
+     * @param method A ContractMethod instance.
+     * @param params A List of method parameter wrapped solidity wrapper class.
      * @return String
      */
-    public static String encodeFunctionCall(String functionName, List<Type> params) {
-        String functionId = ABI.encodeFunctionSignature(ABI.buildFunctionString(functionName, params));
+    public static String encodeFunctionCallWithSolidityWrapper(ContractMethod method, List<Type> params) {
+        String methodId = encodeFunctionSignature(method);
         String encodedArguments = ABI.encodeParameters(params);
 
-        return functionId + encodedArguments;
+        return methodId + encodedArguments;
     }
 
     /**
@@ -99,16 +99,6 @@ public class ABI {
         result.append(params);
         result.append(")");
 
-        return result.toString();
-    }
-
-    public static String buildFunctionString(String methodName, List<Type> parameters) {
-        StringBuilder result = new StringBuilder();
-        result.append(methodName);
-        result.append("(");
-        String params = parameters.stream().map(Type::getTypeAsString).collect(Collectors.joining(","));
-        result.append(params);
-        result.append(")");
         return result.toString();
     }
 

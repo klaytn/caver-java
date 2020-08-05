@@ -122,7 +122,7 @@ public class ContractMethod {
         ContractMethod matchedMethod = findMatchedInstance(functionParams);
         String encodedFunction = ABI.encodeFunctionCall(matchedMethod, arguments);
 
-        return callTransaction(encodedFunction, callObject);
+        return callFunction(encodedFunction, callObject);
     }
 
     /**
@@ -146,7 +146,7 @@ public class ContractMethod {
         ContractMethod matchedMethod = findMatchedInstanceWithSolidityWrapper(functionParams);
         String encodedFunction = ABI.encodeFunctionCallWithSolidityWrapper(matchedMethod, arguments);
 
-        return callTransaction(encodedFunction, callObject);
+        return callFunction(encodedFunction, callObject);
     }
 
     /**
@@ -598,7 +598,7 @@ public class ContractMethod {
         return receipt;
     }
 
-    private List<Type> callTransaction(String encodedInput, CallObject callObject) throws ClassNotFoundException, IOException {
+    private List<Type> callFunction(String encodedInput, CallObject callObject) throws ClassNotFoundException, IOException {
         if(callObject.getData() != null || callObject.getTo() != null) {
             LOGGER.warn("'to' and 'data' field in CallObject will overwrite.");
         }

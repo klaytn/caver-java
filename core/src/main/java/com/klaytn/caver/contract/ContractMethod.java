@@ -139,7 +139,7 @@ public class ContractMethod {
             functionParams.addAll(arguments);
         }
 
-        ContractMethod matchedMethod = findMatchedInstanceWithSolidityWrapper(arguments);
+        ContractMethod matchedMethod = findMatchedInstanceWithSolidityWrapper(functionParams);
         String encodedFunction = ABI.encodeFunctionCall(matchedMethod.getName(), arguments);
 
         return callTransaction(encodedFunction, callObject);
@@ -213,7 +213,6 @@ public class ContractMethod {
      * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
      * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
      * @param wrapperArguments A List of parameter that wrapped solidity wrapper class.
-     * @param options An option to execute smart contract method.
      * @return TransactionReceiptData
      * @throws IOException
      * @throws TransactionException
@@ -515,24 +514,27 @@ public class ContractMethod {
 
     private ContractMethod findMatchedInstance(List arguments) {
         // Check the parameter type defined in function and the parameter type passed are the same.
-        ContractMethod matchedMethod = null;
+        List<ContractMethod> matchedMethod = new ArrayList<>();
 
         if(this.getInputs().size() != arguments.size()) {
             for(ContractMethod method : this.getNextContractMethods()) {
                 if(method.getInputs().size() == arguments.size()) {
-                    matchedMethod = method;
-                    break;
+                    matchedMethod.add(method);
                 }
             }
         } else {
-            matchedMethod = this;
+            matchedMethod.add(this);
         }
 
-        if(matchedMethod == null) {
+        if(matchedMethod.size() == 0) {
             throw new IllegalArgumentException("Cannot find method with passed parameters.");
         }
 
-        return matchedMethod;
+        if(matchedMethod.size() != 1) {
+            LOGGER.warn("It found a two or more overloaded function that has same parameter counts. It may be abnormally executed. Please use *withSolidityWrapper().");
+        }
+
+        return matchedMethod.get(0);
     }
 
     private ContractMethod findMatchedInstanceWithSolidityWrapper(List<Type> arguments) {

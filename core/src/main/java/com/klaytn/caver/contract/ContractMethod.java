@@ -148,7 +148,8 @@ public class ContractMethod {
             functionParams.addAll(arguments);
         }
 
-        String encodedFunction = this.encodeABIWithSolidityWrapper(arguments);
+        ContractMethod matchedMethod = findMatchedInstanceWithSolidityWrapper(arguments);
+        String encodedFunction = ABI.encodeFunctionCall(matchedMethod.getName(), arguments);
 
         if(callObject.getData() != null || callObject.getTo() != null) {
             LOGGER.warn("'to' and 'data' field in CallObject will overwrite.");
@@ -278,7 +279,9 @@ public class ContractMethod {
         SendOptions sendOptions = makeSendOption(options);
         checkSendOption(sendOptions);
 
-        String encodedFunction = this.encodeABIWithSolidityWrapper(wrapperArguments);
+        ContractMethod matchedMethod = findMatchedInstanceWithSolidityWrapper(functionParams);
+
+        String encodedFunction = ABI.encodeFunctionCall(matchedMethod.getName(), functionParams);
 
         SmartContractExecution smartContractExecution = new SmartContractExecution.Builder()
                 .setKlaytnCall(caver.rpc.klay)
@@ -319,7 +322,8 @@ public class ContractMethod {
      * @return The encoded ABI byte code to send via a transaction or call.
      */
     public String encodeABIWithSolidityWrapper(List<Type> arguments) {
-        return ABI.encodeFunctionCall(this.getName(), arguments);
+        ContractMethod matchedMethod = this.findMatchedInstanceWithSolidityWrapper(arguments);
+        return ABI.encodeFunctionCall(matchedMethod.getName(), arguments);
     }
 
     /**
@@ -570,5 +574,40 @@ public class ContractMethod {
         }
 
         return matchedMethod;
+    }
+
+    private ContractMethod findMatchedInstanceWithSolidityWrapper(List<Type> arguments) {
+        ContractMethod matchedMethod = null;
+
+        if(this.checkParamsTypeMatched(arguments)) {
+            matchedMethod = this;
+        } else {
+            for(ContractMethod method : this.getNextContractMethods()) {
+                if(method.checkParamsTypeMatched(arguments)) {
+                    matchedMethod = method;
+                }
+            }
+        }
+
+        if(matchedMethod == null) {
+            throw new IllegalArgumentException("Cannot find method with passed parameters.");
+        }
+
+        return matchedMethod;
+    }
+
+    private boolean checkParamsTypeMatched(List<Type> arguments) {
+        if(this.getInputs().size() != arguments.size()) {
+            return false;
+        }
+
+        for(int i=0; i< this.getInputs().size(); i++) {
+            ContractIOType ioType = this.getInputs().get(i);
+            if(!ioType.getType().equals(arguments.get(i).getTypeAsString())) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

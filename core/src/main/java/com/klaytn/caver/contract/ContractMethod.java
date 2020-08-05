@@ -116,18 +116,9 @@ public class ContractMethod {
         }
 
         ContractMethod matchedMethod = findMatchedInstance(functionParams);
-
         String encodedFunction = ABI.encodeFunctionCall(matchedMethod, arguments);
 
-        if(callObject.getData() != null || callObject.getTo() != null) {
-            LOGGER.warn("'to' and 'data' field in CallObject will overwrite.");
-        }
-        callObject.setData(encodedFunction);
-        callObject.setTo(this.getContractAddress());
-        Bytes response = caver.rpc.klay.call(callObject).send();
-
-        String encodedResult = response.getResult();
-        return ABI.decodeParameters(matchedMethod, encodedResult);
+        return callTransaction(encodedFunction, callObject);
     }
 
     /**
@@ -141,7 +132,7 @@ public class ContractMethod {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public List<Type> callWithSolidityWrapper(List<Type> arguments, CallObject callObject) throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public List<Type> callWithSolidityWrapper(List<Type> arguments, CallObject callObject) throws IOException, ClassNotFoundException {
         List<Type> functionParams = new ArrayList<>();
 
         if(arguments != null) {
@@ -151,15 +142,7 @@ public class ContractMethod {
         ContractMethod matchedMethod = findMatchedInstanceWithSolidityWrapper(arguments);
         String encodedFunction = ABI.encodeFunctionCall(matchedMethod.getName(), arguments);
 
-        if(callObject.getData() != null || callObject.getTo() != null) {
-            LOGGER.warn("'to' and 'data' field in CallObject will overwrite.");
-        }
-        callObject.setData(encodedFunction);
-        callObject.setTo(this.getContractAddress());
-        Bytes response = caver.rpc.klay.call(callObject).send();
-
-        String encodedResult = response.getResult();
-        return ABI.decodeParameters(this, encodedResult);
+        return callTransaction(encodedFunction, callObject);
     }
 
     /**
@@ -218,29 +201,10 @@ public class ContractMethod {
             functionParams.addAll(arguments);
         }
 
-        //Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
-        //Passed parameter "options" has higher priority than "defaultSendOption" field.
-        SendOptions sendOptions = makeSendOption(options);
-        checkSendOption(sendOptions);
-
         ContractMethod matchedMethod = findMatchedInstance(functionParams);
-
         String encodedFunction = ABI.encodeFunctionCall(matchedMethod, arguments);
 
-        SmartContractExecution smartContractExecution = new SmartContractExecution.Builder()
-                .setKlaytnCall(caver.rpc.klay)
-                .setFrom(sendOptions.getFrom())
-                .setTo(this.getContractAddress())
-                .setInput(encodedFunction)
-                .setGas(sendOptions.getGas())
-                .setValue(sendOptions.getValue())
-                .build();
-
-        caver.wallet.sign(sendOptions.getFrom(), smartContractExecution);
-        Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractExecution.getRawTransaction()).send();
-
-        TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());
-        return receipt;
+        return sendTransaction(options, encodedFunction, processor);
     }
 
     /**
@@ -273,30 +237,10 @@ public class ContractMethod {
         if(wrapperArguments != null) {
             functionParams.addAll(wrapperArguments);
         }
-
-        //Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
-        //Passed parameter "options" has higher priority than "defaultSendOption" field.
-        SendOptions sendOptions = makeSendOption(options);
-        checkSendOption(sendOptions);
-
         ContractMethod matchedMethod = findMatchedInstanceWithSolidityWrapper(functionParams);
-
         String encodedFunction = ABI.encodeFunctionCall(matchedMethod.getName(), functionParams);
 
-        SmartContractExecution smartContractExecution = new SmartContractExecution.Builder()
-                .setKlaytnCall(caver.rpc.klay)
-                .setFrom(sendOptions.getFrom())
-                .setTo(this.getContractAddress())
-                .setInput(encodedFunction)
-                .setGas(sendOptions.getGas())
-                .setValue(sendOptions.getValue())
-                .build();
-
-        caver.wallet.sign(sendOptions.getFrom(), smartContractExecution);
-        Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractExecution).send();
-
-        TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());
-        return receipt;
+        return sendTransaction(options, encodedFunction, processor);
     }
 
     /**
@@ -609,5 +553,39 @@ public class ContractMethod {
         }
 
         return true;
+    }
+
+    private TransactionReceipt.TransactionReceiptData sendTransaction(SendOptions options, String encodedInput, TransactionReceiptProcessor processor) throws IOException, TransactionException {
+        //Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
+        //Passed parameter "options" has higher priority than "defaultSendOption" field.
+        SendOptions sendOptions = makeSendOption(options);
+        checkSendOption(sendOptions);
+
+        SmartContractExecution smartContractExecution = new SmartContractExecution.Builder()
+                .setKlaytnCall(caver.rpc.klay)
+                .setFrom(sendOptions.getFrom())
+                .setTo(this.getContractAddress())
+                .setInput(encodedInput)
+                .setGas(sendOptions.getGas())
+                .setValue(sendOptions.getValue())
+                .build();
+
+        caver.wallet.sign(sendOptions.getFrom(), smartContractExecution);
+        Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractExecution).send();
+
+        TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());
+        return receipt;
+    }
+
+    private List<Type> callTransaction(String encodedInput, CallObject callObject) throws ClassNotFoundException, IOException {
+        if(callObject.getData() != null || callObject.getTo() != null) {
+            LOGGER.warn("'to' and 'data' field in CallObject will overwrite.");
+        }
+        callObject.setData(encodedInput);
+        callObject.setTo(this.getContractAddress());
+        Bytes response = caver.rpc.klay.call(callObject).send();
+
+        String encodedResult = response.getResult();
+        return ABI.decodeParameters(this, encodedResult);
     }
 }

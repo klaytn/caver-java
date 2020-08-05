@@ -8,10 +8,14 @@ import com.klaytn.caver.methods.response.Boolean;
 import com.klaytn.caver.methods.response.*;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
 import com.klaytn.caver.transaction.AbstractTransaction;
+import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
+import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.utils.Utils;
 import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.*;
+import org.web3j.protocol.exceptions.TransactionException;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -925,6 +929,21 @@ public class Klay {
         return new Request<>(
                 "klay_sendRawTransaction",
                 Arrays.asList(signedTransactionData),
+                web3jService,
+                Bytes32.class);
+    }
+
+    /**
+     * Creates a new message call transaction or a contract creation for signed transactions.
+     * @param transaction A transaction instance.
+     * @return Bytes32
+     */
+    public Request<?, Bytes32> sendRawTransaction(AbstractTransaction transaction) {
+        String rawTransaction = transaction.getRLPEncoding();
+
+        return new Request<>(
+                "klay_sendRawTransaction",
+                Arrays.asList(rawTransaction),
                 web3jService,
                 Bytes32.class);
     }

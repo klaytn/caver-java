@@ -275,7 +275,7 @@ public class Contract {
      * Setter function for Caver.
      * @param caver The Caver instance.
      */
-    public void setCaver(Caver caver) {
+    void setCaver(Caver caver) {
         this.caver = caver;
 
         //When Caver instance changes, the caver instance of each ContractMethod is also replaced.
@@ -289,7 +289,7 @@ public class Contract {
      * @param abi The abi json string.
      * @throws IOException
      */
-    public void setAbi(String abi) throws IOException {
+    void setAbi(String abi) throws IOException {
         this.abi = abi;
 
         //When abi changes, It newly set a "methods" and "events".
@@ -300,7 +300,7 @@ public class Contract {
      * Setter function for contract address.
      * @param contractAddress The contract address.
      */
-    public void setContractAddress(String contractAddress) {
+    void setContractAddress(String contractAddress) {
         this.contractAddress = contractAddress;
 
         //When contract address changes, the contract address of each ContractMethod is also replaced.
@@ -313,7 +313,7 @@ public class Contract {
      * Setter function for methods.
      * @param methods The map where method name string and ContractMethod mapped.
      */
-    public void setMethods(Map<String, ContractMethod> methods) {
+    void setMethods(Map<String, ContractMethod> methods) {
         this.methods = methods;
     }
 
@@ -321,7 +321,7 @@ public class Contract {
      * Setter function for events.
      * @param events The map where event name string and ContractEvent mapped.
      */
-    public void setEvents(Map<String, ContractEvent> events) {
+    void setEvents(Map<String, ContractEvent> events) {
         this.events = events;
     }
 
@@ -329,7 +329,7 @@ public class Contract {
      * Setter function for constructor.
      * @param constructor The ContractMethod instance related Contract's constructor.
      */
-    public void setConstructor(ContractMethod constructor) {
+    void setConstructor(ContractMethod constructor) {
         this.constructor = constructor;
     }
 

@@ -83,7 +83,7 @@ public class ContractEvent {
      * Setter function for name.
      * @param name A function name.
      */
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
@@ -91,7 +91,7 @@ public class ContractEvent {
      * Setter function for type.
      * @param type The input type. It always set "event".
      */
-    public void setType(String type) {
+    void setType(String type) {
         this.type = type;
     }
 
@@ -99,7 +99,7 @@ public class ContractEvent {
      * Setter function for inputs
      * @param inputs The list of ContractIOType contains to function parameter information.
      */
-    public void setInputs(List<ContractIOType> inputs) {
+    void setInputs(List<ContractIOType> inputs) {
         this.inputs = inputs;
     }
 
@@ -107,7 +107,7 @@ public class ContractEvent {
      * Setter function for event signature.
      * @param signature A function signature
      */
-    public void setSignature(String signature) {
+    void setSignature(String signature) {
         this.signature = signature;
     }
 }

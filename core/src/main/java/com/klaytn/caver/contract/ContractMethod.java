@@ -407,7 +407,7 @@ public class ContractMethod {
      * Setter function for Caver.
      * @param caver The Caver instance.
      */
-    public void setCaver(Caver caver) {
+    void setCaver(Caver caver) {
         this.caver = caver;
     }
 
@@ -415,7 +415,7 @@ public class ContractMethod {
      * Setter function for type.
      * @param type The input type. It always set "function".
      */
-    public void setType(String type) {
+    void setType(String type) {
         this.type = type;
     }
 
@@ -423,7 +423,7 @@ public class ContractMethod {
      * Setter function for name.
      * @param name A function name.
      */
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
@@ -431,7 +431,7 @@ public class ContractMethod {
      * Setter function for inputs
      * @param inputs The list of ContractIOType contains to function parameter information.
      */
-    public void setInputs(List<ContractIOType> inputs) {
+    void setInputs(List<ContractIOType> inputs) {
         this.inputs = inputs;
     }
 
@@ -439,7 +439,7 @@ public class ContractMethod {
      * Setter function for outputs
      * @param outputs The list of ContractIOTYpe contains to function return value information.
      */
-    public void setOutputs(List<ContractIOType> outputs) {
+    void setOutputs(List<ContractIOType> outputs) {
         this.outputs = outputs;
     }
 
@@ -447,7 +447,7 @@ public class ContractMethod {
      * Setter function for function signature.
      * @param signature A function signature
      */
-    public void setSignature(String signature) {
+    void setSignature(String signature) {
         this.signature = signature;
     }
 
@@ -455,7 +455,7 @@ public class ContractMethod {
      * Setter function for contract address
      * @param contractAddress A contract address.
      */
-    public void setContractAddress(String contractAddress) {
+    void setContractAddress(String contractAddress) {
         this.contractAddress = contractAddress;
         if(this.getNextContractMethods() != null && this.getNextContractMethods().size() != 0) {
             this.getNextContractMethods().stream().forEach(contractMethod -> {
@@ -468,11 +468,11 @@ public class ContractMethod {
      * Setter function for defaultSendOption
      * @param defaultSendOptions The sendOptions to set DefaultSendOptions field.
      */
-    public void setDefaultSendOptions(SendOptions defaultSendOptions) {
+    void setDefaultSendOptions(SendOptions defaultSendOptions) {
         this.defaultSendOptions = defaultSendOptions;
     }
 
-    public void setNextContractMethods(List<ContractMethod> nextContractMethods) {
+    void setNextContractMethods(List<ContractMethod> nextContractMethods) {
         this.nextContractMethods = nextContractMethods;
     }
 

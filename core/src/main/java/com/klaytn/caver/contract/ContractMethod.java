@@ -208,7 +208,7 @@ public class ContractMethod {
         ContractMethod matchedMethod = findMatchedInstance(functionParams);
         String encodedFunction = ABI.encodeFunctionCall(matchedMethod, arguments);
 
-        return sendTransaction(options, encodedFunction, processor);
+        return sendTransaction(matchedMethod, options, encodedFunction, processor);
     }
 
     /**
@@ -258,7 +258,7 @@ public class ContractMethod {
         ContractMethod matchedMethod = findMatchedInstanceWithSolidityWrapper(functionParams);
         String encodedFunction = ABI.encodeFunctionCallWithSolidityWrapper(matchedMethod, functionParams);
 
-        return sendTransaction(options, encodedFunction, processor);
+        return sendTransaction(matchedMethod, options, encodedFunction, processor);
     }
 
     /**
@@ -457,6 +457,11 @@ public class ContractMethod {
      */
     public void setContractAddress(String contractAddress) {
         this.contractAddress = contractAddress;
+        if(this.getNextContractMethods() != null && this.getNextContractMethods().size() != 0) {
+            this.getNextContractMethods().stream().forEach(contractMethod -> {
+                contractMethod.contractAddress = contractAddress;
+            });
+        }
     }
 
     /**
@@ -576,7 +581,7 @@ public class ContractMethod {
         return true;
     }
 
-    private TransactionReceipt.TransactionReceiptData sendTransaction(SendOptions options, String encodedInput, TransactionReceiptProcessor processor) throws IOException, TransactionException {
+    private TransactionReceipt.TransactionReceiptData sendTransaction(ContractMethod method, SendOptions options, String encodedInput, TransactionReceiptProcessor processor) throws IOException, TransactionException {
         //Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
         //Passed parameter "options" has higher priority than "defaultSendOption" field.
         SendOptions sendOptions = makeSendOption(options);
@@ -585,7 +590,7 @@ public class ContractMethod {
         SmartContractExecution smartContractExecution = new SmartContractExecution.Builder()
                 .setKlaytnCall(caver.rpc.klay)
                 .setFrom(sendOptions.getFrom())
-                .setTo(this.getContractAddress())
+                .setTo(method.getContractAddress())
                 .setInput(encodedInput)
                 .setGas(sendOptions.getGas())
                 .setValue(sendOptions.getValue())
@@ -603,7 +608,7 @@ public class ContractMethod {
             LOGGER.warn("'to' and 'data' field in CallObject will overwrite.");
         }
         callObject.setData(encodedInput);
-        callObject.setTo(this.getContractAddress());
+        callObject.setTo(method.getContractAddress());
         Bytes response = caver.rpc.klay.call(callObject).send();
 
         String encodedResult = response.getResult();

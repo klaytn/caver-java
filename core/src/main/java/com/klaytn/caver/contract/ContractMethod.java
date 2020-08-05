@@ -122,7 +122,7 @@ public class ContractMethod {
         ContractMethod matchedMethod = findMatchedInstance(functionParams);
         String encodedFunction = ABI.encodeFunctionCall(matchedMethod, arguments);
 
-        return callFunction(encodedFunction, callObject);
+        return callFunction(matchedMethod, encodedFunction, callObject);
     }
 
     /**
@@ -146,7 +146,7 @@ public class ContractMethod {
         ContractMethod matchedMethod = findMatchedInstanceWithSolidityWrapper(functionParams);
         String encodedFunction = ABI.encodeFunctionCallWithSolidityWrapper(matchedMethod, arguments);
 
-        return callFunction(encodedFunction, callObject);
+        return callFunction(matchedMethod, encodedFunction, callObject);
     }
 
     /**
@@ -598,7 +598,7 @@ public class ContractMethod {
         return receipt;
     }
 
-    private List<Type> callFunction(String encodedInput, CallObject callObject) throws ClassNotFoundException, IOException {
+    private List<Type> callFunction(ContractMethod method, String encodedInput, CallObject callObject) throws ClassNotFoundException, IOException {
         if(callObject.getData() != null || callObject.getTo() != null) {
             LOGGER.warn("'to' and 'data' field in CallObject will overwrite.");
         }
@@ -607,6 +607,6 @@ public class ContractMethod {
         Bytes response = caver.rpc.klay.call(callObject).send();
 
         String encodedResult = response.getResult();
-        return ABI.decodeParameters(this, encodedResult);
+        return ABI.decodeParameters(method, encodedResult);
     }
 }

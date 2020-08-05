@@ -203,7 +203,7 @@ public class ContractOverloadFunctionsTest {
         try {
             Contract contract = new Contract(caver, ABIJson, contractAddress);
 
-            List<Type> result = contract.getMethod(methodName).call(null, CallObject.createCallObject());
+            List<Type> result = contract.getMethod(methodName).callWithSolidityWrapper(null, CallObject.createCallObject());
             assertEquals(LUMAN.getAddress(), ((Address)result.get(0)).getValue());
 
         } catch (Exception e) {

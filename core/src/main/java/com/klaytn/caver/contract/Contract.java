@@ -113,14 +113,7 @@ public class Contract {
      * @throws TransactionException
      */
     public Contract deploy(ContractDeployParams deployParam, SendOptions sendOptions, TransactionReceiptProcessor processor) throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        String encodedParams = "";
-
-        if(this.getConstructor() != null) {
-            this.getConstructor().checkTypeValid(deployParam.getDeployParams());
-            encodedParams = ABI.encodeParameters(this.getConstructor(), deployParam.getDeployParams());
-        }
-
-        String input = deployParam.getBytecode() + encodedParams;
+        String input = ABI.encodeContractDeploy(this.getConstructor(), deployParam.getBytecode(), deployParam.getDeployParams());
 
         SmartContractDeploy smartContractDeploy = new SmartContractDeploy.Builder()
                 .setKlaytnCall(caver.rpc.klay)

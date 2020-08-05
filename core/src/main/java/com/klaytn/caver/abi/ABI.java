@@ -84,6 +84,17 @@ public class ABI {
         return Numeric.toHexString(hash).substring(0, 10);
     }
 
+    public static String encodeContractDeploy(ContractMethod constructor, String byteCode, List<Object> constructorParams) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        String encodedParam = "";
+
+        if(constructor != null) {
+            constructor.checkTypeValid(constructorParams);
+            encodedParam = ABI.encodeParameters(constructor, constructorParams);
+        }
+
+        return byteCode + encodedParam;
+    }
+
     /**
      * Build a function name string.
      * @param method A ContractMethod instance.

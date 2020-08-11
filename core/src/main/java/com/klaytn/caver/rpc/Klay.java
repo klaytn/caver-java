@@ -8,14 +8,10 @@ import com.klaytn.caver.methods.response.Boolean;
 import com.klaytn.caver.methods.response.*;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
 import com.klaytn.caver.transaction.AbstractTransaction;
-import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
-import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.utils.Utils;
 import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.*;
-import org.web3j.protocol.exceptions.TransactionException;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -814,9 +810,31 @@ public class Klay {
      * @return Quantity
      */
     public Request<?, Quantity> estimateComputationCost(CallObject callObject) {
+        return estimateComputationCost(callObject, DefaultBlockParameterName.LATEST);
+    }
+
+    /**
+     * Generates and returns an estimate of how much computation cost spent to execute the transaction.
+     * Klaytn limits the computation cost of a transaction to 100000000 currently not to take too much time
+     * by a single transaction. The transaction will not be added to the blockchain like klay_estimateGas.
+     * @param callObject The transaction call object.
+     * @return Quantity
+     */
+    public Request<?, Quantity> estimateComputationCost(CallObject callObject, long blockNumber) {
+        return estimateComputationCost(callObject, new DefaultBlockParameterNumber(blockNumber));
+    }
+
+    /**
+     * Generates and returns an estimate of how much computation cost spent to execute the transaction.
+     * Klaytn limits the computation cost of a transaction to 100000000 currently not to take too much time
+     * by a single transaction. The transaction will not be added to the blockchain like klay_estimateGas.
+     * @param callObject The transaction call object.
+     * @return Quantity
+     */
+    public Request<?, Quantity> estimateComputationCost(CallObject callObject, DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_estimateComputationCost",
-                Arrays.asList(callObject),
+                Arrays.asList(callObject, blockTag),
                 web3jService,
                 Quantity.class);
     }
@@ -1065,7 +1083,7 @@ public class Klay {
     public Request<?, Quantity> getGasPriceAt() {
         return new Request<>(
                 "klay_gasPriceAt",
-                Collections.<String>emptyList(),
+                Arrays.asList(DefaultBlockParameterName.LATEST),
                 web3jService,
                 Quantity.class
         );
@@ -1079,10 +1097,19 @@ public class Klay {
      */
     public Request<?, Quantity> getGasPriceAt(long blockNumber) {
         DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
+        return getGasPriceAt(blockParameterNumber);
+    }
 
+    /**
+     * Returns the unit price of the given block in peb.
+     * NOTE: This API has different behavior from Ethereum's and returns a gas price of Klaytn instead of suggesting a gas price as in Ethereum.
+     * @param blockTag The block tag.
+     * @return Quantity
+     */
+    public Request<?, Quantity> getGasPriceAt(DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_gasPriceAt",
-                Arrays.asList(blockParameterNumber),
+                Arrays.asList(blockTag),
                 web3jService,
                 Quantity.class
         );

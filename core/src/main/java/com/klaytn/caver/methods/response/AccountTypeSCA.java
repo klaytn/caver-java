@@ -9,6 +9,9 @@ public class AccountTypeSCA implements IAccountType {
     private String nonce;
     private String storageRoot;
 
+    public AccountTypeSCA() {
+    }
+
     public AccountTypeSCA(String balance, String codeFormat, String codeHash, boolean humanReadable, AccountKey.AccountKeyData key, String nonce, String storageRoot) {
         this.balance = balance;
         this.codeFormat = codeFormat;

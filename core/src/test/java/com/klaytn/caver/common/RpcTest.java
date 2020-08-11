@@ -1,32 +1,58 @@
 package com.klaytn.caver.common;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.account.*;
 import com.klaytn.caver.base.Accounts;
+import com.klaytn.caver.contract.SendOptions;
+import com.klaytn.caver.kct.kip17.KIP17;
+import com.klaytn.caver.kct.kip17.KIP17DeployParams;
+import com.klaytn.caver.methods.request.CallObject;
+import com.klaytn.caver.methods.request.KlayFilter;
+import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.*;
+import com.klaytn.caver.methods.response.Account;
 import com.klaytn.caver.methods.response.Boolean;
 import com.klaytn.caver.rpc.Klay;
+import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
+import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.transaction.type.FeeDelegatedValueTransfer;
 import com.klaytn.caver.transaction.type.FeeDelegatedValueTransferWithRatio;
 import com.klaytn.caver.transaction.type.ValueTransfer;
 import com.klaytn.caver.utils.Convert;
+import com.klaytn.caver.utils.Utils;
+import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.DefaultBlockParameterNumber;
 import org.web3j.protocol.core.Request;
+import org.web3j.protocol.core.Response;
+import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
+import static com.klaytn.caver.base.LocalValues.LOCAL_NETWORK_ID;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
@@ -35,7 +61,8 @@ import static org.junit.Assert.assertTrue;
                 RpcTest.decodeAccountKeyTest.class,
                 RpcTest.sendTransactionAsFeePayerTest.class,
                 RpcTest.signTransactionTest.class,
-                RpcTest.signTransactionAsFeePayerTest.class
+                RpcTest.signTransactionAsFeePayerTest.class,
+                RpcTest.otherRPCTest.class
         }
 )
 public class RpcTest extends Accounts {
@@ -404,6 +431,553 @@ public class RpcTest extends Accounts {
             valueTransfer.signAsFeePayer(feePayerKeyring);
 
             assertEquals(transactionHash, valueTransfer.getTransactionHash());
+        }
+    }
+
+    public static class getAccountKeyTest {
+        @Test
+        public void getAccountKeyResponseTest() throws IOException {
+            ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
+            String testData = "{\"jsonrpc\":\"2.0\",\"id\":8,\"result\":{\"keyType\":2,\"key\":{\"x\":\"0x125b54c0500b2090d9b7504b010d5ee83962f19ca36cf592d5a798d7bc6d94d0\",\"y\":\"0x74dc3e8e8e7def04087010717522f3f1bbebb56c3030fa55853d05c435227cf\"}}}";
+
+            AccountKey account = mapper.readValue(testData, AccountKey.class);
+            assertEquals("0x125b54c0500b2090d9b7504b010d5ee83962f19ca36cf592d5a798d7bc6d94d0074dc3e8e8e7def04087010717522f3f1bbebb56c3030fa55853d05c435227cf",
+                    ((AccountKeyPublic)account.getResult().getAccountKey()).getPublicKey());
+        }
+    }
+
+    public static class otherRPCTest {
+        private static TransactionReceipt.TransactionReceiptData sendKlay() throws IOException, TransactionException {
+           Caver caver = new Caver(Caver.DEFAULT_URL);
+           AbstractKeyring keyring = caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+
+            BigInteger value = new BigInteger(Utils.convertToPeb(BigDecimal.ONE, "KLAY"));
+
+            //Create a value transfer transaction
+            ValueTransfer valueTransfer = new ValueTransfer.Builder()
+                    .setKlaytnCall(caver.rpc.getKlay())
+                    .setFrom(keyring.getAddress())
+                    .setTo("0x8084fed6b1847448c24692470fc3b2ed87f9eb47")
+                    .setValue(value)
+                    .setGas(BigInteger.valueOf(25000))
+                    .build();
+
+            //Sign to the transaction
+            valueTransfer.sign(keyring);
+
+            //Send a transaction to the klaytn blockchain platform (Klaytn)
+            Bytes32 result = caver.rpc.klay.sendRawTransaction(valueTransfer.getRawTransaction()).send();
+            if(result.hasError()) {
+                throw new RuntimeException(result.getError().getMessage());
+            }
+
+            //Check transaction receipt.
+            TransactionReceiptProcessor transactionReceiptProcessor = new PollingTransactionReceiptProcessor(caver, 1000, 15);
+            TransactionReceipt.TransactionReceiptData transactionReceipt = transactionReceiptProcessor.waitForTransactionReceipt(result.getResult());
+
+            return transactionReceipt;
+        }
+
+
+        public static KIP17 deployContract() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+            Caver caver = new Caver(Caver.DEFAULT_URL);
+            caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+
+            KIP17DeployParams kip7DeployParam = new KIP17DeployParams("CONTRACT_NAME", "CONTRACT_SYMBOL");
+            KIP17 kip17 = KIP17.deploy(caver, kip7DeployParam, LUMAN.getAddress());
+
+            return kip17;
+        }
+
+        @Test
+        public void testIsAccountCreated() throws Exception {
+            Boolean response = caver.rpc.klay.accountCreated(
+                    LUMAN.getAddress(),
+                    DefaultBlockParameterName.LATEST
+            ).send();
+            assertTrue(response.getResult());
+        }
+
+        @Test
+        public void getAccountTest() {
+            Caver caver = new Caver(Caver.BAOBAB_URL);
+            try {
+                Account EOA_account = caver.rpc.klay.getAccount("0x3e3733b256c93f9d759e33c9939258068bd5957d").send();
+                assertEquals(IAccountType.AccType.EOA.getAccType(), EOA_account.getResult().getAccType());
+
+                Account SCA_account = caver.rpc.klay.getAccount("0x5d3fc50fb0bfe6ab1644a893034d3a246cef1b4a").send();
+                assertEquals(IAccountType.AccType.SCA.getAccType(), SCA_account.getResult().getAccType());
+            } catch (IOException e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void getAccountKeyTest() {
+            Caver caver = new Caver(Caver.BAOBAB_URL);
+            try {
+                AccountKey accountKey = caver.rpc.klay.getAccountKey("0x3e3733b256c93f9d759e33c9939258068bd5957d").send();
+            } catch (IOException e){
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void getBalanceTest() {
+            try {
+                Quantity quantity = caver.rpc.klay.getBalance(LUMAN.getAddress()).send();
+                assertNotNull(quantity);
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void getCodeTest() {
+            try {
+                KIP17 kip17 = deployContract();
+
+                String code = caver.rpc.klay.getCode(kip17.getContractAddress()).send().getResult();
+                assertNotNull(code);
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void getTransactionCountTest() throws IOException {
+            Quantity response = caver.rpc.klay.getTransactionCount(
+                    LUMAN.getAddress(),
+                    DefaultBlockParameterName.LATEST).send();
+            BigInteger result = response.getValue();
+            assertNotNull(result);
+        }
+
+        @Test
+        public void isContractAccountTest() {
+            try {
+                KIP17 kip17 = deployContract();
+
+                Boolean result = caver.rpc.klay.isContractAccount(kip17.getContractAddress()).send();
+                assertTrue(result.getResult());
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void getBlockNumberTest() {
+            try {
+                Quantity response = caver.rpc.klay.getBlockNumber().send();
+                BigInteger result = response.getValue();
+                assertNotNull(result);
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void getBlockByNumberTest() {
+            try {
+                Block response = caver.rpc.klay.getBlockByNumber(DefaultBlockParameterName.LATEST, true).send();
+                Block.BlockData<Transaction.TransactionData> block = response.getResult();
+                assertNotNull(block.getHash());
+
+                response = caver.rpc.klay.getBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
+                block = response.getResult();
+                assertNotNull(block.getHash());
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void getBlockByHashTest() {
+            try {
+                Block response = caver.rpc.klay.getBlockByNumber(DefaultBlockParameterName.LATEST, true).send();
+                Block.BlockData<Transaction.TransactionData> block = response.getResult();
+
+                Block responseByHash = caver.rpc.klay.getBlockByHash(block.getHash(), true).send();
+
+                assertEquals(block.getHash(), responseByHash.getResult().getHash());
+
+                response = caver.rpc.klay.getBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
+                block = response.getResult();
+
+                responseByHash = caver.rpc.klay.getBlockByHash(block.getHash(), false).send();
+
+                assertEquals(block.getHash(), responseByHash.getResult().getHash());
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void getBlockReceiptsTest() {
+            try {
+                Block response = caver.rpc.klay.getBlockByNumber(DefaultBlockParameterName.LATEST, true).send();
+                Block.BlockData<Transaction.TransactionData> block = response.getResult();
+
+                BlockTransactionReceipts blockReceipts = caver.rpc.klay.getBlockReceipts(block.getHash()).send();
+                assertEquals(block.getHash(), blockReceipts.getResult().get(0).getBlockHash());
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void getTransactionCountByNumberTest() {
+            try {
+                Block response = caver.rpc.klay.getBlockByNumber(DefaultBlockParameterName.LATEST, true).send();
+                Block.BlockData<Transaction.TransactionData> testBlock = response.getResult();
+
+                Quantity responseByNumber = caver.rpc.klay.getTransactionCountByNumber(
+                        new DefaultBlockParameterNumber(Numeric.toBigInt(testBlock.getNumber()))).send();
+                BigInteger result = responseByNumber.getValue();
+                assertEquals(testBlock.getTransactions().size(), result.intValue());
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void getTransactionCountByHash() {
+            try {
+                Block response = caver.rpc.klay.getBlockByNumber(DefaultBlockParameterName.LATEST, true).send();
+                Block.BlockData<Transaction.TransactionData> testBlock = response.getResult();
+
+                Quantity responseByHash = caver.rpc.klay.getTransactionCountByHash(testBlock.getHash()).send();
+                BigInteger result = responseByHash.getValue();
+                assertEquals(testBlock.getTransactions().size(), result.intValue());
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void getBlockWithConsensusInfoByHashTest() throws Exception {
+            Block response = caver.rpc.klay.getBlockByNumber(DefaultBlockParameterName.LATEST, true).send();
+            Block.BlockData<Transaction.TransactionData> testBlock = response.getResult();
+
+            BlockWithConsensusInfo responseInfo = caver.rpc.klay.getBlockWithConsensusInfoByHash(testBlock.getHash()).send();
+            BlockWithConsensusInfo.Block result = responseInfo.getResult();
+            assertEquals(testBlock.getHash(), result.getHash());
+        }
+
+        @Test
+        public void getBlockWithConsensusInfoByNumberTest() throws Exception {
+            Block response = caver.rpc.klay.getBlockByNumber(DefaultBlockParameterName.LATEST, true).send();
+            Block.BlockData<Transaction.TransactionData> testBlock = response.getResult();
+
+            BlockWithConsensusInfo responseInfo = caver.rpc.klay.getBlockWithConsensusInfoByNumber(
+                    new DefaultBlockParameterNumber(Numeric.toBigInt(testBlock.getNumber()))).send();
+            BlockWithConsensusInfo.Block result = responseInfo.getResult();
+            assertEquals(testBlock.getNumber(), result.getNumber());
+        }
+
+        @Test
+        public void getCommitteeTest() throws IOException {
+            Addresses response = caver.rpc.klay.getCommittee(DefaultBlockParameterName.LATEST).send();
+            assertNull(response.getError());
+        }
+
+        @Test
+        public void getCommitteeSizeTest() throws IOException {
+            Quantity response = caver.rpc.klay.getCommitteeSize(DefaultBlockParameterName.LATEST).send();
+            assertNull(response.getError());
+        }
+
+        @Test
+        public void getCouncilTest() throws IOException {
+            Addresses response = caver.rpc.klay.getCouncil(DefaultBlockParameterName.LATEST).send();
+            assertNull(response.getError());
+        }
+
+        @Test
+        public void getCouncilSizeTest() throws IOException {
+            Quantity response = caver.rpc.klay.getCouncilSize(DefaultBlockParameterName.LATEST).send();
+            assertNull(response.getError());
+        }
+
+        @Test
+        public void getStorageAtTest() throws Exception {
+            Response<String> response = caver.rpc.klay.getStorageAt(
+                    LUMAN.getAddress(),
+                    new DefaultBlockParameterNumber(0),
+                    DefaultBlockParameterName.LATEST).send();
+            String result = response.getResult();
+            assertNotNull(result);
+        }
+
+        @Test
+        public void isSyncingTest() throws Exception {
+            KlaySyncing response = caver.rpc.klay.isSyncing().send();
+            KlaySyncing.Result result = response.getResult();
+            assertFalse(result.isSyncing());
+        }
+
+        @Test
+        public void estimateGasTest() throws Exception {
+            KIP17 kip17 = deployContract();
+
+            String encoded = kip17.getMethod("setApprovalForAll").encodeABI(Arrays.asList(BRANDON.getAddress(), true));
+
+            CallObject callObject = CallObject.createCallObject(
+                    LUMAN.getAddress(),
+                    kip17.getContractAddress(),
+                    new BigInteger("100000", 16),
+                    new BigInteger("5d21dba00", 16),
+                    new BigInteger("0", 16),
+                    encoded
+            );
+            Quantity response = caver.rpc.klay.estimateGas(callObject).send();
+            String result = response.getResult();
+            assertEquals("0xb2d9", result);
+        }
+
+        @Test
+        public void estimateComputationCostTest() throws Exception {
+            KIP17 kip17 = deployContract();
+
+            String encoded = kip17.getMethod("setApprovalForAll").encodeABI(Arrays.asList(BRANDON.getAddress(), true));
+
+            CallObject callObject = CallObject.createCallObject(
+                    LUMAN.getAddress(),
+                    kip17.getContractAddress(),
+                    new BigInteger("100000", 16),
+                    new BigInteger("5d21dba00", 16),
+                    new BigInteger("0", 16),
+                    encoded
+            );
+            Quantity response = caver.rpc.klay.estimateComputationCost(callObject, DefaultBlockParameterName.LATEST).send();
+            String result = response.getResult();
+            assertEquals("0xe036", result);
+        }
+
+        @Test
+        public void getTransactionByBlockHashAndIndexTest() throws Exception {
+            TransactionReceipt.TransactionReceiptData receiptData = sendKlay();
+
+            Transaction res = caver.rpc.klay.getTransactionByBlockHashAndIndex(receiptData.getBlockHash(), 0).send();
+            assertEquals(receiptData.getBlockHash(), res.getResult().getBlockHash());
+        }
+
+        @Test
+        public void getTransactionByBlockNumberAndIndexTest() throws IOException {
+            Block response = caver.rpc.klay.getBlockByNumber(DefaultBlockParameterName.LATEST, true).send();
+            Block.BlockData<Transaction.TransactionData> testBlock = response.getResult();
+
+            Transaction res = caver.rpc.klay.getTransactionByBlockNumberAndIndex(
+                    new DefaultBlockParameterNumber(Numeric.toBigInt(testBlock.getNumber())),
+                    new DefaultBlockParameterNumber(0)).send();
+            assertEquals(testBlock.getHash(), res.getResult().getBlockHash());
+        }
+
+        @Test
+        public void getTransactionByHashTest() throws Exception {
+            KIP17 kip17 = deployContract();
+            TransactionReceipt.TransactionReceiptData receiptData = kip17.pause(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(30000)));
+
+            Transaction response = caver.rpc.klay.getTransactionByHash(receiptData.getTransactionHash()).send();
+            Transaction.TransactionData result = response.getResult();
+            assertEquals(receiptData.getTransactionHash(), result.getHash());
+        }
+
+        @Test
+        public void getTransactionBySenderTxHashTest() throws Exception {
+            KIP17 kip17 = deployContract();
+            TransactionReceipt.TransactionReceiptData receiptData = kip17.pause(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(30000)));
+
+            Transaction response = caver.rpc.klay.getTransactionBySenderTxHash(receiptData.getTransactionHash()).send();
+            assertEquals(receiptData.getTransactionHash(), response.getResult().getHash());
+        }
+
+        @Test
+        public void getTransactionReceiptTest() throws Exception {
+            KIP17 kip17 = deployContract();
+            TransactionReceipt.TransactionReceiptData receiptData = kip17.pause(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(30000)));
+
+            TransactionReceipt response = caver.rpc.klay.getTransactionReceipt(receiptData.getTransactionHash()).send();
+            assertEquals(receiptData.getTransactionHash(), response.getResult().getTransactionHash());
+        }
+
+        @Test
+        public void getTransactionReceiptBySenderTxHashTest() throws Exception {
+            KIP17 kip17 = deployContract();
+            TransactionReceipt.TransactionReceiptData receiptData = kip17.pause(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(30000)));
+
+            TransactionReceipt response = caver.rpc.klay.getTransactionReceiptBySenderTxHash(receiptData.getTransactionHash()).send();
+            assertEquals(receiptData.getTransactionHash(), response.getResult().getTransactionHash());
+        }
+
+        @Test
+        public void getChainIdTest() throws Exception {
+            Quantity response = caver.rpc.klay.getChainID().send();
+            BigInteger result = response.getValue();
+            assertEquals(BigInteger.valueOf(LOCAL_CHAIN_ID), result);
+        }
+
+        @Test
+        public void getClientVersionTest() throws IOException {
+            Bytes response = caver.rpc.klay.getClientVersion().send();
+            assertNull(response.getError());
+        }
+
+        @Test
+        public void getGasPriceTest() throws Exception {
+            Quantity response = caver.rpc.klay.getGasPrice().send();
+            BigInteger result = response.getValue();
+            assertEquals(new BigInteger("5d21dba00", 16), result); // 25,000,000,000 peb = 25 Gpeb
+        }
+
+        @Test
+        public void getGasPriceAtTest() throws IOException {
+            Quantity response = caver.rpc.klay.getGasPriceAt().send();
+            BigInteger result = response.getValue();
+            assertEquals(new BigInteger("5d21dba00", 16), result); // 25,000,000,000 peb = 25 Gpeb
+        }
+
+        @Test
+        public void isParallelDbWriteTest() throws Exception {
+            Boolean response = caver.rpc.klay.isParallelDBWrite().send();
+            java.lang.Boolean result = response.getResult();
+            assertTrue(result);  // It is enabled by default
+        }
+
+        @Test
+        public void isSenderTxHashIndexingEnabledTest() throws Exception {
+            Boolean response = caver.rpc.klay.isSenderTxHashIndexingEnabled().send();
+            java.lang.Boolean result = response.getResult();
+            assertFalse(result);  // It is disabled by default
+        }
+
+        @Test
+        public void getProtocolVersionTest() throws Exception {
+            String result = caver.rpc.klay.getProtocolVersion().send().getResult();
+            assertEquals("0x40", result);
+        }
+
+        @Ignore
+        @Test
+        public void getRewardbaseTest() throws Exception {
+            Bytes20 response = caver.rpc.klay.getRewardbase().send();
+            // Result - If requested from non-CN nodes
+            assertEquals("rewardbase must be explicitly specified", response.getError().getMessage());
+        }
+
+        @Test
+        public void isWriteThroughCachingTest() throws Exception {
+            Boolean response = caver.rpc.klay.writeThroughCaching().send();
+            java.lang.Boolean result = response.getResult();
+            assertFalse(result);  // It is false by default.
+        }
+
+        @Test
+        @Ignore
+        public void getFilterChangesTest() throws Exception {
+            KlayLogs response = caver.rpc.klay.getFilterChanges(
+                    "d5b93cf592b2050aee314767a02976c5").send();
+            List<KlayLogs.LogResult> result = response.getResult();
+            assertTrue("need test data", false);
+        }
+
+        @Test
+        @Ignore
+        public void getFilterLogsTest() throws Exception {
+            KlayLogs response = caver.rpc.klay.getFilterLogs(
+                    "d5b93cf592b2050aee314767a02976c5").send();
+            List<KlayLogs.LogResult> result = response.getResult();
+            assertTrue("need test data", false);
+        }
+
+        @Test
+        @Ignore
+        public void getLogsTest() throws Exception {
+            KlayLogFilter filter = new KlayLogFilter(
+                    DefaultBlockParameterName.EARLIEST,
+                    DefaultBlockParameterName.LATEST,
+                    LUMAN.getAddress(),
+                    "0xe2649fe9fbaa75601408fc54200e3f9b2128e8fec7cea96c9a65b9caf905c9e3");
+            KlayLogs response = caver.rpc.klay.getLogs(filter).send();
+            List<KlayLogs.LogResult> result = response.getResult();
+            assertTrue("need test data", false);
+        }
+
+        @Test
+        public void newBlockFilterTest() throws Exception {
+            Response<String> response = caver.rpc.klay.newBlockFilter().send();
+            String result = response.getResult();
+            assertNotNull(result);
+        }
+
+        @Test
+        public void newFilterTest() throws Exception {
+            KlayFilter filter = new KlayFilter(
+                    DefaultBlockParameterName.EARLIEST,
+                    DefaultBlockParameterName.LATEST,
+                    LUMAN.getAddress());
+            filter.addSingleTopic("0xd596fdad182d29130ce218f4c1590c4b5ede105bee36690727baa6592bd2bfc8");
+            Quantity response = caver.rpc.klay.newFilter(filter).send();
+            String result = response.getResult();
+            assertNotNull(result);
+        }
+
+        @Test
+        public void newPendingTransactionFilterTest() throws Exception {
+            Response<String> response = caver.rpc.klay.newPendingTransactionFilter().send();
+            String result = response.getResult();
+            assertNotNull(result);
+        }
+
+        @Test
+        @Ignore
+        public void uninstallFilterTest() throws Exception {
+            Boolean response = caver.rpc.klay.uninstallFilter("0x0").send();
+            java.lang.Boolean result = response.getResult();
+            assertTrue("need test data", false);
+        }
+
+        @Test
+        public void getSha3Test() throws IOException {
+            Bytes response = caver.rpc.klay.sha3("0x123f").send();
+            String result = response.getResult();
+            assertEquals("0x7fab6b214381d6479bf140c3c8967efb9babe535025500d5b1dc2d549984b90b", result);
+        }
+
+        @Test
+        public void getIdTest() throws Exception {
+            Bytes netVersion = caver.rpc.net.getNetworkID().send();
+            assertEquals(netVersion.getResult(), String.valueOf(LOCAL_NETWORK_ID));
+        }
+
+        @Test
+        public void isListeningTest() throws Exception {
+            Boolean netListening = caver.rpc.net.isListening().send();
+            assertTrue(netListening.getResult());
+        }
+
+        @Test
+        public void getPeerCountTest() throws Exception {
+            Quantity peerCount = caver.rpc.net.getPeerCount().send();
+            assertTrue(peerCount.getValue().intValue() >= 0);
+        }
+
+        @Test
+        public void getPeerCountByTypeTest() throws Exception {
+            KlayPeerCount klayPeerCount = caver.rpc.net.getPeerCountByType().send();
+            KlayPeerCount.PeerCount peerCount = klayPeerCount.getResult();
+            assertTrue(peerCount.getTotal().intValue() >= 0);
         }
     }
 }

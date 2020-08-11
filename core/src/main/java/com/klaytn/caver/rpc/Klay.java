@@ -319,8 +319,8 @@ public class Klay {
      * @param address The account address
      * @return Boolean
      */
-    public Request<?, Boolean> isContractAddress(String address) {
-        return isContractAddress(address, DefaultBlockParameterName.LATEST);
+    public Request<?, Boolean> isContractAccount(String address) {
+        return isContractAccount(address, DefaultBlockParameterName.LATEST);
     }
 
     /**
@@ -330,21 +330,10 @@ public class Klay {
      * @param blockNumber The block number..
      * @return Boolean
      */
-    public Request<?, Boolean> isContractAddress(String address, long blockNumber) {
+    public Request<?, Boolean> isContractAccount(String address, long blockNumber) {
         DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
 
-        return isContractAddress(address, blockParameterNumber);
-    }
-
-    /**
-     * Returns true if an input account has a non-empty codeHash at the time of a specific block number.
-     * It returns false if the account is an EOA or a smart contract account which doesn't have codeHash.
-     * @param address The account address
-     * @param blockTag The string "latest", "earliest" or "pending"
-     * @return Boolean
-     */
-    public Request<?, Boolean> isContractAddress(String address, DefaultBlockParameter blockTag) {
-        return isContractAccount(address, blockTag);
+        return isContractAccount(address, blockParameterNumber);
     }
 
     /**
@@ -364,8 +353,6 @@ public class Klay {
                 web3jService,
                 Boolean.class);
     }
-
-
 
     /**
      * The sign method calculates a Klaytn-specific signature.

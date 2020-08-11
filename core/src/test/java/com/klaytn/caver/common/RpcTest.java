@@ -525,7 +525,7 @@ public class RpcTest extends Accounts {
             try {
                 KIP17 kip17 = deployContract();
 
-                Boolean result = caver.rpc.klay.isContractAddress(kip17.getContractAddress()).send();
+                Boolean result = caver.rpc.klay.isContractAccount(kip17.getContractAddress()).send();
                 assertTrue(result.getResult());
             } catch (Exception e) {
                 e.printStackTrace();

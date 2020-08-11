@@ -14,10 +14,14 @@ import com.klaytn.caver.methods.response.*;
 import com.klaytn.caver.methods.response.Account;
 import com.klaytn.caver.methods.response.Boolean;
 import com.klaytn.caver.rpc.Klay;
+import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
+import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.transaction.type.FeeDelegatedValueTransfer;
 import com.klaytn.caver.transaction.type.FeeDelegatedValueTransferWithRatio;
 import com.klaytn.caver.transaction.type.ValueTransfer;
 import com.klaytn.caver.utils.Convert;
+import com.klaytn.caver.utils.Utils;
+import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import org.junit.BeforeClass;
@@ -36,6 +40,7 @@ import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
@@ -442,6 +447,38 @@ public class RpcTest extends Accounts {
     }
 
     public static class otherRPCTest {
+        private static TransactionReceipt.TransactionReceiptData sendKlay() throws IOException, TransactionException {
+           Caver caver = new Caver(Caver.DEFAULT_URL);
+           AbstractKeyring keyring = caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+
+            BigInteger value = new BigInteger(Utils.convertToPeb(BigDecimal.ONE, "KLAY"));
+
+            //Create a value transfer transaction
+            ValueTransfer valueTransfer = new ValueTransfer.Builder()
+                    .setKlaytnCall(caver.rpc.getKlay())
+                    .setFrom(keyring.getAddress())
+                    .setTo("0x8084fed6b1847448c24692470fc3b2ed87f9eb47")
+                    .setValue(value)
+                    .setGas(BigInteger.valueOf(25000))
+                    .build();
+
+            //Sign to the transaction
+            valueTransfer.sign(keyring);
+
+            //Send a transaction to the klaytn blockchain platform (Klaytn)
+            Bytes32 result = caver.rpc.klay.sendRawTransaction(valueTransfer.getRawTransaction()).send();
+            if(result.hasError()) {
+                throw new RuntimeException(result.getError().getMessage());
+            }
+
+            //Check transaction receipt.
+            TransactionReceiptProcessor transactionReceiptProcessor = new PollingTransactionReceiptProcessor(caver, 1000, 15);
+            TransactionReceipt.TransactionReceiptData transactionReceipt = transactionReceiptProcessor.waitForTransactionReceipt(result.getResult());
+
+            return transactionReceipt;
+        }
+
+
         public static KIP17 deployContract() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
             Caver caver = new Caver(Caver.DEFAULT_URL);
             caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
@@ -729,12 +766,11 @@ public class RpcTest extends Accounts {
         }
 
         @Test
-        public void getTransactionByBlockHashAndIndexTest() throws IOException {
-            Block response = caver.rpc.klay.getBlockByNumber(DefaultBlockParameterName.LATEST, true).send();
-            Block.BlockData<Transaction.TransactionData> testBlock = response.getResult();
+        public void getTransactionByBlockHashAndIndexTest() throws Exception {
+            TransactionReceipt.TransactionReceiptData receiptData = sendKlay();
 
-            Transaction res = caver.rpc.klay.getTransactionByBlockHashAndIndex(testBlock.getHash(), 0).send();
-            assertEquals(testBlock.getHash(), res.getResult().getBlockHash());
+            Transaction res = caver.rpc.klay.getTransactionByBlockHashAndIndex(receiptData.getBlockHash(), 0).send();
+            assertEquals(receiptData.getBlockHash(), res.getResult().getBlockHash());
         }
 
         @Test

@@ -1,5 +1,6 @@
 package com.klaytn.caver.common;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.account.*;
 import com.klaytn.caver.base.Accounts;
@@ -24,6 +25,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.DefaultBlockParameterNumber;
@@ -424,6 +426,18 @@ public class RpcTest extends Accounts {
             valueTransfer.signAsFeePayer(feePayerKeyring);
 
             assertEquals(transactionHash, valueTransfer.getTransactionHash());
+        }
+    }
+
+    public static class getAccountKeyTest {
+        @Test
+        public void getAccountKeyResponseTest() throws IOException {
+            ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
+            String testData = "{\"jsonrpc\":\"2.0\",\"id\":8,\"result\":{\"keyType\":2,\"key\":{\"x\":\"0x125b54c0500b2090d9b7504b010d5ee83962f19ca36cf592d5a798d7bc6d94d0\",\"y\":\"0x74dc3e8e8e7def04087010717522f3f1bbebb56c3030fa55853d05c435227cf\"}}}";
+
+            AccountKey account = mapper.readValue(testData, AccountKey.class);
+            assertEquals("0x125b54c0500b2090d9b7504b010d5ee83962f19ca36cf592d5a798d7bc6d94d0074dc3e8e8e7def04087010717522f3f1bbebb56c3030fa55853d05c435227cf",
+                    ((AccountKeyPublic)account.getResult().getAccountKey()).getPublicKey());
         }
     }
 

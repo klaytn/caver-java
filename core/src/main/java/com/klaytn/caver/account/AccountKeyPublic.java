@@ -63,7 +63,9 @@ public class AccountKeyPublic implements IAccountKey{
      * @return AccountKeyPublic
      */
     public static AccountKeyPublic fromXYPoint(String x, String y) {
-        String publicKey = Numeric.prependHexPrefix(x) + Numeric.cleanHexPrefix(y);
+        String xPoint_padded = Numeric.toHexStringWithPrefixZeroPadded(Numeric.toBigInt(x), 64);
+        String yPoint_padded = Numeric.toHexStringWithPrefixZeroPadded(Numeric.toBigInt(y), 64);
+        String publicKey = Numeric.prependHexPrefix(xPoint_padded) + Numeric.cleanHexPrefix(yPoint_padded);
         return new AccountKeyPublic(publicKey);
     }
 

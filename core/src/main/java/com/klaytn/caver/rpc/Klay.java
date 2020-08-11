@@ -1116,7 +1116,7 @@ public class Klay {
     /**
      * Returns the unit price of the given block in peb.
      * NOTE: This API has different behavior from Ethereum's and returns a gas price of Klaytn instead of suggesting a gas price as in Ethereum.
-     * @param blockNumber The block number.
+     * @param blockTag The block tag.
      * @return Quantity
      */
     public Request<?, Quantity> getGasPriceAt(DefaultBlockParameter blockTag) {

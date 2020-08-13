@@ -52,6 +52,19 @@ public class ABI {
     }
 
     /**
+     * Encodes a function call
+     * @param method A ContractMethod instance.
+     * @param params A List of method parameter wrapped solidity wrapper class.
+     * @return String
+     */
+    public static String encodeFunctionCallWithSolidityWrapper(ContractMethod method, List<Type> params) {
+        String methodId = encodeFunctionSignature(method);
+        String encodedArguments = ABI.encodeParameters(params);
+
+        return methodId + encodedArguments;
+    }
+
+    /**
      * Encodes a function signature.
      * @param method A ContractMethod instance.
      * @return String
@@ -69,6 +82,29 @@ public class ABI {
         byte[] input = functionName.getBytes();
         byte[] hash = Hash.sha3(input);
         return Numeric.toHexString(hash).substring(0, 10);
+    }
+
+    /**
+     * Encodes a data related contract deployment.
+     * @param constructor A ContractMethod instance that contains constructor info.
+     * @param byteCode A smart contract bytecode.
+     * @param constructorParams A list of parameter that need to execute Constructor
+     * @return String
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    public static String encodeContractDeploy(ContractMethod constructor, String byteCode, List<Object> constructorParams) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        String encodedParam = "";
+
+        if(constructor != null) {
+            constructor.checkTypeValid(constructorParams);
+            encodedParam = ABI.encodeParameters(constructor, constructorParams);
+        }
+
+        return byteCode + encodedParam;
     }
 
     /**

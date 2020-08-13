@@ -102,11 +102,15 @@ public class ContractMethod {
      * Execute smart contract method in the EVM without sending any transaction.
      * When creating CallObject, it need not to fill 'data', 'to' fields.
      * The 'data', 'to' fields automatically filled in call() method.
-     * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
+     * @param arguments A List of parameter to call smart contract method.
      * @param callObject A CallObject instance to 'call' smart contract method.
      * @return List
      * @throws IOException
      * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
      */
     public List<Type> call(List<Object> arguments, CallObject callObject) throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         List<Object> functionParams = new ArrayList<>();
@@ -116,24 +120,39 @@ public class ContractMethod {
         }
 
         ContractMethod matchedMethod = findMatchedInstance(functionParams);
+        String encodedFunction = ABI.encodeFunctionCall(matchedMethod, functionParams);
 
-        String encodedFunction = ABI.encodeFunctionCall(matchedMethod, arguments);
+        return callFunction(matchedMethod, encodedFunction, callObject);
+    }
 
-        if(callObject.getData() != null || callObject.getTo() != null) {
-            LOGGER.warn("'to' and 'data' field in CallObject will overwrite.");
+    /**
+     * Execute smart contract method in the EVM without sending any transaction.
+     * When creating CallObject, it need not to fill 'data', 'to' fields.
+     * The 'data', 'to' fields automatically filled in call() method.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
+     * @param callObject A CallObject instance to 'call' smart contract method.
+     * @return List
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public List<Type> callWithSolidityWrapper(List<Type> arguments, CallObject callObject) throws IOException, ClassNotFoundException {
+        List<Type> functionParams = new ArrayList<>();
+
+        if(arguments != null) {
+            functionParams.addAll(arguments);
         }
-        callObject.setData(encodedFunction);
-        callObject.setTo(this.getContractAddress());
-        Bytes response = caver.rpc.klay.call(callObject).send();
 
-        String encodedResult = response.getResult();
-        return ABI.decodeParameters(matchedMethod, encodedResult);
+        ContractMethod matchedMethod = findMatchedInstanceWithSolidityWrapper(functionParams);
+        String encodedFunction = ABI.encodeFunctionCallWithSolidityWrapper(matchedMethod, functionParams);
+
+        return callFunction(matchedMethod, encodedFunction, callObject);
     }
 
     /**
      * Send a transaction to smart contract and execute its method.
      * It is used defaultSendOption field to sendOptions
-     * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
+     * @param arguments A List of parameter to call smart contract method.
      * @return TransactionReceiptData
      * @throws IOException
      * @throws TransactionException
@@ -150,7 +169,7 @@ public class ContractMethod {
     /**
      * Send a transaction to smart contract and execute its method.
      * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
-     * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
+     * @param arguments A List of parameter to call smart contract method.
      * @param options An option to execute smart contract method.
      * @return TransactionReceiptData
      * @throws IOException
@@ -167,7 +186,7 @@ public class ContractMethod {
 
     /**
      * Send a transaction to smart contract and execute its method.
-     * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
+     * @param arguments A List of parameter to call smart contract method.
      * @param options An option to execute smart contract method.
      * @param processor A TransactionReceiptProcessor to get receipt.
      * @return TransactionReceiptData
@@ -186,34 +205,65 @@ public class ContractMethod {
             functionParams.addAll(arguments);
         }
 
-        //Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
-        //Passed parameter "options" has higher priority than "defaultSendOption" field.
-        SendOptions sendOptions = makeSendOption(options);
-        checkSendOption(sendOptions);
-
         ContractMethod matchedMethod = findMatchedInstance(functionParams);
+        String encodedFunction = ABI.encodeFunctionCall(matchedMethod, functionParams);
 
-        String encodedFunction = ABI.encodeFunctionCall(matchedMethod, arguments);
+        return sendTransaction(matchedMethod, options, encodedFunction, processor);
+    }
 
-        SmartContractExecution smartContractExecution = new SmartContractExecution.Builder()
-                .setKlaytnCall(caver.rpc.klay)
-                .setFrom(sendOptions.getFrom())
-                .setTo(this.getContractAddress())
-                .setInput(encodedFunction)
-                .setGas(sendOptions.getGas())
-                .setValue(sendOptions.getValue())
-                .build();
+    /**
+     * Send a transaction to smart contract and execute its method using solidity type wrapper class.
+     * It is used defaultSendOption field to sendOptions
+     * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param wrapperArguments A List of parameter that wrapped solidity wrapper class.
+     * @return TransactionReceiptData
+     * @throws IOException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityWrapper(List<Type> wrapperArguments) throws IOException, TransactionException {
+        return sendWithSolidityWrapper(wrapperArguments, null, new PollingTransactionReceiptProcessor(caver, 1000, 15));
+    }
 
-        caver.wallet.sign(sendOptions.getFrom(), smartContractExecution);
-        Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractExecution.getRawTransaction()).send();
+    /**
+     * Send a transaction to smart contract and execute its method using solidity type wrapper class.
+     * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param wrapperArguments A List of parameter that wrapped solidity wrapper class.
+     * @param options An option to execute smart contract method.
+     * @return TransactionReceiptData
+     * @throws IOException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityWrapper(List<Type> wrapperArguments, SendOptions options) throws IOException, TransactionException {
+        return sendWithSolidityWrapper(wrapperArguments, options, new PollingTransactionReceiptProcessor(caver, 1000, 15));
+    }
 
-        TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());
-        return receipt;
+    /**
+     * Send a transaction to smart contract and execute its method using solidity type wrapper class.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param wrapperArguments A List of parameter that wrapped solidity wrapper class.
+     * @param options An option to execute smart contract method.
+     * @param processor A TransactionReceiptProcessor to get receipt.
+     * @return TransactionReceiptData
+     * @throws IOException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityWrapper(List<Type> wrapperArguments, SendOptions options, TransactionReceiptProcessor processor) throws IOException, TransactionException {
+        List<Type> functionParams = new ArrayList<>();
+
+        if(wrapperArguments != null) {
+            functionParams.addAll(wrapperArguments);
+        }
+        ContractMethod matchedMethod = findMatchedInstanceWithSolidityWrapper(functionParams);
+        String encodedFunction = ABI.encodeFunctionCallWithSolidityWrapper(matchedMethod, functionParams);
+
+        return sendTransaction(matchedMethod, options, encodedFunction, processor);
     }
 
     /**
      * Encodes the ABI for this method. It returns 32-bit function signature hash plus the encoded passed parameters.
-     * @param arguments A List of parameter that solidity wrapper type
+     * @param arguments A List of parameter to encode function signature and parameters
      * @return The encoded ABI byte code to send via a transaction or call.
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
@@ -222,7 +272,20 @@ public class ContractMethod {
      * @throws InvocationTargetException
      */
     public String encodeABI(List<Object> arguments) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        return ABI.encodeFunctionCall(this, arguments);
+        ContractMethod matchedMethod = findMatchedInstance(arguments);
+
+        return ABI.encodeFunctionCall(matchedMethod, arguments);
+    }
+
+    /**
+     * Encodes the ABI for this method. It returns 32-bit function signature hash plus the encoded passed parameters.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param arguments A List of parameter that solidity wrapper class
+     * @return The encoded ABI byte code to send via a transaction or call.
+     */
+    public String encodeABIWithSolidityWrapper(List<Type> arguments) {
+        ContractMethod matchedMethod = this.findMatchedInstanceWithSolidityWrapper(arguments);
+        return ABI.encodeFunctionCallWithSolidityWrapper(matchedMethod, arguments);
     }
 
     /**
@@ -344,7 +407,7 @@ public class ContractMethod {
      * Setter function for Caver.
      * @param caver The Caver instance.
      */
-    public void setCaver(Caver caver) {
+    void setCaver(Caver caver) {
         this.caver = caver;
     }
 
@@ -352,7 +415,7 @@ public class ContractMethod {
      * Setter function for type.
      * @param type The input type. It always set "function".
      */
-    public void setType(String type) {
+    void setType(String type) {
         this.type = type;
     }
 
@@ -360,7 +423,7 @@ public class ContractMethod {
      * Setter function for name.
      * @param name A function name.
      */
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
@@ -368,7 +431,7 @@ public class ContractMethod {
      * Setter function for inputs
      * @param inputs The list of ContractIOType contains to function parameter information.
      */
-    public void setInputs(List<ContractIOType> inputs) {
+    void setInputs(List<ContractIOType> inputs) {
         this.inputs = inputs;
     }
 
@@ -376,7 +439,7 @@ public class ContractMethod {
      * Setter function for outputs
      * @param outputs The list of ContractIOTYpe contains to function return value information.
      */
-    public void setOutputs(List<ContractIOType> outputs) {
+    void setOutputs(List<ContractIOType> outputs) {
         this.outputs = outputs;
     }
 
@@ -384,7 +447,7 @@ public class ContractMethod {
      * Setter function for function signature.
      * @param signature A function signature
      */
-    public void setSignature(String signature) {
+    void setSignature(String signature) {
         this.signature = signature;
     }
 
@@ -392,19 +455,24 @@ public class ContractMethod {
      * Setter function for contract address
      * @param contractAddress A contract address.
      */
-    public void setContractAddress(String contractAddress) {
+    void setContractAddress(String contractAddress) {
         this.contractAddress = contractAddress;
+        if(this.getNextContractMethods() != null && this.getNextContractMethods().size() != 0) {
+            this.getNextContractMethods().stream().forEach(contractMethod -> {
+                contractMethod.contractAddress = contractAddress;
+            });
+        }
     }
 
     /**
      * Setter function for defaultSendOption
      * @param defaultSendOptions The sendOptions to set DefaultSendOptions field.
      */
-    public void setDefaultSendOptions(SendOptions defaultSendOptions) {
+    void setDefaultSendOptions(SendOptions defaultSendOptions) {
         this.defaultSendOptions = defaultSendOptions;
     }
 
-    public void setNextContractMethods(List<ContractMethod> nextContractMethods) {
+    void setNextContractMethods(List<ContractMethod> nextContractMethods) {
         this.nextContractMethods = nextContractMethods;
     }
 
@@ -455,17 +523,40 @@ public class ContractMethod {
 
     private ContractMethod findMatchedInstance(List arguments) {
         // Check the parameter type defined in function and the parameter type passed are the same.
-        ContractMethod matchedMethod = null;
+        List<ContractMethod> matchedMethod = new ArrayList<>();
 
         if(this.getInputs().size() != arguments.size()) {
             for(ContractMethod method : this.getNextContractMethods()) {
                 if(method.getInputs().size() == arguments.size()) {
-                    matchedMethod = method;
-                    break;
+                    matchedMethod.add(method);
                 }
             }
         } else {
+            matchedMethod.add(this);
+        }
+
+        if(matchedMethod.size() == 0) {
+            throw new IllegalArgumentException("Cannot find method with passed parameters.");
+        }
+
+        if(matchedMethod.size() != 1) {
+            LOGGER.warn("It found a two or more overloaded function that has same parameter counts. It may be abnormally executed. Please use *withSolidityWrapper().");
+        }
+
+        return matchedMethod.get(0);
+    }
+
+    private ContractMethod findMatchedInstanceWithSolidityWrapper(List<Type> arguments) {
+        ContractMethod matchedMethod = null;
+
+        if(this.checkParamsTypeMatched(arguments)) {
             matchedMethod = this;
+        } else {
+            for(ContractMethod method : this.getNextContractMethods()) {
+                if(method.checkParamsTypeMatched(arguments)) {
+                    matchedMethod = method;
+                }
+            }
         }
 
         if(matchedMethod == null) {
@@ -473,5 +564,54 @@ public class ContractMethod {
         }
 
         return matchedMethod;
+    }
+
+    private boolean checkParamsTypeMatched(List<Type> arguments) {
+        if(this.getInputs().size() != arguments.size()) {
+            return false;
+        }
+
+        for(int i=0; i< this.getInputs().size(); i++) {
+            ContractIOType ioType = this.getInputs().get(i);
+            if(!ioType.getType().equals(arguments.get(i).getTypeAsString())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private TransactionReceipt.TransactionReceiptData sendTransaction(ContractMethod method, SendOptions options, String encodedInput, TransactionReceiptProcessor processor) throws IOException, TransactionException {
+        //Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
+        //Passed parameter "options" has higher priority than "defaultSendOption" field.
+        SendOptions sendOptions = makeSendOption(options);
+        checkSendOption(sendOptions);
+
+        SmartContractExecution smartContractExecution = new SmartContractExecution.Builder()
+                .setKlaytnCall(caver.rpc.klay)
+                .setFrom(sendOptions.getFrom())
+                .setTo(method.getContractAddress())
+                .setInput(encodedInput)
+                .setGas(sendOptions.getGas())
+                .setValue(sendOptions.getValue())
+                .build();
+
+        caver.wallet.sign(sendOptions.getFrom(), smartContractExecution);
+        Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractExecution).send();
+
+        TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());
+        return receipt;
+    }
+
+    private List<Type> callFunction(ContractMethod method, String encodedInput, CallObject callObject) throws ClassNotFoundException, IOException {
+        if(callObject.getData() != null || callObject.getTo() != null) {
+            LOGGER.warn("'to' and 'data' field in CallObject will overwrite.");
+        }
+        callObject.setData(encodedInput);
+        callObject.setTo(method.getContractAddress());
+        Bytes response = caver.rpc.klay.call(callObject).send();
+
+        String encodedResult = response.getResult();
+        return ABI.decodeParameters(method, encodedResult);
     }
 }

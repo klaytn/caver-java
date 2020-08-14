@@ -473,24 +473,6 @@ public class Klay {
      * @return Quantity
      */
     public Request<?, Quantity> getBlockTransactionCountByNumber(long blockNumber) {
-        return getTransactionCountByNumber(blockNumber);
-    }
-
-    /**
-     * Returns the number of transactions in a block matching the given block number.
-     * @param blockTag The string "latest", "earliest" or "pending"
-     * @return Quantity
-     */
-    public Request<?, Quantity> getBlockTransactionCountByNumber(DefaultBlockParameter blockTag) {
-        return getTransactionCountByNumber(blockTag);
-    }
-
-    /**
-     * Returns the number of transactions in a block matching the given block number.
-     * @param blockNumber The block number.
-     * @return Quantity
-     */
-    public Request<?, Quantity> getTransactionCountByNumber(long blockNumber) {
         DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
         return getTransactionCountByNumber(blockParameterNumber);
     }
@@ -500,7 +482,7 @@ public class Klay {
      * @param blockTag The string "latest", "earliest" or "pending"
      * @return Quantity
      */
-    public Request<?, Quantity> getTransactionCountByNumber(DefaultBlockParameter blockTag) {
+    public Request<?, Quantity> getBlockTransactionCountByNumber(DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_getBlockTransactionCountByNumber",
                 Arrays.asList(blockTag),
@@ -509,12 +491,34 @@ public class Klay {
     }
 
     /**
+     * Returns the number of transactions in a block matching the given block number.
+     * @param blockNumber The block number.
+     * @return Quantity
+     */
+    public Request<?, Quantity> getTransactionCountByNumber(long blockNumber) {
+        return getBlockTransactionCountByNumber(blockNumber);
+    }
+
+    /**
+     * Returns the number of transactions in a block matching the given block number.
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return Quantity
+     */
+    public Request<?, Quantity> getTransactionCountByNumber(DefaultBlockParameter blockTag) {
+        return getBlockTransactionCountByNumber(blockTag);
+    }
+
+    /**
      * Returns the number of transactions in a block from a block matching the given block hash.
      * @param blockHash The hash of a block
      * @return Quantity
      */
     public Request<?, Quantity> getBlockTransactionCountByHash(String blockHash) {
-        return getTransactionCountByHash(blockHash);
+        return new Request<>(
+                "klay_getBlockTransactionCountByHash",
+                Arrays.asList(blockHash),
+                web3jService,
+                Quantity.class);
     }
 
     /**
@@ -523,11 +527,7 @@ public class Klay {
      * @return Quantity
      */
     public Request<?, Quantity> getTransactionCountByHash(String blockHash) {
-        return new Request<>(
-                "klay_getBlockTransactionCountByHash",
-                Arrays.asList(blockHash),
-                web3jService,
-                Quantity.class);
+        return getBlockTransactionCountByHash(blockHash);
     }
 
     /**

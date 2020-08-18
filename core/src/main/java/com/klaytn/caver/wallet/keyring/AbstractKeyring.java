@@ -115,7 +115,7 @@ abstract public class AbstractKeyring {
      * @return KeyStore
      */
     public KeyStore encryptV3(String password, KeyStoreOption options) throws CipherException {
-        throw new RuntimeException("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
+        throw new RuntimeException("Not supported for this class. Use 'encrypt()' function");
     }
 
     /**

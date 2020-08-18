@@ -1870,7 +1870,7 @@ public class KeyringTest {
         @Test
         public void throwException_keyring_multiple() throws CipherException {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
+            expectedException.expectMessage("Not supported for this class. Use 'encrypt()' function");
             String password = "password";
             MultipleKeyring keyring = generateMultipleKeyring(3);
 
@@ -1882,7 +1882,7 @@ public class KeyringTest {
         @Test
         public void throwException_keyring_roleBased() throws CipherException {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
+            expectedException.expectMessage("Not supported for this class. Use 'encrypt()' function");
             String password = "password";
             RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[] {2,3,4});
 
@@ -1915,7 +1915,7 @@ public class KeyringTest {
         @Test
         public void throwException_instanceMethod_multipleKey() throws CipherException {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
+            expectedException.expectMessage("Not supported for this class. Use 'encrypt()' function");
 
             String password = "password";
             AbstractKeyring keyring = generateMultipleKeyring(3);
@@ -1928,7 +1928,7 @@ public class KeyringTest {
         @Test
         public void throwException_instanceMethod_roleBasedKey() throws CipherException {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
+            expectedException.expectMessage("Not supported for this class. Use 'encrypt()' function");
 
             String password = "password";
             AbstractKeyring keyring = generateRoleBaseKeyring(new int[] {3,4,5});
@@ -2019,7 +2019,7 @@ public class KeyringTest {
         @Test
         public void getKlaytnWallet_throwException_multiKey() {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("The keyring cannot be exported in KlaytnWalletKey format. Use keyring.encrypt.");
+            expectedException.expectMessage("Not supported for this class.");
 
             MultipleKeyring keyring = generateMultipleKeyring(3);
             String keyStr = keyring.getKlaytnWalletKey();
@@ -2029,7 +2029,7 @@ public class KeyringTest {
         @Test
         public void getKlaytnWallet_thrownException_roleBased() {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("The keyring cannot be exported in KlaytnWalletKey format. Use keyring.encrypt.");
+            expectedException.expectMessage("Not supported for this class.");
 
             RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[]{1,3,4});
             String keyStr = keyring.getKlaytnWalletKey();

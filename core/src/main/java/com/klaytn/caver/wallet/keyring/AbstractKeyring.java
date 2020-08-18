@@ -115,7 +115,7 @@ abstract public class AbstractKeyring {
      * @return KeyStore
      */
     public KeyStore encryptV3(String password, KeyStoreOption options) throws CipherException {
-        throw new RuntimeException("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
+        throw new RuntimeException("Not supported for this class. Use 'encrypt()' function");
     }
 
     /**
@@ -124,7 +124,7 @@ abstract public class AbstractKeyring {
      * @return KeyStore
      */
     public KeyStore encryptV3(String password) throws CipherException {
-        throw new RuntimeException("This keyring cannot be encrypted keystore v3. Use 'encrypt()' function");
+        throw new RuntimeException("Not supported for this class. Use 'encrypt()' function");
     }
 
     /**
@@ -132,7 +132,7 @@ abstract public class AbstractKeyring {
      * @return String
      */
     public String getKlaytnWalletKey() {
-        throw new RuntimeException("The keyring cannot be exported in KlaytnWalletKey format. Use keyring.encrypt.");
+        throw new RuntimeException("Not supported for this class.");
     }
 
     /**

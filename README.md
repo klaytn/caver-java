@@ -18,14 +18,14 @@ This library is an interface which allows Java applications to easily communicat
 <dependency>
   <groupId>com.klaytn.caver</groupId>
   <artifactId>core</artifactId>
-  <version>1.5.1</version>
+  <version>1.5.3</version>
 </dependency>
 ```
 #### gradle
 ```groovy
-compile 'com.klaytn.caver:core:1.5.1'
+compile 'com.klaytn.caver:core:1.5.3'
 ```
-If you want to use Android dependency, just append -android at the end of version. (e.g. 1.5.1-android)
+If you want to use Android dependency, just append -android at the end of version. (e.g. 1.5.3-android)
 
 ## Start a Client
 If you want to run your own EN (Endpoint Node), see [EN Operation Guide](https://docs.klaytn.com/node/en) to set up.

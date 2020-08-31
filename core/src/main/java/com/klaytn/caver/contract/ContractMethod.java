@@ -103,6 +103,23 @@ public class ContractMethod {
      * When creating CallObject, it need not to fill 'data', 'to' fields.
      * The 'data', 'to' fields automatically filled in call() method.
      * @param arguments A List of parameter to call smart contract method.
+     * @return List
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    public List<Type> call(List<Object> arguments) throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        return call(arguments, CallObject.createCallObject());
+    }
+
+    /**
+     * Execute smart contract method in the EVM without sending any transaction.
+     * When creating CallObject, it need not to fill 'data', 'to' fields.
+     * The 'data', 'to' fields automatically filled in call() method.
+     * @param arguments A List of parameter to call smart contract method.
      * @param callObject A CallObject instance to 'call' smart contract method.
      * @return List
      * @throws IOException
@@ -123,6 +140,20 @@ public class ContractMethod {
         String encodedFunction = ABI.encodeFunctionCall(matchedMethod, functionParams);
 
         return callFunction(matchedMethod, encodedFunction, callObject);
+    }
+
+    /**
+     * Execute smart contract method in the EVM without sending any transaction.
+     * The 'data', 'to' fields automatically filled in call() method.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
+     * @param callObject A CallObject instance to 'call' smart contract method.
+     * @return List
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public List<Type> callWithSolidityWrapper(List<Type> arguments) throws IOException, ClassNotFoundException {
+        return callWithSolidityWrapper(arguments, CallObject.createCallObject());
     }
 
     /**

@@ -303,8 +303,13 @@ public class ContractMethod {
      * @throws InvocationTargetException
      */
     public String encodeABI(List<Object> arguments) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        ContractMethod matchedMethod = findMatchedInstance(arguments);
+        List<Object> functionParams = new ArrayList<>();
 
+        if(arguments != null) {
+            functionParams.addAll(arguments);
+        }
+
+        ContractMethod matchedMethod = findMatchedInstance(functionParams);
         return ABI.encodeFunctionCall(matchedMethod, arguments);
     }
 
@@ -314,9 +319,15 @@ public class ContractMethod {
      * @param arguments A List of parameter that solidity wrapper class
      * @return The encoded ABI byte code to send via a transaction or call.
      */
-    public String encodeABIWithSolidityWrapper(List<Type> arguments) {
-        ContractMethod matchedMethod = this.findMatchedInstanceWithSolidityWrapper(arguments);
-        return ABI.encodeFunctionCallWithSolidityWrapper(matchedMethod, arguments);
+    public String encodeABIWithSolidityWrapper(List<Type> wrapperArguments) {
+        List<Type> functionParams = new ArrayList<>();
+
+        if(wrapperArguments != null) {
+            functionParams.addAll(wrapperArguments);
+        }
+
+        ContractMethod matchedMethod = this.findMatchedInstanceWithSolidityWrapper(functionParams);
+        return ABI.encodeFunctionCallWithSolidityWrapper(matchedMethod, functionParams);
     }
 
     /**

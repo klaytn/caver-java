@@ -147,7 +147,6 @@ public class ContractMethod {
      * The 'data', 'to' fields automatically filled in call() method.
      * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
      * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
-     * @param callObject A CallObject instance to 'call' smart contract method.
      * @return List
      * @throws IOException
      * @throws ClassNotFoundException
@@ -316,7 +315,7 @@ public class ContractMethod {
     /**
      * Encodes the ABI for this method. It returns 32-bit function signature hash plus the encoded passed parameters.
      * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
-     * @param arguments A List of parameter that solidity wrapper class
+     * @param wrapperArguments A List of parameter that solidity wrapper class
      * @return The encoded ABI byte code to send via a transaction or call.
      */
     public String encodeABIWithSolidityWrapper(List<Type> wrapperArguments) {

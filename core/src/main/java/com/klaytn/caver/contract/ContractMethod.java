@@ -142,7 +142,6 @@ public class ContractMethod {
 
     /**
      * Execute smart contract method in the EVM without sending any transaction.
-     * The 'data', 'to' fields automatically filled in call() method.
      * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
      * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
      * @return List

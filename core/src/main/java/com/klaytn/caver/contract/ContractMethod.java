@@ -100,8 +100,6 @@ public class ContractMethod {
 
     /**
      * Execute smart contract method in the EVM without sending any transaction.
-     * When creating CallObject, it need not to fill 'data', 'to' fields.
-     * The 'data', 'to' fields automatically filled in call() method.
      * @param arguments A List of parameter to call smart contract method.
      * @return List
      * @throws IOException

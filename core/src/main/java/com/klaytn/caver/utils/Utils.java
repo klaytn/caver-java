@@ -89,8 +89,12 @@ public class Utils {
      */
     public static boolean isValidPublicKey(String publicKey) {
         String noPrefixPubKey = Numeric.cleanHexPrefix(publicKey);
-        ECPoint point = null;
         boolean result;
+
+        if(noPrefixPubKey.length() == 130 && noPrefixPubKey.startsWith("04")) {
+            noPrefixPubKey = noPrefixPubKey.substring(2);
+        }
+
         if(noPrefixPubKey.length() != 66 && noPrefixPubKey.length() != 128) {
             return false;
         }

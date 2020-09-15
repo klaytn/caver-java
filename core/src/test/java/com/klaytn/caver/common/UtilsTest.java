@@ -118,6 +118,12 @@ public class UtilsTest {
         }
 
         @Test
+        public void uncompressedKeyWithTagTest() {
+            String key = "0x04019b186993b620455077b6bc37bf61666725d8d87ab33eb113ac0414cd48d78ff46e5ea48c6f22e8f19a77e5dbba9d209df60cbcb841b7e3e81fe444ba829831";
+            assertTrue(Utils.isValidPublicKey(key));
+        }
+
+        @Test
         public void compressedKeyTest() {
             String key = KeyringFactory.generate().getPublicKey();
             key = Utils.compressPublicKey(key);
@@ -169,6 +175,14 @@ public class UtilsTest {
             assertTrue(Utils.isValidPublicKey(actualUncompressed));
             assertEquals(expectedUncompressed, actualUncompressed);
         }
+
+        @Test
+        public void alreadyDecompressedKeyWithTag() {
+            String expected = "0x04019b186993b620455077b6bc37bf61666725d8d87ab33eb113ac0414cd48d78ff46e5ea48c6f22e8f19a77e5dbba9d209df60cbcb841b7e3e81fe444ba829831";
+            String key = Utils.decompressPublicKey(expected);
+
+            assertEquals(expected, key);
+        }
     }
 
     public static class compressedPublicKeyTest {
@@ -186,6 +200,14 @@ public class UtilsTest {
             String actualCompressed = Utils.compressPublicKey(expectedCompressed);
             assertTrue(Utils.isValidPublicKey(actualCompressed));
             assertEquals(expectedCompressed, actualCompressed);
+        }
+
+        @Test
+        public void compressedPublicKeyWithTag() {
+            String key = "0x04019b186993b620455077b6bc37bf61666725d8d87ab33eb113ac0414cd48d78ff46e5ea48c6f22e8f19a77e5dbba9d209df60cbcb841b7e3e81fe444ba829831";
+            String expected = Utils.compressPublicKey("019b186993b620455077b6bc37bf61666725d8d87ab33eb113ac0414cd48d78ff46e5ea48c6f22e8f19a77e5dbba9d209df60cbcb841b7e3e81fe444ba829831");
+
+            assertEquals(expected, Utils.compressPublicKey(key));
         }
     }
 

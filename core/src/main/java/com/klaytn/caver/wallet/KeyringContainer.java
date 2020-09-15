@@ -154,7 +154,7 @@ public class KeyringContainer {
         }
 
         AbstractKeyring added = keyring.copy();
-        this.addressKeyringMap.put(keyring.getAddress(), added);
+        this.addressKeyringMap.put(keyring.getAddress().toLowerCase(), added);
 
         return added;
     }

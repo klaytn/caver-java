@@ -356,6 +356,18 @@ public class KeyringContainerTest {
 
             container.getKeyring(invalidAddress);
         }
+
+        @Test
+        public void upperCaseAddress() {
+            String address = "0x37223E5E41186A782e4A1F709829F521f43b18E5";
+            SingleKeyring keyring = KeyringFactory.create(address, PrivateKey.generate().getPrivateKey());
+
+            KeyringContainer container = new KeyringContainer();
+            container.add(keyring);
+
+            assertNotNull(container.getKeyring(address));
+            assertEquals(address, container.getKeyring(address).getAddress());
+        }
     }
 
     public static class addTest {
@@ -435,6 +447,7 @@ public class KeyringContainerTest {
             validateRoleBasedKeyring(added, address, expectPrivateKeyArr);
             validateRoleBasedKeyring(fromContainer, address, expectPrivateKeyArr);
         }
+
     }
 
     public static class removeTest {

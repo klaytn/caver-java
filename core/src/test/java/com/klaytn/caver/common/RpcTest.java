@@ -877,13 +877,6 @@ public class RpcTest extends Accounts {
         }
 
         @Test
-        public void isWriteThroughCachingTest() throws Exception {
-            Boolean response = caver.rpc.klay.writeThroughCaching().send();
-            java.lang.Boolean result = response.getResult();
-            assertFalse(result);  // It is false by default.
-        }
-
-        @Test
         @Ignore
         public void getFilterChangesTest() throws Exception {
             KlayLogs response = caver.rpc.klay.getFilterChanges(

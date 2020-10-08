@@ -508,15 +508,6 @@ public class JsonRpc2_0Klay implements Klay {
     }
 
     @Override
-    public Request<?, Boolean> isWriteThroughCaching() {
-        return new Request<>(
-                "klay_writeThroughCaching",
-                Collections.<String>emptyList(),
-                web3jService,
-                Boolean.class);
-    }
-
-    @Override
     public Request<?, KlayLogs> getFilterChanges(BigInteger filterId) {
         return new Request<>(
                 "klay_getFilterChanges",

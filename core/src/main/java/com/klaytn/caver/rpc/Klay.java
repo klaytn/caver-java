@@ -1193,19 +1193,6 @@ public class Klay {
     }
 
     /**
-     * Returns true if the node is using write through caching.
-     * If enabled, block bodies and receipts are cached when they are written to persistent storage. It is false by default.
-     * @return Boolean
-     */
-    public Request<?, Boolean> writeThroughCaching() {
-        return new Request<>(
-                "klay_writeThroughCaching",
-                Collections.<String>emptyList(),
-                web3jService,
-                Boolean.class);
-    }
-
-    /**
      * Polling method for a filter, which returns an array of logs which occurred since last poll.
      * @param filterId The filter id.
      * @return KlayLogs

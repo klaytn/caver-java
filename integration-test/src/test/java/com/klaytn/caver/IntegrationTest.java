@@ -97,7 +97,7 @@ public class IntegrationTest {
     @Test
     public void INT_API() throws Exception {
         testGenerator = new TestGenerator.Builder("INT-API")
-                .setSkip("006.json", "009.json", "032.json", "034.json", "044.json")
+                .setSkip("006.json", "009.json", "032.json", "034.json", "044.json", "045.json")
                 .build();
         testGenerator.generateAll();
     }

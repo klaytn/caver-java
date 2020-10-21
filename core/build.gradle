@@ -1,7 +1,7 @@
 description 'caverj project core'
 
 dependencies {
-    compile "org.web3j:core:$web3jVersion"
-    compile "com.squareup:javapoet:$javapoetVersion"
+    implementation "org.web3j:core:$web3jVersion"
+    implementation "com.github.ipfs:java-ipfs-http-client:$ipfsVersion"
 }
 

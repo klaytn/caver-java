@@ -27,20 +27,6 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        AccountUpdateTest.createInstance.class,
-        AccountUpdateTest.createInstanceBuilder.class,
-        AccountUpdateTest.getRLPEncodingTest.class,
-        AccountUpdateTest.signWithKeyTest.class,
-        AccountUpdateTest.signWithKeysTest.class,
-        AccountUpdateTest.appendSignaturesTest.class,
-        AccountUpdateTest.combineSignatureTest.class,
-        AccountUpdateTest.getRawTransactionTest.class,
-        AccountUpdateTest.getTransactionHashTest.class,
-        AccountUpdateTest.getSenderTxHashTest.class,
-        AccountUpdateTest.getRLPEncodingForSignatureTest.class,
-})
 public class AccountUpdateTest {
 
     public static AbstractKeyring generateRoleBaseKeyring(int[] numArr, String address) {

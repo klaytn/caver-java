@@ -22,16 +22,6 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        KeyringContainerTest.generateTest.class,
-        KeyringContainerTest.newKeyringTest.class,
-        KeyringContainerTest.updateKeyringTest.class,
-        KeyringContainerTest.getKeyringTest.class,
-        KeyringContainerTest.addTest.class,
-        KeyringContainerTest.removeTest.class,
-        KeyringContainerTest.signMessageTest.class
-})
 public class KeyringContainerTest {
 
     static void validateSingleKeyring(AbstractKeyring actual, String expectAddress, String expectKey) {

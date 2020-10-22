@@ -21,20 +21,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        FeeDelegatedCancelWithRatioTest.createInstance.class,
-        FeeDelegatedCancelWithRatioTest.createInstanceBuilder.class,
-        FeeDelegatedCancelWithRatioTest.getRLPEncodingTest.class,
-        FeeDelegatedCancelWithRatioTest.signAsFeePayer_OneKeyTest.class,
-        FeeDelegatedCancelWithRatioTest.signAsFeePayer_AllKeyTest.class,
-        FeeDelegatedCancelWithRatioTest.appendFeePayerSignaturesTest.class,
-        FeeDelegatedCancelWithRatioTest.combineSignatureTest.class,
-        FeeDelegatedCancelWithRatioTest.getRawTransactionTest.class,
-        FeeDelegatedCancelWithRatioTest.getTransactionHashTest.class,
-        FeeDelegatedCancelWithRatioTest.getSenderTxHashTest.class,
-        FeeDelegatedCancelWithRatioTest.getRLPEncodingForFeePayerSignatureTest.class,
-})
+
 public class FeeDelegatedCancelWithRatioTest {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
     static String senderPrivateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";

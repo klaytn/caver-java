@@ -38,6 +38,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
+import org.web3j.protocol.core.BatchResponse;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.DefaultBlockParameterNumber;
@@ -572,5 +573,18 @@ public class RpcTest {
         KlayPeerCount klayPeerCount = caver.net().getPeerCountByType().send();
         KlayPeerCount.PeerCount peerCount = klayPeerCount.getResult();
         assertTrue(peerCount.getTotal().intValue() >= 0);
+    }
+
+    @Test
+    public void testBatchRequest() throws Exception {
+        BatchResponse batchResponse = caver.getRpc()
+                                           .newBatch()
+                                           .add(caver.getRpc().klay.getBlockNumber())
+                                           .add(caver.getRpc().net.getPeerCount())
+                                           .send();
+        Quantity blockNumber = (Quantity) batchResponse.getResponses().get(0);
+        assertTrue(blockNumber.getValue().intValue() >= 0);
+        Quantity klayPeerCount = (Quantity) batchResponse.getResponses().get(1);
+        assertTrue(klayPeerCount.getValue().intValue() >= 0);
     }
 }

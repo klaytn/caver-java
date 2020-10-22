@@ -447,6 +447,8 @@ public class RpcTest extends Accounts {
     }
 
     public static class otherRPCTest {
+        static TransactionReceipt.TransactionReceiptData sampleReceiptData;
+
         private static TransactionReceipt.TransactionReceiptData sendKlay() throws IOException, TransactionException {
            Caver caver = new Caver(Caver.DEFAULT_URL);
            AbstractKeyring keyring = caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
@@ -487,6 +489,11 @@ public class RpcTest extends Accounts {
             KIP17 kip17 = KIP17.deploy(caver, kip7DeployParam, LUMAN.getAddress());
 
             return kip17;
+        }
+
+        @BeforeClass
+        public static void init() throws IOException, TransactionException {
+            sampleReceiptData = sendKlay();
         }
 
         @Test
@@ -623,11 +630,11 @@ public class RpcTest extends Accounts {
         @Test
         public void getBlockReceiptsTest() {
             try {
-                Block response = caver.rpc.klay.getBlockByNumber(DefaultBlockParameterName.LATEST, true).send();
-                Block.BlockData<Transaction.TransactionData> block = response.getResult();
+                Block response = caver.rpc.klay.getBlockByHash(sampleReceiptData.getBlockHash()).send();
+                Block.BlockData<Transaction.TransactionData> blockData = response.getResult();
 
-                BlockTransactionReceipts blockReceipts = caver.rpc.klay.getBlockReceipts(block.getHash()).send();
-                assertEquals(block.getHash(), blockReceipts.getResult().get(0).getBlockHash());
+                BlockTransactionReceipts blockReceipts = caver.rpc.klay.getBlockReceipts(blockData.getHash()).send();
+                assertEquals(blockData.getHash(), blockReceipts.getResult().get(0).getBlockHash());
             } catch (Exception e) {
                 e.printStackTrace();
                 fail();
@@ -774,14 +781,14 @@ public class RpcTest extends Accounts {
         }
 
         @Test
-        public void getTransactionByBlockNumberAndIndexTest() throws IOException {
-            Block response = caver.rpc.klay.getBlockByNumber(DefaultBlockParameterName.LATEST, true).send();
-            Block.BlockData<Transaction.TransactionData> testBlock = response.getResult();
+        public void getTransactionByBlockNumberAndIndexTest() throws IOException, TransactionException {
+            Block response = caver.rpc.klay.getBlockByHash(sampleReceiptData.getBlockHash()).send();
+            Block.BlockData blockData = response.getResult();
 
             Transaction res = caver.rpc.klay.getTransactionByBlockNumberAndIndex(
-                    new DefaultBlockParameterNumber(Numeric.toBigInt(testBlock.getNumber())),
+                    new DefaultBlockParameterNumber(Numeric.toBigInt(blockData.getNumber())),
                     new DefaultBlockParameterNumber(0)).send();
-            assertEquals(testBlock.getHash(), res.getResult().getBlockHash());
+            assertEquals(blockData.getHash(), res.getResult().getBlockHash());
         }
 
         @Test

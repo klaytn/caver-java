@@ -630,11 +630,8 @@ public class RpcTest extends Accounts {
         @Test
         public void getBlockReceiptsTest() {
             try {
-                Block response = caver.rpc.klay.getBlockByHash(sampleReceiptData.getBlockHash()).send();
-                Block.BlockData<Transaction.TransactionData> blockData = response.getResult();
-
-                BlockTransactionReceipts blockReceipts = caver.rpc.klay.getBlockReceipts(blockData.getHash()).send();
-                assertEquals(blockData.getHash(), blockReceipts.getResult().get(0).getBlockHash());
+                BlockTransactionReceipts blockReceipts = caver.rpc.klay.getBlockReceipts(sampleReceiptData.getBlockHash()).send();
+                assertEquals(sampleReceiptData.getBlockHash(), blockReceipts.getResult().get(0).getBlockHash());
             } catch (Exception e) {
                 e.printStackTrace();
                 fail();

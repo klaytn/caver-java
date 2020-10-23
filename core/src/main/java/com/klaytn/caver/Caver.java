@@ -16,6 +16,7 @@
 
 package com.klaytn.caver;
 
+import com.klaytn.caver.ipfs.IPFS;
 import com.klaytn.caver.rpc.RPC;
 import com.klaytn.caver.wallet.KeyringContainer;
 import okhttp3.OkHttpClient;
@@ -54,6 +55,11 @@ public class Caver {
      * The KeyringContainer instance.
      */
     public KeyringContainer wallet;
+
+    /**
+     * The IPFS instance.
+     */
+    public IPFS ipfs;
 
     public Caver() {
         this(new HttpService(DEFAULT_URL));
@@ -114,6 +120,14 @@ public class Caver {
      */
     public KeyringContainer getWallet() {
         return wallet;
+    }
+
+    /**
+     * Getter for IPFS
+     * @return IPFS
+     */
+    public IPFS getIpfs() {
+        return ipfs;
     }
 
     /**

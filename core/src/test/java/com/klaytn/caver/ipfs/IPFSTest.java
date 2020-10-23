@@ -80,7 +80,7 @@ public class IPFSTest {
 
     @Test
     public void add() throws IOException {
-        createFile();
+        createFile(fileName, text);
         IPFS ipfs = new IPFS("ipfs.infura.io", 5001, true);
 
         String encodedHash = ipfs.add(fileName);

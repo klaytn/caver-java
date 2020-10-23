@@ -1,7 +1,7 @@
 description 'caverj project core'
 
 dependencies {
-    implementation "org.web3j:core:$web3jVersion"
-    implementation "com.github.ipfs:java-ipfs-http-client:$ipfsVersion"
+    compile "org.web3j:core:$web3jVersion"
+    compile "com.github.ipfs:java-ipfs-http-client:$ipfsVersion"
 }
 

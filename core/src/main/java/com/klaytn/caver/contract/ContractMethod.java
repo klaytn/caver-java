@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 The caver-java Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the “License”);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an “AS IS” BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.klaytn.caver.contract;
 
 import com.klaytn.caver.Caver;
@@ -100,6 +116,21 @@ public class ContractMethod {
 
     /**
      * Execute smart contract method in the EVM without sending any transaction.
+     * @param arguments A List of parameter to call smart contract method.
+     * @return List
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    public List<Type> call(List<Object> arguments) throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        return call(arguments, CallObject.createCallObject());
+    }
+
+    /**
+     * Execute smart contract method in the EVM without sending any transaction.
      * When creating CallObject, it need not to fill 'data', 'to' fields.
      * The 'data', 'to' fields automatically filled in call() method.
      * @param arguments A List of parameter to call smart contract method.
@@ -123,6 +154,18 @@ public class ContractMethod {
         String encodedFunction = ABI.encodeFunctionCall(matchedMethod, functionParams);
 
         return callFunction(matchedMethod, encodedFunction, callObject);
+    }
+
+    /**
+     * Execute smart contract method in the EVM without sending any transaction.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param arguments A List of parameter that solidity wrapper type to call smart contract method.
+     * @return List
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public List<Type> callWithSolidityWrapper(List<Type> arguments) throws IOException, ClassNotFoundException {
+        return callWithSolidityWrapper(arguments, CallObject.createCallObject());
     }
 
     /**
@@ -272,20 +315,31 @@ public class ContractMethod {
      * @throws InvocationTargetException
      */
     public String encodeABI(List<Object> arguments) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        ContractMethod matchedMethod = findMatchedInstance(arguments);
+        List<Object> functionParams = new ArrayList<>();
 
+        if(arguments != null) {
+            functionParams.addAll(arguments);
+        }
+
+        ContractMethod matchedMethod = findMatchedInstance(functionParams);
         return ABI.encodeFunctionCall(matchedMethod, arguments);
     }
 
     /**
      * Encodes the ABI for this method. It returns 32-bit function signature hash plus the encoded passed parameters.
      * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
-     * @param arguments A List of parameter that solidity wrapper class
+     * @param wrapperArguments A List of parameter that solidity wrapper class
      * @return The encoded ABI byte code to send via a transaction or call.
      */
-    public String encodeABIWithSolidityWrapper(List<Type> arguments) {
-        ContractMethod matchedMethod = this.findMatchedInstanceWithSolidityWrapper(arguments);
-        return ABI.encodeFunctionCallWithSolidityWrapper(matchedMethod, arguments);
+    public String encodeABIWithSolidityWrapper(List<Type> wrapperArguments) {
+        List<Type> functionParams = new ArrayList<>();
+
+        if(wrapperArguments != null) {
+            functionParams.addAll(wrapperArguments);
+        }
+
+        ContractMethod matchedMethod = this.findMatchedInstanceWithSolidityWrapper(functionParams);
+        return ABI.encodeFunctionCallWithSolidityWrapper(matchedMethod, functionParams);
     }
 
     /**

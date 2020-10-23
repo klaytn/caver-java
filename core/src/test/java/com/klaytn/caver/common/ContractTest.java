@@ -863,6 +863,24 @@ public class ContractTest {
     }
 
     @Test
+    public void callWithNoCallObject() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        Caver caver = new Caver(Caver.DEFAULT_URL);
+
+        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        CallObject callObject = CallObject.createCallObject(
+                LUMAN.getAddress(),
+                contractAddress,
+                null,
+                null,
+                null);
+
+        List<Type> result = contract.getMethod("symbol").call(null);
+
+        Utf8String symbol = (Utf8String)result.get(0);
+        assertEquals("KCT", symbol.getValue());
+    }
+
+    @Test
     public void send() throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         Caver caver = new Caver(Caver.DEFAULT_URL);
         caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));

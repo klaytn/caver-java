@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 The caver-java Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the “License”);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an “AS IS” BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.klaytn.caver.rpc;
 
 import com.klaytn.caver.account.IAccountKey;
@@ -472,7 +488,7 @@ public class Klay {
      * @param blockNumber The block number.
      * @return Quantity
      */
-    public Request<?, Quantity> getTransactionCountByNumber(long blockNumber) {
+    public Request<?, Quantity> getBlockTransactionCountByNumber(long blockNumber) {
         DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
         return getTransactionCountByNumber(blockParameterNumber);
     }
@@ -482,10 +498,41 @@ public class Klay {
      * @param blockTag The string "latest", "earliest" or "pending"
      * @return Quantity
      */
-    public Request<?, Quantity> getTransactionCountByNumber(DefaultBlockParameter blockTag) {
+    public Request<?, Quantity> getBlockTransactionCountByNumber(DefaultBlockParameter blockTag) {
         return new Request<>(
                 "klay_getBlockTransactionCountByNumber",
                 Arrays.asList(blockTag),
+                web3jService,
+                Quantity.class);
+    }
+
+    /**
+     * Returns the number of transactions in a block matching the given block number.
+     * @param blockNumber The block number.
+     * @return Quantity
+     */
+    public Request<?, Quantity> getTransactionCountByNumber(long blockNumber) {
+        return getBlockTransactionCountByNumber(blockNumber);
+    }
+
+    /**
+     * Returns the number of transactions in a block matching the given block number.
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return Quantity
+     */
+    public Request<?, Quantity> getTransactionCountByNumber(DefaultBlockParameter blockTag) {
+        return getBlockTransactionCountByNumber(blockTag);
+    }
+
+    /**
+     * Returns the number of transactions in a block from a block matching the given block hash.
+     * @param blockHash The hash of a block
+     * @return Quantity
+     */
+    public Request<?, Quantity> getBlockTransactionCountByHash(String blockHash) {
+        return new Request<>(
+                "klay_getBlockTransactionCountByHash",
+                Arrays.asList(blockHash),
                 web3jService,
                 Quantity.class);
     }
@@ -496,11 +543,7 @@ public class Klay {
      * @return Quantity
      */
     public Request<?, Quantity> getTransactionCountByHash(String blockHash) {
-        return new Request<>(
-                "klay_getBlockTransactionCountByHash",
-                Arrays.asList(blockHash),
-                web3jService,
-                Quantity.class);
+        return getBlockTransactionCountByHash(blockHash);
     }
 
     /**
@@ -1163,19 +1206,6 @@ public class Klay {
                 Collections.<String>emptyList(),
                 web3jService,
                 Bytes20.class);
-    }
-
-    /**
-     * Returns true if the node is using write through caching.
-     * If enabled, block bodies and receipts are cached when they are written to persistent storage. It is false by default.
-     * @return Boolean
-     */
-    public Request<?, Boolean> writeThroughCaching() {
-        return new Request<>(
-                "klay_writeThroughCaching",
-                Collections.<String>emptyList(),
-                web3jService,
-                Boolean.class);
     }
 
     /**

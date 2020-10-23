@@ -443,14 +443,6 @@ public interface Klay {
     Request<?, Bytes20> getRewardbase();
 
     /**
-     * Returns true if the node is using write through caching. If enabled, block bodies and receipts are cached
-     * when thery are written to persistent storage. It is false by default.
-     *
-     * @return Boolean - true means the node is using write through caching.
-     */
-    Request<?, Boolean> isWriteThroughCaching();
-
-    /**
      * Polling method for a filter, which returns an array of logs which occurred since last poll.
      *
      * @param filterId A filter id

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 The caver-java Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the “License”);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an “AS IS” BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.klaytn.caver.utils;
 
 import com.klaytn.caver.wallet.keyring.SignatureData;
@@ -89,8 +105,12 @@ public class Utils {
      */
     public static boolean isValidPublicKey(String publicKey) {
         String noPrefixPubKey = Numeric.cleanHexPrefix(publicKey);
-        ECPoint point = null;
         boolean result;
+
+        if(noPrefixPubKey.length() == 130 && noPrefixPubKey.startsWith("04")) {
+            noPrefixPubKey = noPrefixPubKey.substring(2);
+        }
+
         if(noPrefixPubKey.length() != 66 && noPrefixPubKey.length() != 128) {
             return false;
         }
@@ -114,15 +134,15 @@ public class Utils {
     /**
      * Convert a compressed public key to an uncompressed format.
      * Given public key has already uncompressed format, it will return
-     * @param compressedPublicKey public key string(uncompressed or compressed)
+     * @param publicKey public key string(uncompressed or compressed)
      * @return uncompressed public key string
      */
-    public static String decompressPublicKey(String compressedPublicKey) {
-        if(AccountKeyPublicUtils.isUncompressedPublicKey(compressedPublicKey)) {
-            return compressedPublicKey;
+    public static String decompressPublicKey(String publicKey) {
+        if(AccountKeyPublicUtils.isUncompressedPublicKey(publicKey)) {
+            return publicKey;
         }
 
-        ECPoint ecPoint = AccountKeyPublicUtils.getECPoint(compressedPublicKey);
+        ECPoint ecPoint = AccountKeyPublicUtils.getECPoint(publicKey);
         String pointXY = Numeric.toHexStringWithPrefixZeroPadded(ecPoint.getAffineXCoord().toBigInteger(), 64) +
                 Numeric.toHexStringNoPrefixZeroPadded(ecPoint.getAffineYCoord().toBigInteger(), 64);
         return pointXY;
@@ -139,8 +159,13 @@ public class Utils {
             return publicKey;
         }
 
-        BigInteger publicKeyBN = Numeric.toBigInt(publicKey);
         String noPrefixKey = Numeric.cleanHexPrefix(publicKey);
+        if(noPrefixKey.length() == 130 && noPrefixKey.startsWith("04")) {
+            noPrefixKey = noPrefixKey.substring(2);
+        }
+
+        BigInteger publicKeyBN = Numeric.toBigInt(noPrefixKey);
+
 
         String publicKeyX = noPrefixKey.substring(0, 64);
         String pubKeyYPrefix = publicKeyBN.testBit(0) ? "03" : "02";

@@ -213,6 +213,25 @@ public class ContractOverloadFunctionsTest {
     }
 
     @Test
+    public void callWithSolidityWrapperNoCallObjectTest() {
+        String methodName = "getOwner";
+
+        Caver caver = new Caver(Caver.DEFAULT_URL);
+        caver.wallet.add(KeyringFactory.createFromPrivateKey(ownerPrivateKey));
+
+        try {
+            Contract contract = new Contract(caver, ABIJson, contractAddress);
+
+            List<Type> result = contract.getMethod(methodName).callWithSolidityWrapper(null);
+            assertEquals(LUMAN.getAddress(), ((Address)result.get(0)).getValue());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
     public void encodeABIWithSolidityWrapperTest() {
         String methodName = "changeOwner";
 

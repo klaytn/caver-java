@@ -148,6 +148,10 @@ public class AccountKeyPublicUtils {
     public static boolean isUncompressedPublicKey(String key) {
         String noPrefixKey = Numeric.cleanHexPrefix(key);
 
+        if(noPrefixKey.length() == 130 && noPrefixKey.startsWith("04")) {
+            noPrefixKey = noPrefixKey.substring(2);
+        }
+
         if(noPrefixKey.length() == 128) {
             String x = noPrefixKey.substring(0, 64);
             String y = noPrefixKey.substring(64);

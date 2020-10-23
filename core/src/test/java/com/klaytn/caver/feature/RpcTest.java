@@ -478,13 +478,6 @@ public class RpcTest {
     }
 
     @Test
-    public void testIsWriteThroughCaching() throws Exception {
-        Boolean response = caver.klay().isWriteThroughCaching().send();
-        java.lang.Boolean result = response.getResult();
-        assertFalse(result);  // It is false by default.
-    }
-
-    @Test
     @Ignore
     public void testGetFilterChanges() throws Exception {
         KlayLogs response = caver.klay().getFilterChanges(

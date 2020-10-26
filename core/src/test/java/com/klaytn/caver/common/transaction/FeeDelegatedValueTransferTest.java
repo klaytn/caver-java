@@ -20,20 +20,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        FeeDelegatedValueTransferTest.createInstance.class,
-        FeeDelegatedValueTransferTest.createInstanceBuilder.class,
-        FeeDelegatedValueTransferTest.getRLPEncodingTest.class,
-        FeeDelegatedValueTransferTest.signAsFeePayer_OneKeyTest.class,
-        FeeDelegatedValueTransferTest.signAsFeePayer_AllKeyTest.class,
-        FeeDelegatedValueTransferTest.appendFeePayerSignaturesTest.class,
-        FeeDelegatedValueTransferTest.combineSignatureTest.class,
-        FeeDelegatedValueTransferTest.getRawTransactionTest.class,
-        FeeDelegatedValueTransferTest.getTransactionHashTest.class,
-        FeeDelegatedValueTransferTest.getSenderTxHashTest.class,
-        FeeDelegatedValueTransferTest.getRLPEncodingForFeePayerSignatureTest.class,
-})
 public class FeeDelegatedValueTransferTest {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
 

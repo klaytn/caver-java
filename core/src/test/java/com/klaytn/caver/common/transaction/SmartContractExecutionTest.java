@@ -20,21 +20,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        SmartContractExecutionTest.createInstance.class,
-        SmartContractExecutionTest.createInstanceBuilder.class,
-        SmartContractExecutionTest.getRLPEncodingTest.class,
-        SmartContractExecutionTest.signWithKeyTest.class,
-        SmartContractExecutionTest.signWithKeysTest.class,
-        SmartContractExecutionTest.appendSignaturesTest.class,
-        SmartContractExecutionTest.combineSignatureTest.class,
-        SmartContractExecutionTest.getRawTransactionTest.class,
-        SmartContractExecutionTest.getTransactionHashTest.class,
-        SmartContractExecutionTest.getSenderTxHashTest.class,
-        SmartContractExecutionTest.getRLPEncodingForSignatureTest.class,
-})
 public class SmartContractExecutionTest {
 
     static Caver caver = new Caver(Caver.DEFAULT_URL);

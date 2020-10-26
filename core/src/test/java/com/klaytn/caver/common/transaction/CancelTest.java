@@ -24,20 +24,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        CancelTest.createInstance.class,
-        CancelTest.createInstanceBuilder.class,
-        CancelTest.getRLPEncodingTest.class,
-        CancelTest.signWithKeyTest.class,
-        CancelTest.signWithKeysTest.class,
-        CancelTest.appendSignaturesTest.class,
-        CancelTest.combineSignatureTest.class,
-        CancelTest.getRawTransactionTest.class,
-        CancelTest.getTransactionHashTest.class,
-        CancelTest.getSenderTxHashTest.class,
-        CancelTest.getRLPEncodingForSignatureTest.class,
-})
 public class CancelTest {
 
     static Caver caver = new Caver(Caver.DEFAULT_URL);

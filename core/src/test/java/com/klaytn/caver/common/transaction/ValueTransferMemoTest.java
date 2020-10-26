@@ -23,21 +23,6 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        ValueTransferMemoTest.createInstance.class,
-        ValueTransferMemoTest.createInstanceBuilder.class,
-        ValueTransferMemoTest.getRLPEncodingTest.class,
-        ValueTransferMemoTest.signWithKeyTest.class,
-        ValueTransferMemoTest.signWithKeysTest.class,
-        ValueTransferMemoTest.appendSignaturesTest.class,
-        ValueTransferMemoTest.combineSignatureTest.class,
-        ValueTransferMemoTest.getRawTransactionTest.class,
-        ValueTransferMemoTest.getTransactionHashTest.class,
-        ValueTransferMemoTest.getSenderTxHashTest.class,
-        ValueTransferMemoTest.getRLPEncodingForSignatureTest.class,
-})
 public class ValueTransferMemoTest {
 
     static Caver caver = new Caver(Caver.DEFAULT_URL);

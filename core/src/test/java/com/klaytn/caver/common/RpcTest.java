@@ -54,17 +54,6 @@ import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses(
-        {
-                RpcTest.encodeAccountKeyTest.class,
-                RpcTest.decodeAccountKeyTest.class,
-                RpcTest.sendTransactionAsFeePayerTest.class,
-                RpcTest.signTransactionTest.class,
-                RpcTest.signTransactionAsFeePayerTest.class,
-                RpcTest.otherRPCTest.class
-        }
-)
 public class RpcTest extends Accounts {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
     static Klay klay = caver.rpc.klay;

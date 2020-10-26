@@ -20,20 +20,6 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        FeeDelegatedChainDataAnchoringWithRatioTest.createInstance.class,
-        FeeDelegatedChainDataAnchoringWithRatioTest.createInstanceBuilder.class,
-        FeeDelegatedChainDataAnchoringWithRatioTest.getRLPEncodingTest.class,
-        FeeDelegatedChainDataAnchoringWithRatioTest.signAsFeePayer_OneKeyTest.class,
-        FeeDelegatedChainDataAnchoringWithRatioTest.signAsFeePayer_AllKeyTest.class,
-        FeeDelegatedChainDataAnchoringWithRatioTest.appendFeePayerSignaturesTest.class,
-        FeeDelegatedChainDataAnchoringWithRatioTest.combineSignatureTest.class,
-        FeeDelegatedChainDataAnchoringWithRatioTest.getRawTransactionTest.class,
-        FeeDelegatedChainDataAnchoringWithRatioTest.getTransactionHashTest.class,
-        FeeDelegatedChainDataAnchoringWithRatioTest.getSenderTxHashTest.class,
-        FeeDelegatedChainDataAnchoringWithRatioTest.getRLPEncodingForFeePayerSignatureTest.class,
-})
 public class FeeDelegatedChainDataAnchoringWithRatioTest {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
     static String senderPrivateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";

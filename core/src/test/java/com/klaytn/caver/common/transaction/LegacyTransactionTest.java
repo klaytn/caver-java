@@ -25,20 +25,6 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        LegacyTransactionTest.createInstance.class,
-        LegacyTransactionTest.createInstanceBuilder.class,
-        LegacyTransactionTest.signWithKeyTest.class,
-        LegacyTransactionTest.signWithKeysTest.class,
-        LegacyTransactionTest.getRLPEncodingTest.class,
-        LegacyTransactionTest.combineSignatureTest.class,
-        LegacyTransactionTest.getRawTransactionTest.class,
-        LegacyTransactionTest.getTransactionHashTest.class,
-        LegacyTransactionTest.getSenderTxHashTest.class,
-        LegacyTransactionTest.getRLPEncodingForSignatureTest.class,
-        LegacyTransactionTest.appendSignaturesTest.class
-})
 public class LegacyTransactionTest {
 
     public static class createInstance {

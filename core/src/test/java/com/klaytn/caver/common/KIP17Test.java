@@ -25,15 +25,6 @@ import static com.klaytn.caver.base.Accounts.BRANDON;
 import static com.klaytn.caver.base.Accounts.LUMAN;
 import static org.junit.Assert.*;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        KIP17Test.ConstructorTest.class,
-        KIP17Test.PausableTest.class,
-        KIP17Test.BurnableTest.class,
-        KIP17Test.MintableTest.class,
-        KIP17Test.CommonTest.class,
-        KIP17Test.EnumerableTest.class
-})
 public class KIP17Test {
     public static KIP17 kip17Contract;
     public static final String CONTRACT_NAME = "NFT";

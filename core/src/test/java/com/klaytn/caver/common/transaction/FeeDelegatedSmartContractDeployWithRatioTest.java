@@ -22,20 +22,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        FeeDelegatedSmartContractDeployWithRatioTest.createInstance.class,
-        FeeDelegatedSmartContractDeployWithRatioTest.createInstanceBuilder.class,
-        FeeDelegatedSmartContractDeployWithRatioTest.getRLPEncodingTest.class,
-        FeeDelegatedSmartContractDeployWithRatioTest.signAsFeePayer_OneKeyTest.class,
-        FeeDelegatedSmartContractDeployWithRatioTest.signAsFeePayer_AllKeyTest.class,
-        FeeDelegatedSmartContractDeployWithRatioTest.appendFeePayerSignaturesTest.class,
-        FeeDelegatedSmartContractDeployWithRatioTest.combineSignatureTest.class,
-        FeeDelegatedSmartContractDeployWithRatioTest.getRawTransactionTest.class,
-        FeeDelegatedSmartContractDeployWithRatioTest.getTransactionHashTest.class,
-        FeeDelegatedSmartContractDeployWithRatioTest.getSenderTxHashTest.class,
-        FeeDelegatedSmartContractDeployWithRatioTest.getRLPEncodingForFeePayerSignatureTest.class,
-})
+
 public class FeeDelegatedSmartContractDeployWithRatioTest {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
     static String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";

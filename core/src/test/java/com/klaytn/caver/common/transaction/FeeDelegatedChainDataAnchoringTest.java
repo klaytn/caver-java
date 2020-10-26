@@ -20,20 +20,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        FeeDelegatedChainDataAnchoringTest.createInstance.class,
-        FeeDelegatedChainDataAnchoringTest.createInstanceBuilder.class,
-        FeeDelegatedChainDataAnchoringTest.getRLPEncodingTest.class,
-        FeeDelegatedChainDataAnchoringTest.signAsFeePayer_OneKeyTest.class,
-        FeeDelegatedChainDataAnchoringTest.signAsFeePayer_AllKeyTest.class,
-        FeeDelegatedChainDataAnchoringTest.appendFeePayerSignaturesTest.class,
-        FeeDelegatedChainDataAnchoringTest.combineSignatureTest.class,
-        FeeDelegatedChainDataAnchoringTest.getRawTransactionTest.class,
-        FeeDelegatedChainDataAnchoringTest.getTransactionHashTest.class,
-        FeeDelegatedChainDataAnchoringTest.getSenderTxHashTest.class,
-        FeeDelegatedChainDataAnchoringTest.getRLPEncodingForFeePayerSignatureTest.class,
-})
 public class FeeDelegatedChainDataAnchoringTest {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
 

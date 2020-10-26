@@ -21,20 +21,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        FeeDelegatedSmartContractDeployTest.createInstance.class,
-        FeeDelegatedSmartContractDeployTest.createInstanceBuilder.class,
-        FeeDelegatedSmartContractDeployTest.getRLPEncodingTest.class,
-        FeeDelegatedSmartContractDeployTest.signAsFeePayer_OneKeyTest.class,
-        FeeDelegatedSmartContractDeployTest.signAsFeePayer_AllKeyTest.class,
-        FeeDelegatedSmartContractDeployTest.appendFeePayerSignaturesTest.class,
-        FeeDelegatedSmartContractDeployTest.combineSignatureTest.class,
-        FeeDelegatedSmartContractDeployTest.getRawTransactionTest.class,
-        FeeDelegatedSmartContractDeployTest.getTransactionHashTest.class,
-        FeeDelegatedSmartContractDeployTest.getSenderTxHashTest.class,
-        FeeDelegatedSmartContractDeployTest.getRLPEncodingForFeePayerSignatureTest.class,
-})
 public class FeeDelegatedSmartContractDeployTest {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
     static String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";

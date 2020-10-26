@@ -22,20 +22,6 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        FeeDelegatedAccountUpdateTest.createInstance.class,
-        FeeDelegatedAccountUpdateTest.createInstanceBuilder.class,
-        FeeDelegatedAccountUpdateTest.getRLPEncodingTest.class,
-        FeeDelegatedAccountUpdateTest.signAsFeePayer_OneKeyTest.class,
-        FeeDelegatedAccountUpdateTest.signAsFeePayer_AllKeyTest.class,
-        FeeDelegatedAccountUpdateTest.appendFeePayerSignaturesTest.class,
-        FeeDelegatedAccountUpdateTest.combineSignatureTest.class,
-        FeeDelegatedAccountUpdateTest.getRawTransactionTest.class,
-        FeeDelegatedAccountUpdateTest.getTransactionHashTest.class,
-        FeeDelegatedAccountUpdateTest.getSenderTxHashTest.class,
-        FeeDelegatedAccountUpdateTest.getRLPEncodingForFeePayerSignatureTest.class,
-})
 public class FeeDelegatedAccountUpdateTest {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
 

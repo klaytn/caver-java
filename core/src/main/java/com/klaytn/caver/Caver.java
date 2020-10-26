@@ -78,6 +78,7 @@ public class Caver {
      * @param service Web3jService
      */
     public Caver(Web3jService service) {
+        ipfs = new IPFS();
         rpc = new RPC(service);
         wallet = new KeyringContainer();
     }

@@ -35,6 +35,10 @@ public class IPFS {
      */
     io.ipfs.api.IPFS ipfs;
 
+
+    public IPFS() {
+    }
+
     /**
      * Creates an IPFS instance.
      * @param host The host url.
@@ -42,7 +46,7 @@ public class IPFS {
      * @param ssl either using ssl or not.
      */
     public IPFS(String host, int port, boolean ssl) {
-        ipfs = new io.ipfs.api.IPFS(host, port, "/api/v0/", ssl);
+        setIPFSNode(host, port, ssl);
     }
 
     /**
@@ -88,5 +92,15 @@ public class IPFS {
     public byte[] get(String encodedHash) throws IOException {
         Multihash multihash = Multihash.fromBase58(encodedHash);
         return this.ipfs.cat(multihash);
+    }
+
+    /**
+     * Set a IPFS node.
+     * @param host The host url.
+     * @param port The port number to use.
+     * @param ssl either using ssl or not.
+     */
+    public void setIPFSNode(String host, int port, boolean ssl) {
+        this.ipfs = new io.ipfs.api.IPFS(host, port, "/api/v0/", ssl);;
     }
 }

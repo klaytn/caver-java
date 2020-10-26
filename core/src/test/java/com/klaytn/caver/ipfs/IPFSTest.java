@@ -81,18 +81,21 @@ public class IPFSTest {
     @Test
     public void add() throws IOException {
         createFile(fileName, text);
-        IPFS ipfs = new IPFS("ipfs.infura.io", 5001, true);
+        Caver caver = new Caver();
+        caver.ipfs.setIPFSNode("ipfs.infura.io", 5001, true);
 
-        String encodedHash = ipfs.add(fileName);
+        String encodedHash = caver.ipfs.add(fileName);
         assertNotNull(encodedHash);
     }
 
     @Test
     public void get() throws IOException {
         String cid = "QmYzW1fXbapdxkZXMQeCYoDCjVc18H8tLfMfrxXRySmQiq";
-        IPFS ipfs = new IPFS("ipfs.infura.io", 5001, true);
 
-        byte[] content = ipfs.get(cid);
+        Caver caver = new Caver();
+        caver.ipfs.setIPFSNode("ipfs.infura.io", 5001, true);
+
+        byte[] content = caver.ipfs.get(cid);
         String data = new String(content);
         assertEquals(text, data);
     }
@@ -100,7 +103,7 @@ public class IPFSTest {
     @Test
     public void integrationTest() throws IOException, TransactionException {
         Caver caver = new Caver();
-        caver.ipfs = new IPFS("ipfs.infura.io", 5001, true);
+        caver.ipfs.setIPFSNode("ipfs.infura.io", 5001, true);
 
         createFile(fileName, text);
         String encodedHash = caver.ipfs.add(fileName);

@@ -23,20 +23,6 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        ValueTransferTest.createInstance.class,
-        ValueTransferTest.createInstanceBuilder.class,
-        ValueTransferTest.getRLPEncodingTest.class,
-        ValueTransferTest.signWithKeyTest.class,
-        ValueTransferTest.signWithKeysTest.class,
-        ValueTransferTest.appendSignaturesTest.class,
-        ValueTransferTest.combineSignatureTest.class,
-        ValueTransferTest.getRawTransactionTest.class,
-        ValueTransferTest.getTransactionHashTest.class,
-        ValueTransferTest.getSenderTxHashTest.class,
-        ValueTransferTest.getRLPEncodingForSignatureTest.class,
-})
 public class ValueTransferTest {
 
     public static AbstractKeyring generateRoleBaseKeyring(int[] numArr, String address) {

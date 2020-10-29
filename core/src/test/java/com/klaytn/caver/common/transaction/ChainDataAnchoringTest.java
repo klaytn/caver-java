@@ -24,20 +24,6 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        ChainDataAnchoringTest.createInstance.class,
-        ChainDataAnchoringTest.createInstanceBuilder.class,
-        ChainDataAnchoringTest.getRLPEncodingTest.class,
-        ChainDataAnchoringTest.signTest.class,
-        ChainDataAnchoringTest.signWithKeysTest.class,
-        ChainDataAnchoringTest.appendSignaturesTest.class,
-        ChainDataAnchoringTest.combineSignatureTest.class,
-        ChainDataAnchoringTest.getRawTransactionTest.class,
-        ChainDataAnchoringTest.getTransactionHashTest.class,
-        ChainDataAnchoringTest.getSenderTxHashTest.class,
-        ChainDataAnchoringTest.getRLPEncodingForSignatureTest.class,
-})
 public class ChainDataAnchoringTest {
 
     static Caver caver = new Caver(Caver.DEFAULT_URL);

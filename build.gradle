@@ -4,6 +4,7 @@ buildscript {
     ext.picocliVersion = '3.0.0'
     ext.junitVersion = '4.12'
     ext.slf4jVersion = '1.7.25'
+    ext.ipfsVersion = '1.3.3'
 }
 
 plugins {
@@ -19,7 +20,7 @@ plugins {
 
 allprojects {
 
-    version '1.5.3'
+    version '1.5.4'
     group 'com.klaytn.caver'
     description 'caver-java project'
 
@@ -30,6 +31,7 @@ allprojects {
 
     repositories {
         mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
 
     javadoc {

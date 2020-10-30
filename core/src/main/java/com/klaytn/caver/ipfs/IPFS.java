@@ -92,11 +92,6 @@ public class IPFS {
         return add(streamable);
     }
 
-    private String add(NamedStreamable streamable) throws IOException {
-        List<MerkleNode> nodeList = ipfs.add(streamable);
-        return nodeList.get(0).hash.toString();
-    }
-
     /**
      * Get file from IPFS.
      * @param encodedHash A encoded multi hash string with base58.
@@ -116,5 +111,17 @@ public class IPFS {
      */
     public void setIPFSNode(String host, int port, boolean ssl) {
         this.ipfs = new io.ipfs.api.IPFS(host, port, "/api/v0/", ssl);;
+    }
+
+
+    /**
+     * Add stream data to IPFS
+     * @param content A byte array to add at IPFS
+     * @return String
+     * @throws IOException
+     */
+    private String add(NamedStreamable streamable) throws IOException {
+        List<MerkleNode> nodeList = ipfs.add(streamable);
+        return nodeList.get(0).hash.toString();
     }
 }

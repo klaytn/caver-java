@@ -64,7 +64,7 @@ public class IPFSTest {
 
     @Test
     public void fromHex() {
-        String multiHashData = "12209cbc07c3f991725836a3aa2a581ca2029198aa420b9d99bc0e131d9f3e2cbe47";
+        String multiHashData = "0x12209cbc07c3f991725836a3aa2a581ca2029198aa420b9d99bc0e131d9f3e2cbe47";
         String expectedEncodedString = "QmYtUc4iTCbbfVSDNKvtQqrfyezPPnFvE33wFmutw9PBBk";
 
         assertEquals(IPFS.fromHex(multiHashData), expectedEncodedString);
@@ -79,13 +79,28 @@ public class IPFSTest {
     }
 
     @Test
-    public void add() throws IOException {
+    public void addFile() throws IOException {
         createFile(fileName, text);
         Caver caver = new Caver();
         caver.ipfs.setIPFSNode("ipfs.infura.io", 5001, true);
 
         String encodedHash = caver.ipfs.add(fileName);
         assertNotNull(encodedHash);
+    }
+
+    @Test
+    public void addByteArray() throws IOException {
+        byte[] data = text.getBytes();
+
+        Caver caver = new Caver();
+        caver.ipfs.setIPFSNode("ipfs.infura.io", 5001, true);
+
+        String cid = caver.ipfs.add(data);
+        assertNotNull(cid);
+
+
+        byte[] content = caver.ipfs.get(cid);
+        assertEquals(text, new String(content));
     }
 
     @Test

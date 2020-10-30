@@ -78,8 +78,22 @@ public class IPFS {
      */
     public String add(String path) throws IOException {
         NamedStreamable streamable = new NamedStreamable.FileWrapper(new File(path));
-        List<MerkleNode> nodeList = ipfs.add(streamable);
+        return add(streamable);
+    }
 
+    /**
+     * Add byte array to IPFS
+     * @param content A byte array to add at IPFS
+     * @return String
+     * @throws IOException
+     */
+    public String add(byte[] content) throws IOException {
+        NamedStreamable streamable = new NamedStreamable.ByteArrayWrapper(content);
+        return add(streamable);
+    }
+
+    private String add(NamedStreamable streamable) throws IOException {
+        List<MerkleNode> nodeList = ipfs.add(streamable);
         return nodeList.get(0).hash.toString();
     }
 

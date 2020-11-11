@@ -12,13 +12,40 @@ This library is an interface which allows Java applications to easily communicat
 - Creation of a new wallet and managing Klaytn wallets
 - Command line tools
 - Android compatible
+
 ## Getting started
+
+### add jitpack Repository
+
+Before install caver-java, You should add a jitpack repository for IPFS feature.
+
+#### maven
+```groovy
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+
+#### gradle
+```groovy
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+### Installation
 #### maven
 ```groovy
 <dependency>
-  <groupId>com.klaytn.caver</groupId>
-  <artifactId>core</artifactId>
-  <version>X.X.X</version>
+    <groupId>com.klaytn.caver</groupId>
+    <artifactId>core</artifactId>
+    <version>X.X.X</version>
 </dependency>
 ```
 #### gradle

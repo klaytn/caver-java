@@ -19,7 +19,7 @@ This library is an interface which allows Java applications to easily communicat
 
 #### add a Repository
 
-Before install caver-java, You should add a jitpack repository for IPFS feature.
+To install caver-java, you should add a jitpack repository for IPFS feature.
 
 **maven**
 ```groovy

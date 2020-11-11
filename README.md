@@ -15,11 +15,13 @@ This library is an interface which allows Java applications to easily communicat
 
 ## Getting started
 
-### add jitpack Repository
+### Installation
+
+#### add a Repository
 
 Before install caver-java, You should add a jitpack repository for IPFS feature.
 
-#### maven
+**maven**
 ```groovy
 <repositories>
     <repository>
@@ -29,7 +31,7 @@ Before install caver-java, You should add a jitpack repository for IPFS feature.
 </repositories>
 ```
 
-#### gradle
+**gradle**
 ```groovy
 allprojects {
     repositories {
@@ -38,9 +40,9 @@ allprojects {
     }
 }
 ```
+#### add a dependency
 
-### Installation
-#### maven
+**maven**
 ```groovy
 <dependency>
     <groupId>com.klaytn.caver</groupId>
@@ -48,7 +50,8 @@ allprojects {
     <version>X.X.X</version>
 </dependency>
 ```
-#### gradle
+
+**gradle**
 ```groovy
 compile 'com.klaytn.caver:core:X.X.X'
 ```

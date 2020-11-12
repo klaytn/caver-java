@@ -220,15 +220,15 @@ public class Contract {
      * @throws ClassNotFoundException
      */
     public List<Type> call(String methodName, Object... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-        return call(methodName, CallObject.createCallObject(), methodArguments);
+        return call(CallObject.createCallObject(), methodName, methodArguments);
     }
 
     /**
      * Execute smart contract method in the EVM without sending any transaction.
      * When creating CallObject, it need not to fill 'data', 'to' fields.
      * The 'data', 'to' fields automatically filled in call() method.
-     * @param methodName The smart contract method name to execute.
      * @param callObject A CallObject instance to 'call' smart contract method.
+     * @param methodName The smart contract method name to execute.
      * @param methodArguments The arguments that need to execute smart contract method.
      * @return List
      * @throws NoSuchMethodException
@@ -238,7 +238,7 @@ public class Contract {
      * @throws InvocationTargetException
      * @throws ClassNotFoundException
      */
-    public List<Type> call(String methodName, CallObject callObject, Object... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public List<Type> call(CallObject callObject, String methodName, Object... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         ContractMethod contractMethod = this.getMethod(methodName);
         return contractMethod.call(Arrays.asList(methodArguments), callObject);
     }
@@ -256,8 +256,8 @@ public class Contract {
      * @throws InvocationTargetException
      * @throws ClassNotFoundException
      */
-    public List<Type> callWithSolidityWrapper(String methodName, Type... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-        return callWithSolidityWrapper(methodName, CallObject.createCallObject(), methodArguments);
+    public List<Type> callWithSolidityTypeReference(String methodName, Type... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        return callWithSolidityTypeReference(CallObject.createCallObject(), methodName, methodArguments);
     }
 
     /**
@@ -265,14 +265,14 @@ public class Contract {
      * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
      * When creating CallObject, it need not to fill 'data', 'to' fields.
      * The 'data', 'to' fields automatically filled in call() method.
-     * @param methodName The smart contract method name to execute.
      * @param callObject A CallObject instance to 'call' smart contract method.
+     * @param methodName The smart contract method name to execute.
      * @param methodArguments The arguments that need to execute smart contract method.
      * @return List
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public List<Type> callWithSolidityWrapper(String methodName, CallObject callObject, Type... methodArguments) throws IOException, ClassNotFoundException {
+    public List<Type> callWithSolidityTypeReference(CallObject callObject, String methodName, Type... methodArguments) throws IOException, ClassNotFoundException {
         ContractMethod contractMethod = this.getMethod(methodName);
 
         return contractMethod.callWithSolidityWrapper(Arrays.asList(methodArguments), callObject);
@@ -294,14 +294,14 @@ public class Contract {
      * @throws TransactionException
      */
     public TransactionReceipt.TransactionReceiptData send(String methodName, Object... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
-        return send(methodName, null, methodArguments);
+        return send(null, methodName, methodArguments);
     }
 
     /**
      * Send a transaction to smart contract and execute its method.
      * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
-     * @param methodName The smart contract method name to execute
      * @param options An option to execute smart contract method.
+     * @param methodName The smart contract method name to execute
      * @param methodArguments The arguments that need to execute smart contract method.
      * @return TransactionReceiptData
      * @throws NoSuchMethodException
@@ -312,15 +312,15 @@ public class Contract {
      * @throws InvocationTargetException
      * @throws ClassNotFoundException
      */
-    public TransactionReceipt.TransactionReceiptData send(String methodName, SendOptions options, Object... methodArguments) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-        return send(methodName, options, new PollingTransactionReceiptProcessor(caver, 1000, 15), methodArguments);
+    public TransactionReceipt.TransactionReceiptData send(SendOptions options, String methodName, Object... methodArguments) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        return send(options, new PollingTransactionReceiptProcessor(caver, 1000, 15), methodName, methodArguments);
     }
 
     /**
      * Send a transaction to smart contract and execute its method.
-     * @param methodName The smart contract method name to execute
      * @param options An option to execute smart contract method.
      * @param receiptProcessor A TransactionReceiptProcessor to get receipt.
+     * @param methodName The smart contract method name to execute
      * @param methodArguments The arguments that need to execute smart contract method.
      * @return TransactionReceiptData
      * @throws NoSuchMethodException
@@ -331,7 +331,7 @@ public class Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData send(String methodName, SendOptions options, TransactionReceiptProcessor receiptProcessor, Object... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData send(SendOptions options, TransactionReceiptProcessor receiptProcessor, String methodName, Object... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         ContractMethod contractMethod = this.getMethod(methodName);
 
         return contractMethod.send(Arrays.asList(methodArguments), options, receiptProcessor);
@@ -353,16 +353,16 @@ public class Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData sendWithSolidityWrapper(String methodName, Type... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
-        return sendWithSolidityWrapper(methodName, null, methodArguments);
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityTypeReference(String methodName, Type... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return sendWithSolidityTypeReference(null, methodName, methodArguments);
     }
 
     /**
      * Send a transaction to smart contract and execute its method using solidity type wrapper class.
      * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
      * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
-     * @param methodName The smart contract method name to execute
      * @param options An option to execute smart contract method.
+     * @param methodName The smart contract method name to execute
      * @param methodArguments The arguments that need to execute smart contract method.
      * @return TransactionReceiptData
      * @throws NoSuchMethodException
@@ -373,16 +373,16 @@ public class Contract {
      * @throws InvocationTargetException
      * @throws ClassNotFoundException
      */
-    public TransactionReceipt.TransactionReceiptData sendWithSolidityWrapper(String methodName, SendOptions options, Type... methodArguments) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-        return sendWithSolidityWrapper(methodName, options, new PollingTransactionReceiptProcessor(caver, 1000, 15), methodArguments);
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityTypeReference(SendOptions options, String methodName, Type... methodArguments) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        return sendWithSolidityTypeReference(options, new PollingTransactionReceiptProcessor(caver, 1000, 15), methodName, methodArguments);
     }
 
     /**
      * Send a transaction to smart contract and execute its method using solidity type wrapper class.
      * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
-     * @param methodName The smart contract method name to execute
      * @param options An option to execute smart contract method.
      * @param receiptProcessor A TransactionReceiptProcessor to get receipt.
+     * @param methodName The smart contract method name to execute
      * @param methodArguments The arguments that need to execute smart contract method.
      * @return TransactionReceiptData
      * @throws NoSuchMethodException
@@ -393,7 +393,7 @@ public class Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData sendWithSolidityWrapper(String methodName, SendOptions options, TransactionReceiptProcessor receiptProcessor, Type... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityTypeReference(SendOptions options, TransactionReceiptProcessor receiptProcessor, String methodName, Type... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         ContractMethod contractMethod = this.getMethod(methodName);
 
         return contractMethod.sendWithSolidityWrapper(Arrays.asList(methodArguments), options, receiptProcessor);

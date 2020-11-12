@@ -257,7 +257,7 @@ public class Contract {
      * @throws ClassNotFoundException
      */
     public List<Type> callWithSolidityWrapper(String methodName, Type... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-        return call(methodName, CallObject.createCallObject(), methodArguments);
+        return callWithSolidityWrapper(methodName, CallObject.createCallObject(), methodArguments);
     }
 
     /**

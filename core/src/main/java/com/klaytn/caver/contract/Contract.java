@@ -256,8 +256,8 @@ public class Contract {
      * @throws InvocationTargetException
      * @throws ClassNotFoundException
      */
-    public List<Type> callWithSolidityTypeReference(String methodName, Type... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-        return callWithSolidityTypeReference(CallObject.createCallObject(), methodName, methodArguments);
+    public List<Type> callWithSolidityType(String methodName, Type... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        return callWithSolidityType(CallObject.createCallObject(), methodName, methodArguments);
     }
 
     /**
@@ -272,7 +272,7 @@ public class Contract {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public List<Type> callWithSolidityTypeReference(CallObject callObject, String methodName, Type... methodArguments) throws IOException, ClassNotFoundException {
+    public List<Type> callWithSolidityType(CallObject callObject, String methodName, Type... methodArguments) throws IOException, ClassNotFoundException {
         ContractMethod contractMethod = this.getMethod(methodName);
 
         return contractMethod.callWithSolidityWrapper(Arrays.asList(methodArguments), callObject);
@@ -353,8 +353,8 @@ public class Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData sendWithSolidityTypeReference(String methodName, Type... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
-        return sendWithSolidityTypeReference(null, methodName, methodArguments);
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityType(String methodName, Type... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return sendWithSolidityType(null, methodName, methodArguments);
     }
 
     /**
@@ -373,8 +373,8 @@ public class Contract {
      * @throws InvocationTargetException
      * @throws ClassNotFoundException
      */
-    public TransactionReceipt.TransactionReceiptData sendWithSolidityTypeReference(SendOptions options, String methodName, Type... methodArguments) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-        return sendWithSolidityTypeReference(options, new PollingTransactionReceiptProcessor(caver, 1000, 15), methodName, methodArguments);
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityType(SendOptions options, String methodName, Type... methodArguments) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        return sendWithSolidityType(options, new PollingTransactionReceiptProcessor(caver, 1000, 15), methodName, methodArguments);
     }
 
     /**
@@ -393,7 +393,7 @@ public class Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData sendWithSolidityTypeReference(SendOptions options, TransactionReceiptProcessor receiptProcessor, String methodName, Type... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityType(SendOptions options, TransactionReceiptProcessor receiptProcessor, String methodName, Type... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         ContractMethod contractMethod = this.getMethod(methodName);
 
         return contractMethod.sendWithSolidityWrapper(Arrays.asList(methodArguments), options, receiptProcessor);

@@ -250,7 +250,7 @@ public class ContractImproveFuncTest {
     @Test
     public void sendWithSolidityWrapper_setString() {
         try {
-            TransactionReceipt.TransactionReceiptData receiptData = contract.sendWithSolidityTypeReference(FUNC_SET_STRING, new Utf8String("KLAY"), new Utf8String("GX"));
+            TransactionReceipt.TransactionReceiptData receiptData = contract.sendWithSolidityType(FUNC_SET_STRING, new Utf8String("KLAY"), new Utf8String("GX"));
             assertEquals("0x1", receiptData.getStatus());
         } catch (Exception e) {
             e.printStackTrace();
@@ -261,7 +261,7 @@ public class ContractImproveFuncTest {
     @Test
     public void sendWithSolidityWrapper_setUint() {
         try {
-            TransactionReceipt.TransactionReceiptData receiptData = contract.sendWithSolidityTypeReference(FUNC_SET_UINT, new Utf8String("DEV"), new Uint256(10));
+            TransactionReceipt.TransactionReceiptData receiptData = contract.sendWithSolidityType(FUNC_SET_UINT, new Utf8String("DEV"), new Uint256(10));
             assertEquals("0x1", receiptData.getStatus());
         } catch (Exception e) {
             e.printStackTrace();
@@ -282,7 +282,7 @@ public class ContractImproveFuncTest {
     @Test
     public void callWithSolidityWrapper_getSymbol() {
         try {
-            List<Type> result = contract.callWithSolidityTypeReference(FUNC_GET_SYMBOL);
+            List<Type> result = contract.callWithSolidityType(FUNC_GET_SYMBOL);
             assertEquals("CONTRACT_TEST", ((Utf8String) result.get(0)).getValue());
         } catch (Exception e) {
             e.printStackTrace();
@@ -304,7 +304,7 @@ public class ContractImproveFuncTest {
     @Test
     public void callWithSolidityWrapper_getString() {
         try {
-            List<Type> result = contract.callWithSolidityTypeReference(FUNC_GET_STRING, new Utf8String("Contract"));
+            List<Type> result = contract.callWithSolidityType(FUNC_GET_STRING, new Utf8String("Contract"));
             assertEquals("Call", ((Utf8String) result.get(0)).getValue());
         } catch (Exception e) {
             e.printStackTrace();
@@ -326,7 +326,7 @@ public class ContractImproveFuncTest {
     @Test
     public void callWithSolidityWrapper_getUint() {
         try {
-            List<Type> result = contract.callWithSolidityTypeReference(FUNC_GET_UINT, new Utf8String("Age"));
+            List<Type> result = contract.callWithSolidityType(FUNC_GET_UINT, new Utf8String("Age"));
             assertEquals(2, ((Uint256) result.get(0)).getValue().intValue());
         } catch (Exception e) {
             e.printStackTrace();

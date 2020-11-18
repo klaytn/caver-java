@@ -103,7 +103,7 @@ public class Utils {
         if(!arr[1].equals("00")) {
             return false;
         }
-        if(!Utils.isAddress(arr[2])) {
+        if(!Utils.isAddress(addHexPrefix(arr[2]))) {
             return false;
         }
         if(!Utils.isValidPrivateKey(arr[0])) {

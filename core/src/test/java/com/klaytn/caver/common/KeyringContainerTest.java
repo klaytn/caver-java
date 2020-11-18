@@ -349,7 +349,7 @@ public class KeyringContainerTest {
 
         @Test
         public void upperCaseAddress() {
-            String address = "0x37223E5E41186A782e4A1F709829F521f43b18E5";
+            String address = "0x37223E5E41186A782E4A1F709829F521F43B18E5";
             SingleKeyring keyring = KeyringFactory.create(address, PrivateKey.generate().getPrivateKey());
 
             KeyringContainer container = new KeyringContainer();

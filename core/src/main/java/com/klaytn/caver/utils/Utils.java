@@ -41,8 +41,8 @@ public class Utils {
      */
     public static boolean isAddress(String address) {
         Pattern baseAddrPattern = Pattern.compile("^(0x)?[0-9a-f]{40}$", Pattern.CASE_INSENSITIVE);
-        Pattern lowerCase = Pattern.compile("^(0x)?[0-9a-f]{40}$");
-        Pattern upperCase = Pattern.compile("^(0x)?[0-9A-F]{40}$");
+        Pattern lowerCase = Pattern.compile("^(0x|0X)?[0-9a-f]{40}$");
+        Pattern upperCase = Pattern.compile("^(0x|0X)?[0-9A-F]{40}$");
 
         //check if it has the basic requirements of an address.
         if(!baseAddrPattern.matcher(address).matches()) {
@@ -55,7 +55,7 @@ public class Utils {
         }
 
         //check checksum address
-        return checkAddressChecksum(address);
+        return checkAddressChecksum(address.replaceFirst("0X", "0x"));
     }
 
     /**

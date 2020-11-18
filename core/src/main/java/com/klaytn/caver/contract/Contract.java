@@ -109,6 +109,45 @@ public class Contract {
     }
 
     /**
+     * Deploy a contract
+     * @param sendOptions A SendOption instance.
+     * @param contractBinaryData A smart contract binary data.
+     * @param constructorParams A List of smart contract constructor parameter.
+     * @return Contract
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public Contract deploy(SendOptions sendOptions, String contractBinaryData, Object... constructorParams) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        ContractDeployParams deployParams = new ContractDeployParams(contractBinaryData, Arrays.asList(constructorParams));
+        return deploy(deployParams, sendOptions);
+    }
+
+    /**
+     * Deploy a contract
+     * @param sendOptions A SendOption instance
+     * @param receiptProcessor A TransactionReceiptProcessor instance.
+     * @param contractBinaryData A smart contract binary data.
+     * @param constructorParams A List of smart contract constructor parameter.
+     * @return Contract
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public Contract deploy(SendOptions sendOptions, TransactionReceiptProcessor receiptProcessor, String contractBinaryData, Object... constructorParams) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        ContractDeployParams deployParams = new ContractDeployParams(contractBinaryData, Arrays.asList(constructorParams));
+        return deploy(deployParams, sendOptions, receiptProcessor);
+    }
+
+    /**
      * Deploy a contract.
      * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor instance.
      * @param deployParam A DeployParam instance.

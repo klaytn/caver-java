@@ -225,6 +225,18 @@ public class ContractImproveFuncTest {
     }
 
     @Test
+    public void deployTest() throws IOException, NoSuchMethodException, TransactionException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        Caver caver = new Caver(Caver.DEFAULT_URL);
+        caver.wallet.add(ownerKeyring);
+
+        Contract contract = new Contract(caver, ABI);
+        SendOptions sendOptions = new SendOptions(ownerKeyring.getAddress(), BigInteger.valueOf(6500000));
+        contract.deploy(sendOptions, BINARY, "TEST");
+
+        assertNotNull(contract.getContractAddress());
+    }
+
+    @Test
     public void send_setString() {
         TransactionReceipt.TransactionReceiptData receiptData = storeStringData("CAVER", "TEST");
         assertEquals("0x1", receiptData.getStatus());

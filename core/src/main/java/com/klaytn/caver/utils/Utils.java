@@ -55,7 +55,7 @@ public class Utils {
         }
 
         //check checksum address
-        return checkAddressChecksum(address.replaceFirst("0X", "0x"));
+        return checkAddressChecksum(address);
     }
 
     /**
@@ -64,6 +64,7 @@ public class Utils {
      * @return boolean
      */
     public static boolean checkAddressChecksum(String address) {
+        address = address.replaceFirst("0X", "0x");
         return (Keys.toChecksumAddress(address).equals(Utils.addHexPrefix(address)));
     }
 

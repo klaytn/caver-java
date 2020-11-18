@@ -132,7 +132,7 @@ public class Contract {
      * @param sendOptions A SendOption instance
      * @param receiptProcessor A TransactionReceiptProcessor instance.
      * @param contractBinaryData A smart contract binary data.
-     * @param constructorParams A List of smart contract constructor parameter.
+     * @param constructorParams The smart contract constructor parameters.
      * @return Contract
      * @throws NoSuchMethodException
      * @throws IOException

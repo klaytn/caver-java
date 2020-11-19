@@ -116,7 +116,7 @@ public class IPFS {
 
     /**
      * Add stream data to IPFS
-     * @param content A byte array to add at IPFS
+     * @param streamable The streamable data
      * @return String
      * @throws IOException
      */

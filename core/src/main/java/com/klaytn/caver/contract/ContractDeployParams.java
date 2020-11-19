@@ -20,6 +20,7 @@ package com.klaytn.caver.contract;
 import org.web3j.abi.datatypes.Type;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -36,6 +37,23 @@ public class ContractDeployParams {
      * A List of smart contract constructor parameter.
      */
     List<Object> deployParams;
+
+    /**
+     * Creates a ContractDeployParam instance.
+     * @param bytecode A smart contract binary data.
+     */
+    public ContractDeployParams(String bytecode) {
+        this(bytecode, (List<Object>)null);
+    }
+
+    /**
+     * Creates a ContractDeployParam instance.
+     * @param bytecode A smart contract binary data.
+     * @param deployParams The variable arguments parameter for smart contract constructor.
+     */
+    public ContractDeployParams(String bytecode, Object... deployParams) {
+        this(bytecode, Arrays.asList(deployParams));
+    }
 
     /**
      * Creates a ContractDeployParam instance.

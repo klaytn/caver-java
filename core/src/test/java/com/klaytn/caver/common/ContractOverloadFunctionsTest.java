@@ -154,7 +154,7 @@ public class ContractOverloadFunctionsTest {
         caver.wallet.add(KeyringFactory.createFromPrivateKey(ownerPrivateKey));
 
         SendOptions options = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
-        ContractDeployParams contractDeployParam = new ContractDeployParams(BYTECODE, null);
+        ContractDeployParams contractDeployParam = new ContractDeployParams(BYTECODE);
 
         try {
             Contract contract = new Contract(caver, ABIJson);

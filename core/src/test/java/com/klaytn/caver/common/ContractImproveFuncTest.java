@@ -5,6 +5,7 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.contract.ContractDeployParams;
 import com.klaytn.caver.contract.SendOptions;
+import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
@@ -167,7 +168,7 @@ public class ContractImproveFuncTest {
             "  }\n" +
             "]";
 
-    static String ownerPrivateKey = "0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3";
+    static String ownerPrivateKey = "0x871ccee7755bb4247e783110cafa6437f9f593a1eaeebe0efcc1b0852282c3e5";
     static SingleKeyring ownerKeyring;
     static Caver caver;
     static Contract contract;
@@ -340,6 +341,56 @@ public class ContractImproveFuncTest {
         try {
             List<Type> result = contract.callWithSolidityType(FUNC_GET_UINT, new Utf8String("Age"));
             assertEquals(2, ((Uint256) result.get(0)).getValue().intValue());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void estimateGas() {
+        try {
+            CallObject callObject = CallObject.createCallObject(ownerKeyring.getAddress());
+            String gas = contract.estimateGas(callObject, FUNC_SET_STRING, "ESTIMATE", "GAS");
+            assertNotNull(gas);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void estimateGasWithSolidityType() {
+        try {
+            CallObject callObject = CallObject.createCallObject(ownerKeyring.getAddress());
+            String gas = contract.estimateGasWithSolidityType(callObject, FUNC_SET_STRING, new Utf8String("ESTIMATE"), new Utf8String("GAS"));
+            assertNotNull(gas);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void encodeABI() {
+        try {
+            String expected = contract.getMethod(FUNC_SET_STRING).encodeABI(Arrays.asList("ENCODE", "FUNCTION"));
+            String actual = contract.encodeABI(FUNC_SET_STRING, "ENCODE", "FUNCTION");
+
+            assertEquals(expected, actual);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void encodeABIWithSolidityType() {
+        try {
+            String expected = contract.getMethod(FUNC_SET_STRING).encodeABIWithSolidityWrapper(Arrays.asList(new Utf8String("ENCODE"), new Utf8String("FUNCTION")));
+            String actual = contract.encodeABIWithSolidityType(FUNC_SET_STRING, new Utf8String("ENCODE"), new Utf8String("FUNCTION"));
+
+            assertEquals(expected, actual);
         } catch (Exception e) {
             e.printStackTrace();
             fail();

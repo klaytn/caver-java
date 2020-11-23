@@ -355,9 +355,9 @@ public class ContractMethod {
      * @throws InvocationTargetException
      */
     public String estimateGas(List<Object> arguments, CallObject callObject) throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        String encodedFunction = encodeABI(arguments);
+        String encodedFunctionCall = encodeABI(arguments);
 
-        return estimateGas(encodedFunction, callObject);
+        return estimateGas(encodedFunctionCall, callObject);
     }
 
     /**
@@ -369,9 +369,9 @@ public class ContractMethod {
      * @throws IOException
      */
     public String estimateGasWithSolidityWrapper(List<Type> arguments, CallObject callObject) throws IOException {
-        String encodedFunction = encodeABIWithSolidityWrapper(arguments);
+        String encodedFunctionCall = encodeABIWithSolidityWrapper(arguments);
 
-        return estimateGas(encodedFunction, callObject);
+        return estimateGas(encodedFunctionCall, callObject);
     }
 
     /**
@@ -666,11 +666,11 @@ public class ContractMethod {
         return ABI.decodeParameters(method, encodedResult);
     }
 
-    private String estimateGas(String encodedFunction, CallObject callObject) throws IOException {
+    private String estimateGas(String encodedFunctionCall, CallObject callObject) throws IOException {
         if(callObject.getData() != null || callObject.getTo() != null) {
             LOGGER.warn("The 'to' and 'data' fields of the CallObject will be overwritten.");
         }
-        callObject.setData(encodedFunction);
+        callObject.setData(encodedFunctionCall);
         callObject.setTo(this.getContractAddress());
 
         Quantity estimateGas = caver.rpc.klay.estimateGas(callObject).send();

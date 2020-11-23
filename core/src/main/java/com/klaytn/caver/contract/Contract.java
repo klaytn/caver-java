@@ -439,7 +439,7 @@ public class Contract {
     }
 
     /**
-     * Encodes the ABI for this method. The resulting hex string is 32-bit function signature hash plus the passed parameters in Solidity tightly packed format.
+     * Encodes the ABI for the method in Contract. The resulting hex string is 32-bit function signature hash plus the passed parameters in Solidity tightly packed format.
      * @param methodName The smart contract method name to encode.
      * @param methodArguments The arguments that need to execute smart contract method.
      * @return String
@@ -455,7 +455,7 @@ public class Contract {
     }
 
     /**
-     * Encodes the ABI for this method with Solidity type wrapper reference. The resulting hex string is 32-bit function signature hash plus the passed parameters in Solidity tightly packed format.
+     * Encodes the ABI for the method in Contract with Solidity type wrapper reference. The resulting hex string is 32-bit function signature hash plus the passed parameters in Solidity tightly packed format.
      * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
      * @param methodName The smart contract method name to encode.
      * @param methodArguments The arguments that need to execute smart contract method.
@@ -485,7 +485,7 @@ public class Contract {
     }
 
     /**
-     * Estimate the gas to execute the contract's method.
+     * Estimate the gas to execute the contract's method with Solidity type wrapper reference.
      * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
      * @param callObject An option to execute smart contract method.
      * @param methodName The smart contract method name.

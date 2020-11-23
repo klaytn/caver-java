@@ -439,6 +439,66 @@ public class Contract {
     }
 
     /**
+     * Encodes the ABI for the method in Contract. The resulting hex string is 32-bit function signature hash plus the passed parameters in Solidity tightly packed format.
+     * @param methodName The smart contract method name to encode.
+     * @param methodArguments The arguments that need to execute smart contract method.
+     * @return String
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public String encodeABI(String methodName, Object... methodArguments) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        ContractMethod method = this.getMethod(methodName);
+        return method.encodeABI(Arrays.asList(methodArguments));
+    }
+
+    /**
+     * Encodes the ABI for the method in Contract with Solidity type wrapper reference. The resulting hex string is 32-bit function signature hash plus the passed parameters in Solidity tightly packed format.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param methodName The smart contract method name to encode.
+     * @param methodArguments The arguments that need to execute smart contract method.
+     * @return String
+     */
+    public String encodeABIWithSolidityType(String methodName, Type... methodArguments) {
+        ContractMethod method = this.getMethod(methodName);
+        return method.encodeABIWithSolidityWrapper(Arrays.asList(methodArguments));
+    }
+
+    /**
+     * Estimate the gas to execute the contract's method.
+     * @param callObject An option to execute smart contract method.
+     * @param methodName The smart contract method name.
+     * @param methodArguments The arguments that need to execute smart contract method.
+     * @return String
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
+    public String estimateGas(CallObject callObject, String methodName, Object... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        ContractMethod method = this.getMethod(methodName);
+        return method.estimateGas(Arrays.asList(methodArguments), callObject);
+    }
+
+    /**
+     * Estimate the gas to execute the contract's method with Solidity type wrapper reference.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param callObject An option to execute smart contract method.
+     * @param methodName The smart contract method name.
+     * @param methodArguments The arguments that need to execute smart contract method.
+     * @return String
+     * @throws IOException
+     */
+    public String estimateGasWithSolidityType(CallObject callObject, String methodName, Type... methodArguments) throws IOException {
+        ContractMethod method = this.getMethod(methodName);
+        return method.estimateGasWithSolidityWrapper(Arrays.asList(methodArguments), callObject);
+    }
+
+    /**
      * Returns the ContractMethod instance corresponding to the method name.
      * @param methodName The method name.
      * @return ContractMethod

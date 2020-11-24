@@ -47,6 +47,15 @@ public class KIP7Test {
         }
 
         @Test
+        public void deploy() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+            Caver caver = new Caver(Caver.DEFAULT_URL);
+            caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+            KIP7 contract = KIP7.deploy(caver, LUMAN.getAddress(), CONTRACT_NAME, CONTRACT_SYMBOL, CONTRACT_DECIMALS, CONTRACT_INITIAL_SUPPLY);
+
+            assertNotNull(contract.getContractAddress());
+        }
+
+        @Test
         public void name(){
             try {
                 String name = kip7contract.name();

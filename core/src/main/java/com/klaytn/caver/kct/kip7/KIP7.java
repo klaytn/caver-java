@@ -82,6 +82,29 @@ public class KIP7 extends Contract {
     /**
      * Deploy KIP-7 contract.
      * It must add deployer's keyring in caver.wallet.
+     * @param caver A Caver instance.
+     * @param deployer A deployer's address.
+     * @param name A KIP-7 contract name.
+     * @param symbol A KIP-7 contract symbol.
+     * @param decimals A KIP-7 contract decimals.
+     * @param initialSupply A KIP-7 contract initial supply.
+     * @return KIP7
+     * @throws NoSuchMethodException
+     * @throws TransactionException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
+    public static KIP7 deploy(Caver caver, String deployer, String name, String symbol, int decimals, BigInteger initialSupply) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        KIP7DeployParams params = new KIP7DeployParams(name, symbol, decimals, initialSupply);
+        return deploy(caver, params, deployer);
+    }
+
+    /**
+     * Deploy KIP-7 contract.
+     * It must add deployer's keyring in caver.wallet.
      * @param caver A Caver instance
      * @param tokenInfo The KIP-7 contract's deploy parameter values
      * @param deployer A deployer's address

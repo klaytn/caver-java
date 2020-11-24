@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.abi.ABI;
+import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.KlayLogs;
@@ -33,6 +34,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.web3j.abi.datatypes.Type;
 import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.response.EthSubscribe;
@@ -104,6 +106,45 @@ public class Contract {
         setCaver(caver);
         setContractAddress(contractAddress);
         setDefaultSendOptions(new SendOptions());
+    }
+
+    /**
+     * Deploy a contract
+     * @param sendOptions A SendOption instance.
+     * @param contractBinaryData A smart contract binary data.
+     * @param constructorParams The smart contract constructor parameters.
+     * @return Contract
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public Contract deploy(SendOptions sendOptions, String contractBinaryData, Object... constructorParams) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        ContractDeployParams deployParams = new ContractDeployParams(contractBinaryData, Arrays.asList(constructorParams));
+        return deploy(deployParams, sendOptions);
+    }
+
+    /**
+     * Deploy a contract
+     * @param sendOptions A SendOption instance
+     * @param receiptProcessor A TransactionReceiptProcessor instance.
+     * @param contractBinaryData A smart contract binary data.
+     * @param constructorParams The smart contract constructor parameters.
+     * @return Contract
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public Contract deploy(SendOptions sendOptions, TransactionReceiptProcessor receiptProcessor, String contractBinaryData, Object... constructorParams) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        ContractDeployParams deployParams = new ContractDeployParams(contractBinaryData, Arrays.asList(constructorParams));
+        return deploy(deployParams, sendOptions, receiptProcessor);
     }
 
     /**
@@ -203,6 +244,258 @@ public class Contract {
         KlayLogs logs = caver.rpc.klay.getLogs(filterOption).send();
 
         return logs;
+    }
+
+    /**
+     * Execute smart contract method in the EVM without sending any transaction.
+     * @param methodName The smart contract method name to execute.
+     * @param methodArguments The arguments that need to execute smart contract method.
+     * @return List
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
+    public List<Type> call(String methodName, Object... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        return call(CallObject.createCallObject(), methodName, methodArguments);
+    }
+
+    /**
+     * Execute smart contract method in the EVM without sending any transaction.
+     * When creating CallObject, it need not to fill 'data', 'to' fields.
+     * The 'data', 'to' fields automatically filled in call() method.
+     * @param callObject A CallObject instance to 'call' smart contract method.
+     * @param methodName The smart contract method name to execute.
+     * @param methodArguments The arguments that need to execute smart contract method.
+     * @return List
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
+    public List<Type> call(CallObject callObject, String methodName, Object... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        ContractMethod contractMethod = this.getMethod(methodName);
+        return contractMethod.call(Arrays.asList(methodArguments), callObject);
+    }
+
+    /**
+     * Execute smart contract method in the EVM without sending any transaction.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param methodName The smart contract method name to execute.
+     * @param methodArguments The arguments that need to execute smart contract method.
+     * @return List
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
+    public List<Type> callWithSolidityType(String methodName, Type... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        return callWithSolidityType(CallObject.createCallObject(), methodName, methodArguments);
+    }
+
+    /**
+     * Execute smart contract method in the EVM without sending any transaction.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * When creating CallObject, it need not to fill 'data', 'to' fields.
+     * The 'data', 'to' fields automatically filled in call() method.
+     * @param callObject A CallObject instance to 'call' smart contract method.
+     * @param methodName The smart contract method name to execute.
+     * @param methodArguments The arguments that need to execute smart contract method.
+     * @return List
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public List<Type> callWithSolidityType(CallObject callObject, String methodName, Type... methodArguments) throws IOException, ClassNotFoundException {
+        ContractMethod contractMethod = this.getMethod(methodName);
+
+        return contractMethod.callWithSolidityWrapper(Arrays.asList(methodArguments), callObject);
+    }
+
+    /**
+     * Send a transaction to smart contract and execute its method.
+     * It is used defaultSendOption field to sendOptions.
+     * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
+     * @param methodName The smart contract method name to execute
+     * @param methodArguments The arguments that need to execute smart contract method.
+     * @return TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData send(String methodName, Object... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return send(null, methodName, methodArguments);
+    }
+
+    /**
+     * Send a transaction to smart contract and execute its method.
+     * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
+     * @param options An option to execute smart contract method.
+     * @param methodName The smart contract method name to execute
+     * @param methodArguments The arguments that need to execute smart contract method.
+     * @return TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws TransactionException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
+    public TransactionReceipt.TransactionReceiptData send(SendOptions options, String methodName, Object... methodArguments) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        return send(options, new PollingTransactionReceiptProcessor(caver, 1000, 15), methodName, methodArguments);
+    }
+
+    /**
+     * Send a transaction to smart contract and execute its method.
+     * @param options An option to execute smart contract method.
+     * @param receiptProcessor A TransactionReceiptProcessor to get receipt.
+     * @param methodName The smart contract method name to execute
+     * @param methodArguments The arguments that need to execute smart contract method.
+     * @return TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData send(SendOptions options, TransactionReceiptProcessor receiptProcessor, String methodName, Object... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        ContractMethod contractMethod = this.getMethod(methodName);
+
+        return contractMethod.send(Arrays.asList(methodArguments), options, receiptProcessor);
+    }
+
+    /**
+     * Send a transaction to smart contract and execute its method using solidity type wrapper class.
+     * It is used defaultSendOption field to sendOptions
+     * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param methodName The smart contract method name to execute
+     * @param methodArguments The arguments that need to execute smart contract method.
+     * @return TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityType(String methodName, Type... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return sendWithSolidityType(null, methodName, methodArguments);
+    }
+
+    /**
+     * Send a transaction to smart contract and execute its method using solidity type wrapper class.
+     * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param options An option to execute smart contract method.
+     * @param methodName The smart contract method name to execute
+     * @param methodArguments The arguments that need to execute smart contract method.
+     * @return TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws TransactionException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityType(SendOptions options, String methodName, Type... methodArguments) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        return sendWithSolidityType(options, new PollingTransactionReceiptProcessor(caver, 1000, 15), methodName, methodArguments);
+    }
+
+    /**
+     * Send a transaction to smart contract and execute its method using solidity type wrapper class.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param options An option to execute smart contract method.
+     * @param receiptProcessor A TransactionReceiptProcessor to get receipt.
+     * @param methodName The smart contract method name to execute
+     * @param methodArguments The arguments that need to execute smart contract method.
+     * @return TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityType(SendOptions options, TransactionReceiptProcessor receiptProcessor, String methodName, Type... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        ContractMethod contractMethod = this.getMethod(methodName);
+
+        return contractMethod.sendWithSolidityWrapper(Arrays.asList(methodArguments), options, receiptProcessor);
+    }
+
+    /**
+     * Encodes the ABI for the method in Contract. The resulting hex string is 32-bit function signature hash plus the passed parameters in Solidity tightly packed format.
+     * @param methodName The smart contract method name to encode.
+     * @param methodArguments The arguments that need to execute smart contract method.
+     * @return String
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public String encodeABI(String methodName, Object... methodArguments) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        ContractMethod method = this.getMethod(methodName);
+        return method.encodeABI(Arrays.asList(methodArguments));
+    }
+
+    /**
+     * Encodes the ABI for the method in Contract with Solidity type wrapper reference. The resulting hex string is 32-bit function signature hash plus the passed parameters in Solidity tightly packed format.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param methodName The smart contract method name to encode.
+     * @param methodArguments The arguments that need to execute smart contract method.
+     * @return String
+     */
+    public String encodeABIWithSolidityType(String methodName, Type... methodArguments) {
+        ContractMethod method = this.getMethod(methodName);
+        return method.encodeABIWithSolidityWrapper(Arrays.asList(methodArguments));
+    }
+
+    /**
+     * Estimate the gas to execute the contract's method.
+     * @param callObject An option to execute smart contract method.
+     * @param methodName The smart contract method name.
+     * @param methodArguments The arguments that need to execute smart contract method.
+     * @return String
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
+    public String estimateGas(CallObject callObject, String methodName, Object... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        ContractMethod method = this.getMethod(methodName);
+        return method.estimateGas(Arrays.asList(methodArguments), callObject);
+    }
+
+    /**
+     * Estimate the gas to execute the contract's method with Solidity type wrapper reference.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param callObject An option to execute smart contract method.
+     * @param methodName The smart contract method name.
+     * @param methodArguments The arguments that need to execute smart contract method.
+     * @return String
+     * @throws IOException
+     */
+    public String estimateGasWithSolidityType(CallObject callObject, String methodName, Type... methodArguments) throws IOException {
+        ContractMethod method = this.getMethod(methodName);
+        return method.estimateGasWithSolidityWrapper(Arrays.asList(methodArguments), callObject);
     }
 
     /**

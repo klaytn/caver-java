@@ -355,26 +355,23 @@ public class ContractMethod {
      * @throws InvocationTargetException
      */
     public String estimateGas(List<Object> arguments, CallObject callObject) throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        List<Object> functionParams = new ArrayList<>();
+        String encodedFunctionCall = encodeABI(arguments);
 
-        if(arguments != null) {
-            functionParams.addAll(arguments);
-        }
+        return estimateGas(encodedFunctionCall, callObject);
+    }
 
-        String encodedFunction = ABI.encodeFunctionCall(this, functionParams);
+    /**
+     * Estimate the gas to execute the Contract's method using Solidity type wrapper class.
+     * It is recommended to use this function when you want to execute one of the functions with the same number of parameters.
+     * @param arguments The arguments that need to execute smart contract method.
+     * @param callObject An option to execute smart contract method.
+     * @return String
+     * @throws IOException
+     */
+    public String estimateGasWithSolidityWrapper(List<Type> arguments, CallObject callObject) throws IOException {
+        String encodedFunctionCall = encodeABIWithSolidityWrapper(arguments);
 
-        if(callObject.getData() != null || callObject.getTo() != null) {
-            LOGGER.warn("The 'to' and 'data' fields of the CallObject will be overwritten.");
-        }
-        callObject.setData(encodedFunction);
-        callObject.setTo(this.getContractAddress());
-
-        Quantity estimateGas = caver.rpc.klay.estimateGas(callObject).send();
-        if(estimateGas.hasError()) {
-            throw new IOException(estimateGas.getError().getMessage());
-        }
-
-        return estimateGas.getResult();
+        return estimateGas(encodedFunctionCall, callObject);
     }
 
     /**
@@ -667,5 +664,20 @@ public class ContractMethod {
 
         String encodedResult = response.getResult();
         return ABI.decodeParameters(method, encodedResult);
+    }
+
+    private String estimateGas(String encodedFunctionCall, CallObject callObject) throws IOException {
+        if(callObject.getData() != null || callObject.getTo() != null) {
+            LOGGER.warn("The 'to' and 'data' fields of the CallObject will be overwritten.");
+        }
+        callObject.setData(encodedFunctionCall);
+        callObject.setTo(this.getContractAddress());
+
+        Quantity estimateGas = caver.rpc.klay.estimateGas(callObject).send();
+        if(estimateGas.hasError()) {
+            throw new IOException(estimateGas.getError().getMessage());
+        }
+
+        return estimateGas.getResult();
     }
 }

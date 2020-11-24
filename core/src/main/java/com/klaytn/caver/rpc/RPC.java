@@ -17,11 +17,13 @@
 package com.klaytn.caver.rpc;
 
 import org.web3j.protocol.Web3jService;
+import org.web3j.protocol.core.BatchRequest;
+import org.web3j.protocol.core.Batcher;
 
 /**
  * This class represents JSON-RPC 2.0 Klaytn APIs
  */
-public class RPC {
+public class RPC implements Batcher {
 
     /**
      * JSON-RPC service instance.
@@ -80,4 +82,12 @@ public class RPC {
         return net;
     }
 
+    /**
+     * Returns a new {@link BatchRequest}
+     * @return BatchRequest
+     */
+    @Override
+    public BatchRequest newBatch() {
+        return new BatchRequest(web3jService);
+    }
 }

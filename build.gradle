@@ -72,6 +72,12 @@ configure(subprojects.findAll { it.name != 'integration-test' }) {
         from sourceSets.main.allSource
     }
 
+    task fatJar(type: Jar) {
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } } {
+            exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+        }
+        with jar
+    }
     task testJar(type: Jar) {
         classifier = 'tests'
         from sourceSets.test.output

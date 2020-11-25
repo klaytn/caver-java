@@ -632,7 +632,7 @@ public class ContractMethod {
         return true;
     }
 
-    private TransactionReceipt.TransactionReceiptData sendTransaction(ContractMethod method, SendOptions options, String encodedInput, TransactionReceiptProcessor processor) throws IOException, TransactionException {
+    private TransactionReceipt.TransactionReceiptData sendTransaction(ContractMethod method, SendOptions options, String encodedInput, TransactionReceiptProcessor processor) throws Exception {
         //Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
         //Passed parameter "options" has higher priority than "defaultSendOption" field.
         SendOptions sendOptions = makeSendOption(options);
@@ -647,7 +647,7 @@ public class ContractMethod {
                 .setValue(sendOptions.getValue())
                 .build();
 
-        caver.wallet.sign(sendOptions.getFrom(), smartContractExecution);
+        caver.getWallet().sign(sendOptions.getFrom(), smartContractExecution);
         Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractExecution).send();
 
         TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());

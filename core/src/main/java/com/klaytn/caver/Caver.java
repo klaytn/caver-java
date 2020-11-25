@@ -18,6 +18,7 @@ package com.klaytn.caver;
 
 import com.klaytn.caver.ipfs.IPFS;
 import com.klaytn.caver.rpc.RPC;
+import com.klaytn.caver.wallet.IWallet;
 import com.klaytn.caver.wallet.KeyringContainer;
 import okhttp3.OkHttpClient;
 import org.web3j.protocol.Web3jService;
@@ -119,7 +120,7 @@ public class Caver {
      * Getter for Wallet
      * @return KeyringContainer
      */
-    public KeyringContainer getWallet() {
+    public IWallet getWallet() {
         return wallet;
     }
 

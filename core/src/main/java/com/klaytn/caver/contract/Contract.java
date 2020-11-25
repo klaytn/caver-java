@@ -169,7 +169,7 @@ public class Contract {
      * @throws IOException
      * @throws TransactionException
      */
-    public Contract deploy(ContractDeployParams deployParam, SendOptions sendOptions, TransactionReceiptProcessor processor) throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public Contract deploy(ContractDeployParams deployParam, SendOptions sendOptions, TransactionReceiptProcessor processor) throws Exception {
         String input = ABI.encodeContractDeploy(this.getConstructor(), deployParam.getBytecode(), deployParam.getDeployParams());
 
         SmartContractDeploy smartContractDeploy = new SmartContractDeploy.Builder()
@@ -181,7 +181,7 @@ public class Contract {
                 .setGas(sendOptions.getGas())
                 .build();
 
-        caver.wallet.sign(sendOptions.getFrom(), smartContractDeploy);
+        caver.getWallet().sign(sendOptions.getFrom(), smartContractDeploy);
 
         Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractDeploy.getRawTransaction()).send();
         TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());

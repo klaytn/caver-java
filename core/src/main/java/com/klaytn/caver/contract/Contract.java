@@ -114,15 +114,9 @@ public class Contract {
      * @param contractBinaryData A smart contract binary data.
      * @param constructorParams The smart contract constructor parameters.
      * @return Contract
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws TransactionException
+     * @throws Exception
      */
-    public Contract deploy(SendOptions sendOptions, String contractBinaryData, Object... constructorParams) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public Contract deploy(SendOptions sendOptions, String contractBinaryData, Object... constructorParams) throws Exception {
         ContractDeployParams deployParams = new ContractDeployParams(contractBinaryData, Arrays.asList(constructorParams));
         return deploy(deployParams, sendOptions);
     }
@@ -134,15 +128,9 @@ public class Contract {
      * @param contractBinaryData A smart contract binary data.
      * @param constructorParams The smart contract constructor parameters.
      * @return Contract
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws TransactionException
+     * @throws Exception
      */
-    public Contract deploy(SendOptions sendOptions, TransactionReceiptProcessor receiptProcessor, String contractBinaryData, Object... constructorParams) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public Contract deploy(SendOptions sendOptions, TransactionReceiptProcessor receiptProcessor, String contractBinaryData, Object... constructorParams) throws Exception {
         ContractDeployParams deployParams = new ContractDeployParams(contractBinaryData, Arrays.asList(constructorParams));
         return deploy(deployParams, sendOptions, receiptProcessor);
     }
@@ -153,10 +141,9 @@ public class Contract {
      * @param deployParam A DeployParam instance.
      * @param sendOptions A SendOption instance.
      * @return Contract
-     * @throws IOException
-     * @throws TransactionException
+     * @throws Exception
      */
-    public Contract deploy(ContractDeployParams deployParam, SendOptions sendOptions) throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public Contract deploy(ContractDeployParams deployParam, SendOptions sendOptions) throws Exception {
         return deploy(deployParam, sendOptions, new PollingTransactionReceiptProcessor(caver, 1000, 15));
     }
 
@@ -166,8 +153,7 @@ public class Contract {
      * @param sendOptions A SendOption instance.
      * @param processor A TransactionReceiptProcessor instance.
      * @return Contract
-     * @throws IOException
-     * @throws TransactionException
+     * @throws Exception
      */
     public Contract deploy(ContractDeployParams deployParam, SendOptions sendOptions, TransactionReceiptProcessor processor) throws Exception {
         String input = ABI.encodeContractDeploy(this.getConstructor(), deployParam.getBytecode(), deployParam.getDeployParams());
@@ -197,6 +183,11 @@ public class Contract {
      * @param paramsOption The filter events by indexed parameters.
      * @param callback The callback function that handled to returned data.
      * @return Disposable instance that able to unsubscribe.
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
      */
     public Disposable once(String eventName, EventFilterOptions paramsOption, Consumer<LogNotification> callback) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Map options = new HashMap<>();
@@ -324,15 +315,9 @@ public class Contract {
      * @param methodName The smart contract method name to execute
      * @param methodArguments The arguments that need to execute smart contract method.
      * @return TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws TransactionException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData send(String methodName, Object... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData send(String methodName, Object... methodArguments) throws Exception {
         return send(null, methodName, methodArguments);
     }
 
@@ -343,15 +328,9 @@ public class Contract {
      * @param methodName The smart contract method name to execute
      * @param methodArguments The arguments that need to execute smart contract method.
      * @return TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws TransactionException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData send(SendOptions options, String methodName, Object... methodArguments) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public TransactionReceipt.TransactionReceiptData send(SendOptions options, String methodName, Object... methodArguments) throws Exception {
         return send(options, new PollingTransactionReceiptProcessor(caver, 1000, 15), methodName, methodArguments);
     }
 
@@ -362,15 +341,9 @@ public class Contract {
      * @param methodName The smart contract method name to execute
      * @param methodArguments The arguments that need to execute smart contract method.
      * @return TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws TransactionException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData send(SendOptions options, TransactionReceiptProcessor receiptProcessor, String methodName, Object... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData send(SendOptions options, TransactionReceiptProcessor receiptProcessor, String methodName, Object... methodArguments) throws Exception {
         ContractMethod contractMethod = this.getMethod(methodName);
 
         return contractMethod.send(Arrays.asList(methodArguments), options, receiptProcessor);
@@ -384,15 +357,9 @@ public class Contract {
      * @param methodName The smart contract method name to execute
      * @param methodArguments The arguments that need to execute smart contract method.
      * @return TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws TransactionException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData sendWithSolidityType(String methodName, Type... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityType(String methodName, Type... methodArguments) throws Exception {
         return sendWithSolidityType(null, methodName, methodArguments);
     }
 
@@ -404,15 +371,9 @@ public class Contract {
      * @param methodName The smart contract method name to execute
      * @param methodArguments The arguments that need to execute smart contract method.
      * @return TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws TransactionException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData sendWithSolidityType(SendOptions options, String methodName, Type... methodArguments) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityType(SendOptions options, String methodName, Type... methodArguments) throws Exception {
         return sendWithSolidityType(options, new PollingTransactionReceiptProcessor(caver, 1000, 15), methodName, methodArguments);
     }
 
@@ -424,15 +385,9 @@ public class Contract {
      * @param methodName The smart contract method name to execute
      * @param methodArguments The arguments that need to execute smart contract method.
      * @return TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws TransactionException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData sendWithSolidityType(SendOptions options, TransactionReceiptProcessor receiptProcessor, String methodName, Type... methodArguments) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityType(SendOptions options, TransactionReceiptProcessor receiptProcessor, String methodName, Type... methodArguments) throws Exception {
         ContractMethod contractMethod = this.getMethod(methodName);
 
         return contractMethod.sendWithSolidityWrapper(Arrays.asList(methodArguments), options, receiptProcessor);
@@ -443,13 +398,9 @@ public class Contract {
      * @param methodName The smart contract method name to encode.
      * @param methodArguments The arguments that need to execute smart contract method.
      * @return String
-     * @throws ClassNotFoundException
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
+     * @throws Exception
      */
-    public String encodeABI(String methodName, Object... methodArguments) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public String encodeABI(String methodName, Object... methodArguments) throws Exception {
         ContractMethod method = this.getMethod(methodName);
         return method.encodeABI(Arrays.asList(methodArguments));
     }

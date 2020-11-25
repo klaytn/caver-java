@@ -90,15 +90,9 @@ public class KIP17 extends Contract {
      * @param name A KIP-17 contract name
      * @param symbol A KIP-17 contract symbol
      * @return KIP17
-     * @throws NoSuchMethodException
-     * @throws TransactionException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public static KIP17 deploy(Caver caver, String deployer, String name, String symbol) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public static KIP17 deploy(Caver caver, String deployer, String name, String symbol) throws Exception {
         KIP17DeployParams deployParams = new KIP17DeployParams(name, symbol);
         return deploy(caver, deployParams, deployer);
     }
@@ -110,15 +104,9 @@ public class KIP17 extends Contract {
      * @param tokenInfo The KIP-17 contract's deploy parameter values.
      * @param deployer A deployer's address.
      * @return KIP17
-     * @throws IOException
-     * @throws NoSuchMethodException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws TransactionException
+     * @throws Exception
      */
-    public static KIP17 deploy(Caver caver, KIP17DeployParams tokenInfo, String deployer) throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public static KIP17 deploy(Caver caver, KIP17DeployParams tokenInfo, String deployer) throws Exception {
         List deployArgument = Arrays.asList(tokenInfo.getName(), tokenInfo.getSymbol());
         ContractDeployParams contractDeployParams = new ContractDeployParams(KIP17ConstantData.BINARY, deployArgument);
         SendOptions sendOptions = new SendOptions(deployer, BigInteger.valueOf(6500000));
@@ -415,7 +403,7 @@ public class KIP17 extends Contract {
      * @throws InvocationTargetException
      * @throws ClassNotFoundException
      */
-    public TransactionReceipt.TransactionReceiptData approve(String to, BigInteger tokenId) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData approve(String to, BigInteger tokenId) throws Exception {
         return approve(to, tokenId, this.getDefaultSendOptions());
     }
 
@@ -433,7 +421,7 @@ public class KIP17 extends Contract {
      * @throws InvocationTargetException
      * @throws ClassNotFoundException
      */
-    public TransactionReceipt.TransactionReceiptData approve(String to, BigInteger tokenId, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData approve(String to, BigInteger tokenId, SendOptions sendParam) throws Exception {
         SendOptions sendOption = determineSendOptions(this, sendParam, FUNCTION_APPROVE, Arrays.asList(to, tokenId));
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_APPROVE).send(Arrays.asList(to, tokenId), sendOption);
@@ -447,14 +435,9 @@ public class KIP17 extends Contract {
      * @param to Account to add the set of authorized operators.
      * @param approved True if the operator is approved, false to revoke approval
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData setApproveForAll(String to, boolean approved) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData setApproveForAll(String to, boolean approved) throws Exception {
         return setApproveForAll(to, approved, this.getDefaultSendOptions());
     }
 
@@ -465,14 +448,9 @@ public class KIP17 extends Contract {
      * @param approved True if the operator is approved, false to revoke approval
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData setApproveForAll(String to, boolean approved, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData setApproveForAll(String to, boolean approved, SendOptions sendParam) throws Exception {
         SendOptions sendOption = determineSendOptions(this, sendParam, FUNCTION_SET_APPROVAL_FOR_ALL, Arrays.asList(to, approved));
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_SET_APPROVAL_FOR_ALL).send(Arrays.asList(to, approved), sendOption);
@@ -487,15 +465,9 @@ public class KIP17 extends Contract {
      * @param to The new owner
      * @param tokenId The NFT identifier to transfer
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws TransactionException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData transferFrom(String from, String to, BigInteger tokenId) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData transferFrom(String from, String to, BigInteger tokenId) throws Exception {
         return transferFrom(from, to, tokenId, this.getDefaultSendOptions());
     }
 
@@ -507,15 +479,9 @@ public class KIP17 extends Contract {
      * @param tokenId The NFT identifier to transfer
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws TransactionException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData transferFrom(String from, String to, BigInteger tokenId, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData transferFrom(String from, String to, BigInteger tokenId, SendOptions sendParam) throws Exception {
         SendOptions sendOption = determineSendOptions(this, sendParam, FUNCTION_TRANSFER_FROM, Arrays.asList(from, to, tokenId));
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_TRANSFER_FROM).send(Arrays.asList(from, to, tokenId), sendOption);
@@ -530,15 +496,9 @@ public class KIP17 extends Contract {
      * @param to The new owner
      * @param tokenId The NFT identifier to transfer
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws TransactionException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String from, String to, BigInteger tokenId) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String from, String to, BigInteger tokenId) throws Exception {
         return safeTransferFrom(from, to, tokenId, this.getDefaultSendOptions());
     }
 
@@ -550,14 +510,9 @@ public class KIP17 extends Contract {
      * @param tokenId The NFT identifier to transfer
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String from, String to, BigInteger tokenId, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String from, String to, BigInteger tokenId, SendOptions sendParam) throws Exception {
         SendOptions sendOption = determineSendOptions(this, sendParam, FUNCTION_SAFE_TRANSFER_FROM, Arrays.asList(from, to, tokenId));
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_SAFE_TRANSFER_FROM).send(Arrays.asList(from, to, tokenId), sendOption);
@@ -573,8 +528,9 @@ public class KIP17 extends Contract {
      * @param tokenId The NFT identifier to transfer
      * @param data Additional data with no specified format, sent in call to "to"
      * @return TransactionReceipt.TransactionReceiptData
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String from, String to, BigInteger tokenId, String data) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String from, String to, BigInteger tokenId, String data) throws Exception {
         return safeTransferFrom(from, to, tokenId, this.getDefaultSendOptions());
     }
 
@@ -587,14 +543,9 @@ public class KIP17 extends Contract {
      * @param data Additional data with no specified format, sent in call to "to"
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String from, String to, BigInteger tokenId, String data, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String from, String to, BigInteger tokenId, String data, SendOptions sendParam) throws Exception {
         SendOptions sendOption = determineSendOptions(this, sendParam, FUNCTION_SAFE_TRANSFER_FROM, Arrays.asList(from, to, tokenId, data));
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_SAFE_TRANSFER_FROM).send(Arrays.asList(from, to, tokenId, data), sendOption);
@@ -608,8 +559,9 @@ public class KIP17 extends Contract {
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account to be given the minting permission
      * @return TransactionReceipt.TransactionReceiptData
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData addMinter(String account) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData addMinter(String account) throws Exception {
         return addMinter(account, this.getDefaultSendOptions());
     }
 
@@ -620,14 +572,9 @@ public class KIP17 extends Contract {
      * @param account The account to be given the minting permission
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData addMinter(String account, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData addMinter(String account, SendOptions sendParam) throws Exception {
         SendOptions sendOption = determineSendOptions(this, sendParam, FUNCTION_ADD_MINTER, Arrays.asList(account));
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_ADD_MINTER).send(Arrays.asList(account), sendOption);
@@ -640,8 +587,9 @@ public class KIP17 extends Contract {
      * It will use default sendOptions in contract instance to passed sendOptions
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @return TransactionReceipt.TransactionReceiptData
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData renounceMinter() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData renounceMinter() throws Exception {
         return renounceMinter(this.getDefaultSendOptions());
     }
 
@@ -651,14 +599,9 @@ public class KIP17 extends Contract {
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData renounceMinter(SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData renounceMinter(SendOptions sendParam) throws Exception {
         SendOptions sendOption = determineSendOptions(this, sendParam, FUNCTION_RENOUNCE_MINTER, null);
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_RENOUNCE_MINTER).send(null, sendOption);
@@ -673,14 +616,9 @@ public class KIP17 extends Contract {
      * @param to The account that will receive the minted token
      * @param tokenId The NFT identifier to be minted
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData mint(String to, BigInteger tokenId) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData mint(String to, BigInteger tokenId) throws Exception {
         return mint(to, tokenId, this.getDefaultSendOptions());
     }
 
@@ -692,14 +630,9 @@ public class KIP17 extends Contract {
      * @param tokenId The NFT identifier to be minted
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData mint(String to, BigInteger tokenId, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData mint(String to, BigInteger tokenId, SendOptions sendParam) throws Exception {
         SendOptions sendOption = determineSendOptions(this, sendParam, FUNCTION_MINT, Arrays.asList(to, tokenId));
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_MINT).send(Arrays.asList(to, tokenId), sendOption);
@@ -715,14 +648,9 @@ public class KIP17 extends Contract {
      * @param tokenId The NFT identifier to be minted
      * @param tokenURI The NFT URI(Uniform Resource Identifier) to be minted
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData mintWithTokenURI(String to, BigInteger tokenId, String tokenURI) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData mintWithTokenURI(String to, BigInteger tokenId, String tokenURI) throws Exception {
         return mintWithTokenURI(to, tokenId, tokenURI, this.getDefaultSendOptions());
     }
 
@@ -735,14 +663,9 @@ public class KIP17 extends Contract {
      * @param tokenURI The NFT URI(Uniform Resource Identifier) to be minted
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData mintWithTokenURI(String to, BigInteger tokenId, String tokenURI, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData mintWithTokenURI(String to, BigInteger tokenId, String tokenURI, SendOptions sendParam) throws Exception {
         SendOptions sendOption = determineSendOptions(this, sendParam, FUNCTION_MINT_WITH_TOKEN_URI, Arrays.asList(to, tokenId, tokenURI));
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_MINT_WITH_TOKEN_URI).send(Arrays.asList(to, tokenId, tokenURI), sendOption);
@@ -755,14 +678,9 @@ public class KIP17 extends Contract {
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param tokenId The NFT identifier to be minted
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData burn(BigInteger tokenId) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData burn(BigInteger tokenId) throws Exception {
         return burn(tokenId, this.getDefaultSendOptions());
     }
 
@@ -772,14 +690,9 @@ public class KIP17 extends Contract {
      * @param tokenId The NFT identifier to be minted
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData burn(BigInteger tokenId, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData burn(BigInteger tokenId, SendOptions sendParam) throws Exception {
         SendOptions sendOption = determineSendOptions(this, sendParam, FUNCTION_BURN, Arrays.asList(tokenId));
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_BURN).send(Arrays.asList(tokenId), sendOption);
@@ -792,14 +705,9 @@ public class KIP17 extends Contract {
      * It will use default sendOptions in contract instance to passed sendOptions
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData pause() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData pause() throws Exception {
         return pause(this.getDefaultSendOptions());
     }
 
@@ -809,14 +717,9 @@ public class KIP17 extends Contract {
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData pause(SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData pause(SendOptions sendParam) throws Exception {
         SendOptions sendOption = determineSendOptions(this, sendParam, FUNCTION_PAUSE, null);
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_PAUSE).send(null, sendOption);
@@ -829,14 +732,9 @@ public class KIP17 extends Contract {
      * It will use default sendOptions in contract instance to passed sendOptions
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData unpause() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData unpause() throws Exception {
         return unpause(this.getDefaultSendOptions());
     }
 
@@ -846,14 +744,9 @@ public class KIP17 extends Contract {
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData unpause(SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData unpause(SendOptions sendParam) throws Exception {
         SendOptions sendOption = determineSendOptions(this, sendParam, FUNCTION_UNPAUSE, null);
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_UNPAUSE).send(null, sendOption);
@@ -867,8 +760,9 @@ public class KIP17 extends Contract {
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account to be given the pausing permission
      * @return TransactionReceipt.TransactionReceiptData
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData addPauser(String account) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData addPauser(String account) throws Exception {
         return addPauser(account, this.getDefaultSendOptions());
     }
 
@@ -879,14 +773,9 @@ public class KIP17 extends Contract {
      * @param account The account to be given the pausing permission
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData addPauser(String account, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData addPauser(String account, SendOptions sendParam) throws Exception {
         SendOptions sendOption = determineSendOptions(this, sendParam, FUNCTION_ADD_PAUSER, Arrays.asList(account));
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_ADD_PAUSER).send(Arrays.asList(account), sendOption);
@@ -899,15 +788,9 @@ public class KIP17 extends Contract {
      * It will use default sendOptions in contract instance to passed sendOptions
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws TransactionException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData renouncePauser() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public TransactionReceipt.TransactionReceiptData renouncePauser() throws Exception {
         return renouncePauser(this.getDefaultSendOptions());
     }
 
@@ -917,15 +800,9 @@ public class KIP17 extends Contract {
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
-     * @throws NoSuchMethodException
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws TransactionException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData renouncePauser(SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData renouncePauser(SendOptions sendParam) throws Exception {
         SendOptions sendOption = determineSendOptions(this, sendParam, FUNCTION_RENOUNCE_PAUSER, null);
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_RENOUNCE_PAUSER).send(null, sendOption);

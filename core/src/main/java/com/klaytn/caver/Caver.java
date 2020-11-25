@@ -118,7 +118,7 @@ public class Caver {
 
     /**
      * Getter for Wallet
-     * @return KeyringContainer
+     * @return IWallet
      */
     public IWallet getWallet() {
         return wallet;

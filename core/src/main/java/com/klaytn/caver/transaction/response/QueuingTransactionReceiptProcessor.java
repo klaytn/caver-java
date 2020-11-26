@@ -20,6 +20,7 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.methods.response.Callback;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.methods.response.TransactionReceipt;
+import com.klaytn.caver.rpc.RPC;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Async;
 
@@ -46,9 +47,9 @@ public class QueuingTransactionReceiptProcessor extends TransactionReceiptProces
     private final BlockingQueue<RequestWrapper> pendingTransactions;
 
     public QueuingTransactionReceiptProcessor(
-            Caver caver, Callback callback,
+            RPC rpc, Callback callback,
             int pollingAttemptsPerTxHash, long pollingFrequency) {
-        super(caver);
+        super(rpc);
         this.scheduledExecutorService = Async.defaultExecutorService();
         this.callback = callback;
         this.pendingTransactions = new LinkedBlockingQueue<>();
@@ -61,7 +62,12 @@ public class QueuingTransactionReceiptProcessor extends TransactionReceiptProces
 
     public QueuingTransactionReceiptProcessor(
             Caver caver, Callback callback) {
-        this(caver, callback, DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH, DEFAULT_POLLING_FREQUENCY);
+        this(caver.getRpc(), callback, DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH, DEFAULT_POLLING_FREQUENCY);
+    }
+
+    public QueuingTransactionReceiptProcessor(
+            RPC rpc, Callback callback) {
+        this(rpc, callback, DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH, DEFAULT_POLLING_FREQUENCY);
     }
 
     @Override

@@ -18,6 +18,7 @@ package com.klaytn.caver.transaction.response;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.methods.response.TransactionReceipt;
+import com.klaytn.caver.rpc.RPC;
 import org.web3j.protocol.exceptions.TransactionException;
 
 import java.io.IOException;
@@ -32,6 +33,12 @@ public class PollingTransactionReceiptProcessor extends TransactionReceiptProces
 
     public PollingTransactionReceiptProcessor(Caver caver, long sleepDuration, int attempts) {
         super(caver);
+        this.sleepDuration = sleepDuration;
+        this.attempts = attempts;
+    }
+
+    public PollingTransactionReceiptProcessor(RPC rpc, long sleepDuration, int attempts) {
+        super(rpc);
         this.sleepDuration = sleepDuration;
         this.attempts = attempts;
     }

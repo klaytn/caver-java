@@ -30,8 +30,6 @@ import org.web3j.protocol.http.HttpService;
 public class Caver {
 
     public static String DEFAULT_URL = "http://localhost:8551";
-    public static String MAINNET_URL = "https://api.cypress.klaytn.net:8651";
-    public static String BAOBAB_URL = "https://api.baobab.klaytn.net:8651";
 
     /**
      * @deprecated Please use <code>caver.rpc.klay</code> instead.

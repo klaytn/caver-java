@@ -23,10 +23,12 @@ import com.klaytn.caver.methods.response.Bytes;
 import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.Quantity;
 import com.klaytn.caver.methods.response.TransactionReceipt;
+import com.klaytn.caver.rpc.RPC;
 import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.transaction.type.SmartContractExecution;
 import com.klaytn.caver.utils.Utils;
+import com.klaytn.caver.wallet.IWallet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.abi.datatypes.Type;
@@ -43,9 +45,14 @@ import java.util.List;
 public class ContractMethod {
 
     /**
-     * A caver instance.
+     * A RPC instance to call klaytn JSON/RPC API.
      */
-    Caver caver;
+    RPC rpc;
+
+    /**
+     * A Class instance implemented IWallet.
+     */
+    IWallet wallet;
 
     /**
      * The input type. It always set "function".
@@ -105,7 +112,10 @@ public class ContractMethod {
      * @param contractAddress The contract address
      */
     public ContractMethod(Caver caver, String type, String name, List<ContractIOType> inputs, List<ContractIOType> outputs, String signature, String contractAddress) {
-        this.caver = caver;
+        this(caver.getWallet(), caver.getRpc(), type, name, inputs, outputs, signature, contractAddress);
+    }
+
+    public ContractMethod(IWallet wallet, RPC rpc, String type, String name, List<ContractIOType> inputs, List<ContractIOType> outputs, String signature, String contractAddress) {
         this.type = type;
         this.name = name;
         this.inputs = inputs;
@@ -200,7 +210,7 @@ public class ContractMethod {
      * @throws Exception
      */
     public TransactionReceipt.TransactionReceiptData send(List<Object> arguments) throws Exception {
-        return send(arguments, null, new PollingTransactionReceiptProcessor(caver, 1000, 15));
+        return send(arguments, null);
     }
 
     /**
@@ -212,7 +222,7 @@ public class ContractMethod {
      * @throws Exception
      */
     public TransactionReceipt.TransactionReceiptData send(List<Object> arguments, SendOptions options) throws Exception {
-        return send(arguments, options, new PollingTransactionReceiptProcessor(caver, 1000, 15));
+        return send(arguments, options, new PollingTransactionReceiptProcessor(getRpc(), 1000, 15));
     }
 
     /**
@@ -247,7 +257,7 @@ public class ContractMethod {
      * @throws TransactionException
      */
     public TransactionReceipt.TransactionReceiptData sendWithSolidityWrapper(List<Type> wrapperArguments) throws Exception {
-        return sendWithSolidityWrapper(wrapperArguments, null, new PollingTransactionReceiptProcessor(caver, 1000, 15));
+        return sendWithSolidityWrapper(wrapperArguments, null);
     }
 
     /**
@@ -261,7 +271,7 @@ public class ContractMethod {
      * @throws TransactionException
      */
     public TransactionReceipt.TransactionReceiptData sendWithSolidityWrapper(List<Type> wrapperArguments, SendOptions options) throws Exception {
-        return sendWithSolidityWrapper(wrapperArguments, options, new PollingTransactionReceiptProcessor(caver, 1000, 15));
+        return sendWithSolidityWrapper(wrapperArguments, options, new PollingTransactionReceiptProcessor(getRpc(), 1000, 15));
     }
 
     /**
@@ -369,11 +379,19 @@ public class ContractMethod {
     }
 
     /**
-     * Getter function for Caver.
-     * @return Caver
+     * Getter function for Wallet
+     * @return IWallet
      */
-    public Caver getCaver() {
-        return caver;
+    public IWallet getWallet() {
+        return wallet;
+    }
+
+    /**
+     * Getter function for RPC
+     * @return
+     */
+    public RPC getRpc() {
+        return rpc;
     }
 
     /**
@@ -437,11 +455,19 @@ public class ContractMethod {
     }
 
     /**
-     * Setter function for Caver.
-     * @param caver The Caver instance.
+     * Setter function for wallet
+     * @param wallet A Class instance implemented IWallet.
      */
-    void setCaver(Caver caver) {
-        this.caver = caver;
+    public void setWallet(IWallet wallet) {
+        this.wallet = wallet;
+    }
+
+    /**
+     * Setter function for RPC
+     * @param rpc A RPC instance to call klaytn JSON/RPC API.
+     */
+    public void setRpc(RPC rpc) {
+        this.rpc = rpc;
     }
 
     /**
@@ -621,7 +647,7 @@ public class ContractMethod {
         checkSendOption(sendOptions);
 
         SmartContractExecution smartContractExecution = new SmartContractExecution.Builder()
-                .setKlaytnCall(caver.rpc.klay)
+                .setKlaytnCall(getRpc().klay)
                 .setFrom(sendOptions.getFrom())
                 .setTo(method.getContractAddress())
                 .setInput(encodedInput)
@@ -629,8 +655,8 @@ public class ContractMethod {
                 .setValue(sendOptions.getValue())
                 .build();
 
-        caver.getWallet().sign(sendOptions.getFrom(), smartContractExecution);
-        Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractExecution).send();
+        getWallet().sign(sendOptions.getFrom(), smartContractExecution);
+        Bytes32 txHash = getRpc().klay.sendRawTransaction(smartContractExecution).send();
 
         TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());
         return receipt;
@@ -642,7 +668,7 @@ public class ContractMethod {
         }
         callObject.setData(encodedInput);
         callObject.setTo(method.getContractAddress());
-        Bytes response = caver.rpc.klay.call(callObject).send();
+        Bytes response = getRpc().klay.call(callObject).send();
 
         String encodedResult = response.getResult();
         return ABI.decodeParameters(method, encodedResult);
@@ -655,7 +681,7 @@ public class ContractMethod {
         callObject.setData(encodedFunctionCall);
         callObject.setTo(this.getContractAddress());
 
-        Quantity estimateGas = caver.rpc.klay.estimateGas(callObject).send();
+        Quantity estimateGas = getRpc().klay.estimateGas(callObject).send();
         if(estimateGas.hasError()) {
             throw new IOException(estimateGas.getError().getMessage());
         }

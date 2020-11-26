@@ -25,10 +25,12 @@ import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.KlayLogs;
 import com.klaytn.caver.methods.response.TransactionReceipt;
+import com.klaytn.caver.rpc.RPC;
 import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.transaction.type.SmartContractDeploy;
 import com.klaytn.caver.utils.CodeFormat;
+import com.klaytn.caver.wallet.IWallet;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -48,9 +50,14 @@ import java.util.*;
 public class Contract {
 
     /**
-     * A caver instance.
+     * A RPC instance to call klaytn JSON/RPC API.
      */
-    Caver caver;
+    RPC rpc;
+
+    /**
+     * A Class instance implemented IWallet.
+     */
+    IWallet wallet;
 
     /**
      * A contract ABI(Application Binary interface) json string.
@@ -101,9 +108,33 @@ public class Contract {
      * @param contractAddress An address string of contract deployed on Klaytn.
      * @throws IOException
      */
-    public Contract(Caver caver, String abi, String contractAddress) throws IOException{
+    public Contract(Caver caver, String abi, String contractAddress) throws IOException {
+        this(caver.getWallet(), caver.getRpc(), abi, contractAddress);
+    }
+
+    /**
+     * Creates a Contract instance.
+     * @param wallet A Class instance implemented IWallet.
+     * @param rpc A RPC instance to call klaytn JSON/RPC API.
+     * @param abi A contract's ABI(Application Binary Interface) json string.
+     * @throws IOException
+     */
+    public Contract(IWallet wallet, RPC rpc, String abi) throws IOException{
+        this(wallet, rpc, abi, null);
+    }
+
+    /**
+     * Create a Contract instance.
+     * @param wallet A Class instance implemented IWallet.
+     * @param rpc A RPC instance to call klaytn JSON/RPC API.
+     * @param abi A contract's ABI(Application Binary Interface) json string.
+     * @param contractAddress An address string of contract deployed on Klaytn.
+     * @throws IOException
+     */
+    public Contract(IWallet wallet, RPC rpc, String abi, String contractAddress) throws IOException {
         setAbi(abi);
-        setCaver(caver);
+        setWallet(wallet);
+        setRpc(rpc);
         setContractAddress(contractAddress);
         setDefaultSendOptions(new SendOptions());
     }
@@ -144,7 +175,7 @@ public class Contract {
      * @throws Exception
      */
     public Contract deploy(ContractDeployParams deployParam, SendOptions sendOptions) throws Exception {
-        return deploy(deployParam, sendOptions, new PollingTransactionReceiptProcessor(caver, 1000, 15));
+        return deploy(deployParam, sendOptions, new PollingTransactionReceiptProcessor(getRpc(), 1000, 15));
     }
 
     /**
@@ -159,7 +190,7 @@ public class Contract {
         String input = ABI.encodeContractDeploy(this.getConstructor(), deployParam.getBytecode(), deployParam.getDeployParams());
 
         SmartContractDeploy smartContractDeploy = new SmartContractDeploy.Builder()
-                .setKlaytnCall(caver.rpc.klay)
+                .setKlaytnCall(rpc.klay)
                 .setFrom(sendOptions.getFrom())
                 .setInput(input)
                 .setCodeFormat(CodeFormat.EVM)
@@ -167,9 +198,9 @@ public class Contract {
                 .setGas(sendOptions.getGas())
                 .build();
 
-        caver.getWallet().sign(sendOptions.getFrom(), smartContractDeploy);
+        getWallet().sign(sendOptions.getFrom(), smartContractDeploy);
 
-        Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractDeploy.getRawTransaction()).send();
+        Bytes32 txHash = rpc.klay.sendRawTransaction(smartContractDeploy.getRawTransaction()).send();
         TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());
 
         String contractAddress = receipt.getContractAddress();
@@ -213,11 +244,11 @@ public class Contract {
         final Request<?, EthSubscribe> subscribeRequest = new Request<>(
                 "klay_subscribe",
                 Arrays.asList("logs", options),
-                this.caver.rpc.getWeb3jService(),
+                getRpc().getWeb3jService(),
                 EthSubscribe.class
         );
 
-        final Flowable<LogNotification> events = this.caver.rpc.getWeb3jService().subscribe(subscribeRequest, "klay_unsubscribe", LogNotification.class);
+        final Flowable<LogNotification> events = getRpc().getWeb3jService().subscribe(subscribeRequest, "klay_unsubscribe", LogNotification.class);
         return events.take(1).subscribe(callback);
     }
 
@@ -232,7 +263,7 @@ public class Contract {
         ContractEvent event = getEvent(eventName);
         filterOption.addSingleTopic(ABI.encodeEventSignature(event));
 
-        KlayLogs logs = caver.rpc.klay.getLogs(filterOption).send();
+        KlayLogs logs = getRpc().klay.getLogs(filterOption).send();
 
         return logs;
     }
@@ -331,7 +362,7 @@ public class Contract {
      * @throws Exception
      */
     public TransactionReceipt.TransactionReceiptData send(SendOptions options, String methodName, Object... methodArguments) throws Exception {
-        return send(options, new PollingTransactionReceiptProcessor(caver, 1000, 15), methodName, methodArguments);
+        return send(options, new PollingTransactionReceiptProcessor(getRpc(), 1000, 15), methodName, methodArguments);
     }
 
     /**
@@ -374,7 +405,7 @@ public class Contract {
      * @throws Exception
      */
     public TransactionReceipt.TransactionReceiptData sendWithSolidityType(SendOptions options, String methodName, Type... methodArguments) throws Exception {
-        return sendWithSolidityType(options, new PollingTransactionReceiptProcessor(caver, 1000, 15), methodName, methodArguments);
+        return sendWithSolidityType(options, new PollingTransactionReceiptProcessor(getRpc(), 1000, 15), methodName, methodArguments);
     }
 
     /**
@@ -476,14 +507,6 @@ public class Contract {
     }
 
     /**
-     * Getter function for caver.
-     * @return Caver
-     */
-    public Caver getCaver() {
-        return caver;
-    }
-
-    /**
      * Getter function for contract's abi.
      * @return String
      */
@@ -532,15 +555,44 @@ public class Contract {
     }
 
     /**
-     * Setter function for Caver.
-     * @param caver The Caver instance.
+     * Getter function for wallet.
+     * @return IWallet
      */
-    void setCaver(Caver caver) {
-        this.caver = caver;
+    public IWallet getWallet() {
+        return wallet;
+    }
 
-        //When Caver instance changes, the caver instance of each ContractMethod is also replaced.
+    /**
+     * Getter function for RPC
+     * @return RPC
+     */
+    public RPC getRpc() {
+        return rpc;
+    }
+
+    /**
+     * Setter function for wallet.
+     * @param wallet The class instance implemented IWallet interface.
+     */
+    public void setWallet(IWallet wallet) {
+        this.wallet = wallet;
+
+        //When IWallet instance changes, the caver instance of each ContractMethod is also replaced.
         if(this.methods != null && this.methods.size() != 0) {
-            this.getMethods().values().forEach(value -> value.setCaver(caver));
+            this.getMethods().values().forEach(value -> value.setWallet(wallet));
+        }
+    }
+
+    /**
+     * Setter function for RPC
+     * @param rpc A RPC instance to call klaytn JSON/RPC API.
+     */
+    public void setRpc(RPC rpc) {
+        this.rpc = rpc;
+
+        //When IWallet instance changes, the caver instance of each ContractMethod is also replaced.
+        if(this.methods != null && this.methods.size() != 0) {
+            this.getMethods().values().forEach(value -> value.setRpc(rpc));
         }
     }
 

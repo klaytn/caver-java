@@ -22,8 +22,9 @@ import com.klaytn.caver.contract.ContractDeployParams;
 import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.TransactionReceipt;
+import com.klaytn.caver.rpc.RPC;
+import com.klaytn.caver.wallet.IWallet;
 import org.web3j.abi.datatypes.Type;
-import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -66,7 +67,17 @@ public class KIP7 extends Contract {
      * @throws IOException
      */
     public KIP7(Caver caver) throws IOException {
-        super(caver, KIP7ConstantData.ABI);
+        this(caver.getWallet(), caver.getRpc());
+    }
+
+    /**
+     * Creates a KIP7 instance.
+     * @param wallet A Class instance implemented IWallet.
+     * @param rpc A RPC instance to call klaytn JSON/RPC API.
+     * @throws IOException
+     */
+    public KIP7(IWallet wallet, RPC rpc) throws IOException {
+        this(wallet, rpc, null);
     }
 
     /**
@@ -76,12 +87,23 @@ public class KIP7 extends Contract {
      * @throws IOException
      */
     public KIP7(Caver caver, String contractAddress) throws IOException {
-        super(caver, KIP7ConstantData.ABI, contractAddress);
+        this(caver.getWallet(), caver.getRpc(), contractAddress);
+    }
+
+    /**
+     * Creates a KIP7 instance
+     * @param wallet A Class instance implemented IWallet.
+     * @param rpc A RPC instance to call klaytn JSON/RPC API.
+     * @param contractAddress A contract address
+     * @throws IOException
+     */
+    public KIP7(IWallet wallet, RPC rpc, String contractAddress) throws IOException {
+        super(wallet, rpc, KIP7ConstantData.ABI, contractAddress);
     }
 
     /**
      * Deploy KIP-7 contract.
-     * It must add deployer's keyring in caver.wallet.
+     * It must add deployer's key data in caver.wallet.
      * @param caver A Caver instance.
      * @param deployer A deployer's address.
      * @param name A KIP-7 contract name.
@@ -92,8 +114,25 @@ public class KIP7 extends Contract {
      * @throws Exception
      */
     public static KIP7 deploy(Caver caver, String deployer, String name, String symbol, int decimals, BigInteger initialSupply) throws Exception {
+        return deploy(caver.getWallet(), caver.getRpc(), deployer, name, symbol, decimals, initialSupply);
+    }
+
+    /**
+     * Deploy KIP-7 contract.
+     * It must add deployer's key data in wallet.
+     * @param wallet A Class instance implemented IWallet.
+     * @param rpc A RPC instance to call klaytn JSON/RPC API.
+     * @param deployer A deployer's address.
+     * @param name A KIP-7 contract name.
+     * @param symbol A KIP-7 contract symbol.
+     * @param decimals A KIP-7 contract decimals.
+     * @param initialSupply A KIP-7 contract initial supply.
+     * @return KIP7
+     * @throws Exception
+     */
+    public static KIP7 deploy(IWallet wallet, RPC rpc, String deployer, String name, String symbol, int decimals, BigInteger initialSupply) throws Exception {
         KIP7DeployParams params = new KIP7DeployParams(name, symbol, decimals, initialSupply);
-        return deploy(caver, params, deployer);
+        return deploy(wallet, rpc, params, deployer);
     }
 
     /**
@@ -106,11 +145,25 @@ public class KIP7 extends Contract {
      * @throws Exception
      */
     public static KIP7 deploy(Caver caver, KIP7DeployParams tokenInfo, String deployer) throws Exception {
+        return deploy(caver.getWallet(), caver.getRpc(), tokenInfo, deployer);
+    }
+
+    /**
+     * Deploy KIP-7 contract.
+     * It must add deployer's key data in wallet.
+     * @param wallet A Class instance implemented IWallet.
+     * @param rpc A RPC instance to call klaytn JSON/RPC API.
+     * @param tokenInfo The KIP-7 contract's deploy parameter values
+     * @param deployer A deployer's address
+     * @return KIP7
+     * @throws Exception
+     */
+    public static KIP7 deploy(IWallet wallet, RPC rpc, KIP7DeployParams tokenInfo, String deployer) throws Exception {
         List deployArgument = Arrays.asList(tokenInfo.getName(), tokenInfo.getSymbol(), tokenInfo.getDecimals(), tokenInfo.getInitialSupply());
         ContractDeployParams contractDeployParams = new ContractDeployParams(KIP7ConstantData.BINARY, deployArgument);
         SendOptions sendOptions = new SendOptions(deployer, BigInteger.valueOf(4000000));
 
-        KIP7 kip7 = new KIP7(caver);
+        KIP7 kip7 = new KIP7(wallet, rpc);
         kip7.deploy(contractDeployParams, sendOptions);
 
         return kip7;
@@ -123,7 +176,7 @@ public class KIP7 extends Contract {
     @Override
     public KIP7 clone() {
         try {
-            return new KIP7(this.getCaver());
+            return new KIP7(this.getWallet(), this.getRpc());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -137,7 +190,7 @@ public class KIP7 extends Contract {
      */
     public KIP7 clone(String tokenAddress) {
         try {
-            return new KIP7(this.getCaver(), tokenAddress);
+            return new KIP7(this.getWallet(), this.getRpc(), tokenAddress);
         } catch (IOException e) {
             e.printStackTrace();
         }

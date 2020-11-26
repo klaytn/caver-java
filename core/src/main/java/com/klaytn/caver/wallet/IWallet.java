@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * This interface manages key data.
+ * The Interface of wallet that can manage multiple key data.
  */
 public interface IWallet {
 

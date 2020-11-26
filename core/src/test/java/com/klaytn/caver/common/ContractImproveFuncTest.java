@@ -174,7 +174,7 @@ public class ContractImproveFuncTest {
     static Contract contract;
 
     @BeforeClass
-    public static void init() throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public static void init() throws Exception {
         caver = new Caver(Caver.DEFAULT_URL);
         ownerKeyring = KeyringFactory.createFromPrivateKey(ownerPrivateKey);
         caver.wallet.add(ownerKeyring);
@@ -226,7 +226,7 @@ public class ContractImproveFuncTest {
     }
 
     @Test
-    public void deployTest() throws IOException, NoSuchMethodException, TransactionException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public void deployTest() throws Exception {
         Caver caver = new Caver(Caver.DEFAULT_URL);
         caver.wallet.add(ownerKeyring);
 

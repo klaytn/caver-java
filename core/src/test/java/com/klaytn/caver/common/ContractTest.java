@@ -728,7 +728,7 @@ public class ContractTest {
             Contract contract = new Contract(caver, jsonObj);
             contract.deploy(contractDeployParam, options);
             contractAddress = contract.getContractAddress();
-        } catch (IOException | TransactionException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+        } catch (Exception e) {
             fail();
         }
     }
@@ -753,14 +753,14 @@ public class ContractTest {
             Contract contract = new Contract(caver, jsonObj);
             contract.deploy(contractDeployParam, options);
             return contract;
-        } catch (IOException | TransactionException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return null;
     }
 
-    public void sendTransfer(Contract contract) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public void sendTransfer(Contract contract) throws Exception {
         SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
 
         List<Object> callParams = Arrays.asList(BRANDON.getAddress());
@@ -801,7 +801,7 @@ public class ContractTest {
             Contract contract = new Contract(caver, jsonObj);
             contract.deploy(contractDeployParam, options);
             assertNotNull(contract.getContractAddress());
-        } catch (IOException | TransactionException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+        } catch (Exception e) {
             fail();
         }
     }
@@ -881,7 +881,7 @@ public class ContractTest {
     }
 
     @Test
-    public void send() throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public void send() throws Exception {
         Caver caver = new Caver(Caver.DEFAULT_URL);
         caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
 
@@ -905,7 +905,7 @@ public class ContractTest {
     }
 
     @Test
-    public void sendWithInvalidFrom() throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public void sendWithInvalidFrom() throws Exception {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Invalid 'from' parameter");
         Caver caver = new Caver(Caver.DEFAULT_URL);
@@ -924,7 +924,7 @@ public class ContractTest {
     }
 
     @Test
-    public void sendWithInvalidGas() throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public void sendWithInvalidGas() throws Exception {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Invalid 'gas' parameter");
         Caver caver = new Caver(Caver.DEFAULT_URL);
@@ -1039,7 +1039,7 @@ public class ContractTest {
     }
 
     @Test
-    public void onceTest() throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public void onceTest() throws Exception {
         WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
         Caver caver = new Caver(webSocketService);
         webSocketService.connect();
@@ -1082,7 +1082,7 @@ public class ContractTest {
     }
 
     @Test
-    public void onceTest2() throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public void onceTest2() throws Exception {
         WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
         Caver caver = new Caver(webSocketService);
         webSocketService.connect();
@@ -1125,7 +1125,7 @@ public class ContractTest {
     }
 
     @Test
-    public void onceTest_multiOptions() throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public void onceTest_multiOptions() throws Exception {
         WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
         Caver caver = new Caver(webSocketService);
         webSocketService.connect();
@@ -1169,7 +1169,7 @@ public class ContractTest {
     }
 
     @Test
-    public void onceTest4_OR_Options() throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public void onceTest4_OR_Options() throws Exception {
         WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
         Caver caver = new Caver(webSocketService);
         webSocketService.connect();
@@ -1212,7 +1212,7 @@ public class ContractTest {
     }
 
     @Test
-    public void onceTest5_OR_Options2() throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public void onceTest5_OR_Options2() throws Exception {
         WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
         Caver caver = new Caver(webSocketService);
         webSocketService.connect();
@@ -1255,7 +1255,7 @@ public class ContractTest {
     }
 
     @Test
-    public void onceTest_allEvents() throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public void onceTest_allEvents() throws Exception {
         WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
         Caver caver = new Caver(webSocketService);
         webSocketService.connect();

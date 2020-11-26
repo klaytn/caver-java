@@ -160,7 +160,7 @@ public class ContractOverloadFunctionsTest {
             Contract contract = new Contract(caver, ABIJson);
             contract.deploy(contractDeployParam, options);
             contractAddress = contract.getContractAddress();
-        } catch (IOException | TransactionException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+        } catch (Exception e) {
             fail();
         }
 

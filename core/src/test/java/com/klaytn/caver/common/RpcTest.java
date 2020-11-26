@@ -470,7 +470,7 @@ public class RpcTest extends Accounts {
         }
 
 
-        public static KIP17 deployContract() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        public static KIP17 deployContract() throws Exception {
             Caver caver = new Caver(Caver.DEFAULT_URL);
             caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
 

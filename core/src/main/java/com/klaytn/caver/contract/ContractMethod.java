@@ -197,15 +197,9 @@ public class ContractMethod {
      * It is used defaultSendOption field to sendOptions
      * @param arguments A List of parameter to call smart contract method.
      * @return TransactionReceiptData
-     * @throws IOException
-     * @throws TransactionException
-     * @throws ClassNotFoundException
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData send(List<Object> arguments) throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public TransactionReceipt.TransactionReceiptData send(List<Object> arguments) throws Exception {
         return send(arguments, null, new PollingTransactionReceiptProcessor(caver, 1000, 15));
     }
 
@@ -215,15 +209,9 @@ public class ContractMethod {
      * @param arguments A List of parameter to call smart contract method.
      * @param options An option to execute smart contract method.
      * @return TransactionReceiptData
-     * @throws IOException
-     * @throws TransactionException
-     * @throws ClassNotFoundException
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData send(List<Object> arguments, SendOptions options) throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public TransactionReceipt.TransactionReceiptData send(List<Object> arguments, SendOptions options) throws Exception {
         return send(arguments, options, new PollingTransactionReceiptProcessor(caver, 1000, 15));
     }
 
@@ -233,15 +221,9 @@ public class ContractMethod {
      * @param options An option to execute smart contract method.
      * @param processor A TransactionReceiptProcessor to get receipt.
      * @return TransactionReceiptData
-     * @throws IOException
-     * @throws TransactionException
-     * @throws ClassNotFoundException
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
+     * @throws Exception
      */
-    public TransactionReceipt.TransactionReceiptData send(List<Object> arguments, SendOptions options, TransactionReceiptProcessor processor) throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public TransactionReceipt.TransactionReceiptData send(List<Object> arguments, SendOptions options, TransactionReceiptProcessor processor) throws Exception {
         List<Object> functionParams = new ArrayList<>();
 
         if(arguments != null) {
@@ -264,7 +246,7 @@ public class ContractMethod {
      * @throws IOException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData sendWithSolidityWrapper(List<Type> wrapperArguments) throws IOException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityWrapper(List<Type> wrapperArguments) throws Exception {
         return sendWithSolidityWrapper(wrapperArguments, null, new PollingTransactionReceiptProcessor(caver, 1000, 15));
     }
 
@@ -278,7 +260,7 @@ public class ContractMethod {
      * @throws IOException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData sendWithSolidityWrapper(List<Type> wrapperArguments, SendOptions options) throws IOException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityWrapper(List<Type> wrapperArguments, SendOptions options) throws Exception {
         return sendWithSolidityWrapper(wrapperArguments, options, new PollingTransactionReceiptProcessor(caver, 1000, 15));
     }
 
@@ -292,7 +274,7 @@ public class ContractMethod {
      * @throws IOException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData sendWithSolidityWrapper(List<Type> wrapperArguments, SendOptions options, TransactionReceiptProcessor processor) throws IOException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData sendWithSolidityWrapper(List<Type> wrapperArguments, SendOptions options, TransactionReceiptProcessor processor) throws Exception {
         List<Type> functionParams = new ArrayList<>();
 
         if(wrapperArguments != null) {
@@ -632,7 +614,7 @@ public class ContractMethod {
         return true;
     }
 
-    private TransactionReceipt.TransactionReceiptData sendTransaction(ContractMethod method, SendOptions options, String encodedInput, TransactionReceiptProcessor processor) throws IOException, TransactionException {
+    private TransactionReceipt.TransactionReceiptData sendTransaction(ContractMethod method, SendOptions options, String encodedInput, TransactionReceiptProcessor processor) throws Exception {
         //Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
         //Passed parameter "options" has higher priority than "defaultSendOption" field.
         SendOptions sendOptions = makeSendOption(options);
@@ -647,7 +629,7 @@ public class ContractMethod {
                 .setValue(sendOptions.getValue())
                 .build();
 
-        caver.wallet.sign(sendOptions.getFrom(), smartContractExecution);
+        caver.getWallet().sign(sendOptions.getFrom(), smartContractExecution);
         Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractExecution).send();
 
         TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());

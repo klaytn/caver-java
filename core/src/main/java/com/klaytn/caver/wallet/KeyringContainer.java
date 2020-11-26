@@ -34,7 +34,7 @@ import java.util.function.Function;
 /**
  * Represents a Keyring container which manages keyring
  */
-public class KeyringContainer {
+public class KeyringContainer implements IWallet{
     /**
      * The map where address and keyring are mapped
      */
@@ -57,22 +57,23 @@ public class KeyringContainer {
 
     /**
      * Generates keyrings in the keyring container with randomly generated key pairs.
-     * @param numberOfKeyrings The number of keyring to create.
+     * @param num The number of keyring to create.
      * @return List of address generated Keyring instances
      */
-    public List<String> generate(int numberOfKeyrings) {
-        return this.generate(numberOfKeyrings, null);
+    @Override
+    public List<String> generate(int num) {
+        return this.generate(num, null);
     }
 
     /**
      * Generates keyrings in the keyring container with randomly generated key pairs.
-     * @param numberOfKeyrings The number of keyring to create.
+     * @param num The number of keyring to create.
      * @param entropy A random string to increase entropy.
      * @return List of address generated Keyring instances
      */
-    public List<String> generate(int numberOfKeyrings, String entropy) {
+    public List<String> generate(int num, String entropy) {
         List<String> addressList = new ArrayList<>();
-        for(int i=0; i<numberOfKeyrings; i++) {
+        for(int i=0; i<num; i++) {
             AbstractKeyring keyring = KeyringFactory.generate(entropy);
             addressList.add(keyring.getAddress());
             this.add(keyring);
@@ -180,11 +181,15 @@ public class KeyringContainer {
      * @param address An address of the keyring to be deleted in keyringContainer
      * @return boolean
      */
+    @Override
     public boolean remove(String address) {
         if(!Utils.isAddress(address)) {
             throw new IllegalArgumentException("To remove keyring, the first parameter should be an address string");
         }
 
+        if(!isExisted(address)) {
+            return false;
+        }
         //deallocate keyring object created for keyringContainer.
         AbstractKeyring removed = this.addressKeyringMap.remove(address);
         removed = null;
@@ -206,27 +211,27 @@ public class KeyringContainer {
     /**
      * Signs with data and returns MessageSigned instance that includes 'signature', 'message', 'messageHash'
      * @param address An address of keyring in keyringContainer
-     * @param data The data string to sign
+     * @param data The data string to sign.
      * @param role A number indication the role of the key.
      * @param index An index of key to use for signing.
      * @return MessageSigned
      */
     public MessageSigned signMessage(String address, String data, int role, int index) {
-        AbstractKeyring keyring = this.getKeyring(address);
-        if(keyring == null) {
+        if(!isExisted(address)) {
             throw new NullPointerException("Failed to find keyring from wallet with address");
         }
 
-        return keyring.signMessage(data, role, index);
+        return this.getKeyring(address).signMessage(data, role, index);
     }
 
     /**
      * Signs the transaction using all keys in the Keyring instance corresponding to the address.
      * @param address An address of keyring in KeyringContainer.
-     * @param transaction A transaction object.
+     * @param transaction An AbstractTransaction instance to sign.
      * @return AbstractTransaction
      * @throws IOException
      */
+    @Override
     public AbstractTransaction sign(String address, AbstractTransaction transaction) throws IOException {
         return sign(address, transaction, TransactionHasher::getHashForSignature);
     }
@@ -234,24 +239,23 @@ public class KeyringContainer {
     /**
      * Signs the transaction using all keys in the Keyring instance corresponding to the address.
      * @param address An address of keyring in KeyringContainer.
-     * @param transaction A transaction object.
+     * @param transaction An AbstractTransaction instance to sign.
      * @param hasher A function to return hash of transaction.
      * @return AbstractTransaction
      * @throws IOException
      */
     public AbstractTransaction sign(String address, AbstractTransaction transaction, Function<AbstractTransaction, String> hasher) throws  IOException{
-        AbstractKeyring keyring = this.getKeyring(address);
-        if(keyring == null) {
+        if(!isExisted(address)) {
             throw new NullPointerException("Failed to find keyring from wallet with address");
         }
 
-        return transaction.sign(keyring, hasher);
+        return transaction.sign(this.getKeyring(address), hasher);
     }
 
     /**
      * Signs the transaction using one key in the keyring instance corresponding to the address.
      * @param address An address of keyring in KeyringContainer.
-     * @param transaction A transaction object.
+     * @param transaction An AbstractTransaction instance to sign
      * @param index An index of key to use for signing.
      * @return AbstractTransaction
      * @throws IOException
@@ -263,28 +267,28 @@ public class KeyringContainer {
     /**
      * Signs the transaction using one key in the keyring instance corresponding to the address.
      * @param address An address of keyring in KeyringContainer.
-     * @param transaction A transaction object.
+     * @param transaction An AbstractTransaction instance to sign.
      * @param index An index of key to use for signing.
      * @param hasher A function to return hash of transaction.
      * @return AbstractTransaction
      * @throws IOException
      */
     public AbstractTransaction sign(String address, AbstractTransaction transaction, int index, Function<AbstractTransaction, String> hasher) throws IOException {
-        AbstractKeyring keyring = this.getKeyring(address);
-        if(keyring == null) {
+        if(!isExisted(address)) {
             throw new NullPointerException("Failed to find keyring from wallet with address");
         }
 
-        return transaction.sign(keyring, index, hasher);
+        return transaction.sign(this.getKeyring(address), index, hasher);
     }
 
     /**
      * Signs the FeeDelegatedTransaction using all keys in the keyring instance corresponding to the address.
      * @param address An address of keyring in KeyringContainer.
-     * @param transaction A FeeDelegatedTransaction object.
+     * @param transaction An AbstractFeeDelegatedTransaction instance to sign.
      * @return AbstractFeeDelegatedTransaction
      * @throws IOException
      */
+    @Override
     public AbstractFeeDelegatedTransaction signAsFeePayer(String address, AbstractFeeDelegatedTransaction transaction) throws IOException {
         return signAsFeePayer(address, transaction, TransactionHasher::getHashForFeePayerSignature);
     }
@@ -292,24 +296,23 @@ public class KeyringContainer {
     /**
      * Signs the FeeDelegatedTransaction using all keys in the keyring instance corresponding to the address.
      * @param address An address of keyring in KeyringContainer.
-     * @param transaction A FeeDelegatedTransaction object.
+     * @param transaction An AbstractFeeDelegatedTransaction instance to sign.
      * @param hasher A function to return hash of transaction.
      * @return AbstractFeeDelegatedTransaction
      * @throws IOException
      */
     public AbstractFeeDelegatedTransaction signAsFeePayer(String address, AbstractFeeDelegatedTransaction transaction, Function<AbstractFeeDelegatedTransaction, String> hasher) throws IOException {
-        AbstractKeyring keyring = this.getKeyring(address);
-        if(keyring == null) {
+        if(!isExisted(address)) {
             throw new NullPointerException("Failed to find keyring from wallet with address");
         }
 
-        return transaction.signAsFeePayer(keyring, hasher);
+        return transaction.signAsFeePayer(this.getKeyring(address), hasher);
     }
 
     /**
      * Signs the FeeDelegatedTransaction using one key in the keyring corresponding to the address.
      * @param address An address of keyring in KeyringContainer.
-     * @param transaction A FeeDelegatedTransaction object.
+     * @param transaction An AbstractFeeDelegatedTransaction instance to sign.
      * @param index An index of key to use for signing.
      * @return AbstractFeeDelegatedTransaction
      * @throws IOException
@@ -321,18 +324,27 @@ public class KeyringContainer {
     /**
      * Signs the FeeDelegatedTransaction using one key in the keyring corresponding to the address.
      * @param address An address of keyring in KeyringContainer.
-     * @param transaction A FeeDelegatedTransaction object.
+     * @param transaction An AbstractFeeDelegatedTransaction instance to sign.
      * @param index An index of key to user for signing
      * @param hasher A function to return hash of transaction.
      * @return AbstractFeeDelegatedTransaction
      * @throws IOException
      */
     public AbstractFeeDelegatedTransaction signAsFeePayer(String address, AbstractFeeDelegatedTransaction transaction, int index, Function<AbstractFeeDelegatedTransaction, String> hasher) throws IOException {
-        AbstractKeyring keyring = this.getKeyring(address);
-        if(keyring == null) {
+        if(!isExisted(address)) {
             throw new NullPointerException("Failed to find keyring from wallet with address");
         }
 
-        return transaction.signAsFeePayer(keyring, index, hasher);
+        return transaction.signAsFeePayer(this.getKeyring(address), index, hasher);
+    }
+
+    /**
+     * Check whether there is a keyring corresponding to the address passed as a parameter in the wallet.
+     * @param address An address to find keyring in wallet.
+     * @return boolean
+     */
+    @Override
+    public boolean isExisted(String address) {
+        return this.getKeyring(address) != null;
     }
 }

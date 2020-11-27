@@ -6,6 +6,7 @@ import com.klaytn.caver.kct.kip7.KIP7;
 import com.klaytn.caver.kct.kip7.KIP7DeployParams;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.utils.Utils;
+import com.klaytn.caver.wallet.KeyringContainer;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -100,7 +101,20 @@ public class KIP7Test {
                 e.printStackTrace();
                 fail();
             }
+        }
 
+        @Test
+        public void cloneTestWithSetWallet() throws IOException {
+            Caver caver = new Caver(Caver.DEFAULT_URL);
+            KIP7 kip7 = new KIP7(caver);
+
+            KeyringContainer container = new KeyringContainer();
+            container.generate(3);
+
+            kip7.setWallet(container);
+            KIP7 cloned = kip7.clone();
+
+            assertEquals(3, ((KeyringContainer)cloned.getWallet()).length());
         }
     }
 

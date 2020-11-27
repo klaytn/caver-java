@@ -22,6 +22,7 @@ import com.klaytn.caver.contract.ContractDeployParams;
 import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.TransactionReceipt;
+import com.klaytn.caver.wallet.IWallet;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
@@ -98,6 +99,24 @@ public class KIP7 extends Contract {
 
     /**
      * Deploy KIP-7 contract.
+     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * @param caver A Caver instance.
+     * @param deployer A deployer's address.
+     * @param name A KIP-7 contract name.
+     * @param symbol A KIP-7 contract symbol.
+     * @param decimals A KIP-7 contract decimals.
+     * @param initialSupply A KIP-7 contract initial supply.
+     * @param wallet The class instance implemented IWallet to sign transaction.
+     * @return KIP7
+     * @throws Exception
+     */
+    public static KIP7 deploy(Caver caver, String deployer, String name, String symbol, int decimals, BigInteger initialSupply, IWallet wallet) throws Exception {
+        KIP7DeployParams params = new KIP7DeployParams(name, symbol, decimals, initialSupply);
+        return deploy(caver, params, deployer, wallet);
+    }
+
+    /**
+     * Deploy KIP-7 contract.
      * It must add deployer's keyring in caver.wallet.
      * @param caver A Caver instance
      * @param tokenInfo The KIP-7 contract's deploy parameter values
@@ -106,11 +125,26 @@ public class KIP7 extends Contract {
      * @throws Exception
      */
     public static KIP7 deploy(Caver caver, KIP7DeployParams tokenInfo, String deployer) throws Exception {
+        return deploy(caver, tokenInfo, deployer, caver.getWallet());
+    }
+
+    /**
+     * Deploy KIP-7 contract.
+     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * @param caver A Caver instance
+     * @param tokenInfo The KIP-7 contract's deploy parameter values
+     * @param deployer A deployer's address
+     * @param wallet The class instance implemented IWallet to sign transaction.
+     * @return KIP7
+     * @throws Exception
+     */
+    public static KIP7 deploy(Caver caver, KIP7DeployParams tokenInfo, String deployer, IWallet wallet) throws Exception {
         List deployArgument = Arrays.asList(tokenInfo.getName(), tokenInfo.getSymbol(), tokenInfo.getDecimals(), tokenInfo.getInitialSupply());
         ContractDeployParams contractDeployParams = new ContractDeployParams(KIP7ConstantData.BINARY, deployArgument);
         SendOptions sendOptions = new SendOptions(deployer, BigInteger.valueOf(4000000));
 
         KIP7 kip7 = new KIP7(caver);
+        kip7.setWallet(wallet);
         kip7.deploy(contractDeployParams, sendOptions);
 
         return kip7;
@@ -123,7 +157,9 @@ public class KIP7 extends Contract {
     @Override
     public KIP7 clone() {
         try {
-            return new KIP7(this.getCaver());
+            KIP7 kip7 = new KIP7(this.getCaver(), this.getContractAddress());
+            kip7.setWallet(this.getWallet());
+            return kip7;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -137,7 +173,9 @@ public class KIP7 extends Contract {
      */
     public KIP7 clone(String tokenAddress) {
         try {
-            return new KIP7(this.getCaver(), tokenAddress);
+            KIP7 kip7 = new KIP7(this.getCaver(), tokenAddress);
+            kip7.setWallet(this.getWallet());
+            return kip7;
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -27,6 +27,7 @@ import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.transaction.type.SmartContractExecution;
 import com.klaytn.caver.utils.Utils;
+import com.klaytn.caver.wallet.IWallet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.abi.datatypes.Type;
@@ -81,6 +82,11 @@ public class ContractMethod {
      * The default send option. When you execute call() or send() without SendOptions, defaultSendOptions will be used.
      */
     SendOptions defaultSendOptions;
+
+    /**
+     * The class instance implemented IWallet interface to sign transaction.
+     */
+    IWallet wallet;
 
 
     List<ContractMethod> nextContractMethods = new ArrayList<>();
@@ -505,6 +511,14 @@ public class ContractMethod {
         this.defaultSendOptions = defaultSendOptions;
     }
 
+    /**
+     * Setter function for wallet
+     * @param wallet The class instance implemented IWallet interface to sign transaction.
+     */
+    public void setWallet(IWallet wallet) {
+        this.wallet = wallet;
+    }
+
     void setNextContractMethods(List<ContractMethod> nextContractMethods) {
         this.nextContractMethods = nextContractMethods;
     }
@@ -629,7 +643,7 @@ public class ContractMethod {
                 .setValue(sendOptions.getValue())
                 .build();
 
-        caver.getWallet().sign(sendOptions.getFrom(), smartContractExecution);
+        this.wallet.sign(sendOptions.getFrom(), smartContractExecution);
         Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractExecution).send();
 
         TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());

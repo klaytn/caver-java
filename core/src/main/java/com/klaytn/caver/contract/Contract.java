@@ -29,6 +29,7 @@ import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.transaction.type.SmartContractDeploy;
 import com.klaytn.caver.utils.CodeFormat;
+import com.klaytn.caver.wallet.IWallet;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -82,6 +83,11 @@ public class Contract {
      */
     SendOptions defaultSendOptions;
 
+    /**
+     * The class instance implemented IWallet to sign transaction.
+     */
+    IWallet wallet;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(Contract.class);
 
     /**
@@ -106,6 +112,7 @@ public class Contract {
         setCaver(caver);
         setContractAddress(contractAddress);
         setDefaultSendOptions(new SendOptions());
+        setWallet(caver.getWallet());
     }
 
     /**
@@ -167,7 +174,7 @@ public class Contract {
                 .setGas(sendOptions.getGas())
                 .build();
 
-        caver.getWallet().sign(sendOptions.getFrom(), smartContractDeploy);
+        this.wallet.sign(sendOptions.getFrom(), smartContractDeploy);
 
         Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractDeploy.getRawTransaction()).send();
         TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());
@@ -532,6 +539,14 @@ public class Contract {
     }
 
     /**
+     * Getter function for wallet
+     * @return IWallet
+     */
+    public IWallet getWallet() {
+        return wallet;
+    }
+
+    /**
      * Setter function for Caver.
      * @param caver The Caver instance.
      */
@@ -591,6 +606,18 @@ public class Contract {
      */
     void setConstructor(ContractMethod constructor) {
         this.constructor = constructor;
+    }
+
+    /**
+     * Setter function for wallet
+     * @param wallet The class instance implemented IWallet to sign transaction.
+     */
+    public void setWallet(IWallet wallet) {
+        this.wallet = wallet;
+
+        if(this.methods != null && this.methods.size() != 0) {
+            this.getMethods().values().forEach(value -> value.setWallet(this.wallet));
+        }
     }
 
     /**

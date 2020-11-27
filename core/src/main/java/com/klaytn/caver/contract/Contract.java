@@ -538,6 +538,10 @@ public class Contract {
         return defaultSendOptions;
     }
 
+    /**
+     * Getter function for wallet
+     * @return IWallet
+     */
     public IWallet getWallet() {
         return wallet;
     }
@@ -604,6 +608,10 @@ public class Contract {
         this.constructor = constructor;
     }
 
+    /**
+     * Setter function for wallet
+     * @param wallet The class instance implemented IWallet to sign transaction.
+     */
     public void setWallet(IWallet wallet) {
         this.wallet = wallet;
 

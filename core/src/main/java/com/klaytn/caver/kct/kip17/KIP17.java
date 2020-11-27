@@ -98,6 +98,17 @@ public class KIP17 extends Contract {
         return deploy(caver, deployParams, deployer);
     }
 
+    /**
+     * Deploy a KIP-17 contract.
+     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * @param caver A Caver instance.
+     * @param deployer A deployer's address.
+     * @param name A KIP-17 contract name
+     * @param symbol A KIP-17 contract symbol
+     * @param wallet The class instance implemented IWallet to sign transaction.
+     * @return KIP17
+     * @throws Exception
+     */
     public static KIP17 deploy(Caver caver, String deployer, String name, String symbol, IWallet wallet) throws Exception {
         KIP17DeployParams deployParams = new KIP17DeployParams(name, symbol);
         return deploy(caver, deployParams, deployer, wallet);
@@ -116,6 +127,16 @@ public class KIP17 extends Contract {
         return deploy(caver, tokenInfo, deployer, caver.getWallet());
     }
 
+    /**
+     * Deploy KIP17 contract
+     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * @param caver A Caver instance.
+     * @param tokenInfo The KIP-17 contract's deploy parameter values.
+     * @param deployer A deployer's address.
+     * @param wallet The class instance implemented IWallet to sign transaction.
+     * @return KIP17
+     * @throws Exception
+     */
     public static KIP17 deploy(Caver caver, KIP17DeployParams tokenInfo, String deployer, IWallet wallet) throws Exception {
         List deployArgument = Arrays.asList(tokenInfo.getName(), tokenInfo.getSymbol());
         ContractDeployParams contractDeployParams = new ContractDeployParams(KIP17ConstantData.BINARY, deployArgument);

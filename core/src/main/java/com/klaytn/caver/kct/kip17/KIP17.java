@@ -155,7 +155,7 @@ public class KIP17 extends Contract {
      */
     public KIP17 clone() {
         try {
-            KIP17 kip17 = new KIP17(this.getCaver(), this.contractAddress);
+            KIP17 kip17 = new KIP17(this.getCaver(), this.getContractAddress());
             kip17.setWallet(this.getWallet());
 
             return kip17;

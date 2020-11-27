@@ -134,7 +134,9 @@ public class KIP7 extends Contract {
     @Override
     public KIP7 clone() {
         try {
-            return new KIP7(this.getCaver());
+            KIP7 kip7 = new KIP7(this.getCaver());
+            kip7.setWallet(this.getWallet());
+            return kip7;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -148,7 +150,9 @@ public class KIP7 extends Contract {
      */
     public KIP7 clone(String tokenAddress) {
         try {
-            return new KIP7(this.getCaver(), tokenAddress);
+            KIP7 kip7 = new KIP7(this.getCaver(), tokenAddress);
+            kip7.setWallet(this.getWallet());
+            return kip7;
         } catch (IOException e) {
             e.printStackTrace();
         }

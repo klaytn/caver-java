@@ -134,7 +134,10 @@ public class KIP17 extends Contract {
      */
     public KIP17 clone() {
         try {
-            return new KIP17(this.getCaver());
+            KIP17 kip17 = new KIP17(this.getCaver());
+            kip17.setWallet(this.getWallet());
+
+            return kip17;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -149,7 +152,10 @@ public class KIP17 extends Contract {
      */
     public KIP17 clone(String tokenAddress) {
         try {
-            return new KIP17(this.getCaver(), tokenAddress);
+            KIP17 kip17 = new KIP17(this.getCaver(), tokenAddress);
+            kip17.setWallet(this.getWallet());
+
+            return kip17;
         } catch (IOException e) {
             e.printStackTrace();
         }

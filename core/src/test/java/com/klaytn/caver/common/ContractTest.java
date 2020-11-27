@@ -7,6 +7,7 @@ import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.KlayLogs;
 import com.klaytn.caver.methods.response.TransactionReceipt;
+import com.klaytn.caver.wallet.KeyringContainer;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
@@ -1294,6 +1295,19 @@ public class ContractTest {
         assertEquals("0x0000000000000000000000003cd93ba290712e6d28ac98f2b820faf799ae8fdb", log[0].getParams().getResult().getTopics().get(2));
 
         webSocketService.close();
+    }
 
+    @Test
+    public void setWallet() throws IOException {
+        Caver caver = new Caver(Caver.DEFAULT_URL);
+        Contract contract = new Contract(caver, jsonObj, contractAddress);
+
+        assertEquals(0, ((KeyringContainer)contract.getWallet()).length());
+
+        KeyringContainer container = new KeyringContainer();
+        container.generate(3);
+
+        contract.setWallet(container);
+        assertEquals(3, ((KeyringContainer)contract.getWallet()).length());
     }
 }

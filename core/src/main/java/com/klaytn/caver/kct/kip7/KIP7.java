@@ -22,6 +22,7 @@ import com.klaytn.caver.contract.ContractDeployParams;
 import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.TransactionReceipt;
+import com.klaytn.caver.wallet.IWallet;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
@@ -96,6 +97,11 @@ public class KIP7 extends Contract {
         return deploy(caver, params, deployer);
     }
 
+    public static KIP7 deploy(Caver caver, String deployer, String name, String symbol, int decimals, BigInteger initialSupply, IWallet wallet) throws Exception {
+        KIP7DeployParams params = new KIP7DeployParams(name, symbol, decimals, initialSupply);
+        return deploy(caver, params, deployer, wallet);
+    }
+
     /**
      * Deploy KIP-7 contract.
      * It must add deployer's keyring in caver.wallet.
@@ -106,11 +112,16 @@ public class KIP7 extends Contract {
      * @throws Exception
      */
     public static KIP7 deploy(Caver caver, KIP7DeployParams tokenInfo, String deployer) throws Exception {
+        return deploy(caver, tokenInfo, deployer, caver.getWallet());
+    }
+
+    public static KIP7 deploy(Caver caver, KIP7DeployParams tokenInfo, String deployer, IWallet wallet) throws Exception {
         List deployArgument = Arrays.asList(tokenInfo.getName(), tokenInfo.getSymbol(), tokenInfo.getDecimals(), tokenInfo.getInitialSupply());
         ContractDeployParams contractDeployParams = new ContractDeployParams(KIP7ConstantData.BINARY, deployArgument);
         SendOptions sendOptions = new SendOptions(deployer, BigInteger.valueOf(4000000));
 
         KIP7 kip7 = new KIP7(caver);
+        kip7.setWallet(wallet);
         kip7.deploy(contractDeployParams, sendOptions);
 
         return kip7;

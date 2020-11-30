@@ -15,6 +15,7 @@ public interface IWallet {
      * Generates key data to manage in wallet.
      * @param num The number of key data to create.
      * @return List
+     * @throws Exception
      */
     List<String> generate(int num) throws Exception;
 
@@ -22,6 +23,7 @@ public interface IWallet {
      * Check whether there is a key data corresponding to the address passed as a parameter in the wallet.
      * @param address An address to find key data in wallet.
      * @return boolean
+     * @throws Exception
      */
     boolean isExisted(String address) throws Exception;
 

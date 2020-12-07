@@ -3,6 +3,7 @@ package com.klaytn.caver.wallet;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
 import com.klaytn.caver.transaction.AbstractTransaction;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.function.Function;
 
@@ -40,16 +41,16 @@ public interface IWallet {
      * @param address An address of key data in wallet.
      * @param transaction An AbstractTransaction instance to sign
      * @return AbstractTransaction
-     * @throws Exception
+     * @throws IOException
      */
-    AbstractTransaction sign(String address, AbstractTransaction transaction) throws Exception;
+    AbstractTransaction sign(String address, AbstractTransaction transaction) throws IOException;
 
     /**
      * Signs the FeeDelegatedTransaction using all keys in the key data corresponding to the address.
      * @param address An address of key data in wallet.
      * @param transaction An AbstractFeeDelegatedTransaction instance to sign.
      * @return AbstractFeeDelegatedTransaction
-     * @throws Exception
+     * @throws IOException
      */
-    AbstractFeeDelegatedTransaction signAsFeePayer(String address, AbstractFeeDelegatedTransaction transaction) throws Exception;
+    AbstractFeeDelegatedTransaction signAsFeePayer(String address, AbstractFeeDelegatedTransaction transaction) throws IOException;
 }

@@ -271,7 +271,7 @@ abstract public class AbstractTransaction {
             throw new IllegalArgumentException("A legacy transaction cannot be signed with a decoupled keyring.");
         }
 
-        if(this.from.equals("0x")){
+        if(this.from.equals("0x") || this.from.equals(Utils.DEFAULT_ZERO_ADDRESS)){
             this.from = keyring.getAddress();
         }
 
@@ -315,7 +315,7 @@ abstract public class AbstractTransaction {
             throw new IllegalArgumentException("A legacy transaction cannot be signed with a decoupled keyring.");
         }
 
-        if(this.from.equals("0x")){
+        if(this.from.equals("0x") || this.from.equals(Utils.DEFAULT_ZERO_ADDRESS)){
             this.from = keyring.getAddress();
         }
 
@@ -621,7 +621,7 @@ abstract public class AbstractTransaction {
     public void setFrom(String from) {
         //"From" field in LegacyTransaction allows null
         if(this instanceof LegacyTransaction) {
-            if(from == null || from.isEmpty() || from.equals("0x")) from = "0x";
+            if(from == null || from.isEmpty() || from.equals("0x") || from.equals(Utils.DEFAULT_ZERO_ADDRESS)) from = Utils.DEFAULT_ZERO_ADDRESS;
         } else {
             if(from == null) {
                 throw new IllegalArgumentException("from is missing.");

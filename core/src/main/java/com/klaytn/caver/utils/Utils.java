@@ -34,6 +34,8 @@ public class Utils {
     public static final int LENGTH_ADDRESS_STRING = 40;
     public static final int LENGTH_PRIVATE_KEY_STRING = 64;
 
+    public static final String DEFAULT_ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+
     /**
      * Check if string has address format.
      * @param address An address string.

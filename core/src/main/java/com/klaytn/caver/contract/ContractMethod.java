@@ -662,9 +662,12 @@ public class ContractMethod {
                 .build();
 
         this.wallet.sign(sendOptions.getFrom(), smartContractExecution);
-        Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractExecution).send();
+        Bytes32 response = caver.rpc.klay.sendRawTransaction(smartContractExecution).send();
+        if(response.hasError()) {
+            throw new IOException(response.getError().getMessage());
+        }
 
-        TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());
+        TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(response.getResult());
         return receipt;
     }
 
@@ -675,6 +678,9 @@ public class ContractMethod {
         callObject.setData(encodedInput);
         callObject.setTo(method.getContractAddress());
         Bytes response = caver.rpc.klay.call(callObject).send();
+        if(response.hasError()) {
+            throw new IOException(response.getError().getMessage());
+        }
 
         String encodedResult = response.getResult();
         return ABI.decodeParameters(method, encodedResult);

@@ -200,8 +200,12 @@ public class Contract {
 
         this.wallet.sign(sendOptions.getFrom(), smartContractDeploy);
 
-        Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractDeploy.getRawTransaction()).send();
-        TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());
+        Bytes32 response = caver.rpc.klay.sendRawTransaction(smartContractDeploy.getRawTransaction()).send();
+        if(response.hasError()) {
+            throw new IOException(response.getError().getMessage());
+        }
+
+        TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(response.getResult());
 
         String contractAddress = receipt.getContractAddress();
         this.setContractAddress(contractAddress);

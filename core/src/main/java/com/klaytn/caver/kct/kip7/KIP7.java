@@ -90,7 +90,13 @@ public class KIP7 extends Contract {
      * @param decimals A KIP-7 contract decimals.
      * @param initialSupply A KIP-7 contract initial supply.
      * @return KIP7
-     * @throws Exception
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
      */
     public static KIP7 deploy(Caver caver, String deployer, String name, String symbol, int decimals, BigInteger initialSupply) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         KIP7DeployParams params = new KIP7DeployParams(name, symbol, decimals, initialSupply);
@@ -108,7 +114,13 @@ public class KIP7 extends Contract {
      * @param initialSupply A KIP-7 contract initial supply.
      * @param wallet The class instance implemented IWallet to sign transaction.
      * @return KIP7
-     * @throws Exception
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
      */
     public static KIP7 deploy(Caver caver, String deployer, String name, String symbol, int decimals, BigInteger initialSupply, IWallet wallet) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         KIP7DeployParams params = new KIP7DeployParams(name, symbol, decimals, initialSupply);
@@ -122,7 +134,13 @@ public class KIP7 extends Contract {
      * @param tokenInfo The KIP-7 contract's deploy parameter values
      * @param deployer A deployer's address
      * @return KIP7
-     * @throws Exception
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
      */
     public static KIP7 deploy(Caver caver, KIP7DeployParams tokenInfo, String deployer) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         return deploy(caver, tokenInfo, deployer, caver.getWallet());
@@ -136,7 +154,13 @@ public class KIP7 extends Contract {
      * @param deployer A deployer's address
      * @param wallet The class instance implemented IWallet to sign transaction.
      * @return KIP7
-     * @throws Exception
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
      */
     public static KIP7 deploy(Caver caver, KIP7DeployParams tokenInfo, String deployer, IWallet wallet) throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         List deployArgument = Arrays.asList(tokenInfo.getName(), tokenInfo.getSymbol(), tokenInfo.getDecimals(), tokenInfo.getInitialSupply());

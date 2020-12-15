@@ -91,9 +91,15 @@ public class KIP17 extends Contract {
      * @param name A KIP-17 contract name
      * @param symbol A KIP-17 contract symbol
      * @return KIP17
-     * @throws Exception
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
      */
-    public static KIP17 deploy(Caver caver, String deployer, String name, String symbol) throws Exception {
+    public static KIP17 deploy(Caver caver, String deployer, String name, String symbol) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         KIP17DeployParams deployParams = new KIP17DeployParams(name, symbol);
         return deploy(caver, deployParams, deployer);
     }
@@ -107,9 +113,15 @@ public class KIP17 extends Contract {
      * @param symbol A KIP-17 contract symbol
      * @param wallet The class instance implemented IWallet to sign transaction.
      * @return KIP17
-     * @throws Exception
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
      */
-    public static KIP17 deploy(Caver caver, String deployer, String name, String symbol, IWallet wallet) throws Exception {
+    public static KIP17 deploy(Caver caver, String deployer, String name, String symbol, IWallet wallet) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         KIP17DeployParams deployParams = new KIP17DeployParams(name, symbol);
         return deploy(caver, deployParams, deployer, wallet);
     }
@@ -121,9 +133,15 @@ public class KIP17 extends Contract {
      * @param tokenInfo The KIP-17 contract's deploy parameter values.
      * @param deployer A deployer's address.
      * @return KIP17
-     * @throws Exception
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
      */
-    public static KIP17 deploy(Caver caver, KIP17DeployParams tokenInfo, String deployer) throws Exception {
+    public static KIP17 deploy(Caver caver, KIP17DeployParams tokenInfo, String deployer) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         return deploy(caver, tokenInfo, deployer, caver.getWallet());
     }
 
@@ -135,9 +153,15 @@ public class KIP17 extends Contract {
      * @param deployer A deployer's address.
      * @param wallet The class instance implemented IWallet to sign transaction.
      * @return KIP17
-     * @throws Exception
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
      */
-    public static KIP17 deploy(Caver caver, KIP17DeployParams tokenInfo, String deployer, IWallet wallet) throws Exception {
+    public static KIP17 deploy(Caver caver, KIP17DeployParams tokenInfo, String deployer, IWallet wallet) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         List deployArgument = Arrays.asList(tokenInfo.getName(), tokenInfo.getSymbol());
         ContractDeployParams contractDeployParams = new ContractDeployParams(KIP17ConstantData.BINARY, deployArgument);
         SendOptions sendOptions = new SendOptions(deployer, BigInteger.valueOf(6500000));

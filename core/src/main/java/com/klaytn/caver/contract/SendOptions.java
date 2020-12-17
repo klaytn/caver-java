@@ -47,6 +47,17 @@ public class SendOptions {
     public SendOptions() {
 
     }
+
+    /**
+     * Creates a SendOption instance.
+     * It should only be used when executing KIP7 / KIP7 class methods.
+     * Because if gas passed to the method is null, the KIP7 / KIP7 class method automatically estimates gas.
+     * @param from The address of the sender
+     */
+    public SendOptions(String from) {
+        this(from, (String)null);
+    }
+
     /**
      * Creates a SendOption instance.
      * It sets value to 0x0.

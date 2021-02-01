@@ -22,6 +22,7 @@ import com.klaytn.caver.contract.ContractDeployParams;
 import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.TransactionReceipt;
+import com.klaytn.caver.wallet.IWallet;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
@@ -90,16 +91,40 @@ public class KIP7 extends Contract {
      * @param initialSupply A KIP-7 contract initial supply.
      * @return KIP7
      * @throws NoSuchMethodException
-     * @throws TransactionException
      * @throws IOException
      * @throws InstantiationException
+     * @throws ClassNotFoundException
      * @throws IllegalAccessException
      * @throws InvocationTargetException
-     * @throws ClassNotFoundException
+     * @throws TransactionException
      */
-    public static KIP7 deploy(Caver caver, String deployer, String name, String symbol, int decimals, BigInteger initialSupply) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public static KIP7 deploy(Caver caver, String deployer, String name, String symbol, int decimals, BigInteger initialSupply) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         KIP7DeployParams params = new KIP7DeployParams(name, symbol, decimals, initialSupply);
         return deploy(caver, params, deployer);
+    }
+
+    /**
+     * Deploy KIP-7 contract.
+     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * @param caver A Caver instance.
+     * @param deployer A deployer's address.
+     * @param name A KIP-7 contract name.
+     * @param symbol A KIP-7 contract symbol.
+     * @param decimals A KIP-7 contract decimals.
+     * @param initialSupply A KIP-7 contract initial supply.
+     * @param wallet The class instance implemented IWallet to sign transaction.
+     * @return KIP7
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public static KIP7 deploy(Caver caver, String deployer, String name, String symbol, int decimals, BigInteger initialSupply, IWallet wallet) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        KIP7DeployParams params = new KIP7DeployParams(name, symbol, decimals, initialSupply);
+        return deploy(caver, params, deployer, wallet);
     }
 
     /**
@@ -109,20 +134,41 @@ public class KIP7 extends Contract {
      * @param tokenInfo The KIP-7 contract's deploy parameter values
      * @param deployer A deployer's address
      * @return KIP7
-     * @throws IOException
      * @throws NoSuchMethodException
+     * @throws IOException
      * @throws InstantiationException
      * @throws ClassNotFoundException
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public static KIP7 deploy(Caver caver, KIP7DeployParams tokenInfo, String deployer) throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public static KIP7 deploy(Caver caver, KIP7DeployParams tokenInfo, String deployer) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        return deploy(caver, tokenInfo, deployer, caver.getWallet());
+    }
+
+    /**
+     * Deploy KIP-7 contract.
+     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * @param caver A Caver instance
+     * @param tokenInfo The KIP-7 contract's deploy parameter values
+     * @param deployer A deployer's address
+     * @param wallet The class instance implemented IWallet to sign transaction.
+     * @return KIP7
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public static KIP7 deploy(Caver caver, KIP7DeployParams tokenInfo, String deployer, IWallet wallet) throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         List deployArgument = Arrays.asList(tokenInfo.getName(), tokenInfo.getSymbol(), tokenInfo.getDecimals(), tokenInfo.getInitialSupply());
         ContractDeployParams contractDeployParams = new ContractDeployParams(KIP7ConstantData.BINARY, deployArgument);
         SendOptions sendOptions = new SendOptions(deployer, BigInteger.valueOf(4000000));
 
         KIP7 kip7 = new KIP7(caver);
+        kip7.setWallet(wallet);
         kip7.deploy(contractDeployParams, sendOptions);
 
         return kip7;
@@ -135,7 +181,9 @@ public class KIP7 extends Contract {
     @Override
     public KIP7 clone() {
         try {
-            return new KIP7(this.getCaver());
+            KIP7 kip7 = new KIP7(this.getCaver(), this.getContractAddress());
+            kip7.setWallet(this.getWallet());
+            return kip7;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -149,7 +197,9 @@ public class KIP7 extends Contract {
      */
     public KIP7 clone(String tokenAddress) {
         try {
-            return new KIP7(this.getCaver(), tokenAddress);
+            KIP7 kip7 = new KIP7(this.getCaver(), tokenAddress);
+            kip7.setWallet(this.getWallet());
+            return kip7;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -347,7 +397,7 @@ public class KIP7 extends Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData approve(String spender, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData approve(String spender, BigInteger amount) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         return approve(spender, amount, this.getDefaultSendOptions());
     }
 
@@ -366,7 +416,7 @@ public class KIP7 extends Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData approve(String spender, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData approve(String spender, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_APPROVE, Arrays.asList(spender, amount));
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_APPROVE).send(Arrays.asList(spender, amount), sendOptions);
@@ -388,7 +438,7 @@ public class KIP7 extends Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData transfer(String recipient, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData transfer(String recipient, BigInteger amount) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         return transfer(recipient, amount, this.getDefaultSendOptions());
     }
 
@@ -407,7 +457,7 @@ public class KIP7 extends Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData transfer(String recipient, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData transfer(String recipient, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_TRANSFER, Arrays.asList(recipient, amount));
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_TRANSFER).send(Arrays.asList(recipient, amount), sendOptions);
@@ -430,7 +480,7 @@ public class KIP7 extends Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData transferFrom(String sender, String recipient, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData transferFrom(String sender, String recipient, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException  {
         return transferFrom(sender, recipient, amount, this.getDefaultSendOptions());
     }
 
@@ -472,7 +522,7 @@ public class KIP7 extends Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData safeTransfer(String recipient, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData safeTransfer(String recipient, BigInteger amount) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         return safeTransfer(recipient, amount, this.getDefaultSendOptions());
     }
 
@@ -491,7 +541,7 @@ public class KIP7 extends Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData safeTransfer(String recipient, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData safeTransfer(String recipient, BigInteger amount, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_SAFE_TRANSFER, Arrays.asList(recipient, amount));
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_SAFE_TRANSFER).send(Arrays.asList(recipient, amount), sendOptions);
@@ -514,7 +564,7 @@ public class KIP7 extends Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData safeTransfer(String recipient, BigInteger amount, String data) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData safeTransfer(String recipient, BigInteger amount, String data) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException  {
         return safeTransfer(recipient, amount, data, this.getDefaultSendOptions());
     }
 
@@ -557,7 +607,7 @@ public class KIP7 extends Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String sender, String recipient, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String sender, String recipient, BigInteger amount) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         return safeTransferFrom(sender, recipient, amount, this.getDefaultSendOptions());
     }
 
@@ -687,7 +737,7 @@ public class KIP7 extends Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData addMinter(String account) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData addMinter(String account) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException  {
         return addMinter(account, this.getDefaultSendOptions());
     }
 
@@ -808,7 +858,7 @@ public class KIP7 extends Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData burnFrom(String account, BigInteger amount) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData burnFrom(String account, BigInteger amount) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         return burnFrom(account, amount, this.getDefaultSendOptions());
     }
 
@@ -850,7 +900,7 @@ public class KIP7 extends Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData addPauser(String account) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData addPauser(String account) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         return addPauser(account, this.getDefaultSendOptions());
     }
 
@@ -890,7 +940,7 @@ public class KIP7 extends Contract {
      * @throws InvocationTargetException
      * @throws TransactionException
      */
-    public TransactionReceipt.TransactionReceiptData pause() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public TransactionReceipt.TransactionReceiptData pause() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         return pause(this.getDefaultSendOptions());
     }
 

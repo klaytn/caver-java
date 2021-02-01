@@ -61,10 +61,9 @@ You can find latest caver-java version at [release page](https://github.com/klay
 
 ## Start a Client
 If you want to run your own EN (Endpoint Node), see [EN Operation Guide](https://docs.klaytn.com/node/en) to set up.
-Otherwise, you can use a Klaytn public EN (https://api.cypress.klaytn.net:8651/) to connect to the mainnet and another public EN (https://api.baobab.klaytn.net:8651) to connect to the Baobab testnet.
 
 ```java
-Caver caver = new Caver(Caver.BAOBAB_URL);
+Caver caver = new Caver(Caver.DEFAULT_URL);
 ```
 
 ## Transactions
@@ -72,7 +71,7 @@ When you send transactions, `caver-java` provides easy-to-use wrapper classes.
 
 Here's an example of transferring KLAY using keystore.json and `ValueTransfer` class:
 ```java
-Caver caver = new Caver(Caver.BAOBAB_URL);
+Caver caver = new Caver(Caver.DEFAULT_URL);
 
 //Read keystore json file.
 File file = new File("./keystore.json");
@@ -130,7 +129,7 @@ Klaytn provides [Fee Delegation](https://docs.klaytn.com/klaytn/design/transacti
 When you are a sender:
 
 ```java
-Caver caver = new Caver(Caver.BAOBAB_URL);
+Caver caver = new Caver(Caver.DEFAULT_URL);
 SingleKeyring senderKeyring = KeyringFactory.createFromPrivateKey("0x{privateKey}");
 caver.wallet.add(senderKeyring);
 
@@ -152,7 +151,7 @@ Then, the sender sends the transaction to the fee payer who will pay for the tra
 When you are a fee payer:
 
 ```java
-Caver caver = new Caver(Caver.BAOBAB_URL);
+Caver caver = new Caver(Caver.DEFAULT_URL);
 
 SingleKeyring feePayerKeyring = KeyringFactory.createFromPrivateKey("0x{privateKey}");
 caver.wallet.add(feePayerKeyring);

@@ -27,6 +27,7 @@ import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.transaction.type.SmartContractExecution;
 import com.klaytn.caver.utils.Utils;
+import com.klaytn.caver.wallet.IWallet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.abi.datatypes.Type;
@@ -81,6 +82,11 @@ public class ContractMethod {
      * The default send option. When you execute call() or send() without SendOptions, defaultSendOptions will be used.
      */
     SendOptions defaultSendOptions;
+
+    /**
+     * The class instance implemented IWallet interface to sign transaction.
+     */
+    IWallet wallet;
 
 
     List<ContractMethod> nextContractMethods = new ArrayList<>();
@@ -201,11 +207,11 @@ public class ContractMethod {
      * @throws TransactionException
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
-     * @throws InvocationTargetException
      * @throws InstantiationException
      * @throws IllegalAccessException
+     * @throws InvocationTargetException
      */
-    public TransactionReceipt.TransactionReceiptData send(List<Object> arguments) throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public TransactionReceipt.TransactionReceiptData send(List<Object> arguments) throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         return send(arguments, null, new PollingTransactionReceiptProcessor(caver, 1000, 15));
     }
 
@@ -219,11 +225,11 @@ public class ContractMethod {
      * @throws TransactionException
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
-     * @throws InvocationTargetException
      * @throws InstantiationException
      * @throws IllegalAccessException
+     * @throws InvocationTargetException
      */
-    public TransactionReceipt.TransactionReceiptData send(List<Object> arguments, SendOptions options) throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public TransactionReceipt.TransactionReceiptData send(List<Object> arguments, SendOptions options) throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         return send(arguments, options, new PollingTransactionReceiptProcessor(caver, 1000, 15));
     }
 
@@ -237,9 +243,9 @@ public class ContractMethod {
      * @throws TransactionException
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
-     * @throws InvocationTargetException
      * @throws InstantiationException
      * @throws IllegalAccessException
+     * @throws InvocationTargetException
      */
     public TransactionReceipt.TransactionReceiptData send(List<Object> arguments, SendOptions options, TransactionReceiptProcessor processor) throws IOException, TransactionException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         List<Object> functionParams = new ArrayList<>();
@@ -523,6 +529,14 @@ public class ContractMethod {
         this.defaultSendOptions = defaultSendOptions;
     }
 
+    /**
+     * Setter function for wallet
+     * @param wallet The class instance implemented IWallet interface to sign transaction.
+     */
+    public void setWallet(IWallet wallet) {
+        this.wallet = wallet;
+    }
+
     void setNextContractMethods(List<ContractMethod> nextContractMethods) {
         this.nextContractMethods = nextContractMethods;
     }
@@ -647,20 +661,26 @@ public class ContractMethod {
                 .setValue(sendOptions.getValue())
                 .build();
 
-        caver.wallet.sign(sendOptions.getFrom(), smartContractExecution);
-        Bytes32 txHash = caver.rpc.klay.sendRawTransaction(smartContractExecution).send();
+        this.wallet.sign(sendOptions.getFrom(), smartContractExecution);
+        Bytes32 response = caver.rpc.klay.sendRawTransaction(smartContractExecution).send();
+        if(response.hasError()) {
+            throw new IOException(response.getError().getMessage());
+        }
 
-        TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(txHash.getResult());
+        TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(response.getResult());
         return receipt;
     }
 
-    private List<Type> callFunction(ContractMethod method, String encodedInput, CallObject callObject) throws ClassNotFoundException, IOException {
+    private List<Type> callFunction(ContractMethod method, String encodedInput, CallObject callObject) throws IOException, ClassNotFoundException {
         if(callObject.getData() != null || callObject.getTo() != null) {
             LOGGER.warn("'to' and 'data' field in CallObject will overwrite.");
         }
         callObject.setData(encodedInput);
         callObject.setTo(method.getContractAddress());
         Bytes response = caver.rpc.klay.call(callObject).send();
+        if(response.hasError()) {
+            throw new IOException(response.getError().getMessage());
+        }
 
         String encodedResult = response.getResult();
         return ABI.decodeParameters(method, encodedResult);

@@ -10,7 +10,9 @@ import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint256;
@@ -173,8 +175,11 @@ public class ContractImproveFuncTest {
     static Caver caver;
     static Contract contract;
 
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+
     @BeforeClass
-    public static void init() throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+    public static void init() throws Exception {
         caver = new Caver(Caver.DEFAULT_URL);
         ownerKeyring = KeyringFactory.createFromPrivateKey(ownerPrivateKey);
         caver.wallet.add(ownerKeyring);
@@ -226,7 +231,7 @@ public class ContractImproveFuncTest {
     }
 
     @Test
-    public void deployTest() throws IOException, NoSuchMethodException, TransactionException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public void deployTest() throws Exception {
         Caver caver = new Caver(Caver.DEFAULT_URL);
         caver.wallet.add(ownerKeyring);
 
@@ -395,5 +400,33 @@ public class ContractImproveFuncTest {
             e.printStackTrace();
             fail();
         }
+    }
+
+    @Test
+    public void sendRawTx_throwException_send() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        expectedException.expect(IOException.class);
+        expectedException.expectMessage("intrinsic gas too low");
+
+        SendOptions sendOptions = new SendOptions(ownerKeyring.getAddress(), BigInteger.valueOf(500));
+        TransactionReceipt.TransactionReceiptData receiptData = contract.send(sendOptions, FUNC_SET_STRING, "GAS", "ENOUGH");
+
+        if(!receiptData.getStatus().equals("0x1")) {
+            fail();
+        }
+    }
+
+    @Test
+    public void sendRawTx_throwException_deploy() throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        expectedException.expect(IOException.class);
+        expectedException.expectMessage("intrinsic gas too low");
+
+        Caver caver = new Caver(Caver.DEFAULT_URL);
+        caver.wallet.add(ownerKeyring);
+
+        Contract contract = new Contract(caver, ABI);
+        SendOptions sendOptions = new SendOptions(ownerKeyring.getAddress(), BigInteger.valueOf(6500));
+        contract.deploy(sendOptions, BINARY, "TEST");
+
+        assertNotNull(contract.getContractAddress());
     }
 }

@@ -18,6 +18,7 @@ package com.klaytn.caver;
 
 import com.klaytn.caver.ipfs.IPFS;
 import com.klaytn.caver.rpc.RPC;
+import com.klaytn.caver.wallet.IWallet;
 import com.klaytn.caver.wallet.KeyringContainer;
 import okhttp3.OkHttpClient;
 import org.web3j.protocol.Web3jService;
@@ -29,8 +30,6 @@ import org.web3j.protocol.http.HttpService;
 public class Caver {
 
     public static String DEFAULT_URL = "http://localhost:8551";
-    public static String MAINNET_URL = "https://api.cypress.klaytn.net:8651";
-    public static String BAOBAB_URL = "https://api.baobab.klaytn.net:8651";
 
     /**
      * @deprecated Please use <code>caver.rpc.klay</code> instead.
@@ -117,9 +116,9 @@ public class Caver {
 
     /**
      * Getter for Wallet
-     * @return KeyringContainer
+     * @return IWallet
      */
-    public KeyringContainer getWallet() {
+    public IWallet getWallet() {
         return wallet;
     }
 

@@ -2,12 +2,13 @@ package com.klaytn.caver.common;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.contract.SendOptions;
-import com.klaytn.caver.kct.KIP7;
 import com.klaytn.caver.kct.kip17.KIP17;
 import com.klaytn.caver.kct.kip17.KIP17DeployParams;
+import com.klaytn.caver.kct.kip7.KIP7;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.tx.gas.DefaultGasProvider;
 import com.klaytn.caver.utils.Utils;
+import com.klaytn.caver.wallet.KeyringContainer;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -31,7 +32,7 @@ public class KIP17Test {
     public static final String CONTRACT_SYMBOL = "NFT_KALE";
     private static final String sTokenURI = "https://game.example/item-id-8u5h2m.json";
 
-    public static void deployContract() throws IOException, NoSuchMethodException, TransactionException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public static void deployContract() throws Exception {
         Caver caver = new Caver(Caver.DEFAULT_URL);
         caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
         caver.wallet.add(KeyringFactory.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
@@ -43,12 +44,12 @@ public class KIP17Test {
 
     public static class ConstructorTest {
         @BeforeClass
-        public static void init() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        public static void init() throws Exception {
             deployContract();
         }
 
         @Test
-        public void deploy() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        public void deploy() throws Exception {
             Caver caver = new Caver(Caver.DEFAULT_URL);
             caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
             KIP17 contract = KIP17.deploy(caver, LUMAN.getAddress(), CONTRACT_NAME, CONTRACT_SYMBOL);
@@ -90,11 +91,25 @@ public class KIP17Test {
                 fail();
             }
         }
+
+        @Test
+        public void cloneTestWithSetWallet() throws IOException {
+            Caver caver = new Caver(Caver.DEFAULT_URL);
+            KIP17 kip17 = new KIP17(caver);
+
+            KeyringContainer container = new KeyringContainer();
+            container.generate(3);
+
+            kip17.setWallet(container);
+            KIP17 cloned = kip17.clone();
+
+            assertEquals(3, ((KeyringContainer)cloned.getWallet()).length());
+        }
     }
 
     public static class PausableTest {
         @BeforeClass
-        public static void init() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        public static void init() throws Exception {
             deployContract();
         }
 
@@ -220,7 +235,7 @@ public class KIP17Test {
 
     public static class BurnableTest {
         @BeforeClass
-        public static void init() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        public static void init() throws Exception {
             deployContract();
         }
 
@@ -248,7 +263,7 @@ public class KIP17Test {
 
     public static class MintableTest {
         @BeforeClass
-        public static void init() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        public static void init() throws Exception {
             deployContract();
         }
 
@@ -337,7 +352,7 @@ public class KIP17Test {
 
     public static class EnumerableTest {
         @BeforeClass
-        public static void init() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        public static void init() throws Exception {
             deployContract();
         }
 
@@ -414,7 +429,7 @@ public class KIP17Test {
 
     public static class CommonTest {
         @BeforeClass
-        public static void init() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        public static void init() throws Exception {
             deployContract();
         }
 

@@ -58,6 +58,7 @@ public class RpcTest extends Accounts {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
     static Klay klay = caver.rpc.klay;
     static Web3jService web3jService = caver.getRpc().getWeb3jService();
+    static KIP17 kip17;
 
     public static void importKey(String privateKey, String password) throws IOException {
         new Request<>(
@@ -75,6 +76,14 @@ public class RpcTest extends Accounts {
                 web3jService,
                 Boolean.class
         ).send();
+    }
+
+    public static void deployContract() throws Exception {
+        Caver caver = new Caver(Caver.DEFAULT_URL);
+        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+
+        KIP17DeployParams kip7DeployParam = new KIP17DeployParams("CONTRACT_NAME", "CONTRACT_SYMBOL");
+        kip17 = KIP17.deploy(caver, kip7DeployParam, LUMAN.getAddress());
     }
 
     public static class encodeAccountKeyTest {
@@ -440,7 +449,7 @@ public class RpcTest extends Accounts {
 
         private static TransactionReceipt.TransactionReceiptData sendKlay() throws IOException, TransactionException {
            Caver caver = new Caver(Caver.DEFAULT_URL);
-           AbstractKeyring keyring = caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+           AbstractKeyring keyring = caver.wallet.add(KeyringFactory.createFromPrivateKey("0x871ccee7755bb4247e783110cafa6437f9f593a1eaeebe0efcc1b0852282c3e5"));
 
             BigInteger value = new BigInteger(Utils.convertToPeb(BigDecimal.ONE, "KLAY"));
 
@@ -469,19 +478,11 @@ public class RpcTest extends Accounts {
             return transactionReceipt;
         }
 
-
-        public static KIP17 deployContract() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-            Caver caver = new Caver(Caver.DEFAULT_URL);
-            caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
-
-            KIP17DeployParams kip7DeployParam = new KIP17DeployParams("CONTRACT_NAME", "CONTRACT_SYMBOL");
-            KIP17 kip17 = KIP17.deploy(caver, kip7DeployParam, LUMAN.getAddress());
-
-            return kip17;
-        }
-
         @BeforeClass
-        public static void init() throws IOException, TransactionException {
+        public static void init() throws Exception {
+            if(kip17 == null) {
+                deployContract();
+            }
             sampleReceiptData = sendKlay();
         }
 
@@ -496,12 +497,12 @@ public class RpcTest extends Accounts {
 
         @Test
         public void getAccountTest() {
-            Caver caver = new Caver(Caver.BAOBAB_URL);
+            Caver caver = new Caver(Caver.DEFAULT_URL);
             try {
-                Account EOA_account = caver.rpc.klay.getAccount("0x3e3733b256c93f9d759e33c9939258068bd5957d").send();
+                Account EOA_account = caver.rpc.klay.getAccount(LUMAN.getAddress()).send();
                 assertEquals(IAccountType.AccType.EOA.getAccType(), EOA_account.getResult().getAccType());
 
-                Account SCA_account = caver.rpc.klay.getAccount("0x5d3fc50fb0bfe6ab1644a893034d3a246cef1b4a").send();
+                Account SCA_account = caver.rpc.klay.getAccount(kip17.getContractAddress()).send();
                 assertEquals(IAccountType.AccType.SCA.getAccType(), SCA_account.getResult().getAccType());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -511,9 +512,10 @@ public class RpcTest extends Accounts {
 
         @Test
         public void getAccountKeyTest() {
-            Caver caver = new Caver(Caver.BAOBAB_URL);
+            Caver caver = new Caver(Caver.DEFAULT_URL);
             try {
-                AccountKey accountKey = caver.rpc.klay.getAccountKey("0x3e3733b256c93f9d759e33c9939258068bd5957d").send();
+                AccountKey accountKey = caver.rpc.klay.getAccountKey(LUMAN.getAddress()).send();
+                assertNotNull(accountKey);
             } catch (IOException e){
                 e.printStackTrace();
                 fail();
@@ -534,8 +536,6 @@ public class RpcTest extends Accounts {
         @Test
         public void getCodeTest() {
             try {
-                KIP17 kip17 = deployContract();
-
                 String code = caver.rpc.klay.getCode(kip17.getContractAddress()).send().getResult();
                 assertNotNull(code);
             } catch (Exception e) {
@@ -556,8 +556,6 @@ public class RpcTest extends Accounts {
         @Test
         public void isContractAccountTest() {
             try {
-                KIP17 kip17 = deployContract();
-
                 Boolean result = caver.rpc.klay.isContractAccount(kip17.getContractAddress()).send();
                 assertTrue(result.getResult());
             } catch (Exception e) {
@@ -722,8 +720,6 @@ public class RpcTest extends Accounts {
 
         @Test
         public void estimateGasTest() throws Exception {
-            KIP17 kip17 = deployContract();
-
             String encoded = kip17.getMethod("setApprovalForAll").encodeABI(Arrays.asList(BRANDON.getAddress(), true));
 
             CallObject callObject = CallObject.createCallObject(
@@ -741,8 +737,6 @@ public class RpcTest extends Accounts {
 
         @Test
         public void estimateComputationCostTest() throws Exception {
-            KIP17 kip17 = deployContract();
-
             String encoded = kip17.getMethod("setApprovalForAll").encodeABI(Arrays.asList(BRANDON.getAddress(), true));
 
             CallObject callObject = CallObject.createCallObject(
@@ -779,39 +773,27 @@ public class RpcTest extends Accounts {
 
         @Test
         public void getTransactionByHashTest() throws Exception {
-            KIP17 kip17 = deployContract();
-            TransactionReceipt.TransactionReceiptData receiptData = kip17.pause(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(30000)));
-
-            Transaction response = caver.rpc.klay.getTransactionByHash(receiptData.getTransactionHash()).send();
+            Transaction response = caver.rpc.klay.getTransactionByHash(sampleReceiptData.getTransactionHash()).send();
             Transaction.TransactionData result = response.getResult();
-            assertEquals(receiptData.getTransactionHash(), result.getHash());
+            assertEquals(sampleReceiptData.getTransactionHash(), result.getHash());
         }
 
         @Test
         public void getTransactionBySenderTxHashTest() throws Exception {
-            KIP17 kip17 = deployContract();
-            TransactionReceipt.TransactionReceiptData receiptData = kip17.pause(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(30000)));
-
-            Transaction response = caver.rpc.klay.getTransactionBySenderTxHash(receiptData.getTransactionHash()).send();
-            assertEquals(receiptData.getTransactionHash(), response.getResult().getHash());
+            Transaction response = caver.rpc.klay.getTransactionBySenderTxHash(sampleReceiptData.getTransactionHash()).send();
+            assertEquals(sampleReceiptData.getTransactionHash(), response.getResult().getHash());
         }
 
         @Test
         public void getTransactionReceiptTest() throws Exception {
-            KIP17 kip17 = deployContract();
-            TransactionReceipt.TransactionReceiptData receiptData = kip17.pause(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(30000)));
-
-            TransactionReceipt response = caver.rpc.klay.getTransactionReceipt(receiptData.getTransactionHash()).send();
-            assertEquals(receiptData.getTransactionHash(), response.getResult().getTransactionHash());
+            TransactionReceipt response = caver.rpc.klay.getTransactionReceipt(sampleReceiptData.getTransactionHash()).send();
+            assertEquals(sampleReceiptData.getTransactionHash(), response.getResult().getTransactionHash());
         }
 
         @Test
         public void getTransactionReceiptBySenderTxHashTest() throws Exception {
-            KIP17 kip17 = deployContract();
-            TransactionReceipt.TransactionReceiptData receiptData = kip17.pause(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(30000)));
-
-            TransactionReceipt response = caver.rpc.klay.getTransactionReceiptBySenderTxHash(receiptData.getTransactionHash()).send();
-            assertEquals(receiptData.getTransactionHash(), response.getResult().getTransactionHash());
+            TransactionReceipt response = caver.rpc.klay.getTransactionReceiptBySenderTxHash(sampleReceiptData.getTransactionHash()).send();
+            assertEquals(sampleReceiptData.getTransactionHash(), response.getResult().getTransactionHash());
         }
 
         @Test

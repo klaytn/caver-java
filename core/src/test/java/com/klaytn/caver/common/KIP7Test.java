@@ -355,7 +355,8 @@ public class KIP7Test {
 
                 assertFalse(kip7contract.isMinter(BRANDON.getAddress()));
             } catch (Exception e) {
-
+                e.printStackTrace();
+                fail();
             }
         }
     }

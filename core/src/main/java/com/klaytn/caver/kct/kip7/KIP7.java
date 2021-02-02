@@ -800,7 +800,7 @@ public class KIP7 extends Contract {
     public TransactionReceipt.TransactionReceiptData renounceMinter(SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_RENOUNCE_MINTER, null);
 
-        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_ADD_MINTER).send(Arrays.asList(sendOptions));
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_RENOUNCE_MINTER).send(null, sendOptions);
         return receiptData;
     }
 
@@ -998,7 +998,7 @@ public class KIP7 extends Contract {
      * @throws TransactionException
      */
     public TransactionReceipt.TransactionReceiptData unpause(SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
-        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_PAUSE, null);
+        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_UNPAUSE, null);
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_UNPAUSE).send(null, sendOptions);
         return receiptData;

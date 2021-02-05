@@ -5,6 +5,8 @@ import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.kct.kip17.KIP17;
 import com.klaytn.caver.kct.kip17.KIP17DeployParams;
 import com.klaytn.caver.kct.kip7.KIP7;
+import com.klaytn.caver.methods.request.CallObject;
+import com.klaytn.caver.methods.response.Bytes;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.tx.gas.DefaultGasProvider;
 import com.klaytn.caver.utils.Utils;
@@ -345,7 +347,8 @@ public class KIP17Test {
 
                 assertFalse(kip17Contract.isMinter(BRANDON.getAddress()));
             } catch (Exception e) {
-
+                e.printStackTrace();
+                fail();
             }
         }
     }

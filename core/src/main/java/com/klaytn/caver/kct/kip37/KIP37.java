@@ -1542,7 +1542,7 @@ public class KIP37 extends Contract {
     private static BigInteger estimateGas(KIP37 kip37, String functionName, CallObject callObject, List<Object> arguments) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         String gas = kip37.getMethod(functionName).estimateGas(arguments, callObject);
         BigDecimal bigDecimal = new BigDecimal(Numeric.toBigInt(gas));
-        BigInteger gasInteger = bigDecimal.multiply(new BigDecimal(1.5)).toBigInteger();
+        BigInteger gasInteger = bigDecimal.multiply(new BigDecimal(1.7)).toBigInteger();
 
         return gasInteger;
     }
@@ -1550,7 +1550,7 @@ public class KIP37 extends Contract {
     private static BigInteger estimateGasWithSolidityType(KIP37 kip37, String functionName, CallObject callObject, List<Type> arguments) throws IOException {
         String gas = kip37.getMethod(functionName).estimateGasWithSolidityWrapper(arguments, callObject);
         BigDecimal bigDecimal = new BigDecimal(Numeric.toBigInt(gas));
-        BigInteger gasInteger = bigDecimal.multiply(new BigDecimal(1.5)).toBigInteger();
+        BigInteger gasInteger = bigDecimal.multiply(new BigDecimal(1.7)).toBigInteger();
 
         return gasInteger;
     }

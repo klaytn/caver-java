@@ -798,22 +798,22 @@ public class KIP37Test {
             final String INTERFACE_ID_FALSE = "0xFFFFFFFF";
 
             try {
-                boolean isSupported_KIP13 = kip37.supportInterface(INTERFACE_ID_KIP13);
+                boolean isSupported_KIP13 = kip37.supportsInterface(INTERFACE_ID_KIP13);
                 assertTrue(isSupported_KIP13);
 
-                boolean isSupported_KIP37_PAUSABLE = kip37.supportInterface(INTERFACE_ID_KIP37_PAUSABLE);
+                boolean isSupported_KIP37_PAUSABLE = kip37.supportsInterface(INTERFACE_ID_KIP37_PAUSABLE);
                 assertTrue(isSupported_KIP37_PAUSABLE);
 
-                boolean isSupported_KIP37_BURNABLE = kip37.supportInterface(INTERFACE_ID_KIP37_BURNABLE);
+                boolean isSupported_KIP37_BURNABLE = kip37.supportsInterface(INTERFACE_ID_KIP37_BURNABLE);
                 assertTrue(isSupported_KIP37_BURNABLE);
 
-                boolean isSupported_KIP37_MINTABLE = kip37.supportInterface(INTERFACE_ID_KIP37_MINTABLE);
+                boolean isSupported_KIP37_MINTABLE = kip37.supportsInterface(INTERFACE_ID_KIP37_MINTABLE);
                 assertTrue(isSupported_KIP37_MINTABLE);
 
-                boolean isSupported_KIP37 = kip37.supportInterface(INTERFACE_ID_KIP37);
+                boolean isSupported_KIP37 = kip37.supportsInterface(INTERFACE_ID_KIP37);
                 assertTrue(isSupported_KIP37);
 
-                boolean isSupported_FALSE = kip37.supportInterface(INTERFACE_ID_FALSE);
+                boolean isSupported_FALSE = kip37.supportsInterface(INTERFACE_ID_FALSE);
                 assertFalse(isSupported_FALSE);
             } catch (Exception e) {
                 e.printStackTrace();

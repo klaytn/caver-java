@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The caver-java Authors
+ * Copyright 2021 The caver-java Authors
  *
  * Licensed under the Apache License, Version 2.0 (the “License”);
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ public class KIP37 extends Contract {
     public static final String FUNCTION_IS_MINTER = "isMinter";
     public static final String FUNCTION_ADD_MINTER = "addMinter";
     public static final String FUNCTION_RENOUNCE_MINTER = "renounceMinter";
-    public static final String FUNCTION_SUPPORT_INTERFACE = "supportsInterface";
+    public static final String FUNCTION_SUPPORTS_INTERFACE = "supportsInterface";
 
     /**
      * Creates a KIP37 instance.
@@ -74,7 +74,7 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Creates a KIP37 instance
+     * Creates a KIP37 instance.
      * @param caver A Caver instance
      * @param contractAddress A contract address.
      * @throws IOException
@@ -84,8 +84,8 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Deploy KIP-37 contract.
-     * It must add deployer's keyring in caver.wallet.
+     * Deploy a KIP-37 contract.
+     * The deployer's keyring should be existed in `caver.wallet`.
      * @param caver A Caver instance
      * @param uri The URI for token type
      * @param deployer A deployer's address
@@ -103,7 +103,7 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Deploy a KIP-17 contract.
+     * Deploy a KIP-37 contract.
      * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
      * @param caver A Caver instance.
      * @param uri The URI for token type
@@ -130,7 +130,7 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Get a URI(Uniform Resource Identifier) for a given token ID
+     * Get a URI(Uniform Resource Identifier) for a given token ID.
      * @param tokenId The token id(hex string)
      * @return String
      * @throws NoSuchMethodException
@@ -145,7 +145,7 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Get a URI(Uniform Resource Identifier) for a given token ID
+     * Get a URI(Uniform Resource Identifier) for a given token ID.
      * @param tokenId The token id(integer)
      * @return String
      * @throws NoSuchMethodException
@@ -213,7 +213,7 @@ public class KIP37 extends Contract {
     /**
      * Get the balance of multiple account / token pairs.
      * @param accounts The addresses of the token holders.
-     * @param tokenIds IDs of the tokens(hex string)
+     * @param tokenIds IDs of the tokens(integer)
      * @return List
      * @throws NoSuchMethodException
      * @throws IOException
@@ -232,7 +232,7 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Transfers 'value amount of an 'id' from the 'from' address to the 'to' address specified.<p>
+     * Transfers value amount of an 'id' from the 'from' address to the 'to' address specified.<p>
      * Caller must be approved to manage the tokens being transferred out of the 'from' account.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
@@ -255,7 +255,7 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Transfers 'value amount of an 'id' from the 'from' address to the 'to' address specified.<p>
+     * Transfers value amount of an 'id' from the 'from' address to the 'to' address specified.<p>
      * Caller must be approved to manage the tokens being transferred out of the 'from' account.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
@@ -278,7 +278,7 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Transfers 'value amount of an 'id' from the 'from' address to the 'to' address specified.<p>
+     * Transfers value amount of an 'id' from the 'from' address to the 'to' address specified.<p>
      * Caller must be approved to manage the tokens being transferred out of the 'from' account.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param from Source address.
@@ -301,7 +301,7 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Transfers 'value amount of an 'id' from the 'from' address to the 'to' address specified.<p>
+     * Transfers value amount of an 'id' from the 'from' address to the 'to' address specified.<p>
      * Caller must be approved to manage the tokens being transferred out of the 'from' account.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param from Source address.
@@ -843,7 +843,7 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Check if specific account has Minter role.
+     * Checks if specific account has the Minter role.
      * @param account The address to check that has Minter role
      * @return boolean
      * @throws NoSuchMethodException
@@ -861,7 +861,7 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Add the account the minter role.<p>
+     * Adds an account as a minter that has the permission of MinterRole and can mint.<p>
      * It will use default sendOptions in contract instance to passed sendOptions<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account address to add minter role.
@@ -879,7 +879,7 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Add the account the minter role.<p>
+     * Adds an account as a minter that has the permission of MinterRole and can mint.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account address to add minter role.
      * @param sendParam A SendOptions need to execute contract's method.
@@ -900,7 +900,7 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Remove the account the minter role.<p>
+     * Renounces privilege of MinterRole from an account.<p>
      * It will use default sendOptions in contract instance to passed sendOptions<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @return TransactionReceipt.TransactionReceiptData
@@ -917,7 +917,7 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Remove the account the minter role.<p>
+     * Renounces privilege of MinterRole from an account.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
@@ -1366,7 +1366,7 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Check if specific account has Pauser role.
+     * Checks if specific account has Pauser role.
      * @param account The account address to check that has Pauser role.
      * @return boolean
      * @throws NoSuchMethodException
@@ -1384,7 +1384,7 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Add the account the Pauser role.<p>
+     * Adds an account as a pauser that has the permission of PauserRole and can pause.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account address to add Pauser role.
@@ -1402,7 +1402,7 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Add the account the Pauser role.<p>
+     * Adds an account as a pauser that has the permission of PauserRole and can pause.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account address to add Pauser role.
      * @param sendParam A SendOptions need to execute contract's method.
@@ -1423,7 +1423,7 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Remove the account the minter role.<p>
+     * Renounces privilege of PauserRole from an account.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @return TransactionReceipt.TransactionReceiptData
@@ -1440,7 +1440,7 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Remove the account the minter role.<p>
+     * Renounces privilege of PauserRole from an account.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @return TransactionReceipt.TransactionReceiptData
@@ -1470,9 +1470,9 @@ public class KIP37 extends Contract {
      * @throws InvocationTargetException
      * @throws ClassNotFoundException
      */
-    public boolean supportInterface(String interfaceId) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public boolean supportsInterface(String interfaceId) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         CallObject callObject = CallObject.createCallObject();
-        List<Type> result = this.getMethod(FUNCTION_SUPPORT_INTERFACE).call(Arrays.asList(interfaceId), callObject);
+        List<Type> result = this.getMethod(FUNCTION_SUPPORTS_INTERFACE).call(Arrays.asList(interfaceId), callObject);
 
         return (boolean)result.get(0).getValue();
     }

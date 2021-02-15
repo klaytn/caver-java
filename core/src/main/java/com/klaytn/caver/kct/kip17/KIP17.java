@@ -20,6 +20,7 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.contract.ContractDeployParams;
 import com.klaytn.caver.contract.SendOptions;
+import com.klaytn.caver.kct.kip13.KIP13;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.IWallet;
@@ -31,8 +32,12 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class KIP17 extends Contract {
 
@@ -63,6 +68,14 @@ public class KIP17 extends Contract {
     public static final String FUNCTION_TOTAL_SUPPLY = "totalSupply";
     public static final String FUNCTION_TRANSFER_FROM = "transferFrom";
     public static final String FUNCTION_UNPAUSE = "unpause";
+
+    public static final String INTERFACE_ID_IKIP17 = "0x80ac58cd";
+    public static final String INTERFACE_ID_IKIP17_METADATA = "0x5b5e139f";
+    public static final String INTERFACE_ID_IKIP17_ENUMERABLE = "0x780e9d63";
+    public static final String INTERFACE_ID_IKIP17_MINTABLE = "0xeab83e20";
+    public static final String INTERFACE_ID_IKIP17_METADATA_MINTABLE = "0xfac27f46";
+    public static final String INTERFACE_ID_IKIP17_BURNABLE = "0x42966c68";
+    public static final String INTERFACE_ID_IKIP17_PAUSABLE = "0x4d5507ff";
 
     /**
      * Creates a KIP17 instance.
@@ -174,6 +187,50 @@ public class KIP17 extends Contract {
     }
 
     /**
+     * Detects which interface the KIP-17 token contract supports.<p>
+     * Example :
+     * <pre>{@code
+     * Map<String, Boolean> result = KIP17.detectInterface();
+     * result.get(KIP17.INTERFACE_ID_IKIP17);
+     * result.get(KIP17.INTERFACE_ID_IKIP17_METADATA);
+     * result.get(KIP17.INTERFACE_ID_IKIP17_ENUMERABLE);
+     * result.get(KIP17.INTERFACE_ID_IKIP17_MINTABLE);
+     * result.get(KIP17.INTERFACE_ID_IKIP17_METADATA_MINTABLE);
+     * result.get(KIP17.INTERFACE_ID_IKIP17_BURNABLE);
+     * result.get(KIP17.INTERFACE_ID_IKIP17_PAUSABLE);
+     * }</pre>
+     *
+     * @param caver A Caver instance.
+     * @param contractAddress A contract instance
+     * @return Map&lt;String, Boolean&gt;
+     */
+    public static Map<String, Boolean> detectInterface(Caver caver, String contractAddress) {
+        Map<String, Boolean> result = Stream.of(
+                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP17, false),
+                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP17_ENUMERABLE, false),
+                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP17_BURNABLE, false),
+                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP17_PAUSABLE, false),
+                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP17_MINTABLE, false),
+                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP17_METADATA, false),
+                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP17_METADATA_MINTABLE, false))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        KIP13 kip13;
+        try {
+            kip13 = new KIP13(caver, contractAddress);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        if(!kip13.isImplementedKIP13Interface()) {
+            throw new RuntimeException("This contract does not support KIP-13.");
+        }
+
+        result.entrySet().forEach(entry -> entry.setValue(kip13.sendQuery(entry.getKey())));
+        return result;
+    }
+
+    /**
      * Copy instance
      * @return KIP17
      */
@@ -205,6 +262,26 @@ public class KIP17 extends Contract {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Detects which interface the KIP-17 token contract supports.<p>
+     * Example :
+     * <pre>{@code
+     * KIP17 kip17 = new KIP17("0x{contract_address}");
+     * Map<String, Boolean> result = kip17.detectInterface();
+     * result.get(KIP17.INTERFACE_ID_IKIP17);
+     * result.get(KIP17.INTERFACE_ID_IKIP17_METADATA);
+     * result.get(KIP17.INTERFACE_ID_IKIP17_ENUMERABLE);
+     * result.get(KIP17.INTERFACE_ID_IKIP17_MINTABLE);
+     * result.get(KIP17.INTERFACE_ID_IKIP17_METADATA_MINTABLE);
+     * result.get(KIP17.INTERFACE_ID_IKIP17_BURNABLE);
+     * result.get(KIP17.INTERFACE_ID_IKIP17_PAUSABLE);
+     * }</pre>
+     * @return Map&lt;String, Boolean&gt;
+     */
+    public Map<String, Boolean> detectInterface() {
+        return detectInterface(this.getCaver(), this.getContractAddress());
     }
 
     /**

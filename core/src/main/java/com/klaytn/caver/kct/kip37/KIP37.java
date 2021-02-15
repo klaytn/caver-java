@@ -20,6 +20,7 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.contract.ContractDeployParams;
 import com.klaytn.caver.contract.SendOptions;
+import com.klaytn.caver.kct.kip13.KIP13;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.IWallet;
@@ -35,9 +36,12 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class KIP37 extends Contract {
     public static final String FUNCTION_URI = "uri";
@@ -63,6 +67,12 @@ public class KIP37 extends Contract {
     public static final String FUNCTION_ADD_MINTER = "addMinter";
     public static final String FUNCTION_RENOUNCE_MINTER = "renounceMinter";
     public static final String FUNCTION_SUPPORTS_INTERFACE = "supportsInterface";
+
+    public static final String INTERFACE_ID_IKIP37 = "0x6433ca1f";
+    public static final String INTERFACE_ID_IKIP37_METADATA = "0x0e89341c";
+    public static final String INTERFACE_ID_IKIP37_MINTABLE = "0xdfd9d9ec";
+    public static final String INTERFACE_ID_IKIP37_BURNABLE = "0x9e094e9e";
+    public static final String INTERFACE_ID_IKIP37_PAUSABLE = "0x0e8ffdb7";
 
     /**
      * Creates a KIP37 instance.
@@ -127,6 +137,65 @@ public class KIP37 extends Contract {
         kip37.deploy(contractDeployParams, sendOptions);
 
         return kip37;
+    }
+
+    /**
+     * Detects which interface the KIP-37 token contract supports.<p>
+     * Example :
+     * <pre>{@code
+     * Map<String, Boolean> result = KIP37.detectInterface();
+     * result.get(KIP37.INTERFACE_ID_IKIP37);
+     * result.get(KIP37.INTERFACE_ID_IKIP37_BURNABLE);
+     * result.get(KIP37.INTERFACE_ID_IKIP37_METADATA);
+     * result.get(KIP37.INTERFACE_ID_IKIP37_MINTABLE);
+     * result.get(KIP37.INTERFACE_ID_IKIP37_PAUSABLE);
+     * }</pre>
+     *
+     * @param caver A Caver instance.
+     * @param contractAddress A contract instance
+     * @return Map&lt;String, Boolean&gt;
+     */
+    public static Map<String, Boolean> detectInterface(Caver caver, String contractAddress) {
+        Map<String, Boolean> result = Stream.of(
+                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP37, false),
+                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP37_BURNABLE, false),
+                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP37_MINTABLE, false),
+                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP37_METADATA, false),
+                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP37_PAUSABLE, false))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        KIP13 kip13;
+        try {
+            kip13 = new KIP13(caver, contractAddress);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        if(!kip13.isImplementedKIP13Interface()) {
+            throw new RuntimeException("This contract does not support KIP-13.");
+        }
+
+        result.entrySet().forEach(entry -> entry.setValue(kip13.sendQuery(entry.getKey())));
+        return result;
+    }
+
+    /**
+     * Detects which interface the KIP-37 token contract supports.<p>
+     * Example :
+     * <pre>{@code
+     * KIP37 kip37 = new KIP37("0x{contract_address}");
+     * Map<String, Boolean> result = kip37.detectInterface();
+     *
+     * result.get(KIP37.INTERFACE_ID_IKIP37);
+     * result.get(KIP37.INTERFACE_ID_IKIP37_BURNABLE);
+     * result.get(KIP37.INTERFACE_ID_IKIP37_METADATA);
+     * result.get(KIP37.INTERFACE_ID_IKIP37_MINTABLE);
+     * result.get(KIP37.INTERFACE_ID_IKIP37_PAUSABLE);
+     * }</pre>
+     * @return Map&lt;String, Boolean&gt;
+     */
+    public Map<String, Boolean> detectInterface() {
+        return detectInterface(this.getCaver(), this.getContractAddress());
     }
 
     /**

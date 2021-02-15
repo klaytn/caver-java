@@ -20,6 +20,7 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.contract.ContractDeployParams;
 import com.klaytn.caver.contract.SendOptions;
+import com.klaytn.caver.kct.kip13.KIP13;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.IWallet;
@@ -31,8 +32,9 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class KIP7 extends Contract {
 
@@ -60,6 +62,14 @@ public class KIP7 extends Contract {
     private static final String FUNCTION_TRANSFER = "transfer";
     private static final String FUNCTION_TRANSFER_FROM = "transferFrom";
     private static final String FUNCTION_UNPAUSE = "unpause";
+
+    public static final String INTERFACE_ID_IKIP7 = "0x65787371";
+    public static final String INTERFACE_ID_IKIP7_METADATA = "0xa219a025";
+    public static final String INTERFACE_ID_IKIP7_MINTABLE = "0xeab83e20";
+    public static final String INTERFACE_ID_IKIP7_BURNABLE = "0x3b5a0bf8";
+    public static final String INTERFACE_ID_IKIP7_PAUSABLE = "0x4d5507ff";
+
+
 
     /**
      * Creates a KIP7 instance.
@@ -175,6 +185,46 @@ public class KIP7 extends Contract {
     }
 
     /**
+     * Detects which interface the KIP-7 token contract supports.<p>
+     * Example :
+     * <pre>{@code
+     * Map<String, Boolean> result = KIP7.detectInterface();
+     * result.get(KIP7.INTERFACE_ID_IKIP7);
+     * result.get(KIP7.INTERFACE_ID_IKIP7_BURNABLE);
+     * result.get(KIP7.INTERFACE_ID_IKIP7_METADATA);
+     * result.get(KIP7.INTERFACE_ID_IKIP7_MINTABLE);
+     * result.get(KIP7.INTERFACE_ID_IKIP7_PAUSABLE);
+     * }</pre>
+     *
+     * @param caver A Caver instance.
+     * @param contractAddress
+     * @return
+     */
+    public static Map<String, Boolean> detectInterface(Caver caver, String contractAddress) {
+        Map<String, Boolean> result = Stream.of(
+                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP7, false),
+                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP7_BURNABLE, false),
+                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP7_MINTABLE, false),
+                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP7_METADATA, false),
+                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP7_PAUSABLE, false))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        KIP13 kip13;
+        try {
+            kip13 = new KIP13(caver, contractAddress);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        if(!kip13.isImplementedKIP13Interface()) {
+            throw new RuntimeException("This contract does not support KIP-13.");
+        }
+
+        result.entrySet().forEach(entry -> entry.setValue(kip13.sendQuery(entry.getKey())));
+        return result;
+    }
+
+    /**
      * Copy instance
      * @return KIP7
      */
@@ -204,6 +254,25 @@ public class KIP7 extends Contract {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Detects which interface the KIP-7 token contract supports.<p>
+     * Example :
+     * <pre>{@code
+     * KIP7 kip7 = new KIP7("0x{contract_address}");
+     * Map<String, Boolean> result = kip7.detectInterface();
+     *
+     * result.get(KIP7.INTERFACE_ID_IKIP7);
+     * result.get(KIP7.INTERFACE_ID_IKIP7_BURNABLE);
+     * result.get(KIP7.INTERFACE_ID_IKIP7_METADATA);
+     * result.get(KIP7.INTERFACE_ID_IKIP7_MINTABLE);
+     * result.get(KIP7.INTERFACE_ID_IKIP7_PAUSABLE);
+     * }</pre>
+     * @return Map&lt;String, Boolean&gt;
+     */
+    public Map<String, Boolean> detectInterface() {
+        return detectInterface(this.getCaver(), this.getContractAddress());
     }
 
     /**

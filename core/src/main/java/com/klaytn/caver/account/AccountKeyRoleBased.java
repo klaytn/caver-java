@@ -130,7 +130,7 @@ public class AccountKeyRoleBased implements IAccountKey{
         /*
         * pubArray must have up to three item.
         * each item can have
-        * {String, String...}, {}
+        * {String, String...}, {}, {"fail"}, {"legacy"}
         *
         * options must have up to three item.
         * Valid WeightedMultiSigOption or Empty WeightedMultiSigOption
@@ -161,8 +161,15 @@ public class AccountKeyRoleBased implements IAccountKey{
             }
             //Set AccountKeyPublic
             else if (publicKeyArr.length == 1 && weightedMultiSigOption.isEmpty()) {
+                if(publicKeyArr[0].equals("legacy")) {
+                    accountKeys.add(new AccountKeyLegacy());
+                } else if (publicKeyArr[0].equals("fail")) {
+                    accountKeys.add(new AccountKeyFail());
+                } else {
                     accountKeys.add(AccountKeyPublic.fromPublicKey(publicKeyArr[0]));
-                    continue;
+                }
+
+                continue;
             }
 
             if (weightedMultiSigOption.isEmpty()) {

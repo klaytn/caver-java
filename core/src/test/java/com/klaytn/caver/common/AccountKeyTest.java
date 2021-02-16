@@ -990,5 +990,67 @@ public class AccountKeyTest {
 
             assertEquals(expectedEncodedData, accountKeyRoleBased.getRLPEncoding());
         }
+
+        @Test
+        public void fromRoleBasedPublicKeysAndOptionsWithString() {
+            String[][] expectedPublicKey = {
+                    {
+                        "fail"
+                    },
+                    {
+                        "0xc10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9803a1898f45b2770eda7abce70e8503b5e82b748ec0ce557ac9f4f4796965e4e"
+                    },
+                    {
+                        "legacy"
+                    }
+            };
+
+            WeightedMultiSigOptions transactionKeyOption = new WeightedMultiSigOptions();
+            WeightedMultiSigOptions accountUpdateKeyOption = new WeightedMultiSigOptions();
+            WeightedMultiSigOptions feePayerKeyOption = new WeightedMultiSigOptions();
+
+            List<WeightedMultiSigOptions> options = new ArrayList<>();
+            options.add(transactionKeyOption);
+            options.add(accountUpdateKeyOption);
+            options.add(feePayerKeyOption);
+
+            AccountKeyRoleBased roleBased = AccountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
+            assertTrue(roleBased.getRoleTransactionKey() instanceof AccountKeyFail);
+            assertTrue(roleBased.getRoleAccountUpdateKey() instanceof AccountKeyPublic);
+            checkPublicKey(expectedPublicKey[1][0], ((AccountKeyPublic) roleBased.getRoleAccountUpdateKey()).getPublicKey());
+            assertTrue(roleBased.getRoleFeePayerKey() instanceof AccountKeyLegacy);
+        }
+
+        @Test
+        public void fromRoleBasedPublicKeysAndOptionsWithStringAndWeightedMultiSig() {
+            String[][] expectedPublicKey = {
+                    {
+                            "legacy"
+                    },
+                    {
+                            "0xc10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9803a1898f45b2770eda7abce70e8503b5e82b748ec0ce557ac9f4f4796965e4e",
+                            "0x1769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c12a4d0eeb91d7bd5d592653d43dd0593cfe24cb20a5dbef05832932e7c7191bf6"
+                    },
+                    {
+                            "fail"
+                    }
+            };
+
+            BigInteger[] weightArr = new BigInteger[]{BigInteger.ONE, BigInteger.ONE};
+            WeightedMultiSigOptions transactionKeyOption = new WeightedMultiSigOptions();
+            WeightedMultiSigOptions accountUpdateKeyOption = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(weightArr));
+            WeightedMultiSigOptions feePayerKeyOption = new WeightedMultiSigOptions();
+
+            List<WeightedMultiSigOptions> options = new ArrayList<>();
+            options.add(transactionKeyOption);
+            options.add(accountUpdateKeyOption);
+            options.add(feePayerKeyOption);
+
+            AccountKeyRoleBased roleBased = AccountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
+            assertTrue(roleBased.getRoleTransactionKey() instanceof AccountKeyLegacy);
+            assertTrue(roleBased.getRoleAccountUpdateKey() instanceof AccountKeyWeightedMultiSig);
+            checkAccountKeyWeightedMultiSig(expectedPublicKey[1], accountUpdateKeyOption, (AccountKeyWeightedMultiSig)roleBased.getRoleAccountUpdateKey());
+            assertTrue(roleBased.getRoleFeePayerKey() instanceof AccountKeyFail);
+        }
     }
 }

@@ -316,6 +316,50 @@ public class KIP37 extends Contract {
      * @param to Target address.
      * @param tokenId ID of the token type(hex string).
      * @param value Transfer amount.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String from, String to, String tokenId, BigInteger value) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+        return safeTransferFrom(from, to, tokenId, value, "", this.getDefaultSendOptions());
+    }
+
+    /**
+     * Transfers value amount of an 'id' from the 'from' address to the 'to' address specified.<p>
+     * Caller must be approved to manage the tokens being transferred out of the 'from' account.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param from Source address.
+     * @param to Target address.
+     * @param tokenId ID of the token type(integer)
+     * @param value Transfer amount.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String from, String to, BigInteger tokenId, BigInteger value) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+        return safeTransferFrom(from, to, tokenId, value, "", this.getDefaultSendOptions());
+    }
+
+    /**
+     * Transfers value amount of an 'id' from the 'from' address to the 'to' address specified.<p>
+     * Caller must be approved to manage the tokens being transferred out of the 'from' account.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param from Source address.
+     * @param to Target address.
+     * @param tokenId ID of the token type(hex string).
+     * @param value Transfer amount.
      * @param data Additional data with no specified format.
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -351,6 +395,50 @@ public class KIP37 extends Contract {
      */
     public TransactionReceipt.TransactionReceiptData safeTransferFrom(String from, String to, BigInteger tokenId, BigInteger value, String data) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
         return safeTransferFrom(from, to, tokenId, value, data, this.getDefaultSendOptions());
+    }
+
+    /**
+     * Transfers value amount of an 'id' from the 'from' address to the 'to' address specified.<p>
+     * Caller must be approved to manage the tokens being transferred out of the 'from' account.<p>
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param from Source address.
+     * @param to Target address.
+     * @param tokenId ID of the token type(hex string)
+     * @param value Transfer amount.
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String from, String to, String tokenId, BigInteger value, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+        return safeTransferFrom(from, to, Numeric.toBigInt(tokenId), value, "", sendParam);
+    }
+
+    /**
+     * Transfers value amount of an 'id' from the 'from' address to the 'to' address specified.<p>
+     * Caller must be approved to manage the tokens being transferred out of the 'from' account.<p>
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param from Source address.
+     * @param to Target address.
+     * @param tokenId ID of the token type(integer)
+     * @param value Transfer amount.
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData safeTransferFrom(String from, String to, BigInteger tokenId, BigInteger value, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+        return safeTransferFrom(from, to, tokenId, value, "", sendParam);
     }
 
     /**
@@ -430,6 +518,49 @@ public class KIP37 extends Contract {
      * @param to Target address.
      * @param tokenIds IDs of token type(integer)
      * @param amounts The amount of transfer corresponding to each token ID
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData safeBatchTransferFrom(String from, String to, BigInteger[] tokenIds, BigInteger[] amounts) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return safeBatchTransferFrom(from, to, tokenIds, amounts, "", this.getDefaultSendOptions());
+    }
+
+
+    /**
+     * Batch-operation version of {@link #safeTransferFrom(String, String, String, BigInteger, String)}. <p>
+     * It will use default sendOptions in contract instance to passed sendOptions. <p>
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param from Source address.
+     * @param to Target address.
+     * @param tokenIds IDs of token type(hex string)
+     * @param amounts The amount of transfer corresponding to each token ID
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData safeBatchTransferFrom(String from, String to, String[] tokenIds, BigInteger[] amounts) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return safeBatchTransferFrom(from, to, tokenIds, amounts, "", this.getDefaultSendOptions());
+    }
+
+    /**
+     * Batch-operation version of {@link #safeTransferFrom(String, String, BigInteger, BigInteger, String)}<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param from Source address.
+     * @param to Target address.
+     * @param tokenIds IDs of token type(integer)
+     * @param amounts The amount of transfer corresponding to each token ID
      * @param data Additional data with no specified format.
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -442,6 +573,48 @@ public class KIP37 extends Contract {
      */
     public TransactionReceipt.TransactionReceiptData safeBatchTransferFrom(String from, String to, BigInteger[] tokenIds, BigInteger[] amounts, String data) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         return safeBatchTransferFrom(from, to, tokenIds, amounts, data, this.getDefaultSendOptions());
+    }
+
+    /**
+     * Batch-operation version of {@link #safeTransferFrom(String, String, String, BigInteger, String, SendOptions)}.<p>
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param from Source address.
+     * @param to Target address.
+     * @param tokenIds IDs of token type(hex string)
+     * @param amounts The amount of transfer corresponding to each token ID
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData safeBatchTransferFrom(String from, String to, String[] tokenIds, BigInteger[] amounts, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return safeBatchTransferFrom(from, to, tokenIds, amounts, "", sendParam);
+    }
+
+    /**
+     * Batch-operation version of {@link #safeTransferFrom(String, String, BigInteger, BigInteger, String, SendOptions)}.<p>
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param from Source address.
+     * @param to Target address.
+     * @param tokenIds IDs of token type(integer)
+     * @param amounts The amount of transfer corresponding to each token ID
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData safeBatchTransferFrom(String from, String to, BigInteger[] tokenIds, BigInteger[] amounts, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return safeBatchTransferFrom(from, to, tokenIds, amounts, "", sendParam);
     }
 
     /**
@@ -583,6 +756,44 @@ public class KIP37 extends Contract {
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param tokenId The token id to create.(hex string)
      * @param initialSupply The amount of tokens being minted.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData create(String tokenId, BigInteger initialSupply) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+        return create(tokenId, initialSupply, "", this.getDefaultSendOptions());
+    }
+
+    /**
+     * Creates a new token type and assigns initialSupply to the minter.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param tokenId The token id to create.(integer)
+     * @param initialSupply The amount of tokens being minted.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData create(BigInteger tokenId, BigInteger initialSupply) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+        return create(tokenId, initialSupply, "", this.getDefaultSendOptions());
+    }
+
+    /**
+     * Creates a new token type and assigns initialSupply to the minter.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param tokenId The token id to create.(hex string)
+     * @param initialSupply The amount of tokens being minted.
      * @param uri The token URI of the created token.
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -616,6 +827,44 @@ public class KIP37 extends Contract {
     public TransactionReceipt.TransactionReceiptData create(BigInteger tokenId, BigInteger initialSupply, String uri) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
         return create(tokenId, initialSupply, uri, this.getDefaultSendOptions());
     }
+
+    /**
+     * Creates a new token type and assigns initialSupply to the minter.<p>
+     * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * @param tokenId The token id to create.(hex string)
+     * @param initialSupply The amount of tokens being minted.
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData create(String tokenId, BigInteger initialSupply, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+        return create(Numeric.toBigInt(tokenId), initialSupply, "", sendParam);
+    }
+
+    /**
+     * Creates a new token type and assigns initialSupply to the minter.<p>
+     * @param tokenId The token id to create.(integer)
+     * @param initialSupply The amount of tokens being minted.
+     * @param sendParam A SendOptions need to execute contract's method.
+     * @return TransactionReceipt.TransactionReceiptData
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     * @throws TransactionException
+     */
+    public TransactionReceipt.TransactionReceiptData create(BigInteger tokenId, BigInteger initialSupply, SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, TransactionException {
+        return create(tokenId, initialSupply, "", sendParam);
+    }
+
 
     /**
      * Creates a new token type and assigns initialSupply to the minter.<p>

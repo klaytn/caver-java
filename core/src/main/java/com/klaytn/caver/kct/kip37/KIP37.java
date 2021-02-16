@@ -226,7 +226,14 @@ public class KIP37 extends Contract {
      */
     public String uri(BigInteger tokenId) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         List<Type> result = this.call(FUNCTION_URI, tokenId);
-        return (String)result.get(0).getValue();
+
+        String uri = (String)result.get(0).getValue();
+        if(uri.contains("{id}")) {
+            String hexTokenID = Numeric.toHexStringNoPrefixZeroPadded(tokenId, 64);
+            uri = uri.replace("{id}", hexTokenID);
+        }
+
+        return uri;
     }
 
     /**

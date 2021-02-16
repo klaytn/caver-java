@@ -22,7 +22,6 @@ import com.klaytn.caver.kct.kip37.KIP37;
 import com.klaytn.caver.kct.kip7.KIP7;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
-import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -33,7 +32,6 @@ import org.web3j.protocol.exceptions.TransactionException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -42,14 +40,14 @@ import static org.junit.Assert.*;
 
 public class KIP37Test {
     public static KIP37 kip37;
-    private static final String tokenURI = "https://kip37.example/item.json";
+    private static final String tokenURI = "https://kip37.example/{id}.json";
 
-    public static void deployContract() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public static KIP37 deployContract(String uri) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         Caver caver = new Caver(Caver.DEFAULT_URL);
         caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
         caver.wallet.add(KeyringFactory.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
 
-        kip37 = KIP37.deploy(caver, tokenURI, LUMAN.getAddress());
+        return KIP37.deploy(caver, uri, LUMAN.getAddress());
     }
 
     public static boolean createToken(KIP37 kip37, BigInteger tokenId, BigInteger initialSupply, String URI, String sender) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
@@ -60,7 +58,7 @@ public class KIP37Test {
     public static class ConstructorTest {
         @BeforeClass
         public static void init() throws Exception {
-            deployContract();
+            kip37 = deployContract(tokenURI);
         }
 
         @Test
@@ -74,8 +72,8 @@ public class KIP37Test {
 
         @Test
         public void uri() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-            String expected = tokenURI;
-            String tokenUri = kip37.uri(BigInteger.valueOf(1));
+            String expected = "https://kip37.example/000000000000000000000000000000000000000000000000000000000004cce0.json";
+            String tokenUri = kip37.uri("0x4cce0");
             assertEquals(expected, tokenUri);
         }
     }
@@ -83,7 +81,7 @@ public class KIP37Test {
     public static class MintableTest {
         @BeforeClass
         public static void initContract() throws Exception {
-            deployContract();
+            kip37 = deployContract(tokenURI);
 
             BigInteger initialSupply = BigInteger.valueOf(1000);
             String tokenURI = "http://mintable.token/";
@@ -247,7 +245,7 @@ public class KIP37Test {
     public static class PausableTest {
         @BeforeClass
         public static void initContract() throws Exception {
-            deployContract();
+            kip37 = deployContract(tokenURI);
             SendOptions options = new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(4000000));
             kip37.setDefaultSendOptions(options);
         }
@@ -472,7 +470,7 @@ public class KIP37Test {
     public static class BurnableTest {
         @BeforeClass
         public static void init() throws Exception {
-            deployContract();
+            kip37= deployContract(tokenURI);
             if(!createToken(kip37, BigInteger.ZERO, BigInteger.valueOf(1000), tokenURI, LUMAN.getAddress())) {
                 fail();
             }
@@ -545,20 +543,20 @@ public class KIP37Test {
     public static class IKIP37Test {
         @BeforeClass
         public static void init() throws Exception {
-            deployContract();
-            if(!createToken(kip37, BigInteger.ZERO, BigInteger.valueOf(1000), tokenURI, LUMAN.getAddress())) {
+            kip37 = deployContract(tokenURI);
+            if(!createToken(kip37, BigInteger.ZERO, BigInteger.valueOf(2000), tokenURI, LUMAN.getAddress())) {
                 fail();
             }
 
-            if(!createToken(kip37, BigInteger.ONE, BigInteger.valueOf(1000), tokenURI, LUMAN.getAddress())) {
+            if(!createToken(kip37, BigInteger.ONE, BigInteger.valueOf(2000), tokenURI, LUMAN.getAddress())) {
                 fail();
             }
 
-            if(!createToken(kip37, BigInteger.valueOf(2), BigInteger.valueOf(1000), tokenURI, LUMAN.getAddress())) {
+            if(!createToken(kip37, BigInteger.valueOf(2), BigInteger.valueOf(2000), tokenURI, LUMAN.getAddress())) {
                 fail();
             }
 
-            if(!createToken(kip37, BigInteger.valueOf(3), BigInteger.valueOf(1000), tokenURI, LUMAN.getAddress())) {
+            if(!createToken(kip37, BigInteger.valueOf(3), BigInteger.valueOf(2000), tokenURI, LUMAN.getAddress())) {
                 fail();
             }
         }
@@ -566,25 +564,25 @@ public class KIP37Test {
         @Test
         public void totalSupply() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
             BigInteger total = kip37.totalSupply(BigInteger.ZERO);
-            assertEquals(BigInteger.valueOf(1000), total);
+            assertEquals(BigInteger.valueOf(2000), total);
         }
 
         @Test
         public void totalSupplyStringID() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
             BigInteger total = kip37.totalSupply("0x0");
-            assertEquals(BigInteger.valueOf(1000), total);
+            assertEquals(BigInteger.valueOf(2000), total);
         }
 
         @Test
         public void balanceOf() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
             BigInteger balance = kip37.balanceOf(LUMAN.getAddress(), BigInteger.ZERO);
-            assertEquals(BigInteger.valueOf(1000), balance);
+            assertEquals(BigInteger.valueOf(2000), balance);
         }
 
         @Test
         public void balanceOfStringID() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
             BigInteger balance = kip37.balanceOf(LUMAN.getAddress(), "0x0");
-            assertEquals(BigInteger.valueOf(1000), balance);
+            assertEquals(BigInteger.valueOf(2000), balance);
         }
 
         @Test
@@ -593,8 +591,8 @@ public class KIP37Test {
             BigInteger[] tokenIds = new BigInteger[] {BigInteger.ZERO, BigInteger.valueOf(1)};
 
             List<BigInteger> balances = kip37.balanceOfBatch(accounts, tokenIds);
-            assertEquals(BigInteger.valueOf(1000), balances.get(0));
-            assertEquals(BigInteger.valueOf(1000), balances.get(1));
+            assertEquals(BigInteger.valueOf(2000), balances.get(0));
+            assertEquals(BigInteger.valueOf(2000), balances.get(1));
         }
 
         @Test
@@ -603,8 +601,8 @@ public class KIP37Test {
             String[] tokenIds = new String[] {"0x0", "0x1"};
 
             List<BigInteger> balances = kip37.balanceOfBatch(accounts, tokenIds);
-            assertEquals(BigInteger.valueOf(1000), balances.get(0));
-            assertEquals(BigInteger.valueOf(1000), balances.get(1));
+            assertEquals(BigInteger.valueOf(2000), balances.get(0));
+            assertEquals(BigInteger.valueOf(2000), balances.get(1));
         }
 
         @Test
@@ -642,7 +640,7 @@ public class KIP37Test {
             BigInteger tokenId = BigInteger.valueOf(2);
             BigInteger values = BigInteger.valueOf(100);
 
-            TransactionReceipt.TransactionReceiptData receiptData = kip37.safeTransferFrom(from, to, tokenId, values, "", new SendOptions(LUMAN.getAddress()));
+            TransactionReceipt.TransactionReceiptData receiptData = kip37.safeTransferFrom(from, to, tokenId, values, "data", new SendOptions(LUMAN.getAddress()));
             if(!receiptData.getStatus().equals("0x1")) {
                 fail();
             }
@@ -657,7 +655,37 @@ public class KIP37Test {
             String tokenId = "0x2";
             BigInteger values = BigInteger.valueOf(100);
 
-            TransactionReceipt.TransactionReceiptData receiptData = kip37.safeTransferFrom(from, to, tokenId, values, "", new SendOptions(LUMAN.getAddress()));
+            TransactionReceipt.TransactionReceiptData receiptData = kip37.safeTransferFrom(from, to, tokenId, values, "data", new SendOptions(LUMAN.getAddress()));
+            if(!receiptData.getStatus().equals("0x1")) {
+                fail();
+            }
+
+            assertEquals(BigInteger.valueOf(100), kip37.balanceOf(to, BigInteger.valueOf(2)));
+        }
+
+        @Test
+        public void safeTransferFromWithoutData() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+            String from = LUMAN.getAddress();
+            String to = KeyringFactory.generate().getAddress();
+            BigInteger tokenId = BigInteger.valueOf(2);
+            BigInteger values = BigInteger.valueOf(100);
+
+            TransactionReceipt.TransactionReceiptData receiptData = kip37.safeTransferFrom(from, to, tokenId, values, new SendOptions(LUMAN.getAddress()));
+            if(!receiptData.getStatus().equals("0x1")) {
+                fail();
+            }
+
+            assertEquals(BigInteger.valueOf(100), kip37.balanceOf(to, BigInteger.valueOf(2)));
+        }
+
+        @Test
+        public void safeTransferFromStringIDWithoutData() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+            String from = LUMAN.getAddress();
+            String to = KeyringFactory.generate().getAddress();
+            String tokenId = "0x2";
+            BigInteger values = BigInteger.valueOf(100);
+
+            TransactionReceipt.TransactionReceiptData receiptData = kip37.safeTransferFrom(from, to, tokenId, values, new SendOptions(LUMAN.getAddress()));
             if(!receiptData.getStatus().equals("0x1")) {
                 fail();
             }
@@ -689,6 +717,38 @@ public class KIP37Test {
             String to = KeyringFactory.generate().getAddress();
 
             TransactionReceipt.TransactionReceiptData receiptData = kip37.safeBatchTransferFrom(LUMAN.getAddress(), to, tokenIds, values, "data", new SendOptions(LUMAN.getAddress()));
+            if(!receiptData.getStatus().equals("0x1")) {
+                fail();
+            }
+
+            assertEquals(BigInteger.valueOf(100), kip37.balanceOf(to, BigInteger.valueOf(2)));
+            assertEquals(BigInteger.valueOf(100), kip37.balanceOf(to, BigInteger.valueOf(3)));
+        }
+
+        @Test
+        public void safeBatchTransferFromWithoutData() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+            BigInteger[] tokenIds = new BigInteger[] {BigInteger.valueOf(2), BigInteger.valueOf(3)};
+            BigInteger[] values = new BigInteger[] {BigInteger.valueOf(100), BigInteger.valueOf(100)};
+
+            String to = KeyringFactory.generate().getAddress();
+
+            TransactionReceipt.TransactionReceiptData receiptData = kip37.safeBatchTransferFrom(LUMAN.getAddress(), to, tokenIds, values, new SendOptions(LUMAN.getAddress()));
+            if(!receiptData.getStatus().equals("0x1")) {
+                fail();
+            }
+
+            assertEquals(BigInteger.valueOf(100), kip37.balanceOf(to, BigInteger.valueOf(2)));
+            assertEquals(BigInteger.valueOf(100), kip37.balanceOf(to, BigInteger.valueOf(3)));
+        }
+
+        @Test
+        public void safeBatchTransferFrom_StringIDWithoutData() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+            String[] tokenIds = new String[] {"0x2", "0x3"};
+            BigInteger[] values = new BigInteger[] {BigInteger.valueOf(100), BigInteger.valueOf(100)};
+
+            String to = KeyringFactory.generate().getAddress();
+
+            TransactionReceipt.TransactionReceiptData receiptData = kip37.safeBatchTransferFrom(LUMAN.getAddress(), to, tokenIds, values, new SendOptions(LUMAN.getAddress()));
             if(!receiptData.getStatus().equals("0x1")) {
                 fail();
             }
@@ -908,7 +968,7 @@ public class KIP37Test {
         public static void initCaver() throws Exception {
             caver = new Caver(Caver.DEFAULT_URL);
             caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
-            deployContract();
+            kip37 = deployContract(tokenURI);
         }
 
         @Test
@@ -966,6 +1026,42 @@ public class KIP37Test {
             contract.deploy(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(10000000)), byteCodeNotSupportedKIP13);
 
             Map<String, Boolean> result = KIP7.detectInterface(caver, contract.getContractAddress());
+        }
+    }
+
+    public static class UriTest {
+        static Caver caver;
+
+        @BeforeClass
+        public static void initCaver() throws Exception {
+            caver = new Caver(Caver.DEFAULT_URL);
+            caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        }
+
+        @Test
+        public void uriWithID() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+            String expected = "https://token-cdn-domain/000000000000000000000000000000000000000000000000000000000004cce0.json";
+
+            String tokenURI = "https://token-cdn-domain/{id}.json";
+            KIP37 kip37 = KIP37.deploy(caver, tokenURI, LUMAN.getAddress());
+
+            String uriFromStr = kip37.uri("0x4cce0");
+            assertEquals(expected, uriFromStr);
+
+            String uriFromInt = kip37.uri(BigInteger.valueOf(314592));
+            assertEquals(expected, uriFromInt);
+        }
+
+        @Test
+        public void uriWithoutID() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+            String tokenURI = "https://token-cdn-domain/example.json";
+            KIP37 kip37 = KIP37.deploy(caver, tokenURI, LUMAN.getAddress());
+
+            String uriFromStr = kip37.uri("0x4cce0");
+            assertEquals(tokenURI, uriFromStr);
+
+            String uriFromInt = kip37.uri(BigInteger.valueOf(314592));
+            assertEquals(tokenURI, uriFromInt);
         }
     }
 }

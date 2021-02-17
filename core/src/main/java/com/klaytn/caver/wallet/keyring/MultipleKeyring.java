@@ -152,17 +152,27 @@ public class MultipleKeyring extends AbstractKeyring{
     }
 
     /**
-     * Return a public key strings
+     * Returns a public key strings.<p>
+     * It returns a public key as a uncompressed format.
      * @return String array
      */
     public String[] getPublicKey() {
+        return getPublicKey(false);
+    }
+
+    /**
+     * Returns a public key strings.
+     * @param compressed Whether in compressed format or not.
+     * @return String array
+     */
+    public String[] getPublicKey(boolean compressed) {
         return Arrays.stream(this.keys).map(key -> {
-            return key.getPublicKey(false);
+            return key.getPublicKey(compressed);
         }).toArray(String[]::new);
     }
 
     /**
-     * returns keys by role. If the key of the role passed as parameter is empty, the default key is returned.
+     * Returns keys by role. If the key of the role passed as parameter is empty, the default key is returned.
      * @param role A number indicating the role of the key. You can use `AccountRoleBased.RoleGroup`.
      * @return PrivateKey Array
      */

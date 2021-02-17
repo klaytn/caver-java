@@ -162,21 +162,30 @@ public class RoleBasedKeyring extends AbstractKeyring {
     }
 
     /**
-     * Return a public key strings
+     * Returns a public key strings.<p>
+     * It returns a public key as a uncompressed format.
      * @return String array
      */
     public List<String[]> getPublicKey() {
+        return getPublicKey(false);
+    }
+
+    /**
+     * Returns a public key strings.
+     * @return String array
+     */
+    public List<String[]> getPublicKey(boolean compressed) {
         return this.keys.stream()
                 .map(array -> {
                     return Arrays.stream(array)
-                            .map(privateKey -> privateKey.getPublicKey(false))
+                            .map(privateKey -> privateKey.getPublicKey(compressed))
                             .toArray(String[]::new);
                 })
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
-     * returns keys by role. If the key of the role passed as parameter is empty, the default key is returned.
+     * Returns keys by role. If the key of the role passed as parameter is empty, the default key is returned.
      * @param role A number indicating the role of the key. You can use `AccountRoleBased.RoleGroup`.
      * @return PrivateKey Array
      */

@@ -21,6 +21,7 @@ import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.contract.ContractDeployParams;
 import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.kct.kip13.KIP13;
+import com.klaytn.caver.kct.kip17.KIP17;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.IWallet;
@@ -138,6 +139,41 @@ public class KIP37 extends Contract {
 
         return kip37;
     }
+
+    /**
+     * Copy instance
+     * @return KIP37
+     */
+    public KIP37 clone() {
+        try {
+            KIP37 kip37 = new KIP37(this.getCaver(), this.getContractAddress());
+            kip37.setWallet(this.getWallet());
+
+            return kip37;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * Copy instance with token address
+     * @param tokenAddress A KIP-37 token address
+     * @return KIP37
+     */
+    public KIP37 clone(String tokenAddress) {
+        try {
+            KIP37 kip37 = new KIP37(this.getCaver(), tokenAddress);
+            kip37.setWallet(this.getWallet());
+
+            return kip37;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     /**
      * Detects which interface the KIP-37 token contract supports.<p>

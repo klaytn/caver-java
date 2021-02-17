@@ -20,7 +20,7 @@ plugins {
 
 allprojects {
 
-    version '1.5.6'
+    version '1.5.7'
     group 'com.klaytn.caver'
     description 'caver-java project'
 

@@ -2068,6 +2068,43 @@ public class KeyringTest {
             assertEquals(3, publicKeys.get(1).length);
             assertEquals(1, publicKeys.get(2).length);
         }
+
+        @Test
+        public void getPublicKey_single_compressed() {
+            SingleKeyring keyring = KeyringFactory.generate();
+            String publicKeys = keyring.getPublicKey(true);
+
+            assertEquals(keyring.getKey().getPublicKey(true), publicKeys);
+        }
+
+        @Test
+        public void getPublicKey_multiple_compressed() {
+            MultipleKeyring keyring = generateMultipleKeyring(2);
+            String[] publicKeys = keyring.getPublicKey(true);
+
+            assertEquals(keyring.getKeys()[0].getPublicKey(true), publicKeys[0]);
+            assertEquals(keyring.getKeys()[1].getPublicKey(true), publicKeys[1]);
+            assertEquals(2, publicKeys.length);
+        }
+
+        @Test
+        public void getPublicKey_roleBased_compressed() {
+            RoleBasedKeyring keyring = generateRoleBaseKeyring(new int[] {2, 3, 1});
+            List<String[]> publicKeys = keyring.getPublicKey(true);
+
+            assertEquals(keyring.getKeys().get(0)[0].getPublicKey(true), publicKeys.get(0)[0]);
+            assertEquals(keyring.getKeys().get(0)[1].getPublicKey(true), publicKeys.get(0)[1]);
+
+            assertEquals(keyring.getKeys().get(1)[0].getPublicKey(true), publicKeys.get(1)[0]);
+            assertEquals(keyring.getKeys().get(1)[1].getPublicKey(true), publicKeys.get(1)[1]);
+            assertEquals(keyring.getKeys().get(1)[2].getPublicKey(true), publicKeys.get(1)[2]);
+
+            assertEquals(keyring.getKeys().get(2)[0].getPublicKey(true), publicKeys.get(2)[0]);
+
+            assertEquals(2, publicKeys.get(0).length);
+            assertEquals(3, publicKeys.get(1).length);
+            assertEquals(1, publicKeys.get(2).length);
+        }
     }
 
     public static class isDecoupledTest {

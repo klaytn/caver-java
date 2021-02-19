@@ -671,21 +671,21 @@ public class KIP7Test {
         @Test
         public void detectInterface() {
             Map<String, Boolean> result = kip7contract.detectInterface();
-            assertTrue(result.get(KIP7.INTERFACE_ID_IKIP7));
-            assertTrue(result.get(KIP7.INTERFACE_ID_IKIP7_BURNABLE));
-            assertTrue(result.get(KIP7.INTERFACE_ID_IKIP7_METADATA));
-            assertTrue(result.get(KIP7.INTERFACE_ID_IKIP7_MINTABLE));
-            assertTrue(result.get(KIP7.INTERFACE_ID_IKIP7_PAUSABLE));
+            assertTrue(result.get(KIP7.INTERFACE.IKIP7.getName()));
+            assertTrue(result.get(KIP7.INTERFACE.IKIP7_BURNABLE.getName()));
+            assertTrue(result.get(KIP7.INTERFACE.IKIP7_METADATA.getName()));
+            assertTrue(result.get(KIP7.INTERFACE.IKIP7_MINTABLE.getName()));
+            assertTrue(result.get(KIP7.INTERFACE.IKIP7_PAUSABLE.getName()));
         }
 
         @Test
         public void detectInterface_staticMethod() {
             Map<String, Boolean> result = KIP7.detectInterface(kip7contract.getCaver(), kip7contract.getContractAddress());
-            assertTrue(result.get(KIP7.INTERFACE_ID_IKIP7));
-            assertTrue(result.get(KIP7.INTERFACE_ID_IKIP7_BURNABLE));
-            assertTrue(result.get(KIP7.INTERFACE_ID_IKIP7_METADATA));
-            assertTrue(result.get(KIP7.INTERFACE_ID_IKIP7_MINTABLE));
-            assertTrue(result.get(KIP7.INTERFACE_ID_IKIP7_PAUSABLE));
+            assertTrue(result.get(KIP7.INTERFACE.IKIP7.getName()));
+            assertTrue(result.get(KIP7.INTERFACE.IKIP7_BURNABLE.getName()));
+            assertTrue(result.get(KIP7.INTERFACE.IKIP7_METADATA.getName()));
+            assertTrue(result.get(KIP7.INTERFACE.IKIP7_MINTABLE.getName()));
+            assertTrue(result.get(KIP7.INTERFACE.IKIP7_PAUSABLE.getName()));
         }
 
         @Test
@@ -694,11 +694,11 @@ public class KIP7Test {
             contract.deploy(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(10000000)), byteCodeWithMintable, BigInteger.valueOf(100000000000L));
 
             Map<String, Boolean> result = KIP7.detectInterface(caver, contract.getContractAddress());
-            assertTrue(result.get(KIP7.INTERFACE_ID_IKIP7));
-            assertFalse(result.get(KIP7.INTERFACE_ID_IKIP7_BURNABLE));
-            assertFalse(result.get(KIP7.INTERFACE_ID_IKIP7_METADATA));
-            assertTrue(result.get(KIP7.INTERFACE_ID_IKIP7_MINTABLE));
-            assertFalse(result.get(KIP7.INTERFACE_ID_IKIP7_PAUSABLE));
+            assertTrue(result.get(KIP7.INTERFACE.IKIP7.getName()));
+            assertFalse(result.get(KIP7.INTERFACE.IKIP7_BURNABLE.getName()));
+            assertFalse(result.get(KIP7.INTERFACE.IKIP7_METADATA.getName()));
+            assertTrue(result.get(KIP7.INTERFACE.IKIP7_MINTABLE.getName()));
+            assertFalse(result.get(KIP7.INTERFACE.IKIP7_PAUSABLE.getName()));
         }
 
         @Test
@@ -707,11 +707,11 @@ public class KIP7Test {
             contract.deploy(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(10000000)), byteCodeWithoutBurnablePausable, "Test", "TST", 18, BigInteger.valueOf(100000000000L));
 
             Map<String, Boolean> result = KIP7.detectInterface(caver, contract.getContractAddress());
-            assertTrue(result.get(KIP7.INTERFACE_ID_IKIP7));
-            assertFalse(result.get(KIP7.INTERFACE_ID_IKIP7_BURNABLE));
-            assertTrue(result.get(KIP7.INTERFACE_ID_IKIP7_METADATA));
-            assertTrue(result.get(KIP7.INTERFACE_ID_IKIP7_MINTABLE));
-            assertFalse(result.get(KIP7.INTERFACE_ID_IKIP7_PAUSABLE));
+            assertTrue(result.get(KIP7.INTERFACE.IKIP7.getName()));
+            assertFalse(result.get(KIP7.INTERFACE.IKIP7_BURNABLE.getName()));
+            assertTrue(result.get(KIP7.INTERFACE.IKIP7_METADATA.getName()));
+            assertTrue(result.get(KIP7.INTERFACE.IKIP7_MINTABLE.getName()));
+            assertFalse(result.get(KIP7.INTERFACE.IKIP7_PAUSABLE.getName()));
         }
 
         @Test

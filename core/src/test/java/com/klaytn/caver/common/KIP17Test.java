@@ -807,25 +807,26 @@ public class KIP17Test {
         @Test
         public void detectInterface() {
             Map<String, Boolean> result = kip17Contract.detectInterface();
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_METADATA));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_ENUMERABLE));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_MINTABLE));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_METADATA_MINTABLE));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_BURNABLE));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_PAUSABLE));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_METADATA.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_ENUMERABLE.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_MINTABLE.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_METADATA_MINTABLE.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_BURNABLE.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_PAUSABLE.getName()));
+
         }
 
         @Test
         public void detectInterface_staticMethod() {
             Map<String, Boolean> result = KIP17.detectInterface(kip17Contract.getCaver(), kip17Contract.getContractAddress());
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_METADATA));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_ENUMERABLE));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_MINTABLE));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_METADATA_MINTABLE));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_BURNABLE));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_PAUSABLE));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_METADATA.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_ENUMERABLE.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_MINTABLE.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_METADATA_MINTABLE.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_BURNABLE.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_PAUSABLE.getName()));
         }
 
         @Test
@@ -834,13 +835,13 @@ public class KIP17Test {
             contract.deploy(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(10000000)), bytecodeWithFullMetadataMintable, "Test", "TST");
 
             Map<String, Boolean> result = KIP17.detectInterface(caver, contract.getContractAddress());
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_METADATA));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_ENUMERABLE));
-            assertFalse(result.get(KIP17.INTERFACE_ID_IKIP17_MINTABLE));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_METADATA_MINTABLE));
-            assertFalse(result.get(KIP17.INTERFACE_ID_IKIP17_BURNABLE));
-            assertFalse(result.get(KIP17.INTERFACE_ID_IKIP17_PAUSABLE));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_METADATA.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_ENUMERABLE.getName()));
+            assertFalse(result.get(KIP17.INTERFACE.IKIP17_MINTABLE.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_METADATA_MINTABLE.getName()));
+            assertFalse(result.get(KIP17.INTERFACE.IKIP17_BURNABLE.getName()));
+            assertFalse(result.get(KIP17.INTERFACE.IKIP17_PAUSABLE.getName()));
         }
 
         @Test
@@ -852,13 +853,13 @@ public class KIP17Test {
             contract.deploy(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(10000000)), byteCodeNotSupportedKIP13);
 
             Map<String, Boolean> result = KIP17.detectInterface(caver, contract.getContractAddress());
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_METADATA));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_ENUMERABLE));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_MINTABLE));
-            assertTrue(result.get(KIP17.INTERFACE_ID_IKIP17_METADATA_MINTABLE));
-            assertFalse(result.get(KIP17.INTERFACE_ID_IKIP17_BURNABLE));
-            assertFalse(result.get(KIP17.INTERFACE_ID_IKIP17_PAUSABLE));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_METADATA.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_ENUMERABLE.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_MINTABLE.getName()));
+            assertTrue(result.get(KIP17.INTERFACE.IKIP17_METADATA_MINTABLE.getName()));
+            assertFalse(result.get(KIP17.INTERFACE.IKIP17_BURNABLE.getName()));
+            assertFalse(result.get(KIP17.INTERFACE.IKIP17_PAUSABLE.getName()));
         }
     }
 }

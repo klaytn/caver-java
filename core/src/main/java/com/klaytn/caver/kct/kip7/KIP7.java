@@ -33,8 +33,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class KIP7 extends Contract {
 
@@ -63,11 +61,29 @@ public class KIP7 extends Contract {
     private static final String FUNCTION_TRANSFER_FROM = "transferFrom";
     private static final String FUNCTION_UNPAUSE = "unpause";
 
-    public static final String INTERFACE_ID_IKIP7 = "0x65787371";
-    public static final String INTERFACE_ID_IKIP7_METADATA = "0xa219a025";
-    public static final String INTERFACE_ID_IKIP7_MINTABLE = "0xeab83e20";
-    public static final String INTERFACE_ID_IKIP7_BURNABLE = "0x3b5a0bf8";
-    public static final String INTERFACE_ID_IKIP7_PAUSABLE = "0x4d5507ff";
+    public enum INTERFACE {
+        IKIP7("IKIP7", "0x65787371"),
+        IKIP7_METADATA("IKIP7Metatdata", "0xa219a025"),
+        IKIP7_MINTABLE("IKIP7Mintable", "0xeab83e20"),
+        IKIP7_BURNABLE("IKIP7Burnable", "0x3b5a0bf8"),
+        IKIP7_PAUSABLE("IKIP7Pausable", "0x4d5507ff");
+
+        String name;
+        String id;
+
+        INTERFACE(String name, String id) {
+            this.name = name;
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getId() {
+            return id;
+        }
+    }
 
 
 
@@ -201,14 +217,6 @@ public class KIP7 extends Contract {
      * @return
      */
     public static Map<String, Boolean> detectInterface(Caver caver, String contractAddress) {
-        Map<String, Boolean> result = Stream.of(
-                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP7, false),
-                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP7_BURNABLE, false),
-                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP7_MINTABLE, false),
-                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP7_METADATA, false),
-                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP7_PAUSABLE, false))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
         KIP13 kip13;
         try {
             kip13 = new KIP13(caver, contractAddress);
@@ -220,7 +228,10 @@ public class KIP7 extends Contract {
             throw new RuntimeException("This contract does not support KIP-13.");
         }
 
-        result.entrySet().forEach(entry -> entry.setValue(kip13.sendQuery(entry.getKey())));
+        Map<String, Boolean> result = new HashMap<>();
+        Arrays.stream(INTERFACE.values())
+                .forEach(element -> result.put(element.getName(), kip13.sendQuery(element.getId())));
+
         return result;
     }
 

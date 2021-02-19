@@ -974,21 +974,23 @@ public class KIP37Test {
         @Test
         public void detectInterface() {
             Map<String, Boolean> result = kip37.detectInterface();
-            assertTrue(result.get(KIP37.INTERFACE_ID_IKIP37));
-            assertTrue(result.get(KIP37.INTERFACE_ID_IKIP37_BURNABLE));
-            assertTrue(result.get(KIP37.INTERFACE_ID_IKIP37_METADATA));
-            assertTrue(result.get(KIP37.INTERFACE_ID_IKIP37_MINTABLE));
-            assertTrue(result.get(KIP37.INTERFACE_ID_IKIP37_PAUSABLE));
+            assertTrue(result.get(KIP37.INTERFACE.IKIP37.getName()));
+            assertTrue(result.get(KIP37.INTERFACE.IKIP37_BURNABLE.getName()));
+            assertTrue(result.get(KIP37.INTERFACE.IKIP37_METADATA.getName()));
+            assertTrue(result.get(KIP37.INTERFACE.IKIP37_MINTABLE.getName()));
+            assertTrue(result.get(KIP37.INTERFACE.IKIP37_PAUSABLE.getName()));
+
+            result.entrySet().forEach(entry -> System.out.println("Interface ID : " + entry.getKey() + " - " + entry.getValue()));
         }
 
         @Test
         public void detectInterface_staticMethod() {
             Map<String, Boolean> result = KIP37.detectInterface(kip37.getCaver(), kip37.getContractAddress());
-            assertTrue(result.get(KIP37.INTERFACE_ID_IKIP37));
-            assertTrue(result.get(KIP37.INTERFACE_ID_IKIP37_BURNABLE));
-            assertTrue(result.get(KIP37.INTERFACE_ID_IKIP37_METADATA));
-            assertTrue(result.get(KIP37.INTERFACE_ID_IKIP37_MINTABLE));
-            assertTrue(result.get(KIP37.INTERFACE_ID_IKIP37_PAUSABLE));
+            assertTrue(result.get(KIP37.INTERFACE.IKIP37.getName()));
+            assertTrue(result.get(KIP37.INTERFACE.IKIP37_BURNABLE.getName()));
+            assertTrue(result.get(KIP37.INTERFACE.IKIP37_METADATA.getName()));
+            assertTrue(result.get(KIP37.INTERFACE.IKIP37_MINTABLE.getName()));
+            assertTrue(result.get(KIP37.INTERFACE.IKIP37_PAUSABLE.getName()));
         }
 
         @Test
@@ -997,11 +999,11 @@ public class KIP37Test {
             contract.deploy(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(10000000)), byteCodeWithMintable, "uri");
 
             Map<String, Boolean> result = KIP37.detectInterface(caver, contract.getContractAddress());
-            assertTrue(result.get(KIP37.INTERFACE_ID_IKIP37));
-            assertFalse(result.get(KIP37.INTERFACE_ID_IKIP37_BURNABLE));
-            assertTrue(result.get(KIP37.INTERFACE_ID_IKIP37_METADATA));
-            assertFalse(result.get(KIP37.INTERFACE_ID_IKIP37_MINTABLE));
-            assertFalse(result.get(KIP37.INTERFACE_ID_IKIP37_PAUSABLE));
+            assertTrue(result.get(KIP37.INTERFACE.IKIP37.getName()));
+            assertFalse(result.get(KIP37.INTERFACE.IKIP37_BURNABLE.getName()));
+            assertTrue(result.get(KIP37.INTERFACE.IKIP37_METADATA.getName()));
+            assertFalse(result.get(KIP37.INTERFACE.IKIP37_MINTABLE.getName()));
+            assertFalse(result.get(KIP37.INTERFACE.IKIP37_PAUSABLE.getName()));
         }
 
         @Test
@@ -1010,11 +1012,11 @@ public class KIP37Test {
             contract.deploy(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(10000000)), byteCodeWithoutBurnablePausable, "uri");
 
             Map<String, Boolean> result = KIP37.detectInterface(caver, contract.getContractAddress());
-            assertTrue(result.get(KIP37.INTERFACE_ID_IKIP37));
-            assertFalse(result.get(KIP37.INTERFACE_ID_IKIP37_BURNABLE));
-            assertTrue(result.get(KIP37.INTERFACE_ID_IKIP37_METADATA));
-            assertTrue(result.get(KIP37.INTERFACE_ID_IKIP37_MINTABLE));
-            assertFalse(result.get(KIP37.INTERFACE_ID_IKIP37_PAUSABLE));;
+            assertTrue(result.get(KIP37.INTERFACE.IKIP37.getName()));
+            assertFalse(result.get(KIP37.INTERFACE.IKIP37_BURNABLE.getName()));
+            assertTrue(result.get(KIP37.INTERFACE.IKIP37_METADATA.getName()));
+            assertTrue(result.get(KIP37.INTERFACE.IKIP37_MINTABLE.getName()));
+            assertFalse(result.get(KIP37.INTERFACE.IKIP37_PAUSABLE.getName()));
         }
 
         @Test

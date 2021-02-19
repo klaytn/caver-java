@@ -22,6 +22,7 @@ import com.klaytn.caver.contract.ContractDeployParams;
 import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.kct.kip13.KIP13;
 import com.klaytn.caver.kct.kip17.KIP17;
+import com.klaytn.caver.kct.kip7.KIP7;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.IWallet;
@@ -37,10 +38,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -74,6 +72,36 @@ public class KIP37 extends Contract {
     public static final String INTERFACE_ID_IKIP37_MINTABLE = "0xdfd9d9ec";
     public static final String INTERFACE_ID_IKIP37_BURNABLE = "0x9e094e9e";
     public static final String INTERFACE_ID_IKIP37_PAUSABLE = "0x0e8ffdb7";
+
+    public static final String INTERFACE_NAME_IKIP37 = "IKIP37";
+    public static final String INTERFACE_NAME_IKIP37_METADATA = "IKIP37Metatdata";
+    public static final String INTERFACE_NAME_IKIP37_MINTABLE = "IKIP37Mintable";
+    public static final String INTERFACE_NAME_IKIP37_BURNABLE = "IKIP37Burnable";
+    public static final String INTERFACE_NAME_IKIP37_PAUSABLE = "IKIP37Pausable";
+
+    public enum INTERFACE {
+        IKIP37("IKIP37", "0x6433ca1f"),
+        IKIP37_METADATA("IKIP37Metatdata", "0x0e89341c"),
+        IKIP37_MINTABLE("IKIP37Mintable", "0xdfd9d9ec"),
+        IKIP37_BURNABLE("IKIP37Burnable", "0x9e094e9e"),
+        IKIP37_PAUSABLE("IKIP37Pausable", "0x0e8ffdb7");
+
+        String name;
+        String id;
+
+        INTERFACE(String name, String id) {
+            this.name = name;
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getId() {
+            return id;
+        }
+    }
 
     /**
      * Creates a KIP37 instance.
@@ -192,14 +220,6 @@ public class KIP37 extends Contract {
      * @return Map&lt;String, Boolean&gt;
      */
     public static Map<String, Boolean> detectInterface(Caver caver, String contractAddress) {
-        Map<String, Boolean> result = Stream.of(
-                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP37, false),
-                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP37_BURNABLE, false),
-                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP37_MINTABLE, false),
-                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP37_METADATA, false),
-                new AbstractMap.SimpleEntry<>(INTERFACE_ID_IKIP37_PAUSABLE, false))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
         KIP13 kip13;
         try {
             kip13 = new KIP13(caver, contractAddress);
@@ -211,7 +231,9 @@ public class KIP37 extends Contract {
             throw new RuntimeException("This contract does not support KIP-13.");
         }
 
-        result.entrySet().forEach(entry -> entry.setValue(kip13.sendQuery(entry.getKey())));
+        Map<String, Boolean> result = new HashMap<>();
+        Arrays.stream(INTERFACE.values())
+                .forEach(element -> result.put(element.getName(), kip13.sendQuery(element.getId())));
         return result;
     }
 

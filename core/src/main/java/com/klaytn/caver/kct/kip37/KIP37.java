@@ -67,18 +67,6 @@ public class KIP37 extends Contract {
     public static final String FUNCTION_RENOUNCE_MINTER = "renounceMinter";
     public static final String FUNCTION_SUPPORTS_INTERFACE = "supportsInterface";
 
-    public static final String INTERFACE_ID_IKIP37 = "0x6433ca1f";
-    public static final String INTERFACE_ID_IKIP37_METADATA = "0x0e89341c";
-    public static final String INTERFACE_ID_IKIP37_MINTABLE = "0xdfd9d9ec";
-    public static final String INTERFACE_ID_IKIP37_BURNABLE = "0x9e094e9e";
-    public static final String INTERFACE_ID_IKIP37_PAUSABLE = "0x0e8ffdb7";
-
-    public static final String INTERFACE_NAME_IKIP37 = "IKIP37";
-    public static final String INTERFACE_NAME_IKIP37_METADATA = "IKIP37Metatdata";
-    public static final String INTERFACE_NAME_IKIP37_MINTABLE = "IKIP37Mintable";
-    public static final String INTERFACE_NAME_IKIP37_BURNABLE = "IKIP37Burnable";
-    public static final String INTERFACE_NAME_IKIP37_PAUSABLE = "IKIP37Pausable";
-
     public enum INTERFACE {
         IKIP37("IKIP37", "0x6433ca1f"),
         IKIP37_METADATA("IKIP37Metatdata", "0x0e89341c"),

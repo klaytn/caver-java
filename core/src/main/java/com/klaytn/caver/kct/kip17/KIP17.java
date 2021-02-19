@@ -67,22 +67,6 @@ public class KIP17 extends Contract {
     public static final String FUNCTION_TRANSFER_FROM = "transferFrom";
     public static final String FUNCTION_UNPAUSE = "unpause";
 
-    public static final String INTERFACE_ID_IKIP17 = "0x80ac58cd";
-    public static final String INTERFACE_ID_IKIP17_METADATA = "0x5b5e139f";
-    public static final String INTERFACE_ID_IKIP17_ENUMERABLE = "0x780e9d63";
-    public static final String INTERFACE_ID_IKIP17_MINTABLE = "0xeab83e20";
-    public static final String INTERFACE_ID_IKIP17_METADATA_MINTABLE = "0xfac27f46";
-    public static final String INTERFACE_ID_IKIP17_BURNABLE = "0x42966c68";
-    public static final String INTERFACE_ID_IKIP17_PAUSABLE = "0x4d5507ff";
-
-    public static final String INTERFACE_NAME_IKIP17 = "IKIP17";
-    public static final String INTERFACE_NAME_IKIP17_METADATA = "IKIP17Metadata";
-    public static final String INTERFACE_NAME_IKIP17_ENUMERABLE = "IKIP17Enumerable";
-    public static final String INTERFACE_NAME_IKIP17_MINTABLE = "IKIP17Mintable";
-    public static final String INTERFACE_NAME_IKIP17_METADATA_MINTABLE = "IKIP17MetadataMintable";
-    public static final String INTERFACE_NAME_IKIP17_BURNABLE = "IKIP17Burnable";
-    public static final String INTERFACE_NAME_IKIP17_PAUSABLE = "IKIP17Pausable";
-
     public enum INTERFACE {
         IKIP17("IKIP17", "0x80ac58cd"),
         IKIP17_METADATA("IKIP17Metadata", "0x5b5e139f"),

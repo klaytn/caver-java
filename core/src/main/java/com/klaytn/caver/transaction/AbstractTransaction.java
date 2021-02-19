@@ -453,7 +453,7 @@ abstract public class AbstractTransaction {
         }
 
         if(this.nonce.equals("0x") || this.chainId.equals("0x") || this.gasPrice.equals("0x")) {
-            throw new RuntimeException("Cannot fill transaction data.(nonce, chainId, gasPrice), Didn't you set a `klaytnCall` field in Transaction instance?");
+            throw new RuntimeException("Cannot fill transaction data.(nonce, chainId, gasPrice). `klaytnCall` must be set in Transaction instance to automatically fill the nonce, chainId or gasPrice. Please call the `setKlaytnCall` to set `klaytnCall` in the Transaction instance.");
         }
     }
 

@@ -197,11 +197,21 @@ public class SingleKeyring extends AbstractKeyring{
     }
 
     /**
-     * Return a public key strings
+     * Return a public key strings.<p>
+     * It returns a public key as a uncompressed format.
      * @return String
      */
     public String getPublicKey() {
-        return this.key.getPublicKey(false);
+        return getPublicKey(false);
+    }
+
+    /**
+     * Return a public key strings.<p>
+     * @param compressed Whether in compressed format or not.
+     * @return String
+     */
+    public String getPublicKey(boolean compressed) {
+        return this.key.getPublicKey(compressed);
     }
 
     /**

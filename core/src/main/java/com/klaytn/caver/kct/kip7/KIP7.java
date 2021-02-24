@@ -20,6 +20,7 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.contract.ContractDeployParams;
 import com.klaytn.caver.contract.SendOptions;
+import com.klaytn.caver.kct.kip13.KIP13;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.IWallet;
@@ -31,8 +32,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class KIP7 extends Contract {
 
@@ -60,6 +60,32 @@ public class KIP7 extends Contract {
     private static final String FUNCTION_TRANSFER = "transfer";
     private static final String FUNCTION_TRANSFER_FROM = "transferFrom";
     private static final String FUNCTION_UNPAUSE = "unpause";
+
+    public enum INTERFACE {
+        IKIP7("IKIP7", "0x65787371"),
+        IKIP7_METADATA("IKIP7Metatdata", "0xa219a025"),
+        IKIP7_MINTABLE("IKIP7Mintable", "0xeab83e20"),
+        IKIP7_BURNABLE("IKIP7Burnable", "0x3b5a0bf8"),
+        IKIP7_PAUSABLE("IKIP7Pausable", "0x4d5507ff");
+
+        String name;
+        String id;
+
+        INTERFACE(String name, String id) {
+            this.name = name;
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getId() {
+            return id;
+        }
+    }
+
+
 
     /**
      * Creates a KIP7 instance.
@@ -175,6 +201,41 @@ public class KIP7 extends Contract {
     }
 
     /**
+     * Detects which interface the KIP-7 token contract supports.<p>
+     * Example :
+     * <pre>{@code
+     * Map<String, Boolean> result = KIP7.detectInterface();
+     * result.get(KIP7.INTERFACE_ID_IKIP7);
+     * result.get(KIP7.INTERFACE_ID_IKIP7_BURNABLE);
+     * result.get(KIP7.INTERFACE_ID_IKIP7_METADATA);
+     * result.get(KIP7.INTERFACE_ID_IKIP7_MINTABLE);
+     * result.get(KIP7.INTERFACE_ID_IKIP7_PAUSABLE);
+     * }</pre>
+     *
+     * @param caver A Caver instance.
+     * @param contractAddress
+     * @return
+     */
+    public static Map<String, Boolean> detectInterface(Caver caver, String contractAddress) {
+        KIP13 kip13;
+        try {
+            kip13 = new KIP13(caver, contractAddress);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        if(!kip13.isImplementedKIP13Interface()) {
+            throw new RuntimeException("This contract does not support KIP-13.");
+        }
+
+        Map<String, Boolean> result = new HashMap<>();
+        Arrays.stream(INTERFACE.values())
+                .forEach(element -> result.put(element.getName(), kip13.sendQuery(element.getId())));
+
+        return result;
+    }
+
+    /**
      * Copy instance
      * @return KIP7
      */
@@ -204,6 +265,25 @@ public class KIP7 extends Contract {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Detects which interface the KIP-7 token contract supports.<p>
+     * Example :
+     * <pre>{@code
+     * KIP7 kip7 = new KIP7("0x{contract_address}");
+     * Map<String, Boolean> result = kip7.detectInterface();
+     *
+     * result.get(KIP7.INTERFACE_ID_IKIP7);
+     * result.get(KIP7.INTERFACE_ID_IKIP7_BURNABLE);
+     * result.get(KIP7.INTERFACE_ID_IKIP7_METADATA);
+     * result.get(KIP7.INTERFACE_ID_IKIP7_MINTABLE);
+     * result.get(KIP7.INTERFACE_ID_IKIP7_PAUSABLE);
+     * }</pre>
+     * @return Map&lt;String, Boolean&gt;
+     */
+    public Map<String, Boolean> detectInterface() {
+        return detectInterface(this.getCaver(), this.getContractAddress());
     }
 
     /**
@@ -800,7 +880,7 @@ public class KIP7 extends Contract {
     public TransactionReceipt.TransactionReceiptData renounceMinter(SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_RENOUNCE_MINTER, null);
 
-        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_ADD_MINTER).send(Arrays.asList(sendOptions));
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_RENOUNCE_MINTER).send(null, sendOptions);
         return receiptData;
     }
 
@@ -998,7 +1078,7 @@ public class KIP7 extends Contract {
      * @throws TransactionException
      */
     public TransactionReceipt.TransactionReceiptData unpause(SendOptions sendParam) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
-        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_PAUSE, null);
+        SendOptions sendOptions = determineSendOptions(this, sendParam, FUNCTION_UNPAUSE, null);
 
         TransactionReceipt.TransactionReceiptData receiptData = this.getMethod(FUNCTION_UNPAUSE).send(null, sendOptions);
         return receiptData;

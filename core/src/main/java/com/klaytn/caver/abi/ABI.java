@@ -133,7 +133,7 @@ public class ABI {
         result.append(method.getName());
         result.append("(");
         String params = method.getInputs().stream()
-                .map(ContractIOType::getType)
+                .map(ContractIOType::getTypeAsString)
                 .collect(Collectors.joining(","));
         result.append(params);
         result.append(")");
@@ -171,7 +171,7 @@ public class ABI {
         result.append(event.getName());
         result.append("(");
         String params = event.getInputs().stream()
-                .map(ContractIOType::getType)
+                .map(ContractIOType::getTypeAsString)
                 .collect(Collectors.joining(","));
         result.append(params);
         result.append(")");

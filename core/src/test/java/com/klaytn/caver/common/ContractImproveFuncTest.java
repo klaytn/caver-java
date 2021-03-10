@@ -13,9 +13,9 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.web3j.abi.datatypes.Type;
-import org.web3j.abi.datatypes.Utf8String;
-import org.web3j.abi.datatypes.generated.Uint256;
+import com.klaytn.caver.abi.datatypes.Type;
+import com.klaytn.caver.abi.datatypes.Utf8String;
+import com.klaytn.caver.abi.datatypes.generated.Uint256;
 import org.web3j.protocol.exceptions.TransactionException;
 
 import java.io.IOException;

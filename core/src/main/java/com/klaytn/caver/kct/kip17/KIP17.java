@@ -25,7 +25,7 @@ import com.klaytn.caver.kct.kip7.KIP7;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.IWallet;
-import org.web3j.abi.datatypes.Type;
+import com.klaytn.caver.abi.datatypes.Type;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
 

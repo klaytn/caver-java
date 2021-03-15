@@ -138,7 +138,8 @@ public class ABI {
         result.append(params);
         result.append(")");
 
-        return result.toString();
+        //remove "tuple" string
+        return result.toString().replace("tuple", "");
     }
 
     /**
@@ -176,7 +177,8 @@ public class ABI {
         result.append(params);
         result.append(")");
 
-        return result.toString();
+        //remove "tuple" string
+        return result.toString().replace("tuple", "");
     }
 
     /**

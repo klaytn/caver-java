@@ -132,7 +132,7 @@ public class ContractIOType {
     public String getTypeAsString() {
         if(getType().contains("tuple")) {
             String typeString = getComponentAsString();
-            return getType().replace("tuple", typeString);
+            return getType().replace("tuple", "tuple" + typeString);
         } else {
             return getType();
         }

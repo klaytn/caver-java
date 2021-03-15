@@ -1,14 +1,15 @@
 package com.klaytn.caver.common;
 
+import com.klaytn.caver.Caver;
 import com.klaytn.caver.abi.ABI;
+import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.contract.ContractIOType;
-import com.klaytn.caver.contract.ContractMethod;
 import org.junit.Test;
 import org.web3j.abi.*;
 import org.web3j.abi.datatypes.*;
 import org.web3j.abi.datatypes.generated.*;
 
-import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.*;
@@ -237,7 +238,7 @@ public class ABITest {
         }
     }
 
-    public static class decodeParameterTest {
+    public static class decodeParameter {
         @Test
         public void decodeBoolType() throws ClassNotFoundException {
             assertEquals(
@@ -432,7 +433,7 @@ public class ABITest {
         }
     }
 
-    public static class decodeLogTest {
+    public static class decodeLog {
         @Test
         public void decodeLog() throws ClassNotFoundException {
             List<ContractIOType> ioTypeList= Arrays.asList(
@@ -460,4 +461,48 @@ public class ABITest {
         }
     }
 
+    public static class buildFunctionEventString {
+        String TEST_ABI = "[{\"constant\":false,\"inputs\":[{\"name\":\"a\",\"type\":\"bytes32[]\"}],\"name\":\"h\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"components\":[{\"name\":\"a\",\"type\":\"uint256\"},{\"name\":\"b\",\"type\":\"uint256[]\"},{\"components\":[{\"name\":\"x\",\"type\":\"uint256\"},{\"name\":\"y\",\"type\":\"uint256\"}],\"name\":\"c\",\"type\":\"tuple[]\"}],\"name\":\"d\",\"type\":\"tuple[]\"}],\"name\":\"structArray\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"components\":[{\"name\":\"x\",\"type\":\"uint256\"},{\"name\":\"y\",\"type\":\"uint256\"}],\"name\":\"s\",\"type\":\"tuple\"}],\"name\":\"staticStruct\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"components\":[{\"name\":\"x\",\"type\":\"uint256\"},{\"name\":\"s\",\"type\":\"string\"}],\"name\":\"d\",\"type\":\"tuple\"}],\"name\":\"dynamicStruct\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"a\",\"type\":\"uint256\"}],\"name\":\"g\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"a\",\"type\":\"string\"}],\"name\":\"b\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"anonymous\":false,\"inputs\":[{\"components\":[{\"name\":\"x\",\"type\":\"uint256\"},{\"name\":\"y\",\"type\":\"uint256\"}],\"indexed\":true,\"name\":\"t\",\"type\":\"tuple\"}],\"name\":\"STRUCT_EVENT\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"t\",\"type\":\"uint256\"}],\"name\":\"EVENT\",\"type\":\"event\"}]";
+
+//        pragma solidity >=0.4.19 <0.7.0;
+//        pragma experimental ABIEncoderV2;
+//
+//        contract Test {
+//            event STRUCT_EVENT(T indexed t);
+//            event EVENT(uint256 indexed t);
+//
+//            struct S { uint a; uint[] b; T[] c; }
+//            struct T { uint x; uint y; }
+//            struct D { uint x; string s; }
+//
+//            function staticStruct(T memory s) public;
+//            function dynamicStruct(D memory d) public;
+//            function structArray(S[] memory d) public;
+//            function g(uint a) public;
+//            function b(string memory a) public;
+//            function h(bytes32[] memory a) public;
+//        }
+        @Test
+        public void buildFunctionStringTest() throws IOException {
+            Caver caver = new Caver(Caver.DEFAULT_URL);
+            Contract contract = new Contract(caver, TEST_ABI);
+
+            assertEquals("b(string)", ABI.buildFunctionString(contract.getMethod("b")));
+            assertEquals("g(uint256)", ABI.buildFunctionString(contract.getMethod("g")));
+            assertEquals("h(bytes32[])", ABI.buildFunctionString(contract.getMethod("h")));
+
+            assertEquals("staticStruct((uint256,uint256))", ABI.buildFunctionString(contract.getMethod("staticStruct")));
+            assertEquals("dynamicStruct((uint256,string))", ABI.buildFunctionString(contract.getMethod("dynamicStruct")));
+            assertEquals("structArray((uint256,uint256[],(uint256,uint256)[])[])", ABI.buildFunctionString(contract.getMethod("structArray")));
+        }
+
+        @Test
+        public void buildEventStringTest() throws IOException {
+            Caver caver = new Caver(Caver.DEFAULT_URL);
+            Contract contract = new Contract(caver, TEST_ABI);
+
+            assertEquals("EVENT(uint256)", ABI.buildEventString(contract.getEvent("EVENT")));
+            assertEquals("STRUCT_EVENT((uint256,uint256))", ABI.buildEventString(contract.getEvent("STRUCT_EVENT")));
+        }
+    }
 }

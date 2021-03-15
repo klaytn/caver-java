@@ -147,11 +147,7 @@ public class ContractIOType {
 
         for(int i=0; i<this.getComponents().size(); i++) {
             ContractIOType ioType = this.components.get(i);
-            if(ioType.getType().contains("tuple")) {
-                stringBuilder.append(ioType.getTypeAsString());
-            } else {
-                stringBuilder.append(ioType.getType());
-            }
+            stringBuilder.append(ioType.getTypeAsString());
 
             if(i < this.getComponents().size() -1) {
                 stringBuilder.append(",");

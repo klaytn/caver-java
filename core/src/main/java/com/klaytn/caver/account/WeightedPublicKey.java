@@ -137,10 +137,11 @@ public class WeightedPublicKey {
             BigInteger weight = node.get("weight").bigIntegerValue();
 
             JsonNode key = node.get("key");
-            String x = key.get("x").asText();
-            String y = key.get("y").asText();
 
-            String publicKey = x + Utils.stripHexPrefix(y);
+            String xPoint_padded = Numeric.toHexStringWithPrefixZeroPadded(Numeric.toBigInt(key.get("x").asText()), 64);
+            String yPoint_padded = Numeric.toHexStringWithPrefixZeroPadded(Numeric.toBigInt(key.get("y").asText()), 64);
+            String publicKey = Numeric.prependHexPrefix(xPoint_padded) + Numeric.cleanHexPrefix(yPoint_padded);
+
             return new WeightedPublicKey(publicKey, weight);
         }
     }

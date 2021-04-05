@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 
 /**
  * Type wrapper to get around limitations of Java's type erasure. This is so that we can pass around
- * Typed {@link org.web3j.abi.datatypes.Array} types.
+ * Typed {@link com.klaytn.caver.abi.datatypes.Array} types.
  *
  * <p>See <a href="http://gafter.blogspot.com.au/2006/12/super-type-tokens.html">this blog post</a>
  * for further details.

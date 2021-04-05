@@ -56,11 +56,11 @@ public final class AbiTypes {
     }
 
     /**
-     * Returns the web3j data type for the given type.
+     * Returns the caver-java data type for the given type.
      *
      * @param type A Solidity type.
      * @param primitives Use Java primitive types to wrap contract parameters.
-     * @return The web3j Java class to represent this Solidity type.
+     * @return The caver-java Java class to represent this Solidity type.
      */
     @SuppressWarnings("unchecked")
     public static Class<? extends Type> getType(String type, boolean primitives) {

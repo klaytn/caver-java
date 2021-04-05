@@ -36,7 +36,7 @@ import com.klaytn.caver.abi.datatypes.primitive.Short;
 import com.klaytn.caver.abi.datatypes.primitive.*;
 
 /**
- * Maps Solidity types to web3j data types, allowing to use Java primitive types for numbers. The
+ * Maps Solidity types to caver-java data types, allowing to use Java primitive types for numbers. The
  * used primitive type is the smallest that can hold a Solidity value for a specific bit length,
  * e.g. {@link java.lang.Short} for <code>int8</code>, <code>int16</code> and <code>uint8</code>;
  * {@link Integer} for <code>int24</code>, <code>int32</code>, <code>uint16</code> and

@@ -35,10 +35,10 @@ import static com.klaytn.caver.abi.TypeDecoder.instantiateType;
 import static com.klaytn.caver.abi.TypeReference.makeTypeReference;
 
 /**
- * Delegates to {@link org.web3j.abi.DefaultFunctionEncoder} unless a {@link FunctionEncoderProvider} SPI is
+ * Delegates to {@link com.klaytn.caver.abi.DefaultFunctionEncoder} unless a {@link FunctionEncoderProvider} SPI is
  * found, in which case the first implementation found will be used.
  *
- * @see org.web3j.abi.DefaultFunctionEncoder
+ * @see com.klaytn.caver.abi.DefaultFunctionEncoder
  * @see FunctionEncoderProvider
  */
 public abstract class FunctionEncoder {

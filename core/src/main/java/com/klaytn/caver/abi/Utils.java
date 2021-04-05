@@ -138,7 +138,7 @@ public class Utils {
     }
 
     public static <T, R extends Type<T>> List<R> typeMap(List<T> input, Class<R> destType)
-            throws org.web3j.abi.TypeMappingException {
+            throws com.klaytn.caver.abi.TypeMappingException {
 
         List<R> result = new ArrayList<>(input.size());
 

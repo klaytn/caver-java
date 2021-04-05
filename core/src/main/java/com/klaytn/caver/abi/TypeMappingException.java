@@ -17,6 +17,7 @@
  * This file is derived from web3j/abi/src/main/java/org/web3j/abi/TypeMappingException.java (2021/04/05).
  * Modified and improved for the caver-java development.
  */
+
 package com.klaytn.caver.abi;
 
 public class TypeMappingException extends RuntimeException {

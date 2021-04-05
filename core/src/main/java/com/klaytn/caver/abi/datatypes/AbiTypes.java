@@ -46,7 +46,7 @@ public final class AbiTypes {
     private AbiTypes() {}
 
     /**
-     * Returns the web3j data type for the given type, without using primitive types.
+     * Returns the caver-java data type for the given type, without using primitive types.
      *
      * @param type A Solidity type.
      * @return The caver-java Java class to represent this Solidity type.

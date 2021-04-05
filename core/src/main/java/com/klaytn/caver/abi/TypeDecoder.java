@@ -39,9 +39,9 @@ import static com.klaytn.caver.abi.Utils.getSimpleTypeName;
 import static com.klaytn.caver.abi.Utils.staticStructNestedPublicFieldsFlatList;
 
 /**
- * Ethereum Contract Application Binary Interface (ABI) decoding for types. Decoding is not
+ * Contract Application Binary Interface (ABI) decoding for types. Decoding is not
  * documented, but is the reverse of the encoding details located <a
- * href="https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI">here</a>.
+ * href="https://docs.soliditylang.org/en/latest/abi-spec.html">here</a>.
  */
 public class TypeDecoder {
 

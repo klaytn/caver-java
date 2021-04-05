@@ -73,7 +73,7 @@ public abstract class FunctionReturnDecoder {
      *   <li>Bytes
      * </ul>
      *
-     * <p>See the <a href="http://solidity.readthedocs.io/en/latest/contracts.html#events">Solidity
+     * <p>See the <a href="https://docs.soliditylang.org/en/latest/contracts.html#events">Solidity
      * documentation</a> for further information.
      *
      * @param rawInput ABI encoded input

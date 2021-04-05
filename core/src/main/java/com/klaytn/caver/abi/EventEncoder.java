@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 /**
  * Ethereum filter encoding. Further limited details are available <a
- * href="https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI#events">here</a>.
+ * href="https://docs.soliditylang.org/en/latest/abi-spec.html#events">here</a>.
  */
 public class EventEncoder {
 

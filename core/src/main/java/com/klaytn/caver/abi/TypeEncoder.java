@@ -35,8 +35,8 @@ import static com.klaytn.caver.abi.datatypes.Type.MAX_BYTE_LENGTH;
 
 
 /**
- * Ethereum Contract Application Binary Interface (ABI) encoding for types. Further details are
- * available <a href="https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI">here</a>.
+ * Contract Application Binary Interface (ABI) encoding for types. Further details are
+ * available <a href="https://docs.soliditylang.org/en/latest/abi-spec.html">here</a>.
  */
 public class TypeEncoder {
 

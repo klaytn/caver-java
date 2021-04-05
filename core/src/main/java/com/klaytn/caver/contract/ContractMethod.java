@@ -30,7 +30,7 @@ import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.IWallet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.web3j.abi.datatypes.Type;
+import com.klaytn.caver.abi.datatypes.Type;
 import org.web3j.protocol.exceptions.TransactionException;
 
 import java.io.IOException;

@@ -3,11 +3,11 @@ package com.klaytn.caver.common;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.abi.ABI;
 import com.klaytn.caver.contract.Contract;
+import com.klaytn.caver.abi.EventValues;
+import com.klaytn.caver.abi.datatypes.*;
+import com.klaytn.caver.abi.datatypes.generated.*;
 import com.klaytn.caver.contract.ContractIOType;
 import org.junit.Test;
-import org.web3j.abi.*;
-import org.web3j.abi.datatypes.*;
-import org.web3j.abi.datatypes.generated.*;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

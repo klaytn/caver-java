@@ -2,6 +2,7 @@ package com.klaytn.caver.common;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.abi.ABI;
+import com.klaytn.caver.abi.EventValues;
 import com.klaytn.caver.contract.*;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.request.KlayLogFilter;
@@ -9,23 +10,18 @@ import com.klaytn.caver.methods.response.KlayLogs;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.KeyringContainer;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
-import io.reactivex.Flowable;
+
 import io.reactivex.disposables.Disposable;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.internal.runners.statements.Fail;
 import org.junit.rules.ExpectedException;
-import org.web3j.abi.EventValues;
-import org.web3j.abi.datatypes.Address;
-import org.web3j.abi.datatypes.Type;
-import org.web3j.abi.datatypes.Uint;
-import org.web3j.abi.datatypes.Utf8String;
-import org.web3j.abi.datatypes.generated.Uint256;
-import org.web3j.abi.datatypes.generated.Uint8;
+
+import com.klaytn.caver.abi.datatypes.Address;
+import com.klaytn.caver.abi.datatypes.Type;
+import com.klaytn.caver.abi.datatypes.Utf8String;
+import com.klaytn.caver.abi.datatypes.generated.Uint256;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.Request;
-import org.web3j.protocol.core.methods.response.EthSubscribe;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.protocol.websocket.WebSocketService;
 import org.web3j.protocol.websocket.events.Log;

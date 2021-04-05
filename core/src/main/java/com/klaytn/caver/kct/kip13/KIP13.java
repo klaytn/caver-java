@@ -17,8 +17,8 @@ package com.klaytn.caver.kct.kip13;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.contract.Contract;
-import org.web3j.abi.datatypes.Bool;
-import org.web3j.abi.datatypes.Type;
+import com.klaytn.caver.abi.datatypes.Bool;
+import com.klaytn.caver.abi.datatypes.Type;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

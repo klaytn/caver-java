@@ -170,7 +170,7 @@ public class TypeDecoder {
             throw new ClassCastException(
                     "Arg of type "
                             + value.getClass()
-                            + " should be a list to instantiate web3j Array");
+                            + " should be a list to instantiate com.klaytn.caver.abi.datatypes Array");
         }
         Constructor listcons;
         int arraySize =

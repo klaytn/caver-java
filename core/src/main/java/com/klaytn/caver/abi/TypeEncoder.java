@@ -43,12 +43,14 @@ public class TypeEncoder {
     private TypeEncoder() {}
 
     static boolean isDynamic(Type parameter) {
+        if(parameter instanceof StaticArray) {
+            StaticArray<Type> array = (StaticArray<Type>)parameter;
+            return isDynamic(array.getValue().get(0));
+        }
+
         return parameter instanceof DynamicBytes
                 || parameter instanceof Utf8String
-                || parameter instanceof DynamicArray
-                || (parameter instanceof StaticArray
-                        && DynamicStruct.class.isAssignableFrom(
-                                ((StaticArray) parameter).getComponentType()));
+                || parameter instanceof DynamicArray;
     }
 
     @SuppressWarnings("unchecked")
@@ -66,8 +68,7 @@ public class TypeEncoder {
         } else if (parameter instanceof Utf8String) {
             return encodeString((Utf8String) parameter);
         } else if (parameter instanceof StaticArray) {
-            if (DynamicStruct.class.isAssignableFrom(
-                    ((StaticArray) parameter).getComponentType())) {
+            if (isDynamic(parameter)) {
                 return encodeStaticArrayWithDynamicStruct((StaticArray) parameter);
             } else {
                 return encodeArrayValues((StaticArray) parameter);
@@ -266,32 +267,9 @@ public class TypeEncoder {
      */
     private static <T extends Type> String encodeArrayValuesOffsets(DynamicArray<T> value) {
         StringBuilder result = new StringBuilder();
-        boolean arrayOfBytes =
-                !value.getValue().isEmpty() && value.getValue().get(0) instanceof DynamicBytes;
-        boolean arrayOfString =
-                !value.getValue().isEmpty() && value.getValue().get(0) instanceof Utf8String;
-        boolean arrayOfDynamicStructs =
-                !value.getValue().isEmpty() && value.getValue().get(0) instanceof DynamicStruct;
-        if (arrayOfBytes || arrayOfString) {
-            long offset = 0;
-            for (int i = 0; i < value.getValue().size(); i++) {
-                if (i == 0) {
-                    offset = value.getValue().size() * MAX_BYTE_LENGTH;
-                } else {
-                    int bytesLength =
-                            arrayOfBytes
-                                    ? ((byte[]) value.getValue().get(i - 1).getValue()).length
-                                    : ((String) value.getValue().get(i - 1).getValue()).length();
-                    int numberOfWords = (bytesLength + MAX_BYTE_LENGTH - 1) / MAX_BYTE_LENGTH;
-                    int totalBytesLength = numberOfWords * MAX_BYTE_LENGTH;
-                    offset += totalBytesLength + MAX_BYTE_LENGTH;
-                }
-                result.append(
-                        Numeric.toHexStringNoPrefix(
-                                Numeric.toBytesPadded(
-                                        new BigInteger(Long.toString(offset)), MAX_BYTE_LENGTH)));
-            }
-        } else if (arrayOfDynamicStructs) {
+
+        boolean isDynamicType = isDynamic(value.getValue().get(0));
+        if(isDynamicType) {
             result.append(encodeStructsArraysOffsets(value));
         }
         return result.toString();

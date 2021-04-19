@@ -134,12 +134,7 @@ public class DefaultFunctionReturnDecoder extends FunctionReturnDecoder {
     public static <T extends Type> int getDataOffset(
             String input, int offset, TypeReference<?> typeReference)
             throws ClassNotFoundException {
-        @SuppressWarnings("unchecked")
-        Class<Type> type = (Class<Type>) typeReference.getClassType();
-        if (DynamicBytes.class.isAssignableFrom(type)
-                || Utf8String.class.isAssignableFrom(type)
-                || DynamicArray.class.isAssignableFrom(type)
-                || hasDynamicOffsetInStaticArray(typeReference, offset)) {
+        if(isDynamic(typeReference)){
             return TypeDecoder.decodeUintAsInt(input, offset) << 1;
         } else {
             return offset;

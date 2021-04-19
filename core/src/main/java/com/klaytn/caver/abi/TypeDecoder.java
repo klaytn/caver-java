@@ -578,6 +578,21 @@ public class TypeDecoder {
         return (decodeUintAsInt(input, 0) * 2);
     }
 
+    static <T extends Type> boolean isDynamic(TypeReference<T> parameter) throws ClassNotFoundException {
+        Class<T> cls = parameter.getClassType();
+        if(StaticArray.class.isAssignableFrom(cls)) {
+            if(StaticStruct.class.isAssignableFrom(cls)) {
+                return false;
+            }
+            TypeReference subTypeRef = parameter.getSubTypeReference();
+            return isDynamic(subTypeRef);
+        }
+
+        return DynamicBytes.class.isAssignableFrom(cls)
+                || Utf8String.class.isAssignableFrom(cls)
+                || DynamicArray.class.isAssignableFrom(cls);
+    }
+
     static <T extends Type> boolean isDynamic(Class<T> parameter) {
         return DynamicBytes.class.isAssignableFrom(parameter)
                 || Utf8String.class.isAssignableFrom(parameter)

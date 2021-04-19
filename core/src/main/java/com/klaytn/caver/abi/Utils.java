@@ -205,9 +205,9 @@ public class Utils {
         TypeReference baseTypeRef = arrayTypeRef.getSubTypeReference();
 
         if(StaticStruct.class.isAssignableFrom(baseTypeRef.getClassType())) {
-            count += staticStructsNestedFieldsFlatList((baseTypeRef.getClassType())).size();
+            count += arrayTypeRef.getSize() * staticStructsNestedFieldsFlatList((baseTypeRef.getClassType())).size();
         } else if(StaticArray.class.isAssignableFrom(baseTypeRef.getClassType())) {
-            count += getStaticArrayElementSize((TypeReference.StaticArrayTypeReference)baseTypeRef);
+            count += arrayTypeRef.getSize() * getStaticArrayElementSize((TypeReference.StaticArrayTypeReference)baseTypeRef);
         } else {
             count += arrayTypeRef.getSize();
         }

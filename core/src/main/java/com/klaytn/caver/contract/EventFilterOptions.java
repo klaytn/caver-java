@@ -59,7 +59,7 @@ public class EventFilterOptions {
                 throw new IllegalArgumentException("Not exist event parameter : " + indexedParameter.getIndexedParamName());
             }
 
-            List<String> topicValue = indexedParameter.makeTopic(contractIOType.getType());
+            List<String> topicValue = indexedParameter.makeTopic(contractIOType.getTypeAsString());
             if(topicValue.size() == 1) {
                 topics[index+1] = topicValue.get(0);
             } else {

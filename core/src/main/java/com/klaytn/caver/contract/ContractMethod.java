@@ -638,7 +638,7 @@ public class ContractMethod {
 
         for(int i=0; i< this.getInputs().size(); i++) {
             ContractIOType ioType = this.getInputs().get(i);
-            if(!ioType.getType().equals(arguments.get(i).getTypeAsString())) {
+            if(!ioType.getTypeAsString().equals(arguments.get(i).getTypeAsString())) {
                 return false;
             }
         }

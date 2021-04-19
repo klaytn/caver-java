@@ -31,8 +31,7 @@ import java.util.List;
 
 import static com.klaytn.caver.abi.TypeDecoder.MAX_BYTE_LENGTH_FOR_HEX_STRING;
 import static com.klaytn.caver.abi.TypeDecoder.isDynamic;
-import static com.klaytn.caver.abi.Utils.getParameterizedTypeFromArray;
-import static com.klaytn.caver.abi.Utils.staticStructNestedPublicFieldsFlatList;
+import static com.klaytn.caver.abi.Utils.*;
 
 
 /**
@@ -106,7 +105,11 @@ public class DefaultFunctionReturnDecoder extends FunctionReturnDecoder {
                     result =
                             TypeDecoder.decodeStaticArray(
                                     input, hexStringDataOffset, typeReference, length);
-                    offset += length * MAX_BYTE_LENGTH_FOR_HEX_STRING;
+                    if(isDynamic(typeReference)) {
+                        offset += MAX_BYTE_LENGTH_FOR_HEX_STRING;
+                    } else {
+                        offset += getStaticArrayElementSize((TypeReference.StaticArrayTypeReference)typeReference) * MAX_BYTE_LENGTH_FOR_HEX_STRING;
+                    }
 
                 } else if (StaticStruct.class.isAssignableFrom(classType)) {
                     result =
@@ -115,30 +118,6 @@ public class DefaultFunctionReturnDecoder extends FunctionReturnDecoder {
                     offset +=
                             staticStructNestedPublicFieldsFlatList(classType).size()
                                     * MAX_BYTE_LENGTH_FOR_HEX_STRING;
-                } else if (StaticArray.class.isAssignableFrom(classType)) {
-                    int length =
-                            Integer.parseInt(
-                                    classType
-                                            .getSimpleName()
-                                            .substring(StaticArray.class.getSimpleName().length()));
-                    result =
-                            TypeDecoder.decodeStaticArray(
-                                    input, hexStringDataOffset, typeReference, length);
-                    if (DynamicStruct.class.isAssignableFrom(
-                            getParameterizedTypeFromArray(typeReference))) {
-                        offset += MAX_BYTE_LENGTH_FOR_HEX_STRING;
-                    } else if (StaticStruct.class.isAssignableFrom(
-                            getParameterizedTypeFromArray(typeReference))) {
-                        offset +=
-                                staticStructNestedPublicFieldsFlatList(
-                                                        getParameterizedTypeFromArray(
-                                                                typeReference))
-                                                .size()
-                                        * length
-                                        * MAX_BYTE_LENGTH_FOR_HEX_STRING;
-                    } else {
-                        offset += length * MAX_BYTE_LENGTH_FOR_HEX_STRING;
-                    }
                 } else {
                     result = TypeDecoder.decode(input, hexStringDataOffset, classType);
                     offset += MAX_BYTE_LENGTH_FOR_HEX_STRING;

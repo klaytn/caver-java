@@ -61,6 +61,7 @@ public class KeyringContainer implements IWallet{
      * @param keyrings An list of keyring
      */
     public KeyringContainer(List<AbstractKeyring> keyrings) {
+        keyring = new KeyringFactoryWrapper();
         keyrings.stream().forEach(this::add);
     }
 

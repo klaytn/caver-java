@@ -90,34 +90,29 @@ public class DefaultFunctionReturnDecoder extends FunctionReturnDecoder {
                 Type result;
                 if (DynamicStruct.class.isAssignableFrom(classType)) {
                     result =
-                            TypeDecoder.decodeDynamicStruct(
-                                    input, hexStringDataOffset, typeReference);
+                            TypeDecoder.decodeDynamicStruct(input, hexStringDataOffset, typeReference);
                     offset += MAX_BYTE_LENGTH_FOR_HEX_STRING;
 
                 } else if (DynamicArray.class.isAssignableFrom(classType)) {
                     result =
-                            TypeDecoder.decodeDynamicArray(
-                                    input, hexStringDataOffset, typeReference);
+                            TypeDecoder.decodeDynamicArray(input, hexStringDataOffset, typeReference);
                     offset += MAX_BYTE_LENGTH_FOR_HEX_STRING;
 
                 } else if (typeReference instanceof TypeReference.StaticArrayTypeReference) {
                     int length = ((TypeReference.StaticArrayTypeReference) typeReference).getSize();
                     result =
-                            TypeDecoder.decodeStaticArray(
-                                    input, hexStringDataOffset, typeReference, length);
+                            TypeDecoder.decodeStaticArray(input, hexStringDataOffset, typeReference, length);
                     if(isDynamic(typeReference)) {
                         offset += MAX_BYTE_LENGTH_FOR_HEX_STRING;
                     } else {
                         offset += getStaticArrayElementSize((TypeReference.StaticArrayTypeReference)typeReference) * MAX_BYTE_LENGTH_FOR_HEX_STRING;
                     }
-
                 } else if (StaticStruct.class.isAssignableFrom(classType)) {
                     result =
-                            TypeDecoder.decodeStaticStruct(
-                                    input, hexStringDataOffset, typeReference);
+                            TypeDecoder.decodeStaticStruct(input, hexStringDataOffset, typeReference);
                     offset +=
-                            staticStructNestedPublicFieldsFlatList(classType).size()
-                                    * MAX_BYTE_LENGTH_FOR_HEX_STRING;
+                        getStaticStructComponentSize((TypeReference.StructTypeReference) typeReference)
+                            * MAX_BYTE_LENGTH_FOR_HEX_STRING;
                 } else {
                     result = TypeDecoder.decode(input, hexStringDataOffset, classType);
                     offset += MAX_BYTE_LENGTH_FOR_HEX_STRING;

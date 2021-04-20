@@ -199,13 +199,26 @@ public class Utils {
                 .collect(Collectors.toList());
     }
 
+    static int getStaticArrayElementSize(StaticArray staticArray) {
+        int count = 0;
+
+        if(StaticStruct.class.isAssignableFrom(staticArray.getComponentType())) {
+            count += staticArray.getValue().size() * getStaticStructComponentSize((StaticStruct)staticArray.getValue().get(0));
+        } else if(StaticArray.class.isAssignableFrom(staticArray.getComponentType())) {
+            count += staticArray.getValue().size() * getStaticArrayElementSize((StaticArray)staticArray.getValue().get(0));
+        } else {
+            count += staticArray.getValue().size();
+        }
+
+        return count;
+    }
 
     static int getStaticArrayElementSize(TypeReference.StaticArrayTypeReference arrayTypeRef) throws ClassNotFoundException {
         int count = 0;
         TypeReference baseTypeRef = arrayTypeRef.getSubTypeReference();
 
         if(StaticStruct.class.isAssignableFrom(baseTypeRef.getClassType())) {
-            count += arrayTypeRef.getSize() * staticStructsNestedFieldsFlatList((baseTypeRef.getClassType())).size();
+            count += arrayTypeRef.getSize() * getStaticStructComponentSize((TypeReference.StructTypeReference) baseTypeRef);
         } else if(StaticArray.class.isAssignableFrom(baseTypeRef.getClassType())) {
             count += arrayTypeRef.getSize() * getStaticArrayElementSize((TypeReference.StaticArrayTypeReference)baseTypeRef);
         } else {
@@ -214,4 +227,38 @@ public class Utils {
 
         return count;
     }
+
+    public static int getStaticStructComponentSize(StaticStruct staticStruct) {
+        int count = 0;
+        for(int i=0; i< staticStruct.getValue().size(); i++) {
+            Type type = staticStruct.getValue().get(i);
+
+            if(StaticStruct.class.isAssignableFrom(type.getClass())) {
+                count += getStaticStructComponentSize((StaticStruct)type);
+            } else if(StaticArray.class.isAssignableFrom(type.getClass())) {
+                count += getStaticArrayElementSize((StaticArray)type);
+            } else {
+                count ++;
+            }
+        }
+        return count;
+    }
+
+    static int getStaticStructComponentSize(TypeReference.StructTypeReference typeReference) throws ClassNotFoundException {
+        int count = 0;
+        for(int i=0; i< typeReference.getTypeList().size(); i++) {
+            TypeReference componentTypeRef = (TypeReference)typeReference.getTypeList().get(i);
+
+            if(StaticStruct.class.isAssignableFrom(componentTypeRef.getClassType())) {
+                count += getStaticStructComponentSize((TypeReference.StructTypeReference)componentTypeRef);
+            } else if(StaticArray.class.isAssignableFrom(componentTypeRef.getClassType())) {
+                TypeReference.StaticArrayTypeReference arrayTypeReference = (TypeReference.StaticArrayTypeReference) componentTypeRef;
+                count += getStaticArrayElementSize(arrayTypeReference);
+            } else {
+                count ++;
+            }
+        }
+        return count;
+    }
+
 }

@@ -57,6 +57,7 @@ public class TypeDecoder {
             InstantiationException, ClassNotFoundException {
         Class rc = ref.getClassType();
         if (Array.class.isAssignableFrom(rc)) {
+            //if class is a StructType, instantiate Struct type
             if(StructType.class.isAssignableFrom(rc)) {
                 return instantiateStructType(ref, value);
             }
@@ -176,10 +177,13 @@ public class TypeDecoder {
                             + " should be a list to instantiate Array");
         }
 
-        // create a list of arguments coerced to the correct type of sub-TypeReference
+
         ArrayList<Type> transformedList = new ArrayList<Type>(values.size());
+
+        // Get a component TypeReference list
         List<TypeReference> subTypeReference = ((TypeReference.StructTypeReference)ref).getTypeList();
 
+        // Instantiate a component type in struct with a value.
         for(int i=0; i<subTypeReference.size(); i++) {
             transformedList.add(instantiateType(subTypeReference.get(i), values.get(i)));
         }
@@ -375,65 +379,46 @@ public class TypeDecoder {
     @SuppressWarnings("unchecked")
     private static <T extends Type> T decodeStaticStructElement(
             final String input,
-            final int offset,
-            final TypeReference.StructTypeReference<T> typeReference) throws ClassNotFoundException {
+            final int startOffset,
+            final TypeReference.StructTypeReference<T> staticStructTypeRef) throws ClassNotFoundException {
 
-        final int length = typeReference.getTypeList().size();
+        /**
+         * Static struct is set of static type, so it just decoded head.
+         * (T1,...,Tk) for k >= 0 and any types T1, …, Tk
+         * if Ti is static:
+         *   - head(X(i)) = enc(X(i)) and tail(X(i)) = "" (the empty string)
+         */
+        final int length = staticStructTypeRef.getTypeList().size();
         List<Type> elements = new ArrayList<>(length);
 
-        for (int i = 0, currOffset = offset; i < length; i++) {
+        for (int i = 0, currOffset = startOffset; i < length; i++) {
             Type value;
-            final Class<T> declaredField = typeReference.getTypeList().get(i).getClassType();
+            final Class<T> elementTypeCls = staticStructTypeRef.getTypeList().get(i).getClassType();
 
-            if (StaticStruct.class.isAssignableFrom(declaredField)) {
-                TypeReference.StructTypeReference<T> structTypeReference = (TypeReference.StructTypeReference)typeReference.getTypeList().get(i);
-
-                final int nestedStructLength = Utils.getStaticStructComponentSize((TypeReference.StructTypeReference)typeReference.getTypeList().get(i)) * 64;
+            if (StaticStruct.class.isAssignableFrom(elementTypeCls)) {
+                TypeReference.StructTypeReference<T> elementTypeRef = (TypeReference.StructTypeReference)staticStructTypeRef.getTypeList().get(i);
+                final int nestedStructLength = Utils.getStaticStructComponentSize(elementTypeRef) * MAX_BYTE_LENGTH_FOR_HEX_STRING;
 
                 value =
                         decodeStaticStruct(
                                 input.substring(currOffset, currOffset + nestedStructLength),
                                 0,
-                                structTypeReference);
+                                elementTypeRef);
                 currOffset += nestedStructLength;
-            } else if(StaticArray.class.isAssignableFrom(declaredField)) {
-                TypeReference.StaticArrayTypeReference arrayTypeReference = (TypeReference.StaticArrayTypeReference)typeReference.getTypeList().get(i);
-                int arraySize = arrayTypeReference.getSize();
+            } else if(StaticArray.class.isAssignableFrom(elementTypeCls)) {
+                TypeReference.StaticArrayTypeReference elementTypeRef = (TypeReference.StaticArrayTypeReference)staticStructTypeRef.getTypeList().get(i);
+                int arraySize = elementTypeRef.getSize();
 
-                value = decodeStaticArray(input.substring(currOffset), 0, typeReference.getTypeList().get(i), arrayTypeReference.getSize());
-                currOffset += arraySize * MAX_BYTE_LENGTH_FOR_HEX_STRING;
+                value = decodeStaticArray(input.substring(currOffset), 0, elementTypeRef, elementTypeRef.getSize());
+                currOffset += Utils.getStaticArrayElementSize(elementTypeRef) * MAX_BYTE_LENGTH_FOR_HEX_STRING;
             } else {
-                value = decode(input.substring(currOffset, currOffset + 64), 0, declaredField);
+                value = decode(input.substring(currOffset, currOffset + MAX_BYTE_LENGTH_FOR_HEX_STRING), 0, elementTypeCls);
                 currOffset += 64;
             }
             elements.add(value);
         }
 
         return (T)new StaticStruct(elements);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T extends Type> T instantiateStruct(
-            final TypeReference<T> typeReference, final List<T> parameters) {
-        try {
-            Constructor ctor =
-                    Arrays.stream(typeReference.getClassType().getDeclaredConstructors())
-                            .filter(
-                                    declaredConstructor ->
-                                            Arrays.stream(declaredConstructor.getParameterTypes())
-                                                    .allMatch(Type.class::isAssignableFrom))
-                            .findAny()
-                            .orElseThrow(
-                                    () ->
-                                            new RuntimeException(
-                                                    "TypeReference struct must contain a constructor with types that extend Type"));
-            ;
-            ctor.setAccessible(true);
-            return (T) ctor.newInstance(parameters.toArray());
-        } catch (ReflectiveOperationException e) {
-            throw new UnsupportedOperationException(
-                    "Constructor cannot accept" + Arrays.toString(parameters.toArray()), e);
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -458,17 +443,6 @@ public class TypeDecoder {
 
     static <T extends Type> T decodeDynamicStruct(
             String input, int offset, TypeReference<T> typeReference) throws ClassNotFoundException {
-
-        BiFunction<List<T>, String, T> function =
-                (elements, typeName) -> {
-                    if (elements.isEmpty()) {
-                        throw new UnsupportedOperationException(
-                                "Zero length fixed array is invalid type");
-                    } else {
-                        return instantiateStruct(typeReference, elements);
-                    }
-                };
-
         return decodeDynamicStructElements(input, offset, (TypeReference.StructTypeReference<T>)typeReference);
     }
 
@@ -480,15 +454,33 @@ public class TypeDecoder {
 
         final int length = typeReference.getTypeList().size();
 
-        final Map<Integer, T> parameters = new HashMap<>();
+        /**
+         * Dynamic struct is a set with at least 1 dynamic type.
+         * So we considered both head and tail.
+         * (T1,...,Tk) for k >= 0 and any types T1, …, Tk
+         * if Ti is static:
+         * head(X(i)) = enc(X(i)) and tail(X(i)) = "" (the empty string)
+         *
+         * otherwise, i.e. if Ti is dynamic:
+         * head(X(i)) = enc(len( head(X(1)) ... head(X(k)) tail(X(1)) ... tail(X(i-1)) )) tail(X(i)) = enc(X(i))
+         */
         int staticOffset = 0;
+
+        //A map of element index and values.
+        final Map<Integer, T> parameters = new HashMap<>();
+
+        //If a element type is a dynamic type, set a offset that located dynamic type value.
         final List<Integer> parameterOffsets = new ArrayList<>();
+
+        //Processed a head part.
         for (int i = 0; i < length; ++i) {
-            final TypeReference<T> subTypeReference = typeReference.getTypeList().get(i);
-            final Class<T> subClsType = subTypeReference.getClassType();
+            final TypeReference<T> elementTypeRef = typeReference.getTypeList().get(i);
+            final Class<T> elementTypeCls = elementTypeRef.getClassType();
             final T value;
             final int beginIndex = offset + staticOffset;
-            if (isDynamic(subTypeReference)) {
+
+            if (isDynamic(elementTypeRef)) {
+                //save a offset that located dynamic type value.
                 final boolean isOnlyParameterInStruct = length == 1;
                 final int parameterOffset =
                         isOnlyParameterInStruct
@@ -499,7 +491,8 @@ public class TypeDecoder {
                 parameterOffsets.add(parameterOffset);
                 staticOffset += 64;
             } else {
-                if (StaticStruct.class.isAssignableFrom(subClsType)) {
+                // Decoded a value and save.
+                if (StaticStruct.class.isAssignableFrom(elementTypeCls)) {
                     value =
                             (T) decodeStaticStruct(
                                     input.substring(beginIndex),
@@ -508,24 +501,26 @@ public class TypeDecoder {
                     staticOffset +=
                             Utils.getStaticStructComponentSize((TypeReference.StructTypeReference) typeReference.getTypeList().get(i))
                                     * MAX_BYTE_LENGTH_FOR_HEX_STRING;
-                } else if(StaticArray.class.isAssignableFrom(subClsType)) {
+                } else if(StaticArray.class.isAssignableFrom(elementTypeCls)) {
                     TypeReference.StaticArrayTypeReference staticArrayTypeReference = (TypeReference.StaticArrayTypeReference)typeReference.getTypeList().get(i);
                     int arraySize = staticArrayTypeReference.getSize();
                     value = (T) decodeStaticArray(input.substring(beginIndex), 0, staticArrayTypeReference, arraySize);
 
-                    if (isDynamic(subTypeReference)) {
+                    if (isDynamic(elementTypeRef)) {
                         staticOffset += arraySize * MAX_BYTE_LENGTH_FOR_HEX_STRING;
                     } else {
-                        staticOffset += getSingleElementLength(input, staticOffset, subTypeReference) * MAX_BYTE_LENGTH_FOR_HEX_STRING;
+                        staticOffset += getSingleElementLength(input, staticOffset, elementTypeRef) * MAX_BYTE_LENGTH_FOR_HEX_STRING;
                     }
 
                 } else {
-                    value = decode(input.substring(beginIndex), 0, subClsType);
+                    value = decode(input.substring(beginIndex), 0, elementTypeCls);
                     staticOffset += value.bytes32PaddedLength() * 2;
                 }
                 parameters.put(i, value);
             }
         }
+
+        //Processed tail part to decoded dynamic type.
         int dynamicParametersProcessed = 0;
         int dynamicParametersToProcess =
                 getDynamicStructDynamicParametersCount(typeReference.getTypeList());
@@ -605,6 +600,8 @@ public class TypeDecoder {
 
     static <T extends Type> boolean isDynamic(TypeReference<T> parameter) throws ClassNotFoundException {
         Class<T> cls = parameter.getClassType();
+
+        // Check if the element type of static array is dynamic.
         if(StaticArray.class.isAssignableFrom(cls)) {
             if(StaticStruct.class.isAssignableFrom(cls)) {
                 return false;
@@ -660,11 +657,12 @@ public class TypeDecoder {
                     (Class<? extends StaticArray>)
                             Class.forName("com.klaytn.caver.abi.datatypes.generated.StaticArray" + length);
 
+            // Check a condition that the element type is Array class type in order to be able to accept the struct type and array type as an element.
             Class baseTypeCls = Array.class.isAssignableFrom(elements.get(0).getClass())
                     ? (Class<T>) elements.get(0).getClass()
                     : (Class<T>) AbiTypes.getType(elements.get(0).getTypeAsString());
 
-            return (T) arrayClass.getConstructor(Class.class, List.class).newInstance(baseTypeCls, elements);
+            return (T)arrayClass.getConstructor(Class.class, List.class).newInstance(baseTypeCls, elements);
         } catch (ReflectiveOperationException e) {
             throw new UnsupportedOperationException(e);
         }
@@ -672,7 +670,7 @@ public class TypeDecoder {
 
     private static <T extends Type> T decodeArrayElements(
             String input,
-            int offset,
+            int startOffset,
             TypeReference<T> typeReference,
             int length,
             BiFunction<List<T>, String, T> consumer) {
@@ -680,46 +678,55 @@ public class TypeDecoder {
         try {
             TypeReference<T> elementTypeRef = typeReference.getSubTypeReference();
             Class<T> elementTypeCls = elementTypeRef.getClassType();
+
+            //Element type is Struct type.
             if (StructType.class.isAssignableFrom(elementTypeCls)) {
                 List<T> elements = new ArrayList<>(length);
+                //currOffset is a current array element offset.
+                int currOffset = startOffset;
 
-                for (int i = 0, currOffset = offset;
-                     i < length;
-                     i++,
-                             currOffset +=
-                                     getSingleElementLength(input, currOffset, elementTypeRef)
-                                             * MAX_BYTE_LENGTH_FOR_HEX_STRING) {
+                for (int i = 0; i < length; i++) {
                     T value;
+
+                    // hexStringOffset is where the actual data to be decoded is located.
+                    int hexStringOffset = 0;
                     if (DynamicStruct.class.isAssignableFrom(elementTypeCls)) {
-                        value = (T)TypeDecoder.decodeDynamicStruct(
-                                        input,
-                                        offset + getDataOffset(input, currOffset, typeReference),
-                                        elementTypeRef);
+                        //If a element type is a dynamic type, calculate the offset that the data to be decoded using currOffset.
+                        hexStringOffset = startOffset + getDataOffset(input, currOffset, typeReference);
+                        value = TypeDecoder.decodeDynamicStruct(input, hexStringOffset, elementTypeRef);
                     } else {
+                        hexStringOffset = currOffset;
                         value =
-                                (T)TypeDecoder.decodeStaticStruct(
-                                        input, currOffset, elementTypeRef);
+                                TypeDecoder.decodeStaticStruct(input, hexStringOffset, elementTypeRef);
                     }
                     elements.add(value);
+
+                    //calculate offset that located next element.
+                    currOffset += getSingleElementLength(input, currOffset, elementTypeRef) * MAX_BYTE_LENGTH_FOR_HEX_STRING;
                 }
 
+                //Instantiate element type.
                 String typeName = getSimpleTypeName(elementTypeCls);
                 return consumer.apply(elements, typeName);
-            } else if (Array.class.isAssignableFrom(elementTypeCls)) {
+            }
+            // Element type is a array type.
+            else if (Array.class.isAssignableFrom(elementTypeCls)) {
                 List<T> elements = new ArrayList<>(length);
-                int currOffset = offset;
+                int currOffset = startOffset;
 
                 for(int i=0; i<length; i++) {
                     T value;
                     if(DynamicArray.class.isAssignableFrom(elementTypeCls)) {
+                        //If a element type is a dynamic type, calculate the offset that the data to be decoded using currOffset.
                         int hexStringDataOffset = getDataOffset(input, currOffset, elementTypeRef);
-                        value = (T)decodeDynamicArray(input, offset + hexStringDataOffset, elementTypeRef);
+                        value = (T)decodeDynamicArray(input, startOffset + hexStringDataOffset, elementTypeRef);
                     } else {
                         int arraySize = ((TypeReference.StaticArrayTypeReference)elementTypeRef).getSize();
                         int hexStringDataOffset = 0;
 
                         if(isDynamic(elementTypeRef.getSubTypeReference())) {
-                            hexStringDataOffset = offset + getDataOffset(input, currOffset, elementTypeRef);
+                            //If a element type is a dynamic type, calculate the offset that the data to be decoded using currOffset.
+                            hexStringDataOffset = startOffset + getDataOffset(input, currOffset, elementTypeRef);
                         } else {
                             hexStringDataOffset = currOffset;
                         }
@@ -727,24 +734,32 @@ public class TypeDecoder {
                         value = (T)decodeStaticArray(input, hexStringDataOffset, elementTypeRef, arraySize);
                     }
                     elements.add(value);
-                    currOffset +=
-                            getSingleElementLength(input, currOffset, elementTypeRef)
-                                    * MAX_BYTE_LENGTH_FOR_HEX_STRING;
+
+                    //calculate offset that located next element.
+                    currOffset += getSingleElementLength(input, currOffset, elementTypeRef) * MAX_BYTE_LENGTH_FOR_HEX_STRING;
                 }
 
+                //Instantiate element type.
                 String typeName = getSimpleTypeName(elementTypeCls);
                 return consumer.apply(elements, typeName);
-            } else {
+            }
+            // element type is a atomic type.
+            else {
                 List<T> elements = new ArrayList<>(length);
-                int currOffset = offset;
+                int currOffset = startOffset;
                 for (int i = 0; i < length; i++) {
                     T value;
                     if (isDynamic(elementTypeRef)) {
+                        //If a element type is a dynamic type, calculate the offset that the data to be decoded using currOffset.
                         int hexStringDataOffset = getDataOffset(input, currOffset, elementTypeRef);
-                        value = decode(input, offset + hexStringDataOffset, elementTypeCls);
+                        value = decode(input, startOffset + hexStringDataOffset, elementTypeCls);
+
+                        //calculate offset that located next element.
                         currOffset += MAX_BYTE_LENGTH_FOR_HEX_STRING;
                     } else {
                         value = decode(input, currOffset, elementTypeCls);
+
+                        //calculate offset that located next element.
                         currOffset +=
                                 getSingleElementLength(input, currOffset, elementTypeRef)
                                         * MAX_BYTE_LENGTH_FOR_HEX_STRING;
@@ -752,14 +767,13 @@ public class TypeDecoder {
                     elements.add(value);
                 }
 
+                //Instantiate element type.
                 String typeName = getSimpleTypeName(elementTypeCls);
-
                 return consumer.apply(elements, typeName);
             }
         } catch (ClassNotFoundException e) {
             throw new UnsupportedOperationException(
-                    "Unable to access parameterized type " + typeReference.getType().getTypeName(),
-                    e);
+                    "Unable to access parameterized type " + typeReference.getType().getTypeName(), e);
         }
     }
 }

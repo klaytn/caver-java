@@ -160,44 +160,6 @@ public class Utils {
         return result;
     }
 
-    /**
-     * Returns flat list of canonical fields in a static struct. Example: struct Baz { Struct Bar {
-     * int a, int b }, int c } will return {a, b, c}.
-     *
-     * @param classType Static struct type
-     * @return Flat list of canonical fields in a nested struct
-     */
-    public static List<Field> staticStructNestedPublicFieldsFlatList(Class<Type> classType) {
-        return staticStructsNestedFieldsFlatList(classType).stream()
-                .filter(field -> Modifier.isPublic(field.getModifiers()))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Goes over a static structs and enumerates all of its fields and nested structs fields
-     * recursively.
-     *
-     * @param classType Static struct type
-     * @return Flat list of all the fields nested in the struct
-     */
-    @SuppressWarnings("unchecked")
-    public static List<Field> staticStructsNestedFieldsFlatList(Class<Type> classType) {
-        List<Field> canonicalFields =
-                Arrays.stream(classType.getDeclaredFields())
-                        .filter(field -> !StaticStruct.class.isAssignableFrom(field.getType()))
-                        .collect(Collectors.toList());
-        List<Field> nestedFields =
-                Arrays.stream(classType.getDeclaredFields())
-                        .filter(field -> StaticStruct.class.isAssignableFrom(field.getType()))
-                        .map(
-                                field ->
-                                        staticStructsNestedFieldsFlatList(
-                                                (Class<Type>) field.getType()))
-                        .flatMap(Collection::stream)
-                        .collect(Collectors.toList());
-        return Stream.concat(canonicalFields.stream(), nestedFields.stream())
-                .collect(Collectors.toList());
-    }
 
     static int getStaticArrayElementSize(StaticArray staticArray) {
         int count = 0;

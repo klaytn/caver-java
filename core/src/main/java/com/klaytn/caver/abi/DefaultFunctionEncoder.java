@@ -81,15 +81,6 @@ public class DefaultFunctionEncoder extends FunctionEncoder {
                 } else {
                     count += Utils.getStaticArrayElementSize((StaticArray)type);
                 }
-//                Type componentType = ((StaticArray<Type>)type).getValue().get(0);
-//                if(componentType instanceof StaticStruct) {
-//                    StaticStruct staticStruct = (StaticStruct)((StaticArray)type).getValue().get(0);
-//                    count += Utils.getStaticStructComponentSize(staticStruct) * ((StaticArray) type).getValue().size();
-//                } else if(TypeEncoder.isDynamic(componentType)) {
-//                    count++;
-//                } else {
-//                    count += ((StaticArray) type).getValue().size();
-//                }
             } else {
                 count++;
             }

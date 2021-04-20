@@ -36,7 +36,6 @@ import java.util.function.BiFunction;
 import static com.klaytn.caver.abi.DefaultFunctionReturnDecoder.getDataOffset;
 import static com.klaytn.caver.abi.TypeReference.makeTypeReference;
 import static com.klaytn.caver.abi.Utils.getSimpleTypeName;
-import static com.klaytn.caver.abi.Utils.staticStructNestedPublicFieldsFlatList;
 
 /**
  * Contract Application Binary Interface (ABI) decoding for types. Decoding is not
@@ -174,7 +173,7 @@ public class TypeDecoder {
             throw new ClassCastException(
                     "Arg of type "
                             + value.getClass()
-                            + " should be a list to instantiate web3j Array");
+                            + " should be a list to instantiate Array");
         }
 
         // create a list of arguments coerced to the correct type of sub-TypeReference
@@ -205,7 +204,7 @@ public class TypeDecoder {
             throw new ClassCastException(
                     "Arg of type "
                             + value.getClass()
-                            + " should be a list to instantiate web3j Array");
+                            + " should be a list to instantiate Array");
         }
         Constructor listcons;
         int arraySize =
@@ -289,21 +288,6 @@ public class TypeDecoder {
                 return 1;
             }
             return Utils.getStaticArrayElementSize((TypeReference.StaticArrayTypeReference) typeReference);
-        } else {
-            return 1;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    static <T extends Type> int getSingleElementLength(String input, int offset, Class<T> type) {
-        if (input.length() == offset) {
-            return 0;
-        } else if (DynamicBytes.class.isAssignableFrom(type)
-                || Utf8String.class.isAssignableFrom(type)) {
-            // length field + data value
-            return (decodeUintAsInt(input, offset) / Type.MAX_BYTE_LENGTH) + 2;
-        } else if (StaticStruct.class.isAssignableFrom(type)) {
-            return staticStructNestedPublicFieldsFlatList((Class<Type>) type).size();
         } else {
             return 1;
         }
@@ -500,7 +484,6 @@ public class TypeDecoder {
         int staticOffset = 0;
         final List<Integer> parameterOffsets = new ArrayList<>();
         for (int i = 0; i < length; ++i) {
-//            final Class<T> declaredField = (Class<T>) typeReference.getTypeList().get(i).getClassType();
             final TypeReference<T> subTypeReference = typeReference.getTypeList().get(i);
             final Class<T> subClsType = subTypeReference.getClassType();
             final T value;
@@ -586,16 +569,9 @@ public class TypeDecoder {
             try {
                 return isDynamic(t);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
-            return false;
         }).count();
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T extends Type> int getDynamicStructDynamicParametersCount(
-            final Class<?>[] cls) {
-        return (int) Arrays.stream(cls).filter(c -> isDynamic((Class<T>) c)).count();
     }
 
     private static <T extends Type> T decodeDynamicParameterFromStruct(
@@ -619,25 +595,6 @@ public class TypeDecoder {
             value = decodeStaticArray(dynamicElementData, 0, reference, reference.getSize());
         } else {
             value = decode(dynamicElementData, typeReference.getClassType());
-        }
-        return value;
-    }
-
-    private static <T extends Type> T decodeDynamicParameterFromStruct(
-            final String input,
-            final int parameterOffset,
-            final int parameterLength,
-            final Class<T> declaredField) throws ClassNotFoundException {
-        final String dynamicElementData =
-                input.substring(parameterOffset, parameterOffset + parameterLength);
-
-        final T value;
-        if (DynamicStruct.class.isAssignableFrom(declaredField)) {
-            value =
-                    decodeDynamicStruct(
-                            dynamicElementData, 64, TypeReference.create(declaredField));
-        } else {
-            value = decode(dynamicElementData, declaredField);
         }
         return value;
     }

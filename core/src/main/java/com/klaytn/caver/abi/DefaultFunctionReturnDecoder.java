@@ -135,25 +135,4 @@ public class DefaultFunctionReturnDecoder extends FunctionReturnDecoder {
             return offset;
         }
     }
-
-    /**
-     * Checks if the parametrized type is offsetted in case of static array containing structs.
-     *
-     * @param typeReference of static array
-     * @return true, if static array elements have dynamic offsets
-     * @throws ClassNotFoundException if class type cannot be determined
-     */
-    private static boolean hasDynamicOffsetInStaticArray(TypeReference<?> typeReference, int offset)
-            throws ClassNotFoundException {
-        @SuppressWarnings("unchecked")
-        Class<Type> type = (Class<Type>) typeReference.getClassType();
-        try {
-            return StaticArray.class.isAssignableFrom(type)
-                    && (DynamicStruct.class.isAssignableFrom(
-                                    getParameterizedTypeFromArray(typeReference))
-                            || isDynamic(getParameterizedTypeFromArray(typeReference)));
-        } catch (ClassCastException e) {
-            return false;
-        }
-    }
 }

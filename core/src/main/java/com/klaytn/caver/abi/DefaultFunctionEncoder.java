@@ -25,8 +25,6 @@ import com.klaytn.caver.abi.datatypes.*;
 import java.math.BigInteger;
 import java.util.List;
 
-import static com.klaytn.caver.abi.Utils.staticStructNestedPublicFieldsFlatList;
-
 public class DefaultFunctionEncoder extends FunctionEncoder {
 
     @Override
@@ -75,19 +73,23 @@ public class DefaultFunctionEncoder extends FunctionEncoder {
     private static int getLength(final List<Type> parameters) {
         int count = 0;
         for (final Type type : parameters) {
-            if (type instanceof StaticArray) {
-                Type componentType = ((StaticArray<Type>)type).getValue().get(0);
-                if(componentType instanceof StaticStruct) {
-                    count +=
-                            staticStructNestedPublicFieldsFlatList(
-                                    ((StaticArray) type).getComponentType())
-                                    .size()
-                                    * ((StaticArray) type).getValue().size();
-                } else if(TypeEncoder.isDynamic(componentType)) {
+            if(type instanceof StaticStruct) {
+                count += Utils.getStaticStructComponentSize((StaticStruct) type);
+            } else if (type instanceof StaticArray) {
+                if(TypeEncoder.isDynamic(type)) {
                     count++;
                 } else {
-                    count += ((StaticArray) type).getValue().size();
+                    count += Utils.getStaticArrayElementSize((StaticArray)type);
                 }
+//                Type componentType = ((StaticArray<Type>)type).getValue().get(0);
+//                if(componentType instanceof StaticStruct) {
+//                    StaticStruct staticStruct = (StaticStruct)((StaticArray)type).getValue().get(0);
+//                    count += Utils.getStaticStructComponentSize(staticStruct) * ((StaticArray) type).getValue().size();
+//                } else if(TypeEncoder.isDynamic(componentType)) {
+//                    count++;
+//                } else {
+//                    count += ((StaticArray) type).getValue().size();
+//                }
             } else {
                 count++;
             }

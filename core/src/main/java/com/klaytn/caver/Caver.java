@@ -20,7 +20,6 @@ import com.klaytn.caver.ipfs.IPFS;
 import com.klaytn.caver.rpc.RPC;
 import com.klaytn.caver.wallet.IWallet;
 import com.klaytn.caver.wallet.KeyringContainer;
-import okhttp3.OkHttpClient;
 import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.http.HttpService;
 
@@ -32,15 +31,15 @@ public class Caver {
     public static String DEFAULT_URL = "http://localhost:8551";
 
     /**
-     * @deprecated Please use <code>caver.rpc.klay</code> instead.
      * @see RPC#klay
+     * @deprecated Please use <code>caver.rpc.klay</code> instead.
      */
     @Deprecated
     Klay klay;
 
     /**
-     * @deprecated Please use <code>caver.rpc.net</code> instead.
      * @see RPC#net
+     * @deprecated Please use <code>caver.rpc.net</code> instead.
      */
     @Deprecated
     Net net;
@@ -66,6 +65,7 @@ public class Caver {
 
     /**
      * Creates a Caver instance
+     *
      * @param url JSON-RPC request URL
      */
     public Caver(String url) {
@@ -74,6 +74,7 @@ public class Caver {
 
     /**
      * Creates a Caver instance
+     *
      * @param service Web3jService
      */
     public Caver(Web3jService service) {
@@ -108,6 +109,7 @@ public class Caver {
 
     /**
      * Getter for RPC
+     *
      * @return RPC
      */
     public RPC getRpc() {
@@ -116,6 +118,7 @@ public class Caver {
 
     /**
      * Getter for Wallet
+     *
      * @return IWallet
      */
     public IWallet getWallet() {
@@ -124,6 +127,7 @@ public class Caver {
 
     /**
      * Getter for IPFS
+     *
      * @return IPFS
      */
     public IPFS getIpfs() {
@@ -131,20 +135,20 @@ public class Caver {
     }
 
     /**
-     * @deprecated Please use <code>caver.rpc.klay</code> instead.
      * @see RPC#klay
+     * @deprecated Please use <code>caver.rpc.klay</code> instead.
      */
     @Deprecated
     public Klay klay() {
         return klay;
-    };
+    }
 
     /**
-     * @deprecated Please use <code>caver.rpc.net</code> instead.
      * @see RPC#net
+     * @deprecated Please use <code>caver.rpc.net</code> instead.
      */
     @Deprecated
     public Net net() {
         return net;
-    };
+    }
 }

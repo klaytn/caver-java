@@ -49,7 +49,7 @@ public class ABI {
         List<String> solTypeList = new ArrayList();
 
         for (ContractIOType contractIOType : method.getInputs()) {
-            solTypeList.add(contractIOType.getType());
+            solTypeList.add(contractIOType.getTypeAsString());
         }
 
         return encodeFunctionCall(functionSignature, solTypeList, params);
@@ -212,7 +212,7 @@ public class ABI {
     public static String encodeParameters(ContractMethod method, List<Object> values) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         List<String> solTypeList = new ArrayList<>();
         for(ContractIOType type : method.getInputs()) {
-            solTypeList.add(type.getType());
+            solTypeList.add(type.getTypeAsString());
         }
 
         return encodeParameters(solTypeList, values);
@@ -315,7 +315,7 @@ public class ABI {
         List<TypeReference<Type>> resultParams = new ArrayList<>();
 
         for(ContractIOType ioType: method.getOutputs()) {
-            resultParams.add(TypeReference.makeTypeReference(ioType.getType()));
+            resultParams.add(TypeReference.makeTypeReference(ioType.getTypeAsString()));
         }
 
         return FunctionReturnDecoder.decode(encoded, resultParams);
@@ -335,9 +335,9 @@ public class ABI {
 
         for(ContractIOType input: inputs) {
             if(input.isIndexed()) {
-                indexedList.add(TypeReference.makeTypeReference(input.getType()));
+                indexedList.add(TypeReference.makeTypeReference(input.getTypeAsString()));
             } else {
-                nonIndexedList.add(TypeReference.makeTypeReference(input.getType()));
+                nonIndexedList.add(TypeReference.makeTypeReference(input.getTypeAsString()));
             }
         }
 

@@ -198,4 +198,20 @@ public class Utils {
         return Stream.concat(canonicalFields.stream(), nestedFields.stream())
                 .collect(Collectors.toList());
     }
+
+
+    static int getStaticArrayElementSize(TypeReference.StaticArrayTypeReference arrayTypeRef) throws ClassNotFoundException {
+        int count = 0;
+        TypeReference baseTypeRef = arrayTypeRef.getSubTypeReference();
+
+        if(StaticStruct.class.isAssignableFrom(baseTypeRef.getClassType())) {
+            count += arrayTypeRef.getSize() * staticStructsNestedFieldsFlatList((baseTypeRef.getClassType())).size();
+        } else if(StaticArray.class.isAssignableFrom(baseTypeRef.getClassType())) {
+            count += arrayTypeRef.getSize() * getStaticArrayElementSize((TypeReference.StaticArrayTypeReference)baseTypeRef);
+        } else {
+            count += arrayTypeRef.getSize();
+        }
+
+        return count;
+    }
 }

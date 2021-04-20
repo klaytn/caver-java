@@ -54,7 +54,7 @@ public abstract class StaticArray<T extends Type> extends Array<T> {
     @SuppressWarnings("unchecked")
     public StaticArray(int expectedSize, List<T> values) {
         super(
-                StructType.class.isAssignableFrom(values.get(0).getClass())
+                Array.class.isAssignableFrom(values.get(0).getClass())
                         ? (Class<T>) values.get(0).getClass()
                         : (Class<T>) AbiTypes.getType(values.get(0).getTypeAsString()),
                 values);

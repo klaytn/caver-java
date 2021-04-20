@@ -253,6 +253,28 @@ public class TypeDecoder {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    static <T extends Type> int getSingleElementLength(String input, int offset, TypeReference<T> typeReference) throws ClassNotFoundException {
+        Class typeCls = typeReference.getClassType();
+
+        if (input.length() == offset) {
+            return 0;
+        } else if (DynamicBytes.class.isAssignableFrom(typeCls)
+            || Utf8String.class.isAssignableFrom(typeCls)) {
+            // length field + data value
+            return (decodeUintAsInt(input, offset) / Type.MAX_BYTE_LENGTH) + 2;
+        } else if (StaticStruct.class.isAssignableFrom(typeCls)) {
+            return staticStructNestedPublicFieldsFlatList((Class<Type>) typeReference.getClassType()).size();
+        } else if (StaticArray.class.isAssignableFrom(typeCls)) {
+            if(isDynamic(typeReference)) {
+                return 1;
+            }
+            return Utils.getStaticArrayElementSize((TypeReference.StaticArrayTypeReference) typeReference);
+        } else {
+            return 1;
+        }
+    }
+
     static int decodeUintAsInt(String rawInput, int offset) {
         String input = rawInput.substring(offset, offset + MAX_BYTE_LENGTH_FOR_HEX_STRING);
         return decode(input, 0, Uint.class).getValue().intValue();
@@ -431,7 +453,14 @@ public class TypeDecoder {
         int length = decodeUintAsInt(input, offset);
 
         BiFunction<List<T>, String, T> function =
-                (elements, typeName) -> (T) new DynamicArray(AbiTypes.getType(typeName), elements);
+            (elements, typeName) -> {
+                Class baseTypeCls = Array.class.isAssignableFrom(elements.get(0).getClass())
+                    ? (Class<T>) elements.get(0).getClass()
+                    : (Class<T>) AbiTypes.getType(elements.get(0).getTypeAsString());
+
+                return (T) new DynamicArray(baseTypeCls, elements);
+            };
+
 
         int valueOffset = offset + MAX_BYTE_LENGTH_FOR_HEX_STRING;
 
@@ -578,6 +607,21 @@ public class TypeDecoder {
         return (decodeUintAsInt(input, 0) * 2);
     }
 
+    static <T extends Type> boolean isDynamic(TypeReference<T> parameter) throws ClassNotFoundException {
+        Class<T> cls = parameter.getClassType();
+        if(StaticArray.class.isAssignableFrom(cls)) {
+            if(StaticStruct.class.isAssignableFrom(cls)) {
+                return false;
+            }
+            TypeReference subTypeRef = parameter.getSubTypeReference();
+            return isDynamic(subTypeRef);
+        }
+
+        return DynamicBytes.class.isAssignableFrom(cls)
+                || Utf8String.class.isAssignableFrom(cls)
+                || DynamicArray.class.isAssignableFrom(cls);
+    }
+
     static <T extends Type> boolean isDynamic(Class<T> parameter) {
         return DynamicBytes.class.isAssignableFrom(parameter)
                 || Utf8String.class.isAssignableFrom(parameter)
@@ -619,7 +663,13 @@ public class TypeDecoder {
             Class<? extends StaticArray> arrayClass =
                     (Class<? extends StaticArray>)
                             Class.forName("com.klaytn.caver.abi.datatypes.generated.StaticArray" + length);
-            return (T) arrayClass.getConstructor(List.class).newInstance(elements);
+
+            Class baseTypeCls = Array.class.isAssignableFrom(elements.get(0).getClass())
+                ? (Class<T>) elements.get(0).getClass()
+                : (Class<T>) AbiTypes.getType(elements.get(0).getTypeAsString());
+
+            return (T) arrayClass.getConstructor(Class.class, List.class).newInstance(baseTypeCls, elements);
+
         } catch (ReflectiveOperationException e) {
             throw new UnsupportedOperationException(e);
         }
@@ -633,56 +683,84 @@ public class TypeDecoder {
             BiFunction<List<T>, String, T> consumer) {
 
         try {
-            Class<T> cls = Utils.getParameterizedTypeFromArray(typeReference);
-            if (StructType.class.isAssignableFrom(cls)) {
+//            Class<T> cls = Utils.getParameterizedTypeFromArray(typeReference);
+            TypeReference baseTypeRef = typeReference.getSubTypeReference();
+            Class<T> baseTypeCls = baseTypeRef.getClassType();
+            if (StructType.class.isAssignableFrom(baseTypeCls)) {
                 List<T> elements = new ArrayList<>(length);
                 for (int i = 0, currOffset = offset;
                         i < length;
                         i++,
                                 currOffset +=
-                                        getSingleElementLength(input, currOffset, cls)
+                                        getSingleElementLength(input, currOffset, baseTypeRef)
                                                 * MAX_BYTE_LENGTH_FOR_HEX_STRING) {
                     T value;
-                    if (DynamicStruct.class.isAssignableFrom(cls)) {
+                    if (DynamicStruct.class.isAssignableFrom(baseTypeCls)) {
                         value =
                                 TypeDecoder.decodeDynamicStruct(
                                         input,
                                         offset + getDataOffset(input, currOffset, typeReference),
-                                        TypeReference.create(cls));
+                                        TypeReference.create(baseTypeCls));
                     } else {
                         value =
                                 TypeDecoder.decodeStaticStruct(
-                                        input, currOffset, TypeReference.create(cls));
+                                        input, currOffset, TypeReference.create(baseTypeCls));
                     }
                     elements.add(value);
                 }
 
-                String typeName = getSimpleTypeName(cls);
+                String typeName = getSimpleTypeName(baseTypeCls);
 
                 return consumer.apply(elements, typeName);
-            } else if (Array.class.isAssignableFrom(cls)) {
-                throw new UnsupportedOperationException(
-                        "Arrays of arrays are not currently supported for external functions, see"
-                                + "http://solidity.readthedocs.io/en/develop/types.html#members");
+            } else if (Array.class.isAssignableFrom(baseTypeCls)) {
+                List<T> elements = new ArrayList<>(length);
+                int currOffset = offset;
+
+                for(int i=0; i<length; i++) {
+                    T value;
+                    if(DynamicArray.class.isAssignableFrom(baseTypeCls)) {
+                        int hexStringDataOffset = getDataOffset(input, currOffset, baseTypeRef);
+                        value = (T)decodeDynamicArray(input, offset + hexStringDataOffset, baseTypeRef);
+                    } else {
+                        int arraySize = ((TypeReference.StaticArrayTypeReference)baseTypeRef).getSize();
+                        int hexStringDataOffset = 0;
+
+                        if(isDynamic(baseTypeRef.getSubTypeReference())) {
+                            hexStringDataOffset = offset + getDataOffset(input, currOffset, baseTypeRef);
+                        } else {
+                            hexStringDataOffset = currOffset;
+                        }
+
+                        value = (T)decodeStaticArray(input, hexStringDataOffset, baseTypeRef, arraySize);
+                    }
+                    elements.add(value);
+                    currOffset +=
+                        getSingleElementLength(input, currOffset, baseTypeRef)
+                            * MAX_BYTE_LENGTH_FOR_HEX_STRING;
+                }
+
+                String typeName = getSimpleTypeName(baseTypeCls);
+                return consumer.apply(elements, typeName);
+
             } else {
                 List<T> elements = new ArrayList<>(length);
                 int currOffset = offset;
                 for (int i = 0; i < length; i++) {
                     T value;
-                    if (isDynamic(cls)) {
-                        int hexStringDataOffset = getDataOffset(input, currOffset, typeReference);
-                        value = decode(input, offset + hexStringDataOffset, cls);
+                    if (isDynamic(baseTypeRef)) {
+                        int hexStringDataOffset = getDataOffset(input, currOffset, baseTypeRef);
+                        value = decode(input, offset + hexStringDataOffset, baseTypeCls);
                         currOffset += MAX_BYTE_LENGTH_FOR_HEX_STRING;
                     } else {
-                        value = decode(input, currOffset, cls);
+                        value = decode(input, currOffset, baseTypeCls);
                         currOffset +=
-                                getSingleElementLength(input, currOffset, cls)
+                                getSingleElementLength(input, currOffset, baseTypeRef)
                                         * MAX_BYTE_LENGTH_FOR_HEX_STRING;
                     }
                     elements.add(value);
                 }
 
-                String typeName = getSimpleTypeName(cls);
+                String typeName = getSimpleTypeName(baseTypeCls);
 
                 return consumer.apply(elements, typeName);
             }

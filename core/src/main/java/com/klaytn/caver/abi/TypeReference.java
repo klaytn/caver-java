@@ -20,12 +20,13 @@
 
 package com.klaytn.caver.abi;
 
-import com.klaytn.caver.abi.datatypes.AbiTypes;
-import com.klaytn.caver.abi.datatypes.DynamicArray;
-import com.klaytn.caver.abi.datatypes.StaticArray;
+import com.klaytn.caver.abi.datatypes.*;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -137,48 +138,127 @@ public abstract class TypeReference<T extends com.klaytn.caver.abi.datatypes.Typ
         }
     }
 
+    /**
+     * Type wrapper class for Struct type(StaticStruct, DynamicStruct).
+     */
+    public abstract static class StructTypeReference<T extends com.klaytn.caver.abi.datatypes.Type>
+            extends TypeReference<T> {
+        /**
+         * A List of TypeReference wrapped a field in struct type.
+         */
+        private List<TypeReference> typeList;
+
+        /**
+         * Create a StructTypeReference instance.
+         * @param typeList A List of TypeReference wrapped a field in struct type.
+         */
+        public StructTypeReference(List<TypeReference> typeList) {
+            this.typeList = typeList;
+        }
+
+        /**
+         * Getter for typeList
+         * @return A List of TypeReference wrapped a field in struct type.
+         */
+        public List<TypeReference> getTypeList() {
+            return typeList;
+        }
+    }
+
+    /**
+     * Type wrapper class for static array type.
+     */
     public abstract static class StaticArrayTypeReference<T extends com.klaytn.caver.abi.datatypes.Type>
             extends TypeReference<T> {
 
+        /**
+         * A size of array
+         */
         private final int size;
 
+        /**
+         * Create StaticArrayTypeReference instance.
+         * @param size A size of array
+         */
         protected StaticArrayTypeReference(int size) {
             this.size = size;
         }
 
+        /**
+         * Getter for size
+         * @return A size of array
+         */
         public int getSize() {
             return size;
         }
     }
 
+    /**
+     * Create a TypeReference instance using solidity type string.
+     * @param solidityType A solidity type string to make TypeReference.
+     * @return TypeReference
+     * @throws ClassNotFoundException
+     */
     public static TypeReference makeTypeReference(String solidityType)
             throws ClassNotFoundException {
         return makeTypeReference(solidityType, false, false);
     }
 
+    /**
+     * Create a TypeReference instance using solidity type string.
+     * @param solidityType A solidity type string to make TypeReference.
+     * @param indexed true if the field is part of the log's topics, false if it one of the logs data.
+     * @param primitives If true, a TypeReference instance is created with a type representing the range of the passed integer type.
+     * @return TypeReference
+     * @throws ClassNotFoundException
+     */
     public static TypeReference makeTypeReference(
             String solidityType, final boolean indexed, final boolean primitives)
             throws ClassNotFoundException {
 
-        Matcher nextSquareBrackets = ARRAY_SUFFIX.matcher(solidityType);
-        if (!nextSquareBrackets.find()) {
-            final Class<? extends com.klaytn.caver.abi.datatypes.Type> typeClass =
-                    getAtomicTypeClass(solidityType, primitives);
-            return create(typeClass, indexed);
+        // Check a solidityType string whether a atomic type or array type.
+        // The atomic type is a type except an array.
+        if (isAtomicTypeString(solidityType)) {
+            //Struct type.
+            if(solidityType.contains("tuple")) {
+                return makeStructTypeReference(solidityType);
+            }
+            //Others.
+            else {
+                final Class<? extends com.klaytn.caver.abi.datatypes.Type> typeClass =
+                        getAtomicTypeClass(solidityType, primitives);
+                return create(typeClass, indexed);
+            }
         }
 
+        // Make a TypeReference instance of Array type.
+        Matcher nextSquareBrackets = ARRAY_SUFFIX.matcher(solidityType);
+        nextSquareBrackets.find();
         int lastReadStringPosition = nextSquareBrackets.start();
 
-        final Class<? extends com.klaytn.caver.abi.datatypes.Type> baseClass =
-                getAtomicTypeClass(solidityType.substring(0, lastReadStringPosition), primitives);
+        // Make a TypeReference instance that element type of array.
+        TypeReference arrayWrappedType;
+        if(solidityType.contains("tuple")) {
+            int index = solidityType.lastIndexOf(')');
+            String baseType = solidityType.substring(0, index + 1);
+            arrayWrappedType = makeStructTypeReference(baseType);
 
-        TypeReference arrayWrappedType = create(baseClass, indexed);
+            lastReadStringPosition = index + 1;
+            nextSquareBrackets.find(lastReadStringPosition);
+        } else {
+            String baseType = solidityType.substring(0, lastReadStringPosition);
+            final Class<? extends com.klaytn.caver.abi.datatypes.Type> baseClass =
+                    getAtomicTypeClass(baseType, primitives);
+
+            arrayWrappedType = create(baseClass, indexed);
+        }
+
         final int len = solidityType.length();
-
         // for each [\d*], wrap the previous TypeReference in an array
         while (lastReadStringPosition < len) {
             String arraySize = nextSquareBrackets.group(1);
             final TypeReference baseTr = arrayWrappedType;
+            //If an arraySize has null or "", it makes a Dynamic array.
             if (arraySize == null || arraySize.equals("")) {
                 arrayWrappedType =
                         new TypeReference<DynamicArray>(indexed) {
@@ -208,6 +288,7 @@ public abstract class TypeReference<T extends com.klaytn.caver.abi.datatypes.Typ
                             }
                         };
             } else {
+                //If a arraySize existed, it makes a Static array.
                 final Class arrayclass;
                 int arraySizeInt = Integer.parseInt(arraySize);
                 if (arraySizeInt <= StaticArray.MAX_SIZE_OF_STATIC_ARRAY) {
@@ -251,6 +332,8 @@ public abstract class TypeReference<T extends com.klaytn.caver.abi.datatypes.Typ
                             }
                         };
             }
+
+            //find a next [] brackets.
             lastReadStringPosition = nextSquareBrackets.end();
             nextSquareBrackets = ARRAY_SUFFIX.matcher(solidityType);
             // cant find any more [] and string isn't fully parsed
@@ -260,5 +343,119 @@ public abstract class TypeReference<T extends com.klaytn.caver.abi.datatypes.Typ
             }
         }
         return arrayWrappedType;
+    }
+
+    /**
+     * Creates a StructTypeReference instance using tupleString.
+     * @param tupleString A tuple type string
+     * @return StructTypeReference
+     * @throws ClassNotFoundException
+     */
+    @SuppressWarnings("unchecked")
+    public static TypeReference makeStructTypeReference(String tupleString) throws ClassNotFoundException {
+        List<TypeReference> typeReferences = new ArrayList<>();
+
+        //Split a component.
+        //if a tuple string has a "tuple(string,bool,string,uint256)"
+        //it parsed a component as a "string", "bool", "string", "uint256" and created a list instance.
+        List<String> components = splitComponent(tupleString);
+
+        boolean hasDynamic = false;
+        for(int i=0; i<components.size(); i++) {
+            TypeReference reference = TypeReference.makeTypeReference(components.get(i));
+            typeReferences.add(reference);
+
+            if(TypeDecoder.isDynamic(reference)) {
+                hasDynamic = true;
+            }
+        }
+
+        if(hasDynamic) {
+            return new StructTypeReference<DynamicStruct>(typeReferences) {
+                @Override
+                public Type getType() {
+                    return DynamicStruct.class;
+                }
+            };
+        } else {
+            return new StructTypeReference<StaticStruct>(typeReferences) {
+                @Override
+                public Type getType() {
+                    return StaticStruct.class;
+                }
+            };
+        }
+    }
+
+    private static List<String> splitComponent(String tupleString) {
+        //set a component string.
+        //tuple(string,tuple(string,string))
+        //string,tuple(string,string)
+        String component = tupleString.substring(6, tupleString.length()-1);
+
+        List<String> array = new ArrayList<>();
+        StringBuilder builder = new StringBuilder();
+
+        for(int i=0; i < component.length(); i++) {
+            char a = component.charAt(i);
+
+            if(a == 't' && component.startsWith("tuple", i)) {
+                int endIndex = findTupleEndIndex(component, i);
+                builder.append(component.substring(i, endIndex+1));
+
+                i = endIndex;
+            } else if(a == ',') {
+                array.add(builder.toString());
+                builder.setLength(0);
+            } else {
+                builder.append(a);
+            }
+
+            if(i == component.length()-1) {
+                array.add(builder.toString());
+                builder.setLength(0);
+            }
+        }
+
+        return array;
+    }
+
+    private static int findTupleEndIndex(String subString, int startIndex) {
+        int depth = 0;
+        int endIndex = 0;
+
+        for(int i = startIndex; i < subString.length(); i++) {
+            char a = subString.charAt(i);
+            if(a == '(') {
+                depth++;
+            } else if(a == ')') {
+                depth--;
+
+                if(depth == 0) {
+                    endIndex = i;
+                    break;
+                }
+            }
+        }
+
+        return endIndex;
+    }
+
+    private static boolean isAtomicTypeString(String solidityType) {
+        //Check that the beginning of the string is `tuple`, and the last character is `]`.
+        boolean isTupleArray = solidityType.startsWith("tuple") && (solidityType.charAt(solidityType.length() - 1) == ']');
+        Matcher nextSquareBrackets = ARRAY_SUFFIX.matcher(solidityType);
+
+        if(!nextSquareBrackets.find()) {
+            return true;
+        }
+        //If a solidityType string has a tuple(uint256[],bool), It should return a true.
+        //uint256[] is just one of components in tuple.
+        else {
+            if(solidityType.startsWith("tuple") && !isTupleArray) {
+                return true;
+            }
+            return false;
+        }
     }
 }

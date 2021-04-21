@@ -413,7 +413,7 @@ public class TypeDecoder {
                 currOffset += Utils.getStaticArrayElementSize(elementTypeRef) * MAX_BYTE_LENGTH_FOR_HEX_STRING;
             } else {
                 value = decode(input.substring(currOffset, currOffset + MAX_BYTE_LENGTH_FOR_HEX_STRING), 0, elementTypeCls);
-                currOffset += 64;
+                currOffset += MAX_BYTE_LENGTH_FOR_HEX_STRING;
             }
             elements.add(value);
         }
@@ -486,10 +486,10 @@ public class TypeDecoder {
                         isOnlyParameterInStruct
                                 ? offset
                                 : (decodeDynamicStructDynamicParameterOffset(
-                                input.substring(beginIndex, beginIndex + 64)))
+                                input.substring(beginIndex, beginIndex + MAX_BYTE_LENGTH_FOR_HEX_STRING)))
                                 + offset;
                 parameterOffsets.add(parameterOffset);
-                staticOffset += 64;
+                staticOffset += MAX_BYTE_LENGTH_FOR_HEX_STRING;
             } else {
                 // Decoded a value and save.
                 if (StaticStruct.class.isAssignableFrom(elementTypeCls)) {

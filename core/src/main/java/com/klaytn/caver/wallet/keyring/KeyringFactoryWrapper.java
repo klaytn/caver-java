@@ -33,16 +33,17 @@ public class KeyringFactoryWrapper {
     }
 
     /**
-     * Generates a keyring instance.
-     * @return Keyring
+     * Generates a single type of keyring instance.
+     * @return SingleKeyring
      */
     public SingleKeyring generate() {
         return KeyringFactory.generate();
     }
+
     /**
-     * Generates a keyring instance with entropy.
+     * Generates a single type of keyring instance with entropy.
      * @param entropy A random string to create keyring.
-     * @return Keyring
+     * @return SingleKeyring
      */
     public SingleKeyring generate(String entropy) {
         return KeyringFactory.generate(entropy);
@@ -107,7 +108,7 @@ public class KeyringFactoryWrapper {
      * Creates a single type of keyring instance.
      * @param address The address of keyring.
      * @param key The key of keyring.
-     * @return Keyring
+     * @return SingleKeyring
      */
     public SingleKeyring create(String address, String key) {
         return KeyringFactory.create(address, key);
@@ -117,7 +118,7 @@ public class KeyringFactoryWrapper {
      * Creates a multiple type of keyring instance.
      * @param address The address of keyring.
      * @param keys The key list of keyring.
-     * @return Keyring
+     * @return MultipleKeyring
      */
     public MultipleKeyring create(String address, String[] keys) {
         return KeyringFactory.create(address, keys);
@@ -127,25 +128,25 @@ public class KeyringFactoryWrapper {
      * Creates a roleBased type of keyring instance.
      * @param address The address of keyring.
      * @param keys The key list of keyring.
-     * @return Keyring
+     * @return RoleBasedKeyring
      */
     public RoleBasedKeyring create(String address, List<String[]> keys) {
         return KeyringFactory.create(address, keys);
     }
 
     /**
-     * Creates a keyring instance with private key.
+     * Creates a single type of keyring instance with private key.
      * @param key A private key string.
-     * @return Keyring
+     * @return SingleKeyring
      */
     public SingleKeyring createFromPrivateKey(String key) {
         return KeyringFactory.createFromPrivateKey(key);
     }
 
     /**
-     * Creates a keyring instance from KlaytnWalletKey string.
+     * Creates a single type of keyring instance from KlaytnWalletKey string.
      * @param klaytnWalletKey A key string in KlaytnWalletKey format.
-     * @return Keyring
+     * @return SingleKeyring
      */
     public SingleKeyring createFromKlaytnWalletKey(String klaytnWalletKey) {
         return KeyringFactory.createFromKlaytnWalletKey(klaytnWalletKey);
@@ -155,7 +156,7 @@ public class KeyringFactoryWrapper {
      * Creates a single type of keyring instance from address and private key string.
      * @param address An address of keyring.
      * @param key A private key string.
-     * @return Keyring
+     * @return SingleKeyring
      */
     public SingleKeyring createWithSingleKey(String address, String key) {
         return KeyringFactory.createWithSingleKey(address, key);
@@ -165,7 +166,7 @@ public class KeyringFactoryWrapper {
      * Creates a multiple type of keyring instance from address and private key strings.
      * @param address An address of keyring.
      * @param multipleKey An array of private key strings.
-     * @return Keyring
+     * @return MultipleKeyring
      */
     public MultipleKeyring createWithMultipleKey(String address, String[] multipleKey) {
         return KeyringFactory.createWithMultipleKey(address, multipleKey);
@@ -175,7 +176,7 @@ public class KeyringFactoryWrapper {
      * Create a roleBased type of keyring instance from address and private key strings.
      * @param address An address of keyring.
      * @param roleBasedKey A List of private key strings.
-     * @return Keyring
+     * @return RoleBasedKeyring
      */
     public RoleBasedKeyring createWithRoleBasedKey(String address, List<String[]> roleBasedKey) {
         return KeyringFactory.createWithRoleBasedKey(address, roleBasedKey);
@@ -185,7 +186,7 @@ public class KeyringFactoryWrapper {
      * Decrypts a KeyStore json string and returns a keyring instance.
      * @param keyStore The encrypted keystore to decrypt.
      * @param password The password to use for decryption.
-     * @return Keyring
+     * @return AbstractKeyring
      * @throws CipherException
      * @throws IOException
      */
@@ -197,7 +198,7 @@ public class KeyringFactoryWrapper {
      * Decrypts a keystore v3 or v4 and returns a keyring instance.
      * @param keystore The encrypted keystore to decrypt.
      * @param password The password to use for decryption.
-     * @return Keyring
+     * @return AbstractKeyring
      * @throws CipherException It throws when cipher operation has failed.
      */
     public AbstractKeyring decrypt(KeyStore keystore, String password) throws CipherException{

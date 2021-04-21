@@ -42,6 +42,11 @@ public class StaticStruct extends StaticArray<Type> implements StructType {
     }
 
     @Override
+    public List<Type> getComponents() {
+        return super.getValue();
+    }
+
+    @Override
     public String getTypeAsString() {
         final StringBuilder type = new StringBuilder("(");
         for (int i = 0; i < itemTypes.size(); ++i) {

@@ -20,4 +20,8 @@
 
 package com.klaytn.caver.abi.datatypes;
 
-public interface StructType {}
+import java.util.List;
+
+public interface StructType {
+    List<Type> getComponents();
+}

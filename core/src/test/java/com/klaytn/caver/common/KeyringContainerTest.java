@@ -145,9 +145,9 @@ public class KeyringContainerTest {
         public void newMultipleKeyring() {
             String expectAddress = caver.wallet.keyring.generate().getAddress();
             String[] expectPrivateKeyArr = {
-                    caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    caver.wallet.keyring.generate().getKey().getPrivateKey(),
+                caver.wallet.keyring.generateSingleKey(),
+                caver.wallet.keyring.generateSingleKey(),
+                caver.wallet.keyring.generateSingleKey(),
             };
 
             AbstractKeyring added = caver.wallet.newKeyring(expectAddress, expectPrivateKeyArr);
@@ -159,19 +159,19 @@ public class KeyringContainerTest {
         public void newRoleBasedKeyring() {
             String expectAddress = caver.wallet.keyring.generate().getAddress();
             String[][] expectPrivateKeyArr = {
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    },
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    },
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    }
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                }
             };
 
             AbstractKeyring added = caver.wallet.newKeyring(expectAddress, Arrays.asList(expectPrivateKeyArr));
@@ -183,14 +183,14 @@ public class KeyringContainerTest {
         public void newRoleBasedKeyringWithEmptyRole() {
             String expectAddress = caver.wallet.keyring.generate().getAddress();
             String[][] expectPrivateKeyArr = {
-                    {
-                    },
-                    {
-                    },
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    }
+                {
+                },
+                {
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                }
             };
 
             AbstractKeyring added = caver.wallet.newKeyring(expectAddress, Arrays.asList(expectPrivateKeyArr));
@@ -210,7 +210,7 @@ public class KeyringContainerTest {
             SingleKeyring coupled = caver.wallet.keyring.generate();
 
             String address = coupled.getAddress();
-            String privateKey = caver.wallet.keyring.generate().getKey().getPrivateKey();
+            String privateKey = caver.wallet.keyring.generateSingleKey();
 
             SingleKeyring decoupled = caver.wallet.keyring.createWithSingleKey(coupled.getAddress(), privateKey);
 
@@ -228,8 +228,8 @@ public class KeyringContainerTest {
         public void updateToDecoupledKeyring() {
             SingleKeyring coupled = caver.wallet.keyring.generate();
             SingleKeyring deCoupled = caver.wallet.keyring.createWithSingleKey(
-                    coupled.getAddress(),
-                    caver.wallet.keyring.generate().getKey().getPrivateKey()
+                coupled.getAddress(),
+                caver.wallet.keyring.generateSingleKey()
             );
 
             caver.wallet.add(coupled);
@@ -237,7 +237,7 @@ public class KeyringContainerTest {
             AbstractKeyring updated = caver.wallet.updateKeyring(deCoupled);
             AbstractKeyring fromContainer = caver.wallet.getKeyring(coupled.getAddress());
 
-            validateSingleKeyring(updated,  coupled.getAddress(), deCoupled.getKey().getPrivateKey());
+            validateSingleKeyring(updated, coupled.getAddress(), deCoupled.getKey().getPrivateKey());
             validateSingleKeyring(fromContainer, coupled.getAddress(), deCoupled.getKey().getPrivateKey());
         }
 
@@ -247,14 +247,14 @@ public class KeyringContainerTest {
             SingleKeyring origin = caver.wallet.keyring.generate();
 
             String[] expectPrivateKeyArr = {
-                    caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    caver.wallet.keyring.generate().getKey().getPrivateKey(),
+                caver.wallet.keyring.generateSingleKey(),
+                caver.wallet.keyring.generateSingleKey(),
+                caver.wallet.keyring.generateSingleKey(),
             };
 
             MultipleKeyring multipleKeyring = caver.wallet.keyring.createWithMultipleKey(
-                    origin.getAddress(),
-                    expectPrivateKeyArr
+                origin.getAddress(),
+                expectPrivateKeyArr
             );
 
             caver.wallet.add(origin);
@@ -272,24 +272,24 @@ public class KeyringContainerTest {
             SingleKeyring origin = caver.wallet.keyring.generate();
 
             String[][] expectPrivateKeyArr = {
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    },
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    },
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    }
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                }
             };
 
             RoleBasedKeyring roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(
-                    origin.getAddress(),
-                    Arrays.asList(expectPrivateKeyArr)
+                origin.getAddress(),
+                Arrays.asList(expectPrivateKeyArr)
             );
 
             caver.wallet.add(origin);
@@ -322,7 +322,7 @@ public class KeyringContainerTest {
         //CA-KEYRINGCONTAINER-012
         @Test
         public void withValidAddress() {
-            SingleKeyring added = (SingleKeyring)caver.wallet.add(caver.wallet.keyring.generate());
+            SingleKeyring added = (SingleKeyring) caver.wallet.add(caver.wallet.keyring.generate());
             AbstractKeyring keyring = caver.wallet.getKeyring(added.getAddress());
 
             validateSingleKeyring(keyring, added.getAddress(), added.getKey().getPrivateKey());
@@ -352,8 +352,8 @@ public class KeyringContainerTest {
         public void upperCaseAddress() {
             String address = "0x37223E5E41186A782E4A1F709829F521F43B18E5";
             SingleKeyring keyring = caver.wallet.keyring.create(
-                    address,
-                    caver.wallet.keyring.generate().getKey().getPrivateKey()
+                address,
+                caver.wallet.keyring.generateSingleKey()
             );
 
             caver.wallet.add(keyring);
@@ -382,8 +382,8 @@ public class KeyringContainerTest {
         @Test
         public void deCoupledKeyring() {
             SingleKeyring deCoupled = caver.wallet.keyring.createWithSingleKey(
-                    caver.wallet.keyring.generate().getAddress(),
-                    caver.wallet.keyring.generate().getKey().getPrivateKey()
+                caver.wallet.keyring.generate().getAddress(),
+                caver.wallet.keyring.generateSingleKey()
             );
 
             AbstractKeyring added = caver.wallet.add(deCoupled);
@@ -398,14 +398,14 @@ public class KeyringContainerTest {
         public void multipleKeyring() {
             String address = caver.wallet.keyring.generate().getAddress();
             String[] expectPrivateKeyArr = {
-                    caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    caver.wallet.keyring.generate().getKey().getPrivateKey(),
+                caver.wallet.keyring.generateSingleKey(),
+                caver.wallet.keyring.generateSingleKey(),
+                caver.wallet.keyring.generateSingleKey(),
             };
 
             MultipleKeyring multipleKeyring = caver.wallet.keyring.createWithMultipleKey(
-                    address,
-                    expectPrivateKeyArr
+                address,
+                expectPrivateKeyArr
             );
 
             AbstractKeyring added = caver.wallet.add(multipleKeyring);
@@ -420,24 +420,24 @@ public class KeyringContainerTest {
         public void roleBasedKeyring() {
             String address = caver.wallet.keyring.generate().getAddress();
             String[][] expectPrivateKeyArr = {
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    },
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    },
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    }
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                }
             };
 
             RoleBasedKeyring roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(
-                    address,
-                    Arrays.asList(expectPrivateKeyArr)
+                address,
+                Arrays.asList(expectPrivateKeyArr)
             );
 
             AbstractKeyring added = caver.wallet.add(roleBasedKeyring);
@@ -469,8 +469,8 @@ public class KeyringContainerTest {
         @Test
         public void deCoupledKey() {
             AbstractKeyring keyringToAdd = caver.wallet.keyring.createWithSingleKey(
-                    caver.wallet.keyring.generate().getAddress(),
-                    caver.wallet.keyring.generate().getKey().getPrivateKey()
+                caver.wallet.keyring.generate().getAddress(),
+                caver.wallet.keyring.generateSingleKey()
             );
 
             AbstractKeyring added = caver.wallet.add(keyringToAdd);
@@ -486,14 +486,14 @@ public class KeyringContainerTest {
         public void multipleKey() {
             String address = caver.wallet.keyring.generate().getAddress();
             String[] expectPrivateKeyArr = {
-                    caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    caver.wallet.keyring.generate().getKey().getPrivateKey(),
+                caver.wallet.keyring.generateSingleKey(),
+                caver.wallet.keyring.generateSingleKey(),
+                caver.wallet.keyring.generateSingleKey(),
             };
 
             AbstractKeyring keyringToAdd = caver.wallet.keyring.createWithMultipleKey(
-                    address,
-                    expectPrivateKeyArr
+                address,
+                expectPrivateKeyArr
             );
 
             AbstractKeyring added = caver.wallet.add(keyringToAdd);
@@ -509,24 +509,24 @@ public class KeyringContainerTest {
         public void roleBasedKey() {
             String address = caver.wallet.keyring.generate().getAddress();
             String[][] expectPrivateKeyArr = {
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    },
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    },
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    }
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                }
             };
 
             AbstractKeyring keyringToAdd = caver.wallet.keyring.createWithRoleBasedKey(
-                    address,
-                    Arrays.asList(expectPrivateKeyArr)
+                address,
+                Arrays.asList(expectPrivateKeyArr)
             );
 
             AbstractKeyring added = caver.wallet.add(keyringToAdd);
@@ -548,19 +548,19 @@ public class KeyringContainerTest {
 
             String address = caver.wallet.keyring.generate().getAddress();
             String[][] expectPrivateKeyArr = {
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    },
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    },
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    }
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                }
             };
 
             AbstractKeyring roleBased = caver.wallet.newKeyring(address, Arrays.asList(expectPrivateKeyArr));
@@ -583,19 +583,19 @@ public class KeyringContainerTest {
 
             String address = caver.wallet.keyring.generate().getAddress();
             String[][] expectPrivateKeyArr = {
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    },
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    },
-                    {
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                            caver.wallet.keyring.generate().getKey().getPrivateKey(),
-                    }
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                }
             };
 
             AbstractKeyring roleBased = caver.wallet.newKeyring(address, Arrays.asList(expectPrivateKeyArr));
@@ -637,8 +637,8 @@ public class KeyringContainerTest {
             String address = caver.wallet.keyring.generate().getAddress();
             String[] multipleKey = caver.wallet.keyring.generateMultipleKeys(3);
             MultipleKeyring multipleKeyring = caver.wallet.keyring.createWithMultipleKey(
-                    address,
-                    multipleKey
+                address,
+                multipleKey
             );
 
             ValueTransfer valueTransfer = generateValueTransfer(multipleKeyring);
@@ -647,10 +647,10 @@ public class KeyringContainerTest {
             caver.wallet.sign(multipleKeyring.getAddress(), valueTransfer, 1);
 
             SignatureData expectedSig = keyring.sign(
-                    TransactionHasher.getHashForSignature(valueTransfer),
-                    valueTransfer.getChainId(),
-                    0,
-                    1
+                TransactionHasher.getHashForSignature(valueTransfer),
+                valueTransfer.getChainId(),
+                0,
+                1
             );
 
             assertEquals(1, valueTransfer.getSignatures().size());
@@ -661,8 +661,8 @@ public class KeyringContainerTest {
         public void sign_withIndex_roleBasedKeyring() throws IOException {
             String address = caver.wallet.keyring.generate().getAddress();
             List<String[]> roleBasedKey = caver.wallet.keyring.generateRoleBasedKeys(
-                    new int[]{4,5,6},
-                    "entropy"
+                new int[]{4,5,6},
+                "entropy"
             );
             RoleBasedKeyring roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(address, roleBasedKey);
 
@@ -672,10 +672,10 @@ public class KeyringContainerTest {
             caver.wallet.sign(keyring.getAddress(), valueTransfer, 2);
 
             SignatureData expectedSig = keyring.sign(
-                    TransactionHasher.getHashForSignature(valueTransfer),
-                    valueTransfer.getChainId(),
-                    0,
-                    2
+                TransactionHasher.getHashForSignature(valueTransfer),
+                valueTransfer.getChainId(),
+                0,
+                2
             );
 
             assertEquals(1, valueTransfer.getSignatures().size());
@@ -686,8 +686,8 @@ public class KeyringContainerTest {
         public void sign_withIndex_accountUpdate() throws IOException {
             String address = caver.wallet.keyring.generate().getAddress();
             List<String[]> roleBasedKey = caver.wallet.keyring.generateRoleBasedKeys(
-                    new int[]{4,5,6},
-                    "entropy"
+                new int[]{4,5,6},
+                "entropy"
             );
             RoleBasedKeyring roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(address, roleBasedKey);
 
@@ -696,10 +696,10 @@ public class KeyringContainerTest {
             caver.wallet.sign(keyring.getAddress(), accountUpdate, 2);
 
             SignatureData expectedSig = roleBasedKeyring.sign(
-                    TransactionHasher.getHashForSignature(accountUpdate),
-                    accountUpdate.getChainId(),
-                    1,
-                    2
+                TransactionHasher.getHashForSignature(accountUpdate),
+                accountUpdate.getChainId(),
+                1,
+                2
             );
 
             assertEquals(1, accountUpdate.getSignatures().size());
@@ -746,8 +746,8 @@ public class KeyringContainerTest {
         public void sign_roleBasedKeyring() throws IOException {
             String address = caver.wallet.keyring.generate().getAddress();
             List<String[]> roleBasedKey = caver.wallet.keyring.generateRoleBasedKeys(
-                    new int[]{4,5,6},
-                    "entropy"
+                new int[]{4,5,6},
+                "entropy"
             );
             RoleBasedKeyring roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(address, roleBasedKey);
 
@@ -769,9 +769,9 @@ public class KeyringContainerTest {
             });
 
             List<SignatureData> expected = keyring.sign(
-                    "0xd4aab6590bdb708d1d3eafe95a967dafcd2d7cde197e512f3f0b8158e7b65fd1",
-                    valueTransfer.getChainId(),
-                    AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex()
+                "0xd4aab6590bdb708d1d3eafe95a967dafcd2d7cde197e512f3f0b8158e7b65fd1",
+                valueTransfer.getChainId(),
+                AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex()
             );
             assertEquals(expected.get(0), valueTransfer.getSignatures().get(0));
         }
@@ -780,8 +780,8 @@ public class KeyringContainerTest {
         public void sign_AccountUpdateTx() throws IOException {
             String address = caver.wallet.keyring.generate().getAddress();
             List<String[]> roleBasedKey = caver.wallet.keyring.generateRoleBasedKeys(
-                    new int[]{4,5,6},
-                    "entropy"
+                new int[]{4,5,6},
+                "entropy"
             );
             RoleBasedKeyring roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(address, roleBasedKey);
 
@@ -819,10 +819,10 @@ public class KeyringContainerTest {
 
             caver.wallet.signAsFeePayer(singleKeyring.getAddress(), feeDelegatedValueTransfer, 0);
             SignatureData expectedSig = singleKeyring.sign(
-                    TransactionHasher.getHashForFeePayerSignature(feeDelegatedValueTransfer),
-                    feeDelegatedValueTransfer.getChainId(),
-                    2,
-                    0
+                TransactionHasher.getHashForFeePayerSignature(feeDelegatedValueTransfer),
+                feeDelegatedValueTransfer.getChainId(),
+                2,
+                0
             );
 
             assertEquals(1, feeDelegatedValueTransfer.getFeePayerSignatures().size());
@@ -841,10 +841,10 @@ public class KeyringContainerTest {
             caver.wallet.signAsFeePayer(keyring.getAddress(), feeDelegatedValueTransfer, 1);
 
             SignatureData expectedSig = keyring.sign(
-                    TransactionHasher.getHashForFeePayerSignature(feeDelegatedValueTransfer),
-                    feeDelegatedValueTransfer.getChainId(),
-                    2,
-                    1
+                TransactionHasher.getHashForFeePayerSignature(feeDelegatedValueTransfer),
+                feeDelegatedValueTransfer.getChainId(),
+                2,
+                1
             );
 
             assertEquals(1, feeDelegatedValueTransfer.getFeePayerSignatures().size());
@@ -855,8 +855,8 @@ public class KeyringContainerTest {
         public void signAsFeePayer_withIndex_roleBasedKeyring() throws IOException {
             String address = caver.wallet.keyring.generate().getAddress();
             List<String[]> roleBasedKey = caver.wallet.keyring.generateRoleBasedKeys(
-                    new int[]{4,5,6},
-                    "entropy"
+                new int[]{4,5,6},
+                "entropy"
             );
             RoleBasedKeyring roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(address, roleBasedKey);
 
@@ -910,8 +910,8 @@ public class KeyringContainerTest {
         public void signAsFeePayer_roleBasedKeyring() throws IOException {
             String address = caver.wallet.keyring.generate().getAddress();
             List<String[]> roleBasedKey = caver.wallet.keyring.generateRoleBasedKeys(
-                    new int[]{4,5,6},
-                    "entropy"
+                new int[]{4,5,6},
+                "entropy"
             );
             RoleBasedKeyring roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(address, roleBasedKey);
 
@@ -933,8 +933,8 @@ public class KeyringContainerTest {
             });
 
             List<SignatureData> expected = keyring.sign(
-                    "0xd4aab6590bdb708d1d3eafe95a967dafcd2d7cde197e512f3f0b8158e7b65fd1", valueTransfer.getChainId(),
-                    AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex()
+                "0xd4aab6590bdb708d1d3eafe95a967dafcd2d7cde197e512f3f0b8158e7b65fd1", valueTransfer.getChainId(),
+                AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex()
             );
             assertEquals(expected.get(0), valueTransfer.getFeePayerSignatures().get(0));
         }

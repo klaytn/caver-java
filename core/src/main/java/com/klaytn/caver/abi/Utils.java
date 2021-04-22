@@ -160,52 +160,27 @@ public class Utils {
         return result;
     }
 
-    /**
-     * Returns flat list of canonical fields in a static struct. Example: struct Baz { Struct Bar {
-     * int a, int b }, int c } will return {a, b, c}.
-     *
-     * @param classType Static struct type
-     * @return Flat list of canonical fields in a nested struct
-     */
-    public static List<Field> staticStructNestedPublicFieldsFlatList(Class<Type> classType) {
-        return staticStructsNestedFieldsFlatList(classType).stream()
-                .filter(field -> Modifier.isPublic(field.getModifiers()))
-                .collect(Collectors.toList());
-    }
 
-    /**
-     * Goes over a static structs and enumerates all of its fields and nested structs fields
-     * recursively.
-     *
-     * @param classType Static struct type
-     * @return Flat list of all the fields nested in the struct
-     */
-    @SuppressWarnings("unchecked")
-    public static List<Field> staticStructsNestedFieldsFlatList(Class<Type> classType) {
-        List<Field> canonicalFields =
-                Arrays.stream(classType.getDeclaredFields())
-                        .filter(field -> !StaticStruct.class.isAssignableFrom(field.getType()))
-                        .collect(Collectors.toList());
-        List<Field> nestedFields =
-                Arrays.stream(classType.getDeclaredFields())
-                        .filter(field -> StaticStruct.class.isAssignableFrom(field.getType()))
-                        .map(
-                                field ->
-                                        staticStructsNestedFieldsFlatList(
-                                                (Class<Type>) field.getType()))
-                        .flatMap(Collection::stream)
-                        .collect(Collectors.toList());
-        return Stream.concat(canonicalFields.stream(), nestedFields.stream())
-                .collect(Collectors.toList());
-    }
+    static int getStaticArrayElementSize(StaticArray staticArray) {
+        int count = 0;
 
+        if(StaticStruct.class.isAssignableFrom(staticArray.getComponentType())) {
+            count += staticArray.getValue().size() * getStaticStructComponentSize((StaticStruct)staticArray.getValue().get(0));
+        } else if(StaticArray.class.isAssignableFrom(staticArray.getComponentType())) {
+            count += staticArray.getValue().size() * getStaticArrayElementSize((StaticArray)staticArray.getValue().get(0));
+        } else {
+            count += staticArray.getValue().size();
+        }
+
+        return count;
+    }
 
     static int getStaticArrayElementSize(TypeReference.StaticArrayTypeReference arrayTypeRef) throws ClassNotFoundException {
         int count = 0;
         TypeReference baseTypeRef = arrayTypeRef.getSubTypeReference();
 
         if(StaticStruct.class.isAssignableFrom(baseTypeRef.getClassType())) {
-            count += arrayTypeRef.getSize() * staticStructsNestedFieldsFlatList((baseTypeRef.getClassType())).size();
+            count += arrayTypeRef.getSize() * getStaticStructComponentSize((TypeReference.StructTypeReference) baseTypeRef);
         } else if(StaticArray.class.isAssignableFrom(baseTypeRef.getClassType())) {
             count += arrayTypeRef.getSize() * getStaticArrayElementSize((TypeReference.StaticArrayTypeReference)baseTypeRef);
         } else {
@@ -214,4 +189,38 @@ public class Utils {
 
         return count;
     }
+
+    public static int getStaticStructComponentSize(StaticStruct staticStruct) {
+        int count = 0;
+        for(int i=0; i< staticStruct.getValue().size(); i++) {
+            Type type = staticStruct.getValue().get(i);
+
+            if(StaticStruct.class.isAssignableFrom(type.getClass())) {
+                count += getStaticStructComponentSize((StaticStruct)type);
+            } else if(StaticArray.class.isAssignableFrom(type.getClass())) {
+                count += getStaticArrayElementSize((StaticArray)type);
+            } else {
+                count ++;
+            }
+        }
+        return count;
+    }
+
+    static int getStaticStructComponentSize(TypeReference.StructTypeReference typeReference) throws ClassNotFoundException {
+        int count = 0;
+        for(int i=0; i< typeReference.getTypeList().size(); i++) {
+            TypeReference componentTypeRef = (TypeReference)typeReference.getTypeList().get(i);
+
+            if(StaticStruct.class.isAssignableFrom(componentTypeRef.getClassType())) {
+                count += getStaticStructComponentSize((TypeReference.StructTypeReference)componentTypeRef);
+            } else if(StaticArray.class.isAssignableFrom(componentTypeRef.getClassType())) {
+                TypeReference.StaticArrayTypeReference arrayTypeReference = (TypeReference.StaticArrayTypeReference) componentTypeRef;
+                count += getStaticArrayElementSize(arrayTypeReference);
+            } else {
+                count ++;
+            }
+        }
+        return count;
+    }
+
 }

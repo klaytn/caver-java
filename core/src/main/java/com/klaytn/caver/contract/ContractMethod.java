@@ -30,7 +30,7 @@ import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.IWallet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.web3j.abi.datatypes.Type;
+import com.klaytn.caver.abi.datatypes.Type;
 import org.web3j.protocol.exceptions.TransactionException;
 
 import java.io.IOException;
@@ -638,7 +638,7 @@ public class ContractMethod {
 
         for(int i=0; i< this.getInputs().size(); i++) {
             ContractIOType ioType = this.getInputs().get(i);
-            if(!ioType.getType().equals(arguments.get(i).getTypeAsString())) {
+            if(!ioType.getTypeAsString().equals(arguments.get(i).getTypeAsString())) {
                 return false;
             }
         }

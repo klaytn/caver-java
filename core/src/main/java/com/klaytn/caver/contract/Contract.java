@@ -35,7 +35,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.web3j.abi.datatypes.Type;
+import com.klaytn.caver.abi.datatypes.Type;
 import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.response.EthSubscribe;

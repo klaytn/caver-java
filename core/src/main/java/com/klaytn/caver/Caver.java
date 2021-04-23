@@ -16,6 +16,7 @@
 
 package com.klaytn.caver;
 
+import com.klaytn.caver.account.AccountWrapper;
 import com.klaytn.caver.ipfs.IPFS;
 import com.klaytn.caver.rpc.RPC;
 import com.klaytn.caver.wallet.IWallet;
@@ -60,6 +61,11 @@ public class Caver {
      */
     public IPFS ipfs;
 
+    /*
+     * The AccountWrapper instance
+     */
+    public AccountWrapper account;
+
     public Caver() {
         this(new HttpService(DEFAULT_URL));
     }
@@ -80,6 +86,7 @@ public class Caver {
         ipfs = new IPFS();
         rpc = new RPC(service);
         wallet = new KeyringContainer();
+        account = new AccountWrapper();
     }
 
     /**

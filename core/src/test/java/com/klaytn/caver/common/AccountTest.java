@@ -1,5 +1,6 @@
 package com.klaytn.caver.common;
 
+import com.klaytn.caver.Caver;
 import com.klaytn.caver.account.*;
 import com.klaytn.caver.utils.Utils;
 import org.junit.Rule;
@@ -46,13 +47,14 @@ public class AccountTest {
         }
     }
 
+    Caver caver = new Caver(Caver.DEFAULT_URL);
     //CA-ACCOUNT-043
     @Test
     public void createToAccountKeyPublic_uncompressed() {
         String address = "0xf43dcbb903a0b4b48a7dfa8a370a63f0a731708d";
         String publicKey = "0x1e3aec6e8bd8247aea112c3d1094566272974e56bb0151c58745847e2998ad0e5e8360b120dceea794c6cb1e4215208a78c82e8df5dcf1ac9aa73f1568ee5f2e";
 
-        Account account = Account.create(address, publicKey);
+        Account account = caver.account.create(address, publicKey);
         assertEquals(address, account.getAddress());
         checkAccountKeyPublic(account.getAccountKey(), publicKey);
     }
@@ -63,7 +65,7 @@ public class AccountTest {
         String address = "0xf43dcbb903a0b4b48a7dfa8a370a63f0a731708d";
         String publicKey = "0x021e3aec6e8bd8247aea112c3d1094566272974e56bb0151c58745847e2998ad0e";
 
-        Account account = Account.create(address, publicKey);
+        Account account = caver.account.create(address, publicKey);
         assertEquals(address, account.getAddress());
         checkAccountKeyPublic(account.getAccountKey(), publicKey);
     }
@@ -82,7 +84,7 @@ public class AccountTest {
         BigInteger[] weights = {BigInteger.ONE, BigInteger.ONE, BigInteger.valueOf(2), BigInteger.valueOf(2)};
         WeightedMultiSigOptions options = new WeightedMultiSigOptions(BigInteger.ONE, Arrays.asList(weights));
 
-        Account account = Account.create(address, publicKeys, options);
+        Account account = caver.account.create(address, publicKeys, options);
         assertEquals(address, account.getAddress());
         checkAccountKeyWeightedMultiSig(account.getAccountKey(), publicKeys, options);
     }
@@ -101,7 +103,7 @@ public class AccountTest {
         BigInteger[] weights = {BigInteger.ONE, BigInteger.ONE, BigInteger.valueOf(2), BigInteger.valueOf(2)};
         WeightedMultiSigOptions options = new WeightedMultiSigOptions(BigInteger.ONE, Arrays.asList(weights));
 
-        Account account = Account.create(address, publicKeys, options);
+        Account account = caver.account.create(address, publicKeys, options);
         assertEquals(address, account.getAddress());
         checkAccountKeyWeightedMultiSig(account.getAccountKey(), publicKeys, options);
     }
@@ -120,7 +122,7 @@ public class AccountTest {
         BigInteger[] weights = {BigInteger.ONE, BigInteger.ONE, BigInteger.ONE, BigInteger.ONE};
         WeightedMultiSigOptions expectedOptions = new WeightedMultiSigOptions(BigInteger.ONE, Arrays.asList(weights));
 
-        Account account = Account.create(address, publicKeys);
+        Account account = caver.account.create(address, publicKeys);
         assertEquals(address, account.getAddress());
         checkAccountKeyWeightedMultiSig(account.getAccountKey(), publicKeys, expectedOptions);
     }
@@ -159,7 +161,7 @@ public class AccountTest {
                 new WeightedMultiSigOptions(BigInteger.valueOf(3), Arrays.asList(optionWeight[2])),
         };
 
-        Account account = Account.create(address, Arrays.asList(publicKeys), Arrays.asList(options));
+        Account account = caver.account.create(address, Arrays.asList(publicKeys), Arrays.asList(options));
         assertEquals(address, account.getAddress());
 
         assertTrue(account.getAccountKey() instanceof AccountKeyRoleBased);
@@ -212,7 +214,7 @@ public class AccountTest {
                 new WeightedMultiSigOptions(BigInteger.valueOf(3), Arrays.asList(optionWeight[2])),
         };
 
-        Account account = Account.create(address, Arrays.asList(publicKeys), Arrays.asList(options));
+        Account account = caver.account.create(address, Arrays.asList(publicKeys), Arrays.asList(options));
         assertEquals(address, account.getAddress());
 
         assertTrue(account.getAccountKey() instanceof AccountKeyRoleBased);
@@ -265,7 +267,7 @@ public class AccountTest {
                 new WeightedMultiSigOptions(BigInteger.valueOf(1), Arrays.asList(optionWeight[2])),
         };
 
-        Account account = Account.create(address, Arrays.asList(publicKeys));
+        Account account = caver.account.create(address, Arrays.asList(publicKeys));
         assertEquals(address, account.getAddress());
 
         assertTrue(account.getAccountKey() instanceof AccountKeyRoleBased);
@@ -317,7 +319,7 @@ public class AccountTest {
                 new WeightedMultiSigOptions(BigInteger.valueOf(1), Arrays.asList(optionWeight[2])),
         };
 
-        Account account = Account.create(address, Arrays.asList(publicKeys));
+        Account account = caver.account.create(address, Arrays.asList(publicKeys));
         assertEquals(address, account.getAddress());
 
         assertTrue(account.getAccountKey() instanceof AccountKeyRoleBased);
@@ -342,7 +344,7 @@ public class AccountTest {
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
         String rlpEncodedAccountKey = "0x01c0";
 
-        Account account = Account.createFromRLPEncoding(address, rlpEncodedAccountKey);
+        Account account = caver.account.createFromRLPEncoding(address, rlpEncodedAccountKey);
         assertEquals(address, account.getAddress());
         assertTrue(account.getAccountKey() instanceof AccountKeyLegacy);
     }
@@ -354,7 +356,7 @@ public class AccountTest {
         String expectedPubKey = "0xc10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9803a1898f45b2770eda7abce70e8503b5e82b748ec0ce557ac9f4f4796965e4e";
         String rlpEncodedAccountKey = "0x02a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9";
 
-        Account account = Account.createFromRLPEncoding(address, rlpEncodedAccountKey);
+        Account account = caver.account.createFromRLPEncoding(address, rlpEncodedAccountKey);
         assertEquals(address, account.getAddress());
         assertTrue(account.getAccountKey() instanceof AccountKeyPublic);
         checkAccountKeyPublic(account.getAccountKey(), expectedPubKey);
@@ -366,7 +368,7 @@ public class AccountTest {
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
         String rlpEncodedAccountKey = "0x03c0";
 
-        Account account = Account.createFromRLPEncoding(address, rlpEncodedAccountKey);
+        Account account = caver.account.createFromRLPEncoding(address, rlpEncodedAccountKey);
         assertEquals(address, account.getAddress());
         assertTrue(account.getAccountKey() instanceof AccountKeyFail);
     }
@@ -383,7 +385,7 @@ public class AccountTest {
         WeightedMultiSigOptions expectedOption = new WeightedMultiSigOptions(BigInteger.valueOf(2),Arrays.asList(weights));
 
         String rlpEncodedAccountKey= "0x04f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1";
-        Account account = Account.createFromRLPEncoding(address, rlpEncodedAccountKey);
+        Account account = caver.account.createFromRLPEncoding(address, rlpEncodedAccountKey);
         assertEquals(address, account.getAddress());
         checkAccountKeyWeightedMultiSig(account.getAccountKey(), expectPublicKey, expectedOption);
     }
@@ -418,7 +420,7 @@ public class AccountTest {
                 new WeightedMultiSigOptions(BigInteger.valueOf(1), Arrays.asList(optionWeight[1])),
         };
 
-        Account account = Account.createFromRLPEncoding(address, rlpEncodedKey);
+        Account account = caver.account.createFromRLPEncoding(address, rlpEncodedKey);
         assertEquals(address, account.getAddress());
         assertTrue(account.getAccountKey() instanceof AccountKeyRoleBased);
 
@@ -464,7 +466,7 @@ public class AccountTest {
                 new WeightedMultiSigOptions(BigInteger.valueOf(1), Arrays.asList(optionWeight[1])),
         };
 
-        Account account = Account.createFromRLPEncoding(address, rlpEncodedKey);
+        Account account = caver.account.createFromRLPEncoding(address, rlpEncodedKey);
         assertEquals(address, account.getAddress());
         assertTrue(account.getAccountKey() instanceof AccountKeyRoleBased);
 
@@ -485,7 +487,7 @@ public class AccountTest {
     @Test
     public void createWithAccountKeyLegacy() {
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
-        Account account = Account.createWithAccountKeyLegacy(address);
+        Account account = caver.account.createWithAccountKeyLegacy(address);
         assertTrue(account.getAccountKey() instanceof AccountKeyLegacy);
         assertEquals(address, account.getAddress());
     }
@@ -496,7 +498,7 @@ public class AccountTest {
         String address = "0xf43dcbb903a0b4b48a7dfa8a370a63f0a731708d";
         String publicKey = "0x1e3aec6e8bd8247aea112c3d1094566272974e56bb0151c58745847e2998ad0e5e8360b120dceea794c6cb1e4215208a78c82e8df5dcf1ac9aa73f1568ee5f2e";
 
-        Account account = Account.createWithAccountKeyPublic(address, publicKey);
+        Account account = caver.account.createWithAccountKeyPublic(address, publicKey);
         assertTrue(account.getAccountKey() instanceof AccountKeyPublic);
         assertEquals(address, account.getAddress());
         checkAccountKeyPublic(account.getAccountKey(), publicKey);
@@ -508,7 +510,7 @@ public class AccountTest {
         String address = "0xf43dcbb903a0b4b48a7dfa8a370a63f0a731708d";
         String publicKey = "0x021e3aec6e8bd8247aea112c3d1094566272974e56bb0151c58745847e2998ad0e";
 
-        Account account = Account.createWithAccountKeyPublic(address, publicKey);
+        Account account = caver.account.createWithAccountKeyPublic(address, publicKey);
         assertTrue(account.getAccountKey() instanceof AccountKeyPublic);
         assertEquals(address, account.getAddress());
         checkAccountKeyPublic(account.getAccountKey(), publicKey);
@@ -519,7 +521,7 @@ public class AccountTest {
     public void createWithAccountKeyFail() {
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
 
-        Account account = Account.createWithAccountKeyFail(address);
+        Account account = caver.account.createWithAccountKeyFail(address);
         assertTrue(account.getAccountKey() instanceof AccountKeyFail);
         assertEquals(address, account.getAddress());
     }
@@ -535,7 +537,7 @@ public class AccountTest {
         BigInteger[] weights = {BigInteger.ONE, BigInteger.ONE};
         WeightedMultiSigOptions expectedOption = new WeightedMultiSigOptions(BigInteger.valueOf(2),Arrays.asList(weights));
 
-        Account account = Account.createWithAccountKeyWeightedMultiSig(address, expectPublicKey, expectedOption);
+        Account account = caver.account.createWithAccountKeyWeightedMultiSig(address, expectPublicKey, expectedOption);
         assertEquals(address, account.getAddress());
         checkAccountKeyWeightedMultiSig(account.getAccountKey(), expectPublicKey, expectedOption);
     }
@@ -551,7 +553,7 @@ public class AccountTest {
         BigInteger[] weights = {BigInteger.ONE, BigInteger.ONE};
         WeightedMultiSigOptions expectedOption = new WeightedMultiSigOptions(BigInteger.valueOf(1),Arrays.asList(weights));
 
-        Account account = Account.createWithAccountKeyWeightedMultiSig(address, expectPublicKey);
+        Account account = caver.account.createWithAccountKeyWeightedMultiSig(address, expectPublicKey);
         assertEquals(address, account.getAddress());
         checkAccountKeyWeightedMultiSig(account.getAccountKey(), expectPublicKey, expectedOption);
     }
@@ -585,7 +587,7 @@ public class AccountTest {
                 new WeightedMultiSigOptions(BigInteger.valueOf(1), Arrays.asList(optionWeight[1])),
         };
 
-        Account account = Account.createWithAccountKeyRoleBased(address, Arrays.asList(publicKeys), Arrays.asList(expectedOptions));
+        Account account = caver.account.createWithAccountKeyRoleBased(address, Arrays.asList(publicKeys), Arrays.asList(expectedOptions));
         assertEquals(address, account.getAddress());
         assertTrue(account.getAccountKey() instanceof AccountKeyRoleBased);
 
@@ -634,7 +636,7 @@ public class AccountTest {
                 new WeightedMultiSigOptions(BigInteger.valueOf(1), Arrays.asList(optionWeight[2])),
         };
 
-        Account account = Account.createWithAccountKeyRoleBased(address, Arrays.asList(publicKeys));
+        Account account = caver.account.createWithAccountKeyRoleBased(address, Arrays.asList(publicKeys));
         assertEquals(address, account.getAddress());
         assertTrue(account.getAccountKey() instanceof AccountKeyRoleBased);
 
@@ -657,7 +659,7 @@ public class AccountTest {
     public void getRLPEncodingAccountKey_AccountKeyLegacy() {
         String rlpEncodedAccountKey = "0x01c0";
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
-        Account account = Account.createFromRLPEncoding(address, rlpEncodedAccountKey);
+        Account account = caver.account.createFromRLPEncoding(address, rlpEncodedAccountKey);
 
         assertEquals(address, account.getAddress());
         assertTrue(account.getAccountKey() instanceof AccountKeyLegacy);
@@ -669,7 +671,7 @@ public class AccountTest {
     public void getRLPEncodingAccountKey_AccountKeyPublic() {
         String rlpEncodedAccountKey = "0x02a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9";
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
-        Account account = Account.createFromRLPEncoding(address, rlpEncodedAccountKey);
+        Account account = caver.account.createFromRLPEncoding(address, rlpEncodedAccountKey);
 
         assertEquals(address, account.getAddress());
         assertTrue(account.getAccountKey() instanceof AccountKeyPublic);
@@ -681,7 +683,7 @@ public class AccountTest {
     public void getRLPEncodingAccountKey_AccountKeyFail() {
         String rlpEncodedAccountKey = "0x03c0";
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
-        Account account = Account.createFromRLPEncoding(address, rlpEncodedAccountKey);
+        Account account = caver.account.createFromRLPEncoding(address, rlpEncodedAccountKey);
 
         assertEquals(address, account.getAddress());
         assertTrue(account.getAccountKey() instanceof AccountKeyFail);
@@ -693,7 +695,7 @@ public class AccountTest {
     public void getRLPEncodingAccountKey_AccountKeyWeightedMultiSig() {
         String rlpEncodedAccountKey = "0x04f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1";
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
-        Account account = Account.createFromRLPEncoding(address, rlpEncodedAccountKey);
+        Account account = caver.account.createFromRLPEncoding(address, rlpEncodedAccountKey);
 
         assertEquals(address, account.getAddress());
         assertTrue(account.getAccountKey() instanceof AccountKeyWeightedMultiSig);
@@ -705,7 +707,7 @@ public class AccountTest {
     public void getRLPEncodingAccountKey_AccountKeyRoleBased() {
         String rlpEncodedAccountKey = "0x05f8c4a302a1036250dad4985bc22c8b9b84d1a05624c4daa0e83c8ae8fb35702d9024a8c14a71b84e04f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1b84e04f84b01f848e301a103e7615d056e770b3262e5b39a4823c3124989924ed4dcfab13f10b252701540d4e301a1036f21d60c16200d99e6777422470b3122b65850d5135a5a4b41344a5607a1446d";
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
-        Account account = Account.createFromRLPEncoding(address, rlpEncodedAccountKey);
+        Account account = caver.account.createFromRLPEncoding(address, rlpEncodedAccountKey);
 
         assertEquals(address, account.getAddress());
         assertTrue(account.getAccountKey() instanceof AccountKeyRoleBased);
@@ -717,10 +719,15 @@ public class AccountTest {
     public void getRLPEncodingAccountKey_AccountKeyRoleBasedWithAccountNil() {
         String rlpEncodedAccountKey = "0x05f876a302a1036250dad4985bc22c8b9b84d1a05624c4daa0e83c8ae8fb35702d9024a8c14a718180b84e04f84b01f848e301a103e7615d056e770b3262e5b39a4823c3124989924ed4dcfab13f10b252701540d4e301a1036f21d60c16200d99e6777422470b3122b65850d5135a5a4b41344a5607a1446d";
         String address = "0xab9825316619a0720ad891135e92adb84fd74fc1";
-        Account account = Account.createFromRLPEncoding(address, rlpEncodedAccountKey);
+        Account account = caver.account.createFromRLPEncoding(address, rlpEncodedAccountKey);
 
         assertEquals(address, account.getAddress());
         assertTrue(account.getAccountKey() instanceof AccountKeyRoleBased);
+
+        AccountKeyRoleBased accountKeyRoleBased = (AccountKeyRoleBased)account.getAccountKey();
+        IAccountKey accountUpdate = accountKeyRoleBased.getRoleAccountUpdateKey();
+        assertTrue(accountUpdate instanceof  AccountKeyNil);
+
         assertEquals(rlpEncodedAccountKey, account.getRLPEncodingAccountKey());
     }
 

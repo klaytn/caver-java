@@ -22,6 +22,7 @@ import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
+import com.klaytn.caver.wallet.keyring.KeyringFactoryWrapper;
 import com.klaytn.caver.wallet.keyring.MessageSigned;
 
 import java.io.IOException;
@@ -40,11 +41,19 @@ public class KeyringContainer implements IWallet{
      */
     Map<String, AbstractKeyring> addressKeyringMap = new HashMap<>();
 
+    /**
+     * The KeyringFactoryWrapper instance
+     * This is added to improve "SDK User Experience"
+     * which means giving developers similar development experience with caver-js
+     */
+    public KeyringFactoryWrapper keyring;
 
     /**
      * Creates KeyringContainer instance
      */
-    public KeyringContainer() {}
+    public KeyringContainer() {
+        keyring = new KeyringFactoryWrapper();
+    }
 
 
     /**
@@ -52,6 +61,7 @@ public class KeyringContainer implements IWallet{
      * @param keyrings An list of keyring
      */
     public KeyringContainer(List<AbstractKeyring> keyrings) {
+        keyring = new KeyringFactoryWrapper();
         keyrings.stream().forEach(this::add);
     }
 

@@ -1,5 +1,6 @@
 package com.klaytn.caver.common;
 
+import com.klaytn.caver.Caver;
 import com.klaytn.caver.account.*;
 import com.klaytn.caver.utils.AccountKeyPublicUtils;
 import com.klaytn.caver.utils.Utils;
@@ -20,6 +21,7 @@ import static org.junit.Assert.*;
 public class AccountKeyTest {
 
     public static class AccountKeyFailTests {
+        Caver caver = new Caver(Caver.DEFAULT_URL);
 
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
@@ -29,7 +31,7 @@ public class AccountKeyTest {
         public void decodeWithString() {
             String encodedString = "0x03c0";
             try {
-                AccountKeyFail accountKeyFail = AccountKeyFail.decode(encodedString);
+                AccountKeyFail accountKeyFail = caver.account.accountKey.accountKeyFail.decode(encodedString);
                 assertTrue(accountKeyFail instanceof AccountKeyFail);
             } catch (Exception e) {
                 fail();
@@ -42,7 +44,7 @@ public class AccountKeyTest {
             byte[] encodedArr = new byte[]{(byte) 0x03, (byte) 0xc0};
             String encodeString = "0x03c0";
             try {
-                AccountKeyFail accountKeyFail = AccountKeyFail.decode(encodedArr);
+                AccountKeyFail accountKeyFail = caver.account.accountKey.accountKeyFail.decode(encodedArr);
                 assertTrue(accountKeyFail instanceof AccountKeyFail);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -59,7 +61,7 @@ public class AccountKeyTest {
             String encodedString ="0x03";
 
             //should throw RuntimeException
-            AccountKeyFail accountKeyFail = AccountKeyFail.decode(encodedString);
+            AccountKeyFail accountKeyFail = caver.account.accountKey.accountKeyFail.decode(encodedString);
         }
 
         //CA-ACCOUNT-004
@@ -71,7 +73,7 @@ public class AccountKeyTest {
             byte[] encodedArr = new byte[]{(byte) 0x03};
 
             //should throw RuntimeException
-            AccountKeyFail accountKeyFail = AccountKeyFail.decode(encodedArr);
+            AccountKeyFail accountKeyFail = caver.account.accountKey.accountKeyFail.decode(encodedArr);
         }
 
         //CA-ACCOUNT-005
@@ -85,6 +87,7 @@ public class AccountKeyTest {
     }
 
     public static class AccountKeyLegacyTest {
+        Caver caver = new Caver(Caver.DEFAULT_URL);
 
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
@@ -95,7 +98,7 @@ public class AccountKeyTest {
             String encodedString = "0x01c0";
 
             try {
-                AccountKeyLegacy accountKeyLegacy = AccountKeyLegacy.decode(encodedString);
+                AccountKeyLegacy accountKeyLegacy = caver.account.accountKey.accountKeyLegacy.decode(encodedString);
                 assertTrue(accountKeyLegacy instanceof AccountKeyLegacy);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -109,7 +112,7 @@ public class AccountKeyTest {
             byte[] encodedArr = new byte[]{(byte) 0x01, (byte) 0xc0};
             String encodedString = "0x01c0";
             try {
-                AccountKeyLegacy accountKeyLegacy = AccountKeyLegacy.decode(encodedArr);
+                AccountKeyLegacy accountKeyLegacy = caver.account.accountKey.accountKeyLegacy.decode(encodedArr);
                 assertTrue(accountKeyLegacy instanceof AccountKeyLegacy);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -126,7 +129,7 @@ public class AccountKeyTest {
             String encodedString = "0x01";
 
             //should throw RuntimeException
-            AccountKeyLegacy accountKeyLegacy = AccountKeyLegacy.decode(encodedString);
+            AccountKeyLegacy accountKeyLegacy = caver.account.accountKey.accountKeyLegacy.decode(encodedString);
         }
 
         //CA-ACCOUNT-009
@@ -138,7 +141,7 @@ public class AccountKeyTest {
             byte[] encodedArr = new byte[]{(byte) 0x01};
 
             //should throw RuntimeException
-            AccountKeyLegacy accountKeyLegacy = AccountKeyLegacy.decode(encodedArr);
+            AccountKeyLegacy accountKeyLegacy = caver.account.accountKey.accountKeyLegacy.decode(encodedArr);
         }
 
         //CA-ACCOUNT-010
@@ -146,7 +149,7 @@ public class AccountKeyTest {
         public void encode() {
             String encodedString = "0x01c0";
             try {
-                AccountKeyLegacy accountKeyLegacy = AccountKeyLegacy.decode(encodedString);
+                AccountKeyLegacy accountKeyLegacy = caver.account.accountKey.accountKeyLegacy.decode(encodedString);
                 assertEquals(encodedString, accountKeyLegacy.getRLPEncoding());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -156,6 +159,7 @@ public class AccountKeyTest {
     }
 
     public static class AccountKeyPublicTest {
+        Caver caver = new Caver(Caver.DEFAULT_URL);
 
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
@@ -167,7 +171,7 @@ public class AccountKeyTest {
             String actualEncodedKey = "0x02a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9";
 
             try {
-                AccountKeyPublic accountKeyPublic = AccountKeyPublic.decode(actualEncodedKey);
+                AccountKeyPublic accountKeyPublic = caver.account.accountKey.accountKeyPublic.decode(actualEncodedKey);
 
                 assertTrue(accountKeyPublic instanceof  AccountKeyPublic);
                 assertEquals(expectedAccountKey, accountKeyPublic.getPublicKey());
@@ -185,7 +189,7 @@ public class AccountKeyTest {
             byte[] actualEncodedKeyArr = Numeric.hexStringToByteArray(actualEncodedKey);
 
             try {
-                AccountKeyPublic accountKeyPublic = AccountKeyPublic.decode(actualEncodedKeyArr);
+                AccountKeyPublic accountKeyPublic = caver.account.accountKey.accountKeyPublic.decode(actualEncodedKeyArr);
 
                 assertTrue(accountKeyPublic instanceof  AccountKeyPublic);
                 assertEquals(accountKeyPublic.getPublicKey(), expectedAccountKey);
@@ -204,7 +208,7 @@ public class AccountKeyTest {
             String invalidEncodedValue = "0x03a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9";
 
             //should throw RuntimeException
-            AccountKeyPublic accountKeyPublic = AccountKeyPublic.decode(invalidEncodedValue);
+            AccountKeyPublic accountKeyPublic = caver.account.accountKey.accountKeyPublic.decode(invalidEncodedValue);
         }
 
         //CA-ACCOUNT-014
@@ -216,7 +220,7 @@ public class AccountKeyTest {
             byte[] invalidEncodedValue = Numeric.hexStringToByteArray("0x03a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9");
 
             //should throw RuntimeException
-            AccountKeyPublic accountKeyPublic = AccountKeyPublic.decode(invalidEncodedValue);
+            AccountKeyPublic accountKeyPublic = caver.account.accountKey.accountKeyPublic.decode(invalidEncodedValue);
         }
 
         //CA-ACCOUNT-015
@@ -228,7 +232,7 @@ public class AccountKeyTest {
             String x = noPrefixPubKey.substring(0, 64);
             String y = noPrefixPubKey.substring(64);
 
-            AccountKeyPublic accountKeyPublic = AccountKeyPublic.fromXYPoint(x, y);
+            AccountKeyPublic accountKeyPublic = caver.account.accountKey.accountKeyPublic.fromXYPoint(x, y);
 
             assertTrue(accountKeyPublic instanceof  AccountKeyPublic);
             assertEquals(publicKey, accountKeyPublic.getPublicKey());
@@ -239,7 +243,7 @@ public class AccountKeyTest {
         public void fromPublicKey_uncompressedFormat() {
             String publicKey = "0x022dfe0d7c496d954037ab15afd3352008f6c5bfe972850b7b321e96721f4bf11f7e6aa508dd50af53e190dcd4a2559aa1c3ef3f78b97b97e2928ac33e038464";
 
-            AccountKeyPublic accountKeyPublic = AccountKeyPublic.fromPublicKey(publicKey);
+            AccountKeyPublic accountKeyPublic = caver.account.accountKey.accountKeyPublic.fromPublicKey(publicKey);
 
             assertTrue(accountKeyPublic instanceof  AccountKeyPublic);
             assertEquals(publicKey, accountKeyPublic.getPublicKey());
@@ -250,7 +254,7 @@ public class AccountKeyTest {
         public void fromPublicKey_compressedFormat() {
             String publicKey = "0x02022dfe0d7c496d954037ab15afd3352008f6c5bfe972850b7b321e96721f4bf1";
 
-            AccountKeyPublic accountKeyPublic = AccountKeyPublic.fromPublicKey(publicKey);
+            AccountKeyPublic accountKeyPublic = caver.account.accountKey.accountKeyPublic.fromPublicKey(publicKey);
 
             assertTrue(accountKeyPublic instanceof  AccountKeyPublic);
             assertEquals(publicKey, accountKeyPublic.getPublicKey());
@@ -265,7 +269,7 @@ public class AccountKeyTest {
             String expectedX = noPrefixPubKey.substring(0, 64);
             String expectedY = noPrefixPubKey.substring(64);
 
-            AccountKeyPublic accountKeyPublic = AccountKeyPublic.fromPublicKey(publicKey);
+            AccountKeyPublic accountKeyPublic = caver.account.accountKey.accountKeyPublic.fromPublicKey(publicKey);
             String[] arr = accountKeyPublic.getXYPoint();
 
 
@@ -284,7 +288,7 @@ public class AccountKeyTest {
             String expectedX = noPrefixPubKey.substring(0, 64);
             String expectedY = noPrefixPubKey.substring(64);
 
-            AccountKeyPublic accountKeyPublic = AccountKeyPublic.fromPublicKey(compressedPublicKey);
+            AccountKeyPublic accountKeyPublic = caver.account.accountKey.accountKeyPublic.fromPublicKey(compressedPublicKey);
             String[] arr = accountKeyPublic.getXYPoint();
 
             assertEquals(expectedX, arr[0]);
@@ -293,6 +297,8 @@ public class AccountKeyTest {
     }
 
     public static class AccountKeyWeightedMultiSigTest {
+        Caver caver = new Caver(Caver.DEFAULT_URL);
+
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
@@ -327,7 +333,7 @@ public class AccountKeyTest {
 
             String encodedKey = "0x04f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1";
 
-            AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.decode(encodedKey);
+            AccountKeyWeightedMultiSig multiSig = caver.account.accountKey.accountKeyWeightedMultiSig.decode(encodedKey);
 
             checkWeightedPublicKey(expectedAccountKey, expectedOption, multiSig);
         }
@@ -346,7 +352,7 @@ public class AccountKeyTest {
             WeightedMultiSigOptions expectedOption = new WeightedMultiSigOptions(BigInteger.valueOf(2), weightList);
             byte[] encodedKeyArr = Numeric.hexStringToByteArray("0x04f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1");
 
-            AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.decode(encodedKeyArr);
+            AccountKeyWeightedMultiSig multiSig = caver.account.accountKey.accountKeyWeightedMultiSig.decode(encodedKeyArr);
             checkWeightedPublicKey(expectedAccountKey, expectedOption, multiSig);
         }
 
@@ -357,7 +363,7 @@ public class AccountKeyTest {
             expectedException.expectMessage("Invalid RLP-encoded AccountKeyWeightedMultiSig Tag");
 
             String encodedKey = "0x03f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1";
-            AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.decode(encodedKey);
+            AccountKeyWeightedMultiSig multiSig = caver.account.accountKey.accountKeyWeightedMultiSig.decode(encodedKey);
         }
 
         //CA-ACCOUNT-023
@@ -367,7 +373,7 @@ public class AccountKeyTest {
             expectedException.expectMessage("Invalid RLP-encoded AccountKeyWeightedMultiSig Tag");
 
             byte[] encodedKeyArr = Numeric.hexStringToByteArray("0x03f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1");
-            AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.decode(encodedKeyArr);
+            AccountKeyWeightedMultiSig multiSig = caver.account.accountKey.accountKeyWeightedMultiSig.decode(encodedKeyArr);
         }
 
         //CA-ACCOUNT-024
@@ -383,7 +389,7 @@ public class AccountKeyTest {
 
             WeightedMultiSigOptions expectedOption = new WeightedMultiSigOptions(BigInteger.valueOf(2), weightList);
 
-            AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.fromPublicKeysAndOptions(expectedAccountKey, expectedOption);
+            AccountKeyWeightedMultiSig multiSig = caver.account.accountKey.accountKeyWeightedMultiSig.fromPublicKeysAndOptions(expectedAccountKey, expectedOption);
             checkWeightedPublicKey(expectedAccountKey, expectedOption, multiSig);
         }
 
@@ -403,7 +409,7 @@ public class AccountKeyTest {
             List<BigInteger> weightList = Arrays.asList(weight);
 
             WeightedMultiSigOptions option = new WeightedMultiSigOptions(threshold, weightList);
-            AccountKeyWeightedMultiSig multiSig = AccountKeyWeightedMultiSig.fromPublicKeysAndOptions(publicKey, option);
+            AccountKeyWeightedMultiSig multiSig = caver.account.accountKey.accountKeyWeightedMultiSig.fromPublicKeysAndOptions(publicKey, option);
             String data = multiSig.getRLPEncoding();
 
             assertEquals(expectedEncodedData, data);
@@ -470,7 +476,7 @@ public class AccountKeyTest {
 
             WeightedMultiSigOptions options = new WeightedMultiSigOptions(threshold, weightList);
 
-            AccountKeyWeightedMultiSig accountKeyWeightedMultiSig = AccountKeyWeightedMultiSig.fromPublicKeysAndOptions(publicKey, options);
+            AccountKeyWeightedMultiSig accountKeyWeightedMultiSig = caver.account.accountKey.accountKeyWeightedMultiSig.fromPublicKeysAndOptions(publicKey, options);
         }
 
         //CA-ACCOUNT-030
@@ -500,11 +506,13 @@ public class AccountKeyTest {
 
             WeightedMultiSigOptions options = new WeightedMultiSigOptions(threshold, weightList);
 
-            AccountKeyWeightedMultiSig accountKeyWeightedMultiSig = AccountKeyWeightedMultiSig.fromPublicKeysAndOptions(publicKey, options);
+            AccountKeyWeightedMultiSig accountKeyWeightedMultiSig = caver.account.accountKey.accountKeyWeightedMultiSig.fromPublicKeysAndOptions(publicKey, options);
         }
     }
 
     public static class AccountKeyRoleBasedTest {
+        Caver caver = new Caver(Caver.DEFAULT_URL);
+
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
@@ -581,7 +589,7 @@ public class AccountKeyTest {
             WeightedMultiSigOptions accountUpdateKeyOption = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(weightArr));
             WeightedMultiSigOptions feePayerKeyOption = new WeightedMultiSigOptions(BigInteger.valueOf(1), Arrays.asList(weightArr));
 
-            AccountKeyRoleBased accountKey = AccountKeyRoleBased.decode(encodedData);
+            AccountKeyRoleBased accountKey = caver.account.accountKey.accountKeyRoleBased.decode(encodedData);
 
             IAccountKey transactionKey = accountKey.getRoleTransactionKey();
             assertTrue(transactionKey instanceof AccountKeyPublic);
@@ -622,7 +630,7 @@ public class AccountKeyTest {
             WeightedMultiSigOptions accountUpdateKeyOption = new WeightedMultiSigOptions(BigInteger.valueOf(2), Arrays.asList(weightArr));
             WeightedMultiSigOptions feePayerKeyOption = new WeightedMultiSigOptions(BigInteger.valueOf(1), Arrays.asList(weightArr));
 
-            AccountKeyRoleBased accountKey = AccountKeyRoleBased.decode(encodedArr);
+            AccountKeyRoleBased accountKey = caver.account.accountKey.accountKeyRoleBased.decode(encodedArr);
 
             IAccountKey transactionKey = accountKey.getRoleTransactionKey();
             assertTrue(transactionKey instanceof AccountKeyPublic);
@@ -659,7 +667,7 @@ public class AccountKeyTest {
             WeightedMultiSigOptions expectedAccountUpdateRoleOpt = new WeightedMultiSigOptions();
             WeightedMultiSigOptions expectedFeePayerRoleOpt = new WeightedMultiSigOptions(BigInteger.ONE, Arrays.asList(weightArr));
 
-            AccountKeyRoleBased accountKeyRoleBased = AccountKeyRoleBased.decode(encodedData);
+            AccountKeyRoleBased accountKeyRoleBased = caver.account.accountKey.accountKeyRoleBased.decode(encodedData);
 
             IAccountKey transactionKey = accountKeyRoleBased.getRoleTransactionKey();
             assertTrue(transactionKey instanceof AccountKeyPublic);
@@ -682,7 +690,7 @@ public class AccountKeyTest {
 
             String invalidEncodedData = "0x06f8c4a302a1036250dad4985bc22c8b9b84d1a05624c4daa0e83c8ae8fb35702d9024a8c14a71b84e04f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1b84e04f84b01f848e301a103e7615d056e770b3262e5b39a4823c3124989924ed4dcfab13f10b252701540d4e301a1036f21d60c16200d99e6777422470b3122b65850d5135a5a4b41344a5607a1446d";
 
-            AccountKeyRoleBased.decode(invalidEncodedData);
+            caver.account.accountKey.accountKeyRoleBased.decode(invalidEncodedData);
         }
 
         //CA-ACCOUNT-035
@@ -693,7 +701,7 @@ public class AccountKeyTest {
 
             String invalidEncodedData = "0x06f8c4a302a1036250dad4985bc22c8b9b84d1a05624c4daa0e83c8ae8fb35702d9024a8c14a71b84e04f84b02f848e301a102c10b598a1a3ba252acc21349d61c2fbd9bc8c15c50a5599f420cccc3291f9bf9e301a1021769a9196f523c419be50c26419ebbec34d3d6aa8b59da834212f13dbec9a9c1b84e04f84b01f848e301a103e7615d056e770b3262e5b39a4823c3124989924ed4dcfab13f10b252701540d4e301a1036f21d60c16200d99e6777422470b3122b65850d5135a5a4b41344a5607a1446d";
             byte[] invalidEncodeDataArr = Numeric.hexStringToByteArray(invalidEncodedData);
-            AccountKeyRoleBased.decode(invalidEncodeDataArr);
+            caver.account.accountKey.accountKeyRoleBased.decode(invalidEncodeDataArr);
         }
 
         //CA-ACCOUNT-036
@@ -730,7 +738,7 @@ public class AccountKeyTest {
             options.add(accountUpdateOpt);
             options.add(feePayerOpt);
 
-            AccountKeyRoleBased accountKeyRoleBased = AccountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
+            AccountKeyRoleBased accountKeyRoleBased = caver.account.accountKey.accountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
 
             IAccountKey txKey = accountKeyRoleBased.getRoleTransactionKey();
             assertTrue(txKey instanceof AccountKeyWeightedMultiSig);
@@ -780,7 +788,7 @@ public class AccountKeyTest {
             options.add(accountUpdateOpt);
             options.add(feePayerOpt);
 
-            AccountKeyRoleBased accountKeyRoleBased = AccountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
+            AccountKeyRoleBased accountKeyRoleBased = caver.account.accountKey.accountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
 
             IAccountKey txKey = accountKeyRoleBased.getRoleTransactionKey();
             assertTrue(txKey instanceof AccountKeyWeightedMultiSig);
@@ -828,7 +836,7 @@ public class AccountKeyTest {
             options.add(accountUpdateOpt);
             options.add(feePayerOpt);
 
-            AccountKeyRoleBased accountKeyRoleBased = AccountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
+            AccountKeyRoleBased accountKeyRoleBased = caver.account.accountKey.accountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
 
             IAccountKey txKey = accountKeyRoleBased.getRoleTransactionKey();
             assertTrue(txKey instanceof AccountKeyNil);
@@ -879,7 +887,7 @@ public class AccountKeyTest {
             options.add(accountUpdateOpt);
             options.add(feePayerOpt);
 
-            AccountKeyRoleBased accountKeyRoleBased = AccountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
+            AccountKeyRoleBased accountKeyRoleBased = caver.account.accountKey.accountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
         }
 
         //CA-ACCOUNT-040
@@ -920,7 +928,7 @@ public class AccountKeyTest {
             options.add(accountUpdateOpt);
             options.add(feePayerOpt);
 
-            AccountKeyRoleBased accountKeyRoleBased = AccountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
+            AccountKeyRoleBased accountKeyRoleBased = caver.account.accountKey.accountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
         }
 
         //CA-ACCOUNT-041
@@ -933,7 +941,7 @@ public class AccountKeyTest {
 
             BigInteger[] weights = {BigInteger.ONE, BigInteger.ONE};
             WeightedMultiSigOptions option = new WeightedMultiSigOptions(BigInteger.ONE, Arrays.asList(weights));
-            AccountKeyWeightedMultiSig accountKeyWeightedMultiSig = AccountKeyWeightedMultiSig.fromPublicKeysAndOptions(publicKey, option);
+            AccountKeyWeightedMultiSig accountKeyWeightedMultiSig = caver.account.accountKey.accountKeyWeightedMultiSig.fromPublicKeysAndOptions(publicKey, option);
 
             AccountKeyLegacy accountKeyLegacy = new AccountKeyLegacy();
             AccountKeyFail accountKeyFail = new AccountKeyFail();
@@ -986,7 +994,7 @@ public class AccountKeyTest {
             weightedMultiSigOptions.add(accountUpdateKeyOption);
             weightedMultiSigOptions.add(feePayerKeyOption);
 
-            AccountKeyRoleBased accountKeyRoleBased = AccountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(list, weightedMultiSigOptions);
+            AccountKeyRoleBased accountKeyRoleBased = caver.account.accountKey.accountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(list, weightedMultiSigOptions);
 
             assertEquals(expectedEncodedData, accountKeyRoleBased.getRLPEncoding());
         }
@@ -1014,7 +1022,7 @@ public class AccountKeyTest {
             options.add(accountUpdateKeyOption);
             options.add(feePayerKeyOption);
 
-            AccountKeyRoleBased roleBased = AccountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
+            AccountKeyRoleBased roleBased = caver.account.accountKey.accountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
             assertTrue(roleBased.getRoleTransactionKey() instanceof AccountKeyFail);
             assertTrue(roleBased.getRoleAccountUpdateKey() instanceof AccountKeyPublic);
             checkPublicKey(expectedPublicKey[1][0], ((AccountKeyPublic) roleBased.getRoleAccountUpdateKey()).getPublicKey());
@@ -1046,7 +1054,7 @@ public class AccountKeyTest {
             options.add(accountUpdateKeyOption);
             options.add(feePayerKeyOption);
 
-            AccountKeyRoleBased roleBased = AccountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
+            AccountKeyRoleBased roleBased = caver.account.accountKey.accountKeyRoleBased.fromRoleBasedPublicKeysAndOptions(Arrays.asList(expectedPublicKey), options);
             assertTrue(roleBased.getRoleTransactionKey() instanceof AccountKeyLegacy);
             assertTrue(roleBased.getRoleAccountUpdateKey() instanceof AccountKeyWeightedMultiSig);
             checkAccountKeyWeightedMultiSig(expectedPublicKey[1], accountUpdateKeyOption, (AccountKeyWeightedMultiSig)roleBased.getRoleAccountUpdateKey());

@@ -21,7 +21,7 @@ import org.web3j.utils.Numeric;
 
 public class TransactionDecoder {
     /**
-     * Decodes a RLP-encoded transaction and return it with matching type of transaction
+     * Decodes a RLP-encoded transaction and returns it with matching type of transaction
      *
      * @param rlpEncoded RLP-encoded transaction
      * @return AbstractTransaction

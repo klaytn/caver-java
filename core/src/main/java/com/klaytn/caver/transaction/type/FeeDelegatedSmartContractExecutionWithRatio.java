@@ -139,8 +139,8 @@ public class FeeDelegatedSmartContractExecutionWithRatio extends AbstractFeeDele
     }
 
     /**
-     * Decodes a RLP-encoded FeeDelegatedSmartContractExecutionWithRatio string.
-     * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractExecutionWithRatio string.
+     * Decodes a RLP-encoded FeeDelegatedSmartContractExecutionWithRatio byte array.
+     * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractExecutionWithRatio byte array.
      * @return FeeDelegatedSmartContractExecutionWithRatio
      */
     public static FeeDelegatedSmartContractExecutionWithRatio decode(byte[] rlpEncoded) {

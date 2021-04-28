@@ -2,6 +2,7 @@ package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
+import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.type.FeeDelegatedSmartContractExecution;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Before;
@@ -37,15 +38,15 @@ public class FeeDelegatedSmartContractExecutionTest {
     static String input = "0x6353586b000000000000000000000000bc5951f055a85f41a3b62fd6f68ab7de76d299b2";
 
     static SignatureData senderSignatureData = new SignatureData(
-            "0x25",
-            "0x253aea7d2c37160da45e84afbb45f6b3341cf1e8fc2df4ecc78f14adb512dc4f",
-            "0x22465b74015c2a8f8501186bb5e200e6ce44be52e9374615a7e7e21c41bc27b5"
+        "0x25",
+        "0x253aea7d2c37160da45e84afbb45f6b3341cf1e8fc2df4ecc78f14adb512dc4f",
+        "0x22465b74015c2a8f8501186bb5e200e6ce44be52e9374615a7e7e21c41bc27b5"
     );
 
     static SignatureData feePayerSignatureData = new SignatureData(
-            "0x26",
-            "0xe7c51db7b922c6fa2a941c9687884c593b1b13076bdf0c473538d826bf7b9d1a",
-            "0x5b0de2aabb84b66db8bf52d62f3d3b71b592e3748455630f1504c20073624d80"
+        "0x26",
+        "0xe7c51db7b922c6fa2a941c9687884c593b1b13076bdf0c473538d826bf7b9d1a",
+        "0x5b0de2aabb84b66db8bf52d62f3d3b71b592e3748455630f1504c20073624d80"
     );
 
     static String expectedRLPEncoding = "0x31f8fb8204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0ba46353586b000000000000000000000000bc5951f055a85f41a3b62fd6f68ab7de76d299b2f845f84325a0253aea7d2c37160da45e84afbb45f6b3341cf1e8fc2df4ecc78f14adb512dc4fa022465b74015c2a8f8501186bb5e200e6ce44be52e9374615a7e7e21c41bc27b5945a0043070275d9f6054307ee7348bd660849d90ff845f84326a0e7c51db7b922c6fa2a941c9687884c593b1b13076bdf0c473538d826bf7b9d1aa05b0de2aabb84b66db8bf52d62f3d3b71b592e3748455630f1504c20073624d80";
@@ -54,8 +55,8 @@ public class FeeDelegatedSmartContractExecutionTest {
     static String expectedRLPEncodingForFeePayerSigning = "0xf875b85bf859318204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0ba46353586b000000000000000000000000bc5951f055a85f41a3b62fd6f68ab7de76d299b2945a0043070275d9f6054307ee7348bd660849d90f018080";
 
     public static AbstractKeyring generateRoleBaseKeyring(int[] numArr, String address) {
-        List<String[]> arr = KeyringFactory.generateRoleBasedKeys(numArr, "entropy");
-        return KeyringFactory.createWithRoleBasedKey(address, arr);
+        List<String[]> arr = caver.wallet.keyring.generateRoleBasedKeys(numArr, "entropy");
+        return caver.wallet.keyring.createWithRoleBasedKey(address, arr);
     }
 
     public static class createInstanceBuilder {
@@ -65,18 +66,18 @@ public class FeeDelegatedSmartContractExecutionTest {
         @Test
         public void BuilderTest() {
             FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             assertNotNull(txObj);
         }
@@ -84,16 +85,16 @@ public class FeeDelegatedSmartContractExecutionTest {
         @Test
         public void BuilderWithRPCTest() throws IOException {
             FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution.Builder()
-                    .setKlaytnCall(caver.rpc.getKlay())
-                    .setGas(gas)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setKlaytnCall(caver.rpc.getKlay())
+                .setGas(gas)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             txObj.fillTransaction();
 
@@ -105,18 +106,18 @@ public class FeeDelegatedSmartContractExecutionTest {
         @Test
         public void BuilderTestWithBigInteger() {
             FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             assertEquals(gas, txObj.getGas());
             assertEquals(gasPrice, txObj.getGasPrice());
@@ -132,18 +133,18 @@ public class FeeDelegatedSmartContractExecutionTest {
             String from = "invalid Address";
 
             FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -154,18 +155,18 @@ public class FeeDelegatedSmartContractExecutionTest {
             String from = null;
 
             FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -176,18 +177,18 @@ public class FeeDelegatedSmartContractExecutionTest {
             String to = "invalid Address";
 
             FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -198,18 +199,18 @@ public class FeeDelegatedSmartContractExecutionTest {
             String value = "invalid value";
 
             FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -220,18 +221,18 @@ public class FeeDelegatedSmartContractExecutionTest {
             String value = null;
 
             FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -242,18 +243,18 @@ public class FeeDelegatedSmartContractExecutionTest {
             String gas = "invalid gas";
 
             FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -264,18 +265,18 @@ public class FeeDelegatedSmartContractExecutionTest {
             String gas = null;
 
             FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -286,18 +287,18 @@ public class FeeDelegatedSmartContractExecutionTest {
             String input = "invalid input";
 
             FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -308,18 +309,18 @@ public class FeeDelegatedSmartContractExecutionTest {
             String input = null;
 
             FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -330,6 +331,29 @@ public class FeeDelegatedSmartContractExecutionTest {
             String feePayer = null;
 
             FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution.Builder()
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
+        }
+    }
+
+    public static class createInstance {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        @Test
+        public void createInstance() {
+            FeeDelegatedSmartContractExecution txObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -341,29 +365,6 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
-        }
-    }
-
-    public static class createInstance {
-        @Rule
-        public ExpectedException expectedException = ExpectedException.none();
-
-        @Test
-        public void createInstance() {
-            FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
             );
 
             assertNotNull(txObj);
@@ -376,237 +377,8 @@ public class FeeDelegatedSmartContractExecutionTest {
 
             String from = "invalid Address";
 
-            FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
-            );
-        }
-
-        @Test
-        public void throwException_missingFrom() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("from is missing.");
-
-            String from = null;
-
-            FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
-            );
-        }
-
-        @Test
-        public void throwException_invalidTo() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid address.");
-
-            String to = "invalid Address";
-
-            FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
-            );
-        }
-
-        @Test
-        public void throwException_missingTo() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("to is missing.");
-
-            String to = null;
-
-            FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
-            );
-        }
-
-        @Test
-        public void throwException_invalidValue() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid value");
-
-            String value = "invalid value";
-
-            FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
-            );
-        }
-
-        @Test
-        public void throwException_missingValue() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("value is missing.");
-
-            String value = null;
-
-            FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
-            );
-        }
-
-        @Test
-        public void throwException_invalidGas() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid gas.");
-
-            String gas = "invalid gas";
-
-            FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
-            );
-        }
-
-        @Test
-        public void throwException_missingGas() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("gas is missing.");
-
-            String gas = null;
-
-            FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
-            );
-        }
-
-        @Test
-        public void throwException_invalidInput() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid input");
-
-            String input = "invalid input";
-
-            FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
-            );
-        }
-
-        @Test
-        public void throwException_missingInput() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("input is missing.");
-
-            String input = null;
-
-            FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
-            );
-        }
-    }
-
-    public static class getRLPEncodingTest {
-        @Rule
-        public ExpectedException expectedException = ExpectedException.none();
-
-        @Test
-        public void getRLPEncoding() {
-            FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution.Builder()
+            FeeDelegatedSmartContractExecution txObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -618,7 +390,237 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
+        }
+
+        @Test
+        public void throwException_missingFrom() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("from is missing.");
+
+            String from = null;
+
+            FeeDelegatedSmartContractExecution txObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setValue(value)
+                    .setTo(to)
+                    .setInput(input)
+                    .setFeePayer(feePayer)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+            );
+        }
+
+        @Test
+        public void throwException_invalidTo() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid address.");
+
+            String to = "invalid Address";
+
+            FeeDelegatedSmartContractExecution txObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setValue(value)
+                    .setTo(to)
+                    .setInput(input)
+                    .setFeePayer(feePayer)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+            );
+        }
+
+        @Test
+        public void throwException_missingTo() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("to is missing.");
+
+            String to = null;
+
+            FeeDelegatedSmartContractExecution txObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setValue(value)
+                    .setTo(to)
+                    .setInput(input)
+                    .setFeePayer(feePayer)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+            );
+        }
+
+        @Test
+        public void throwException_invalidValue() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid value");
+
+            String value = "invalid value";
+
+            FeeDelegatedSmartContractExecution txObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setValue(value)
+                    .setTo(to)
+                    .setInput(input)
+                    .setFeePayer(feePayer)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+            );
+        }
+
+        @Test
+        public void throwException_missingValue() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("value is missing.");
+
+            String value = null;
+
+            FeeDelegatedSmartContractExecution txObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setValue(value)
+                    .setTo(to)
+                    .setInput(input)
+                    .setFeePayer(feePayer)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+            );
+        }
+
+        @Test
+        public void throwException_invalidGas() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid gas.");
+
+            String gas = "invalid gas";
+
+            FeeDelegatedSmartContractExecution txObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setValue(value)
+                    .setTo(to)
+                    .setInput(input)
+                    .setFeePayer(feePayer)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+            );
+        }
+
+        @Test
+        public void throwException_missingGas() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("gas is missing.");
+
+            String gas = null;
+
+            FeeDelegatedSmartContractExecution txObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setValue(value)
+                    .setTo(to)
+                    .setInput(input)
+                    .setFeePayer(feePayer)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+            );
+        }
+
+        @Test
+        public void throwException_invalidInput() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid input");
+
+            String input = "invalid input";
+
+            FeeDelegatedSmartContractExecution txObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setValue(value)
+                    .setTo(to)
+                    .setInput(input)
+                    .setFeePayer(feePayer)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+            );
+        }
+
+        @Test
+        public void throwException_missingInput() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("input is missing.");
+
+            String input = null;
+
+            FeeDelegatedSmartContractExecution txObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setValue(value)
+                    .setTo(to)
+                    .setInput(input)
+                    .setFeePayer(feePayer)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+            );
+        }
+    }
+
+    public static class getRLPEncodingTest {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        @Test
+        public void getRLPEncoding() {
+            FeeDelegatedSmartContractExecution txObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setValue(value)
+                    .setTo(to)
+                    .setInput(input)
+                    .setFeePayer(feePayer)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
         }
@@ -630,7 +632,8 @@ public class FeeDelegatedSmartContractExecutionTest {
 
             String nonce = null;
 
-            FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution.Builder()
+            FeeDelegatedSmartContractExecution txObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -642,7 +645,7 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             txObj.getRLPEncoding();
         }
@@ -654,7 +657,8 @@ public class FeeDelegatedSmartContractExecutionTest {
 
             String gasPrice = null;
 
-            FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution.Builder()
+            FeeDelegatedSmartContractExecution txObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -666,7 +670,7 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             txObj.getRLPEncoding();
         }
@@ -679,14 +683,15 @@ public class FeeDelegatedSmartContractExecutionTest {
         String expectedRawTx = "0x31f8fb8204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0ba46353586b000000000000000000000000bc5951f055a85f41a3b62fd6f68ab7de76d299b2f845f84325a0253aea7d2c37160da45e84afbb45f6b3341cf1e8fc2df4ecc78f14adb512dc4fa022465b74015c2a8f8501186bb5e200e6ce44be52e9374615a7e7e21c41bc27b59433f524631e573329a550296f595c820d6c65213ff845f84325a003eb559128cf96555ef9df53a8d93f8d8d3924bb510aa4d546f13d89a6ebcdf0a0743788a7ddc975fce765f837726c601d7f065af70f94af5b671b3f445825ecb5";
 
         FeeDelegatedSmartContractExecution txObj;
-        SingleKeyring keyring = KeyringFactory.createFromPrivateKey(feePayerPrivateKey);
+        SingleKeyring keyring = caver.wallet.keyring.createFromPrivateKey(feePayerPrivateKey);
         String klaytnWalletKey = keyring.getKlaytnWalletKey();
         String feePayerAddress = keyring.getAddress();
 
         @Before
         public void before() {
 
-            txObj = new FeeDelegatedSmartContractExecution.Builder()
+            txObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -697,7 +702,7 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setInput(input)
                     .setFeePayer(feePayerAddress)
                     .setSignatures(senderSignatureData)
-                    .build();
+            );
         }
 
         @Test
@@ -731,12 +736,12 @@ public class FeeDelegatedSmartContractExecutionTest {
         @Test
         public void signAsFeePayer_multipleKey() throws IOException {
             String[] keyArr = {
-                    PrivateKey.generate().getPrivateKey(),
-                    feePayerPrivateKey,
-                    PrivateKey.generate().getPrivateKey()
+                caver.wallet.keyring.generateSingleKey(),
+                feePayerPrivateKey,
+                caver.wallet.keyring.generateSingleKey()
             };
 
-            MultipleKeyring keyring = KeyringFactory.createWithMultipleKey(feePayerAddress, keyArr);
+            MultipleKeyring keyring = caver.wallet.keyring.createWithMultipleKey(feePayerAddress, keyArr);
             txObj.signAsFeePayer(keyring, 1);
             assertEquals(1, txObj.getFeePayerSignatures().size());
             assertEquals(expectedRawTx, txObj.getRawTransaction());
@@ -745,21 +750,21 @@ public class FeeDelegatedSmartContractExecutionTest {
         @Test
         public void signAsFeePayer_roleBasedKey() throws IOException {
             String[][] keyArr = {
-                    {
-                            PrivateKey.generate().getPrivateKey(),
-                            PrivateKey.generate().getPrivateKey(),
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
 
-                    },
-                    {
-                            PrivateKey.generate().getPrivateKey()
-                    },
-                    {
-                            PrivateKey.generate().getPrivateKey(),
-                            feePayerPrivateKey
-                    }
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey()
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    feePayerPrivateKey
+                }
             };
 
-            RoleBasedKeyring roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(feePayerAddress, Arrays.asList(keyArr));
+            RoleBasedKeyring roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(feePayerAddress, Arrays.asList(keyArr));
             txObj.signAsFeePayer(roleBasedKeyring, 1);
             assertEquals(1, txObj.getFeePayerSignatures().size());
             assertEquals(expectedRawTx, txObj.getRawTransaction());
@@ -770,7 +775,7 @@ public class FeeDelegatedSmartContractExecutionTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The feePayer address of the transaction is different with the address of the keyring to use.");
 
-            SingleKeyring keyring = KeyringFactory.createWithSingleKey(feePayerPrivateKey, PrivateKey.generate().getPrivateKey());
+            SingleKeyring keyring = caver.wallet.keyring.generate();
 
             txObj.signAsFeePayer(keyring, 0);
         }
@@ -780,7 +785,7 @@ public class FeeDelegatedSmartContractExecutionTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
-            AbstractKeyring keyring = generateRoleBaseKeyring(new int[]{3,3,3}, feePayerAddress);
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[]{3, 3, 3}, feePayerAddress);
             txObj.signAsFeePayer(keyring, 4);
         }
     }
@@ -794,7 +799,8 @@ public class FeeDelegatedSmartContractExecutionTest {
 
         @Before
         public void before() {
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -805,11 +811,17 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setInput(input)
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
-                    .build();
+            );
 
-            singleKeyring = KeyringFactory.createWithSingleKey(feePayer, feePayerPrivateKey);
-            multipleKeyring = KeyringFactory.createWithMultipleKey(feePayer, KeyringFactory.generateMultipleKeys(8));
-            roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(feePayer, KeyringFactory.generateRolBasedKeys(new int[]{3,4,5}));
+            singleKeyring = caver.wallet.keyring.createWithSingleKey(feePayer, feePayerPrivateKey);
+            multipleKeyring = caver.wallet.keyring.createWithMultipleKey(
+                feePayer,
+                caver.wallet.keyring.generateMultipleKeys(8)
+            );
+            roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(
+                feePayer,
+                caver.wallet.keyring.generateRolBasedKeys(new int[]{3, 4, 5})
+            );
         }
 
         @Test
@@ -841,7 +853,7 @@ public class FeeDelegatedSmartContractExecutionTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The feePayer address of the transaction is different with the address of the keyring to use.");
 
-            SingleKeyring keyring = KeyringFactory.createFromPrivateKey(PrivateKey.generate().getPrivateKey());
+            SingleKeyring keyring = caver.wallet.keyring.generate();
             mTxObj.signAsFeePayer(keyring);
         }
     }
@@ -854,7 +866,8 @@ public class FeeDelegatedSmartContractExecutionTest {
 
         @Before
         public void before() {
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -865,15 +878,15 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setInput(input)
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
-                    .build();
+            );
         }
 
         @Test
         public void appendFeePayerSignature() {
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             mTxObj.appendFeePayerSignatures(signatureData);
@@ -883,9 +896,9 @@ public class FeeDelegatedSmartContractExecutionTest {
         @Test
         public void appendFeePayerSignatureList() {
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -899,7 +912,8 @@ public class FeeDelegatedSmartContractExecutionTest {
         public void appendFeePayerSignatureList_EmptySig() {
             SignatureData emptySignature = SignatureData.getEmptySignature();
 
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -910,12 +924,12 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setInput(input)
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
-                    .build();
+            );
 
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -928,12 +942,13 @@ public class FeeDelegatedSmartContractExecutionTest {
         @Test
         public void appendFeePayerSignature_ExistedSignature() {
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -945,12 +960,12 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(signatureData)
-                    .build();
+            );
 
             SignatureData signatureData1 = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
-                    Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
+                Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -965,12 +980,13 @@ public class FeeDelegatedSmartContractExecutionTest {
         @Test
         public void appendFeePayerSignatureList_ExistedSignature() {
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -982,18 +998,18 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(signatureData)
-                    .build();
+            );
 
             SignatureData signatureData1 = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
-                    Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
+                Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
             SignatureData signatureData2 = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0x9a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
-                    Numeric.hexStringToByteArray("0xa3ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0x9a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
+                Numeric.hexStringToByteArray("0xa3ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -1025,7 +1041,8 @@ public class FeeDelegatedSmartContractExecutionTest {
 
         @Test
         public void combineSignatures() {
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1034,16 +1051,16 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setValue(value)
                     .setInput(input)
                     .setChainId(chainID)
-                    .build();
+            );
 
             String rlpEncoded = "0x31f8df038505d21dba00830dbba094d3e7cbbba40c98e05d972438b11ff9374d71654a8094553b11f36cd1ebcbf74c920dc51cd8a1648cb98ab844a9059cbb000000000000000000000000fc9fb77a8407e4ac10e6d5f96574debc844d0d5b00000000000000000000000000000000000000000000000000000002540be400f847f845820fe9a07531ee2314700f1d4f45983cfd9f865cd7c7d90341c745f7371073f407d48acfa03ea07fc14ccd89da897dbfbe10ad04fe8c74ee3a3f3cadf1c5697a8f669bbd71940000000000000000000000000000000000000000c4c3018080";
 
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncoded));
 
             SignatureData expectedSignatureData = new SignatureData(
-                    "0x0fe9",
-                    "0x7531ee2314700f1d4f45983cfd9f865cd7c7d90341c745f7371073f407d48acf",
-                    "0x3ea07fc14ccd89da897dbfbe10ad04fe8c74ee3a3f3cadf1c5697a8f669bbd71"
+                "0x0fe9",
+                "0x7531ee2314700f1d4f45983cfd9f865cd7c7d90341c745f7371073f407d48acf",
+                "0x3ea07fc14ccd89da897dbfbe10ad04fe8c74ee3a3f3cadf1c5697a8f669bbd71"
             );
 
             assertEquals(rlpEncoded, combined);
@@ -1054,12 +1071,13 @@ public class FeeDelegatedSmartContractExecutionTest {
         @Test
         public void combineSignature_MultipleSignature() {
             SignatureData senderSignature = new SignatureData(
-                    "0x0fe9",
-                    "0x7531ee2314700f1d4f45983cfd9f865cd7c7d90341c745f7371073f407d48acf",
-                    "0x3ea07fc14ccd89da897dbfbe10ad04fe8c74ee3a3f3cadf1c5697a8f669bbd71"
+                "0x0fe9",
+                "0x7531ee2314700f1d4f45983cfd9f865cd7c7d90341c745f7371073f407d48acf",
+                "0x3ea07fc14ccd89da897dbfbe10ad04fe8c74ee3a3f3cadf1c5697a8f669bbd71"
             );
 
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1069,32 +1087,32 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setInput(input)
                     .setChainId(chainID)
                     .setSignatures(senderSignature)
-                    .build();
+            );
 
             String[] rlpEncodedStrings = {
-                    "0x31f8cb038505d21dba00830dbba094d3e7cbbba40c98e05d972438b11ff9374d71654a8094553b11f36cd1ebcbf74c920dc51cd8a1648cb98ab844a9059cbb000000000000000000000000fc9fb77a8407e4ac10e6d5f96574debc844d0d5b00000000000000000000000000000000000000000000000000000002540be400f847f845820feaa0390e818cdd138b4c698082c52c330589489af0ba169f5c8685247c53abd08831a0784755dd4bc6c0a4b8e7f32f84c9d22e4b5ed04ddb43e9dfc35ee9083db474a380c4c3018080",
-                    "0x31f8cb038505d21dba00830dbba094d3e7cbbba40c98e05d972438b11ff9374d71654a8094553b11f36cd1ebcbf74c920dc51cd8a1648cb98ab844a9059cbb000000000000000000000000fc9fb77a8407e4ac10e6d5f96574debc844d0d5b00000000000000000000000000000000000000000000000000000002540be400f847f845820feaa0a94395fb25f06759e101fb159f7a2989b08c8912564b74d0c64078d964747f18a003c4574aa95af372c69accb57faa8e713ca180d3af85fa690201d33bf204639080c4c3018080"
+                "0x31f8cb038505d21dba00830dbba094d3e7cbbba40c98e05d972438b11ff9374d71654a8094553b11f36cd1ebcbf74c920dc51cd8a1648cb98ab844a9059cbb000000000000000000000000fc9fb77a8407e4ac10e6d5f96574debc844d0d5b00000000000000000000000000000000000000000000000000000002540be400f847f845820feaa0390e818cdd138b4c698082c52c330589489af0ba169f5c8685247c53abd08831a0784755dd4bc6c0a4b8e7f32f84c9d22e4b5ed04ddb43e9dfc35ee9083db474a380c4c3018080",
+                "0x31f8cb038505d21dba00830dbba094d3e7cbbba40c98e05d972438b11ff9374d71654a8094553b11f36cd1ebcbf74c920dc51cd8a1648cb98ab844a9059cbb000000000000000000000000fc9fb77a8407e4ac10e6d5f96574debc844d0d5b00000000000000000000000000000000000000000000000000000002540be400f847f845820feaa0a94395fb25f06759e101fb159f7a2989b08c8912564b74d0c64078d964747f18a003c4574aa95af372c69accb57faa8e713ca180d3af85fa690201d33bf204639080c4c3018080"
             };
 
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedStrings));
             String expectedRLPEncoding = "0x31f9016d038505d21dba00830dbba094d3e7cbbba40c98e05d972438b11ff9374d71654a8094553b11f36cd1ebcbf74c920dc51cd8a1648cb98ab844a9059cbb000000000000000000000000fc9fb77a8407e4ac10e6d5f96574debc844d0d5b00000000000000000000000000000000000000000000000000000002540be400f8d5f845820fe9a07531ee2314700f1d4f45983cfd9f865cd7c7d90341c745f7371073f407d48acfa03ea07fc14ccd89da897dbfbe10ad04fe8c74ee3a3f3cadf1c5697a8f669bbd71f845820feaa0390e818cdd138b4c698082c52c330589489af0ba169f5c8685247c53abd08831a0784755dd4bc6c0a4b8e7f32f84c9d22e4b5ed04ddb43e9dfc35ee9083db474a3f845820feaa0a94395fb25f06759e101fb159f7a2989b08c8912564b74d0c64078d964747f18a003c4574aa95af372c69accb57faa8e713ca180d3af85fa690201d33bf2046390940000000000000000000000000000000000000000c4c3018080";
 
             SignatureData[] expectedSignatureData = new SignatureData[]{
-                    new SignatureData(
-                            "0x0fe9",
-                            "0x7531ee2314700f1d4f45983cfd9f865cd7c7d90341c745f7371073f407d48acf",
-                            "0x3ea07fc14ccd89da897dbfbe10ad04fe8c74ee3a3f3cadf1c5697a8f669bbd71"
-                    ),
-                    new SignatureData(
-                            "0x0fea",
-                            "0x390e818cdd138b4c698082c52c330589489af0ba169f5c8685247c53abd08831",
-                            "0x784755dd4bc6c0a4b8e7f32f84c9d22e4b5ed04ddb43e9dfc35ee9083db474a3"
-                    ),
-                    new SignatureData(
-                            "0x0fea",
-                            "0xa94395fb25f06759e101fb159f7a2989b08c8912564b74d0c64078d964747f18",
-                            "0x03c4574aa95af372c69accb57faa8e713ca180d3af85fa690201d33bf2046390"
-                    )
+                new SignatureData(
+                    "0x0fe9",
+                    "0x7531ee2314700f1d4f45983cfd9f865cd7c7d90341c745f7371073f407d48acf",
+                    "0x3ea07fc14ccd89da897dbfbe10ad04fe8c74ee3a3f3cadf1c5697a8f669bbd71"
+                ),
+                new SignatureData(
+                    "0x0fea",
+                    "0x390e818cdd138b4c698082c52c330589489af0ba169f5c8685247c53abd08831",
+                    "0x784755dd4bc6c0a4b8e7f32f84c9d22e4b5ed04ddb43e9dfc35ee9083db474a3"
+                ),
+                new SignatureData(
+                    "0x0fea",
+                    "0xa94395fb25f06759e101fb159f7a2989b08c8912564b74d0c64078d964747f18",
+                    "0x03c4574aa95af372c69accb57faa8e713ca180d3af85fa690201d33bf2046390"
+                )
             };
 
             assertEquals(expectedRLPEncoding, combined);
@@ -1105,7 +1123,8 @@ public class FeeDelegatedSmartContractExecutionTest {
 
         @Test
         public void combineSignature_feePayerSignature() {
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1114,15 +1133,15 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setValue(value)
                     .setInput(input)
                     .setChainId(chainID)
-                    .build();
+            );
 
             String rlpEncoded = "0x31f8df038505d21dba00830dbba094d3e7cbbba40c98e05d972438b11ff9374d71654a8094553b11f36cd1ebcbf74c920dc51cd8a1648cb98ab844a9059cbb000000000000000000000000fc9fb77a8407e4ac10e6d5f96574debc844d0d5b00000000000000000000000000000000000000000000000000000002540be400c4c301808094fc9fb77a8407e4ac10e6d5f96574debc844d0d5bf847f845820feaa08d9d977567a1903deb82d67525beaa23842ebfe8ae7dad04c0d161a9a2451573a07e280f122aaf89e6379e95d1499c2d536d7ac37b77fa8980b5f083d153f2fb5b";
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncoded));
 
             SignatureData signatureData = new SignatureData(
-                    "0x0fea",
-                    "0x8d9d977567a1903deb82d67525beaa23842ebfe8ae7dad04c0d161a9a2451573",
-                    "0x7e280f122aaf89e6379e95d1499c2d536d7ac37b77fa8980b5f083d153f2fb5b"
+                "0x0fea",
+                "0x8d9d977567a1903deb82d67525beaa23842ebfe8ae7dad04c0d161a9a2451573",
+                "0x7e280f122aaf89e6379e95d1499c2d536d7ac37b77fa8980b5f083d153f2fb5b"
             );
             assertEquals(rlpEncoded, combined);
             assertEquals(signatureData, mTxObj.getFeePayerSignatures().get(0));
@@ -1132,12 +1151,13 @@ public class FeeDelegatedSmartContractExecutionTest {
         public void combineSignature_multipleFeePayerSignature() {
             String feePayer = "0xfc9fb77a8407e4ac10e6d5f96574debc844d0d5b";
             SignatureData feePayerSignatureData = new SignatureData(
-                    "0x0fea",
-                    "0x8d9d977567a1903deb82d67525beaa23842ebfe8ae7dad04c0d161a9a2451573",
-                    "0x7e280f122aaf89e6379e95d1499c2d536d7ac37b77fa8980b5f083d153f2fb5b"
+                "0x0fea",
+                "0x8d9d977567a1903deb82d67525beaa23842ebfe8ae7dad04c0d161a9a2451573",
+                "0x7e280f122aaf89e6379e95d1499c2d536d7ac37b77fa8980b5f083d153f2fb5b"
             );
 
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1148,32 +1168,32 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setChainId(chainID)
                     .setFeePayer(feePayer)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
-            String[] rlpEncodedStrings = new String[] {
-                    "0x31f8df038505d21dba00830dbba094d3e7cbbba40c98e05d972438b11ff9374d71654a8094553b11f36cd1ebcbf74c920dc51cd8a1648cb98ab844a9059cbb000000000000000000000000fc9fb77a8407e4ac10e6d5f96574debc844d0d5b00000000000000000000000000000000000000000000000000000002540be400c4c301808094fc9fb77a8407e4ac10e6d5f96574debc844d0d5bf847f845820fe9a08ffc31dc605d1d93b62e5dc5d72d62efe6994235e370feffc2f4366cf5f68a69a03910e05d112c137482ddb5740062dfcc6ce1556f081f22efb9b5f343adf45638",
-                    "0x31f8df038505d21dba00830dbba094d3e7cbbba40c98e05d972438b11ff9374d71654a8094553b11f36cd1ebcbf74c920dc51cd8a1648cb98ab844a9059cbb000000000000000000000000fc9fb77a8407e4ac10e6d5f96574debc844d0d5b00000000000000000000000000000000000000000000000000000002540be400c4c301808094fc9fb77a8407e4ac10e6d5f96574debc844d0d5bf847f845820feaa025f9886ca65ae770ac69e155978600c6dfe9f2f3f06c692bbae5175f5eb4d7e1a020d0b91badffe5074dd66bdd558ddd2be0ec629e83e6616cf381bb692d41bbe5",
+            String[] rlpEncodedStrings = new String[]{
+                "0x31f8df038505d21dba00830dbba094d3e7cbbba40c98e05d972438b11ff9374d71654a8094553b11f36cd1ebcbf74c920dc51cd8a1648cb98ab844a9059cbb000000000000000000000000fc9fb77a8407e4ac10e6d5f96574debc844d0d5b00000000000000000000000000000000000000000000000000000002540be400c4c301808094fc9fb77a8407e4ac10e6d5f96574debc844d0d5bf847f845820fe9a08ffc31dc605d1d93b62e5dc5d72d62efe6994235e370feffc2f4366cf5f68a69a03910e05d112c137482ddb5740062dfcc6ce1556f081f22efb9b5f343adf45638",
+                "0x31f8df038505d21dba00830dbba094d3e7cbbba40c98e05d972438b11ff9374d71654a8094553b11f36cd1ebcbf74c920dc51cd8a1648cb98ab844a9059cbb000000000000000000000000fc9fb77a8407e4ac10e6d5f96574debc844d0d5b00000000000000000000000000000000000000000000000000000002540be400c4c301808094fc9fb77a8407e4ac10e6d5f96574debc844d0d5bf847f845820feaa025f9886ca65ae770ac69e155978600c6dfe9f2f3f06c692bbae5175f5eb4d7e1a020d0b91badffe5074dd66bdd558ddd2be0ec629e83e6616cf381bb692d41bbe5",
             };
 
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedStrings));
             String expectedRLPEncoded = "0x31f9016d038505d21dba00830dbba094d3e7cbbba40c98e05d972438b11ff9374d71654a8094553b11f36cd1ebcbf74c920dc51cd8a1648cb98ab844a9059cbb000000000000000000000000fc9fb77a8407e4ac10e6d5f96574debc844d0d5b00000000000000000000000000000000000000000000000000000002540be400c4c301808094fc9fb77a8407e4ac10e6d5f96574debc844d0d5bf8d5f845820feaa08d9d977567a1903deb82d67525beaa23842ebfe8ae7dad04c0d161a9a2451573a07e280f122aaf89e6379e95d1499c2d536d7ac37b77fa8980b5f083d153f2fb5bf845820fe9a08ffc31dc605d1d93b62e5dc5d72d62efe6994235e370feffc2f4366cf5f68a69a03910e05d112c137482ddb5740062dfcc6ce1556f081f22efb9b5f343adf45638f845820feaa025f9886ca65ae770ac69e155978600c6dfe9f2f3f06c692bbae5175f5eb4d7e1a020d0b91badffe5074dd66bdd558ddd2be0ec629e83e6616cf381bb692d41bbe5";
 
             SignatureData[] expectedSignatureData = new SignatureData[]{
-                    new SignatureData(
-                            "0x0fea",
-                            "0x8d9d977567a1903deb82d67525beaa23842ebfe8ae7dad04c0d161a9a2451573",
-                            "0x7e280f122aaf89e6379e95d1499c2d536d7ac37b77fa8980b5f083d153f2fb5b"
-                    ),
-                    new SignatureData(
-                            "0x0fe9",
-                            "0x8ffc31dc605d1d93b62e5dc5d72d62efe6994235e370feffc2f4366cf5f68a69",
-                            "0x3910e05d112c137482ddb5740062dfcc6ce1556f081f22efb9b5f343adf45638"
-                    ),
-                    new SignatureData(
-                            "0x0fea",
-                            "0x25f9886ca65ae770ac69e155978600c6dfe9f2f3f06c692bbae5175f5eb4d7e1",
-                            "0x20d0b91badffe5074dd66bdd558ddd2be0ec629e83e6616cf381bb692d41bbe5"
-                    )
+                new SignatureData(
+                    "0x0fea",
+                    "0x8d9d977567a1903deb82d67525beaa23842ebfe8ae7dad04c0d161a9a2451573",
+                    "0x7e280f122aaf89e6379e95d1499c2d536d7ac37b77fa8980b5f083d153f2fb5b"
+                ),
+                new SignatureData(
+                    "0x0fe9",
+                    "0x8ffc31dc605d1d93b62e5dc5d72d62efe6994235e370feffc2f4366cf5f68a69",
+                    "0x3910e05d112c137482ddb5740062dfcc6ce1556f081f22efb9b5f343adf45638"
+                ),
+                new SignatureData(
+                    "0x0fea",
+                    "0x25f9886ca65ae770ac69e155978600c6dfe9f2f3f06c692bbae5175f5eb4d7e1",
+                    "0x20d0b91badffe5074dd66bdd558ddd2be0ec629e83e6616cf381bb692d41bbe5"
+                )
             };
 
             assertEquals(expectedRLPEncoded, combined);
@@ -1184,7 +1204,8 @@ public class FeeDelegatedSmartContractExecutionTest {
 
         @Test
         public void multipleSignature_senderSignature_feePayerSignature() {
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1193,48 +1214,48 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setValue(value)
                     .setTo(to)
                     .setInput(input)
-                    .build();
+            );
 
 
             String rlpEncodedString = "0x31f90159038505d21dba00830dbba094d3e7cbbba40c98e05d972438b11ff9374d71654a8094553b11f36cd1ebcbf74c920dc51cd8a1648cb98ab844a9059cbb000000000000000000000000fc9fb77a8407e4ac10e6d5f96574debc844d0d5b00000000000000000000000000000000000000000000000000000002540be400f8d5f845820fe9a07531ee2314700f1d4f45983cfd9f865cd7c7d90341c745f7371073f407d48acfa03ea07fc14ccd89da897dbfbe10ad04fe8c74ee3a3f3cadf1c5697a8f669bbd71f845820feaa0390e818cdd138b4c698082c52c330589489af0ba169f5c8685247c53abd08831a0784755dd4bc6c0a4b8e7f32f84c9d22e4b5ed04ddb43e9dfc35ee9083db474a3f845820feaa0a94395fb25f06759e101fb159f7a2989b08c8912564b74d0c64078d964747f18a003c4574aa95af372c69accb57faa8e713ca180d3af85fa690201d33bf204639080c4c3018080";
-            SignatureData[] expectedSignatures = new SignatureData[] {
-                    new SignatureData(
-                            "0x0fe9",
-                            "0x7531ee2314700f1d4f45983cfd9f865cd7c7d90341c745f7371073f407d48acf",
-                            "0x3ea07fc14ccd89da897dbfbe10ad04fe8c74ee3a3f3cadf1c5697a8f669bbd71"
-                    ),
-                    new SignatureData(
-                            "0x0fea",
-                            "0x390e818cdd138b4c698082c52c330589489af0ba169f5c8685247c53abd08831",
-                            "0x784755dd4bc6c0a4b8e7f32f84c9d22e4b5ed04ddb43e9dfc35ee9083db474a3"
-                    ),
-                    new SignatureData(
-                            "0x0fea",
-                            "0xa94395fb25f06759e101fb159f7a2989b08c8912564b74d0c64078d964747f18",
-                            "0x03c4574aa95af372c69accb57faa8e713ca180d3af85fa690201d33bf2046390"
-                    ),
+            SignatureData[] expectedSignatures = new SignatureData[]{
+                new SignatureData(
+                    "0x0fe9",
+                    "0x7531ee2314700f1d4f45983cfd9f865cd7c7d90341c745f7371073f407d48acf",
+                    "0x3ea07fc14ccd89da897dbfbe10ad04fe8c74ee3a3f3cadf1c5697a8f669bbd71"
+                ),
+                new SignatureData(
+                    "0x0fea",
+                    "0x390e818cdd138b4c698082c52c330589489af0ba169f5c8685247c53abd08831",
+                    "0x784755dd4bc6c0a4b8e7f32f84c9d22e4b5ed04ddb43e9dfc35ee9083db474a3"
+                ),
+                new SignatureData(
+                    "0x0fea",
+                    "0xa94395fb25f06759e101fb159f7a2989b08c8912564b74d0c64078d964747f18",
+                    "0x03c4574aa95af372c69accb57faa8e713ca180d3af85fa690201d33bf2046390"
+                ),
             };
 
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedString));
 
             String rlpEncodedStringsWithFeePayerSignatures = "0x31f9016d038505d21dba00830dbba094d3e7cbbba40c98e05d972438b11ff9374d71654a8094553b11f36cd1ebcbf74c920dc51cd8a1648cb98ab844a9059cbb000000000000000000000000fc9fb77a8407e4ac10e6d5f96574debc844d0d5b00000000000000000000000000000000000000000000000000000002540be400c4c301808094fc9fb77a8407e4ac10e6d5f96574debc844d0d5bf8d5f845820feaa08d9d977567a1903deb82d67525beaa23842ebfe8ae7dad04c0d161a9a2451573a07e280f122aaf89e6379e95d1499c2d536d7ac37b77fa8980b5f083d153f2fb5bf845820fe9a08ffc31dc605d1d93b62e5dc5d72d62efe6994235e370feffc2f4366cf5f68a69a03910e05d112c137482ddb5740062dfcc6ce1556f081f22efb9b5f343adf45638f845820feaa025f9886ca65ae770ac69e155978600c6dfe9f2f3f06c692bbae5175f5eb4d7e1a020d0b91badffe5074dd66bdd558ddd2be0ec629e83e6616cf381bb692d41bbe5";
 
-            SignatureData[] expectedFeePayerSignatures = new SignatureData[] {
-                    new SignatureData(
-                            "0x0fea",
-                            "0x8d9d977567a1903deb82d67525beaa23842ebfe8ae7dad04c0d161a9a2451573",
-                            "0x7e280f122aaf89e6379e95d1499c2d536d7ac37b77fa8980b5f083d153f2fb5b"
-                    ),
-                    new SignatureData(
-                            "0x0fe9",
-                            "0x8ffc31dc605d1d93b62e5dc5d72d62efe6994235e370feffc2f4366cf5f68a69",
-                            "0x3910e05d112c137482ddb5740062dfcc6ce1556f081f22efb9b5f343adf45638"
-                    ),
-                    new SignatureData(
-                            "0x0fea",
-                            "0x25f9886ca65ae770ac69e155978600c6dfe9f2f3f06c692bbae5175f5eb4d7e1",
-                            "0x20d0b91badffe5074dd66bdd558ddd2be0ec629e83e6616cf381bb692d41bbe5"
-                    ),
+            SignatureData[] expectedFeePayerSignatures = new SignatureData[]{
+                new SignatureData(
+                    "0x0fea",
+                    "0x8d9d977567a1903deb82d67525beaa23842ebfe8ae7dad04c0d161a9a2451573",
+                    "0x7e280f122aaf89e6379e95d1499c2d536d7ac37b77fa8980b5f083d153f2fb5b"
+                ),
+                new SignatureData(
+                    "0x0fe9",
+                    "0x8ffc31dc605d1d93b62e5dc5d72d62efe6994235e370feffc2f4366cf5f68a69",
+                    "0x3910e05d112c137482ddb5740062dfcc6ce1556f081f22efb9b5f343adf45638"
+                ),
+                new SignatureData(
+                    "0x0fea",
+                    "0x25f9886ca65ae770ac69e155978600c6dfe9f2f3f06c692bbae5175f5eb4d7e1",
+                    "0x20d0b91badffe5074dd66bdd558ddd2be0ec629e83e6616cf381bb692d41bbe5"
+                ),
             };
 
             combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedStringsWithFeePayerSignatures));
@@ -1255,7 +1276,8 @@ public class FeeDelegatedSmartContractExecutionTest {
 
             String gas = "0x1000";
 
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1264,7 +1286,7 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setValue(value)
                     .setTo(to)
                     .setInput(input)
-                    .build();
+            );
 
             String rlpEncoded = "0x31f9016d038505d21dba00830dbba094d3e7cbbba40c98e05d972438b11ff9374d71654a8094553b11f36cd1ebcbf74c920dc51cd8a1648cb98ab844a9059cbb000000000000000000000000fc9fb77a8407e4ac10e6d5f96574debc844d0d5b00000000000000000000000000000000000000000000000000000002540be400c4c301808094fc9fb77a8407e4ac10e6d5f96574debc844d0d5bf8d5f845820feaa08d9d977567a1903deb82d67525beaa23842ebfe8ae7dad04c0d161a9a2451573a07e280f122aaf89e6379e95d1499c2d536d7ac37b77fa8980b5f083d153f2fb5bf845820fe9a08ffc31dc605d1d93b62e5dc5d72d62efe6994235e370feffc2f4366cf5f68a69a03910e05d112c137482ddb5740062dfcc6ce1556f081f22efb9b5f343adf45638f845820feaa025f9886ca65ae770ac69e155978600c6dfe9f2f3f06c692bbae5175f5eb4d7e1a020d0b91badffe5074dd66bdd558ddd2be0ec629e83e6616cf381bb692d41bbe5";
             List<String> list = new ArrayList<>();
@@ -1277,7 +1299,8 @@ public class FeeDelegatedSmartContractExecutionTest {
     public static class getRawTransactionTest {
         @Test
         public void getRawTransaction() {
-            FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution.Builder()
+            FeeDelegatedSmartContractExecution txObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1289,7 +1312,7 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             assertEquals(expectedRLPEncoding, txObj.getRawTransaction());
         }
@@ -1303,7 +1326,8 @@ public class FeeDelegatedSmartContractExecutionTest {
 
         @Test
         public void getTransactionHash() {
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1315,7 +1339,7 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             assertEquals(expectedTransactionHash, mTxObj.getTransactionHash());
         }
@@ -1327,7 +1351,8 @@ public class FeeDelegatedSmartContractExecutionTest {
 
             String nonce = null;
 
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1339,19 +1364,20 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             String txHash = mTxObj.getTransactionHash();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String gasPrice = null;
 
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1363,7 +1389,7 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             String txHash = mTxObj.getTransactionHash();
         }
@@ -1377,7 +1403,8 @@ public class FeeDelegatedSmartContractExecutionTest {
 
         @Test
         public void getSenderTransactionHash() {
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1389,7 +1416,7 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             assertEquals(expectedSenderTransactionHash, mTxObj.getSenderTxHash());
         }
@@ -1401,7 +1428,8 @@ public class FeeDelegatedSmartContractExecutionTest {
 
             String nonce = null;
 
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1413,19 +1441,20 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             mTxObj.getSenderTxHash();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String gasPrice = null;
 
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1437,7 +1466,7 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             mTxObj.getSenderTxHash();
         }
@@ -1451,7 +1480,8 @@ public class FeeDelegatedSmartContractExecutionTest {
 
         @Test
         public void getRLPEncodingForFeePayerSignature() {
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1463,7 +1493,7 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             assertEquals(expectedRLPEncodingForFeePayerSigning, mTxObj.getRLPEncodingForFeePayerSignature());
         }
@@ -1475,7 +1505,8 @@ public class FeeDelegatedSmartContractExecutionTest {
 
             String nonce = null;
 
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1487,19 +1518,20 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String gasPrice = null;
 
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1511,19 +1543,20 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }
 
         @Test
-        public void throwException_NotDefined_chainID() {
+        public void throwException_NotDefined_ChainID() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String chainID = null;
 
-            mTxObj = new FeeDelegatedSmartContractExecution.Builder()
+            mTxObj = caver.transaction.feeDelegatedSmartContractExecution.create(
+                TxPropertyBuilder.feeDelegatedSmartContractExecution()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1535,7 +1568,7 @@ public class FeeDelegatedSmartContractExecutionTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }

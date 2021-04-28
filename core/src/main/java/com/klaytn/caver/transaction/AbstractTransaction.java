@@ -86,8 +86,10 @@ abstract public class AbstractTransaction {
      */
     private List<SignatureData> signatures = new ArrayList<>();
 
+
     /**
      * Represents a AbstractTransaction class builder.
+     *
      * @param <B> An generic extends to AbstractTransaction.Builder
      */
     public static class Builder<B extends AbstractTransaction.Builder> {
@@ -161,7 +163,7 @@ abstract public class AbstractTransaction {
         }
 
         public B setSignatures(SignatureData sign) {
-            if(sign == null) {
+            if (sign == null) {
                 sign = SignatureData.getEmptySignature();
             }
 
@@ -172,29 +174,31 @@ abstract public class AbstractTransaction {
 
     /**
      * Create AbstractTransaction instance
+     *
      * @param builder AbstractTransaction.builder
      */
     public AbstractTransaction(AbstractTransaction.Builder builder) {
         this(builder.klaytnCall,
-                builder.type,
-                builder.from,
-                builder.nonce,
-                builder.gas,
-                builder.gasPrice,
-                builder.chainId,
-                builder.signatures
+            builder.type,
+            builder.from,
+            builder.nonce,
+            builder.gas,
+            builder.gasPrice,
+            builder.chainId,
+            builder.signatures
         );
     }
 
     /**
      * Create AbstractTransaction instance
+     *
      * @param klaytnCall Klay RPC instance
-     * @param type Transaction's type string
-     * @param from The address of the sender.
-     * @param nonce A value used to uniquely identify a sender’s transaction.
-     * @param gas The maximum amount of gas the transaction is allowed to use.
-     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
-     * @param chainId Network ID
+     * @param type       Transaction's type string
+     * @param from       The address of the sender.
+     * @param nonce      A value used to uniquely identify a sender’s transaction.
+     * @param gas        The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice   A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId    Network ID
      * @param signatures A Signature list
      */
     public AbstractTransaction(Klay klaytnCall, String type, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures) {
@@ -210,6 +214,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Returns the RLP-encoded string of this transaction (i.e., rawTransaction).
+     *
      * @return String
      */
     @JsonIgnore
@@ -217,6 +222,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Returns the RLP-encoded string to make the signature of this transaction.
+     *
      * @return String
      */
     @JsonIgnore
@@ -225,7 +231,8 @@ abstract public class AbstractTransaction {
     /**
      * Signs to the transaction with a single private key.
      * It sets Hasher default value.
-     *   - signer : TransactionHasher.getHashForSignature()
+     * - signer : TransactionHasher.getHashForSignature()
+     *
      * @param keyString The private key string.
      * @return AbstractTransaction
      * @throws IOException
@@ -237,8 +244,9 @@ abstract public class AbstractTransaction {
 
     /**
      * Signs to the transaction with a single private key.
+     *
      * @param keyString The private key string
-     * @param signer The function to get hash of transaction.
+     * @param signer    The function to get hash of transaction.
      * @return AbstractTransaction
      * @throws IOException
      */
@@ -250,32 +258,34 @@ abstract public class AbstractTransaction {
     /**
      * Signs using all private keys used in the role defined in the Keyring instance.
      * It sets index and Hasher default value.
-     *   - signer : TransactionHasher.getHashForSignature()
+     * - signer : TransactionHasher.getHashForSignature()
+     *
      * @param keyring The Keyring instance.
      * @return AbstractTransaction
      * @throws IOException
      */
-    public AbstractTransaction sign(AbstractKeyring keyring) throws IOException  {
+    public AbstractTransaction sign(AbstractKeyring keyring) throws IOException {
         return this.sign(keyring, TransactionHasher::getHashForSignature);
     }
 
     /**
      * Signs using all private keys used in the role defined in the Keyring instance.
+     *
      * @param keyring The Keyring instance.
-     * @param signer The function to get hash of transaction.
+     * @param signer  The function to get hash of transaction.
      * @return AbstractTransaction
      * @throws IOException
      */
-    public AbstractTransaction sign(AbstractKeyring keyring, Function<AbstractTransaction, String> signer) throws IOException  {
-        if(this.getType().equals(TransactionType.TxTypeLegacyTransaction.toString()) && keyring.isDecoupled()) {
+    public AbstractTransaction sign(AbstractKeyring keyring, Function<AbstractTransaction, String> signer) throws IOException {
+        if (this.getType().equals(TransactionType.TxTypeLegacyTransaction.toString()) && keyring.isDecoupled()) {
             throw new IllegalArgumentException("A legacy transaction cannot be signed with a decoupled keyring.");
         }
 
-        if(this.from.equals("0x") || this.from.equals(Utils.DEFAULT_ZERO_ADDRESS)){
+        if (this.from.equals("0x") || this.from.equals(Utils.DEFAULT_ZERO_ADDRESS)) {
             this.from = keyring.getAddress();
         }
 
-        if(!this.from.toLowerCase().equals(keyring.getAddress().toLowerCase())) {
+        if (!this.from.toLowerCase().equals(keyring.getAddress().toLowerCase())) {
             throw new IllegalArgumentException("The from address of the transaction is different with the address of the keyring to use");
         }
 
@@ -293,8 +303,9 @@ abstract public class AbstractTransaction {
     /**
      * Signs to the transaction with a private key in the Keyring instance.
      * It sets signer to TransactionHasher.getHashForSignature()
+     *
      * @param keyring The Keyring instance.
-     * @param index The index of private key to use in Keyring instance.
+     * @param index   The index of private key to use in Keyring instance.
      * @return AbstractTransaction
      * @throws IOException
      */
@@ -304,22 +315,23 @@ abstract public class AbstractTransaction {
 
     /**
      * Signs to the transaction with a private key in the Keyring instance.
+     *
      * @param keyring The Keyring instance.
-     * @param index The index of private key to use in Keyring instance.
-     * @param signer The function to get hash of transaction.
+     * @param index   The index of private key to use in Keyring instance.
+     * @param signer  The function to get hash of transaction.
      * @return AbstractTransaction
      * @throws IOException
      */
     public AbstractTransaction sign(AbstractKeyring keyring, int index, Function<AbstractTransaction, String> signer) throws IOException {
-        if(this.getType().equals(TransactionType.TxTypeLegacyTransaction.toString()) && keyring.isDecoupled()) {
+        if (this.getType().equals(TransactionType.TxTypeLegacyTransaction.toString()) && keyring.isDecoupled()) {
             throw new IllegalArgumentException("A legacy transaction cannot be signed with a decoupled keyring.");
         }
 
-        if(this.from.equals("0x") || this.from.equals(Utils.DEFAULT_ZERO_ADDRESS)){
+        if (this.from.equals("0x") || this.from.equals(Utils.DEFAULT_ZERO_ADDRESS)) {
             this.from = keyring.getAddress();
         }
 
-        if(!this.from.toLowerCase().equals(keyring.getAddress().toLowerCase())) {
+        if (!this.from.toLowerCase().equals(keyring.getAddress().toLowerCase())) {
             throw new IllegalArgumentException("The from address of the transaction is different with the address of the keyring to use");
         }
 
@@ -336,6 +348,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Appends signatures to the transaction.
+     *
      * @param signatureData SignatureData instance contains ECDSA signature data
      */
     public void appendSignatures(SignatureData signatureData) {
@@ -346,6 +359,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Appends signatures to the transaction.
+     *
      * @param signatureData List of SignatureData contains ECDSA signature data
      */
     public void appendSignatures(List<SignatureData> signatureData) {
@@ -357,6 +371,7 @@ abstract public class AbstractTransaction {
      * Combines signatures to the transaction from RLP-encoded transaction strings and returns a single transaction with all signatures combined.
      * When combining the signatures into a transaction instance,
      * an error is thrown if the decoded transaction contains different value except signatures.
+     *
      * @param rlpEncoded A List of RLP-encoded transaction strings.
      * @return String
      */
@@ -365,20 +380,20 @@ abstract public class AbstractTransaction {
 
         // If the signatures are empty, there may be an undefined member variable.
         // In this case, the empty information is filled with the decoded result.
-        if(Utils.isEmptySig(this.getSignatures())) fillVariable = true;
+        if (Utils.isEmptySig(this.getSignatures())) fillVariable = true;
 
-        for(String encodedStr : rlpEncoded) {
+        for (String encodedStr : rlpEncoded) {
             AbstractTransaction txObj = TransactionDecoder.decode(encodedStr);
 
-            if(fillVariable) {
-                if(this.getNonce().equals("0x")) this.setNonce(txObj.getNonce());
-                if(this.getGasPrice().equals("0x")) this.setGasPrice(txObj.getGasPrice());
+            if (fillVariable) {
+                if (this.getNonce().equals("0x")) this.setNonce(txObj.getNonce());
+                if (this.getGasPrice().equals("0x")) this.setGasPrice(txObj.getGasPrice());
                 fillVariable = false;
             }
 
             // Signatures can only be combined for the same transaction.
             // Therefore, compare whether the decoded transaction is the same as this.
-            if(!this.compareTxField(txObj, false)) {
+            if (!this.compareTxField(txObj, false)) {
                 throw new RuntimeException("Transactions containing different information cannot be combined.");
             }
 
@@ -390,6 +405,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Returns a RawTransaction(RLP-encoded transaction string)
+     *
      * @return String
      */
     @JsonIgnore
@@ -399,6 +415,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Returns a hash string of transaction
+     *
      * @return String
      */
     @JsonIgnore
@@ -408,6 +425,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Returns a senderTxHash of transaction
+     *
      * @return String
      */
     @JsonIgnore
@@ -417,6 +435,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Returns an RLP-encoded transaction string for making signature.
+     *
      * @return String
      */
     @JsonIgnore
@@ -434,48 +453,50 @@ abstract public class AbstractTransaction {
 
     /**
      * Fills empty optional transaction field.(nonce, gasPrice, chainId)
+     *
      * @throws IOException
      */
-    public void fillTransaction() throws IOException{
-        if(klaytnCall != null) {
-            if(this.nonce.equals("0x")) {
+    public void fillTransaction() throws IOException {
+        if (klaytnCall != null) {
+            if (this.nonce.equals("0x")) {
                 this.nonce = klaytnCall.getTransactionCount(this.from, DefaultBlockParameterName.PENDING).send().getResult();
             }
 
-            if(this.chainId.equals("0x")) {
+            if (this.chainId.equals("0x")) {
                 this.chainId = klaytnCall.getChainID().send().getResult();
             }
 
-            if(this.gasPrice.equals("0x")) {
+            if (this.gasPrice.equals("0x")) {
                 this.gasPrice = klaytnCall.getGasPrice().send().getResult();
             }
 
         }
 
-        if(this.nonce.equals("0x") || this.chainId.equals("0x") || this.gasPrice.equals("0x")) {
+        if (this.nonce.equals("0x") || this.chainId.equals("0x") || this.gasPrice.equals("0x")) {
             throw new RuntimeException("Cannot fill transaction data.(nonce, chainId, gasPrice). `klaytnCall` must be set in Transaction instance to automatically fill the nonce, chainId or gasPrice. Please call the `setKlaytnCall` to set `klaytnCall` in the Transaction instance.");
         }
     }
 
     /**
      * Check equals txObj passed parameter and Current instance.
-     * @param txObj The AbstractTransaction Object to compare
+     *
+     * @param txObj    The AbstractTransaction Object to compare
      * @param checkSig Check whether signatures field is equal.
      * @return boolean
      */
     public boolean compareTxField(AbstractTransaction txObj, boolean checkSig) {
-        if(!this.getType().equals(txObj.getType())) return false;
-        if(!this.getFrom().toLowerCase().equals(txObj.getFrom().toLowerCase())) return false;
-        if(!Numeric.toBigInt(this.getNonce()).equals(Numeric.toBigInt(txObj.getNonce()))) return false;
-        if(!Numeric.toBigInt(this.getGas()).equals(Numeric.toBigInt(txObj.getGas()))) return false;
-        if(!Numeric.toBigInt(this.getGasPrice()).equals(Numeric.toBigInt(txObj.getGasPrice()))) return false;
+        if (!this.getType().equals(txObj.getType())) return false;
+        if (!this.getFrom().toLowerCase().equals(txObj.getFrom().toLowerCase())) return false;
+        if (!Numeric.toBigInt(this.getNonce()).equals(Numeric.toBigInt(txObj.getNonce()))) return false;
+        if (!Numeric.toBigInt(this.getGas()).equals(Numeric.toBigInt(txObj.getGas()))) return false;
+        if (!Numeric.toBigInt(this.getGasPrice()).equals(Numeric.toBigInt(txObj.getGasPrice()))) return false;
 
-        if(checkSig) {
+        if (checkSig) {
             List<SignatureData> dataList = this.getSignatures();
-            if(dataList.size() != txObj.getSignatures().size()) return false;
+            if (dataList.size() != txObj.getSignatures().size()) return false;
 
-            for(int i=0; i< dataList.size(); i++) {
-                if(!dataList.get(i).equals(txObj.getSignatures().get(i))) {
+            for (int i = 0; i < dataList.size(); i++) {
+                if (!dataList.get(i).equals(txObj.getSignatures().get(i))) {
                     return false;
                 }
             }
@@ -489,16 +510,16 @@ abstract public class AbstractTransaction {
      * If there is an undefined variable, an error occurs.
      */
     public void validateOptionalValues(boolean checkChainID) {
-        if(this.getNonce() == null || this.getNonce().isEmpty() || this.getNonce().equals("0x")) {
+        if (this.getNonce() == null || this.getNonce().isEmpty() || this.getNonce().equals("0x")) {
             throw new RuntimeException("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");
         }
 
-        if(this.getGasPrice() == null || this.getGasPrice().isEmpty() || this.getGasPrice().equals("0x")) {
+        if (this.getGasPrice() == null || this.getGasPrice().isEmpty() || this.getGasPrice().equals("0x")) {
             throw new RuntimeException("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
         }
 
-        if(checkChainID) {
-            if(this.getChainId() == null || this.getChainId().isEmpty() || this.getChainId().equals("0x")) {
+        if (checkChainID) {
+            if (this.getChainId() == null || this.getChainId().isEmpty() || this.getChainId().equals("0x")) {
                 throw new RuntimeException("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
             }
         }
@@ -506,9 +527,10 @@ abstract public class AbstractTransaction {
 
     /**
      * Refines the array containing signatures
-     *   - Removes duplicate signatures
-     *   - Removes the default empty signature("0x01", "0x", "0x")
-     *   - For an empty signature array, return an array containing the default empty signature("0x01", "0x", "0x")
+     * - Removes duplicate signatures
+     * - Removes the default empty signature("0x01", "0x", "0x")
+     * - For an empty signature array, return an array containing the default empty signature("0x01", "0x", "0x")
+     *
      * @param signatureDataList
      * @return
      */
@@ -518,19 +540,19 @@ abstract public class AbstractTransaction {
 
         List<SignatureData> refinedList = new ArrayList<>();
 
-        for(SignatureData signData : signatureDataList) {
-            if(!Utils.isEmptySig(signData)) {
-                if(!refinedList.contains(signData)) {
+        for (SignatureData signData : signatureDataList) {
+            if (!Utils.isEmptySig(signData)) {
+                if (!refinedList.contains(signData)) {
                     refinedList.add(signData);
                 }
             }
         }
 
-        if(refinedList.size() == 0) {
+        if (refinedList.size() == 0) {
             refinedList.add(emptySig);
         }
 
-        if(isLegacy && refinedList.size() > 1) {
+        if (isLegacy && refinedList.size() > 1) {
             throw new RuntimeException("LegacyTransaction cannot have multiple signature.");
         }
 
@@ -539,6 +561,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Getter function for klaytnRPC
+     *
      * @return Klay
      */
     public Klay getKlaytnCall() {
@@ -547,6 +570,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Setter function for klaytnRPC
+     *
      * @param klaytnCall Klay RPC Instance.
      */
     public void setKlaytnCall(Klay klaytnCall) {
@@ -555,6 +579,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Getter function for type.
+     *
      * @return String
      */
     public String getType() {
@@ -563,6 +588,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Getter function for from
+     *
      * @return String
      */
     public String getFrom() {
@@ -571,6 +597,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Getter function for nonce
+     *
      * @return String
      */
     public String getNonce() {
@@ -579,6 +606,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Getter function for gas
+     *
      * @return String
      */
     public String getGas() {
@@ -587,6 +615,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Getter function for gas price
+     *
      * @return String
      */
     public String getGasPrice() {
@@ -595,6 +624,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Getter function for chain id
+     *
      * @return String
      */
     @JsonIgnore
@@ -604,6 +634,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Getter function for signatures
+     *
      * @return String
      */
     public List<SignatureData> getSignatures() {
@@ -612,6 +643,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Setter function for type.
+     *
      * @param type The Transaction type.
      */
     public void setType(String type) {
@@ -620,14 +652,15 @@ abstract public class AbstractTransaction {
 
     public void setFrom(String from) {
         //"From" field in LegacyTransaction allows null
-        if(this instanceof LegacyTransaction) {
-            if(from == null || from.isEmpty() || from.equals("0x") || from.equals(Utils.DEFAULT_ZERO_ADDRESS)) from = Utils.DEFAULT_ZERO_ADDRESS;
+        if (this instanceof LegacyTransaction) {
+            if (from == null || from.isEmpty() || from.equals("0x") || from.equals(Utils.DEFAULT_ZERO_ADDRESS))
+                from = Utils.DEFAULT_ZERO_ADDRESS;
         } else {
-            if(from == null) {
+            if (from == null) {
                 throw new IllegalArgumentException("from is missing.");
             }
 
-            if(!Utils.isAddress(from)) {
+            if (!Utils.isAddress(from)) {
                 throw new IllegalArgumentException("Invalid address. : " + from);
             }
         }
@@ -637,22 +670,24 @@ abstract public class AbstractTransaction {
 
     /**
      * Setter function for gas
+     *
      * @param gas The maximum amount of gas the transaction is allowed to use.
      */
     public void setGas(String gas) {
         //Gas value must be set.
-        if(gas == null || gas.isEmpty() || gas.equals("0x")) {
+        if (gas == null || gas.isEmpty() || gas.equals("0x")) {
             throw new IllegalArgumentException("gas is missing.");
         }
 
-        if(!Utils.isNumber(gas)) {
-            throw new IllegalArgumentException("Invalid gas. : "  + gas);
+        if (!Utils.isNumber(gas)) {
+            throw new IllegalArgumentException("Invalid gas. : " + gas);
         }
         this.gas = gas;
     }
 
     /**
      * Setter function for gas
+     *
      * @param gas The maximum amount of gas the transaction is allowed to use.
      */
     public void setGas(BigInteger gas) {
@@ -661,15 +696,16 @@ abstract public class AbstractTransaction {
 
     /**
      * Setter function for nonce.
+     *
      * @param nonce A value used to uniquely identify a sender’s transaction.
      */
     public void setNonce(String nonce) {
 
-        if(nonce == null || nonce.isEmpty() || nonce.equals("0x")) {
+        if (nonce == null || nonce.isEmpty() || nonce.equals("0x")) {
             nonce = "0x";
         }
 
-        if(!nonce.equals("0x") && !Utils.isNumber(nonce)) {
+        if (!nonce.equals("0x") && !Utils.isNumber(nonce)) {
             throw new IllegalArgumentException("Invalid nonce. : " + nonce);
         }
         this.nonce = nonce;
@@ -677,6 +713,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Setter function for nonce.
+     *
      * @param nonce A value used to uniquely identify a sender’s transaction.
      */
     public void setNonce(BigInteger nonce) {
@@ -685,14 +722,15 @@ abstract public class AbstractTransaction {
 
     /**
      * Setter function for gas price.
+     *
      * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
      */
     public void setGasPrice(String gasPrice) {
-        if(gasPrice == null || gasPrice.isEmpty() || gasPrice.equals("0x")) {
+        if (gasPrice == null || gasPrice.isEmpty() || gasPrice.equals("0x")) {
             gasPrice = "0x";
         }
 
-        if(!gasPrice.equals("0x") && !Utils.isNumber(gasPrice)) {
+        if (!gasPrice.equals("0x") && !Utils.isNumber(gasPrice)) {
             throw new IllegalArgumentException("Invalid gasPrice. : " + gasPrice);
         }
 
@@ -701,6 +739,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Setter function for gas price.
+     *
      * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
      */
     public void setGasPrice(BigInteger gasPrice) {
@@ -709,14 +748,15 @@ abstract public class AbstractTransaction {
 
     /**
      * Setter function for chain id.
+     *
      * @param chainId A network id.
      */
     public void setChainId(String chainId) {
-        if(chainId == null || chainId.isEmpty() || chainId.equals("0x")) {
+        if (chainId == null || chainId.isEmpty() || chainId.equals("0x")) {
             chainId = "0x";
         }
 
-        if(!chainId.equals("0x") && !Utils.isNumber(chainId)) {
+        if (!chainId.equals("0x") && !Utils.isNumber(chainId)) {
             throw new IllegalArgumentException("Invalid chainId. : " + chainId);
         }
 
@@ -726,6 +766,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Setter function for chain id.
+     *
      * @param chainId A network id.
      */
     public void setChainId(BigInteger chainId) {
@@ -733,7 +774,7 @@ abstract public class AbstractTransaction {
     }
 
     public void setSignatures(List<SignatureData> signatures) {
-        if(signatures == null || signatures.size() == 0) {
+        if (signatures == null || signatures.size() == 0) {
             signatures = Arrays.asList(SignatureData.getEmptySignature());
         }
         appendSignatures(signatures);

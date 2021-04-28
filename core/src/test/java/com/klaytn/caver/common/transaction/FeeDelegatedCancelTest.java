@@ -2,6 +2,7 @@ package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
+import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.type.FeeDelegatedCancel;
 import com.klaytn.caver.transaction.type.FeeDelegatedSmartContractExecution;
 import com.klaytn.caver.wallet.keyring.*;
@@ -36,15 +37,15 @@ public class FeeDelegatedCancelTest {
     static String chainID = "0x1";
 
     static SignatureData senderSignatureData = new SignatureData(
-            "0x26",
-            "0x8409f5441d4725f90905ad87f03793857d124de7a43169bc67320cd2f020efa9",
-            "0x60af63e87bdc565d7f7de906916b2334336ee7b24d9a71c9521a67df02e7ec92"
+        "0x26",
+        "0x8409f5441d4725f90905ad87f03793857d124de7a43169bc67320cd2f020efa9",
+        "0x60af63e87bdc565d7f7de906916b2334336ee7b24d9a71c9521a67df02e7ec92"
     );
 
     static SignatureData feePayerSignatureData = new SignatureData(
-            "0x26",
-            "0x44d5b25e8c649a1fdaa409dc3817be390ad90a17c25bc17c89b6d5d248495e0",
-            "0x73938e690d27b5267c73108352cf12d01de7fd0077b388e94721aa1fa32f85ec"
+        "0x26",
+        "0x44d5b25e8c649a1fdaa409dc3817be390ad90a17c25bc17c89b6d5d248495e0",
+        "0x73938e690d27b5267c73108352cf12d01de7fd0077b388e94721aa1fa32f85ec"
     );
 
     static String expectedRLPEncoding = "0x39f8c08204d219830f424094a94f5374fce5edbc8e2a8697c15331677e6ebf0bf845f84326a08409f5441d4725f90905ad87f03793857d124de7a43169bc67320cd2f020efa9a060af63e87bdc565d7f7de906916b2334336ee7b24d9a71c9521a67df02e7ec92945a0043070275d9f6054307ee7348bd660849d90ff845f84326a0044d5b25e8c649a1fdaa409dc3817be390ad90a17c25bc17c89b6d5d248495e0a073938e690d27b5267c73108352cf12d01de7fd0077b388e94721aa1fa32f85ec";
@@ -53,8 +54,8 @@ public class FeeDelegatedCancelTest {
     static String expectedRLPEncodingForFeePayerSigning = "0xf8389fde398204d219830f424094a94f5374fce5edbc8e2a8697c15331677e6ebf0b945a0043070275d9f6054307ee7348bd660849d90f018080";
 
     public static AbstractKeyring generateRoleBaseKeyring(int[] numArr, String address) {
-        List<String[]> arr = KeyringFactory.generateRoleBasedKeys(numArr, "entropy");
-        return KeyringFactory.createWithRoleBasedKey(address, arr);
+        List<String[]> arr = caver.wallet.keyring.generateRoleBasedKeys(numArr, "entropy");
+        return caver.wallet.keyring.createWithRoleBasedKey(address, arr);
     }
 
     public static class createInstanceBuilder {
@@ -64,15 +65,15 @@ public class FeeDelegatedCancelTest {
         @Test
         public void BuilderTest() {
             FeeDelegatedCancel txObj = new FeeDelegatedCancel.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             assertNotNull(txObj);
         }
@@ -80,13 +81,13 @@ public class FeeDelegatedCancelTest {
         @Test
         public void BuilderWithRPCTest() throws IOException {
             FeeDelegatedCancel txObj = new FeeDelegatedCancel.Builder()
-                    .setKlaytnCall(caver.rpc.getKlay())
-                    .setGas(gas)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setKlaytnCall(caver.rpc.getKlay())
+                .setGas(gas)
+                .setFrom(from)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             txObj.fillTransaction();
 
@@ -98,15 +99,15 @@ public class FeeDelegatedCancelTest {
         @Test
         public void BuilderTestWithBigInteger() {
             FeeDelegatedCancel txObj = new FeeDelegatedCancel.Builder()
-                    .setNonce(nonce)
-                    .setGas(Numeric.toBigInt(gas))
-                    .setGasPrice(Numeric.toBigInt(gasPrice))
-                    .setChainId(Numeric.toBigInt(chainID))
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(Numeric.toBigInt(gas))
+                .setGasPrice(Numeric.toBigInt(gasPrice))
+                .setChainId(Numeric.toBigInt(chainID))
+                .setFrom(from)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             assertEquals(gas, txObj.getGas());
             assertEquals(gasPrice, txObj.getGasPrice());
@@ -121,15 +122,15 @@ public class FeeDelegatedCancelTest {
             String from = "invalid Address";
 
             FeeDelegatedCancel txObj = new FeeDelegatedCancel.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -140,15 +141,15 @@ public class FeeDelegatedCancelTest {
             String from = null;
 
             FeeDelegatedCancel txObj = new FeeDelegatedCancel.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -159,15 +160,15 @@ public class FeeDelegatedCancelTest {
             String gas = "invalid gas";
 
             FeeDelegatedCancel txObj = new FeeDelegatedCancel.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -178,15 +179,15 @@ public class FeeDelegatedCancelTest {
             String gas = null;
 
             FeeDelegatedCancel txObj = new FeeDelegatedCancel.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -197,15 +198,15 @@ public class FeeDelegatedCancelTest {
             String feePayer = null;
 
             FeeDelegatedSmartContractExecution txObj = new FeeDelegatedSmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setFeePayer(feePayer)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
     }
 
@@ -215,16 +216,16 @@ public class FeeDelegatedCancelTest {
 
         @Test
         public void createInstance() {
-            FeeDelegatedCancel txObj = new FeeDelegatedCancel(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData)
+            FeeDelegatedCancel txObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setFeePayer(feePayer)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
             );
 
             assertNotNull(txObj);
@@ -237,16 +238,16 @@ public class FeeDelegatedCancelTest {
 
             String from = "invalid Address";
 
-            FeeDelegatedCancel txObj = new FeeDelegatedCancel(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData)
+            FeeDelegatedCancel txObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setFeePayer(feePayer)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -257,16 +258,16 @@ public class FeeDelegatedCancelTest {
 
             String from = null;
 
-            FeeDelegatedCancel txObj = new FeeDelegatedCancel(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData)
+            FeeDelegatedCancel txObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setFeePayer(feePayer)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -277,16 +278,16 @@ public class FeeDelegatedCancelTest {
 
             String gas = "invalid gas";
 
-            FeeDelegatedCancel txObj = new FeeDelegatedCancel(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData)
+            FeeDelegatedCancel txObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setFeePayer(feePayer)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -297,16 +298,16 @@ public class FeeDelegatedCancelTest {
 
             String gas = null;
 
-            FeeDelegatedCancel txObj = new FeeDelegatedCancel(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData)
+            FeeDelegatedCancel txObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setFeePayer(feePayer)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -317,16 +318,16 @@ public class FeeDelegatedCancelTest {
 
             String feePayer = null;
 
-            FeeDelegatedCancel txObj = new FeeDelegatedCancel(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData)
+            FeeDelegatedCancel txObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setFeePayer(feePayer)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
             );
         }
     }
@@ -337,7 +338,8 @@ public class FeeDelegatedCancelTest {
 
         @Test
         public void getRLPEncoding() {
-            FeeDelegatedCancel txObj = new FeeDelegatedCancel.Builder()
+            FeeDelegatedCancel txObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -346,7 +348,7 @@ public class FeeDelegatedCancelTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
         }
@@ -358,7 +360,8 @@ public class FeeDelegatedCancelTest {
 
             String nonce = null;
 
-            FeeDelegatedCancel txObj = new FeeDelegatedCancel.Builder()
+            FeeDelegatedCancel txObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -367,7 +370,7 @@ public class FeeDelegatedCancelTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             txObj.getRLPEncoding();
         }
@@ -379,7 +382,8 @@ public class FeeDelegatedCancelTest {
 
             String gasPrice = null;
 
-            FeeDelegatedCancel txObj = new FeeDelegatedCancel.Builder()
+            FeeDelegatedCancel txObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -388,7 +392,7 @@ public class FeeDelegatedCancelTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             txObj.getRLPEncoding();
         }
@@ -399,13 +403,14 @@ public class FeeDelegatedCancelTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         FeeDelegatedCancel txObj;
-        SingleKeyring keyring = KeyringFactory.createWithSingleKey(feePayer, feePayerPrivateKey);
+        SingleKeyring keyring = caver.wallet.keyring.createWithSingleKey(feePayer, feePayerPrivateKey);
         String klaytnWalletKey = keyring.getKlaytnWalletKey();
 
         @Before
         public void before() {
 
-            txObj = new FeeDelegatedCancel.Builder()
+            txObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -413,16 +418,17 @@ public class FeeDelegatedCancelTest {
                     .setFrom(from)
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
-                    .build();
+            );
 
         }
 
         @Test
         public void signAsFeePayer_String() throws IOException {
-            String privateKey = PrivateKey.generate().getPrivateKey();
+            String privateKey = caver.wallet.keyring.generateSingleKey();
             String feePayer = new PrivateKey(privateKey).getDerivedAddress();
 
-            txObj = new FeeDelegatedCancel.Builder()
+            txObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -430,7 +436,7 @@ public class FeeDelegatedCancelTest {
                     .setFrom(from)
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
-                    .build();
+            );
 
             txObj.signAsFeePayer(privateKey);
             assertEquals(1, txObj.getFeePayerSignatures().size());
@@ -460,12 +466,12 @@ public class FeeDelegatedCancelTest {
         @Test
         public void signAsFeePayer_multipleKey() throws IOException {
             String[] keyArr = {
-                    PrivateKey.generate().getPrivateKey(),
-                    feePayerPrivateKey,
-                    PrivateKey.generate().getPrivateKey()
+                caver.wallet.keyring.generateSingleKey(),
+                feePayerPrivateKey,
+                caver.wallet.keyring.generateSingleKey()
             };
 
-            MultipleKeyring keyring = KeyringFactory.createWithMultipleKey(feePayer, keyArr);
+            MultipleKeyring keyring = caver.wallet.keyring.createWithMultipleKey(feePayer, keyArr);
             txObj.signAsFeePayer(keyring, 1);
             assertEquals(1, txObj.getFeePayerSignatures().size());
             assertEquals(expectedRLPEncoding, txObj.getRawTransaction());
@@ -474,21 +480,20 @@ public class FeeDelegatedCancelTest {
         @Test
         public void signAsFeePayer_roleBasedKey() throws IOException {
             String[][] keyArr = {
-                    {
-                            PrivateKey.generate().getPrivateKey(),
-                            PrivateKey.generate().getPrivateKey(),
-
-                    },
-                    {
-                            PrivateKey.generate().getPrivateKey()
-                    },
-                    {
-                            PrivateKey.generate().getPrivateKey(),
-                            feePayerPrivateKey
-                    }
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey()
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    feePayerPrivateKey
+                }
             };
 
-            RoleBasedKeyring roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(feePayer, Arrays.asList(keyArr));
+            RoleBasedKeyring roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(feePayer, Arrays.asList(keyArr));
             txObj.signAsFeePayer(roleBasedKeyring, 1);
             assertEquals(1, txObj.getFeePayerSignatures().size());
             assertEquals(expectedRLPEncoding, txObj.getRawTransaction());
@@ -499,7 +504,7 @@ public class FeeDelegatedCancelTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The feePayer address of the transaction is different with the address of the keyring to use.");
 
-            SingleKeyring keyring = KeyringFactory.createWithSingleKey(feePayerPrivateKey, PrivateKey.generate().getPrivateKey());
+            SingleKeyring keyring = caver.wallet.keyring.generate();
 
             txObj.signAsFeePayer(keyring, 0);
         }
@@ -509,7 +514,7 @@ public class FeeDelegatedCancelTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
-            AbstractKeyring keyring = generateRoleBaseKeyring(new int[]{3,3,3}, feePayer);
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[]{3, 3, 3}, feePayer);
             txObj.signAsFeePayer(keyring, 4);
         }
     }
@@ -523,7 +528,8 @@ public class FeeDelegatedCancelTest {
 
         @Before
         public void before() {
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -531,11 +537,17 @@ public class FeeDelegatedCancelTest {
                     .setFrom(from)
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
-                    .build();
+            );
 
-            singleKeyring = KeyringFactory.createWithSingleKey(feePayer, feePayerPrivateKey);
-            multipleKeyring = KeyringFactory.createWithMultipleKey(feePayer, KeyringFactory.generateMultipleKeys(8));
-            roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(feePayer, KeyringFactory.generateRolBasedKeys(new int[]{3,4,5}));
+            singleKeyring = caver.wallet.keyring.createWithSingleKey(feePayer, feePayerPrivateKey);
+            multipleKeyring = caver.wallet.keyring.createWithMultipleKey(
+                feePayer,
+                caver.wallet.keyring.generateMultipleKeys(8)
+            );
+            roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(
+                feePayer,
+                caver.wallet.keyring.generateRolBasedKeys(new int[]{3, 4, 5})
+            );
         }
 
         @Test
@@ -567,7 +579,7 @@ public class FeeDelegatedCancelTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The feePayer address of the transaction is different with the address of the keyring to use.");
 
-            SingleKeyring keyring = KeyringFactory.createFromPrivateKey(PrivateKey.generate().getPrivateKey());
+            SingleKeyring keyring = caver.wallet.keyring.generate();
             mTxObj.signAsFeePayer(keyring);
         }
     }
@@ -580,7 +592,8 @@ public class FeeDelegatedCancelTest {
 
         @Before
         public void before() {
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -588,15 +601,15 @@ public class FeeDelegatedCancelTest {
                     .setFrom(from)
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
-                    .build();
+            );
         }
 
         @Test
         public void appendFeePayerSignature() {
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             mTxObj.appendFeePayerSignatures(signatureData);
@@ -606,9 +619,9 @@ public class FeeDelegatedCancelTest {
         @Test
         public void appendFeePayerSignatureList() {
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -622,7 +635,8 @@ public class FeeDelegatedCancelTest {
         public void appendFeePayerSignatureList_EmptySig() {
             SignatureData emptySignature = SignatureData.getEmptySignature();
 
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -631,12 +645,12 @@ public class FeeDelegatedCancelTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(emptySignature)
-                    .build();
+            );
 
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -649,12 +663,13 @@ public class FeeDelegatedCancelTest {
         @Test
         public void appendFeePayerSignature_ExistedSignature() {
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -663,12 +678,12 @@ public class FeeDelegatedCancelTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(signatureData)
-                    .build();
+            );
 
             SignatureData signatureData1 = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
-                    Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
+                Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -683,12 +698,13 @@ public class FeeDelegatedCancelTest {
         @Test
         public void appendFeePayerSignatureList_ExistedSignature() {
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -697,18 +713,18 @@ public class FeeDelegatedCancelTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(signatureData)
-                    .build();
+            );
 
             SignatureData signatureData1 = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
-                    Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
+                Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
             SignatureData signatureData2 = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0x9a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
-                    Numeric.hexStringToByteArray("0xa3ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0x9a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
+                Numeric.hexStringToByteArray("0xa3ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -737,22 +753,23 @@ public class FeeDelegatedCancelTest {
 
         @Test
         public void combineSignatures() {
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setFrom(from)
-                    .build();
+            );
 
             String rlpEncoded = "0x39f883018505d21dba00830dbba094dcad313f2bf2240dbdb243eaf5eee2f512e0bfd1f847f845820fe9a04d9bf7a8bd15a41143eeecd3c39691cdc151b50d641534f0c73055849f7abca1a07123185b4cc046eb6a78e1ee370c059dfe437012098ebe18379685acd907606f940000000000000000000000000000000000000000c4c3018080";
 
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncoded));
 
             SignatureData expectedSignatureData = new SignatureData(
-                    "0x0fe9",
-                    "0x4d9bf7a8bd15a41143eeecd3c39691cdc151b50d641534f0c73055849f7abca1",
-                    "0x7123185b4cc046eb6a78e1ee370c059dfe437012098ebe18379685acd907606f"
+                "0x0fe9",
+                "0x4d9bf7a8bd15a41143eeecd3c39691cdc151b50d641534f0c73055849f7abca1",
+                "0x7123185b4cc046eb6a78e1ee370c059dfe437012098ebe18379685acd907606f"
             );
 
             assertEquals(rlpEncoded, combined);
@@ -763,44 +780,45 @@ public class FeeDelegatedCancelTest {
         @Test
         public void combineSignature_MultipleSignature() {
             SignatureData senderSignature = new SignatureData(
-                    "0x0fe9",
-                    "0x4d9bf7a8bd15a41143eeecd3c39691cdc151b50d641534f0c73055849f7abca1",
-                    "0x7123185b4cc046eb6a78e1ee370c059dfe437012098ebe18379685acd907606f"
+                "0x0fe9",
+                "0x4d9bf7a8bd15a41143eeecd3c39691cdc151b50d641534f0c73055849f7abca1",
+                "0x7123185b4cc046eb6a78e1ee370c059dfe437012098ebe18379685acd907606f"
             );
 
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setFrom(from)
                     .setSignatures(senderSignature)
-                    .build();
+            );
 
             String[] rlpEncodedStrings = {
-                    "0x39f86f018505d21dba00830dbba094dcad313f2bf2240dbdb243eaf5eee2f512e0bfd1f847f845820fe9a0205d4f6f758629da5eb25d1d572e82430243e00096ed64097b6d0031847bf792a0280ce8a79438c699fce0417403e8892e46e10da764b16876091ef0965c1ce1df80c4c3018080",
-                    "0x39f86f018505d21dba00830dbba094dcad313f2bf2240dbdb243eaf5eee2f512e0bfd1f847f845820feaa02f3c7b7aebd6c9af7a5b4259f0ea77d96362efbdca397b9f17e3c6924296c53fa00e4197ba6e38cecf99715f523c1805a58559072f944443bad1152dee73bfb16780c4c3018080",
+                "0x39f86f018505d21dba00830dbba094dcad313f2bf2240dbdb243eaf5eee2f512e0bfd1f847f845820fe9a0205d4f6f758629da5eb25d1d572e82430243e00096ed64097b6d0031847bf792a0280ce8a79438c699fce0417403e8892e46e10da764b16876091ef0965c1ce1df80c4c3018080",
+                "0x39f86f018505d21dba00830dbba094dcad313f2bf2240dbdb243eaf5eee2f512e0bfd1f847f845820feaa02f3c7b7aebd6c9af7a5b4259f0ea77d96362efbdca397b9f17e3c6924296c53fa00e4197ba6e38cecf99715f523c1805a58559072f944443bad1152dee73bfb16780c4c3018080",
             };
 
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedStrings));
             String expectedRLPEncoding = "0x39f90111018505d21dba00830dbba094dcad313f2bf2240dbdb243eaf5eee2f512e0bfd1f8d5f845820fe9a04d9bf7a8bd15a41143eeecd3c39691cdc151b50d641534f0c73055849f7abca1a07123185b4cc046eb6a78e1ee370c059dfe437012098ebe18379685acd907606ff845820fe9a0205d4f6f758629da5eb25d1d572e82430243e00096ed64097b6d0031847bf792a0280ce8a79438c699fce0417403e8892e46e10da764b16876091ef0965c1ce1dff845820feaa02f3c7b7aebd6c9af7a5b4259f0ea77d96362efbdca397b9f17e3c6924296c53fa00e4197ba6e38cecf99715f523c1805a58559072f944443bad1152dee73bfb167940000000000000000000000000000000000000000c4c3018080";
 
             SignatureData[] expectedSignatureData = new SignatureData[]{
-                    new SignatureData(
-                            "0x0fe9",
-                            "0x4d9bf7a8bd15a41143eeecd3c39691cdc151b50d641534f0c73055849f7abca1",
-                            "0x7123185b4cc046eb6a78e1ee370c059dfe437012098ebe18379685acd907606f"
-                    ),
-                    new SignatureData(
-                            "0x0fe9",
-                            "0x205d4f6f758629da5eb25d1d572e82430243e00096ed64097b6d0031847bf792",
-                            "0x280ce8a79438c699fce0417403e8892e46e10da764b16876091ef0965c1ce1df"
-                    ),
-                    new SignatureData(
-                            "0x0fea",
-                            "0x2f3c7b7aebd6c9af7a5b4259f0ea77d96362efbdca397b9f17e3c6924296c53f",
-                            "0x0e4197ba6e38cecf99715f523c1805a58559072f944443bad1152dee73bfb167"
-                    )
+                new SignatureData(
+                    "0x0fe9",
+                    "0x4d9bf7a8bd15a41143eeecd3c39691cdc151b50d641534f0c73055849f7abca1",
+                    "0x7123185b4cc046eb6a78e1ee370c059dfe437012098ebe18379685acd907606f"
+                ),
+                new SignatureData(
+                    "0x0fe9",
+                    "0x205d4f6f758629da5eb25d1d572e82430243e00096ed64097b6d0031847bf792",
+                    "0x280ce8a79438c699fce0417403e8892e46e10da764b16876091ef0965c1ce1df"
+                ),
+                new SignatureData(
+                    "0x0fea",
+                    "0x2f3c7b7aebd6c9af7a5b4259f0ea77d96362efbdca397b9f17e3c6924296c53f",
+                    "0x0e4197ba6e38cecf99715f523c1805a58559072f944443bad1152dee73bfb167"
+                )
             };
 
             assertEquals(expectedRLPEncoding, combined);
@@ -811,21 +829,22 @@ public class FeeDelegatedCancelTest {
 
         @Test
         public void combineSignature_feePayerSignature() {
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setFrom(from)
-                    .build();
+            );
 
             String rlpEncoded = "0x39f883018505d21dba00830dbba094dcad313f2bf2240dbdb243eaf5eee2f512e0bfd1c4c3018080946f89ec285c52a3e092cdb017e125a9b197e78dc7f847f845820fe9a0a4ca740e08115db092a79ce902bdac45347a3d34a74ea0fcc371ccf01269ca43a029e095bf3f9e0be7e2130fe6985419114958877412b46b5b4243cc39380c5028";
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncoded));
 
             SignatureData signatureData = new SignatureData(
-                    "0x0fe9",
-                    "0xa4ca740e08115db092a79ce902bdac45347a3d34a74ea0fcc371ccf01269ca43",
-                    "0x29e095bf3f9e0be7e2130fe6985419114958877412b46b5b4243cc39380c5028"
+                "0x0fe9",
+                "0xa4ca740e08115db092a79ce902bdac45347a3d34a74ea0fcc371ccf01269ca43",
+                "0x29e095bf3f9e0be7e2130fe6985419114958877412b46b5b4243cc39380c5028"
             );
             assertEquals(rlpEncoded, combined);
             assertEquals(signatureData, mTxObj.getFeePayerSignatures().get(0));
@@ -835,12 +854,13 @@ public class FeeDelegatedCancelTest {
         public void combineSignature_multipleFeePayerSignature() {
             String feePayer = "0x6f89ec285c52a3e092cdb017e125a9b197e78dc7";
             SignatureData feePayerSignatureData = new SignatureData(
-                    "0x0fe9",
-                    "0xa4ca740e08115db092a79ce902bdac45347a3d34a74ea0fcc371ccf01269ca43",
-                    "0x29e095bf3f9e0be7e2130fe6985419114958877412b46b5b4243cc39380c5028"
+                "0x0fe9",
+                "0xa4ca740e08115db092a79ce902bdac45347a3d34a74ea0fcc371ccf01269ca43",
+                "0x29e095bf3f9e0be7e2130fe6985419114958877412b46b5b4243cc39380c5028"
             );
 
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -848,32 +868,32 @@ public class FeeDelegatedCancelTest {
                     .setFrom(from)
                     .setFeePayer(feePayer)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
-            String[] rlpEncodedStrings = new String[] {
-                    "0x39f883018505d21dba00830dbba094dcad313f2bf2240dbdb243eaf5eee2f512e0bfd1c4c3018080946f89ec285c52a3e092cdb017e125a9b197e78dc7f847f845820feaa09c86edd1b5d75ac1050a5a7494dece5f186b8e9654f75cf4942f7dca57fc2de0a032f306028776389107c40f1765679b2630f093b1c4f4fda9415f0c909c7addef",
-                    "0x39f883018505d21dba00830dbba094dcad313f2bf2240dbdb243eaf5eee2f512e0bfd1c4c3018080946f89ec285c52a3e092cdb017e125a9b197e78dc7f847f845820fe9a0392e7a5d2efbc7da9d114ce79797eebbe2007ece065109f7f93baed1e23bb22ca022e161a9f20c14b5830154e819cdaf59e8d82690b318afb19e2903b52020bb3e",
+            String[] rlpEncodedStrings = new String[]{
+                "0x39f883018505d21dba00830dbba094dcad313f2bf2240dbdb243eaf5eee2f512e0bfd1c4c3018080946f89ec285c52a3e092cdb017e125a9b197e78dc7f847f845820feaa09c86edd1b5d75ac1050a5a7494dece5f186b8e9654f75cf4942f7dca57fc2de0a032f306028776389107c40f1765679b2630f093b1c4f4fda9415f0c909c7addef",
+                "0x39f883018505d21dba00830dbba094dcad313f2bf2240dbdb243eaf5eee2f512e0bfd1c4c3018080946f89ec285c52a3e092cdb017e125a9b197e78dc7f847f845820fe9a0392e7a5d2efbc7da9d114ce79797eebbe2007ece065109f7f93baed1e23bb22ca022e161a9f20c14b5830154e819cdaf59e8d82690b318afb19e2903b52020bb3e",
             };
 
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedStrings));
             String expectedRLPEncoded = "0x39f90111018505d21dba00830dbba094dcad313f2bf2240dbdb243eaf5eee2f512e0bfd1c4c3018080946f89ec285c52a3e092cdb017e125a9b197e78dc7f8d5f845820fe9a0a4ca740e08115db092a79ce902bdac45347a3d34a74ea0fcc371ccf01269ca43a029e095bf3f9e0be7e2130fe6985419114958877412b46b5b4243cc39380c5028f845820feaa09c86edd1b5d75ac1050a5a7494dece5f186b8e9654f75cf4942f7dca57fc2de0a032f306028776389107c40f1765679b2630f093b1c4f4fda9415f0c909c7addeff845820fe9a0392e7a5d2efbc7da9d114ce79797eebbe2007ece065109f7f93baed1e23bb22ca022e161a9f20c14b5830154e819cdaf59e8d82690b318afb19e2903b52020bb3e";
 
             SignatureData[] expectedSignatureData = new SignatureData[]{
-                    new SignatureData(
-                            "0x0fe9",
-                            "0xa4ca740e08115db092a79ce902bdac45347a3d34a74ea0fcc371ccf01269ca43",
-                            "0x29e095bf3f9e0be7e2130fe6985419114958877412b46b5b4243cc39380c5028"
-                    ),
-                    new SignatureData(
-                            "0x0fea",
-                            "0x9c86edd1b5d75ac1050a5a7494dece5f186b8e9654f75cf4942f7dca57fc2de0",
-                            "0x32f306028776389107c40f1765679b2630f093b1c4f4fda9415f0c909c7addef"
-                    ),
-                    new SignatureData(
-                            "0x0fe9",
-                            "0x392e7a5d2efbc7da9d114ce79797eebbe2007ece065109f7f93baed1e23bb22c",
-                            "0x22e161a9f20c14b5830154e819cdaf59e8d82690b318afb19e2903b52020bb3e"
-                    )
+                new SignatureData(
+                    "0x0fe9",
+                    "0xa4ca740e08115db092a79ce902bdac45347a3d34a74ea0fcc371ccf01269ca43",
+                    "0x29e095bf3f9e0be7e2130fe6985419114958877412b46b5b4243cc39380c5028"
+                ),
+                new SignatureData(
+                    "0x0fea",
+                    "0x9c86edd1b5d75ac1050a5a7494dece5f186b8e9654f75cf4942f7dca57fc2de0",
+                    "0x32f306028776389107c40f1765679b2630f093b1c4f4fda9415f0c909c7addef"
+                ),
+                new SignatureData(
+                    "0x0fe9",
+                    "0x392e7a5d2efbc7da9d114ce79797eebbe2007ece065109f7f93baed1e23bb22c",
+                    "0x22e161a9f20c14b5830154e819cdaf59e8d82690b318afb19e2903b52020bb3e"
+                )
             };
 
             assertEquals(expectedRLPEncoded, combined);
@@ -884,53 +904,54 @@ public class FeeDelegatedCancelTest {
 
         @Test
         public void multipleSignature_senderSignature_feePayerSignature() {
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setFrom(from)
-                    .build();
+            );
 
             String rlpEncodedString = "0x39f8fd018505d21dba00830dbba094dcad313f2bf2240dbdb243eaf5eee2f512e0bfd1f8d5f845820fe9a04d9bf7a8bd15a41143eeecd3c39691cdc151b50d641534f0c73055849f7abca1a07123185b4cc046eb6a78e1ee370c059dfe437012098ebe18379685acd907606ff845820fe9a0205d4f6f758629da5eb25d1d572e82430243e00096ed64097b6d0031847bf792a0280ce8a79438c699fce0417403e8892e46e10da764b16876091ef0965c1ce1dff845820feaa02f3c7b7aebd6c9af7a5b4259f0ea77d96362efbdca397b9f17e3c6924296c53fa00e4197ba6e38cecf99715f523c1805a58559072f944443bad1152dee73bfb16780c4c3018080";
-            SignatureData[] expectedSignatures = new SignatureData[] {
-                    new SignatureData(
-                            "0x0fe9",
-                            "0x4d9bf7a8bd15a41143eeecd3c39691cdc151b50d641534f0c73055849f7abca1",
-                            "0x7123185b4cc046eb6a78e1ee370c059dfe437012098ebe18379685acd907606f"
-                    ),
-                    new SignatureData(
-                            "0x0fe9",
-                            "0x205d4f6f758629da5eb25d1d572e82430243e00096ed64097b6d0031847bf792",
-                            "0x280ce8a79438c699fce0417403e8892e46e10da764b16876091ef0965c1ce1df"
-                    ),
-                    new SignatureData(
-                            "0x0fea",
-                            "0x2f3c7b7aebd6c9af7a5b4259f0ea77d96362efbdca397b9f17e3c6924296c53f",
-                            "0x0e4197ba6e38cecf99715f523c1805a58559072f944443bad1152dee73bfb167"
-                    ),
+            SignatureData[] expectedSignatures = new SignatureData[]{
+                new SignatureData(
+                    "0x0fe9",
+                    "0x4d9bf7a8bd15a41143eeecd3c39691cdc151b50d641534f0c73055849f7abca1",
+                    "0x7123185b4cc046eb6a78e1ee370c059dfe437012098ebe18379685acd907606f"
+                ),
+                new SignatureData(
+                    "0x0fe9",
+                    "0x205d4f6f758629da5eb25d1d572e82430243e00096ed64097b6d0031847bf792",
+                    "0x280ce8a79438c699fce0417403e8892e46e10da764b16876091ef0965c1ce1df"
+                ),
+                new SignatureData(
+                    "0x0fea",
+                    "0x2f3c7b7aebd6c9af7a5b4259f0ea77d96362efbdca397b9f17e3c6924296c53f",
+                    "0x0e4197ba6e38cecf99715f523c1805a58559072f944443bad1152dee73bfb167"
+                ),
             };
 
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedString));
 
             String rlpEncodedStringsWithFeePayerSignatures = "0x39f90111018505d21dba00830dbba094dcad313f2bf2240dbdb243eaf5eee2f512e0bfd1c4c3018080946f89ec285c52a3e092cdb017e125a9b197e78dc7f8d5f845820fe9a0a4ca740e08115db092a79ce902bdac45347a3d34a74ea0fcc371ccf01269ca43a029e095bf3f9e0be7e2130fe6985419114958877412b46b5b4243cc39380c5028f845820feaa09c86edd1b5d75ac1050a5a7494dece5f186b8e9654f75cf4942f7dca57fc2de0a032f306028776389107c40f1765679b2630f093b1c4f4fda9415f0c909c7addeff845820fe9a0392e7a5d2efbc7da9d114ce79797eebbe2007ece065109f7f93baed1e23bb22ca022e161a9f20c14b5830154e819cdaf59e8d82690b318afb19e2903b52020bb3e";
 
-            SignatureData[] expectedFeePayerSignatures = new SignatureData[] {
-                    new SignatureData(
-                            "0x0fe9",
-                            "0xa4ca740e08115db092a79ce902bdac45347a3d34a74ea0fcc371ccf01269ca43",
-                            "0x29e095bf3f9e0be7e2130fe6985419114958877412b46b5b4243cc39380c5028"
-                    ),
-                    new SignatureData(
-                            "0x0fea",
-                            "0x9c86edd1b5d75ac1050a5a7494dece5f186b8e9654f75cf4942f7dca57fc2de0",
-                            "0x32f306028776389107c40f1765679b2630f093b1c4f4fda9415f0c909c7addef"
-                    ),
-                    new SignatureData(
-                            "0x0fe9",
-                            "0x392e7a5d2efbc7da9d114ce79797eebbe2007ece065109f7f93baed1e23bb22c",
-                            "0x22e161a9f20c14b5830154e819cdaf59e8d82690b318afb19e2903b52020bb3e"
-                    ),
+            SignatureData[] expectedFeePayerSignatures = new SignatureData[]{
+                new SignatureData(
+                    "0x0fe9",
+                    "0xa4ca740e08115db092a79ce902bdac45347a3d34a74ea0fcc371ccf01269ca43",
+                    "0x29e095bf3f9e0be7e2130fe6985419114958877412b46b5b4243cc39380c5028"
+                ),
+                new SignatureData(
+                    "0x0fea",
+                    "0x9c86edd1b5d75ac1050a5a7494dece5f186b8e9654f75cf4942f7dca57fc2de0",
+                    "0x32f306028776389107c40f1765679b2630f093b1c4f4fda9415f0c909c7addef"
+                ),
+                new SignatureData(
+                    "0x0fe9",
+                    "0x392e7a5d2efbc7da9d114ce79797eebbe2007ece065109f7f93baed1e23bb22c",
+                    "0x22e161a9f20c14b5830154e819cdaf59e8d82690b318afb19e2903b52020bb3e"
+                ),
             };
 
             combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedStringsWithFeePayerSignatures));
@@ -951,14 +972,16 @@ public class FeeDelegatedCancelTest {
 
             String gas = "0x1000";
 
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
+
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setChainId(chainID)
                     .setFrom(from)
                     .setFeePayer(feePayer)
-                    .build();
+            );
 
             String rlpEncoded = "0x39f86f018505d21dba00830dbba094dcad313f2bf2240dbdb243eaf5eee2f512e0bfd1f847f845820fe9a04d9bf7a8bd15a41143eeecd3c39691cdc151b50d641534f0c73055849f7abca1a07123185b4cc046eb6a78e1ee370c059dfe437012098ebe18379685acd907606f80c4c3018080";
             List<String> list = new ArrayList<>();
@@ -971,7 +994,8 @@ public class FeeDelegatedCancelTest {
     public static class getRawTransactionTest {
         @Test
         public void getRawTransaction() {
-            FeeDelegatedCancel txObj = new FeeDelegatedCancel.Builder()
+            FeeDelegatedCancel txObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -980,7 +1004,7 @@ public class FeeDelegatedCancelTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             assertEquals(expectedRLPEncoding, txObj.getRawTransaction());
         }
@@ -994,7 +1018,8 @@ public class FeeDelegatedCancelTest {
 
         @Test
         public void getTransactionHash() {
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1003,7 +1028,7 @@ public class FeeDelegatedCancelTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             assertEquals(expectedTransactionHash, mTxObj.getTransactionHash());
         }
@@ -1015,7 +1040,8 @@ public class FeeDelegatedCancelTest {
 
             String nonce = null;
 
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1024,19 +1050,20 @@ public class FeeDelegatedCancelTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             String txHash = mTxObj.getTransactionHash();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String gasPrice = null;
 
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1045,7 +1072,7 @@ public class FeeDelegatedCancelTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             String txHash = mTxObj.getTransactionHash();
         }
@@ -1059,7 +1086,8 @@ public class FeeDelegatedCancelTest {
 
         @Test
         public void getSenderTransactionHash() {
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1068,7 +1096,7 @@ public class FeeDelegatedCancelTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             assertEquals(expectedSenderTransactionHash, mTxObj.getSenderTxHash());
         }
@@ -1080,7 +1108,8 @@ public class FeeDelegatedCancelTest {
 
             String nonce = null;
 
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1089,19 +1118,20 @@ public class FeeDelegatedCancelTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             mTxObj.getSenderTxHash();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String gasPrice = null;
 
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1110,7 +1140,7 @@ public class FeeDelegatedCancelTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             mTxObj.getSenderTxHash();
         }
@@ -1124,7 +1154,8 @@ public class FeeDelegatedCancelTest {
 
         @Test
         public void getRLPEncodingForFeePayerSignature() {
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1133,7 +1164,7 @@ public class FeeDelegatedCancelTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             assertEquals(expectedRLPEncodingForFeePayerSigning, mTxObj.getRLPEncodingForFeePayerSignature());
         }
@@ -1145,7 +1176,8 @@ public class FeeDelegatedCancelTest {
 
             String nonce = null;
 
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1154,19 +1186,20 @@ public class FeeDelegatedCancelTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String gasPrice = null;
 
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1175,19 +1208,20 @@ public class FeeDelegatedCancelTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }
 
         @Test
-        public void throwException_NotDefined_chainID() {
+        public void throwException_NotDefined_ChainID() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String chainID = null;
 
-            mTxObj = new FeeDelegatedCancel.Builder()
+            mTxObj = caver.transaction.feeDelegatedCancel.create(
+                TxPropertyBuilder.feeDelegatedCancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -1196,7 +1230,7 @@ public class FeeDelegatedCancelTest {
                     .setFeePayer(feePayer)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            );
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }

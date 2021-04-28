@@ -95,7 +95,7 @@ public class ChainDataAnchoring extends AbstractTransaction {
 
     /**
      * Decodes a RLP-encoded ChainDataAnchoring byte array.
-     * @param rlpEncoded RLP-encoded ChainDataAnchoring string
+     * @param rlpEncoded RLP-encoded ChainDataAnchoring byte array.
      * @return ChainDataAnchoring
      */
     public static ChainDataAnchoring decode(byte[] rlpEncoded) {

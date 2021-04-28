@@ -41,15 +41,15 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
     static String input = "0x6353586b000000000000000000000000bc5951f055a85f41a3b62fd6f68ab7de76d299b2";
 
     static SignatureData senderSignatureData = new SignatureData(
-            "0x26",
-            "0x74ccfee18dc28932396b85617c53784ee366303bce39a2401d8eb602cf73766f",
-            "0x4c937a5ab9401d2cacb3f39ba8c29dbcd44588cc5c7d0b6b4113cfa7b7d9427b"
+        "0x26",
+        "0x74ccfee18dc28932396b85617c53784ee366303bce39a2401d8eb602cf73766f",
+        "0x4c937a5ab9401d2cacb3f39ba8c29dbcd44588cc5c7d0b6b4113cfa7b7d9427b"
     );
 
     static SignatureData feePayerSignatureData = new SignatureData(
-            "0x25",
-            "0x4a4997524694d535976d7343c1e3a260f99ba53fcb5477e2b96216ec96ebb565",
-            "0xf8cb31a35399d2b0fbbfa39f259c819a15370706c0449952c7cfc682d200d7c"
+        "0x25",
+        "0x4a4997524694d535976d7343c1e3a260f99ba53fcb5477e2b96216ec96ebb565",
+        "0xf8cb31a35399d2b0fbbfa39f259c819a15370706c0449952c7cfc682d200d7c"
     );
 
     static String expectedRLPEncoding = "0x32f8fc8204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0ba46353586b000000000000000000000000bc5951f055a85f41a3b62fd6f68ab7de76d299b21ef845f84326a074ccfee18dc28932396b85617c53784ee366303bce39a2401d8eb602cf73766fa04c937a5ab9401d2cacb3f39ba8c29dbcd44588cc5c7d0b6b4113cfa7b7d9427b945a0043070275d9f6054307ee7348bd660849d90ff845f84325a04a4997524694d535976d7343c1e3a260f99ba53fcb5477e2b96216ec96ebb565a00f8cb31a35399d2b0fbbfa39f259c819a15370706c0449952c7cfc682d200d7c";
@@ -58,8 +58,8 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
     static String expectedRLPEncodingForFeePayerSigning = "0xf876b85cf85a328204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0ba46353586b000000000000000000000000bc5951f055a85f41a3b62fd6f68ab7de76d299b21e945a0043070275d9f6054307ee7348bd660849d90f018080";
 
     public static AbstractKeyring generateRoleBaseKeyring(int[] numArr, String address) {
-        List<String[]> arr = KeyringFactory.generateRoleBasedKeys(numArr, "entropy");
-        return KeyringFactory.createWithRoleBasedKey(address, arr);
+        List<String[]> arr = caver.wallet.keyring.generateRoleBasedKeys(numArr, "entropy");
+        return caver.wallet.keyring.createWithRoleBasedKey(address, arr);
     }
 
     public static class createInstanceBuilder {
@@ -69,19 +69,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Test
         public void BuilderTest() {
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             assertNotNull(txObj);
         }
@@ -93,20 +93,20 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String chainId = null;
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setKlaytnCall(caver.rpc.getKlay())
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainId)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setKlaytnCall(caver.rpc.getKlay())
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainId)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             txObj.fillTransaction();
 
@@ -118,19 +118,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Test
         public void BuilderTestWithBigInteger() {
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(Numeric.toBigInt(nonce))
-                    .setGas(Numeric.toBigInt(gas))
-                    .setGasPrice(Numeric.toBigInt(gasPrice))
-                    .setChainId(Numeric.toBigInt(chainID))
-                    .setFrom(from)
-                    .setValue(Numeric.toBigInt(value))
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(Numeric.toBigInt(nonce))
+                .setGas(Numeric.toBigInt(gas))
+                .setGasPrice(Numeric.toBigInt(gasPrice))
+                .setChainId(Numeric.toBigInt(chainID))
+                .setFrom(from)
+                .setValue(Numeric.toBigInt(value))
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             assertEquals(gas, txObj.getGas());
             assertEquals(gasPrice, txObj.getGasPrice());
@@ -146,19 +146,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String from = "invalid Address";
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -169,19 +169,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String from = null;
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -192,19 +192,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String to = "invalid Address";
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -215,19 +215,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String value = "invalid value";
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -238,19 +238,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String value = null;
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -261,19 +261,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String gas = "invalid gas";
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -284,19 +284,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String gas = null;
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -307,19 +307,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String input = "invalid input";
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -330,19 +330,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String input = null;
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -353,19 +353,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String feePayer = null;
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -376,19 +376,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String feeRatio = "invalid fee ratio";
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -399,19 +399,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             BigInteger feeRatio = BigInteger.valueOf(101);
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
 
         @Test
@@ -422,19 +422,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String feeRatio = null;
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
         }
     }
 
@@ -447,19 +447,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Test
         public void createInstance() {
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    feeRatio,
-                    to,
-                    value,
-                    input
+                null,
+                from,
+                nonce,
+                gas,
+                gasPrice,
+                chainID,
+                Arrays.asList(senderSignatureData),
+                feePayer,
+                Arrays.asList(feePayerSignatureData),
+                feeRatio,
+                to,
+                value,
+                input
             );
 
             assertNotNull(txObj);
@@ -473,19 +473,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String from = "invalid Address";
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    feeRatio,
-                    to,
-                    value,
-                    input
+                null,
+                from,
+                nonce,
+                gas,
+                gasPrice,
+                chainID,
+                Arrays.asList(senderSignatureData),
+                feePayer,
+                Arrays.asList(feePayerSignatureData),
+                feeRatio,
+                to,
+                value,
+                input
             );
         }
 
@@ -497,19 +497,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String from = null;
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    feeRatio,
-                    to,
-                    value,
-                    input
+                null,
+                from,
+                nonce,
+                gas,
+                gasPrice,
+                chainID,
+                Arrays.asList(senderSignatureData),
+                feePayer,
+                Arrays.asList(feePayerSignatureData),
+                feeRatio,
+                to,
+                value,
+                input
             );
         }
 
@@ -521,19 +521,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String to = "invalid Address";
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    feeRatio,
-                    to,
-                    value,
-                    input
+                null,
+                from,
+                nonce,
+                gas,
+                gasPrice,
+                chainID,
+                Arrays.asList(senderSignatureData),
+                feePayer,
+                Arrays.asList(feePayerSignatureData),
+                feeRatio,
+                to,
+                value,
+                input
             );
         }
 
@@ -545,19 +545,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String to = null;
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    feeRatio,
-                    to,
-                    value,
-                    input
+                null,
+                from,
+                nonce,
+                gas,
+                gasPrice,
+                chainID,
+                Arrays.asList(senderSignatureData),
+                feePayer,
+                Arrays.asList(feePayerSignatureData),
+                feeRatio,
+                to,
+                value,
+                input
             );
         }
 
@@ -569,19 +569,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String value = "invalid value";
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    feeRatio,
-                    to,
-                    value,
-                    input
+                null,
+                from,
+                nonce,
+                gas,
+                gasPrice,
+                chainID,
+                Arrays.asList(senderSignatureData),
+                feePayer,
+                Arrays.asList(feePayerSignatureData),
+                feeRatio,
+                to,
+                value,
+                input
             );
         }
 
@@ -593,19 +593,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String value = null;
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    feeRatio,
-                    to,
-                    value,
-                    input
+                null,
+                from,
+                nonce,
+                gas,
+                gasPrice,
+                chainID,
+                Arrays.asList(senderSignatureData),
+                feePayer,
+                Arrays.asList(feePayerSignatureData),
+                feeRatio,
+                to,
+                value,
+                input
             );
         }
 
@@ -617,19 +617,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String gas = "invalid gas";
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    feeRatio,
-                    to,
-                    value,
-                    input
+                null,
+                from,
+                nonce,
+                gas,
+                gasPrice,
+                chainID,
+                Arrays.asList(senderSignatureData),
+                feePayer,
+                Arrays.asList(feePayerSignatureData),
+                feeRatio,
+                to,
+                value,
+                input
             );
         }
 
@@ -641,19 +641,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String gas = null;
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    feeRatio,
-                    to,
-                    value,
-                    input
+                null,
+                from,
+                nonce,
+                gas,
+                gasPrice,
+                chainID,
+                Arrays.asList(senderSignatureData),
+                feePayer,
+                Arrays.asList(feePayerSignatureData),
+                feeRatio,
+                to,
+                value,
+                input
             );
         }
 
@@ -665,19 +665,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String input = "invalid input";
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    feeRatio,
-                    to,
-                    value,
-                    input
+                null,
+                from,
+                nonce,
+                gas,
+                gasPrice,
+                chainID,
+                Arrays.asList(senderSignatureData),
+                feePayer,
+                Arrays.asList(feePayerSignatureData),
+                feeRatio,
+                to,
+                value,
+                input
             );
         }
 
@@ -689,19 +689,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String input = null;
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    feeRatio,
-                    to,
-                    value,
-                    input
+                null,
+                from,
+                nonce,
+                gas,
+                gasPrice,
+                chainID,
+                Arrays.asList(senderSignatureData),
+                feePayer,
+                Arrays.asList(feePayerSignatureData),
+                feeRatio,
+                to,
+                value,
+                input
             );
         }
 
@@ -713,19 +713,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String feeRatio = "invalid fee ratio";
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    feeRatio,
-                    to,
-                    value,
-                    input
+                null,
+                from,
+                nonce,
+                gas,
+                gasPrice,
+                chainID,
+                Arrays.asList(senderSignatureData),
+                feePayer,
+                Arrays.asList(feePayerSignatureData),
+                feeRatio,
+                to,
+                value,
+                input
             );
         }
 
@@ -737,19 +737,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String feeRatio = "0xFF";
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    feeRatio,
-                    to,
-                    value,
-                    input
+                null,
+                from,
+                nonce,
+                gas,
+                gasPrice,
+                chainID,
+                Arrays.asList(senderSignatureData),
+                feePayer,
+                Arrays.asList(feePayerSignatureData),
+                feeRatio,
+                to,
+                value,
+                input
             );
         }
 
@@ -761,19 +761,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String feeRatio = null;
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    feeRatio,
-                    to,
-                    value,
-                    input
+                null,
+                from,
+                nonce,
+                gas,
+                gasPrice,
+                chainID,
+                Arrays.asList(senderSignatureData),
+                feePayer,
+                Arrays.asList(feePayerSignatureData),
+                feeRatio,
+                to,
+                value,
+                input
             );
         }
     }
@@ -785,19 +785,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Test
         public void getRLPEncoding() {
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
         }
@@ -810,19 +810,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String nonce = null;
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             txObj.getRLPEncoding();
         }
@@ -835,19 +835,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String gasPrice = null;
 
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             txObj.getRLPEncoding();
         }
@@ -863,42 +863,42 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
 
         @Before
         public void before() {
-            keyring = KeyringFactory.createWithSingleKey(feePayer, feePayerPrivateKey);
+            keyring = caver.wallet.keyring.createWithSingleKey(feePayer, feePayerPrivateKey);
             klaytnWalletKey = keyring.getKlaytnWalletKey();
 
             txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .build();
         }
 
         @Test
         public void signAsFeePayer_String() throws IOException {
-            String feePayerPrivateKey = PrivateKey.generate().getPrivateKey();
-            String feePayer = new PrivateKey(feePayerPrivateKey).getDerivedAddress();
+            String feePayerPrivateKey = caver.wallet.keyring.generateSingleKey();
+            String feePayer = caver.wallet.keyring.createFromPrivateKey(feePayerPrivateKey).getAddress();
 
             txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .build();
 
             txObj.signAsFeePayer(feePayerPrivateKey);
             assertEquals(1, txObj.getFeePayerSignatures().size());
@@ -925,12 +925,12 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Test
         public void signAsFeePayer_multipleKey() throws IOException {
             String[] keyArr = {
-                    PrivateKey.generate().getPrivateKey(),
-                    feePayerPrivateKey,
-                    PrivateKey.generate().getPrivateKey()
+                caver.wallet.keyring.generateSingleKey(),
+                feePayerPrivateKey,
+                caver.wallet.keyring.generateSingleKey()
             };
 
-            MultipleKeyring keyring = KeyringFactory.createWithMultipleKey(feePayer, keyArr);
+            MultipleKeyring keyring = caver.wallet.keyring.createWithMultipleKey(feePayer, keyArr);
             txObj.signAsFeePayer(keyring, 1);
             assertEquals(1, txObj.getFeePayerSignatures().size());
         }
@@ -938,21 +938,20 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Test
         public void signAsFeePayer_roleBasedKey() throws IOException {
             String[][] keyArr = {
-                    {
-                            PrivateKey.generate().getPrivateKey(),
-                            PrivateKey.generate().getPrivateKey(),
-
-                    },
-                    {
-                            PrivateKey.generate().getPrivateKey()
-                    },
-                    {
-                            PrivateKey.generate().getPrivateKey(),
-                            feePayerPrivateKey
-                    }
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey()
+                },
+                {
+                    caver.wallet.keyring.generateSingleKey(),
+                    feePayerPrivateKey
+                }
             };
 
-            RoleBasedKeyring roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(feePayer, Arrays.asList(keyArr));
+            RoleBasedKeyring roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(feePayer, Arrays.asList(keyArr));
             txObj.signAsFeePayer(roleBasedKeyring, 1);
             assertEquals(1, txObj.getFeePayerSignatures().size());
         }
@@ -962,7 +961,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The feePayer address of the transaction is different with the address of the keyring to use.");
 
-            SingleKeyring keyring = KeyringFactory.createWithSingleKey(feePayerPrivateKey, PrivateKey.generate().getPrivateKey());
+            SingleKeyring keyring = caver.wallet.keyring.generate();
             txObj.signAsFeePayer(keyring, 0);
         }
 
@@ -971,7 +970,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
-            AbstractKeyring keyring = generateRoleBaseKeyring(new int[]{3,3,3}, feePayer);
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[]{3, 3, 3}, feePayer);
             txObj.signAsFeePayer(keyring, 4);
         }
     }
@@ -986,22 +985,31 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Before
         public void before() {
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .build();
 
-            singleKeyring = KeyringFactory.createWithSingleKey(feePayer, KeyringFactory.generateSingleKey());
-            multipleKeyring = KeyringFactory.createWithMultipleKey(feePayer, KeyringFactory.generateMultipleKeys(8));
-            roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(feePayer, KeyringFactory.generateRolBasedKeys(new int[]{3,4,5}));
+            singleKeyring = caver.wallet.keyring.createWithSingleKey(
+                feePayer,
+                caver.wallet.keyring.generateSingleKey()
+            );
+            multipleKeyring = caver.wallet.keyring.createWithMultipleKey(
+                feePayer,
+                caver.wallet.keyring.generateMultipleKeys(8)
+            );
+            roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(
+                feePayer,
+                caver.wallet.keyring.generateRolBasedKeys(new int[]{3, 4, 5})
+            );
         }
 
         @Test
@@ -1033,7 +1041,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The feePayer address of the transaction is different with the address of the keyring to use.");
 
-            SingleKeyring keyring = KeyringFactory.createFromPrivateKey(PrivateKey.generate().getPrivateKey());
+            SingleKeyring keyring = caver.wallet.keyring.generate();
             mTxObj.signAsFeePayer(keyring);
         }
     }
@@ -1047,26 +1055,26 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Before
         public void before() {
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .build();
         }
 
         @Test
         public void appendFeePayerSignature() {
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             mTxObj.appendFeePayerSignatures(signatureData);
@@ -1076,9 +1084,9 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Test
         public void appendFeePayerSignatureList() {
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -1093,24 +1101,24 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             SignatureData emptySignature = SignatureData.getEmptySignature();
 
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(emptySignature)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(emptySignature)
+                .build();
 
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -1123,30 +1131,30 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Test
         public void appendFeePayerSignature_ExistedSignature() {
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(signatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(signatureData)
+                .build();
 
             SignatureData signatureData1 = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
-                    Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
+                Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -1161,36 +1169,36 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Test
         public void appendFeePayerSignatureList_ExistedSignature() {
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(signatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(signatureData)
+                .build();
 
             SignatureData signatureData1 = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
-                    Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
+                Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
             SignatureData signatureData2 = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0x9a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
-                    Numeric.hexStringToByteArray("0xa3ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0x9a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
+                Numeric.hexStringToByteArray("0xa3ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -1224,25 +1232,25 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Test
         public void combineSignatures() {
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeeRatio(feeRatio)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeeRatio(feeRatio)
+                .build();
 
             String rlpEncoded = "0x32f8e0038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ef847f845820fe9a0b95ed5ff6d9cd8d02e3031ea4ddf38d42803817b5ecc086828f497787699bf5ba0105105455d4af28cc943e43e375316b57205e6eb664407b3bc1a7eca9ecd6c8f940000000000000000000000000000000000000000c4c3018080";
 
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncoded));
 
             SignatureData expectedSignatureData = new SignatureData(
-                    "0x0fe9",
-                    "0xb95ed5ff6d9cd8d02e3031ea4ddf38d42803817b5ecc086828f497787699bf5b",
-                    "0x105105455d4af28cc943e43e375316b57205e6eb664407b3bc1a7eca9ecd6c8f"
+                "0x0fe9",
+                "0xb95ed5ff6d9cd8d02e3031ea4ddf38d42803817b5ecc086828f497787699bf5b",
+                "0x105105455d4af28cc943e43e375316b57205e6eb664407b3bc1a7eca9ecd6c8f"
             );
 
             assertEquals(rlpEncoded, combined);
@@ -1253,48 +1261,48 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Test
         public void combineSignature_MultipleSignature() {
             SignatureData senderSignature = new SignatureData(
-                    "0x0fe9",
-                    "0xb95ed5ff6d9cd8d02e3031ea4ddf38d42803817b5ecc086828f497787699bf5b",
-                    "0x105105455d4af28cc943e43e375316b57205e6eb664407b3bc1a7eca9ecd6c8f"
+                "0x0fe9",
+                "0xb95ed5ff6d9cd8d02e3031ea4ddf38d42803817b5ecc086828f497787699bf5b",
+                "0x105105455d4af28cc943e43e375316b57205e6eb664407b3bc1a7eca9ecd6c8f"
             );
 
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignature)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignature)
+                .build();
 
             String[] rlpEncodedStrings = {
-                    "0x32f8cc038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ef847f845820fe9a058cf881d440cd88e2a1d0999b4b0eec72b36f7c13a793fcba7d509c544c06505a025bdcc5b6f7619169397508d38da290faa54b01c83c582d1dfa0ba250b7a187180c4c3018080",
-                    "0x32f8cc038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ef847f845820fe9a0fa309605c494a338e4cd92c7bedeafa25387f57e0b5f6e18f9d8da90edea9e44a055d173d614d096f23eb9a01fd894f961d266985df6503d5176d047eb3b3ef5ed80c4c3018080",
+                "0x32f8cc038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ef847f845820fe9a058cf881d440cd88e2a1d0999b4b0eec72b36f7c13a793fcba7d509c544c06505a025bdcc5b6f7619169397508d38da290faa54b01c83c582d1dfa0ba250b7a187180c4c3018080",
+                "0x32f8cc038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ef847f845820fe9a0fa309605c494a338e4cd92c7bedeafa25387f57e0b5f6e18f9d8da90edea9e44a055d173d614d096f23eb9a01fd894f961d266985df6503d5176d047eb3b3ef5ed80c4c3018080",
             };
 
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedStrings));
             String expectedRLPEncoding = "0x32f9016e038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ef8d5f845820fe9a0b95ed5ff6d9cd8d02e3031ea4ddf38d42803817b5ecc086828f497787699bf5ba0105105455d4af28cc943e43e375316b57205e6eb664407b3bc1a7eca9ecd6c8ff845820fe9a058cf881d440cd88e2a1d0999b4b0eec72b36f7c13a793fcba7d509c544c06505a025bdcc5b6f7619169397508d38da290faa54b01c83c582d1dfa0ba250b7a1871f845820fe9a0fa309605c494a338e4cd92c7bedeafa25387f57e0b5f6e18f9d8da90edea9e44a055d173d614d096f23eb9a01fd894f961d266985df6503d5176d047eb3b3ef5ed940000000000000000000000000000000000000000c4c3018080";
 
             SignatureData[] expectedSignatureData = new SignatureData[]{
-                    new SignatureData(
-                            "0x0fe9",
-                            "0xb95ed5ff6d9cd8d02e3031ea4ddf38d42803817b5ecc086828f497787699bf5b",
-                            "0x105105455d4af28cc943e43e375316b57205e6eb664407b3bc1a7eca9ecd6c8f"
-                    ),
-                    new SignatureData(
-                            "0x0fe9",
-                            "0x58cf881d440cd88e2a1d0999b4b0eec72b36f7c13a793fcba7d509c544c06505",
-                            "0x25bdcc5b6f7619169397508d38da290faa54b01c83c582d1dfa0ba250b7a1871"
-                    ),
-                    new SignatureData(
-                            "0x0fe9",
-                            "0xfa309605c494a338e4cd92c7bedeafa25387f57e0b5f6e18f9d8da90edea9e44",
-                            "0x55d173d614d096f23eb9a01fd894f961d266985df6503d5176d047eb3b3ef5ed"
-                    )
+                new SignatureData(
+                    "0x0fe9",
+                    "0xb95ed5ff6d9cd8d02e3031ea4ddf38d42803817b5ecc086828f497787699bf5b",
+                    "0x105105455d4af28cc943e43e375316b57205e6eb664407b3bc1a7eca9ecd6c8f"
+                ),
+                new SignatureData(
+                    "0x0fe9",
+                    "0x58cf881d440cd88e2a1d0999b4b0eec72b36f7c13a793fcba7d509c544c06505",
+                    "0x25bdcc5b6f7619169397508d38da290faa54b01c83c582d1dfa0ba250b7a1871"
+                ),
+                new SignatureData(
+                    "0x0fe9",
+                    "0xfa309605c494a338e4cd92c7bedeafa25387f57e0b5f6e18f9d8da90edea9e44",
+                    "0x55d173d614d096f23eb9a01fd894f961d266985df6503d5176d047eb3b3ef5ed"
+                )
             };
 
             assertEquals(expectedRLPEncoding, combined);
@@ -1308,25 +1316,25 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String feePayer = "0xad3bd7a7df94367e8b0443dd10e86330750ebf0c";
 
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .build();
 
             String rlpEncoded = "0x32f8e0038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ec4c301808094ad3bd7a7df94367e8b0443dd10e86330750ebf0cf847f845820fe9a0c7a060a2e28476e4567bc76964f826153149a07c061e389b51f34f3863f65a31a01bfd20aca5b410ca369113150c16af4d9f9c72907aaaf34896427ef1f1a51ebb";
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncoded));
 
             SignatureData signatureData = new SignatureData(
-                    "0x0fe9",
-                    "0xc7a060a2e28476e4567bc76964f826153149a07c061e389b51f34f3863f65a31",
-                    "0x1bfd20aca5b410ca369113150c16af4d9f9c72907aaaf34896427ef1f1a51ebb"
+                "0x0fe9",
+                "0xc7a060a2e28476e4567bc76964f826153149a07c061e389b51f34f3863f65a31",
+                "0x1bfd20aca5b410ca369113150c16af4d9f9c72907aaaf34896427ef1f1a51ebb"
             );
             assertEquals(rlpEncoded, combined);
             assertEquals(signatureData, mTxObj.getFeePayerSignatures().get(0));
@@ -1336,50 +1344,50 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         public void combineSignature_multipleFeePayerSignature() {
             String feePayer = "0xad3bd7a7df94367e8b0443dd10e86330750ebf0c";
             SignatureData feePayerSignatureData = new SignatureData(
-                    "0x0fe9",
-                    "0xc7a060a2e28476e4567bc76964f826153149a07c061e389b51f34f3863f65a31",
-                    "0x1bfd20aca5b410ca369113150c16af4d9f9c72907aaaf34896427ef1f1a51ebb"
+                "0x0fe9",
+                "0xc7a060a2e28476e4567bc76964f826153149a07c061e389b51f34f3863f65a31",
+                "0x1bfd20aca5b410ca369113150c16af4d9f9c72907aaaf34896427ef1f1a51ebb"
             );
 
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
 
-            String[] rlpEncodedStrings = new String[] {
-                    "0x32f8e0038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ec4c301808094ad3bd7a7df94367e8b0443dd10e86330750ebf0cf847f845820feaa09d6fb034ed27fa0baf8ba2650b48e087d261ab7716eae4df9299236ddce7dd08a053b1c7ab56349cbb5515e27737846f97862e3f20409b183c3c6b4a918cd20920",
-                    "0x32f8e0038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ec4c301808094ad3bd7a7df94367e8b0443dd10e86330750ebf0cf847f845820fe9a019315d03a16242c6d754bd006883376e211b6f8af486d1b41a0705878e3bb100a06d463477534b9c5e82196cb8c8982bc0e3c9120b14c2db3df0f4d1c9dc04c657",
+            String[] rlpEncodedStrings = new String[]{
+                "0x32f8e0038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ec4c301808094ad3bd7a7df94367e8b0443dd10e86330750ebf0cf847f845820feaa09d6fb034ed27fa0baf8ba2650b48e087d261ab7716eae4df9299236ddce7dd08a053b1c7ab56349cbb5515e27737846f97862e3f20409b183c3c6b4a918cd20920",
+                "0x32f8e0038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ec4c301808094ad3bd7a7df94367e8b0443dd10e86330750ebf0cf847f845820fe9a019315d03a16242c6d754bd006883376e211b6f8af486d1b41a0705878e3bb100a06d463477534b9c5e82196cb8c8982bc0e3c9120b14c2db3df0f4d1c9dc04c657",
             };
 
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedStrings));
             String expectedRLPEncoded = "0x32f9016e038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ec4c301808094ad3bd7a7df94367e8b0443dd10e86330750ebf0cf8d5f845820fe9a0c7a060a2e28476e4567bc76964f826153149a07c061e389b51f34f3863f65a31a01bfd20aca5b410ca369113150c16af4d9f9c72907aaaf34896427ef1f1a51ebbf845820feaa09d6fb034ed27fa0baf8ba2650b48e087d261ab7716eae4df9299236ddce7dd08a053b1c7ab56349cbb5515e27737846f97862e3f20409b183c3c6b4a918cd20920f845820fe9a019315d03a16242c6d754bd006883376e211b6f8af486d1b41a0705878e3bb100a06d463477534b9c5e82196cb8c8982bc0e3c9120b14c2db3df0f4d1c9dc04c657";
 
             SignatureData[] expectedSignatureData = new SignatureData[]{
-                    new SignatureData(
-                            "0x0fe9",
-                            "0xc7a060a2e28476e4567bc76964f826153149a07c061e389b51f34f3863f65a31",
-                            "0x1bfd20aca5b410ca369113150c16af4d9f9c72907aaaf34896427ef1f1a51ebb"
-                    ),
-                    new SignatureData(
-                            "0x0fea",
-                            "0x9d6fb034ed27fa0baf8ba2650b48e087d261ab7716eae4df9299236ddce7dd08",
-                            "0x53b1c7ab56349cbb5515e27737846f97862e3f20409b183c3c6b4a918cd20920"
-                    ),
-                    new SignatureData(
-                            "0x0fe9",
-                            "0x19315d03a16242c6d754bd006883376e211b6f8af486d1b41a0705878e3bb100",
-                            "0x6d463477534b9c5e82196cb8c8982bc0e3c9120b14c2db3df0f4d1c9dc04c657"
-                    )
+                new SignatureData(
+                    "0x0fe9",
+                    "0xc7a060a2e28476e4567bc76964f826153149a07c061e389b51f34f3863f65a31",
+                    "0x1bfd20aca5b410ca369113150c16af4d9f9c72907aaaf34896427ef1f1a51ebb"
+                ),
+                new SignatureData(
+                    "0x0fea",
+                    "0x9d6fb034ed27fa0baf8ba2650b48e087d261ab7716eae4df9299236ddce7dd08",
+                    "0x53b1c7ab56349cbb5515e27737846f97862e3f20409b183c3c6b4a918cd20920"
+                ),
+                new SignatureData(
+                    "0x0fe9",
+                    "0x19315d03a16242c6d754bd006883376e211b6f8af486d1b41a0705878e3bb100",
+                    "0x6d463477534b9c5e82196cb8c8982bc0e3c9120b14c2db3df0f4d1c9dc04c657"
+                )
             };
 
             assertEquals(expectedRLPEncoded, combined);
@@ -1391,57 +1399,57 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Test
         public void multipleSignature_senderSignature_feePayerSignature() {
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeeRatio(feeRatio)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeeRatio(feeRatio)
+                .build();
 
 
             String rlpEncodedString = "0x32f9015a038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ef8d5f845820fe9a0b95ed5ff6d9cd8d02e3031ea4ddf38d42803817b5ecc086828f497787699bf5ba0105105455d4af28cc943e43e375316b57205e6eb664407b3bc1a7eca9ecd6c8ff845820fe9a058cf881d440cd88e2a1d0999b4b0eec72b36f7c13a793fcba7d509c544c06505a025bdcc5b6f7619169397508d38da290faa54b01c83c582d1dfa0ba250b7a1871f845820fe9a0fa309605c494a338e4cd92c7bedeafa25387f57e0b5f6e18f9d8da90edea9e44a055d173d614d096f23eb9a01fd894f961d266985df6503d5176d047eb3b3ef5ed80c4c3018080";
-            SignatureData[] expectedSignatures = new SignatureData[] {
-                    new SignatureData(
-                            "0x0fe9",
-                            "0xb95ed5ff6d9cd8d02e3031ea4ddf38d42803817b5ecc086828f497787699bf5b",
-                            "0x105105455d4af28cc943e43e375316b57205e6eb664407b3bc1a7eca9ecd6c8f"
-                    ),
-                    new SignatureData(
-                            "0x0fe9",
-                            "0x58cf881d440cd88e2a1d0999b4b0eec72b36f7c13a793fcba7d509c544c06505",
-                            "0x25bdcc5b6f7619169397508d38da290faa54b01c83c582d1dfa0ba250b7a1871"
-                    ),
-                    new SignatureData(
-                            "0x0fe9",
-                            "0xfa309605c494a338e4cd92c7bedeafa25387f57e0b5f6e18f9d8da90edea9e44",
-                            "0x55d173d614d096f23eb9a01fd894f961d266985df6503d5176d047eb3b3ef5ed"
-                    ),
+            SignatureData[] expectedSignatures = new SignatureData[]{
+                new SignatureData(
+                    "0x0fe9",
+                    "0xb95ed5ff6d9cd8d02e3031ea4ddf38d42803817b5ecc086828f497787699bf5b",
+                    "0x105105455d4af28cc943e43e375316b57205e6eb664407b3bc1a7eca9ecd6c8f"
+                ),
+                new SignatureData(
+                    "0x0fe9",
+                    "0x58cf881d440cd88e2a1d0999b4b0eec72b36f7c13a793fcba7d509c544c06505",
+                    "0x25bdcc5b6f7619169397508d38da290faa54b01c83c582d1dfa0ba250b7a1871"
+                ),
+                new SignatureData(
+                    "0x0fe9",
+                    "0xfa309605c494a338e4cd92c7bedeafa25387f57e0b5f6e18f9d8da90edea9e44",
+                    "0x55d173d614d096f23eb9a01fd894f961d266985df6503d5176d047eb3b3ef5ed"
+                ),
             };
 
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedString));
 
             String rlpEncodedStringsWithFeePayerSignatures = "0x32f9016e038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ec4c301808094ad3bd7a7df94367e8b0443dd10e86330750ebf0cf8d5f845820fe9a0c7a060a2e28476e4567bc76964f826153149a07c061e389b51f34f3863f65a31a01bfd20aca5b410ca369113150c16af4d9f9c72907aaaf34896427ef1f1a51ebbf845820feaa09d6fb034ed27fa0baf8ba2650b48e087d261ab7716eae4df9299236ddce7dd08a053b1c7ab56349cbb5515e27737846f97862e3f20409b183c3c6b4a918cd20920f845820fe9a019315d03a16242c6d754bd006883376e211b6f8af486d1b41a0705878e3bb100a06d463477534b9c5e82196cb8c8982bc0e3c9120b14c2db3df0f4d1c9dc04c657";
 
-            SignatureData[] expectedFeePayerSignatures = new SignatureData[] {
-                    new SignatureData(
-                            "0x0fe9",
-                            "0xc7a060a2e28476e4567bc76964f826153149a07c061e389b51f34f3863f65a31",
-                            "0x1bfd20aca5b410ca369113150c16af4d9f9c72907aaaf34896427ef1f1a51ebb"
-                    ),
-                    new SignatureData(
-                            "0x0fea",
-                            "0x9d6fb034ed27fa0baf8ba2650b48e087d261ab7716eae4df9299236ddce7dd08",
-                            "0x53b1c7ab56349cbb5515e27737846f97862e3f20409b183c3c6b4a918cd20920"
-                    ),
-                    new SignatureData(
-                            "0x0fe9",
-                            "0x19315d03a16242c6d754bd006883376e211b6f8af486d1b41a0705878e3bb100",
-                            "0x6d463477534b9c5e82196cb8c8982bc0e3c9120b14c2db3df0f4d1c9dc04c657"
-                    ),
+            SignatureData[] expectedFeePayerSignatures = new SignatureData[]{
+                new SignatureData(
+                    "0x0fe9",
+                    "0xc7a060a2e28476e4567bc76964f826153149a07c061e389b51f34f3863f65a31",
+                    "0x1bfd20aca5b410ca369113150c16af4d9f9c72907aaaf34896427ef1f1a51ebb"
+                ),
+                new SignatureData(
+                    "0x0fea",
+                    "0x9d6fb034ed27fa0baf8ba2650b48e087d261ab7716eae4df9299236ddce7dd08",
+                    "0x53b1c7ab56349cbb5515e27737846f97862e3f20409b183c3c6b4a918cd20920"
+                ),
+                new SignatureData(
+                    "0x0fe9",
+                    "0x19315d03a16242c6d754bd006883376e211b6f8af486d1b41a0705878e3bb100",
+                    "0x6d463477534b9c5e82196cb8c8982bc0e3c9120b14c2db3df0f4d1c9dc04c657"
+                ),
             };
 
             combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedStringsWithFeePayerSignatures));
@@ -1463,16 +1471,16 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String gas = "0x1000";
 
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeeRatio(feeRatio)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeeRatio(feeRatio)
+                .build();
 
             String rlpEncoded = "0x32f8cc038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ef847f845820fe9a0b95ed5ff6d9cd8d02e3031ea4ddf38d42803817b5ecc086828f497787699bf5ba0105105455d4af28cc943e43e375316b57205e6eb664407b3bc1a7eca9ecd6c8f80c4c3018080";
             List<String> list = new ArrayList<>();
@@ -1486,19 +1494,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Test
         public void getRawTransaction() {
             FeeDelegatedSmartContractExecutionWithRatio txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             assertEquals(expectedRLPEncoding, txObj.getRawTransaction());
         }
@@ -1513,19 +1521,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Test
         public void getTransactionHash() {
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             assertEquals(expectedTransactionHash, mTxObj.getTransactionHash());
         }
@@ -1538,44 +1546,44 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String nonce = null;
 
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             String txHash = mTxObj.getTransactionHash();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String gasPrice = null;
 
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             String txHash = mTxObj.getTransactionHash();
         }
@@ -1590,19 +1598,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Test
         public void getSenderTransactionHash() {
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             assertEquals(expectedSenderTransactionHash, mTxObj.getSenderTxHash());
         }
@@ -1615,44 +1623,44 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String nonce = null;
 
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             mTxObj.getSenderTxHash();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String gasPrice = null;
 
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             mTxObj.getSenderTxHash();
         }
@@ -1667,19 +1675,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Test
         public void getRLPEncodingForFeePayerSignature() {
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             assertEquals(expectedRLPEncodingForFeePayerSigning, mTxObj.getRLPEncodingForFeePayerSignature());
         }
@@ -1692,69 +1700,69 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             String nonce = null;
 
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String gasPrice = null;
 
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }
 
         @Test
-        public void throwException_NotDefined_chainID() {
+        public void throwException_NotDefined_ChainID() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String chainID = null;
 
             mTxObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setChainId(chainID)
+                .setFrom(from)
+                .setValue(value)
+                .setTo(to)
+                .setInput(input)
+                .setFeePayer(feePayer)
+                .setFeeRatio(feeRatio)
+                .setSignatures(senderSignatureData)
+                .setFeePayerSignatures(feePayerSignatureData)
+                .build();
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }

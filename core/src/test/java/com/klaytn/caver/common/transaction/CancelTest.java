@@ -2,9 +2,9 @@ package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
+import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.type.Cancel;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
-import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.PrivateKey;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.junit.Before;
@@ -36,9 +36,9 @@ public class CancelTest {
     static String chainID = "0x1";
 
     static SignatureData signatureData = new SignatureData(
-            Numeric.hexStringToByteArray("0x25"),
-            Numeric.hexStringToByteArray("0xfb2c3d53d2f6b7bb1deb5a09f80366a5a45429cc1e3956687b075a9dcad20434"),
-            Numeric.hexStringToByteArray("0x5c6187822ee23b1001e9613d29a5d6002f990498d2902904f7f259ab3358216e")
+        Numeric.hexStringToByteArray("0x25"),
+        Numeric.hexStringToByteArray("0xfb2c3d53d2f6b7bb1deb5a09f80366a5a45429cc1e3956687b075a9dcad20434"),
+        Numeric.hexStringToByteArray("0x5c6187822ee23b1001e9613d29a5d6002f990498d2902904f7f259ab3358216e")
     );
 
     static String expectedRLPEncoding = "0x38f8648204d219830f424094a94f5374fce5edbc8e2a8697c15331677e6ebf0bf845f84325a0fb2c3d53d2f6b7bb1deb5a09f80366a5a45429cc1e3956687b075a9dcad20434a05c6187822ee23b1001e9613d29a5d6002f990498d2902904f7f259ab3358216e";
@@ -48,10 +48,10 @@ public class CancelTest {
     public static AbstractKeyring generateRoleBaseKeyring(int[] numArr, String address) {
         String[][] keyArr = new String[3][];
 
-        for(int i=0; i<numArr.length; i++) {
+        for (int i = 0; i < numArr.length; i++) {
             int length = numArr[i];
             String[] arr = new String[length];
-            for(int j=0; j<length; j++) {
+            for (int j = 0; j < length; j++) {
                 arr[j] = PrivateKey.generate("entropy").getPrivateKey();
             }
             keyArr[i] = arr;
@@ -59,7 +59,7 @@ public class CancelTest {
 
         List<String[]> arr = Arrays.asList(keyArr);
 
-        return KeyringFactory.createWithRoleBasedKey(address, arr);
+        return caver.wallet.keyring.createWithRoleBasedKey(address, arr);
     }
 
     public static class createInstanceBuilder {
@@ -69,13 +69,13 @@ public class CancelTest {
         @Test
         public void BuilderTest() {
             Cancel txObj = new Cancel.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setSignatures(signatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setFrom(from)
+                .setChainId(chainID)
+                .setSignatures(signatureData)
+                .build();
 
             assertNotNull(txObj);
         }
@@ -83,28 +83,29 @@ public class CancelTest {
         @Test
         public void BuilderWithRPCTest() throws IOException {
             Cancel txObj = new Cancel.Builder()
-                    .setKlaytnCall(caver.rpc.getKlay())
-                    .setGas(gas)
-                    .setFrom(from)
-                    .setSignatures(signatureData)
-                    .build();
+                .setKlaytnCall(caver.rpc.getKlay())
+                .setGas(gas)
+                .setFrom(from)
+                .setSignatures(signatureData)
+                .build();
 
             txObj.fillTransaction();
 
             assertFalse(txObj.getNonce().isEmpty());
             assertFalse(txObj.getGasPrice().isEmpty());
-            assertFalse(txObj.getChainId().isEmpty());        }
+            assertFalse(txObj.getChainId().isEmpty());
+        }
 
         @Test
         public void BuilderTestWithBigInteger() {
             Cancel txObj = new Cancel.Builder()
-                    .setNonce(nonce)
-                    .setGas(Numeric.toBigInt(gas))
-                    .setGasPrice(Numeric.toBigInt(gasPrice))
-                    .setChainId(Numeric.toBigInt(chainID))
-                    .setFrom(from)
-                    .setSignatures(signatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(Numeric.toBigInt(gas))
+                .setGasPrice(Numeric.toBigInt(gasPrice))
+                .setChainId(Numeric.toBigInt(chainID))
+                .setFrom(from)
+                .setSignatures(signatureData)
+                .build();
 
             assertNotNull(txObj);
 
@@ -121,13 +122,13 @@ public class CancelTest {
             String from = "invalid Address";
 
             Cancel txObj = new Cancel.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setSignatures(signatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setFrom(from)
+                .setChainId(chainID)
+                .setSignatures(signatureData)
+                .build();
         }
 
         @Test
@@ -138,13 +139,13 @@ public class CancelTest {
             String from = null;
 
             Cancel txObj = new Cancel.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setSignatures(signatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setFrom(from)
+                .setChainId(chainID)
+                .setSignatures(signatureData)
+                .build();
         }
 
         @Test
@@ -155,13 +156,13 @@ public class CancelTest {
             String gas = "invalid gas";
 
             Cancel txObj = new Cancel.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setSignatures(signatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setFrom(from)
+                .setChainId(chainID)
+                .setSignatures(signatureData)
+                .build();
         }
 
         @Test
@@ -172,13 +173,13 @@ public class CancelTest {
             String gas = null;
 
             Cancel txObj = new Cancel.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setSignatures(signatureData)
-                    .build();
+                .setNonce(nonce)
+                .setGas(gas)
+                .setGasPrice(gasPrice)
+                .setFrom(from)
+                .setChainId(chainID)
+                .setSignatures(signatureData)
+                .build();
         }
     }
 
@@ -188,14 +189,14 @@ public class CancelTest {
 
         @Test
         public void createInstance() {
-            Cancel txObj = new Cancel(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null
+            Cancel txObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setFrom(from)
+                    .setChainId(chainID)
+                    .setSignatures(signatureData)
             );
 
             assertNotNull(txObj);
@@ -208,14 +209,14 @@ public class CancelTest {
 
             String from = "invalid Address";
 
-            Cancel txObj = new Cancel(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null
+            Cancel txObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setFrom(from)
+                    .setChainId(chainID)
+                    .setSignatures(signatureData)
             );
         }
 
@@ -226,14 +227,14 @@ public class CancelTest {
 
             String from = null;
 
-            Cancel txObj = new Cancel(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null
+            Cancel txObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setFrom(from)
+                    .setChainId(chainID)
+                    .setSignatures(signatureData)
             );
         }
 
@@ -244,14 +245,14 @@ public class CancelTest {
 
             String gas = "invalid gas";
 
-            Cancel txObj = new Cancel(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null
+            Cancel txObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setFrom(from)
+                    .setChainId(chainID)
+                    .setSignatures(signatureData)
             );
         }
 
@@ -262,14 +263,14 @@ public class CancelTest {
 
             String gas = null;
 
-            Cancel txObj = new Cancel(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null
+            Cancel txObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setFrom(from)
+                    .setChainId(chainID)
+                    .setSignatures(signatureData)
             );
         }
     }
@@ -280,14 +281,15 @@ public class CancelTest {
 
         @Test
         public void getRLPEncoding() {
-            Cancel txObj = new Cancel.Builder()
+            Cancel txObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
                     .setSignatures(signatureData)
-                    .build();
+            );
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
         }
@@ -297,13 +299,14 @@ public class CancelTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            Cancel txObj = new Cancel.Builder()
+            Cancel txObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
                     .setSignatures(signatureData)
-                    .build();
+            );
 
             txObj.getRLPEncoding();
         }
@@ -313,13 +316,14 @@ public class CancelTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            Cancel txObj = new Cancel.Builder()
+            Cancel txObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setFrom(from)
                     .setChainId(chainID)
                     .setSignatures(signatureData)
-                    .build();
+            );
 
             txObj.getRLPEncoding();
         }
@@ -335,21 +339,22 @@ public class CancelTest {
 
         @Before
         public void before() {
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .build();
+            );
 
-            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
-            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(caver.wallet.keyring.generate().getAddress(), privateKey);
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
 
         @Test
-        public void signWithKey_Keyring() throws IOException{
+        public void signWithKey_Keyring() throws IOException {
             mTxObj.sign(coupledKeyring, 0, TransactionHasher::getHashForSignature);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
@@ -403,7 +408,7 @@ public class CancelTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
-            AbstractKeyring role = generateRoleBaseKeyring(new int[]{3,3,3}, from);
+            AbstractKeyring role = generateRoleBaseKeyring(new int[]{3, 3, 3}, from);
             mTxObj.sign(role, 4);
         }
     }
@@ -418,16 +423,17 @@ public class CancelTest {
 
         @Before
         public void before() {
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .build();
+            );
 
-            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
-            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(caver.wallet.keyring.generate().getAddress(), privateKey);
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
 
@@ -469,7 +475,7 @@ public class CancelTest {
 
         @Test
         public void signWithKeys_roleBasedKeyring() throws IOException {
-            AbstractKeyring roleBased = generateRoleBaseKeyring(new int[]{3,3,3}, from);
+            AbstractKeyring roleBased = generateRoleBaseKeyring(new int[]{3, 3, 3}, from);
 
             mTxObj.sign(roleBased);
             assertEquals(3, mTxObj.getSignatures().size());
@@ -486,25 +492,26 @@ public class CancelTest {
 
         @Before
         public void before() {
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .build();
+            );
 
-            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
-            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(caver.wallet.keyring.generate().getAddress(), privateKey);
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
 
         @Test
         public void appendSignature() {
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             mTxObj.appendSignatures(signatureData);
@@ -514,9 +521,9 @@ public class CancelTest {
         @Test
         public void appendSignatureList() {
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -530,19 +537,20 @@ public class CancelTest {
         public void appendSignatureList_EmptySig() {
             SignatureData emptySignature = SignatureData.getEmptySignature();
 
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
                     .setSignatures(emptySignature)
-                    .build();
+            );
 
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -555,24 +563,25 @@ public class CancelTest {
         @Test
         public void appendSignature_ExistedSignature() {
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
                     .setSignatures(signatureData)
-                    .build();
+            );
 
             SignatureData signatureData1 = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
-                    Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
+                Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -587,30 +596,31 @@ public class CancelTest {
         @Test
         public void appendSignatureList_ExistedSignature() {
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
                     .setSignatures(signatureData)
-                    .build();
+            );
 
             SignatureData signatureData1 = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
-                    Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
+                Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
             SignatureData signatureData2 = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0x9a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
-                    Numeric.hexStringToByteArray("0xa3ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0x9a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
+                Numeric.hexStringToByteArray("0xa3ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -642,18 +652,19 @@ public class CancelTest {
             String expectedRLPEncoded = "0x38f869018505d21dba00830dbba094504a835246e030d70ded9027f9f5a0aefcd45143f847f845820feaa00382dcd275a9657d8fc3c4dc1509ad975f083184e3d34779dc6bef10e0e973c8a059d5deb0f4c06a35a8024506159864ffc46dd08d91d5ac16fa69e92fb2d6b9ae";
 
             SignatureData expectedSignature = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0x0382dcd275a9657d8fc3c4dc1509ad975f083184e3d34779dc6bef10e0e973c8"),
-                    Numeric.hexStringToByteArray("0x59d5deb0f4c06a35a8024506159864ffc46dd08d91d5ac16fa69e92fb2d6b9ae")
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0x0382dcd275a9657d8fc3c4dc1509ad975f083184e3d34779dc6bef10e0e973c8"),
+                Numeric.hexStringToByteArray("0x59d5deb0f4c06a35a8024506159864ffc46dd08d91d5ac16fa69e92fb2d6b9ae")
             );
 
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .build();
+            );
 
             String rlpEncoded = "0x38f869018505d21dba00830dbba094504a835246e030d70ded9027f9f5a0aefcd45143f847f845820feaa00382dcd275a9657d8fc3c4dc1509ad975f083184e3d34779dc6bef10e0e973c8a059d5deb0f4c06a35a8024506159864ffc46dd08d91d5ac16fa69e92fb2d6b9ae";
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncoded));
@@ -667,41 +678,42 @@ public class CancelTest {
             String expectedRLPEncoded = "0x38f8f7018505d21dba00830dbba094504a835246e030d70ded9027f9f5a0aefcd45143f8d5f845820feaa00382dcd275a9657d8fc3c4dc1509ad975f083184e3d34779dc6bef10e0e973c8a059d5deb0f4c06a35a8024506159864ffc46dd08d91d5ac16fa69e92fb2d6b9aef845820feaa05a3a7910ce495e316da1394f197cdadd95dbb6954d803052b9f62ce993c0ec3ca00934f8dda9666d759e511a5658de1db36faefb35e76a5e237d87ba8c3b9bb700f845820feaa0dccd060bd76582d221f6fe7e02e70877a25b65d80fed13b69b5c79d7c4520912a07572c5c68daf7094a17105eb6e5fed1b102bfe4ca737d62b51f921f7663fb2bd";
 
             SignatureData[] expectedSignature = new SignatureData[]{
-                    new SignatureData(
-                            Numeric.hexStringToByteArray("0x0fea"),
-                            Numeric.hexStringToByteArray("0x0382dcd275a9657d8fc3c4dc1509ad975f083184e3d34779dc6bef10e0e973c8"),
-                            Numeric.hexStringToByteArray("0x59d5deb0f4c06a35a8024506159864ffc46dd08d91d5ac16fa69e92fb2d6b9ae")
-                    ),
-                    new SignatureData(
-                            Numeric.hexStringToByteArray("0x0fea"),
-                            Numeric.hexStringToByteArray("0x5a3a7910ce495e316da1394f197cdadd95dbb6954d803052b9f62ce993c0ec3c"),
-                            Numeric.hexStringToByteArray("0x0934f8dda9666d759e511a5658de1db36faefb35e76a5e237d87ba8c3b9bb700")
-                    ),
-                    new SignatureData(
-                            Numeric.hexStringToByteArray("0x0fea"),
-                            Numeric.hexStringToByteArray("0xdccd060bd76582d221f6fe7e02e70877a25b65d80fed13b69b5c79d7c4520912"),
-                            Numeric.hexStringToByteArray("0x7572c5c68daf7094a17105eb6e5fed1b102bfe4ca737d62b51f921f7663fb2bd")
-                    )
-            };
-
-            SignatureData signatureData = new SignatureData(
+                new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
                     Numeric.hexStringToByteArray("0x0382dcd275a9657d8fc3c4dc1509ad975f083184e3d34779dc6bef10e0e973c8"),
                     Numeric.hexStringToByteArray("0x59d5deb0f4c06a35a8024506159864ffc46dd08d91d5ac16fa69e92fb2d6b9ae")
+                ),
+                new SignatureData(
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0x5a3a7910ce495e316da1394f197cdadd95dbb6954d803052b9f62ce993c0ec3c"),
+                    Numeric.hexStringToByteArray("0x0934f8dda9666d759e511a5658de1db36faefb35e76a5e237d87ba8c3b9bb700")
+                ),
+                new SignatureData(
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0xdccd060bd76582d221f6fe7e02e70877a25b65d80fed13b69b5c79d7c4520912"),
+                    Numeric.hexStringToByteArray("0x7572c5c68daf7094a17105eb6e5fed1b102bfe4ca737d62b51f921f7663fb2bd")
+                )
+            };
+
+            SignatureData signatureData = new SignatureData(
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0x0382dcd275a9657d8fc3c4dc1509ad975f083184e3d34779dc6bef10e0e973c8"),
+                Numeric.hexStringToByteArray("0x59d5deb0f4c06a35a8024506159864ffc46dd08d91d5ac16fa69e92fb2d6b9ae")
             );
 
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
                     .setSignatures(signatureData)
-                    .build();
+            );
 
-            String[] rlpEncodedString = new String[] {
-                    "0x38f869018505d21dba00830dbba094504a835246e030d70ded9027f9f5a0aefcd45143f847f845820feaa05a3a7910ce495e316da1394f197cdadd95dbb6954d803052b9f62ce993c0ec3ca00934f8dda9666d759e511a5658de1db36faefb35e76a5e237d87ba8c3b9bb700",
-                    "0x38f869018505d21dba00830dbba094504a835246e030d70ded9027f9f5a0aefcd45143f847f845820feaa0dccd060bd76582d221f6fe7e02e70877a25b65d80fed13b69b5c79d7c4520912a07572c5c68daf7094a17105eb6e5fed1b102bfe4ca737d62b51f921f7663fb2bd"
+            String[] rlpEncodedString = new String[]{
+                "0x38f869018505d21dba00830dbba094504a835246e030d70ded9027f9f5a0aefcd45143f847f845820feaa05a3a7910ce495e316da1394f197cdadd95dbb6954d803052b9f62ce993c0ec3ca00934f8dda9666d759e511a5658de1db36faefb35e76a5e237d87ba8c3b9bb700",
+                "0x38f869018505d21dba00830dbba094504a835246e030d70ded9027f9f5a0aefcd45143f847f845820feaa0dccd060bd76582d221f6fe7e02e70877a25b65d80fed13b69b5c79d7c4520912a07572c5c68daf7094a17105eb6e5fed1b102bfe4ca737d62b51f921f7663fb2bd"
             };
 
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedString));
@@ -718,13 +730,14 @@ public class CancelTest {
 
             int nonce = 1234;
 
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(BigInteger.valueOf(nonce))
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
-                    .build();
+            );
 
             String rlpEncoded = "0x38f869018505d21dba00830dbba094504a835246e030d70ded9027f9f5a0aefcd45143f847f845820feaa05a3a7910ce495e316da1394f197cdadd95dbb6954d803052b9f62ce993c0ec3ca00934f8dda9666d759e511a5658de1db36faefb35e76a5e237d87ba8c3b9bb700";
 
@@ -739,17 +752,18 @@ public class CancelTest {
 
         @Before
         public void before() {
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
                     .setSignatures(signatureData)
-                    .build();
+            );
 
-            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
-            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(caver.wallet.keyring.generate().getAddress(), privateKey);
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
 
@@ -770,17 +784,18 @@ public class CancelTest {
 
         @Before
         public void before() {
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
                     .setSignatures(signatureData)
-                    .build();
+            );
 
-            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
-            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(caver.wallet.keyring.generate().getAddress(), privateKey);
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
 
@@ -797,33 +812,35 @@ public class CancelTest {
 
             String nonce = null;
 
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
                     .setSignatures(signatureData)
-                    .build();
+            );
 
             mTxObj.getTransactionHash();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String gasPrice = null;
 
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
                     .setSignatures(signatureData)
-                    .build();
+            );
 
             mTxObj.getTransactionHash();
         }
@@ -839,17 +856,18 @@ public class CancelTest {
 
         @Before
         public void before() {
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
                     .setSignatures(signatureData)
-                    .build();
+            );
 
-            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
-            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(caver.wallet.keyring.generate().getAddress(), privateKey);
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
 
@@ -866,33 +884,35 @@ public class CancelTest {
 
             String nonce = null;
 
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
                     .setSignatures(signatureData)
-                    .build();
+            );
 
             mTxObj.getSenderTxHash();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String gasPrice = null;
 
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
                     .setSignatures(signatureData)
-                    .build();
+            );
 
             mTxObj.getSenderTxHash();
         }
@@ -908,17 +928,18 @@ public class CancelTest {
 
         @Before
         public void before() {
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
                     .setSignatures(signatureData)
-                    .build();
+            );
 
-            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
-            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(caver.wallet.keyring.generate().getAddress(), privateKey);
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
 
@@ -935,52 +956,55 @@ public class CancelTest {
 
             String nonce = null;
 
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
                     .setSignatures(signatureData)
-                    .build();
+            );
 
             mTxObj.getRLPEncodingForSignature();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String gasPrice = null;
 
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
                     .setSignatures(signatureData)
-                    .build();
+            );
 
             mTxObj.getRLPEncodingForSignature();
         }
 
         @Test
-        public void throwException_NotDefined_chainID() {
+        public void throwException_NotDefined_ChainID() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String chainID = null;
 
-            mTxObj = new Cancel.Builder()
+            mTxObj = caver.transaction.cancel.create(
+                TxPropertyBuilder.cancel()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
                     .setFrom(from)
                     .setChainId(chainID)
                     .setSignatures(signatureData)
-                    .build();
+            );
 
             mTxObj.getRLPEncodingForSignature();
         }

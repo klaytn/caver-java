@@ -36,7 +36,6 @@ import java.util.List;
  * Please refer to https://docs.klaytn.com/klaytn/design/transactions/fee-delegation#txtypefeedelegatedsmartcontractexecution to see more detail.
  */
 public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTransaction {
-
     /**
      * The account address that will receive the transferred value.
      */
@@ -143,8 +142,8 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
     }
 
     /**
-     * Decodes a RLP-encoded FeeDelegatedSmartContractExecution string.
-     * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractExecution string.
+     * Decodes a RLP-encoded FeeDelegatedSmartContractExecution byte array.
+     * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractExecution byte array.
      * @return FeeDelegatedSmartContractExecution
      */
     public static FeeDelegatedSmartContractExecution decode(byte[] rlpEncoded) {

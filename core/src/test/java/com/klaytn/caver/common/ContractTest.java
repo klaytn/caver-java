@@ -9,7 +9,6 @@ import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.KlayLogs;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.KeyringContainer;
-import com.klaytn.caver.wallet.keyring.KeyringFactory;
 
 import io.reactivex.disposables.Disposable;
 import org.junit.BeforeClass;
@@ -703,7 +702,7 @@ public class ContractTest {
     @BeforeClass
     public static void initTest() {
         Caver caver = new Caver(Caver.DEFAULT_URL);
-        caver.wallet.add(KeyringFactory.createFromPrivateKey(ownerPrivateKey));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey(ownerPrivateKey));
 
         String name = "KlayTN";
         String symbol = "KCT";
@@ -721,7 +720,7 @@ public class ContractTest {
         ContractDeployParams contractDeployParam = new ContractDeployParams(BINARY, constructorParams);
 
         try {
-            Contract contract = new Contract(caver, jsonObj);
+            Contract contract = caver.contract.create(jsonObj);
             contract.deploy(contractDeployParam, options);
             contractAddress = contract.getContractAddress();
         } catch (Exception e) {
@@ -746,7 +745,7 @@ public class ContractTest {
         ContractDeployParams contractDeployParam = new ContractDeployParams(BINARY, constructorParams);
 
         try {
-            Contract contract = new Contract(caver, jsonObj);
+            Contract contract = caver.contract.create(jsonObj);
             contract.deploy(contractDeployParam, options);
             return contract;
         } catch (Exception e) {
@@ -776,7 +775,7 @@ public class ContractTest {
     @Test
     public void deployTest() {
         Caver caver = new Caver(Caver.DEFAULT_URL);
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
 
         String name = "KlayTN";
         String symbol = "KCT";
@@ -794,7 +793,7 @@ public class ContractTest {
         ContractDeployParams contractDeployParam = new ContractDeployParams(BINARY, constructorParams);
 
         try {
-            Contract contract = new Contract(caver, jsonObj);
+            Contract contract = caver.contract.create(jsonObj);
             contract.deploy(contractDeployParam, options);
             assertNotNull(contract.getContractAddress());
         } catch (Exception e) {
@@ -805,7 +804,7 @@ public class ContractTest {
     @Test
     public void getMethodTest() throws IOException {
         Caver caver = new Caver(Caver.DEFAULT_URL);
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
 
         assertNotNull(contract.getMethod("transferFrom"));
     }
@@ -816,7 +815,7 @@ public class ContractTest {
         expectedException.expectMessage("method is not exist");
 
         Caver caver = new Caver(Caver.DEFAULT_URL);
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
 
         contract.getMethod("noMethod");
     }
@@ -824,7 +823,7 @@ public class ContractTest {
     @Test
     public void getEventTest() throws IOException {
         Caver caver = new Caver(Caver.DEFAULT_URL);
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
 
         assertNotNull(contract.getEvent("Transfer"));
     }
@@ -835,7 +834,7 @@ public class ContractTest {
         expectedException.expectMessage("event is not exist");
 
         Caver caver = new Caver(Caver.DEFAULT_URL);
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
 
         contract.getEvent("noEvent");
     }
@@ -844,7 +843,7 @@ public class ContractTest {
     public void call() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Caver caver = new Caver(Caver.DEFAULT_URL);
 
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
         CallObject callObject = CallObject.createCallObject(
                 LUMAN.getAddress(),
                 contractAddress,
@@ -862,7 +861,7 @@ public class ContractTest {
     public void callWithNoCallObject() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Caver caver = new Caver(Caver.DEFAULT_URL);
 
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
         CallObject callObject = CallObject.createCallObject(
                 LUMAN.getAddress(),
                 contractAddress,
@@ -879,9 +878,9 @@ public class ContractTest {
     @Test
     public void send() throws Exception {
         Caver caver = new Caver(Caver.DEFAULT_URL);
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
 
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
         SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
 
         List<Object> callParams = Arrays.asList(BRANDON.getAddress());
@@ -905,9 +904,9 @@ public class ContractTest {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Invalid 'from' parameter");
         Caver caver = new Caver(Caver.DEFAULT_URL);
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
 
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
         SendOptions sendOptions = new SendOptions(null, DefaultGasProvider.GAS_LIMIT);
 
         BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));
@@ -924,9 +923,9 @@ public class ContractTest {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Invalid 'gas' parameter");
         Caver caver = new Caver(Caver.DEFAULT_URL);
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
 
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
         SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), (String)null);
 
         BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));
@@ -941,9 +940,9 @@ public class ContractTest {
     @Test
     public void makeSendOptionsOnlyDefaultOption() throws IOException{
         Caver caver = new Caver(Caver.DEFAULT_URL);
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
 
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
         contract.getDefaultSendOptions().setFrom(LUMAN.getAddress());
         contract.getDefaultSendOptions().setGas(DefaultGasProvider.GAS_LIMIT);
 
@@ -956,9 +955,9 @@ public class ContractTest {
     @Test
     public void makeSendOptionNoDefaultOption() throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
         Caver caver = new Caver(Caver.DEFAULT_URL);
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
 
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
         SendOptions options = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
 
         SendOptions combineOptions = contract.getMethod("transfer").makeSendOption(options);
@@ -970,9 +969,9 @@ public class ContractTest {
     @Test
     public void makeSendOptionCombineOptions() throws IOException {
         Caver caver = new Caver(Caver.DEFAULT_URL);
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
 
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
         contract.getDefaultSendOptions().setFrom(BRANDON.getAddress());
 
         SendOptions options = new SendOptions();
@@ -987,9 +986,9 @@ public class ContractTest {
     @Test
     public void estimateGas() throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Caver caver = new Caver(Caver.DEFAULT_URL);
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
 
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
 
         BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
         List<Object> sendParams = Arrays.asList(
@@ -1005,7 +1004,7 @@ public class ContractTest {
     @Test
     public void getPastEvent() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, TransactionException, InstantiationException, IllegalAccessException {
         Caver caver = new Caver(Caver.DEFAULT_URL);
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
 
         Contract contract = deploy(caver);
 
@@ -1039,10 +1038,10 @@ public class ContractTest {
         Caver caver = new Caver(webSocketService);
         webSocketService.connect();
 
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
 
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
 
         List options = new ArrayList();
         options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
@@ -1082,10 +1081,10 @@ public class ContractTest {
         Caver caver = new Caver(webSocketService);
         webSocketService.connect();
 
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
 
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
 
         List options = new ArrayList();
         options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
@@ -1125,10 +1124,10 @@ public class ContractTest {
         Caver caver = new Caver(webSocketService);
         webSocketService.connect();
 
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
 
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
 
         List options = new ArrayList();
         options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
@@ -1169,10 +1168,10 @@ public class ContractTest {
         Caver caver = new Caver(webSocketService);
         webSocketService.connect();
 
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
 
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
 
         List options = new ArrayList();
         options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
@@ -1212,10 +1211,10 @@ public class ContractTest {
         Caver caver = new Caver(webSocketService);
         webSocketService.connect();
 
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
 
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
 
         List options = new ArrayList();
         options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
@@ -1255,10 +1254,10 @@ public class ContractTest {
         Caver caver = new Caver(webSocketService);
         webSocketService.connect();
 
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
 
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
 
         List options = new ArrayList();
         options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
@@ -1294,7 +1293,7 @@ public class ContractTest {
     @Test
     public void setWallet() throws IOException {
         Caver caver = new Caver(Caver.DEFAULT_URL);
-        Contract contract = new Contract(caver, jsonObj, contractAddress);
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
 
         assertEquals(0, ((KeyringContainer)contract.getWallet()).length());
 

@@ -24,7 +24,6 @@ import com.klaytn.caver.transaction.type.*;
 public class TxPropertyBuilder {
     /**
      * Creates a Builder of LegacyTransaction
-     *
      * @return LegacyTransaction.Builder
      */
     public static LegacyTransaction.Builder legacyTransaction() {
@@ -33,7 +32,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of ValueTransfer
-     *
      * @return ValueTransfer.Builder
      */
     public static ValueTransfer.Builder valueTransfer() {
@@ -42,7 +40,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of FeeDelegatedValueTransfer
-     *
      * @return FeeDelegatedValueTransfer.Builder
      */
     public static FeeDelegatedValueTransfer.Builder feeDelegatedValueTransfer() {
@@ -51,7 +48,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of FeeDelegatedValueTransferWithRatio
-     *
      * @return FeeDelegatedValueTransferWithRatio.Builder
      */
     public static FeeDelegatedValueTransferWithRatio.Builder feeDelegatedValueTransferWithRatio() {
@@ -60,7 +56,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of ValueTransferMemo
-     *
      * @return ValueTransferMemo.Builder
      */
     public static ValueTransferMemo.Builder valueTransferMemo() {
@@ -69,7 +64,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of FeeDelegatedValueTransferMemo
-     *
      * @return FeeDelegatedValueTransferMemo.Builder
      */
     public static FeeDelegatedValueTransferMemo.Builder feeDelegatedValueTransferMemo() {
@@ -78,7 +72,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of FeeDelegatedValueTransferMemoWithRatio
-     *
      * @return FeeDelegatedValueTransferMemoWithRatio.Builder
      */
     public static FeeDelegatedValueTransferMemoWithRatio.Builder feeDelegatedValueTransferMemoWithRatio() {
@@ -87,7 +80,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of AccountUpdate
-     *
      * @return AccountUpdate.Builder
      */
     public static AccountUpdate.Builder accountUpdate() {
@@ -96,7 +88,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of FeeDelegatedAccountUpdate
-     *
      * @return FeeDelegatedAccountUpdate.Builder
      */
     public static FeeDelegatedAccountUpdate.Builder feeDelegatedAccountUpdate() {
@@ -105,7 +96,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of FeeDelegatedAccountUpdateWithRatio
-     *
      * @return FeeDelegatedAccountUpdateWithRatio.Builder
      */
     public static FeeDelegatedAccountUpdateWithRatio.Builder feeDelegatedAccountUpdateWithRatio() {
@@ -114,7 +104,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of SmartContractDeploy
-     *
      * @return SmartContractDeploy.Builder
      */
     public static SmartContractDeploy.Builder smartContractDeploy() {
@@ -123,7 +112,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of FeeDelegatedSmartContractDeploy
-     *
      * @return FeeDelegatedSmartContractDeploy.Builder
      */
     public static FeeDelegatedSmartContractDeploy.Builder feeDelegatedSmartContractDeploy() {
@@ -132,7 +120,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of FeeDelegatedSmartContractDeployWithRatio
-     *
      * @return FeeDelegatedSmartContractDeployWithRatio.Builder
      */
     public static FeeDelegatedSmartContractDeployWithRatio.Builder feeDelegatedSmartContractDeployWithRatio() {
@@ -141,7 +128,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of SmartContractExecution
-     *
      * @return SmartContractExecution.Builder
      */
     public static SmartContractExecution.Builder smartContractExecution() {
@@ -150,7 +136,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of FeeDelegatedSmartContractExecution
-     *
      * @return FeeDelegatedSmartContractExecution.Builder
      */
     public static FeeDelegatedSmartContractExecution.Builder feeDelegatedSmartContractExecution() {
@@ -159,7 +144,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of FeeDelegatedSmartContractExecutionWithRatio
-     *
      * @return FeeDelegatedSmartContractExecutionWithRatio.Builder
      */
     public static FeeDelegatedSmartContractExecutionWithRatio.Builder feeDelegatedSmartContractExecutionWithRatio() {
@@ -168,7 +152,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of Cancel
-     *
      * @return Cancel.Builder
      */
     public static Cancel.Builder cancel() {
@@ -177,7 +160,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of FeeDelegatedCancel
-     *
      * @return FeeDelegatedCancel.Builder
      */
     public static FeeDelegatedCancel.Builder feeDelegatedCancel() {
@@ -186,7 +168,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of FeeDelegatedCancelWithRatio
-     *
      * @return FeeDelegatedCancelWithRatio.Builder
      */
     public static FeeDelegatedCancelWithRatio.Builder feeDelegatedCancelWithRatio() {
@@ -195,7 +176,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of ChainDataAnchoring
-     *
      * @return ChainDataAnchoring.Builder
      */
     public static ChainDataAnchoring.Builder chainDataAnchoring() {
@@ -204,7 +184,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of FeeDelegatedChainDataAnchoring
-     *
      * @return FeeDelegatedChainDataAnchoring.Builder
      */
     public static FeeDelegatedChainDataAnchoring.Builder feeDelegatedChainDataAnchoring() {
@@ -213,7 +192,6 @@ public class TxPropertyBuilder {
 
     /**
      * Creates a Builder of FeeDelegatedChainDataAnchoringWithRatio
-     *
      * @return FeeDelegatedChainDataAnchoringWithRatio.Builder
      */
     public static FeeDelegatedChainDataAnchoringWithRatio.Builder feeDelegatedChainDataAnchoringWithRatio() {

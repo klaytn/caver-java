@@ -20,7 +20,7 @@ import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.type.AccountUpdate;
 
 /**
- * Represents a AccountUpdateWrapper
+ * Represents an AccountUpdateWrapper
  * 1. This class wraps all of static methods of AccountUpdate
  * 2. This class should be accessed via `caver.transaction.accountUpdate
  */
@@ -31,7 +31,7 @@ public class AccountUpdateWrapper {
     private Klay klaytnCall;
 
     /**
-     * Create a AccountUpdateWrapper instance.
+     * Create an AccountUpdateWrapper instance.
      * @param klaytnCall Klay RPC instance
      */
     public AccountUpdateWrapper(Klay klaytnCall) {
@@ -39,7 +39,7 @@ public class AccountUpdateWrapper {
     }
 
     /**
-     * Creates a AccountUpdate instance derived from a RLP-encoded AccountUpdate string.
+     * Creates an AccountUpdate instance derived from a RLP-encoded AccountUpdate string.
      * @param rlpEncoded RLP-encoded AccountUpdate string
      * @return AccountUpdate
      */
@@ -50,7 +50,7 @@ public class AccountUpdateWrapper {
     }
 
     /**
-     * Creates a AccountUpdate instance derived from a RLP-encoded AccountUpdate byte array.
+     * Creates an AccountUpdate instance derived from a RLP-encoded AccountUpdate byte array.
      * @param rlpEncoded RLP-encoded AccountUpdate byte array.
      * @return AccountUpdate
      */
@@ -61,7 +61,7 @@ public class AccountUpdateWrapper {
     }
 
     /**
-     * Creates a AccountUpdate instance using AccountUpdate.Builder
+     * Creates an AccountUpdate instance using AccountUpdate.Builder
      * @param builder AccountUpdate.Builder
      * @return AccountUpdate
      */

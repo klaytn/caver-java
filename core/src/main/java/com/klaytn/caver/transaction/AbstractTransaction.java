@@ -646,7 +646,7 @@ abstract public class AbstractTransaction {
         }
 
         if(!Utils.isNumber(gas)) {
-            throw new IllegalArgumentException("Invalid gas. : "  + gas);
+            throw new IllegalArgumentException("Invalid gas. : " + gas);
         }
         this.gas = gas;
     }

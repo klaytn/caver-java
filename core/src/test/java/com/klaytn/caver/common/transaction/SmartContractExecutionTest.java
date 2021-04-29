@@ -2,14 +2,16 @@ package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
+import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.type.SmartContractExecution;
-import com.klaytn.caver.wallet.keyring.*;
+import com.klaytn.caver.wallet.keyring.AbstractKeyring;
+import com.klaytn.caver.wallet.keyring.PrivateKey;
+import com.klaytn.caver.wallet.keyring.RoleBasedKeyring;
+import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -18,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 public class SmartContractExecutionTest {
 
@@ -48,10 +49,10 @@ public class SmartContractExecutionTest {
     public static RoleBasedKeyring generateRoleBaseKeyring(int[] numArr, String address) {
         String[][] keyArr = new String[3][];
 
-        for(int i=0; i<numArr.length; i++) {
+        for(int i = 0; i < numArr.length; i++) {
             int length = numArr[i];
             String[] arr = new String[length];
-            for(int j=0; j<length; j++) {
+            for(int j = 0; j < length; j++) {
                 arr[j] = PrivateKey.generate("entropy").getPrivateKey();
             }
             keyArr[i] = arr;
@@ -59,7 +60,7 @@ public class SmartContractExecutionTest {
 
         List<String[]> arr = Arrays.asList(keyArr);
 
-        return KeyringFactory.createWithRoleBasedKey(address, arr);
+        return caver.wallet.keyring.createWithRoleBasedKey(address, arr);
     }
 
     public static class createInstanceBuilder {
@@ -100,7 +101,8 @@ public class SmartContractExecutionTest {
 
             assertFalse(txObj.getNonce().isEmpty());
             assertFalse(txObj.getGasPrice().isEmpty());
-            assertFalse(txObj.getChainId().isEmpty());        }
+            assertFalse(txObj.getChainId().isEmpty());
+        }
 
         @Test
         public void BuilderTestWithBigInteger() {
@@ -332,17 +334,16 @@ public class SmartContractExecutionTest {
 
         @Test
         public void createInstance() {
-            SmartContractExecution txObj = new SmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    value,
-                    input
+            SmartContractExecution txObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
+                            .setInput(input)
             );
 
             assertNotNull(txObj);
@@ -355,17 +356,16 @@ public class SmartContractExecutionTest {
 
             String from = "invalid Address";
 
-            SmartContractExecution txObj = new SmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    value,
-                    input
+            SmartContractExecution txObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
+                            .setInput(input)
             );
         }
 
@@ -376,17 +376,16 @@ public class SmartContractExecutionTest {
 
             String from = null;
 
-            SmartContractExecution txObj = new SmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    value,
-                    input
+            SmartContractExecution txObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
+                            .setInput(input)
             );
         }
 
@@ -397,17 +396,16 @@ public class SmartContractExecutionTest {
 
             String to = "invalid Address";
 
-            SmartContractExecution txObj = new SmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    value,
-                    input
+            SmartContractExecution txObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
+                            .setInput(input)
             );
         }
 
@@ -418,20 +416,18 @@ public class SmartContractExecutionTest {
 
             String to = null;
 
-            SmartContractExecution txObj = new SmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    value,
-                    input
+            SmartContractExecution txObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
+                            .setInput(input)
             );
         }
-
 
 
         @Test
@@ -441,17 +437,16 @@ public class SmartContractExecutionTest {
 
             String value = "invalid value";
 
-            SmartContractExecution txObj = new SmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    value,
-                    input
+            SmartContractExecution txObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
+                            .setInput(input)
             );
         }
 
@@ -462,17 +457,16 @@ public class SmartContractExecutionTest {
 
             String value = null;
 
-            SmartContractExecution txObj = new SmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    value,
-                    input
+            SmartContractExecution txObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
+                            .setInput(input)
             );
         }
 
@@ -483,17 +477,16 @@ public class SmartContractExecutionTest {
 
             String gas = "invalid gas";
 
-            SmartContractExecution txObj = new SmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    value,
-                    input
+            SmartContractExecution txObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
+                            .setInput(input)
             );
         }
 
@@ -504,17 +497,16 @@ public class SmartContractExecutionTest {
 
             String gas = null;
 
-            SmartContractExecution txObj = new SmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    value,
-                    input
+            SmartContractExecution txObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
+                            .setInput(input)
             );
         }
 
@@ -525,17 +517,16 @@ public class SmartContractExecutionTest {
 
             String input = "invalid input";
 
-            SmartContractExecution txObj = new SmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    value,
-                    input
+            SmartContractExecution txObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
+                            .setInput(input)
             );
         }
 
@@ -546,17 +537,16 @@ public class SmartContractExecutionTest {
 
             String input = null;
 
-            SmartContractExecution txObj = new SmartContractExecution(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    value,
-                    input
+            SmartContractExecution txObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
+                            .setInput(input)
             );
         }
     }
@@ -567,17 +557,18 @@ public class SmartContractExecutionTest {
 
         @Test
         public void getRLPEncoding() {
-            SmartContractExecution txObj = new SmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setTo(to)
-                    .setInput(input)
-                    .setSignatures(signatureData)
-                    .build();
+            SmartContractExecution txObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setTo(to)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            );
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
         }
@@ -587,16 +578,17 @@ public class SmartContractExecutionTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            SmartContractExecution txObj = new SmartContractExecution.Builder()
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(signatureData)
-                    .build();
+            SmartContractExecution txObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            );
 
             txObj.getRLPEncoding();
         }
@@ -606,16 +598,17 @@ public class SmartContractExecutionTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            SmartContractExecution txObj = new SmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(signatureData)
-                    .build();
+            SmartContractExecution txObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            );
 
             txObj.getRLPEncoding();
         }
@@ -641,28 +634,30 @@ public class SmartContractExecutionTest {
         AbstractKeyring coupledKeyring, deCoupledKeyring;
         String klaytnWalletKey;
 
-
-
         @Before
         public void before() {
-            mTxObj = new SmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setTo(to)
-                    .setInput(input)
-                    .build();
+            mTxObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setTo(to)
+                            .setInput(input)
+            );
 
-            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
-            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(
+                    caver.wallet.keyring.generate().getAddress(),
+                    privateKey
+            );
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
         @Test
-        public void signWithKey_Keyring() throws IOException{
+        public void signWithKey_Keyring() throws IOException {
             mTxObj.sign(coupledKeyring, 0, TransactionHasher::getHashForSignature);
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
@@ -716,7 +711,7 @@ public class SmartContractExecutionTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
-            RoleBasedKeyring role = generateRoleBaseKeyring(new int[]{3,3,3}, from);
+            RoleBasedKeyring role = generateRoleBaseKeyring(new int[]{3, 3, 3}, from);
             mTxObj.sign(role, 4);
         }
     }
@@ -731,19 +726,23 @@ public class SmartContractExecutionTest {
 
         @Before
         public void before() {
-            mTxObj = new SmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .build();
+            mTxObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+            );
 
-            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
-            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(
+                    caver.wallet.keyring.generate().getAddress(),
+                    privateKey
+            );
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
@@ -770,7 +769,7 @@ public class SmartContractExecutionTest {
 
         @Test
         public void signWithKeys_KeyString_NoSigner() throws IOException {
-            mTxObj.sign(privateKey, TransactionHasher::getHashForSignature);
+            mTxObj.sign(privateKey);
             assertEquals(1, mTxObj.getSignatures().size());
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
@@ -785,7 +784,7 @@ public class SmartContractExecutionTest {
 
         @Test
         public void signWithKeys_roleBasedKeyring() throws IOException {
-            AbstractKeyring roleBased = generateRoleBaseKeyring(new int[]{3,3,3}, from);
+            AbstractKeyring roleBased = generateRoleBaseKeyring(new int[]{3, 3, 3}, from);
 
             mTxObj.sign(roleBased);
             assertEquals(3, mTxObj.getSignatures().size());
@@ -802,19 +801,23 @@ public class SmartContractExecutionTest {
 
         @Before
         public void before() {
-            mTxObj = new SmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .build();
+            mTxObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+            );
 
-            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
-            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(
+                    caver.wallet.keyring.generate().getAddress(),
+                    privateKey
+            );
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
@@ -848,19 +851,20 @@ public class SmartContractExecutionTest {
 
         @Test
         public void appendSignatureList_EmptySig() {
-            SignatureData emptySignature = signatureData.getEmptySignature();
+            SignatureData emptySignature = SignatureData.getEmptySignature();
 
-            mTxObj = new SmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(emptySignature)
-                    .build();
+            mTxObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(emptySignature)
+            );
 
             SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
@@ -883,17 +887,18 @@ public class SmartContractExecutionTest {
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            mTxObj = new SmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(signatureData)
-                    .build();
+            mTxObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            );
 
             SignatureData signatureData1 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
@@ -918,17 +923,18 @@ public class SmartContractExecutionTest {
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            mTxObj = new SmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(signatureData)
-                    .build();
+            mTxObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            );
 
             SignatureData signatureData1 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
@@ -970,10 +976,10 @@ public class SmartContractExecutionTest {
         SmartContractExecution mTxObj;
 
         @Test
-        public void combineSignature() {
+        public void combine_multipleSignature() {
             String expectedRLPEncoded = "0x30f90153018505d21dba00830dbba094e3cd4e1cd287235cc0ea48c9fd02978533f5ec2b80942de587b91c76fb0b92fd607c4fbd5e9a17da799fb844a9059cbb0000000000000000000000008a4c9c443bb0645df646a2d5bb55def0ed1e885a0000000000000000000000000000000000000000000000000000000000003039f8d5f845820fe9a04a7d00c2680e5bca49a5880e23c5adb40b069af204a55e888f45746a20978e46a007b57a439201d182f4aec5db28d72192468f58f4fe7a1e717f96dd0d1def2d16f845820fe9a08494bfd86b0480e33700635d37ab0eb0ce3e6d93b5c51e6eda9fadd179569804a047f601d9fcb8682090165d8d048d6a5e3c5a48377ec9b212be6d7ee72b768bfdf845820fe9a0f642b38cf64cf70c89a0ccd74de13266ea98854078119a4619cad3bb2e6d4530a02307abe779333fe9da8eeebf40fbfeff9f1314ae8467a0119541339dfb65f10a";
 
-            SignatureData[] expectedSignature = new SignatureData[] {
+            SignatureData[] expectedSignature = new SignatureData[]{
                     new SignatureData(
                             Numeric.hexStringToByteArray("0x0fe9"),
                             Numeric.hexStringToByteArray("0x4a7d00c2680e5bca49a5880e23c5adb40b069af204a55e888f45746a20978e46"),
@@ -998,19 +1004,20 @@ public class SmartContractExecutionTest {
             );
 
 
-            mTxObj = new SmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(signatureData)
-                    .build();
+            mTxObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            );
 
-            String[] rlpEncodedString = new String[] {
+            String[] rlpEncodedString = new String[]{
                     "0x30f8c5018505d21dba00830dbba094e3cd4e1cd287235cc0ea48c9fd02978533f5ec2b80942de587b91c76fb0b92fd607c4fbd5e9a17da799fb844a9059cbb0000000000000000000000008a4c9c443bb0645df646a2d5bb55def0ed1e885a0000000000000000000000000000000000000000000000000000000000003039f847f845820fe9a08494bfd86b0480e33700635d37ab0eb0ce3e6d93b5c51e6eda9fadd179569804a047f601d9fcb8682090165d8d048d6a5e3c5a48377ec9b212be6d7ee72b768bfd",
                     "0x30f8c5018505d21dba00830dbba094e3cd4e1cd287235cc0ea48c9fd02978533f5ec2b80942de587b91c76fb0b92fd607c4fbd5e9a17da799fb844a9059cbb0000000000000000000000008a4c9c443bb0645df646a2d5bb55def0ed1e885a0000000000000000000000000000000000000000000000000000000000003039f847f845820fe9a0f642b38cf64cf70c89a0ccd74de13266ea98854078119a4619cad3bb2e6d4530a02307abe779333fe9da8eeebf40fbfeff9f1314ae8467a0119541339dfb65f10a"
             };
@@ -1036,17 +1043,18 @@ public class SmartContractExecutionTest {
 
             String value = "0x1000";
 
-            mTxObj = new SmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(signatureData)
-                    .build();
+            mTxObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            );
 
             String rlpEncoded = "0x28f9027e018505d21dba00830dbba080809447a4caa81fe2ed8cc834aafe5b1d7ee3ddedecfab9020e60806040526000805534801561001457600080fd5b506101ea806100246000396000f30060806040526004361061006d576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd1461007257806342cbb15c1461009d578063767800de146100c8578063b22636271461011f578063d14e62b814610150575b600080fd5b34801561007e57600080fd5b5061008761017d565b6040518082815260200191505060405180910390f35b3480156100a957600080fd5b506100b2610183565b6040518082815260200191505060405180910390f35b3480156100d457600080fd5b506100dd61018b565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34801561012b57600080fd5b5061014e60048036038101908080356000191690602001909291905050506101b1565b005b34801561015c57600080fd5b5061017b600480360381019080803590602001909291905050506101b4565b005b60005481565b600043905090565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b50565b80600081905550505600a165627a7a7230582053c65686a3571c517e2cf4f741d842e5ee6aa665c96ce70f46f9a594794f11eb00298080f847f845820fe9a06f59d699a5dd22a653b0ed1e39cbfc52ee468607eec95b195f302680ed7f9815a03b2f3f2a7a9482edfbcc9ee8e003e284b6c4a7ecbc8d361cc486562d4bdda389";
             List<String> list = new ArrayList<>();
@@ -1057,30 +1065,60 @@ public class SmartContractExecutionTest {
     }
 
     public static class getRawTransactionTest {
-
-        SmartContractExecution mTxObj;
-        AbstractKeyring coupledKeyring, deCoupledKeyring;
-        String klaytnWalletKey;
-
-        @Before
-        public void before() {
-            mTxObj = new SmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(signatureData)
-                    .build();
-        }
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
 
         @Test
         public void getRawTransaction() {
-            String rawTx = mTxObj.getRawTransaction();
+            String rawTx = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            ).getRawTransaction();
             assertEquals(expectedRLPEncoding, rawTx);
+        }
+
+        @Test
+        public void throwException_NotDefined_Nonce() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("nonce is undefined.");
+
+            caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            ).getRawTransaction();
+        }
+
+        @Test
+        public void throwException_NotDefined_GasPrice() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("gasPrice is undefined.");
+
+            caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            ).getRawTransaction();
         }
     }
 
@@ -1089,27 +1127,22 @@ public class SmartContractExecutionTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         SmartContractExecution mTxObj;
-        AbstractKeyring coupledKeyring, deCoupledKeyring;
-        String klaytnWalletKey;
-
-        @Before
-        public void before() {
-            mTxObj = new SmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(signatureData)
-                    .build();
-        }
-
 
         @Test
         public void getTransactionHash() {
+            mTxObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            );
+
             String txHash = mTxObj.getTransactionHash();
             assertEquals(expectedTransactionHash, txHash);
         }
@@ -1119,35 +1152,37 @@ public class SmartContractExecutionTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            mTxObj = new SmartContractExecution.Builder()
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(signatureData)
-                    .build();
+            mTxObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            );
 
             mTxObj.getTransactionHash();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            mTxObj = new SmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(signatureData)
-                    .build();
+            mTxObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            );
 
             mTxObj.getTransactionHash();
         }
@@ -1158,27 +1193,21 @@ public class SmartContractExecutionTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         SmartContractExecution mTxObj;
-        AbstractKeyring coupledKeyring, deCoupledKeyring;
-        String klaytnWalletKey;
-
-        @Before
-        public void before() {
-            mTxObj = new SmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(signatureData)
-                    .build();
-        }
-
 
         @Test
         public void getSenderTransactionHash() {
+            mTxObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            );
             String txHash = mTxObj.getSenderTxHash();
             assertEquals(expectedTransactionHash, txHash);
         }
@@ -1188,35 +1217,37 @@ public class SmartContractExecutionTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            mTxObj = new SmartContractExecution.Builder()
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(signatureData)
-                    .build();
+            mTxObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            );
 
             mTxObj.getSenderTxHash();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            mTxObj = new SmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(signatureData)
-                    .build();
+            mTxObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            );
 
             mTxObj.getSenderTxHash();
         }
@@ -1227,25 +1258,22 @@ public class SmartContractExecutionTest {
         public ExpectedException expectedException = ExpectedException.none();
 
         SmartContractExecution mTxObj;
-        AbstractKeyring coupledKeyring, deCoupledKeyring;
-        String klaytnWalletKey;
 
-        @Before
-        public void before() {
-            mTxObj = new SmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(signatureData)
-                    .build();
-        }
         @Test
         public void getRLPEncodingForSignature() {
+            mTxObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            );
+
             String rlp = mTxObj.getRLPEncodingForSignature();
             assertEquals(expectedRlpEncodingForSigning, rlp);
         }
@@ -1255,53 +1283,57 @@ public class SmartContractExecutionTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            mTxObj = new SmartContractExecution.Builder()
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(signatureData)
-                    .build();
+            mTxObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            );
+
             mTxObj.getRLPEncodingForSignature();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            mTxObj = new SmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(signatureData)
-                    .build();
+            mTxObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            );
 
             mTxObj.getRLPEncodingForSignature();
         }
 
         @Test
-        public void throwException_NotDefined_chainID() {
+        public void throwException_NotDefined_ChainID() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            mTxObj = new SmartContractExecution.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(signatureData)
-                    .build();
+            mTxObj = caver.transaction.smartContractExecution.create(
+                    TxPropertyBuilder.smartContractExecution()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(signatureData)
+            );
 
             mTxObj.getRLPEncodingForSignature();
         }

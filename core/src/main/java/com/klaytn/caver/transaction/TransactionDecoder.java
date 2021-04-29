@@ -20,7 +20,11 @@ import com.klaytn.caver.transaction.type.*;
 import org.web3j.utils.Numeric;
 
 public class TransactionDecoder {
-
+    /**
+     * Decodes a RLP-encoded transaction and returns it with matching type of transaction
+     * @param rlpEncoded RLP-encoded transaction
+     * @return AbstractTransaction
+     */
     public static AbstractTransaction decode(String rlpEncoded) {
         byte[] rlpBytes = Numeric.hexStringToByteArray(rlpEncoded);
 

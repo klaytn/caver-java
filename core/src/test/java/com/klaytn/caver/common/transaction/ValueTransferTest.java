@@ -2,17 +2,14 @@ package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
+import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.type.ValueTransfer;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
-import com.klaytn.caver.wallet.keyring.KeyringFactory;
-import com.klaytn.caver.wallet.keyring.PrivateKey;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -26,20 +23,21 @@ import static org.junit.Assert.*;
 public class ValueTransferTest {
 
     public static AbstractKeyring generateRoleBaseKeyring(int[] numArr, String address) {
+        Caver caver = new Caver(Caver.DEFAULT_URL);
         String[][] keyArr = new String[3][];
 
-        for(int i=0; i<numArr.length; i++) {
+        for(int i = 0; i < numArr.length; i++) {
             int length = numArr[i];
             String[] arr = new String[length];
-            for(int j=0; j<length; j++) {
-                arr[j] = PrivateKey.generate("entropy").getPrivateKey();
+            for(int j = 0; j < length; j++) {
+                arr[j] = caver.wallet.keyring.generateSingleKey("entropy");
             }
             keyArr[i] = arr;
         }
 
         List<String[]> arr = Arrays.asList(keyArr);
 
-        return KeyringFactory.createWithRoleBasedKey(address, arr);
+        return caver.wallet.keyring.createWithRoleBasedKey(address, arr);
     }
 
     public static class createInstanceBuilder {
@@ -71,7 +69,7 @@ public class ValueTransferTest {
         }
 
         @Test
-        public void BuilderWithRPCTest() throws IOException{
+        public void BuilderWithRPCTest() throws IOException {
             ValueTransfer valueTransfer = new ValueTransfer.Builder()
                     .setKlaytnCall(caver.rpc.getKlay())
                     .setGas(gas)
@@ -202,7 +200,7 @@ public class ValueTransferTest {
                     .setGasPrice(gasPrice)
                     .setTo(to)
                     .setChainId(chainID)
-                    .setValue((String)null)
+                    .setValue((String) null)
                     .setFrom(from)
                     .build();
         }
@@ -232,7 +230,7 @@ public class ValueTransferTest {
 
             ValueTransfer valueTransfer = new ValueTransfer.Builder()
                     .setNonce(nonce)
-                    .setGas((String)null)
+                    .setGas((String) null)
                     .setGasPrice(gasPrice)
                     .setTo(to)
                     .setChainId(chainID)
@@ -246,6 +244,7 @@ public class ValueTransferTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
+        Caver caver = new Caver(Caver.DEFAULT_URL);
         String nonce = "0x4D2";
         String gas = "0xf4240";
         String gasPrice = "0x19";
@@ -254,21 +253,31 @@ public class ValueTransferTest {
         String chainID = "0x1";
         String value = "0xa";
 
+        public void validateInstance(ValueTransfer valueTransfer) {
+            assertEquals(nonce, valueTransfer.getNonce());
+            assertEquals(gas, valueTransfer.getGas());
+            assertEquals(gasPrice, valueTransfer.getGasPrice());
+            assertEquals(to, valueTransfer.getTo());
+            assertEquals(from, valueTransfer.getFrom());
+            assertEquals(chainID, valueTransfer.getChainId());
+            assertEquals(value, valueTransfer.getValue());
+        }
+
         @Test
         public void createInstance() {
-            ValueTransfer valueTransfer = new ValueTransfer(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    value
+            ValueTransfer valueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
             );
 
             assertNotNull(valueTransfer);
+            validateInstance(valueTransfer);
         }
 
         @Test
@@ -278,16 +287,15 @@ public class ValueTransferTest {
 
             String from = "invalid Address";
 
-            ValueTransfer valueTransfer = new ValueTransfer(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    value
+            ValueTransfer valueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
             );
         }
 
@@ -296,16 +304,14 @@ public class ValueTransferTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("from is missing.");
 
-            ValueTransfer valueTransfer = new ValueTransfer(
-                    null,
-                    null,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    value
+            ValueTransfer valueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
             );
         }
 
@@ -316,16 +322,15 @@ public class ValueTransferTest {
 
             String to = "invalid Address";
 
-            ValueTransfer valueTransfer = new ValueTransfer(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    value
+            ValueTransfer valueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
             );
         }
 
@@ -334,20 +339,16 @@ public class ValueTransferTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("to is missing.");
 
-            ValueTransfer valueTransfer = new ValueTransfer(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    null,
-                    value
+            ValueTransfer valueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
             );
         }
-
-
 
         @Test
         public void throwException_invalidValue() {
@@ -356,16 +357,15 @@ public class ValueTransferTest {
 
             String value = "invalid value";
 
-            ValueTransfer valueTransfer = new ValueTransfer(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    value
+            ValueTransfer valueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
             );
         }
 
@@ -374,16 +374,14 @@ public class ValueTransferTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("value is missing.");
 
-            ValueTransfer valueTransfer = new ValueTransfer(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    null
+            ValueTransfer valueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
             );
         }
 
@@ -394,16 +392,15 @@ public class ValueTransferTest {
 
             String gas = "invalid gas";
 
-            ValueTransfer valueTransfer = new ValueTransfer(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    value
+            ValueTransfer valueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
             );
         }
 
@@ -412,16 +409,14 @@ public class ValueTransferTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("gas is missing.");
 
-            ValueTransfer valueTransfer = new ValueTransfer(
-                    null,
-                    from,
-                    nonce,
-                    null,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    value
+            ValueTransfer valueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
             );
         }
 
@@ -431,6 +426,7 @@ public class ValueTransferTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
+        Caver caver = new Caver(Caver.DEFAULT_URL);
         String from = "0xa94f5374Fce5edBC8E2a8697C15331677e6EbF0B";
         String to = "0x7b65B75d204aBed71587c9E519a89277766EE1d0";
         String value = "0xa";
@@ -448,17 +444,17 @@ public class ValueTransferTest {
         public void getRLPEncoding() {
             String expectedEncoded = "0x08f87a8204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0bf845f84325a0f3d0cd43661cabf53425535817c5058c27781f478cb5459874feaa462ed3a29aa06748abe186269ff10b8100a4b7d7fea274b53ea2905acbf498dc8b5ab1bf4fbc";
 
-            ValueTransfer valueTransfer = new ValueTransfer.Builder()
-                    .setFrom(from)
-                    .setTo(to)
-                    .setValue(value)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainId)
-                    .setNonce(BigInteger.valueOf(nonce))
-                    .setSignatures(signatureData)
-                    .build();
-
+            ValueTransfer valueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setFrom(from)
+                            .setTo(to)
+                            .setValue(value)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainId)
+                            .setNonce(BigInteger.valueOf(nonce))
+                            .setSignatures(signatureData)
+            );
             assertEquals(expectedEncoded, valueTransfer.getRLPEncoding());
         }
 
@@ -467,15 +463,16 @@ public class ValueTransferTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            ValueTransfer valueTransfer = new ValueTransfer.Builder()
-                    .setFrom(from)
-                    .setTo(to)
-                    .setValue(value)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainId)
-                    .setSignatures(signatureData)
-                    .build();
+            ValueTransfer valueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setFrom(from)
+                            .setTo(to)
+                            .setValue(value)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainId)
+                            .setSignatures(signatureData)
+            );
 
             valueTransfer.getRLPEncoding();
         }
@@ -485,16 +482,16 @@ public class ValueTransferTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            ValueTransfer valueTransfer = new ValueTransfer.Builder()
-                    .setFrom(from)
-                    .setNonce(BigInteger.valueOf(nonce))
-                    .setTo(to)
-                    .setValue(value)
-                    .setGas(gas)
-                    .setChainId(chainId)
-                    .setSignatures(signatureData)
-                    .build();
-
+            ValueTransfer valueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setFrom(from)
+                            .setNonce(BigInteger.valueOf(nonce))
+                            .setTo(to)
+                            .setValue(value)
+                            .setGas(gas)
+                            .setChainId(chainId)
+                            .setSignatures(signatureData)
+            );
             valueTransfer.getRLPEncoding();
         }
     }
@@ -503,6 +500,7 @@ public class ValueTransferTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
+        Caver caver = new Caver(Caver.DEFAULT_URL);
         String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
         String from = "0xa94f5374Fce5edBC8E2a8697C15331677e6EbF0B";
         String to = "0x7b65B75d204aBed71587c9E519a89277766EE1d0";
@@ -525,24 +523,27 @@ public class ValueTransferTest {
 
         @Before
         public void before() {
-            mValueTransfer = new ValueTransfer.Builder()
-                    .setNonce(BigInteger.valueOf(nonce))
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainId)
-                    .setValue(value)
-                    .setFrom(from)
-                    .build();
+            mValueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setNonce(BigInteger.valueOf(nonce))
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainId)
+                            .setValue(value)
+                            .setFrom(from)
+            );
 
-            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
-            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(
+                    caver.wallet.keyring.generate().getAddress(),
+                    privateKey
+            );
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
-
         }
 
         @Test
-        public void signWithKey_Keyring() throws IOException{
+        public void signWithKey_Keyring() throws IOException {
             mValueTransfer.sign(coupledKeyring, 0, TransactionHasher::getHashForSignature);
             assertEquals(expectedRawTx, mValueTransfer.getRawTransaction());
         }
@@ -596,8 +597,8 @@ public class ValueTransferTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
-            AbstractKeyring role = generateRoleBaseKeyring(new int[]{3,3,3}, from);
-            mValueTransfer.sign(role, 4);
+            AbstractKeyring roleBasedKeyring = generateRoleBaseKeyring(new int[]{3, 3, 3}, from);
+            mValueTransfer.sign(roleBasedKeyring, 4);
         }
     }
 
@@ -605,6 +606,7 @@ public class ValueTransferTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
+        Caver caver = new Caver(Caver.DEFAULT_URL);
         String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
         String from = "0xa94f5374Fce5edBC8E2a8697C15331677e6EbF0B";
         String to = "0x7b65B75d204aBed71587c9E519a89277766EE1d0";
@@ -613,7 +615,7 @@ public class ValueTransferTest {
         String gasPrice = "0x19";
         String chainId = "0x1";
         int nonce = 1234;
-        SignatureData signatureData = new SignatureData (
+        SignatureData signatureData = new SignatureData(
                 Numeric.hexStringToByteArray("0x25"),
                 Numeric.hexStringToByteArray("0xf3d0cd43661cabf53425535817c5058c27781f478cb5459874feaa462ed3a29a"),
                 Numeric.hexStringToByteArray("0x6748abe186269ff10b8100a4b7d7fea274b53ea2905acbf498dc8b5ab1bf4fbc")
@@ -637,10 +639,12 @@ public class ValueTransferTest {
                     .setFrom(from)
                     .build();
 
-            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
-            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(
+                    caver.wallet.keyring.generate().getAddress(),
+                    privateKey
+            );
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
-
         }
 
         @Test
@@ -666,7 +670,7 @@ public class ValueTransferTest {
 
         @Test
         public void signWithKeys_KeyString_NoSigner() throws IOException {
-            mValueTransfer.sign(privateKey, TransactionHasher::getHashForSignature);
+            mValueTransfer.sign(privateKey);
             assertEquals(1, mValueTransfer.getSignatures().size());
             assertEquals(expectedRawTx, mValueTransfer.getRawTransaction());
         }
@@ -681,7 +685,7 @@ public class ValueTransferTest {
 
         @Test
         public void signWithKeys_roleBasedKeyring() throws IOException {
-            AbstractKeyring roleBased = generateRoleBaseKeyring(new int[]{3,3,3}, from);
+            AbstractKeyring roleBased = generateRoleBaseKeyring(new int[]{3, 3, 3}, from);
 
             mValueTransfer.sign(roleBased);
             assertEquals(3, mValueTransfer.getSignatures().size());
@@ -692,6 +696,7 @@ public class ValueTransferTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
+        Caver caver = new Caver(Caver.DEFAULT_URL);
         String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
         String from = "0xa94f5374Fce5edBC8E2a8697C15331677e6EbF0B";
         String to = "0x7b65B75d204aBed71587c9E519a89277766EE1d0";
@@ -709,18 +714,22 @@ public class ValueTransferTest {
 
         @Before
         public void before() {
-            mValueTransfer = new ValueTransfer.Builder()
-                    .setNonce(BigInteger.valueOf(nonce))
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainId)
-                    .setValue(value)
-                    .setFrom(from)
-                    .build();
+            mValueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setNonce(BigInteger.valueOf(nonce))
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainId)
+                            .setValue(value)
+                            .setFrom(from)
+            );
 
-            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
-            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(
+                    caver.wallet.keyring.generate().getAddress(),
+                    privateKey
+            );
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
@@ -755,17 +764,17 @@ public class ValueTransferTest {
         @Test
         public void appendSignatureList_EmptySig() {
             SignatureData emptySignature = SignatureData.getEmptySignature();
-
-            mValueTransfer = new ValueTransfer.Builder()
-                    .setNonce(BigInteger.valueOf(nonce))
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainId)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setSignatures(emptySignature)
-                    .build();
+            mValueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setNonce(BigInteger.valueOf(nonce))
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainId)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setSignatures(emptySignature)
+            );
 
             SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
@@ -861,6 +870,7 @@ public class ValueTransferTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
+        Caver caver = new Caver(Caver.DEFAULT_URL);
         String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
 
         String from = "0x7d0104ac150f749d36bb34999bcade9f2c0bd2e6";
@@ -877,18 +887,22 @@ public class ValueTransferTest {
 
         @Before
         public void before() {
-            mValueTransfer = new ValueTransfer.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainId)
-                    .setValue(value)
-                    .setFrom(from)
-                    .build();
+            mValueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainId)
+                            .setValue(value)
+                            .setFrom(from)
+            );
 
-            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
-            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(
+                    caver.wallet.keyring.generate().getAddress(),
+                    privateKey
+            );
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
@@ -916,20 +930,21 @@ public class ValueTransferTest {
                     Numeric.hexStringToByteArray("0x1f4a44eeb8b7f0b0019162d1d6b90c401078e56fcd7495e74f7cfcd37e25f017")
             );
 
-            mValueTransfer = new ValueTransfer.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainId)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setSignatures(signatureData)
-                    .build();
+            mValueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainId)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setSignatures(signatureData)
+            );
 
             String expectedRLPEncoded = "0x08f9010d3a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae01947d0104ac150f749d36bb34999bcade9f2c0bd2e6f8d5f845820feaa03d820b27d0997baf16f98df01c7b2b2e9734ad05b2228c4d403c2facff8397f3a01f4a44eeb8b7f0b0019162d1d6b90c401078e56fcd7495e74f7cfcd37e25f017f845820feaa0c24227c8128652d4ec039950d9cfa82c3f962c4f4dee61e54236bdf89cbff8e9a04522134ef899ba136a668afd4ae76bd00bb19c0dc5ff66d7492a6a2a506021c2f845820fe9a0c9845154419b26dcb7700b4856c38f6e272004654ac3f38e9663134863600c52a05671961420adee43ee4538cba0200e82ff3c939c81e7d6f977660546b06d6914";
 
-            SignatureData[] expectedSignature = new SignatureData[] {
+            SignatureData[] expectedSignature = new SignatureData[]{
                     new SignatureData(
                             Numeric.hexStringToByteArray("0x0fea"),
                             Numeric.hexStringToByteArray("0x3d820b27d0997baf16f98df01c7b2b2e9734ad05b2228c4d403c2facff8397f3"),
@@ -947,7 +962,7 @@ public class ValueTransferTest {
                     )
             };
 
-            String[] rlpEncodedString = new String[] {
+            String[] rlpEncodedString = new String[]{
                     "0x08f87f3a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae01947d0104ac150f749d36bb34999bcade9f2c0bd2e6f847f845820feaa0c24227c8128652d4ec039950d9cfa82c3f962c4f4dee61e54236bdf89cbff8e9a04522134ef899ba136a668afd4ae76bd00bb19c0dc5ff66d7492a6a2a506021c2",
                     "0x08f87f3a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae01947d0104ac150f749d36bb34999bcade9f2c0bd2e6f847f845820fe9a0c9845154419b26dcb7700b4856c38f6e272004654ac3f38e9663134863600c52a05671961420adee43ee4538cba0200e82ff3c939c81e7d6f977660546b06d6914"
             };
@@ -972,18 +987,20 @@ public class ValueTransferTest {
 
             String value = "0x1000";
 
-            mValueTransfer = new ValueTransfer.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainId)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setSignatures(signatureData)
-                    .build();
+            mValueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainId)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setSignatures(signatureData)
+            );
 
             String rlpEncoded = "0x08f87f3a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae01947d0104ac150f749d36bb34999bcade9f2c0bd2e6f847f845820feaa0c24227c8128652d4ec039950d9cfa82c3f962c4f4dee61e54236bdf89cbff8e9a04522134ef899ba136a668afd4ae76bd00bb19c0dc5ff66d7492a6a2a506021c2";
+
             List<String> list = new ArrayList<>();
             list.add(rlpEncoded);
 
@@ -992,7 +1009,10 @@ public class ValueTransferTest {
     }
 
     public static class getRawTransactionTest {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
 
+        Caver caver = new Caver(Caver.DEFAULT_URL);
         String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
         String from = "0xa94f5374Fce5edBC8E2a8697C15331677e6EbF0B";
         String to = "0x7b65B75d204aBed71587c9E519a89277766EE1d0";
@@ -1002,33 +1022,59 @@ public class ValueTransferTest {
         String chainId = "0x1";
         int nonce = 1234;
 
-        ValueTransfer mValueTransfer;
-
         SignatureData SignatureData = new SignatureData(
                 Numeric.hexStringToByteArray("0x25"),
                 Numeric.hexStringToByteArray("0xf3d0cd43661cabf53425535817c5058c27781f478cb5459874feaa462ed3a29a"),
                 Numeric.hexStringToByteArray("0x6748abe186269ff10b8100a4b7d7fea274b53ea2905acbf498dc8b5ab1bf4fbc")
         );
 
-        @Before
-        public void before() {
-            mValueTransfer = new ValueTransfer.Builder()
-                    .setNonce(BigInteger.valueOf(nonce))
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainId)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setSignatures(SignatureData)
-                    .build();
+        @Test
+        public void getRawTransaction() {
+            String rawTx = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setNonce(BigInteger.valueOf(nonce))
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainId)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setSignatures(SignatureData)
+            ).getRawTransaction();
+            String expected = "0x08f87a8204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0bf845f84325a0f3d0cd43661cabf53425535817c5058c27781f478cb5459874feaa462ed3a29aa06748abe186269ff10b8100a4b7d7fea274b53ea2905acbf498dc8b5ab1bf4fbc";
+            assertEquals(expected, rawTx);
         }
 
         @Test
-        public void getRawTransaction() {
-            String rawTx = mValueTransfer.getRawTransaction();
-            String expected = "0x08f87a8204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0bf845f84325a0f3d0cd43661cabf53425535817c5058c27781f478cb5459874feaa462ed3a29aa06748abe186269ff10b8100a4b7d7fea274b53ea2905acbf498dc8b5ab1bf4fbc";
-            assertEquals(expected, rawTx);
+        public void throwException_NotDefined_Nonce() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("nonce is undefined.");
+            caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainId)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setSignatures(SignatureData)
+            ).getRawTransaction();
+        }
+
+        @Test
+        public void throwException_NotDefined_GasPrice() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("gasPrice is undefined.");
+            caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setNonce(BigInteger.valueOf(nonce))
+                            .setGas(gas)
+                            .setTo(to)
+                            .setChainId(chainId)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setSignatures(SignatureData)
+            ).getRawTransaction();
         }
     }
 
@@ -1036,6 +1082,7 @@ public class ValueTransferTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
+        Caver caver = new Caver(Caver.DEFAULT_URL);
         String expectedHash = "0x762f130342569e9669a4d8547f1248bd2554fbbf3062d63a97ce28bfa97aa9d7";
 
         String from = "0xa94f5374Fce5edBC8E2a8697C15331677e6EbF0B";
@@ -1056,17 +1103,17 @@ public class ValueTransferTest {
 
         @Test
         public void getTransactionHash() {
-            mValueTransfer = new ValueTransfer.Builder()
-                    .setNonce(BigInteger.valueOf(nonce))
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainId)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setSignatures(signatureData)
-                    .build();
-
+            mValueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setNonce(BigInteger.valueOf(nonce))
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainId)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setSignatures(signatureData)
+            );
             String txHash = mValueTransfer.getTransactionHash();
             assertEquals(expectedHash, txHash);
         }
@@ -1076,33 +1123,35 @@ public class ValueTransferTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            mValueTransfer = new ValueTransfer.Builder()
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainId)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setSignatures(signatureData)
-                    .build();
+            mValueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainId)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setSignatures(signatureData)
+            );
 
             mValueTransfer.getTransactionHash();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            mValueTransfer = new ValueTransfer.Builder()
-                    .setNonce(BigInteger.valueOf(nonce))
-                    .setGas(gas)
-                    .setTo(to)
-                    .setChainId(chainId)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setSignatures(signatureData)
-                    .build();
+            mValueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setNonce(BigInteger.valueOf(nonce))
+                            .setGas(gas)
+                            .setTo(to)
+                            .setChainId(chainId)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setSignatures(signatureData)
+            );
 
             mValueTransfer.getTransactionHash();
         }
@@ -1112,6 +1161,7 @@ public class ValueTransferTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
+        Caver caver = new Caver(Caver.DEFAULT_URL);
         String expectedHash = "0x762f130342569e9669a4d8547f1248bd2554fbbf3062d63a97ce28bfa97aa9d7";
 
         String from = "0xa94f5374Fce5edBC8E2a8697C15331677e6EbF0B";
@@ -1131,17 +1181,18 @@ public class ValueTransferTest {
         );
 
         @Test
-        public void getTransactionHash() {
-            mValueTransfer = new ValueTransfer.Builder()
-                    .setNonce(BigInteger.valueOf(nonce))
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainId)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setSignatures(signatureData)
-                    .build();
+        public void getSenderTransactionHash() {
+            mValueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setNonce(BigInteger.valueOf(nonce))
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainId)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setSignatures(signatureData)
+            );
 
             String txHash = mValueTransfer.getSenderTxHash();
             assertEquals(expectedHash, txHash);
@@ -1152,33 +1203,35 @@ public class ValueTransferTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            mValueTransfer = new ValueTransfer.Builder()
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainId)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setSignatures(signatureData)
-                    .build();
+            mValueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainId)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setSignatures(signatureData)
+            );
 
             mValueTransfer.getSenderTxHash();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            mValueTransfer = new ValueTransfer.Builder()
-                    .setNonce(BigInteger.valueOf(nonce))
-                    .setGas(gas)
-                    .setTo(to)
-                    .setChainId(chainId)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setSignatures(signatureData)
-                    .build();
+            mValueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setNonce(BigInteger.valueOf(nonce))
+                            .setGas(gas)
+                            .setTo(to)
+                            .setChainId(chainId)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setSignatures(signatureData)
+            );
 
             mValueTransfer.getSenderTxHash();
         }
@@ -1188,6 +1241,7 @@ public class ValueTransferTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
+        Caver caver = new Caver(Caver.DEFAULT_URL);
         String from = "0xa94f5374Fce5edBC8E2a8697C15331677e6EbF0B";
         String to = "0x7b65B75d204aBed71587c9E519a89277766EE1d0";
         String value = "0xa";
@@ -1198,7 +1252,7 @@ public class ValueTransferTest {
 
         ValueTransfer mValueTransfer;
 
-        SignatureData signatureData = new  SignatureData(
+        SignatureData signatureData = new SignatureData(
                 Numeric.hexStringToByteArray("0x25"),
                 Numeric.hexStringToByteArray("0xf3d0cd43661cabf53425535817c5058c27781f478cb5459874feaa462ed3a29a"),
                 Numeric.hexStringToByteArray("0x6748abe186269ff10b8100a4b7d7fea274b53ea2905acbf498dc8b5ab1bf4fbc")
@@ -1208,15 +1262,16 @@ public class ValueTransferTest {
 
         @Test
         public void getRLPEncodingForSignature() {
-            mValueTransfer = new ValueTransfer.Builder()
-                    .setNonce(BigInteger.valueOf(nonce))
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainId)
-                    .setValue(value)
-                    .setFrom(from)
-                    .build();
+            mValueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setNonce(BigInteger.valueOf(nonce))
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainId)
+                            .setValue(value)
+                            .setFrom(from)
+            );
 
             String rlp = mValueTransfer.getRLPEncodingForSignature();
             assertEquals(expectedRLP, rlp);
@@ -1227,50 +1282,53 @@ public class ValueTransferTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            mValueTransfer = new ValueTransfer.Builder()
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainId)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setSignatures(signatureData)
-                    .build();
+            mValueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainId)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setSignatures(signatureData)
+            );
 
             mValueTransfer.getRLPEncodingForSignature();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            mValueTransfer = new ValueTransfer.Builder()
-                    .setNonce(BigInteger.valueOf(nonce))
-                    .setGas(gas)
-                    .setTo(to)
-                    .setChainId(chainId)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setSignatures(signatureData)
-                    .build();
+            mValueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setNonce(BigInteger.valueOf(nonce))
+                            .setGas(gas)
+                            .setTo(to)
+                            .setChainId(chainId)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setSignatures(signatureData)
+            );
 
             mValueTransfer.getRLPEncodingForSignature();
         }
 
         @Test
-        public void throwException_NotDefined_chainID() {
+        public void throwException_NotDefined_ChainID() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            mValueTransfer = new ValueTransfer.Builder()
-                    .setNonce(BigInteger.valueOf(nonce))
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setValue(value)
-                    .setFrom(from)
-                    .build();
+            mValueTransfer = caver.transaction.valueTransfer.create(
+                    TxPropertyBuilder.valueTransfer()
+                            .setNonce(BigInteger.valueOf(nonce))
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setValue(value)
+                            .setFrom(from)
+            );
 
             mValueTransfer.getRLPEncodingForSignature();
         }

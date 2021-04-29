@@ -2,6 +2,7 @@ package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
+import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.type.FeeDelegatedSmartContractDeploy;
 import com.klaytn.caver.utils.CodeFormat;
 import com.klaytn.caver.wallet.keyring.*;
@@ -9,8 +10,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -19,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 public class FeeDelegatedSmartContractDeployTest {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
@@ -56,8 +54,8 @@ public class FeeDelegatedSmartContractDeployTest {
     static String expectedRLPEncodingForFeePayerSigning = "0xf90246b90229f9022629808505d21dba00830dbba08080948061145252c8f2b4f110aed096435ae6ed7d5a95b901fe608060405234801561001057600080fd5b506101de806100206000396000f3006080604052600436106100615763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416631a39d8ef81146100805780636353586b146100a757806370a08231146100ca578063fd6b7ef8146100f8575b3360009081526001602052604081208054349081019091558154019055005b34801561008c57600080fd5b5061009561010d565b60408051918252519081900360200190f35b6100c873ffffffffffffffffffffffffffffffffffffffff60043516610113565b005b3480156100d657600080fd5b5061009573ffffffffffffffffffffffffffffffffffffffff60043516610147565b34801561010457600080fd5b506100c8610159565b60005481565b73ffffffffffffffffffffffffffffffffffffffff1660009081526001602052604081208054349081019091558154019055565b60016020526000908152604090205481565b336000908152600160205260408120805490829055908111156101af57604051339082156108fc029083906000818181858888f193505050501561019c576101af565b3360009081526001602052604090208190555b505600a165627a7a72305820627ca46bb09478a015762806cc00c431230501118c7c26c30ac58c4e09e51c4f00298080942c8eb96e7060ab864d94e91ab16f214dc66476288207e38080";
 
     public static AbstractKeyring generateRoleBaseKeyring(int[] numArr, String address) {
-        List<String[]> arr = KeyringFactory.generateRoleBasedKeys(numArr, "entropy");
-        return KeyringFactory.createWithRoleBasedKey(address, arr);
+        List<String[]> arr = caver.wallet.keyring.generateRoleBasedKeys(numArr, "entropy");
+        return caver.wallet.keyring.createWithRoleBasedKey(address, arr);
     }
 
     public static class createInstanceBuilder {
@@ -331,21 +329,21 @@ public class FeeDelegatedSmartContractDeployTest {
 
         @Test
         public void createInstance() {
-            FeeDelegatedSmartContractDeploy txObj = new FeeDelegatedSmartContractDeploy(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input,
-                    humanReadable,
-                    codeFormat
+            FeeDelegatedSmartContractDeploy txObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
 
             assertNotNull(txObj);
@@ -358,21 +356,21 @@ public class FeeDelegatedSmartContractDeployTest {
 
             String from = "invalid Address";
 
-            FeeDelegatedSmartContractDeploy txObj = new FeeDelegatedSmartContractDeploy(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input,
-                    humanReadable,
-                    codeFormat
+            FeeDelegatedSmartContractDeploy txObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -383,21 +381,21 @@ public class FeeDelegatedSmartContractDeployTest {
 
             String from = null;
 
-            FeeDelegatedSmartContractDeploy txObj = new FeeDelegatedSmartContractDeploy(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input,
-                    humanReadable,
-                    codeFormat
+            FeeDelegatedSmartContractDeploy txObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -408,21 +406,21 @@ public class FeeDelegatedSmartContractDeployTest {
 
             String to = "invalid Address";
 
-            FeeDelegatedSmartContractDeploy txObj = new FeeDelegatedSmartContractDeploy(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input,
-                    humanReadable,
-                    codeFormat
+            FeeDelegatedSmartContractDeploy txObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -434,21 +432,21 @@ public class FeeDelegatedSmartContractDeployTest {
 
             String value = "invalid value";
 
-            FeeDelegatedSmartContractDeploy txObj = new FeeDelegatedSmartContractDeploy(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input,
-                    humanReadable,
-                    codeFormat
+            FeeDelegatedSmartContractDeploy txObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -459,21 +457,21 @@ public class FeeDelegatedSmartContractDeployTest {
 
             String value = null;
 
-            FeeDelegatedSmartContractDeploy txObj = new FeeDelegatedSmartContractDeploy(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input,
-                    humanReadable,
-                    codeFormat
+            FeeDelegatedSmartContractDeploy txObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -484,21 +482,21 @@ public class FeeDelegatedSmartContractDeployTest {
 
             String gas = "invalid gas";
 
-            FeeDelegatedSmartContractDeploy txObj = new FeeDelegatedSmartContractDeploy(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input,
-                    humanReadable,
-                    codeFormat
+            FeeDelegatedSmartContractDeploy txObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -509,21 +507,21 @@ public class FeeDelegatedSmartContractDeployTest {
 
             String gas = null;
 
-            FeeDelegatedSmartContractDeploy txObj = new FeeDelegatedSmartContractDeploy(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input,
-                    humanReadable,
-                    codeFormat
+            FeeDelegatedSmartContractDeploy txObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -534,21 +532,21 @@ public class FeeDelegatedSmartContractDeployTest {
 
             boolean humanReadable = true;
 
-            FeeDelegatedSmartContractDeploy txObj = new FeeDelegatedSmartContractDeploy(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input,
-                    humanReadable,
-                    codeFormat
+            FeeDelegatedSmartContractDeploy txObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
 
         }
@@ -560,21 +558,21 @@ public class FeeDelegatedSmartContractDeployTest {
 
             String codeFormat = "1";
 
-            FeeDelegatedSmartContractDeploy txObj = new FeeDelegatedSmartContractDeploy(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input,
-                    humanReadable,
-                    codeFormat
+            FeeDelegatedSmartContractDeploy txObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -585,21 +583,21 @@ public class FeeDelegatedSmartContractDeployTest {
 
             String codeFormat = null;
 
-            FeeDelegatedSmartContractDeploy txObj = new FeeDelegatedSmartContractDeploy(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input,
-                    humanReadable,
-                    codeFormat
+            FeeDelegatedSmartContractDeploy txObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -610,21 +608,21 @@ public class FeeDelegatedSmartContractDeployTest {
 
             String feePayer = null;
 
-            FeeDelegatedSmartContractDeploy txObj = new FeeDelegatedSmartContractDeploy(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input,
-                    humanReadable,
-                    codeFormat
+            FeeDelegatedSmartContractDeploy txObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
     }
@@ -636,21 +634,22 @@ public class FeeDelegatedSmartContractDeployTest {
         @Test
         public void getRLPEncoding() {
 
-            FeeDelegatedSmartContractDeploy txObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            FeeDelegatedSmartContractDeploy txObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
         }
@@ -662,21 +661,22 @@ public class FeeDelegatedSmartContractDeployTest {
 
             String nonce = "0x";
 
-            FeeDelegatedSmartContractDeploy txObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            FeeDelegatedSmartContractDeploy txObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             txObj.getRLPEncoding();
         }
@@ -688,21 +688,22 @@ public class FeeDelegatedSmartContractDeployTest {
 
             String gasPrice = "0x";
 
-            FeeDelegatedSmartContractDeploy txObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            FeeDelegatedSmartContractDeploy txObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             txObj.getRLPEncoding();
         }
@@ -723,27 +724,28 @@ public class FeeDelegatedSmartContractDeployTest {
         String value = "0x00";
 
         FeeDelegatedSmartContractDeploy txObj;
-        SingleKeyring keyring = KeyringFactory.createFromPrivateKey(feePayerPrivateKey);
+        SingleKeyring keyring = caver.wallet.keyring.createFromPrivateKey(feePayerPrivateKey);
         String klaytnWalletKey = keyring.getKlaytnWalletKey();
         String feePayer = keyring.getAddress();
 
         @Before
         public void before() {
 
-            txObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .build();
+            txObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+            );
         }
 
         @Test
@@ -777,12 +779,12 @@ public class FeeDelegatedSmartContractDeployTest {
         @Test
         public void signAsFeePayer_multipleKey() throws IOException {
             String[] keyArr = {
-                    PrivateKey.generate().getPrivateKey(),
+                    caver.wallet.keyring.generateSingleKey(),
                     feePayerPrivateKey,
-                    PrivateKey.generate().getPrivateKey()
+                    caver.wallet.keyring.generateSingleKey()
             };
 
-            MultipleKeyring keyring = KeyringFactory.createWithMultipleKey(feePayer, keyArr);
+            MultipleKeyring keyring = caver.wallet.keyring.createWithMultipleKey(feePayer, keyArr);
             txObj.signAsFeePayer(keyring, 1);
             assertEquals(1, txObj.getFeePayerSignatures().size());
             assertEquals(expectedRawTx, txObj.getRawTransaction());
@@ -792,20 +794,19 @@ public class FeeDelegatedSmartContractDeployTest {
         public void signAsFeePayer_roleBasedKey() throws IOException {
             String[][] keyArr = {
                     {
-                            PrivateKey.generate().getPrivateKey(),
-                            PrivateKey.generate().getPrivateKey(),
-
+                            caver.wallet.keyring.generateSingleKey(),
+                            caver.wallet.keyring.generateSingleKey(),
                     },
                     {
-                            PrivateKey.generate().getPrivateKey()
+                            caver.wallet.keyring.generateSingleKey()
                     },
                     {
-                            PrivateKey.generate().getPrivateKey(),
+                            caver.wallet.keyring.generateSingleKey(),
                             feePayerPrivateKey
                     }
             };
 
-            RoleBasedKeyring roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(keyring.getAddress(), Arrays.asList(keyArr));
+            RoleBasedKeyring roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(keyring.getAddress(), Arrays.asList(keyArr));
             txObj.signAsFeePayer(roleBasedKeyring, 1);
             assertEquals(1, txObj.getFeePayerSignatures().size());
             assertEquals(expectedRawTx, txObj.getRawTransaction());
@@ -816,7 +817,7 @@ public class FeeDelegatedSmartContractDeployTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The feePayer address of the transaction is different with the address of the keyring to use.");
 
-            SingleKeyring keyring = KeyringFactory.createWithSingleKey(feePayerPrivateKey, PrivateKey.generate().getPrivateKey());
+            SingleKeyring keyring = caver.wallet.keyring.generate();
 
             txObj.signAsFeePayer(keyring, 0);
         }
@@ -826,7 +827,7 @@ public class FeeDelegatedSmartContractDeployTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
-            AbstractKeyring keyring = generateRoleBaseKeyring(new int[]{3,3,3}, feePayer);
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[]{3, 3, 3}, feePayer);
             txObj.signAsFeePayer(keyring, 4);
         }
     }
@@ -839,28 +840,35 @@ public class FeeDelegatedSmartContractDeployTest {
         AbstractKeyring singleKeyring, multipleKeyring, roleBasedKeyring;
 
         String feePayerPrivateKey = "0xb9d5558443585bca6f225b935950e3f6e69f9da8a5809a83f51c3365dff53936";
-        String feePayer = KeyringFactory.createFromPrivateKey(feePayerPrivateKey).getAddress();
+        String feePayer = caver.wallet.keyring.createFromPrivateKey(feePayerPrivateKey).getAddress();
 
         @Before
         public void before() {
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+            );
 
-            singleKeyring = KeyringFactory.createWithSingleKey(feePayer, feePayerPrivateKey);
-            multipleKeyring = KeyringFactory.createWithMultipleKey(feePayer, KeyringFactory.generateMultipleKeys(8));
-            roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(feePayer, KeyringFactory.generateRolBasedKeys(new int[]{3,4,5}));
+            singleKeyring = caver.wallet.keyring.createWithSingleKey(feePayer, feePayerPrivateKey);
+            multipleKeyring = caver.wallet.keyring.createWithMultipleKey(
+                    feePayer,
+                    caver.wallet.keyring.generateMultipleKeys(8)
+            );
+            roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(
+                    feePayer,
+                    caver.wallet.keyring.generateRolBasedKeys(new int[]{3, 4, 5})
+            );
         }
 
         @Test
@@ -892,7 +900,7 @@ public class FeeDelegatedSmartContractDeployTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The feePayer address of the transaction is different with the address of the keyring to use.");
 
-            SingleKeyring keyring = KeyringFactory.createFromPrivateKey(PrivateKey.generate().getPrivateKey());
+            SingleKeyring keyring = caver.wallet.keyring.generate();
             mTxObj.signAsFeePayer(keyring);
         }
     }
@@ -907,23 +915,24 @@ public class FeeDelegatedSmartContractDeployTest {
 
         @Before
         public void before() {
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+            );
 
-            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
-            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(caver.wallet.keyring.generate().getAddress(), privateKey);
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
@@ -959,21 +968,22 @@ public class FeeDelegatedSmartContractDeployTest {
         public void appendFeePayerSignatureList_EmptySig() {
             SignatureData emptySignature = SignatureData.getEmptySignature();
 
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(emptySignature)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(emptySignature)
+            );
 
             SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
@@ -996,21 +1006,22 @@ public class FeeDelegatedSmartContractDeployTest {
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(signatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(signatureData)
+            );
 
             SignatureData signatureData1 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
@@ -1035,21 +1046,22 @@ public class FeeDelegatedSmartContractDeployTest {
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(signatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(signatureData)
+            );
 
             SignatureData signatureData1 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
@@ -1096,18 +1108,19 @@ public class FeeDelegatedSmartContractDeployTest {
 
         @Test
         public void combineSignature() {
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+            );
 
 
             SignatureData expectedSignature = new SignatureData(
@@ -1133,23 +1146,24 @@ public class FeeDelegatedSmartContractDeployTest {
                     "0x10632196cf8e128de3f99f5e13d41c254dfe3edcc17eea84a49e287cf5b28bda"
             );
 
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setSignatures(signature)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setSignatures(signature)
+            );
 
             String expectedRLPEncoded = "0x29f90316018505d21dba00830dbba080809454dc8905caf698250cebfcbde49f037b52d55f61b901fe608060405234801561001057600080fd5b506101de806100206000396000f3006080604052600436106100615763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416631a39d8ef81146100805780636353586b146100a757806370a08231146100ca578063fd6b7ef8146100f8575b3360009081526001602052604081208054349081019091558154019055005b34801561008c57600080fd5b5061009561010d565b60408051918252519081900360200190f35b6100c873ffffffffffffffffffffffffffffffffffffffff60043516610113565b005b3480156100d657600080fd5b5061009573ffffffffffffffffffffffffffffffffffffffff60043516610147565b34801561010457600080fd5b506100c8610159565b60005481565b73ffffffffffffffffffffffffffffffffffffffff1660009081526001602052604081208054349081019091558154019055565b60016020526000908152604090205481565b336000908152600160205260408120805490829055908111156101af57604051339082156108fc029083906000818181858888f193505050501561019c576101af565b3360009081526001602052604090208190555b505600a165627a7a72305820627ca46bb09478a015762806cc00c431230501118c7c26c30ac58c4e09e51c4f00298080f8d5f845820fe9a0627b73b8636a2d98f5f51bc30381631055127c3aa13f6f5d470c94ace4d10780a010632196cf8e128de3f99f5e13d41c254dfe3edcc17eea84a49e287cf5b28bdaf845820fe9a0c941f8f173e5a5c22216f3f0fdfa4da602356398e24ceee99beb2a2a9c2bfafca00f231de0075bd109708513416a3896fa076130cf6fd891cb1a7abd1835a352bef845820fe9a073bdd7375228ab9598ab5be10a4ffe1c44211de675295cf07bfce726eef2b764a018923a5455d601c52532280259d820ec2ae5cda3ec57095d8df2a872192a5ae9940000000000000000000000000000000000000000c4c3018080";
 
-            SignatureData[] expectedSignature = new SignatureData[] {
+            SignatureData[] expectedSignature = new SignatureData[]{
                     new SignatureData(
                             "0x0fe9",
                             "0x627b73b8636a2d98f5f51bc30381631055127c3aa13f6f5d470c94ace4d10780",
@@ -1167,7 +1181,7 @@ public class FeeDelegatedSmartContractDeployTest {
                     )
             };
 
-            String[] rlpEncodedString = new String[] {
+            String[] rlpEncodedString = new String[]{
                     "0x29f90274018505d21dba00830dbba080809454dc8905caf698250cebfcbde49f037b52d55f61b901fe608060405234801561001057600080fd5b506101de806100206000396000f3006080604052600436106100615763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416631a39d8ef81146100805780636353586b146100a757806370a08231146100ca578063fd6b7ef8146100f8575b3360009081526001602052604081208054349081019091558154019055005b34801561008c57600080fd5b5061009561010d565b60408051918252519081900360200190f35b6100c873ffffffffffffffffffffffffffffffffffffffff60043516610113565b005b3480156100d657600080fd5b5061009573ffffffffffffffffffffffffffffffffffffffff60043516610147565b34801561010457600080fd5b506100c8610159565b60005481565b73ffffffffffffffffffffffffffffffffffffffff1660009081526001602052604081208054349081019091558154019055565b60016020526000908152604090205481565b336000908152600160205260408120805490829055908111156101af57604051339082156108fc029083906000818181858888f193505050501561019c576101af565b3360009081526001602052604090208190555b505600a165627a7a72305820627ca46bb09478a015762806cc00c431230501118c7c26c30ac58c4e09e51c4f00298080f847f845820fe9a0c941f8f173e5a5c22216f3f0fdfa4da602356398e24ceee99beb2a2a9c2bfafca00f231de0075bd109708513416a3896fa076130cf6fd891cb1a7abd1835a352be80c4c3018080",
                     "0x29f90274018505d21dba00830dbba080809454dc8905caf698250cebfcbde49f037b52d55f61b901fe608060405234801561001057600080fd5b506101de806100206000396000f3006080604052600436106100615763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416631a39d8ef81146100805780636353586b146100a757806370a08231146100ca578063fd6b7ef8146100f8575b3360009081526001602052604081208054349081019091558154019055005b34801561008c57600080fd5b5061009561010d565b60408051918252519081900360200190f35b6100c873ffffffffffffffffffffffffffffffffffffffff60043516610113565b005b3480156100d657600080fd5b5061009573ffffffffffffffffffffffffffffffffffffffff60043516610147565b34801561010457600080fd5b506100c8610159565b60005481565b73ffffffffffffffffffffffffffffffffffffffff1660009081526001602052604081208054349081019091558154019055565b60016020526000908152604090205481565b336000908152600160205260408120805490829055908111156101af57604051339082156108fc029083906000818181858888f193505050501561019c576101af565b3360009081526001602052604090208190555b505600a165627a7a72305820627ca46bb09478a015762806cc00c431230501118c7c26c30ac58c4e09e51c4f00298080f847f845820fe9a073bdd7375228ab9598ab5be10a4ffe1c44211de675295cf07bfce726eef2b764a018923a5455d601c52532280259d820ec2ae5cda3ec57095d8df2a872192a5ae980c4c3018080"
             };
@@ -1182,19 +1196,20 @@ public class FeeDelegatedSmartContractDeployTest {
         @Test
         public void combineSignature_withFeePayerSignature() {
             String feePayer = "0xb1d7bfd3587cd8bfb1cc6ae980fef3735a3601ab";
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+            );
 
             String rlpEncoded = "0x29f90288018505d21dba00830dbba080809454dc8905caf698250cebfcbde49f037b52d55f61b901fe608060405234801561001057600080fd5b506101de806100206000396000f3006080604052600436106100615763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416631a39d8ef81146100805780636353586b146100a757806370a08231146100ca578063fd6b7ef8146100f8575b3360009081526001602052604081208054349081019091558154019055005b34801561008c57600080fd5b5061009561010d565b60408051918252519081900360200190f35b6100c873ffffffffffffffffffffffffffffffffffffffff60043516610113565b005b3480156100d657600080fd5b5061009573ffffffffffffffffffffffffffffffffffffffff60043516610147565b34801561010457600080fd5b506100c8610159565b60005481565b73ffffffffffffffffffffffffffffffffffffffff1660009081526001602052604081208054349081019091558154019055565b60016020526000908152604090205481565b336000908152600160205260408120805490829055908111156101af57604051339082156108fc029083906000818181858888f193505050501561019c576101af565b3360009081526001602052604090208190555b505600a165627a7a72305820627ca46bb09478a015762806cc00c431230501118c7c26c30ac58c4e09e51c4f00298080c4c301808094b1d7bfd3587cd8bfb1cc6ae980fef3735a3601abf847f845820fe9a0142775d7fd0e65c21ddf3a83f32a9b3043638b0fd0f75301b436616b00261121a07efb4167f4cfd4c6497bf812014f80a4e66612f860e1ff5a4f5fdc282b131a72";
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncoded));
@@ -1205,7 +1220,7 @@ public class FeeDelegatedSmartContractDeployTest {
                     "0x7efb4167f4cfd4c6497bf812014f80a4e66612f860e1ff5a4f5fdc282b131a72"
             );
 
-            assertEquals(rlpEncoded,combined);
+            assertEquals(rlpEncoded, combined);
             assertEquals(expectedSignatureData, mTxObj.getFeePayerSignatures().get(0));
         }
 
@@ -1218,22 +1233,23 @@ public class FeeDelegatedSmartContractDeployTest {
                     "0x7efb4167f4cfd4c6497bf812014f80a4e66612f860e1ff5a4f5fdc282b131a72"
             );
 
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setFeePayerSignatures(signatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setFeePayerSignatures(signatureData)
+            );
 
-            String[] rlpEncodedStrings = new String[] {
+            String[] rlpEncodedStrings = new String[]{
                     "0x29f90288018505d21dba00830dbba080809454dc8905caf698250cebfcbde49f037b52d55f61b901fe608060405234801561001057600080fd5b506101de806100206000396000f3006080604052600436106100615763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416631a39d8ef81146100805780636353586b146100a757806370a08231146100ca578063fd6b7ef8146100f8575b3360009081526001602052604081208054349081019091558154019055005b34801561008c57600080fd5b5061009561010d565b60408051918252519081900360200190f35b6100c873ffffffffffffffffffffffffffffffffffffffff60043516610113565b005b3480156100d657600080fd5b5061009573ffffffffffffffffffffffffffffffffffffffff60043516610147565b34801561010457600080fd5b506100c8610159565b60005481565b73ffffffffffffffffffffffffffffffffffffffff1660009081526001602052604081208054349081019091558154019055565b60016020526000908152604090205481565b336000908152600160205260408120805490829055908111156101af57604051339082156108fc029083906000818181858888f193505050501561019c576101af565b3360009081526001602052604090208190555b505600a165627a7a72305820627ca46bb09478a015762806cc00c431230501118c7c26c30ac58c4e09e51c4f00298080c4c301808094b1d7bfd3587cd8bfb1cc6ae980fef3735a3601abf847f845820feaa06e6acf405e08848854e469e8e38edad783ebf0e24cdefbd5d4a2d8f75c37b662a06f39343ba613683a6b0c85ed2f421acdee010027d5803c0da9658b21602919c6",
                     "0x29f90288018505d21dba00830dbba080809454dc8905caf698250cebfcbde49f037b52d55f61b901fe608060405234801561001057600080fd5b506101de806100206000396000f3006080604052600436106100615763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416631a39d8ef81146100805780636353586b146100a757806370a08231146100ca578063fd6b7ef8146100f8575b3360009081526001602052604081208054349081019091558154019055005b34801561008c57600080fd5b5061009561010d565b60408051918252519081900360200190f35b6100c873ffffffffffffffffffffffffffffffffffffffff60043516610113565b005b3480156100d657600080fd5b5061009573ffffffffffffffffffffffffffffffffffffffff60043516610147565b34801561010457600080fd5b506100c8610159565b60005481565b73ffffffffffffffffffffffffffffffffffffffff1660009081526001602052604081208054349081019091558154019055565b60016020526000908152604090205481565b336000908152600160205260408120805490829055908111156101af57604051339082156108fc029083906000818181858888f193505050501561019c576101af565b3360009081526001602052604090208190555b505600a165627a7a72305820627ca46bb09478a015762806cc00c431230501118c7c26c30ac58c4e09e51c4f00298080c4c301808094b1d7bfd3587cd8bfb1cc6ae980fef3735a3601abf847f845820feaa0a85dfa3531c970ad63298dc803176e5c3edb98fdaa406fc32be853bedba01e51a03c6b2458349fc33f5acef72252e62e1c59e38dcb00a1c38426b00c2f0d8051be"
             };
@@ -1242,7 +1258,7 @@ public class FeeDelegatedSmartContractDeployTest {
 
             String expectedRLPEncoded = "0x29f90316018505d21dba00830dbba080809454dc8905caf698250cebfcbde49f037b52d55f61b901fe608060405234801561001057600080fd5b506101de806100206000396000f3006080604052600436106100615763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416631a39d8ef81146100805780636353586b146100a757806370a08231146100ca578063fd6b7ef8146100f8575b3360009081526001602052604081208054349081019091558154019055005b34801561008c57600080fd5b5061009561010d565b60408051918252519081900360200190f35b6100c873ffffffffffffffffffffffffffffffffffffffff60043516610113565b005b3480156100d657600080fd5b5061009573ffffffffffffffffffffffffffffffffffffffff60043516610147565b34801561010457600080fd5b506100c8610159565b60005481565b73ffffffffffffffffffffffffffffffffffffffff1660009081526001602052604081208054349081019091558154019055565b60016020526000908152604090205481565b336000908152600160205260408120805490829055908111156101af57604051339082156108fc029083906000818181858888f193505050501561019c576101af565b3360009081526001602052604090208190555b505600a165627a7a72305820627ca46bb09478a015762806cc00c431230501118c7c26c30ac58c4e09e51c4f00298080c4c301808094b1d7bfd3587cd8bfb1cc6ae980fef3735a3601abf8d5f845820fe9a0142775d7fd0e65c21ddf3a83f32a9b3043638b0fd0f75301b436616b00261121a07efb4167f4cfd4c6497bf812014f80a4e66612f860e1ff5a4f5fdc282b131a72f845820feaa06e6acf405e08848854e469e8e38edad783ebf0e24cdefbd5d4a2d8f75c37b662a06f39343ba613683a6b0c85ed2f421acdee010027d5803c0da9658b21602919c6f845820feaa0a85dfa3531c970ad63298dc803176e5c3edb98fdaa406fc32be853bedba01e51a03c6b2458349fc33f5acef72252e62e1c59e38dcb00a1c38426b00c2f0d8051be";
 
-            SignatureData[] expectedSignatures = new SignatureData[] {
+            SignatureData[] expectedSignatures = new SignatureData[]{
                     new SignatureData(
                             "0x0fe9",
                             "0x142775d7fd0e65c21ddf3a83f32a9b3043638b0fd0f75301b436616b00261121",
@@ -1268,22 +1284,23 @@ public class FeeDelegatedSmartContractDeployTest {
 
         @Test
         public void multipleSignature_feePayerSignature() {
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+            );
 
 
             String rlpEncodedString = "0x29f90302018505d21dba00830dbba080809454dc8905caf698250cebfcbde49f037b52d55f61b901fe608060405234801561001057600080fd5b506101de806100206000396000f3006080604052600436106100615763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416631a39d8ef81146100805780636353586b146100a757806370a08231146100ca578063fd6b7ef8146100f8575b3360009081526001602052604081208054349081019091558154019055005b34801561008c57600080fd5b5061009561010d565b60408051918252519081900360200190f35b6100c873ffffffffffffffffffffffffffffffffffffffff60043516610113565b005b3480156100d657600080fd5b5061009573ffffffffffffffffffffffffffffffffffffffff60043516610147565b34801561010457600080fd5b506100c8610159565b60005481565b73ffffffffffffffffffffffffffffffffffffffff1660009081526001602052604081208054349081019091558154019055565b60016020526000908152604090205481565b336000908152600160205260408120805490829055908111156101af57604051339082156108fc029083906000818181858888f193505050501561019c576101af565b3360009081526001602052604090208190555b505600a165627a7a72305820627ca46bb09478a015762806cc00c431230501118c7c26c30ac58c4e09e51c4f00298080f8d5f845820fe9a0627b73b8636a2d98f5f51bc30381631055127c3aa13f6f5d470c94ace4d10780a010632196cf8e128de3f99f5e13d41c254dfe3edcc17eea84a49e287cf5b28bdaf845820fe9a0c941f8f173e5a5c22216f3f0fdfa4da602356398e24ceee99beb2a2a9c2bfafca00f231de0075bd109708513416a3896fa076130cf6fd891cb1a7abd1835a352bef845820fe9a073bdd7375228ab9598ab5be10a4ffe1c44211de675295cf07bfce726eef2b764a018923a5455d601c52532280259d820ec2ae5cda3ec57095d8df2a872192a5ae980c4c3018080";
-            SignatureData[] expectedSignatures = new SignatureData[] {
+            SignatureData[] expectedSignatures = new SignatureData[]{
                     new SignatureData(
                             "0x0fe9",
                             "0x627b73b8636a2d98f5f51bc30381631055127c3aa13f6f5d470c94ace4d10780",
@@ -1305,7 +1322,7 @@ public class FeeDelegatedSmartContractDeployTest {
 
             String rlpEncodedStringsWithFeePayerSignatures = "0x29f90316018505d21dba00830dbba080809454dc8905caf698250cebfcbde49f037b52d55f61b901fe608060405234801561001057600080fd5b506101de806100206000396000f3006080604052600436106100615763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416631a39d8ef81146100805780636353586b146100a757806370a08231146100ca578063fd6b7ef8146100f8575b3360009081526001602052604081208054349081019091558154019055005b34801561008c57600080fd5b5061009561010d565b60408051918252519081900360200190f35b6100c873ffffffffffffffffffffffffffffffffffffffff60043516610113565b005b3480156100d657600080fd5b5061009573ffffffffffffffffffffffffffffffffffffffff60043516610147565b34801561010457600080fd5b506100c8610159565b60005481565b73ffffffffffffffffffffffffffffffffffffffff1660009081526001602052604081208054349081019091558154019055565b60016020526000908152604090205481565b336000908152600160205260408120805490829055908111156101af57604051339082156108fc029083906000818181858888f193505050501561019c576101af565b3360009081526001602052604090208190555b505600a165627a7a72305820627ca46bb09478a015762806cc00c431230501118c7c26c30ac58c4e09e51c4f00298080c4c301808094b1d7bfd3587cd8bfb1cc6ae980fef3735a3601abf8d5f845820fe9a0142775d7fd0e65c21ddf3a83f32a9b3043638b0fd0f75301b436616b00261121a07efb4167f4cfd4c6497bf812014f80a4e66612f860e1ff5a4f5fdc282b131a72f845820feaa06e6acf405e08848854e469e8e38edad783ebf0e24cdefbd5d4a2d8f75c37b662a06f39343ba613683a6b0c85ed2f421acdee010027d5803c0da9658b21602919c6f845820feaa0a85dfa3531c970ad63298dc803176e5c3edb98fdaa406fc32be853bedba01e51a03c6b2458349fc33f5acef72252e62e1c59e38dcb00a1c38426b00c2f0d8051be";
 
-            SignatureData[] expectedFeePayerSignatures = new SignatureData[] {
+            SignatureData[] expectedFeePayerSignatures = new SignatureData[]{
                     new SignatureData(
                             "0x0fe9",
                             "0x142775d7fd0e65c21ddf3a83f32a9b3043638b0fd0f75301b436616b00261121",
@@ -1341,18 +1358,19 @@ public class FeeDelegatedSmartContractDeployTest {
 
             String gas = "0x1000";
 
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+            );
 
             String rlpEncoded = "0x09f899018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a9404bb86a1b16113ebe8f57071f839b002cbcbf7d0c4c301808094b85f01a3b0b6aaa2e487c9ed541e27b75b3eba95f847f845820feaa0d432bdce799828530d89d14b4406ccb0446852a51f13e365123eac9375d7e629a04f73deb5343ff7d587a5affb14196a79c522b9a67c7d895762c6758258ac247b";
             List<String> list = new ArrayList<>();
@@ -1365,21 +1383,22 @@ public class FeeDelegatedSmartContractDeployTest {
     public static class getRawTransactionTest {
         @Test
         public void getRawTransaction() {
-            FeeDelegatedSmartContractDeploy txObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            FeeDelegatedSmartContractDeploy txObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             assertEquals(expectedRLPEncoding, txObj.getRawTransaction());
         }
@@ -1393,21 +1412,22 @@ public class FeeDelegatedSmartContractDeployTest {
 
         @Test
         public void getTransactionHash() {
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             assertEquals(expectedTransactionHash, mTxObj.getTransactionHash());
         }
@@ -1419,47 +1439,49 @@ public class FeeDelegatedSmartContractDeployTest {
 
             String nonce = null;
 
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             String txHash = mTxObj.getTransactionHash();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String gasPrice = null;
 
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             String txHash = mTxObj.getTransactionHash();
         }
@@ -1473,21 +1495,22 @@ public class FeeDelegatedSmartContractDeployTest {
 
         @Test
         public void getSenderTransactionHash() {
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             assertEquals(expectedSenderTransactionHash, mTxObj.getSenderTxHash());
         }
@@ -1499,47 +1522,49 @@ public class FeeDelegatedSmartContractDeployTest {
 
             String nonce = null;
 
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             mTxObj.getSenderTxHash();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String gasPrice = null;
 
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             mTxObj.getSenderTxHash();
         }
@@ -1553,21 +1578,22 @@ public class FeeDelegatedSmartContractDeployTest {
 
         @Test
         public void getRLPEncodingForFeePayerSignature() {
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             assertEquals(expectedRLPEncodingForFeePayerSigning, mTxObj.getRLPEncodingForFeePayerSignature());
         }
@@ -1579,73 +1605,76 @@ public class FeeDelegatedSmartContractDeployTest {
 
             String nonce = null;
 
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String gasPrice = null;
 
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }
 
         @Test
-        public void throwException_NotDefined_chainID() {
+        public void throwException_NotDefined_ChainID() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String chainID = null;
 
-            mTxObj = new FeeDelegatedSmartContractDeploy.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setValue(value)
-                    .setTo(to)
-                    .setInput(input)
-                    .setHumanReadable(humanReadable)
-                    .setCodeFormat(codeFormat)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedSmartContractDeploy.create(
+                    TxPropertyBuilder.feeDelegatedSmartContractDeploy()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setValue(value)
+                            .setTo(to)
+                            .setInput(input)
+                            .setHumanReadable(humanReadable)
+                            .setCodeFormat(codeFormat)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }

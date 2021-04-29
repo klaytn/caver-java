@@ -2,14 +2,13 @@ package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
+import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.type.FeeDelegatedValueTransferMemo;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -18,7 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 
 public class FeeDelegatedValueTransferMemoTest {
@@ -53,8 +51,8 @@ public class FeeDelegatedValueTransferMemoTest {
     static String expectedRLPEncodingForFeePayerSigning = "0xf856b83cf83a118204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0b8568656c6c6f945a0043070275d9f6054307ee7348bd660849d90f018080";
 
     public static AbstractKeyring generateRoleBaseKeyring(int[] numArr, String address) {
-        List<String[]> arr = KeyringFactory.generateRoleBasedKeys(numArr, "entropy");
-        return KeyringFactory.createWithRoleBasedKey(address, arr);
+        List<String[]> arr = caver.wallet.keyring.generateRoleBasedKeys(numArr, "entropy");
+        return caver.wallet.keyring.createWithRoleBasedKey(address, arr);
     }
 
     public static class createInstanceBuilder {
@@ -328,19 +326,19 @@ public class FeeDelegatedValueTransferMemoTest {
 
         @Test
         public void createInstance() {
-            FeeDelegatedValueTransferMemo txObj = new FeeDelegatedValueTransferMemo(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
+            FeeDelegatedValueTransferMemo txObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
 
             assertNotNull(txObj);
@@ -353,19 +351,19 @@ public class FeeDelegatedValueTransferMemoTest {
 
             String from = "invalid Address";
 
-            FeeDelegatedValueTransferMemo txObj = new FeeDelegatedValueTransferMemo(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
+            FeeDelegatedValueTransferMemo txObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -376,19 +374,19 @@ public class FeeDelegatedValueTransferMemoTest {
 
             String from = null;
 
-            FeeDelegatedValueTransferMemo txObj = new FeeDelegatedValueTransferMemo(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
+            FeeDelegatedValueTransferMemo txObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -399,19 +397,19 @@ public class FeeDelegatedValueTransferMemoTest {
 
             String to = "invalid Address";
 
-            FeeDelegatedValueTransferMemo txObj = new FeeDelegatedValueTransferMemo(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
+            FeeDelegatedValueTransferMemo txObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -422,22 +420,21 @@ public class FeeDelegatedValueTransferMemoTest {
 
             String to = null;
 
-            FeeDelegatedValueTransferMemo txObj = new FeeDelegatedValueTransferMemo(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
+            FeeDelegatedValueTransferMemo txObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
-
 
 
         @Test
@@ -447,19 +444,19 @@ public class FeeDelegatedValueTransferMemoTest {
 
             String value = "invalid value";
 
-            FeeDelegatedValueTransferMemo txObj = new FeeDelegatedValueTransferMemo(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
+            FeeDelegatedValueTransferMemo txObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -470,19 +467,19 @@ public class FeeDelegatedValueTransferMemoTest {
 
             String value = null;
 
-            FeeDelegatedValueTransferMemo txObj = new FeeDelegatedValueTransferMemo(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
+            FeeDelegatedValueTransferMemo txObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -493,19 +490,19 @@ public class FeeDelegatedValueTransferMemoTest {
 
             String gas = "invalid gas";
 
-            FeeDelegatedValueTransferMemo txObj = new FeeDelegatedValueTransferMemo(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
+            FeeDelegatedValueTransferMemo txObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -516,19 +513,19 @@ public class FeeDelegatedValueTransferMemoTest {
 
             String gas = null;
 
-            FeeDelegatedValueTransferMemo txObj = new FeeDelegatedValueTransferMemo(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
+            FeeDelegatedValueTransferMemo txObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -539,19 +536,19 @@ public class FeeDelegatedValueTransferMemoTest {
 
             String feePayer = null;
 
-            FeeDelegatedValueTransferMemo txObj = new FeeDelegatedValueTransferMemo(
-                    null,
-                    from,
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    Arrays.asList(senderSignatureData),
-                    feePayer,
-                    Arrays.asList(feePayerSignatureData),
-                    to,
-                    value,
-                    input
+            FeeDelegatedValueTransferMemo txObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
     }
@@ -562,20 +559,20 @@ public class FeeDelegatedValueTransferMemoTest {
 
         @Test
         public void getRLPEncoding() {
-
-            FeeDelegatedValueTransferMemo txObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            FeeDelegatedValueTransferMemo txObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
         }
@@ -587,19 +584,20 @@ public class FeeDelegatedValueTransferMemoTest {
 
             String nonce = "0x";
 
-            FeeDelegatedValueTransferMemo txObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            FeeDelegatedValueTransferMemo txObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             txObj.getRLPEncoding();
         }
@@ -611,19 +609,20 @@ public class FeeDelegatedValueTransferMemoTest {
 
             String gasPrice = "0x";
 
-            FeeDelegatedValueTransferMemo txObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            FeeDelegatedValueTransferMemo txObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             txObj.getRLPEncoding();
         }
@@ -639,20 +638,21 @@ public class FeeDelegatedValueTransferMemoTest {
 
         @Before
         public void before() {
-            txObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .build();
+            txObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+            );
 
-            keyring = KeyringFactory.createWithSingleKey(feePayer, feePayerPrivateKey);
+            keyring = caver.wallet.keyring.createWithSingleKey(feePayer, feePayerPrivateKey);
             klaytnWalletKey = keyring.getKlaytnWalletKey();
         }
 
@@ -660,21 +660,22 @@ public class FeeDelegatedValueTransferMemoTest {
         public void signAsFeePayer_String() throws IOException {
             String expectedRLPEncoding = "0x11f8dc8204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0b8568656c6c6ff845f84326a064e213aef0167fbd853f8f9989ef5d8b912a77457395ccf13d7f37009edd5c5ba05d0c2e55e4d8734fe2516ed56ac628b74c0eb02aa3b6eda51e1e25a1396093e19433f524631e573329a550296f595c820d6c65213ff845f84325a00a59dd9f258c326e1bbaf1ebb0899a269a78afd70976ca73df257acdcb339faba01935d1df1c174c012a723c7a03b33fffd987499755306d2266f00e888f80bd2c";
 
-            SingleKeyring keyring = KeyringFactory.createFromPrivateKey(feePayerPrivateKey);
+            SingleKeyring keyring = caver.wallet.keyring.createFromPrivateKey(feePayerPrivateKey);
             String feePayer = keyring.getAddress();
 
-            FeeDelegatedValueTransferMemo txObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .build();
+            txObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+            );
 
             txObj.signAsFeePayer(feePayerPrivateKey);
             assertEquals(1, txObj.getFeePayerSignatures().size());
@@ -705,12 +706,12 @@ public class FeeDelegatedValueTransferMemoTest {
         @Test
         public void signAsFeePayer_multipleKey() throws IOException {
             String[] keyArr = {
-                    PrivateKey.generate().getPrivateKey(),
+                    caver.wallet.keyring.generateSingleKey(),
                     feePayerPrivateKey,
-                    PrivateKey.generate().getPrivateKey()
+                    caver.wallet.keyring.generateSingleKey()
             };
 
-            MultipleKeyring keyring = KeyringFactory.createWithMultipleKey(feePayer, keyArr);
+            MultipleKeyring keyring = caver.wallet.keyring.createWithMultipleKey(feePayer, keyArr);
             txObj.signAsFeePayer(keyring, 1);
             assertEquals(1, txObj.getFeePayerSignatures().size());
             assertEquals(expectedRLPEncoding, txObj.getRawTransaction());
@@ -720,20 +721,19 @@ public class FeeDelegatedValueTransferMemoTest {
         public void signAsFeePayer_roleBasedKey() throws IOException {
             String[][] keyArr = {
                     {
-                            PrivateKey.generate().getPrivateKey(),
-                            PrivateKey.generate().getPrivateKey(),
-
+                            caver.wallet.keyring.generateSingleKey(),
+                            caver.wallet.keyring.generateSingleKey(),
                     },
                     {
-                            PrivateKey.generate().getPrivateKey()
+                            caver.wallet.keyring.generateSingleKey()
                     },
                     {
-                            PrivateKey.generate().getPrivateKey(),
+                            caver.wallet.keyring.generateSingleKey(),
                             feePayerPrivateKey
                     }
             };
 
-            RoleBasedKeyring keyring = KeyringFactory.createWithRoleBasedKey(feePayer, Arrays.asList(keyArr));
+            RoleBasedKeyring keyring = caver.wallet.keyring.createWithRoleBasedKey(feePayer, Arrays.asList(keyArr));
             txObj.signAsFeePayer(keyring, 1);
             assertEquals(1, txObj.getFeePayerSignatures().size());
             assertEquals(expectedRLPEncoding, txObj.getRawTransaction());
@@ -744,7 +744,7 @@ public class FeeDelegatedValueTransferMemoTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The feePayer address of the transaction is different with the address of the keyring to use.");
 
-            SingleKeyring keyring = KeyringFactory.createWithSingleKey(feePayerPrivateKey, PrivateKey.generate().getPrivateKey());
+            SingleKeyring keyring = caver.wallet.keyring.generate();
 
             txObj.signAsFeePayer(keyring, 0);
         }
@@ -754,7 +754,7 @@ public class FeeDelegatedValueTransferMemoTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
-            AbstractKeyring keyring = generateRoleBaseKeyring(new int[]{3,3,3}, feePayer);
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[]{3, 3, 3}, feePayer);
             txObj.signAsFeePayer(keyring, 4);
         }
     }
@@ -768,22 +768,29 @@ public class FeeDelegatedValueTransferMemoTest {
 
         @Before
         public void before() {
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+            );
 
-            singleKeyring = KeyringFactory.createWithSingleKey(feePayer, feePayerPrivateKey);
-            multipleKeyring = KeyringFactory.createWithMultipleKey(feePayer, KeyringFactory.generateMultipleKeys(8));
-            roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(feePayer, KeyringFactory.generateRolBasedKeys(new int[]{3,4,5}));
+            singleKeyring = caver.wallet.keyring.createWithSingleKey(feePayer, feePayerPrivateKey);
+            multipleKeyring = caver.wallet.keyring.createWithMultipleKey(
+                    feePayer,
+                    caver.wallet.keyring.generateMultipleKeys(8)
+            );
+            roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(
+                    feePayer,
+                    caver.wallet.keyring.generateRolBasedKeys(new int[]{3, 4, 5})
+            );
         }
 
         @Test
@@ -815,7 +822,7 @@ public class FeeDelegatedValueTransferMemoTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The feePayer address of the transaction is different with the address of the keyring to use.");
 
-            SingleKeyring keyring = KeyringFactory.createFromPrivateKey(PrivateKey.generate().getPrivateKey());
+            SingleKeyring keyring = caver.wallet.keyring.generate();
             mTxObj.signAsFeePayer(keyring);
         }
     }
@@ -830,21 +837,25 @@ public class FeeDelegatedValueTransferMemoTest {
 
         @Before
         public void before() {
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+            );
 
-            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
-            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), privateKey);
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(
+                    caver.wallet.keyring.generate().getAddress(),
+                    privateKey
+            );
             klaytnWalletKey = privateKey + "0x00" + coupledKeyring.getAddress();
         }
 
@@ -880,19 +891,20 @@ public class FeeDelegatedValueTransferMemoTest {
         public void appendFeePayerSignatureList_EmptySig() {
             SignatureData emptySignature = SignatureData.getEmptySignature();
 
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayer(feePayer)
-                    .setFeePayerSignatures(emptySignature)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayer(feePayer)
+                            .setFeePayerSignatures(emptySignature)
+            );
 
             SignatureData signatureData = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
@@ -915,19 +927,20 @@ public class FeeDelegatedValueTransferMemoTest {
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayer(feePayer)
-                    .setFeePayerSignatures(signatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayer(feePayer)
+                            .setFeePayerSignatures(signatureData)
+            );
 
             SignatureData signatureData1 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
@@ -952,19 +965,20 @@ public class FeeDelegatedValueTransferMemoTest {
                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayer(feePayer)
-                    .setFeePayerSignatures(signatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayer(feePayer)
+                            .setFeePayerSignatures(signatureData)
+            );
 
             SignatureData signatureData1 = new SignatureData(
                     Numeric.hexStringToByteArray("0x0fea"),
@@ -1008,17 +1022,18 @@ public class FeeDelegatedValueTransferMemoTest {
 
         @Test
         public void combineSignature() {
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setChainId(chainId)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setChainId(chainId)
+            );
 
 
             SignatureData expectedSignature = new SignatureData(
@@ -1044,22 +1059,23 @@ public class FeeDelegatedValueTransferMemoTest {
                     "0x01586e5321f51ed56da5241d6cc8365bdcade89c4b08d2615bc21231f5e2c26e"
             );
 
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setChainId(chainId)
-                    .setSignatures(signature)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setChainId(chainId)
+                            .setSignatures(signature)
+            );
 
             String expectedRLPEncoded = "0x11f9012d018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a941bc5339c6c55380d0da8aaa28e135164ecb862628568656c6c6ff8d5f845820feaa060a20eed201a2b28bc452b65c699083a6399aaeff2a7572c5c8cf54056254aeaa001586e5321f51ed56da5241d6cc8365bdcade89c4b08d2615bc21231f5e2c26ef845820fe9a0b8f3ba052cd0ef34b683a3e8ad6f68f71a82d9416bf9732def4b66802967a055a07c241fa9b7d32b72fc8310e886c5b70de262457fd07711cbb2e17217d8c39b26f845820feaa06c301c61b6b8746f63baf57c477bd269ecdeb07d6200a719988bfcd0b7767bc1a016da23b63b4e54ffa16ce8668987e48a76b8e64ba7863359462efd1e8d9838a6940000000000000000000000000000000000000000c4c3018080";
 
-            SignatureData[] expectedSignature = new SignatureData[] {
+            SignatureData[] expectedSignature = new SignatureData[]{
                     new SignatureData(
                             "0x0fea",
                             "0x60a20eed201a2b28bc452b65c699083a6399aaeff2a7572c5c8cf54056254aea",
@@ -1077,7 +1093,7 @@ public class FeeDelegatedValueTransferMemoTest {
                     )
             };
 
-            String[] rlpEncodedString = new String[] {
+            String[] rlpEncodedString = new String[]{
                     "0x11f88b018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a941bc5339c6c55380d0da8aaa28e135164ecb862628568656c6c6ff847f845820fe9a0b8f3ba052cd0ef34b683a3e8ad6f68f71a82d9416bf9732def4b66802967a055a07c241fa9b7d32b72fc8310e886c5b70de262457fd07711cbb2e17217d8c39b2680c4c3018080",
                     "0x11f88b018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a941bc5339c6c55380d0da8aaa28e135164ecb862628568656c6c6ff847f845820feaa06c301c61b6b8746f63baf57c477bd269ecdeb07d6200a719988bfcd0b7767bc1a016da23b63b4e54ffa16ce8668987e48a76b8e64ba7863359462efd1e8d9838a680c4c3018080"
             };
@@ -1092,17 +1108,18 @@ public class FeeDelegatedValueTransferMemoTest {
         @Test
         public void combineSignature_withFeePayerSignature() {
             String feePayer = "0x8d2f6e4986bc55e2d50611149e5725999a763d7c";
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+            );
 
             String rlpEncoded = "0x11f89f018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a941bc5339c6c55380d0da8aaa28e135164ecb862628568656c6c6fc4c3018080948d2f6e4986bc55e2d50611149e5725999a763d7cf847f845820feaa0779d20a7958d3131e5ef6a423abb2337e8f120bd0798c47227aee51c70d23c06a07d3c36d5a33cb18e8fec7d1e1f2cfd9a0ec932adee9ad9a090fcd28fafd44392";
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncoded));
@@ -1113,7 +1130,7 @@ public class FeeDelegatedValueTransferMemoTest {
                     "0x7d3c36d5a33cb18e8fec7d1e1f2cfd9a0ec932adee9ad9a090fcd28fafd44392"
             );
 
-            assertEquals(rlpEncoded,combined);
+            assertEquals(rlpEncoded, combined);
             assertEquals(expectedSignatureData, mTxObj.getFeePayerSignatures().get(0));
         }
 
@@ -1126,20 +1143,21 @@ public class FeeDelegatedValueTransferMemoTest {
                     "0x7d3c36d5a33cb18e8fec7d1e1f2cfd9a0ec932adee9ad9a090fcd28fafd44392"
             );
 
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeePayerSignatures(signatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeePayerSignatures(signatureData)
+            );
 
-            String[] rlpEncodedStrings = new String[] {
+            String[] rlpEncodedStrings = new String[]{
                     "0x11f89f018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a941bc5339c6c55380d0da8aaa28e135164ecb862628568656c6c6fc4c3018080948d2f6e4986bc55e2d50611149e5725999a763d7cf847f845820fe9a0de14998f4aba6474b55b84e9a236daf159252b460915cea204a4361cf99c9dc9a0743a40d63646defba13c70581d85000836155dddb30bc8024c62dad76981abec",
                     "0x11f89f018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a941bc5339c6c55380d0da8aaa28e135164ecb862628568656c6c6fc4c3018080948d2f6e4986bc55e2d50611149e5725999a763d7cf847f845820fe9a034fa68120ce57d201f0c859308d32d74835e7969555960c4041a466c9e2f8788a05a996a8c67347f0eba83cd6b38fe030aff2e8356e4b5ec2af85549f040014e3d"
             };
@@ -1148,7 +1166,7 @@ public class FeeDelegatedValueTransferMemoTest {
 
             String expectedRLPEncoded = "0x11f9012d018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a941bc5339c6c55380d0da8aaa28e135164ecb862628568656c6c6fc4c3018080948d2f6e4986bc55e2d50611149e5725999a763d7cf8d5f845820feaa0779d20a7958d3131e5ef6a423abb2337e8f120bd0798c47227aee51c70d23c06a07d3c36d5a33cb18e8fec7d1e1f2cfd9a0ec932adee9ad9a090fcd28fafd44392f845820fe9a0de14998f4aba6474b55b84e9a236daf159252b460915cea204a4361cf99c9dc9a0743a40d63646defba13c70581d85000836155dddb30bc8024c62dad76981abecf845820fe9a034fa68120ce57d201f0c859308d32d74835e7969555960c4041a466c9e2f8788a05a996a8c67347f0eba83cd6b38fe030aff2e8356e4b5ec2af85549f040014e3d";
 
-            SignatureData[] expectedSignatures = new SignatureData[] {
+            SignatureData[] expectedSignatures = new SignatureData[]{
                     new SignatureData(
                             "0x0fea",
                             "0x779d20a7958d3131e5ef6a423abb2337e8f120bd0798c47227aee51c70d23c06",
@@ -1179,16 +1197,17 @@ public class FeeDelegatedValueTransferMemoTest {
 
             String value = "0x1000";
 
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setFrom(from)
-                    .setInput(input)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setFrom(from)
+                            .setInput(input)
+            );
 
             String rlpEncoded = "0x09f899018505d21dba00830f4240947b65b75d204abed71587c9e519a89277766ee1d00a9404bb86a1b16113ebe8f57071f839b002cbcbf7d0c4c301808094b85f01a3b0b6aaa2e487c9ed541e27b75b3eba95f847f845820feaa0d432bdce799828530d89d14b4406ccb0446852a51f13e365123eac9375d7e629a04f73deb5343ff7d587a5affb14196a79c522b9a67c7d895762c6758258ac247b";
             List<String> list = new ArrayList<>();
@@ -1201,19 +1220,20 @@ public class FeeDelegatedValueTransferMemoTest {
     public static class getRawTransactionTest {
         @Test
         public void getRawTransaction() {
-            FeeDelegatedValueTransferMemo mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            FeeDelegatedValueTransferMemo mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             assertEquals(expectedRLPEncoding, mTxObj.getRawTransaction());
         }
@@ -1227,19 +1247,20 @@ public class FeeDelegatedValueTransferMemoTest {
 
         @Test
         public void getTransactionHash() {
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             assertEquals(expectedTransactionHash, mTxObj.getTransactionHash());
         }
@@ -1251,43 +1272,45 @@ public class FeeDelegatedValueTransferMemoTest {
 
             String nonce = null;
 
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             String txHash = mTxObj.getTransactionHash();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String gasPrice = null;
 
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             String txHash = mTxObj.getTransactionHash();
         }
@@ -1301,19 +1324,20 @@ public class FeeDelegatedValueTransferMemoTest {
 
         @Test
         public void getSenderTransactionHash() {
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             assertEquals(expectedSenderTransactionHash, mTxObj.getSenderTxHash());
         }
@@ -1325,43 +1349,45 @@ public class FeeDelegatedValueTransferMemoTest {
 
             String nonce = null;
 
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             mTxObj.getSenderTxHash();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String gasPrice = null;
 
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             mTxObj.getSenderTxHash();
         }
@@ -1375,19 +1401,20 @@ public class FeeDelegatedValueTransferMemoTest {
 
         @Test
         public void getRLPEncodingForFeePayerSignature() {
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             assertEquals(expectedRLPEncodingForFeePayerSigning, mTxObj.getRLPEncodingForFeePayerSignature());
         }
@@ -1399,67 +1426,70 @@ public class FeeDelegatedValueTransferMemoTest {
 
             String nonce = null;
 
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String gasPrice = null;
 
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }
 
         @Test
-        public void throwException_NotDefined_chainID() {
+        public void throwException_NotDefined_ChainID() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
 
             String chainID = null;
 
-            mTxObj = new FeeDelegatedValueTransferMemo.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setTo(to)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .build();
+            mTxObj = caver.transaction.feeDelegatedValueTransferMemo.create(
+                    TxPropertyBuilder.feeDelegatedValueTransferMemo()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setTo(to)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+            );
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }

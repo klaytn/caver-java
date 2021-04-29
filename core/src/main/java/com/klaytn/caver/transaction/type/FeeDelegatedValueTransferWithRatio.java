@@ -17,7 +17,6 @@
 package com.klaytn.caver.transaction.type;
 
 import com.klaytn.caver.rpc.Klay;
-import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedWithRatioTransaction;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
@@ -132,8 +131,8 @@ public class FeeDelegatedValueTransferWithRatio extends AbstractFeeDelegatedWith
     }
 
     /**
-     * Decodes a RLP-encoded FeeDelegatedValueTransferWithRatio string.
-     * @param rlpEncoded RLP-encoded FeeDelegatedValueTransferWithRatio string.
+     * Decodes a RLP-encoded FeeDelegatedValueTransferWithRatio byte array.
+     * @param rlpEncoded RLP-encoded FeeDelegatedValueTransferWithRatio byte array.
      * @return FeeDelegatedValueTransferWithRatio
      */
     public static FeeDelegatedValueTransferWithRatio decode(byte[] rlpEncoded) {

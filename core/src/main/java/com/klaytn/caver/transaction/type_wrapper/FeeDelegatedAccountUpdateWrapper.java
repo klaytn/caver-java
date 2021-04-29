@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.klaytn.caver.transaction.type_wrapper;
 
 import com.klaytn.caver.rpc.Klay;
@@ -63,6 +64,18 @@ public class FeeDelegatedAccountUpdateWrapper {
     }
 
     /**
+     * Creates a FeeDelegatedAccountUpdate instance using FeeDelegatedAccountUpdate.Builder
+     *
+     * @param builder FeeDelegatedAccountUpdate.Builder
+     * @return FeeDelegatedAccountUpdate
+     */
+    public FeeDelegatedAccountUpdate create(FeeDelegatedAccountUpdate.Builder builder) {
+        return builder
+            .setKlaytnCall(this.klaytnCall)
+            .build();
+    }
+
+    /**
      * Decodes a RLP-encoded FeeDelegatedAccountUpdate string.
      * @param rlpEncoded RLP-encoded FeeDelegatedAccountUpdate string.
      * @return FeeDelegatedAccountUpdate
@@ -78,17 +91,5 @@ public class FeeDelegatedAccountUpdateWrapper {
      */
     public FeeDelegatedAccountUpdate decode(byte[] rlpEncoded) {
         return FeeDelegatedAccountUpdate.decode(rlpEncoded);
-    }
-
-    /**
-     * Creates a FeeDelegatedAccountUpdate instance using FeeDelegatedAccountUpdate.Builder
-     *
-     * @param builder FeeDelegatedAccountUpdate.Builder
-     * @return FeeDelegatedAccountUpdate
-     */
-    public FeeDelegatedAccountUpdate create(FeeDelegatedAccountUpdate.Builder builder) {
-        return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
     }
 }

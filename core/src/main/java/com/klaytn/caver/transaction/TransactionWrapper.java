@@ -20,9 +20,11 @@ import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.type_wrapper.*;
 
 /**
- * Represents a transaction which contains all types of transaction wrapper classes as member variables
+ * Represents a TransactionWrapper
+ * 1. This class contains all types of transaction wrapper classes as member variables
+ * 2. This class should be accessed via `caver.transaction`
  */
-public class Transaction {
+public class TransactionWrapper {
     /**
      * LegacyTransactionWrapper instance
      */
@@ -138,7 +140,7 @@ public class Transaction {
      *
      * @param klaytnCall Klay RPC instance
      */
-    public Transaction(Klay klaytnCall) {
+    public TransactionWrapper(Klay klaytnCall) {
         this.legacyTransaction = new LegacyTransactionWrapper(klaytnCall);
 
         this.valueTransfer = new ValueTransferWrapper(klaytnCall);

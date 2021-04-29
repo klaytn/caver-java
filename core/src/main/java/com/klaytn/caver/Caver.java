@@ -19,7 +19,7 @@ package com.klaytn.caver;
 import com.klaytn.caver.account.AccountWrapper;
 import com.klaytn.caver.ipfs.IPFS;
 import com.klaytn.caver.rpc.RPC;
-import com.klaytn.caver.transaction.Transaction;
+import com.klaytn.caver.transaction.TransactionWrapper;
 import com.klaytn.caver.wallet.IWallet;
 import com.klaytn.caver.wallet.KeyringContainer;
 import okhttp3.OkHttpClient;
@@ -60,7 +60,7 @@ public class Caver {
     /**
      * The Transaction instance.
      */
-    public Transaction transaction;
+    public TransactionWrapper transaction;
 
     /**
      * The IPFS instance.
@@ -93,7 +93,7 @@ public class Caver {
         rpc = new RPC(service);
         wallet = new KeyringContainer();
         account = new AccountWrapper();
-        transaction = new Transaction(rpc.getKlay());
+        transaction = new TransactionWrapper(rpc.getKlay());
     }
 
     /**

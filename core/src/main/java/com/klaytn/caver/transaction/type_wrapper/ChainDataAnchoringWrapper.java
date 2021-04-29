@@ -32,7 +32,6 @@ public class ChainDataAnchoringWrapper {
 
     /**
      * Create a ChainDataAnchoringWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public ChainDataAnchoringWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class ChainDataAnchoringWrapper {
 
     /**
      * Creates a ChainDataAnchoring instance derived from a RLP-encoded ChainDataAnchoring string.
-     *
      * @param rlpEncoded RLP-encoded ChainDataAnchoring string
      * @return ChainDataAnchoring
      */
@@ -53,7 +51,6 @@ public class ChainDataAnchoringWrapper {
 
     /**
      * Creates a ChainDataAnchoring instance derived from a RLP-encoded ChainDataAnchoring byte array.
-     *
      * @param rlpEncoded RLP-encoded ChainDataAnchoring byte array.
      * @return ChainDataAnchoring
      */
@@ -65,19 +62,17 @@ public class ChainDataAnchoringWrapper {
 
     /**
      * Creates a ChainDataAnchoring instance using ChainDataAnchoring.Builder
-     *
      * @param builder ChainDataAnchoring.Builder
      * @return ChainDataAnchoring
      */
     public ChainDataAnchoring create(ChainDataAnchoring.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**
      * Decodes a RLP-encoded ChainDataAnchoring string.
-     *
      * @param rlpEncoded RLP-encoded ChainDataAnchoring string
      * @return ChainDataAnchoring
      */
@@ -87,7 +82,6 @@ public class ChainDataAnchoringWrapper {
 
     /**
      * Decodes a RLP-encoded ChainDataAnchoring byte array.
-     *
      * @param rlpEncoded RLP-encoded ChainDataAnchoring byte array.
      * @return ChainDataAnchoring
      */

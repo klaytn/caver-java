@@ -32,7 +32,6 @@ public class CancelWrapper {
 
     /**
      * Create a CancelWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public CancelWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class CancelWrapper {
 
     /**
      * Creates a Cancel instance derived from a RLP-encoded Cancel string.
-     *
      * @param rlpEncoded RLP-encoded Cancel string
      * @return Cancel
      */
@@ -53,7 +51,6 @@ public class CancelWrapper {
 
     /**
      * Creates a Cancel instance derived from a RLP-encoded Cancel byte array.
-     *
      * @param rlpEncoded RLP-encoded Cancel byte array.
      * @return Cancel
      */
@@ -65,19 +62,17 @@ public class CancelWrapper {
 
     /**
      * Creates a Cancel instance using Cancel.Builder
-     *
      * @param builder Cancel.Builder
      * @return Cancel
      */
     public Cancel create(Cancel.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**
      * Decodes a RLP-encoded Cancel string.
-     *
      * @param rlpEncoded RLP-encoded Cancel string
      * @return Cancel
      */
@@ -87,7 +82,6 @@ public class CancelWrapper {
 
     /**
      * Decodes a RLP-encoded Cancel byte array.
-     *
      * @param rlpEncoded RLP-encoded Cancel byte array.
      * @return Cancel
      */

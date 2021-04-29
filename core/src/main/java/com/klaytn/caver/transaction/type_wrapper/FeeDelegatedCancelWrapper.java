@@ -32,7 +32,6 @@ public class FeeDelegatedCancelWrapper {
 
     /**
      * Create a FeeDelegatedCancelWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedCancelWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class FeeDelegatedCancelWrapper {
 
     /**
      * Creates a FeeDelegatedCancel instance derived from a RLP-encoded FeeDelegatedCancel string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedCancel string
      * @return FeeDelegatedCancel
      */
@@ -53,7 +51,6 @@ public class FeeDelegatedCancelWrapper {
 
     /**
      * Creates a FeeDelegatedCancel instance derived from a RLP-encoded FeeDelegatedCancel byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedCancel byte array.
      * @return FeeDelegatedCancel
      */
@@ -65,19 +62,17 @@ public class FeeDelegatedCancelWrapper {
 
     /**
      * Creates a FeeDelegatedCancel instance using FeeDelegatedCancel.Builder
-     *
      * @param builder FeeDelegatedCancel.Builder
      * @return FeeDelegatedCancel
      */
     public FeeDelegatedCancel create(FeeDelegatedCancel.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**
      * Decodes a RLP-encoded FeeDelegatedCancel string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedCancel string.
      * @return FeeDelegatedCancel
      */
@@ -87,7 +82,6 @@ public class FeeDelegatedCancelWrapper {
 
     /**
      * Decodes a RLP-encoded FeeDelegatedCancel byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedCancel byte array.
      * @return FeeDelegatedCancel
      */

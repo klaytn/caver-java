@@ -137,7 +137,6 @@ public class TransactionWrapper {
 
     /**
      * Creates a Transaction instance
-     *
      * @param klaytnCall Klay RPC instance
      */
     public TransactionWrapper(Klay klaytnCall) {
@@ -174,7 +173,6 @@ public class TransactionWrapper {
 
     /**
      * Decodes a RLP-encoded transaction and returns it with matching type of transaction
-     *
      * @param rlpEncoded RLP-encoded transaction
      * @return AbstractTransaction
      */

@@ -32,7 +32,6 @@ public class LegacyTransactionWrapper {
 
     /**
      * Create a LegacyTransactionWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public LegacyTransactionWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class LegacyTransactionWrapper {
 
     /**
      * Creates a LegacyTransaction instance derived from a RLP-encoded LegacyTransaction string.
-     *
      * @param rlpEncoded RLP-encoded LegacyTransaction string
      * @return LegacyTransaction
      */
@@ -53,7 +51,6 @@ public class LegacyTransactionWrapper {
 
     /**
      * Creates a LegacyTransaction instance derived from a RLP-encoded LegacyTransaction byte array.
-     *
      * @param rlpEncoded RLP-encoded LegacyTransaction byte array.
      * @return LegacyTransaction
      */
@@ -65,19 +62,17 @@ public class LegacyTransactionWrapper {
 
     /**
      * Creates a LegacyTransaction instance using LegacyTransaction.Builder
-     *
      * @param builder LegacyTransaction.Builder
      * @return LegacyTransaction
      */
     public LegacyTransaction create(LegacyTransaction.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**
      * Decodes a RLP-encoded LegacyTransaction string.
-     *
      * @param rlpEncoded RLP-encoded LegacyTransaction string
      * @return LegacyTransaction
      */
@@ -87,7 +82,6 @@ public class LegacyTransactionWrapper {
 
     /**
      * Decodes a RLP-encoded LegacyTransaction byte array.
-     *
      * @param rlpEncoded RLP-encoded LegacyTransaction byte array.
      * @return LegacyTransaction
      */

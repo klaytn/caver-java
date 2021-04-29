@@ -11,8 +11,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -21,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 
 public class ChainDataAnchoringTest {
@@ -37,9 +34,9 @@ public class ChainDataAnchoringTest {
     static String input = "0xf8a6a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a0000000000000000000000000000000000000000000000000000000000000000405";
 
     static SignatureData signatureData = new SignatureData(
-        Numeric.hexStringToByteArray("0x25"),
-        Numeric.hexStringToByteArray("0xe58b9abf9f33a066b998fccaca711553fb4df425c9234bbb3577f9d9775bb124"),
-        Numeric.hexStringToByteArray("0x2c409a6c5d92277c0a812dd0cc553d7fe1d652a807274c3786df3292cd473e09")
+            Numeric.hexStringToByteArray("0x25"),
+            Numeric.hexStringToByteArray("0xe58b9abf9f33a066b998fccaca711553fb4df425c9234bbb3577f9d9775bb124"),
+            Numeric.hexStringToByteArray("0x2c409a6c5d92277c0a812dd0cc553d7fe1d652a807274c3786df3292cd473e09")
     );
 
     static String expectedRLPEncoding = "0x48f9010e8204d219830f424094a94f5374fce5edbc8e2a8697c15331677e6ebf0bb8a8f8a6a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a0000000000000000000000000000000000000000000000000000000000000000405f845f84325a0e58b9abf9f33a066b998fccaca711553fb4df425c9234bbb3577f9d9775bb124a02c409a6c5d92277c0a812dd0cc553d7fe1d652a807274c3786df3292cd473e09";
@@ -49,10 +46,10 @@ public class ChainDataAnchoringTest {
     public static AbstractKeyring generateRoleBaseKeyring(int[] numArr, String address) {
         String[][] keyArr = new String[3][];
 
-        for (int i = 0; i < numArr.length; i++) {
+        for(int i = 0; i < numArr.length; i++) {
             int length = numArr[i];
             String[] arr = new String[length];
-            for (int j = 0; j < length; j++) {
+            for(int j = 0; j < length; j++) {
                 arr[j] = PrivateKey.generate("entropy").getPrivateKey();
             }
             keyArr[i] = arr;
@@ -70,14 +67,14 @@ public class ChainDataAnchoringTest {
         @Test
         public void BuilderTest() {
             ChainDataAnchoring txObj = new ChainDataAnchoring.Builder()
-                .setNonce(nonce)
-                .setGas(gas)
-                .setGasPrice(gasPrice)
-                .setFrom(from)
-                .setChainId(chainID)
-                .setInput(input)
-                .setSignatures(signatureData)
-                .build();
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setFrom(from)
+                    .setChainId(chainID)
+                    .setInput(input)
+                    .setSignatures(signatureData)
+                    .build();
 
             assertNotNull(txObj);
         }
@@ -85,12 +82,12 @@ public class ChainDataAnchoringTest {
         @Test
         public void BuilderWithRPCTest() throws IOException {
             ChainDataAnchoring txObj = new ChainDataAnchoring.Builder()
-                .setKlaytnCall(caver.rpc.getKlay())
-                .setGas(gas)
-                .setFrom(from)
-                .setInput(input)
-                .setSignatures(signatureData)
-                .build();
+                    .setKlaytnCall(caver.rpc.getKlay())
+                    .setGas(gas)
+                    .setFrom(from)
+                    .setInput(input)
+                    .setSignatures(signatureData)
+                    .build();
 
             txObj.fillTransaction();
 
@@ -102,14 +99,14 @@ public class ChainDataAnchoringTest {
         @Test
         public void BuilderTestWithBigInteger() {
             ChainDataAnchoring txObj = new ChainDataAnchoring.Builder()
-                .setNonce(nonce)
-                .setGas(gas)
-                .setGasPrice(gasPrice)
-                .setFrom(from)
-                .setChainId(chainID)
-                .setInput(input)
-                .setSignatures(signatureData)
-                .build();
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setFrom(from)
+                    .setChainId(chainID)
+                    .setInput(input)
+                    .setSignatures(signatureData)
+                    .build();
 
             assertNotNull(txObj);
 
@@ -126,14 +123,14 @@ public class ChainDataAnchoringTest {
             String from = "invalid Address";
 
             ChainDataAnchoring txObj = new ChainDataAnchoring.Builder()
-                .setNonce(nonce)
-                .setGas(gas)
-                .setGasPrice(gasPrice)
-                .setFrom(from)
-                .setChainId(chainID)
-                .setInput(input)
-                .setSignatures(signatureData)
-                .build();
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setFrom(from)
+                    .setChainId(chainID)
+                    .setInput(input)
+                    .setSignatures(signatureData)
+                    .build();
         }
 
         @Test
@@ -144,14 +141,14 @@ public class ChainDataAnchoringTest {
             String from = null;
 
             ChainDataAnchoring txObj = new ChainDataAnchoring.Builder()
-                .setNonce(nonce)
-                .setGas(gas)
-                .setGasPrice(gasPrice)
-                .setFrom(from)
-                .setChainId(chainID)
-                .setInput(input)
-                .setSignatures(signatureData)
-                .build();
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setFrom(from)
+                    .setChainId(chainID)
+                    .setInput(input)
+                    .setSignatures(signatureData)
+                    .build();
         }
 
         @Test
@@ -162,14 +159,14 @@ public class ChainDataAnchoringTest {
             String gas = "invalid gas";
 
             ChainDataAnchoring txObj = new ChainDataAnchoring.Builder()
-                .setNonce(nonce)
-                .setGas(gas)
-                .setGasPrice(gasPrice)
-                .setFrom(from)
-                .setChainId(chainID)
-                .setInput(input)
-                .setSignatures(signatureData)
-                .build();
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setFrom(from)
+                    .setChainId(chainID)
+                    .setInput(input)
+                    .setSignatures(signatureData)
+                    .build();
         }
 
         @Test
@@ -180,14 +177,14 @@ public class ChainDataAnchoringTest {
             String gas = null;
 
             ChainDataAnchoring txObj = new ChainDataAnchoring.Builder()
-                .setNonce(nonce)
-                .setGas(gas)
-                .setGasPrice(gasPrice)
-                .setFrom(from)
-                .setChainId(chainID)
-                .setInput(input)
-                .setSignatures(signatureData)
-                .build();
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setFrom(from)
+                    .setChainId(chainID)
+                    .setInput(input)
+                    .setSignatures(signatureData)
+                    .build();
         }
 
         @Test
@@ -198,14 +195,14 @@ public class ChainDataAnchoringTest {
             String input = "invalid input";
 
             ChainDataAnchoring txObj = new ChainDataAnchoring.Builder()
-                .setNonce(nonce)
-                .setGas(gas)
-                .setGasPrice(gasPrice)
-                .setFrom(from)
-                .setChainId(chainID)
-                .setInput(input)
-                .setSignatures(signatureData)
-                .build();
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setFrom(from)
+                    .setChainId(chainID)
+                    .setInput(input)
+                    .setSignatures(signatureData)
+                    .build();
 
             assertNotNull(txObj);
         }
@@ -218,14 +215,14 @@ public class ChainDataAnchoringTest {
             String input = null;
 
             ChainDataAnchoring txObj = new ChainDataAnchoring.Builder()
-                .setNonce(nonce)
-                .setGas(gas)
-                .setGasPrice(gasPrice)
-                .setFrom(from)
-                .setChainId(chainID)
-                .setInput(input)
-                .setSignatures(signatureData)
-                .build();
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setFrom(from)
+                    .setChainId(chainID)
+                    .setInput(input)
+                    .setSignatures(signatureData)
+                    .build();
 
             assertNotNull(txObj);
         }
@@ -238,14 +235,14 @@ public class ChainDataAnchoringTest {
         @Test
         public void createInstance() {
             ChainDataAnchoring txObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
 
             assertNotNull(txObj);
@@ -259,14 +256,14 @@ public class ChainDataAnchoringTest {
             String from = "invalid Address";
 
             ChainDataAnchoring txObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
         }
 
@@ -278,14 +275,14 @@ public class ChainDataAnchoringTest {
             String from = null;
 
             ChainDataAnchoring txObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
         }
 
@@ -297,14 +294,14 @@ public class ChainDataAnchoringTest {
             String gas = "invalid gas";
 
             ChainDataAnchoring txObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
         }
 
@@ -316,14 +313,14 @@ public class ChainDataAnchoringTest {
             String gas = null;
 
             ChainDataAnchoring txObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
         }
 
@@ -335,14 +332,14 @@ public class ChainDataAnchoringTest {
             String input = "invalid input";
 
             ChainDataAnchoring txObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
         }
 
@@ -354,14 +351,14 @@ public class ChainDataAnchoringTest {
             String input = null;
 
             ChainDataAnchoring txObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
         }
     }
@@ -373,14 +370,14 @@ public class ChainDataAnchoringTest {
         @Test
         public void getRLPEncoding() {
             ChainDataAnchoring txObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
@@ -394,14 +391,14 @@ public class ChainDataAnchoringTest {
             String nonce = null;
 
             ChainDataAnchoring txObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
 
             txObj.getRLPEncoding();
@@ -415,14 +412,14 @@ public class ChainDataAnchoringTest {
             String gasPrice = null;
 
             ChainDataAnchoring txObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
 
             txObj.getRLPEncoding();
@@ -440,19 +437,19 @@ public class ChainDataAnchoringTest {
         @Before
         public void before() {
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
             );
 
             coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
             deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(
-                caver.wallet.keyring.generate().getAddress(),
-                privateKey
+                    caver.wallet.keyring.generate().getAddress(),
+                    privateKey
             );
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
@@ -528,19 +525,19 @@ public class ChainDataAnchoringTest {
         @Before
         public void before() {
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
             );
 
             coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
             deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(
-                caver.wallet.keyring.generate().getAddress(),
-                privateKey
+                    caver.wallet.keyring.generate().getAddress(),
+                    privateKey
             );
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
@@ -601,13 +598,13 @@ public class ChainDataAnchoringTest {
         @Before
         public void before() {
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
             );
 
             coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
@@ -618,9 +615,9 @@ public class ChainDataAnchoringTest {
         @Test
         public void appendSignature() {
             SignatureData signatureData = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
-                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             mTxObj.appendSignatures(signatureData);
@@ -630,9 +627,9 @@ public class ChainDataAnchoringTest {
         @Test
         public void appendSignatureList() {
             SignatureData signatureData = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
-                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -647,20 +644,20 @@ public class ChainDataAnchoringTest {
             SignatureData emptySignature = SignatureData.getEmptySignature();
 
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(emptySignature)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(emptySignature)
             );
 
             SignatureData signatureData = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
-                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -673,26 +670,26 @@ public class ChainDataAnchoringTest {
         @Test
         public void appendSignature_ExistedSignature() {
             SignatureData signatureData = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
-                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
 
             SignatureData signatureData1 = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
-                Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
-                Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
+                    Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -707,32 +704,32 @@ public class ChainDataAnchoringTest {
         @Test
         public void appendSignatureList_ExistedSignature() {
             SignatureData signatureData = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
-                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
 
             SignatureData signatureData1 = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
-                Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
-                Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
+                    Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
             SignatureData signatureData2 = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
-                Numeric.hexStringToByteArray("0x9a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
-                Numeric.hexStringToByteArray("0xa3ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0x9a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
+                    Numeric.hexStringToByteArray("0xa3ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -762,19 +759,19 @@ public class ChainDataAnchoringTest {
         @Test
         public void combineSignature() {
             SignatureData expectedSignature = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
-                Numeric.hexStringToByteArray("0x91e77e86e76dc7f1edb1ef1c87fd4bcba1fd95cbc659db407e1f358ae0cc00ed"),
-                Numeric.hexStringToByteArray("0x08c2fc7ec8ee14e734701435d0ca2e001bc1e0742c0fe0d58bd131a582e4f10c")
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0x91e77e86e76dc7f1edb1ef1c87fd4bcba1fd95cbc659db407e1f358ae0cc00ed"),
+                    Numeric.hexStringToByteArray("0x08c2fc7ec8ee14e734701435d0ca2e001bc1e0742c0fe0d58bd131a582e4f10c")
             );
 
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
             );
 
             String rlpEncoded = "0x48f90113018505d21dba00830f424094b605c7550ad5fb15ddd9291a2d31a889db808152b8a8f8a6a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a0000000000000000000000000000000000000000000000000000000000000000405f847f845820feaa091e77e86e76dc7f1edb1ef1c87fd4bcba1fd95cbc659db407e1f358ae0cc00eda008c2fc7ec8ee14e734701435d0ca2e001bc1e0742c0fe0d58bd131a582e4f10c";
@@ -789,44 +786,44 @@ public class ChainDataAnchoringTest {
             String expectedRLPEncoded = "0x48f901a1018505d21dba00830f424094b605c7550ad5fb15ddd9291a2d31a889db808152b8a8f8a6a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a0000000000000000000000000000000000000000000000000000000000000000405f8d5f845820feaa091e77e86e76dc7f1edb1ef1c87fd4bcba1fd95cbc659db407e1f358ae0cc00eda008c2fc7ec8ee14e734701435d0ca2e001bc1e0742c0fe0d58bd131a582e4f10cf845820feaa0c17c5ad8820b984da2bc816f881e1e283a9d7806ed5e3c703f58a7ed1f40edf1a049c4aa23508715aba0891ddad59bab4ff6abde777adffc1f39c79e51a78b786af845820fe9a0d2779b46862d5d10cb31d08ad5907eccf6343148e4264c730e048bb859cf1456a052570001d11eee29ee96c9f530be948a5f270167895705454596f6e61680718c";
 
             SignatureData[] expectedSignature = new SignatureData[]{
-                new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0x91e77e86e76dc7f1edb1ef1c87fd4bcba1fd95cbc659db407e1f358ae0cc00ed"),
-                    Numeric.hexStringToByteArray("0x08c2fc7ec8ee14e734701435d0ca2e001bc1e0742c0fe0d58bd131a582e4f10c")
-                ),
-                new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xc17c5ad8820b984da2bc816f881e1e283a9d7806ed5e3c703f58a7ed1f40edf1"),
-                    Numeric.hexStringToByteArray("0x49c4aa23508715aba0891ddad59bab4ff6abde777adffc1f39c79e51a78b786a")
-                ),
-                new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fe9"),
-                    Numeric.hexStringToByteArray("0xd2779b46862d5d10cb31d08ad5907eccf6343148e4264c730e048bb859cf1456"),
-                    Numeric.hexStringToByteArray("0x52570001d11eee29ee96c9f530be948a5f270167895705454596f6e61680718c")
-                )
+                    new SignatureData(
+                            Numeric.hexStringToByteArray("0x0fea"),
+                            Numeric.hexStringToByteArray("0x91e77e86e76dc7f1edb1ef1c87fd4bcba1fd95cbc659db407e1f358ae0cc00ed"),
+                            Numeric.hexStringToByteArray("0x08c2fc7ec8ee14e734701435d0ca2e001bc1e0742c0fe0d58bd131a582e4f10c")
+                    ),
+                    new SignatureData(
+                            Numeric.hexStringToByteArray("0x0fea"),
+                            Numeric.hexStringToByteArray("0xc17c5ad8820b984da2bc816f881e1e283a9d7806ed5e3c703f58a7ed1f40edf1"),
+                            Numeric.hexStringToByteArray("0x49c4aa23508715aba0891ddad59bab4ff6abde777adffc1f39c79e51a78b786a")
+                    ),
+                    new SignatureData(
+                            Numeric.hexStringToByteArray("0x0fe9"),
+                            Numeric.hexStringToByteArray("0xd2779b46862d5d10cb31d08ad5907eccf6343148e4264c730e048bb859cf1456"),
+                            Numeric.hexStringToByteArray("0x52570001d11eee29ee96c9f530be948a5f270167895705454596f6e61680718c")
+                    )
             };
 
 
             SignatureData signature = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
-                Numeric.hexStringToByteArray("0x91e77e86e76dc7f1edb1ef1c87fd4bcba1fd95cbc659db407e1f358ae0cc00ed"),
-                Numeric.hexStringToByteArray("0x08c2fc7ec8ee14e734701435d0ca2e001bc1e0742c0fe0d58bd131a582e4f10c")
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0x91e77e86e76dc7f1edb1ef1c87fd4bcba1fd95cbc659db407e1f358ae0cc00ed"),
+                    Numeric.hexStringToByteArray("0x08c2fc7ec8ee14e734701435d0ca2e001bc1e0742c0fe0d58bd131a582e4f10c")
             );
 
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signature)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signature)
             );
 
             String[] rlpEncodedString = new String[]{
-                "0x48f90113018505d21dba00830f424094b605c7550ad5fb15ddd9291a2d31a889db808152b8a8f8a6a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a0000000000000000000000000000000000000000000000000000000000000000405f847f845820feaa0c17c5ad8820b984da2bc816f881e1e283a9d7806ed5e3c703f58a7ed1f40edf1a049c4aa23508715aba0891ddad59bab4ff6abde777adffc1f39c79e51a78b786a",
-                "0x48f90113018505d21dba00830f424094b605c7550ad5fb15ddd9291a2d31a889db808152b8a8f8a6a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a0000000000000000000000000000000000000000000000000000000000000000405f847f845820fe9a0d2779b46862d5d10cb31d08ad5907eccf6343148e4264c730e048bb859cf1456a052570001d11eee29ee96c9f530be948a5f270167895705454596f6e61680718c"
+                    "0x48f90113018505d21dba00830f424094b605c7550ad5fb15ddd9291a2d31a889db808152b8a8f8a6a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a0000000000000000000000000000000000000000000000000000000000000000405f847f845820feaa0c17c5ad8820b984da2bc816f881e1e283a9d7806ed5e3c703f58a7ed1f40edf1a049c4aa23508715aba0891ddad59bab4ff6abde777adffc1f39c79e51a78b786a",
+                    "0x48f90113018505d21dba00830f424094b605c7550ad5fb15ddd9291a2d31a889db808152b8a8f8a6a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a0000000000000000000000000000000000000000000000000000000000000000405f847f845820fe9a0d2779b46862d5d10cb31d08ad5907eccf6343148e4264c730e048bb859cf1456a052570001d11eee29ee96c9f530be948a5f270167895705454596f6e61680718c"
             };
 
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedString));
@@ -844,13 +841,13 @@ public class ChainDataAnchoringTest {
             String nonce = "0x1234";
 
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
             );
 
             String rlpEncoded = "0x48f901a1018505d21dba00830f424094b605c7550ad5fb15ddd9291a2d31a889db808152b8a8f8a6a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a0000000000000000000000000000000000000000000000000000000000000000405f8d5f845820feaa091e77e86e76dc7f1edb1ef1c87fd4bcba1fd95cbc659db407e1f358ae0cc00eda008c2fc7ec8ee14e734701435d0ca2e001bc1e0742c0fe0d58bd131a582e4f10cf845820feaa0c17c5ad8820b984da2bc816f881e1e283a9d7806ed5e3c703f58a7ed1f40edf1a049c4aa23508715aba0891ddad59bab4ff6abde777adffc1f39c79e51a78b786af845820fe9a0d2779b46862d5d10cb31d08ad5907eccf6343148e4264c730e048bb859cf1456a052570001d11eee29ee96c9f530be948a5f270167895705454596f6e61680718c";
@@ -868,20 +865,20 @@ public class ChainDataAnchoringTest {
         @Before
         public void before() {
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
 
             coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
             deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(
-                caver.wallet.keyring.generate().getAddress(),
-                privateKey
+                    caver.wallet.keyring.generate().getAddress(),
+                    privateKey
             );
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
@@ -904,20 +901,20 @@ public class ChainDataAnchoringTest {
         @Before
         public void before() {
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
 
             coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
             deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(
-                caver.wallet.keyring.generate().getAddress(),
-                privateKey
+                    caver.wallet.keyring.generate().getAddress(),
+                    privateKey
             );
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
@@ -936,14 +933,14 @@ public class ChainDataAnchoringTest {
             String nonce = null;
 
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
 
             mTxObj.getTransactionHash();
@@ -957,14 +954,14 @@ public class ChainDataAnchoringTest {
             String gasPrice = null;
 
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
 
             mTxObj.getTransactionHash();
@@ -982,20 +979,20 @@ public class ChainDataAnchoringTest {
         @Before
         public void before() {
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
 
             coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
             deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(
-                caver.wallet.keyring.generate().getAddress(),
-                privateKey
+                    caver.wallet.keyring.generate().getAddress(),
+                    privateKey
             );
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
@@ -1014,14 +1011,14 @@ public class ChainDataAnchoringTest {
             String nonce = null;
 
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
 
             mTxObj.getSenderTxHash();
@@ -1035,14 +1032,14 @@ public class ChainDataAnchoringTest {
             String gasPrice = null;
 
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
 
             mTxObj.getSenderTxHash();
@@ -1060,20 +1057,20 @@ public class ChainDataAnchoringTest {
         @Before
         public void before() {
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
 
             coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
             deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(
-                caver.wallet.keyring.generate().getAddress(),
-                privateKey
+                    caver.wallet.keyring.generate().getAddress(),
+                    privateKey
             );
             klaytnWalletKey = coupledKeyring.getKlaytnWalletKey();
         }
@@ -1092,14 +1089,14 @@ public class ChainDataAnchoringTest {
             String nonce = null;
 
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
 
             mTxObj.getRLPEncodingForSignature();
@@ -1113,14 +1110,14 @@ public class ChainDataAnchoringTest {
             String gasPrice = null;
 
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
 
             mTxObj.getRLPEncodingForSignature();
@@ -1134,14 +1131,14 @@ public class ChainDataAnchoringTest {
             String chainID = null;
 
             mTxObj = caver.transaction.chainDataAnchoring.create(
-                TxPropertyBuilder.chainDataAnchoring()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setSignatures(signatureData)
+                    TxPropertyBuilder.chainDataAnchoring()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setSignatures(signatureData)
             );
 
             mTxObj.getRLPEncodingForSignature();

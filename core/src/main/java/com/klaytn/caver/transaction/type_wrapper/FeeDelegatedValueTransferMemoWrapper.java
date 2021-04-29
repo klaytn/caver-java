@@ -32,7 +32,6 @@ public class FeeDelegatedValueTransferMemoWrapper {
 
     /**
      * Create a FeeDelegatedValueTransferMemoWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedValueTransferMemoWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class FeeDelegatedValueTransferMemoWrapper {
 
     /**
      * Creates a FeeDelegatedValueTransferMemo instance derived from a RLP-encoded FeeDelegatedValueTransferMemo string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedValueTransferMemo string
      * @return FeeDelegatedValueTransferMemo
      */
@@ -53,7 +51,6 @@ public class FeeDelegatedValueTransferMemoWrapper {
 
     /**
      * Creates a FeeDelegatedValueTransferMemo instance derived from a RLP-encoded FeeDelegatedValueTransferMemo byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedValueTransferMemo byte array.
      * @return FeeDelegatedValueTransferMemo
      */
@@ -65,19 +62,17 @@ public class FeeDelegatedValueTransferMemoWrapper {
 
     /**
      * Creates a FeeDelegatedValueTransferMemo instance using FeeDelegatedValueTransferMemo.Builder
-     *
      * @param builder FeeDelegatedValueTransferMemo.Builder
      * @return FeeDelegatedValueTransferMemo
      */
     public FeeDelegatedValueTransferMemo create(FeeDelegatedValueTransferMemo.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**
      * Decodes a RLP-encoded FeeDelegatedValueTransferMemo string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedValueTransferMemo string.
      * @return FeeDelegatedValueTransferMemo
      */
@@ -87,7 +82,6 @@ public class FeeDelegatedValueTransferMemoWrapper {
 
     /**
      * Decodes a RLP-encoded FeeDelegatedValueTransferMemo byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedValueTransferMemo byte array.
      * @return FeeDelegatedValueTransferMemo
      */

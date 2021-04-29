@@ -32,7 +32,6 @@ public class FeeDelegatedValueTransferMemoWithRatioWrapper {
 
     /**
      * Create a FeeDelegatedValueTransferMemoWithRatioWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedValueTransferMemoWithRatioWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class FeeDelegatedValueTransferMemoWithRatioWrapper {
 
     /**
      * Creates a FeeDelegatedValueTransferMemoWithRatio instance derived from a RLP-encoded FeeDelegatedValueTransferMemoWithRatio string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedValueTransferMemoWithRatio string
      * @return FeeDelegatedValueTransferMemoWithRatio
      */
@@ -53,7 +51,6 @@ public class FeeDelegatedValueTransferMemoWithRatioWrapper {
 
     /**
      * Creates a FeeDelegatedValueTransferMemoWithRatio instance derived from a RLP-encoded FeeDelegatedValueTransferMemoWithRatio byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedValueTransferMemoWithRatio byte array.
      * @return FeeDelegatedValueTransferMemoWithRatio
      */
@@ -65,19 +62,17 @@ public class FeeDelegatedValueTransferMemoWithRatioWrapper {
 
     /**
      * Creates a FeeDelegatedValueTransferMemoWithRatio instance using FeeDelegatedValueTransferMemoWithRatio.Builder
-     *
      * @param builder FeeDelegatedValueTransferMemoWithRatio.Builder
      * @return FeeDelegatedValueTransferMemoWithRatio
      */
     public FeeDelegatedValueTransferMemoWithRatio create(FeeDelegatedValueTransferMemoWithRatio.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**
      * Decodes a RLP-encoded FeeDelegatedValueTransferMemoWithRatio string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedValueTransferMemoWithRatio string.
      * @return FeeDelegatedValueTransferMemoWithRatio
      */
@@ -87,7 +82,6 @@ public class FeeDelegatedValueTransferMemoWithRatioWrapper {
 
     /**
      * Decodes a RLP-encoded FeeDelegatedValueTransferMemoWithRatio byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedValueTransferMemoWithRatio byte array.
      * @return FeeDelegatedValueTransferMemoWithRatio
      */

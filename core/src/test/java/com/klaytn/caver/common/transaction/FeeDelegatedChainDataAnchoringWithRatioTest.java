@@ -9,8 +9,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -38,15 +36,15 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
     static String input = "0xf8ad80b8aaf8a8a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a00000000000000000000000000000000000000000000000000000000000000004058006";
 
     static SignatureData senderSignatureData = new SignatureData(
-        "0x26",
-        "0xc612a243bcb3b98958e9cce1a0bc0e170291b33a7f0dbfae4b36dafb5806797d",
-        "0xc734423492ecc21cc53238147c359676fcec43fcc2a0e021d87bb1da49f0abf"
+            "0x26",
+            "0xc612a243bcb3b98958e9cce1a0bc0e170291b33a7f0dbfae4b36dafb5806797d",
+            "0xc734423492ecc21cc53238147c359676fcec43fcc2a0e021d87bb1da49f0abf"
     );
 
     static SignatureData feePayerSignatureData = new SignatureData(
-        "0x25",
-        "0xa3e40598b67e2bcbaa48fdd258b9d1dcfcc9cc134972560ba042430078a769a5",
-        "0x6707ea362e588e4e5869cffcd5a058749d823aeff13eb95dc1146faff561df32"
+            "0x25",
+            "0xa3e40598b67e2bcbaa48fdd258b9d1dcfcc9cc134972560ba042430078a769a5",
+            "0x6707ea362e588e4e5869cffcd5a058749d823aeff13eb95dc1146faff561df32"
     );
 
     static String expectedRLPEncoding = "0x4af90177128505d21dba0085174876e80094a94f5374fce5edbc8e2a8697c15331677e6ebf0bb8aff8ad80b8aaf8a8a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a0000000000000000000000000000000000000000000000000000000000000000405800658f845f84326a0c612a243bcb3b98958e9cce1a0bc0e170291b33a7f0dbfae4b36dafb5806797da00c734423492ecc21cc53238147c359676fcec43fcc2a0e021d87bb1da49f0abf9433f524631e573329a550296f595c820d6c65213ff845f84325a0a3e40598b67e2bcbaa48fdd258b9d1dcfcc9cc134972560ba042430078a769a5a06707ea362e588e4e5869cffcd5a058749d823aeff13eb95dc1146faff561df32";
@@ -66,17 +64,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Test
         public void BuilderTest() {
             FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
-                .setNonce(nonce)
-                .setGas(gas)
-                .setGasPrice(gasPrice)
-                .setChainId(chainID)
-                .setFrom(from)
-                .setFeePayer(feePayer)
-                .setFeeRatio(feeRatio)
-                .setInput(input)
-                .setSignatures(senderSignatureData)
-                .setFeePayerSignatures(feePayerSignatureData)
-                .build();
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setFeePayer(feePayer)
+                    .setFeeRatio(feeRatio)
+                    .setInput(input)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+                    .build();
 
             assertNotNull(txObj);
         }
@@ -84,15 +82,15 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Test
         public void BuilderWithRPCTest() throws IOException {
             FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
-                .setKlaytnCall(caver.rpc.getKlay())
-                .setGas(gas)
-                .setFrom(from)
-                .setFeePayer(feePayer)
-                .setFeeRatio(feeRatio)
-                .setInput(input)
-                .setSignatures(senderSignatureData)
-                .setFeePayerSignatures(feePayerSignatureData)
-                .build();
+                    .setKlaytnCall(caver.rpc.getKlay())
+                    .setGas(gas)
+                    .setFrom(from)
+                    .setFeePayer(feePayer)
+                    .setFeeRatio(feeRatio)
+                    .setInput(input)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+                    .build();
 
             txObj.fillTransaction();
 
@@ -104,17 +102,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Test
         public void BuilderTestWithBigInteger() {
             FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
-                .setNonce(Numeric.toBigInt(nonce))
-                .setGas(Numeric.toBigInt(gas))
-                .setGasPrice(gasPrice)
-                .setChainId(Numeric.toBigInt(chainID))
-                .setFrom(from)
-                .setInput(input)
-                .setFeePayer(feePayer)
-                .setFeeRatio(Numeric.toBigInt(feeRatio))
-                .setSignatures(senderSignatureData)
-                .setFeePayerSignatures(feePayerSignatureData)
-                .build();
+                    .setNonce(Numeric.toBigInt(nonce))
+                    .setGas(Numeric.toBigInt(gas))
+                    .setGasPrice(gasPrice)
+                    .setChainId(Numeric.toBigInt(chainID))
+                    .setFrom(from)
+                    .setInput(input)
+                    .setFeePayer(feePayer)
+                    .setFeeRatio(Numeric.toBigInt(feeRatio))
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+                    .build();
 
             assertEquals(gas, txObj.getGas());
             assertEquals(gasPrice, txObj.getGasPrice());
@@ -130,217 +128,6 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String from = "invalid Address";
 
             FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
-                .setNonce(nonce)
-                .setGas(gas)
-                .setGasPrice(gasPrice)
-                .setChainId(chainID)
-                .setFrom(from)
-                .setFeePayer(feePayer)
-                .setFeeRatio(feeRatio)
-                .setInput(input)
-                .setSignatures(senderSignatureData)
-                .setFeePayerSignatures(feePayerSignatureData)
-                .build();
-        }
-
-        @Test
-        public void throwException_missingFrom() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("from is missing.");
-
-            String from = null;
-
-            FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
-                .setNonce(nonce)
-                .setGas(gas)
-                .setGasPrice(gasPrice)
-                .setChainId(chainID)
-                .setFrom(from)
-                .setFeePayer(feePayer)
-                .setFeeRatio(feeRatio)
-                .setInput(input)
-                .setSignatures(senderSignatureData)
-                .setFeePayerSignatures(feePayerSignatureData)
-                .build();
-        }
-
-        @Test
-        public void throwException_invalidGas() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid gas.");
-
-            String gas = "invalid gas";
-
-            FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
-                .setNonce(nonce)
-                .setGas(gas)
-                .setGasPrice(gasPrice)
-                .setChainId(chainID)
-                .setFrom(from)
-                .setFeePayer(feePayer)
-                .setFeeRatio(feeRatio)
-                .setInput(input)
-                .setSignatures(senderSignatureData)
-                .setFeePayerSignatures(feePayerSignatureData)
-                .build();
-        }
-
-        @Test
-        public void throwException_missingGas() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("gas is missing.");
-
-            String gas = null;
-
-            FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
-                .setNonce(nonce)
-                .setGas(gas)
-                .setGasPrice(gasPrice)
-                .setChainId(chainID)
-                .setFrom(from)
-                .setFeePayer(feePayer)
-                .setFeeRatio(feeRatio)
-                .setInput(input)
-                .setSignatures(senderSignatureData)
-                .setFeePayerSignatures(feePayerSignatureData)
-                .build();
-        }
-
-        @Test
-        public void throwException_invalidInput() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid input");
-
-            String input = "invalid input";
-
-            FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
-                .setNonce(nonce)
-                .setGasPrice(gasPrice)
-                .setGas(gas)
-                .setFrom(from)
-                .setChainId(chainID)
-                .setFeePayer(feePayer)
-                .setFeeRatio(feeRatio)
-                .setInput(input)
-                .setSignatures(senderSignatureData)
-                .setFeePayerSignatures(feePayerSignatureData)
-                .build();
-        }
-
-        @Test
-        public void throwException_missingInput() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("input is missing.");
-
-            String input = null;
-
-            FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
-                .setNonce(nonce)
-                .setGasPrice(gasPrice)
-                .setGas(gas)
-                .setFrom(from)
-                .setChainId(chainID)
-                .setFeePayer(feePayer)
-                .setFeeRatio(feeRatio)
-                .setInput(input)
-                .setSignatures(senderSignatureData)
-                .setFeePayerSignatures(feePayerSignatureData)
-                .build();
-        }
-
-        @Test
-        public void throwException_setFeePayerSignatures_missingFeePayer() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("feePayer is missing: feePayer must be defined with feePayerSignatures.");
-
-            String feePayer = null;
-
-            FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
-                .setNonce(nonce)
-                .setGas(gas)
-                .setGasPrice(gasPrice)
-                .setChainId(chainID)
-                .setFrom(from)
-                .setFeePayer(feePayer)
-                .setFeeRatio(feeRatio)
-                .setInput(input)
-                .setSignatures(senderSignatureData)
-                .setFeePayerSignatures(feePayerSignatureData)
-                .build();
-        }
-
-        @Test
-        public void throwException_FeeRatio_invalid() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid type of feeRatio: feeRatio should be number type or hex number string");
-
-            String feeRatio = "invalid fee ratio";
-
-            FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
-                .setNonce(nonce)
-                .setGas(gas)
-                .setGasPrice(gasPrice)
-                .setChainId(chainID)
-                .setFrom(from)
-                .setFeePayer(feePayer)
-                .setFeeRatio(feeRatio)
-                .setInput(input)
-                .setSignatures(senderSignatureData)
-                .setFeePayerSignatures(feePayerSignatureData)
-                .build();
-        }
-
-        @Test
-        public void throwException_FeeRatio_outOfRange() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Invalid feeRatio: feeRatio is out of range. [1,99]");
-
-            BigInteger feeRatio = BigInteger.valueOf(101);
-
-            FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
-                .setNonce(nonce)
-                .setGas(gas)
-                .setGasPrice(gasPrice)
-                .setChainId(chainID)
-                .setFrom(from)
-                .setFeePayer(feePayer)
-                .setFeeRatio(feeRatio)
-                .setInput(input)
-                .setSignatures(senderSignatureData)
-                .setFeePayerSignatures(feePayerSignatureData)
-                .build();
-        }
-
-        @Test
-        public void throwException_missingFeeRatio() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("feeRatio is missing.");
-
-            String feeRatio = null;
-
-            FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
-                .setNonce(nonce)
-                .setGas(gas)
-                .setGasPrice(gasPrice)
-                .setChainId(chainID)
-                .setFrom(from)
-                .setFeePayer(feePayer)
-                .setFeeRatio(feeRatio)
-                .setInput(input)
-                .setSignatures(senderSignatureData)
-                .setFeePayerSignatures(feePayerSignatureData)
-                .build();
-        }
-    }
-
-    public static class createInstance {
-        @Rule
-        public ExpectedException expectedException = ExpectedException.none();
-
-        @Test
-        public void createInstance() {
-            FeeDelegatedChainDataAnchoringWithRatio txObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
                     .setNonce(nonce)
                     .setGas(gas)
                     .setGasPrice(gasPrice)
@@ -351,6 +138,217 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
                     .setInput(input)
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
+                    .build();
+        }
+
+        @Test
+        public void throwException_missingFrom() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("from is missing.");
+
+            String from = null;
+
+            FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setFeePayer(feePayer)
+                    .setFeeRatio(feeRatio)
+                    .setInput(input)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+                    .build();
+        }
+
+        @Test
+        public void throwException_invalidGas() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid gas.");
+
+            String gas = "invalid gas";
+
+            FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setFeePayer(feePayer)
+                    .setFeeRatio(feeRatio)
+                    .setInput(input)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+                    .build();
+        }
+
+        @Test
+        public void throwException_missingGas() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("gas is missing.");
+
+            String gas = null;
+
+            FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setFeePayer(feePayer)
+                    .setFeeRatio(feeRatio)
+                    .setInput(input)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+                    .build();
+        }
+
+        @Test
+        public void throwException_invalidInput() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid input");
+
+            String input = "invalid input";
+
+            FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
+                    .setNonce(nonce)
+                    .setGasPrice(gasPrice)
+                    .setGas(gas)
+                    .setFrom(from)
+                    .setChainId(chainID)
+                    .setFeePayer(feePayer)
+                    .setFeeRatio(feeRatio)
+                    .setInput(input)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+                    .build();
+        }
+
+        @Test
+        public void throwException_missingInput() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("input is missing.");
+
+            String input = null;
+
+            FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
+                    .setNonce(nonce)
+                    .setGasPrice(gasPrice)
+                    .setGas(gas)
+                    .setFrom(from)
+                    .setChainId(chainID)
+                    .setFeePayer(feePayer)
+                    .setFeeRatio(feeRatio)
+                    .setInput(input)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+                    .build();
+        }
+
+        @Test
+        public void throwException_setFeePayerSignatures_missingFeePayer() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("feePayer is missing: feePayer must be defined with feePayerSignatures.");
+
+            String feePayer = null;
+
+            FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setFeePayer(feePayer)
+                    .setFeeRatio(feeRatio)
+                    .setInput(input)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+                    .build();
+        }
+
+        @Test
+        public void throwException_FeeRatio_invalid() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid type of feeRatio: feeRatio should be number type or hex number string");
+
+            String feeRatio = "invalid fee ratio";
+
+            FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setFeePayer(feePayer)
+                    .setFeeRatio(feeRatio)
+                    .setInput(input)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+                    .build();
+        }
+
+        @Test
+        public void throwException_FeeRatio_outOfRange() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid feeRatio: feeRatio is out of range. [1,99]");
+
+            BigInteger feeRatio = BigInteger.valueOf(101);
+
+            FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setFeePayer(feePayer)
+                    .setFeeRatio(feeRatio)
+                    .setInput(input)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+                    .build();
+        }
+
+        @Test
+        public void throwException_missingFeeRatio() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("feeRatio is missing.");
+
+            String feeRatio = null;
+
+            FeeDelegatedChainDataAnchoringWithRatio txObj = new FeeDelegatedChainDataAnchoringWithRatio.Builder()
+                    .setNonce(nonce)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainID)
+                    .setFrom(from)
+                    .setFeePayer(feePayer)
+                    .setFeeRatio(feeRatio)
+                    .setInput(input)
+                    .setSignatures(senderSignatureData)
+                    .setFeePayerSignatures(feePayerSignatureData)
+                    .build();
+        }
+    }
+
+    public static class createInstance {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        @Test
+        public void createInstance() {
+            FeeDelegatedChainDataAnchoringWithRatio txObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
 
             assertNotNull(txObj);
@@ -364,17 +362,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String from = "invalid Address";
 
             FeeDelegatedChainDataAnchoringWithRatio txObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -386,17 +384,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String from = null;
 
             FeeDelegatedChainDataAnchoringWithRatio txObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -408,17 +406,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String gas = "invalid gas";
 
             FeeDelegatedChainDataAnchoringWithRatio txObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -430,17 +428,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String gas = null;
 
             FeeDelegatedChainDataAnchoringWithRatio txObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -452,17 +450,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String input = "invalid input";
 
             FeeDelegatedChainDataAnchoringWithRatio txObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -474,17 +472,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String input = null;
 
             FeeDelegatedChainDataAnchoringWithRatio txObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -496,17 +494,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String feePayer = null;
 
             FeeDelegatedChainDataAnchoringWithRatio txObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -518,17 +516,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String feeRatio = "invalid fee ratio";
 
             FeeDelegatedChainDataAnchoringWithRatio txObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -540,17 +538,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String feeRatio = "0xFF";
 
             FeeDelegatedChainDataAnchoringWithRatio txObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
 
@@ -562,17 +560,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String feeRatio = null;
 
             FeeDelegatedChainDataAnchoringWithRatio txObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
         }
     }
@@ -584,17 +582,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Test
         public void getRLPEncoding() {
             FeeDelegatedChainDataAnchoringWithRatio txObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
 
             assertEquals(expectedRLPEncoding, txObj.getRLPEncoding());
@@ -608,17 +606,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String nonce = null;
 
             FeeDelegatedChainDataAnchoringWithRatio txObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
 
             txObj.getRLPEncoding();
@@ -632,17 +630,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String gasPrice = null;
 
             FeeDelegatedChainDataAnchoringWithRatio txObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
 
             txObj.getRLPEncoding();
@@ -663,16 +661,16 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             klaytnWalletKey = keyring.getKlaytnWalletKey();
 
             txObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
             );
         }
 
@@ -682,16 +680,16 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String feePayer = caver.wallet.keyring.createFromPrivateKey(feePayerPrivateKey).getAddress();
 
             txObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
             );
 
             txObj.signAsFeePayer(feePayerPrivateKey);
@@ -719,9 +717,9 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Test
         public void signAsFeePayer_multipleKey() throws IOException {
             String[] keyArr = {
-                caver.wallet.keyring.generateSingleKey(),
-                feePayerPrivateKey,
-                caver.wallet.keyring.generateSingleKey()
+                    caver.wallet.keyring.generateSingleKey(),
+                    feePayerPrivateKey,
+                    caver.wallet.keyring.generateSingleKey()
             };
 
             MultipleKeyring keyring = caver.wallet.keyring.createWithMultipleKey(feePayer, keyArr);
@@ -732,17 +730,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Test
         public void signAsFeePayer_roleBasedKey() throws IOException {
             String[][] keyArr = {
-                {
-                    caver.wallet.keyring.generateSingleKey(),
-                    caver.wallet.keyring.generateSingleKey(),
-                },
-                {
-                    caver.wallet.keyring.generateSingleKey()
-                },
-                {
-                    caver.wallet.keyring.generateSingleKey(),
-                    feePayerPrivateKey
-                }
+                    {
+                            caver.wallet.keyring.generateSingleKey(),
+                            caver.wallet.keyring.generateSingleKey(),
+                    },
+                    {
+                            caver.wallet.keyring.generateSingleKey()
+                    },
+                    {
+                            caver.wallet.keyring.generateSingleKey(),
+                            feePayerPrivateKey
+                    }
             };
 
             RoleBasedKeyring roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(feePayer, Arrays.asList(keyArr));
@@ -779,26 +777,26 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Before
         public void before() {
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
             );
 
             singleKeyring = caver.wallet.keyring.createWithSingleKey(feePayer, caver.wallet.keyring.generateSingleKey());
             multipleKeyring = caver.wallet.keyring.createWithMultipleKey(
-                feePayer,
-                caver.wallet.keyring.generateMultipleKeys(8)
+                    feePayer,
+                    caver.wallet.keyring.generateMultipleKeys(8)
             );
             roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(
-                feePayer,
-                caver.wallet.keyring.generateRolBasedKeys(new int[]{3, 4, 5})
+                    feePayer,
+                    caver.wallet.keyring.generateRolBasedKeys(new int[]{3, 4, 5})
             );
         }
 
@@ -845,25 +843,25 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Before
         public void before() {
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
             );
         }
 
         @Test
         public void appendFeePayerSignature() {
             SignatureData signatureData = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
-                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             mTxObj.appendFeePayerSignatures(signatureData);
@@ -873,9 +871,9 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Test
         public void appendFeePayerSignatureList() {
             SignatureData signatureData = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
-                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -890,23 +888,23 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             SignatureData emptySignature = SignatureData.getEmptySignature();
 
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(emptySignature)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(emptySignature)
             );
 
             SignatureData signatureData = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
-                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -919,29 +917,29 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Test
         public void appendFeePayerSignature_ExistedSignature() {
             SignatureData signatureData = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
-                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(signatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(signatureData)
             );
 
             SignatureData signatureData1 = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
-                Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
-                Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
+                    Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -956,35 +954,35 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Test
         public void appendFeePayerSignatureList_ExistedSignature() {
             SignatureData signatureData = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
-                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
             );
 
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setInput(input)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(signatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setInput(input)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(signatureData)
             );
 
             SignatureData signatureData1 = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
-                Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
-                Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0x7a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
+                    Numeric.hexStringToByteArray("0x23ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
             SignatureData signatureData2 = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
-                Numeric.hexStringToByteArray("0x9a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
-                Numeric.hexStringToByteArray("0xa3ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
+                    Numeric.hexStringToByteArray("0x0fea"),
+                    Numeric.hexStringToByteArray("0x9a5011b41cfcb6270af1b5f8aeac8aeabb1edb436f028261b5add564de694700"),
+                    Numeric.hexStringToByteArray("0xa3ac51660b8b421bf732ef8148d0d4f19d5e29cb97be6bccb5ae505ebe89eb4a")
             );
 
             List<SignatureData> list = new ArrayList<>();
@@ -1016,14 +1014,14 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Test
         public void combineSignatures() {
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setFeeRatio(feeRatio)
-                    .setChainId(chainID)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeeRatio(feeRatio)
+                            .setChainId(chainID)
             );
 
             String rlpEncoded = "0x4af90135018505d21dba00830249f094acfda1ac94468f2bda3e30a272215d0a5b5be413b8aff8ad80b8aaf8a8a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000000040580061ef847f845820feaa01fba7ba78b13f7b85e8f240aea9ea22df8d0eaf68bc33486e815718e5a635413a07e1b339a04862531af1e966f2cddb2fe8dc6f48f508da435300045979d4ef44c940000000000000000000000000000000000000000c4c3018080";
@@ -1031,9 +1029,9 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncoded));
 
             SignatureData expectedSignatureData = new SignatureData(
-                "0x0fea",
-                "0x1fba7ba78b13f7b85e8f240aea9ea22df8d0eaf68bc33486e815718e5a635413",
-                "0x7e1b339a04862531af1e966f2cddb2fe8dc6f48f508da435300045979d4ef44c"
+                    "0x0fea",
+                    "0x1fba7ba78b13f7b85e8f240aea9ea22df8d0eaf68bc33486e815718e5a635413",
+                    "0x7e1b339a04862531af1e966f2cddb2fe8dc6f48f508da435300045979d4ef44c"
             );
 
             assertEquals(rlpEncoded, combined);
@@ -1044,47 +1042,47 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Test
         public void combineSignature_MultipleSignature() {
             SignatureData senderSignature = new SignatureData(
-                "0x0fea",
-                "0x1fba7ba78b13f7b85e8f240aea9ea22df8d0eaf68bc33486e815718e5a635413",
-                "0x7e1b339a04862531af1e966f2cddb2fe8dc6f48f508da435300045979d4ef44c"
+                    "0x0fea",
+                    "0x1fba7ba78b13f7b85e8f240aea9ea22df8d0eaf68bc33486e815718e5a635413",
+                    "0x7e1b339a04862531af1e966f2cddb2fe8dc6f48f508da435300045979d4ef44c"
             );
 
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setFeeRatio(feeRatio)
-                    .setChainId(chainID)
-                    .setSignatures(senderSignature)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeeRatio(feeRatio)
+                            .setChainId(chainID)
+                            .setSignatures(senderSignature)
             );
 
             String[] rlpEncodedStrings = {
-                "0x4af90121018505d21dba00830249f094acfda1ac94468f2bda3e30a272215d0a5b5be413b8aff8ad80b8aaf8a8a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000000040580061ef847f845820fe9a0d52efcc22cd8bc3ae0dc0fa8b4a0c68ffda9295ed7a9ed612d4af6bcdfc04af5a067749106fce239d6669ae86e9eb389f25e3c506e9934435150774ed2776e974c80c4c3018080",
-                "0x4af90121018505d21dba00830249f094acfda1ac94468f2bda3e30a272215d0a5b5be413b8aff8ad80b8aaf8a8a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000000040580061ef847f845820feaa0ca90225e2de0caa34d9676690224028bd03cd99a76a0fa631466073a3f8f1944a02678afba3c5071e5a7a7084bcec0a12913f779a30303f81d897c862622048ab880c4c3018080",
+                    "0x4af90121018505d21dba00830249f094acfda1ac94468f2bda3e30a272215d0a5b5be413b8aff8ad80b8aaf8a8a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000000040580061ef847f845820fe9a0d52efcc22cd8bc3ae0dc0fa8b4a0c68ffda9295ed7a9ed612d4af6bcdfc04af5a067749106fce239d6669ae86e9eb389f25e3c506e9934435150774ed2776e974c80c4c3018080",
+                    "0x4af90121018505d21dba00830249f094acfda1ac94468f2bda3e30a272215d0a5b5be413b8aff8ad80b8aaf8a8a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000000040580061ef847f845820feaa0ca90225e2de0caa34d9676690224028bd03cd99a76a0fa631466073a3f8f1944a02678afba3c5071e5a7a7084bcec0a12913f779a30303f81d897c862622048ab880c4c3018080",
             };
 
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedStrings));
             String expectedRLPEncoding = "0x4af901c3018505d21dba00830249f094acfda1ac94468f2bda3e30a272215d0a5b5be413b8aff8ad80b8aaf8a8a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000000040580061ef8d5f845820feaa01fba7ba78b13f7b85e8f240aea9ea22df8d0eaf68bc33486e815718e5a635413a07e1b339a04862531af1e966f2cddb2fe8dc6f48f508da435300045979d4ef44cf845820fe9a0d52efcc22cd8bc3ae0dc0fa8b4a0c68ffda9295ed7a9ed612d4af6bcdfc04af5a067749106fce239d6669ae86e9eb389f25e3c506e9934435150774ed2776e974cf845820feaa0ca90225e2de0caa34d9676690224028bd03cd99a76a0fa631466073a3f8f1944a02678afba3c5071e5a7a7084bcec0a12913f779a30303f81d897c862622048ab8940000000000000000000000000000000000000000c4c3018080";
 
             SignatureData[] expectedSignatureData = new SignatureData[]{
-                new SignatureData(
-                    "0x0fea",
-                    "0x1fba7ba78b13f7b85e8f240aea9ea22df8d0eaf68bc33486e815718e5a635413",
-                    "0x7e1b339a04862531af1e966f2cddb2fe8dc6f48f508da435300045979d4ef44c"
-                ),
-                new SignatureData(
-                    "0x0fe9",
-                    "0xd52efcc22cd8bc3ae0dc0fa8b4a0c68ffda9295ed7a9ed612d4af6bcdfc04af5",
-                    "0x67749106fce239d6669ae86e9eb389f25e3c506e9934435150774ed2776e974c"
-                ),
-                new SignatureData(
-                    "0x0fea",
-                    "0xca90225e2de0caa34d9676690224028bd03cd99a76a0fa631466073a3f8f1944",
-                    "0x2678afba3c5071e5a7a7084bcec0a12913f779a30303f81d897c862622048ab8"
-                )
+                    new SignatureData(
+                            "0x0fea",
+                            "0x1fba7ba78b13f7b85e8f240aea9ea22df8d0eaf68bc33486e815718e5a635413",
+                            "0x7e1b339a04862531af1e966f2cddb2fe8dc6f48f508da435300045979d4ef44c"
+                    ),
+                    new SignatureData(
+                            "0x0fe9",
+                            "0xd52efcc22cd8bc3ae0dc0fa8b4a0c68ffda9295ed7a9ed612d4af6bcdfc04af5",
+                            "0x67749106fce239d6669ae86e9eb389f25e3c506e9934435150774ed2776e974c"
+                    ),
+                    new SignatureData(
+                            "0x0fea",
+                            "0xca90225e2de0caa34d9676690224028bd03cd99a76a0fa631466073a3f8f1944",
+                            "0x2678afba3c5071e5a7a7084bcec0a12913f779a30303f81d897c862622048ab8"
+                    )
             };
 
             assertEquals(expectedRLPEncoding, combined);
@@ -1096,23 +1094,23 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Test
         public void combineSignature_feePayerSignature() {
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setFeeRatio(feeRatio)
-                    .setChainId(chainID)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeeRatio(feeRatio)
+                            .setChainId(chainID)
             );
 
             String rlpEncoded = "0x4af90135018505d21dba00830249f094acfda1ac94468f2bda3e30a272215d0a5b5be413b8aff8ad80b8aaf8a8a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000000040580061ec4c30180809475d141c9dbefde51f488c8d79da55f48282a1e52f847f845820feaa0945863c17f8213765cb3196b6988840488e326055d0c654d34c71bd798ae5ec3a0784a6ecf82352503d12bd2c609016b7e7f8af1ed04d0cdceb02cd0f0830d8881";
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncoded));
 
             SignatureData signatureData = new SignatureData(
-                "0x0fea",
-                "0x945863c17f8213765cb3196b6988840488e326055d0c654d34c71bd798ae5ec3",
-                "0x784a6ecf82352503d12bd2c609016b7e7f8af1ed04d0cdceb02cd0f0830d8881"
+                    "0x0fea",
+                    "0x945863c17f8213765cb3196b6988840488e326055d0c654d34c71bd798ae5ec3",
+                    "0x784a6ecf82352503d12bd2c609016b7e7f8af1ed04d0cdceb02cd0f0830d8881"
             );
             assertEquals(rlpEncoded, combined);
             assertEquals(signatureData, mTxObj.getFeePayerSignatures().get(0));
@@ -1122,49 +1120,49 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         public void combineSignature_multipleFeePayerSignature() {
             String feePayer = "0x75d141c9dbefde51f488c8d79da55f48282a1e52";
             SignatureData feePayerSignatureData = new SignatureData(
-                "0x0fea",
-                "0x945863c17f8213765cb3196b6988840488e326055d0c654d34c71bd798ae5ec3",
-                "0x784a6ecf82352503d12bd2c609016b7e7f8af1ed04d0cdceb02cd0f0830d8881"
+                    "0x0fea",
+                    "0x945863c17f8213765cb3196b6988840488e326055d0c654d34c71bd798ae5ec3",
+                    "0x784a6ecf82352503d12bd2c609016b7e7f8af1ed04d0cdceb02cd0f0830d8881"
             );
 
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setFeeRatio(feeRatio)
-                    .setFeePayer(feePayer)
-                    .setChainId(chainID)
-                    .setFeePayerSignatures(feePayerSignatureData)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeeRatio(feeRatio)
+                            .setFeePayer(feePayer)
+                            .setChainId(chainID)
+                            .setFeePayerSignatures(feePayerSignatureData)
             );
 
 
             String[] rlpEncodedStrings = new String[]{
-                "0x4af90135018505d21dba00830249f094acfda1ac94468f2bda3e30a272215d0a5b5be413b8aff8ad80b8aaf8a8a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000000040580061ec4c30180809475d141c9dbefde51f488c8d79da55f48282a1e52f847f845820feaa092b2e701dea51bd0958d40d67b1a794822153a7624f35609d8f6320467067226a0161b871c857cf7ddb259e3dc76b4bad176a52b488bb9cea7198b778f3d0cb770",
-                "0x4af90135018505d21dba00830249f094acfda1ac94468f2bda3e30a272215d0a5b5be413b8aff8ad80b8aaf8a8a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000000040580061ec4c30180809475d141c9dbefde51f488c8d79da55f48282a1e52f847f845820feaa0d67112e14b4fb00d5b0304638d665e0052e57e0d4bfa4fc00040b9e991bbd36da049eb2a9e8d2575e707631d2c3dc708152c5cbf59a52846871adbe7f8ae1add13",
+                    "0x4af90135018505d21dba00830249f094acfda1ac94468f2bda3e30a272215d0a5b5be413b8aff8ad80b8aaf8a8a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000000040580061ec4c30180809475d141c9dbefde51f488c8d79da55f48282a1e52f847f845820feaa092b2e701dea51bd0958d40d67b1a794822153a7624f35609d8f6320467067226a0161b871c857cf7ddb259e3dc76b4bad176a52b488bb9cea7198b778f3d0cb770",
+                    "0x4af90135018505d21dba00830249f094acfda1ac94468f2bda3e30a272215d0a5b5be413b8aff8ad80b8aaf8a8a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000000040580061ec4c30180809475d141c9dbefde51f488c8d79da55f48282a1e52f847f845820feaa0d67112e14b4fb00d5b0304638d665e0052e57e0d4bfa4fc00040b9e991bbd36da049eb2a9e8d2575e707631d2c3dc708152c5cbf59a52846871adbe7f8ae1add13",
             };
 
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedStrings));
             String expectedRLPEncoded = "0x4af901c3018505d21dba00830249f094acfda1ac94468f2bda3e30a272215d0a5b5be413b8aff8ad80b8aaf8a8a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000000040580061ec4c30180809475d141c9dbefde51f488c8d79da55f48282a1e52f8d5f845820feaa0945863c17f8213765cb3196b6988840488e326055d0c654d34c71bd798ae5ec3a0784a6ecf82352503d12bd2c609016b7e7f8af1ed04d0cdceb02cd0f0830d8881f845820feaa092b2e701dea51bd0958d40d67b1a794822153a7624f35609d8f6320467067226a0161b871c857cf7ddb259e3dc76b4bad176a52b488bb9cea7198b778f3d0cb770f845820feaa0d67112e14b4fb00d5b0304638d665e0052e57e0d4bfa4fc00040b9e991bbd36da049eb2a9e8d2575e707631d2c3dc708152c5cbf59a52846871adbe7f8ae1add13";
 
             SignatureData[] expectedSignatureData = new SignatureData[]{
-                new SignatureData(
-                    "0x0fea",
-                    "0x945863c17f8213765cb3196b6988840488e326055d0c654d34c71bd798ae5ec3",
-                    "0x784a6ecf82352503d12bd2c609016b7e7f8af1ed04d0cdceb02cd0f0830d8881"
-                ),
-                new SignatureData(
-                    "0x0fea",
-                    "0x92b2e701dea51bd0958d40d67b1a794822153a7624f35609d8f6320467067226",
-                    "0x161b871c857cf7ddb259e3dc76b4bad176a52b488bb9cea7198b778f3d0cb770"
-                ),
-                new SignatureData(
-                    "0x0fea",
-                    "0xd67112e14b4fb00d5b0304638d665e0052e57e0d4bfa4fc00040b9e991bbd36d",
-                    "0x49eb2a9e8d2575e707631d2c3dc708152c5cbf59a52846871adbe7f8ae1add13"
-                )
+                    new SignatureData(
+                            "0x0fea",
+                            "0x945863c17f8213765cb3196b6988840488e326055d0c654d34c71bd798ae5ec3",
+                            "0x784a6ecf82352503d12bd2c609016b7e7f8af1ed04d0cdceb02cd0f0830d8881"
+                    ),
+                    new SignatureData(
+                            "0x0fea",
+                            "0x92b2e701dea51bd0958d40d67b1a794822153a7624f35609d8f6320467067226",
+                            "0x161b871c857cf7ddb259e3dc76b4bad176a52b488bb9cea7198b778f3d0cb770"
+                    ),
+                    new SignatureData(
+                            "0x0fea",
+                            "0xd67112e14b4fb00d5b0304638d665e0052e57e0d4bfa4fc00040b9e991bbd36d",
+                            "0x49eb2a9e8d2575e707631d2c3dc708152c5cbf59a52846871adbe7f8ae1add13"
+                    )
             };
 
             assertEquals(expectedRLPEncoded, combined);
@@ -1176,34 +1174,34 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Test
         public void multipleSignature_senderSignature_feePayerSignature() {
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setFeeRatio(feeRatio)
-                    .setChainId(chainID)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeeRatio(feeRatio)
+                            .setChainId(chainID)
             );
 
 
             String rlpEncodedString = "0x4af901af018505d21dba00830249f094acfda1ac94468f2bda3e30a272215d0a5b5be413b8aff8ad80b8aaf8a8a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000000040580061ef8d5f845820feaa01fba7ba78b13f7b85e8f240aea9ea22df8d0eaf68bc33486e815718e5a635413a07e1b339a04862531af1e966f2cddb2fe8dc6f48f508da435300045979d4ef44cf845820fe9a0d52efcc22cd8bc3ae0dc0fa8b4a0c68ffda9295ed7a9ed612d4af6bcdfc04af5a067749106fce239d6669ae86e9eb389f25e3c506e9934435150774ed2776e974cf845820feaa0ca90225e2de0caa34d9676690224028bd03cd99a76a0fa631466073a3f8f1944a02678afba3c5071e5a7a7084bcec0a12913f779a30303f81d897c862622048ab880c4c3018080";
             SignatureData[] expectedSignatures = new SignatureData[]{
-                new SignatureData(
-                    "0x0fea",
-                    "0x1fba7ba78b13f7b85e8f240aea9ea22df8d0eaf68bc33486e815718e5a635413",
-                    "0x7e1b339a04862531af1e966f2cddb2fe8dc6f48f508da435300045979d4ef44c"
-                ),
-                new SignatureData(
-                    "0x0fe9",
-                    "0xd52efcc22cd8bc3ae0dc0fa8b4a0c68ffda9295ed7a9ed612d4af6bcdfc04af5",
-                    "0x67749106fce239d6669ae86e9eb389f25e3c506e9934435150774ed2776e974c"
-                ),
-                new SignatureData(
-                    "0x0fea",
-                    "0xca90225e2de0caa34d9676690224028bd03cd99a76a0fa631466073a3f8f1944",
-                    "0x2678afba3c5071e5a7a7084bcec0a12913f779a30303f81d897c862622048ab8"
-                ),
+                    new SignatureData(
+                            "0x0fea",
+                            "0x1fba7ba78b13f7b85e8f240aea9ea22df8d0eaf68bc33486e815718e5a635413",
+                            "0x7e1b339a04862531af1e966f2cddb2fe8dc6f48f508da435300045979d4ef44c"
+                    ),
+                    new SignatureData(
+                            "0x0fe9",
+                            "0xd52efcc22cd8bc3ae0dc0fa8b4a0c68ffda9295ed7a9ed612d4af6bcdfc04af5",
+                            "0x67749106fce239d6669ae86e9eb389f25e3c506e9934435150774ed2776e974c"
+                    ),
+                    new SignatureData(
+                            "0x0fea",
+                            "0xca90225e2de0caa34d9676690224028bd03cd99a76a0fa631466073a3f8f1944",
+                            "0x2678afba3c5071e5a7a7084bcec0a12913f779a30303f81d897c862622048ab8"
+                    ),
             };
 
             String combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedString));
@@ -1211,21 +1209,21 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String rlpEncodedStringsWithFeePayerSignatures = "0x4af901c3018505d21dba00830249f094acfda1ac94468f2bda3e30a272215d0a5b5be413b8aff8ad80b8aaf8a8a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000000040580061ec4c30180809475d141c9dbefde51f488c8d79da55f48282a1e52f8d5f845820feaa0945863c17f8213765cb3196b6988840488e326055d0c654d34c71bd798ae5ec3a0784a6ecf82352503d12bd2c609016b7e7f8af1ed04d0cdceb02cd0f0830d8881f845820feaa092b2e701dea51bd0958d40d67b1a794822153a7624f35609d8f6320467067226a0161b871c857cf7ddb259e3dc76b4bad176a52b488bb9cea7198b778f3d0cb770f845820feaa0d67112e14b4fb00d5b0304638d665e0052e57e0d4bfa4fc00040b9e991bbd36da049eb2a9e8d2575e707631d2c3dc708152c5cbf59a52846871adbe7f8ae1add13";
 
             SignatureData[] expectedFeePayerSignatures = new SignatureData[]{
-                new SignatureData(
-                    "0x0fea",
-                    "0x945863c17f8213765cb3196b6988840488e326055d0c654d34c71bd798ae5ec3",
-                    "0x784a6ecf82352503d12bd2c609016b7e7f8af1ed04d0cdceb02cd0f0830d8881"
-                ),
-                new SignatureData(
-                    "0x0fea",
-                    "0x92b2e701dea51bd0958d40d67b1a794822153a7624f35609d8f6320467067226",
-                    "0x161b871c857cf7ddb259e3dc76b4bad176a52b488bb9cea7198b778f3d0cb770"
-                ),
-                new SignatureData(
-                    "0x0fea",
-                    "0xd67112e14b4fb00d5b0304638d665e0052e57e0d4bfa4fc00040b9e991bbd36d",
-                    "0x49eb2a9e8d2575e707631d2c3dc708152c5cbf59a52846871adbe7f8ae1add13"
-                ),
+                    new SignatureData(
+                            "0x0fea",
+                            "0x945863c17f8213765cb3196b6988840488e326055d0c654d34c71bd798ae5ec3",
+                            "0x784a6ecf82352503d12bd2c609016b7e7f8af1ed04d0cdceb02cd0f0830d8881"
+                    ),
+                    new SignatureData(
+                            "0x0fea",
+                            "0x92b2e701dea51bd0958d40d67b1a794822153a7624f35609d8f6320467067226",
+                            "0x161b871c857cf7ddb259e3dc76b4bad176a52b488bb9cea7198b778f3d0cb770"
+                    ),
+                    new SignatureData(
+                            "0x0fea",
+                            "0xd67112e14b4fb00d5b0304638d665e0052e57e0d4bfa4fc00040b9e991bbd36d",
+                            "0x49eb2a9e8d2575e707631d2c3dc708152c5cbf59a52846871adbe7f8ae1add13"
+                    ),
             };
 
             combined = mTxObj.combineSignedRawTransactions(Arrays.asList(rlpEncodedStringsWithFeePayerSignatures));
@@ -1247,14 +1245,14 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String gas = "0x1000";
 
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setFrom(from)
-                    .setInput(input)
-                    .setFeeRatio(feeRatio)
-                    .setChainId(chainID)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setFrom(from)
+                            .setInput(input)
+                            .setFeeRatio(feeRatio)
+                            .setChainId(chainID)
             );
 
             String rlpEncoded = "0x4af90121018505d21dba00830249f094acfda1ac94468f2bda3e30a272215d0a5b5be413b8aff8ad80b8aaf8a8a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000000040580061ef847f845820feaa01fba7ba78b13f7b85e8f240aea9ea22df8d0eaf68bc33486e815718e5a635413a07e1b339a04862531af1e966f2cddb2fe8dc6f48f508da435300045979d4ef44c80c4c3018080";
@@ -1269,17 +1267,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Test
         public void getRawTransaction() {
             FeeDelegatedChainDataAnchoringWithRatio txObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .setInput(input)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+                            .setInput(input)
             );
 
             assertEquals(expectedRLPEncoding, txObj.getRawTransaction());
@@ -1295,17 +1293,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Test
         public void getTransactionHash() {
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .setInput(input)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+                            .setInput(input)
             );
 
             assertEquals(expectedTransactionHash, mTxObj.getTransactionHash());
@@ -1319,17 +1317,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String nonce = null;
 
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .setInput(input)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+                            .setInput(input)
             );
 
             String txHash = mTxObj.getTransactionHash();
@@ -1343,17 +1341,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String gasPrice = null;
 
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .setInput(input)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+                            .setInput(input)
             );
 
             String txHash = mTxObj.getTransactionHash();
@@ -1369,17 +1367,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Test
         public void getSenderTransactionHash() {
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .setInput(input)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+                            .setInput(input)
             );
 
             assertEquals(expectedSenderTransactionHash, mTxObj.getSenderTxHash());
@@ -1393,17 +1391,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String nonce = null;
 
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .setInput(input)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+                            .setInput(input)
             );
 
             mTxObj.getSenderTxHash();
@@ -1417,17 +1415,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String gasPrice = null;
 
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .setInput(input)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+                            .setInput(input)
             );
 
             mTxObj.getSenderTxHash();
@@ -1443,17 +1441,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
         @Test
         public void getRLPEncodingForFeePayerSignature() {
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .setInput(input)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+                            .setInput(input)
             );
 
             assertEquals(expectedRLPEncodingForFeePayerSigning, mTxObj.getRLPEncodingForFeePayerSignature());
@@ -1467,17 +1465,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String nonce = null;
 
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .setInput(input)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+                            .setInput(input)
             );
 
             mTxObj.getRLPEncodingForFeePayerSignature();
@@ -1491,17 +1489,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String gasPrice = null;
 
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .setInput(input)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+                            .setInput(input)
             );
 
             mTxObj.getRLPEncodingForFeePayerSignature();
@@ -1515,17 +1513,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioTest {
             String chainID = null;
 
             mTxObj = caver.transaction.feeDelegatedChainDataAnchoringWithRatio.create(
-                TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom(from)
-                    .setFeePayer(feePayer)
-                    .setFeeRatio(feeRatio)
-                    .setSignatures(senderSignatureData)
-                    .setFeePayerSignatures(feePayerSignatureData)
-                    .setInput(input)
+                    TxPropertyBuilder.feeDelegatedChainDataAnchoringWithRatio()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom(from)
+                            .setFeePayer(feePayer)
+                            .setFeeRatio(feeRatio)
+                            .setSignatures(senderSignatureData)
+                            .setFeePayerSignatures(feePayerSignatureData)
+                            .setInput(input)
             );
 
             mTxObj.getRLPEncodingForFeePayerSignature();

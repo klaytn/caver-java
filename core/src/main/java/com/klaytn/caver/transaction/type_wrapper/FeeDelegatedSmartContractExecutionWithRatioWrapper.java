@@ -32,7 +32,6 @@ public class FeeDelegatedSmartContractExecutionWithRatioWrapper {
 
     /**
      * Create a FeeDelegatedSmartContractExecutionWithRatioWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedSmartContractExecutionWithRatioWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class FeeDelegatedSmartContractExecutionWithRatioWrapper {
 
     /**
      * Creates a FeeDelegatedSmartContractExecutionWithRatio instance derived from a RLP-encoded FeeDelegatedSmartContractExecutionWithRatio string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractExecutionWithRatio string
      * @return FeeDelegatedSmartContractExecutionWithRatio
      */
@@ -53,7 +51,6 @@ public class FeeDelegatedSmartContractExecutionWithRatioWrapper {
 
     /**
      * Creates a FeeDelegatedSmartContractExecutionWithRatio instance derived from a RLP-encoded FeeDelegatedSmartContractExecutionWithRatio byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractExecutionWithRatio byte array.
      * @return FeeDelegatedSmartContractExecutionWithRatio
      */
@@ -83,13 +80,12 @@ public class FeeDelegatedSmartContractExecutionWithRatioWrapper {
 
     /**
      * Creates a FeeDelegatedSmartContractExecutionWithRatio instance using FeeDelegatedSmartContractExecutionWithRatio.Builder
-     *
      * @param builder FeeDelegatedSmartContractExecutionWithRatio.Builder
      * @return FeeDelegatedSmartContractExecutionWithRatio
      */
     public FeeDelegatedSmartContractExecutionWithRatio create(FeeDelegatedSmartContractExecutionWithRatio.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 }

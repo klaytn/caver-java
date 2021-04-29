@@ -32,7 +32,6 @@ public class ValueTransferMemoWrapper {
 
     /**
      * Create a ValueTransferMemoWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public ValueTransferMemoWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class ValueTransferMemoWrapper {
 
     /**
      * Creates a ValueTransferMemo instance derived from a RLP-encoded ValueTransferMemo string.
-     *
      * @param rlpEncoded RLP-encoded ValueTransferMemo string
      * @return ValueTransferMemo
      */
@@ -53,7 +51,6 @@ public class ValueTransferMemoWrapper {
 
     /**
      * Creates a ValueTransferMemo instance derived from a RLP-encoded ValueTransferMemo byte array.
-     *
      * @param rlpEncoded RLP-encoded ValueTransferMemo byte array.
      * @return ValueTransferMemo
      */
@@ -65,19 +62,17 @@ public class ValueTransferMemoWrapper {
 
     /**
      * Creates a ValueTransferMemo instance using ValueTransferMemo.Builder
-     *
      * @param builder ValueTransferMemo.Builder
      * @return ValueTransferMemo
      */
     public ValueTransferMemo create(ValueTransferMemo.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**
      * Decodes a RLP-encoded ValueTransferMemo string.
-     *
      * @param rlpEncoded RLP-encoded ValueTransferMemo string
      * @return ValueTransferMemo
      */
@@ -87,7 +82,6 @@ public class ValueTransferMemoWrapper {
 
     /**
      * Decodes a RLP-encoded ValueTransferMemo byte array.
-     *
      * @param rlpEncoded RLP-encoded ValueTransferMemo byte array.
      * @return ValueTransferMemo
      */

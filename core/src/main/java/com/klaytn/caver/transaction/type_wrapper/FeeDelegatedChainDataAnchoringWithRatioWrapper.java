@@ -32,7 +32,6 @@ public class FeeDelegatedChainDataAnchoringWithRatioWrapper {
 
     /**
      * Create a FeeDelegatedChainDataAnchoringWithRatioWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedChainDataAnchoringWithRatioWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class FeeDelegatedChainDataAnchoringWithRatioWrapper {
 
     /**
      * Creates a FeeDelegatedChainDataAnchoringWithRatio instance derived from a RLP-encoded FeeDelegatedChainDataAnchoringWithRatio string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedChainDataAnchoringWithRatio string
      * @return FeeDelegatedChainDataAnchoringWithRatio
      */
@@ -53,7 +51,6 @@ public class FeeDelegatedChainDataAnchoringWithRatioWrapper {
 
     /**
      * Creates a FeeDelegatedChainDataAnchoringWithRatio instance derived from a RLP-encoded FeeDelegatedChainDataAnchoringWithRatio byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedChainDataAnchoringWithRatio byte array.
      * @return FeeDelegatedChainDataAnchoringWithRatio
      */
@@ -65,19 +62,17 @@ public class FeeDelegatedChainDataAnchoringWithRatioWrapper {
 
     /**
      * Creates a FeeDelegatedChainDataAnchoringWithRatio instance using FeeDelegatedChainDataAnchoringWithRatio.Builder
-     *
      * @param builder FeeDelegatedChainDataAnchoringWithRatio.Builder
      * @return FeeDelegatedChainDataAnchoringWithRatio
      */
     public FeeDelegatedChainDataAnchoringWithRatio create(FeeDelegatedChainDataAnchoringWithRatio.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**
      * Decodes a RLP-encoded FeeDelegatedChainDataAnchoringWithRatio string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedChainDataAnchoringWithRatio string.
      * @return FeeDelegatedChainDataAnchoringWithRatio
      */
@@ -87,7 +82,6 @@ public class FeeDelegatedChainDataAnchoringWithRatioWrapper {
 
     /**
      * Decodes a RLP-encoded FeeDelegatedChainDataAnchoringWithRatio byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedChainDataAnchoringWithRatio byte array.
      * @return FeeDelegatedChainDataAnchoringWithRatio
      */

@@ -32,7 +32,6 @@ public class ValueTransferWrapper {
 
     /**
      * Create a ValueTransferWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public ValueTransferWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class ValueTransferWrapper {
 
     /**
      * Creates a ValueTransfer instance derived from a RLP-encoded ValueTransfer string.
-     *
      * @param rlpEncoded RLP-encoded ValueTransfer string
      * @return ValueTransfer
      */
@@ -53,7 +51,6 @@ public class ValueTransferWrapper {
 
     /**
      * Creates a ValueTransfer instance derived from a RLP-encoded ValueTransfer byte array.
-     *
      * @param rlpEncoded RLP-encoded ValueTransfer byte array.
      * @return ValueTransfer
      */
@@ -65,19 +62,17 @@ public class ValueTransferWrapper {
 
     /**
      * Creates a ValueTransfer instance using ValueTransfer.Builder
-     *
      * @param builder ValueTransfer.Builder
      * @return ValueTransfer
      */
     public ValueTransfer create(ValueTransfer.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**
      * Decodes a RLP-encoded ValueTransfer string.
-     *
      * @param rlpEncoded RLP-encoded ValueTransfer string
      * @return ValueTransfer
      */
@@ -87,7 +82,6 @@ public class ValueTransferWrapper {
 
     /**
      * Decodes a RLP-encoded ValueTransfer byte array.
-     *
      * @param rlpEncoded RLP-encoded ValueTransfer byte array.
      * @return ValueTransfer
      */

@@ -32,7 +32,6 @@ public class SmartContractDeployWrapper {
 
     /**
      * Create a SmartContractDeployWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public SmartContractDeployWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class SmartContractDeployWrapper {
 
     /**
      * Creates a SmartContractDeploy instance derived from a RLP-encoded SmartContractDeploy string.
-     *
      * @param rlpEncoded RLP-encoded SmartContractDeploy string
      * @return SmartContractDeploy
      */
@@ -53,7 +51,6 @@ public class SmartContractDeployWrapper {
 
     /**
      * Creates a SmartContractDeploy instance derived from a RLP-encoded SmartContractDeploy byte array.
-     *
      * @param rlpEncoded RLP-encoded SmartContractDeploy byte array.
      * @return SmartContractDeploy
      */
@@ -65,19 +62,17 @@ public class SmartContractDeployWrapper {
 
     /**
      * Creates a SmartContractDeploy instance using SmartContractDeploy.Builder
-     *
      * @param builder SmartContractDeploy.Builder
      * @return SmartContractDeploy
      */
     public SmartContractDeploy create(SmartContractDeploy.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**
      * Decodes a RLP-encoded SmartContractDeploy string.
-     *
      * @param rlpEncoded RLP-encoded SmartContractDeploy string
      * @return SmartContractDeploy
      */
@@ -87,7 +82,6 @@ public class SmartContractDeployWrapper {
 
     /**
      * Decodes a RLP-encoded SmartContractDeploy byte array.
-     *
      * @param rlpEncoded RLP-encoded SmartContractDeploy byte array.
      * @return SmartContractDeploy
      */

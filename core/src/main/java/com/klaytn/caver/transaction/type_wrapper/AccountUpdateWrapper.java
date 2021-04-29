@@ -32,7 +32,6 @@ public class AccountUpdateWrapper {
 
     /**
      * Create a AccountUpdateWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public AccountUpdateWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class AccountUpdateWrapper {
 
     /**
      * Creates a AccountUpdate instance derived from a RLP-encoded AccountUpdate string.
-     *
      * @param rlpEncoded RLP-encoded AccountUpdate string
      * @return AccountUpdate
      */
@@ -53,7 +51,6 @@ public class AccountUpdateWrapper {
 
     /**
      * Creates a AccountUpdate instance derived from a RLP-encoded AccountUpdate byte array.
-     *
      * @param rlpEncoded RLP-encoded AccountUpdate byte array.
      * @return AccountUpdate
      */
@@ -65,19 +62,17 @@ public class AccountUpdateWrapper {
 
     /**
      * Creates a AccountUpdate instance using AccountUpdate.Builder
-     *
      * @param builder AccountUpdate.Builder
      * @return AccountUpdate
      */
     public AccountUpdate create(AccountUpdate.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**
      * Decodes a RLP-encoded AccountUpdate string.
-     *
      * @param rlpEncoded RLP-encoded AccountUpdate string.
      * @return AccountUpdate
      */
@@ -87,7 +82,6 @@ public class AccountUpdateWrapper {
 
     /**
      * Decodes a RLP-encoded AccountUpdate byte array.
-     *
      * @param rlpEncoded RLP-encoded AccountUpdate byte array.
      * @return AccountUpdate
      */

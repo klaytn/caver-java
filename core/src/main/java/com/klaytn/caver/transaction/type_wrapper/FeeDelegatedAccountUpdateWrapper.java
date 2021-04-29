@@ -32,7 +32,6 @@ public class FeeDelegatedAccountUpdateWrapper {
 
     /**
      * Create a FeeDelegatedAccountUpdateWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedAccountUpdateWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class FeeDelegatedAccountUpdateWrapper {
 
     /**
      * Creates a FeeDelegatedAccountUpdate instance derived from a RLP-encoded FeeDelegatedAccountUpdate string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedAccountUpdate string
      * @return FeeDelegatedAccountUpdate
      */
@@ -53,7 +51,6 @@ public class FeeDelegatedAccountUpdateWrapper {
 
     /**
      * Creates a FeeDelegatedAccountUpdate instance derived from a RLP-encoded FeeDelegatedAccountUpdate byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedAccountUpdate byte array.
      * @return FeeDelegatedAccountUpdate
      */
@@ -65,14 +62,13 @@ public class FeeDelegatedAccountUpdateWrapper {
 
     /**
      * Creates a FeeDelegatedAccountUpdate instance using FeeDelegatedAccountUpdate.Builder
-     *
      * @param builder FeeDelegatedAccountUpdate.Builder
      * @return FeeDelegatedAccountUpdate
      */
     public FeeDelegatedAccountUpdate create(FeeDelegatedAccountUpdate.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**

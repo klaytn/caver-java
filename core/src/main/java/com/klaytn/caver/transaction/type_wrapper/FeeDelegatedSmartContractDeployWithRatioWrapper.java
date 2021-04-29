@@ -32,7 +32,6 @@ public class FeeDelegatedSmartContractDeployWithRatioWrapper {
 
     /**
      * Create a FeeDelegatedSmartContractDeployWithRatioWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedSmartContractDeployWithRatioWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class FeeDelegatedSmartContractDeployWithRatioWrapper {
 
     /**
      * Creates a FeeDelegatedSmartContractDeployWithRatio instance derived from a RLP-encoded FeeDelegatedSmartContractDeployWithRatio string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractDeployWithRatio string
      * @return FeeDelegatedSmartContractDeployWithRatio
      */
@@ -53,7 +51,6 @@ public class FeeDelegatedSmartContractDeployWithRatioWrapper {
 
     /**
      * Creates a FeeDelegatedSmartContractDeployWithRatio instance derived from a RLP-encoded FeeDelegatedSmartContractDeployWithRatio byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractDeployWithRatio byte array.
      * @return FeeDelegatedSmartContractDeployWithRatio
      */
@@ -65,19 +62,17 @@ public class FeeDelegatedSmartContractDeployWithRatioWrapper {
 
     /**
      * Creates a FeeDelegatedSmartContractDeployWithRatio instance using FeeDelegatedSmartContractDeployWithRatio.Builder
-     *
      * @param builder FeeDelegatedSmartContractDeployWithRatio.Builder
      * @return FeeDelegatedSmartContractDeployWithRatio
      */
     public FeeDelegatedSmartContractDeployWithRatio create(FeeDelegatedSmartContractDeployWithRatio.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**
      * Decodes a RLP-encoded FeeDelegatedSmartContractDeployWithRatio string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractDeployWithRatio string.
      * @return FeeDelegatedSmartContractDeployWithRatio
      */
@@ -87,7 +82,6 @@ public class FeeDelegatedSmartContractDeployWithRatioWrapper {
 
     /**
      * Decodes a RLP-encoded FeeDelegatedSmartContractDeployWithRatio byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractDeployWithRatio byte array.
      * @return FeeDelegatedSmartContractDeployWithRatio
      */

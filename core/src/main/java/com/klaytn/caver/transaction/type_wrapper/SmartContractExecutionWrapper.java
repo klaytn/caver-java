@@ -32,7 +32,6 @@ public class SmartContractExecutionWrapper {
 
     /**
      * Create a SmartContractExecutionWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public SmartContractExecutionWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class SmartContractExecutionWrapper {
 
     /**
      * Creates a SmartContractExecution instance derived from a RLP-encoded SmartContractExecution string.
-     *
      * @param rlpEncoded RLP-encoded SmartContractExecution string
      * @return SmartContractExecution
      */
@@ -53,7 +51,6 @@ public class SmartContractExecutionWrapper {
 
     /**
      * Creates a SmartContractExecution instance derived from a RLP-encoded SmartContractExecution byte array.
-     *
      * @param rlpEncoded RLP-encoded SmartContractExecution byte array.
      * @return SmartContractExecution
      */
@@ -65,14 +62,13 @@ public class SmartContractExecutionWrapper {
 
     /**
      * Creates a SmartContractExecution instance using SmartContractExecution.Builder
-     *
      * @param builder SmartContractExecution.Builder
      * @return SmartContractExecution
      */
     public SmartContractExecution create(SmartContractExecution.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**

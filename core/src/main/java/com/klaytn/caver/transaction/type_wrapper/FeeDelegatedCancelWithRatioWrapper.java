@@ -32,7 +32,6 @@ public class FeeDelegatedCancelWithRatioWrapper {
 
     /**
      * Create a FeeDelegatedCancelWithRatioWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedCancelWithRatioWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class FeeDelegatedCancelWithRatioWrapper {
 
     /**
      * Creates a FeeDelegatedCancelWithRatio instance derived from a RLP-encoded FeeDelegatedCancelWithRatio string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedCancelWithRatio string
      * @return FeeDelegatedCancelWithRatio
      */
@@ -53,7 +51,6 @@ public class FeeDelegatedCancelWithRatioWrapper {
 
     /**
      * Creates a FeeDelegatedCancelWithRatio instance derived from a RLP-encoded FeeDelegatedCancelWithRatio byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedCancelWithRatio byte array.
      * @return FeeDelegatedCancelWithRatio
      */
@@ -65,19 +62,17 @@ public class FeeDelegatedCancelWithRatioWrapper {
 
     /**
      * Creates a FeeDelegatedCancelWithRatio instance using FeeDelegatedCancelWithRatio.Builder
-     *
      * @param builder FeeDelegatedCancelWithRatio.Builder
      * @return FeeDelegatedCancelWithRatio
      */
     public FeeDelegatedCancelWithRatio create(FeeDelegatedCancelWithRatio.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**
      * Decodes a RLP-encoded FeeDelegatedCancelWithRatio string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedCancelWithRatio string.
      * @return FeeDelegatedCancelWithRatio
      */
@@ -87,7 +82,6 @@ public class FeeDelegatedCancelWithRatioWrapper {
 
     /**
      * Decodes a RLP-encoded FeeDelegatedCancelWithRatio byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedCancelWithRatio byte array.
      * @return FeeDelegatedCancelWithRatio
      */

@@ -32,7 +32,6 @@ public class FeeDelegatedValueTransferWrapper {
 
     /**
      * Create a FeeDelegatedValueTransferWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedValueTransferWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class FeeDelegatedValueTransferWrapper {
 
     /**
      * Creates a FeeDelegatedValueTransfer instance derived from a RLP-encoded FeeDelegatedValueTransfer string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedValueTransfer string
      * @return FeeDelegatedValueTransfer
      */
@@ -53,7 +51,6 @@ public class FeeDelegatedValueTransferWrapper {
 
     /**
      * Creates a FeeDelegatedValueTransfer instance derived from a RLP-encoded FeeDelegatedValueTransfer byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedValueTransfer byte array.
      * @return FeeDelegatedValueTransfer
      */
@@ -65,19 +62,17 @@ public class FeeDelegatedValueTransferWrapper {
 
     /**
      * Creates a FeeDelegatedValueTransfer instance using FeeDelegatedValueTransfer.Builder
-     *
      * @param builder FeeDelegatedValueTransfer.Builder
      * @return FeeDelegatedValueTransfer
      */
     public FeeDelegatedValueTransfer create(FeeDelegatedValueTransfer.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**
      * Decodes a RLP-encoded FeeDelegatedValueTransfer string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedValueTransfer string
      * @return FeeDelegatedValueTransfer
      */
@@ -87,7 +82,6 @@ public class FeeDelegatedValueTransferWrapper {
 
     /**
      * Decodes a RLP-encoded FeeDelegatedValueTransfer byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedValueTransfer byte array.
      * @return FeeDelegatedValueTransfer
      */

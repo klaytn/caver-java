@@ -32,7 +32,6 @@ public class FeeDelegatedAccountUpdateWithRatioWrapper {
 
     /**
      * Create a FeeDelegatedAccountUpdateWithRatioWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedAccountUpdateWithRatioWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class FeeDelegatedAccountUpdateWithRatioWrapper {
 
     /**
      * Creates a FeeDelegatedAccountUpdateWithRatio instance derived from a RLP-encoded FeeDelegatedAccountUpdateWithRatio string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedAccountUpdateWithRatio string
      * @return FeeDelegatedAccountUpdateWithRatio
      */
@@ -53,7 +51,6 @@ public class FeeDelegatedAccountUpdateWithRatioWrapper {
 
     /**
      * Creates a FeeDelegatedAccountUpdateWithRatio instance derived from a RLP-encoded FeeDelegatedAccountUpdateWithRatio byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedAccountUpdateWithRatio byte array.
      * @return FeeDelegatedAccountUpdateWithRatio
      */
@@ -65,19 +62,17 @@ public class FeeDelegatedAccountUpdateWithRatioWrapper {
 
     /**
      * Creates a FeeDelegatedAccountUpdateWithRatio instance using FeeDelegatedAccountUpdateWithRatio.Builder
-     *
      * @param builder FeeDelegatedAccountUpdateWithRatio.Builder
      * @return FeeDelegatedAccountUpdateWithRatio
      */
     public FeeDelegatedAccountUpdateWithRatio create(FeeDelegatedAccountUpdateWithRatio.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**
      * Decodes a RLP-encoded FeeDelegatedAccountUpdateWithRatio string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedAccountUpdateWithRatio string.
      * @return FeeDelegatedAccountUpdateWithRatio
      */
@@ -87,7 +82,6 @@ public class FeeDelegatedAccountUpdateWithRatioWrapper {
 
     /**
      * Decodes a RLP-encoded FeeDelegatedAccountUpdateWithRatio byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedAccountUpdateWithRatio byte array.
      * @return FeeDelegatedAccountUpdateWithRatio
      */

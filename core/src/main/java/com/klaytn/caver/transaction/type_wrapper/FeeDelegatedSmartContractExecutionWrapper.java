@@ -32,7 +32,6 @@ public class FeeDelegatedSmartContractExecutionWrapper {
 
     /**
      * Create a FeeDelegatedSmartContractExecutionWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedSmartContractExecutionWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class FeeDelegatedSmartContractExecutionWrapper {
 
     /**
      * Creates a FeeDelegatedSmartContractExecution instance derived from a RLP-encoded FeeDelegatedSmartContractExecution string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractExecution string
      * @return FeeDelegatedSmartContractExecution
      */
@@ -53,7 +51,6 @@ public class FeeDelegatedSmartContractExecutionWrapper {
 
     /**
      * Creates a FeeDelegatedSmartContractExecution instance derived from a RLP-encoded FeeDelegatedSmartContractExecution byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractExecution byte array.
      * @return FeeDelegatedSmartContractExecution
      */
@@ -65,19 +62,17 @@ public class FeeDelegatedSmartContractExecutionWrapper {
 
     /**
      * Creates a FeeDelegatedSmartContractExecution instance using FeeDelegatedSmartContractExecution.Builder
-     *
      * @param builder FeeDelegatedSmartContractExecution.Builder
      * @return FeeDelegatedSmartContractExecution
      */
     public FeeDelegatedSmartContractExecution create(FeeDelegatedSmartContractExecution.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**
      * Decodes a RLP-encoded FeeDelegatedSmartContractExecution string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractExecution string.
      * @return FeeDelegatedSmartContractExecution
      */
@@ -87,7 +82,6 @@ public class FeeDelegatedSmartContractExecutionWrapper {
 
     /**
      * Decodes a RLP-encoded FeeDelegatedSmartContractExecution byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractExecution byte array.
      * @return FeeDelegatedSmartContractExecution
      */

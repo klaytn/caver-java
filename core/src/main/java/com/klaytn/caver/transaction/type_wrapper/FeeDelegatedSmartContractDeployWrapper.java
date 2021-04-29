@@ -32,7 +32,6 @@ public class FeeDelegatedSmartContractDeployWrapper {
 
     /**
      * Create a FeeDelegatedSmartContractDeployWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedSmartContractDeployWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class FeeDelegatedSmartContractDeployWrapper {
 
     /**
      * Creates a FeeDelegatedSmartContractDeploy instance derived from a RLP-encoded FeeDelegatedSmartContractDeploy string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractDeploy string
      * @return FeeDelegatedSmartContractDeploy
      */
@@ -53,7 +51,6 @@ public class FeeDelegatedSmartContractDeployWrapper {
 
     /**
      * Creates a FeeDelegatedSmartContractDeploy instance derived from a RLP-encoded FeeDelegatedSmartContractDeploy byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractDeploy byte array.
      * @return FeeDelegatedSmartContractDeploy
      */
@@ -65,19 +62,17 @@ public class FeeDelegatedSmartContractDeployWrapper {
 
     /**
      * Creates a FeeDelegatedSmartContractDeploy instance using FeeDelegatedSmartContractDeploy.Builder
-     *
      * @param builder FeeDelegatedSmartContractDeploy.Builder
      * @return FeeDelegatedSmartContractDeploy
      */
     public FeeDelegatedSmartContractDeploy create(FeeDelegatedSmartContractDeploy.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**
      * Decodes a RLP-encoded FeeDelegatedSmartContractDeploy string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractDeploy string.
      * @return FeeDelegatedSmartContractDeploy
      */
@@ -87,7 +82,6 @@ public class FeeDelegatedSmartContractDeployWrapper {
 
     /**
      * Decodes a RLP-encoded FeeDelegatedSmartContractDeploy byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractDeploy byte array.
      * @return FeeDelegatedSmartContractDeploy
      */

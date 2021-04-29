@@ -32,7 +32,6 @@ public class FeeDelegatedChainDataAnchoringWrapper {
 
     /**
      * Create a FeeDelegatedChainDataAnchoringWrapper instance.
-     *
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedChainDataAnchoringWrapper(Klay klaytnCall) {
@@ -41,7 +40,6 @@ public class FeeDelegatedChainDataAnchoringWrapper {
 
     /**
      * Creates a FeeDelegatedChainDataAnchoring instance derived from a RLP-encoded FeeDelegatedChainDataAnchoring string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedChainDataAnchoring string
      * @return FeeDelegatedChainDataAnchoring
      */
@@ -53,7 +51,6 @@ public class FeeDelegatedChainDataAnchoringWrapper {
 
     /**
      * Creates a FeeDelegatedChainDataAnchoring instance derived from a RLP-encoded FeeDelegatedChainDataAnchoring byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedChainDataAnchoring byte array.
      * @return FeeDelegatedChainDataAnchoring
      */
@@ -65,19 +62,17 @@ public class FeeDelegatedChainDataAnchoringWrapper {
 
     /**
      * Creates a FeeDelegatedChainDataAnchoring instance using FeeDelegatedChainDataAnchoring.Builder
-     *
      * @param builder FeeDelegatedChainDataAnchoring.Builder
      * @return FeeDelegatedChainDataAnchoring
      */
     public FeeDelegatedChainDataAnchoring create(FeeDelegatedChainDataAnchoring.Builder builder) {
         return builder
-            .setKlaytnCall(this.klaytnCall)
-            .build();
+                .setKlaytnCall(this.klaytnCall)
+                .build();
     }
 
     /**
      * Decodes a RLP-encoded FeeDelegatedChainDataAnchoring string.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedChainDataAnchoring string.
      * @return FeeDelegatedChainDataAnchoring
      */
@@ -87,7 +82,6 @@ public class FeeDelegatedChainDataAnchoringWrapper {
 
     /**
      * Decodes a RLP-encoded FeeDelegatedChainDataAnchoring byte array.
-     *
      * @param rlpEncoded RLP-encoded FeeDelegatedChainDataAnchoring byte array.
      * @return FeeDelegatedChainDataAnchoring
      */

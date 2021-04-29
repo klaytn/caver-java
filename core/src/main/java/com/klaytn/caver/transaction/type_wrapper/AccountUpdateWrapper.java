@@ -31,7 +31,7 @@ public class AccountUpdateWrapper {
     private Klay klaytnCall;
 
     /**
-     * Create an AccountUpdateWrapper instance.
+     * Creates an AccountUpdateWrapper instance.
      * @param klaytnCall Klay RPC instance
      */
     public AccountUpdateWrapper(Klay klaytnCall) {

@@ -31,7 +31,7 @@ public class FeeDelegatedValueTransferWrapper {
     private Klay klaytnCall;
 
     /**
-     * Create a FeeDelegatedValueTransferWrapper instance.
+     * Creates a FeeDelegatedValueTransferWrapper instance.
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedValueTransferWrapper(Klay klaytnCall) {

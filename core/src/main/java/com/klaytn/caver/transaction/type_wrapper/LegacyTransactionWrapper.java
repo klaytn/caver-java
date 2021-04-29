@@ -31,7 +31,7 @@ public class LegacyTransactionWrapper {
     private Klay klaytnCall;
 
     /**
-     * Create a LegacyTransactionWrapper instance.
+     * Creates a LegacyTransactionWrapper instance.
      * @param klaytnCall Klay RPC instance
      */
     public LegacyTransactionWrapper(Klay klaytnCall) {

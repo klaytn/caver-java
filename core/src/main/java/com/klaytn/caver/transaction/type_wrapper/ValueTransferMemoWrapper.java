@@ -31,7 +31,7 @@ public class ValueTransferMemoWrapper {
     private Klay klaytnCall;
 
     /**
-     * Create a ValueTransferMemoWrapper instance.
+     * Creates a ValueTransferMemoWrapper instance.
      * @param klaytnCall Klay RPC instance
      */
     public ValueTransferMemoWrapper(Klay klaytnCall) {

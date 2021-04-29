@@ -31,7 +31,7 @@ public class ChainDataAnchoringWrapper {
     private Klay klaytnCall;
 
     /**
-     * Create a ChainDataAnchoringWrapper instance.
+     * Creates a ChainDataAnchoringWrapper instance.
      * @param klaytnCall Klay RPC instance
      */
     public ChainDataAnchoringWrapper(Klay klaytnCall) {

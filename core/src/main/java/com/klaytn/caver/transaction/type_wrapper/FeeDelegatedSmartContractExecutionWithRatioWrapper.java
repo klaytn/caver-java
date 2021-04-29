@@ -31,7 +31,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioWrapper {
     private Klay klaytnCall;
 
     /**
-     * Create a FeeDelegatedSmartContractExecutionWithRatioWrapper instance.
+     * Creates a FeeDelegatedSmartContractExecutionWithRatioWrapper instance.
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedSmartContractExecutionWithRatioWrapper(Klay klaytnCall) {

@@ -31,7 +31,7 @@ public class FeeDelegatedChainDataAnchoringWithRatioWrapper {
     private Klay klaytnCall;
 
     /**
-     * Create a FeeDelegatedChainDataAnchoringWithRatioWrapper instance.
+     * Creates a FeeDelegatedChainDataAnchoringWithRatioWrapper instance.
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedChainDataAnchoringWithRatioWrapper(Klay klaytnCall) {

@@ -31,7 +31,7 @@ public class FeeDelegatedSmartContractDeployWrapper {
     private Klay klaytnCall;
 
     /**
-     * Create a FeeDelegatedSmartContractDeployWrapper instance.
+     * Creates a FeeDelegatedSmartContractDeployWrapper instance.
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedSmartContractDeployWrapper(Klay klaytnCall) {

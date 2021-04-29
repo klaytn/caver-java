@@ -31,7 +31,7 @@ public class SmartContractExecutionWrapper {
     private Klay klaytnCall;
 
     /**
-     * Create a SmartContractExecutionWrapper instance.
+     * Creates a SmartContractExecutionWrapper instance.
      * @param klaytnCall Klay RPC instance
      */
     public SmartContractExecutionWrapper(Klay klaytnCall) {

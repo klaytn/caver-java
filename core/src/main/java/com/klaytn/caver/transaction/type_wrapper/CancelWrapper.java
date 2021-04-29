@@ -31,7 +31,7 @@ public class CancelWrapper {
     private Klay klaytnCall;
 
     /**
-     * Create a CancelWrapper instance.
+     * Creates a CancelWrapper instance.
      * @param klaytnCall Klay RPC instance
      */
     public CancelWrapper(Klay klaytnCall) {

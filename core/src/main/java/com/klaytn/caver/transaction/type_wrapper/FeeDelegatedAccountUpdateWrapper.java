@@ -31,7 +31,7 @@ public class FeeDelegatedAccountUpdateWrapper {
     private Klay klaytnCall;
 
     /**
-     * Create a FeeDelegatedAccountUpdateWrapper instance.
+     * Creates a FeeDelegatedAccountUpdateWrapper instance.
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedAccountUpdateWrapper(Klay klaytnCall) {

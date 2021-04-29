@@ -31,7 +31,7 @@ public class ValueTransferWrapper {
     private Klay klaytnCall;
 
     /**
-     * Create a ValueTransferWrapper instance.
+     * Creates a ValueTransferWrapper instance.
      * @param klaytnCall Klay RPC instance
      */
     public ValueTransferWrapper(Klay klaytnCall) {

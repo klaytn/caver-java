@@ -31,7 +31,7 @@ public class FeeDelegatedValueTransferMemoWithRatioWrapper {
     private Klay klaytnCall;
 
     /**
-     * Create a FeeDelegatedValueTransferMemoWithRatioWrapper instance.
+     * Creates a FeeDelegatedValueTransferMemoWithRatioWrapper instance.
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedValueTransferMemoWithRatioWrapper(Klay klaytnCall) {

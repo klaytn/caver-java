@@ -31,7 +31,7 @@ public class FeeDelegatedCancelWrapper {
     private Klay klaytnCall;
 
     /**
-     * Create a FeeDelegatedCancelWrapper instance.
+     * Creates a FeeDelegatedCancelWrapper instance.
      * @param klaytnCall Klay RPC instance
      */
     public FeeDelegatedCancelWrapper(Klay klaytnCall) {

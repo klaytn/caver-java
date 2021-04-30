@@ -74,7 +74,8 @@ public class Caver {
     public AccountWrapper account;
 
     /**
-     * The ContractWrapper instance
+     * The ContractWrapper instance.<p>
+     * It sets a HttpProvider that using DEFAULT_URL("http://localhost:8551").
      */
     public ContractWrapper contract;
 

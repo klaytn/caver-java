@@ -16,6 +16,7 @@
 
 package com.klaytn.caver;
 
+import com.klaytn.caver.abi.ABIWrapper;
 import com.klaytn.caver.account.AccountWrapper;
 import com.klaytn.caver.contract.ContractWrapper;
 import com.klaytn.caver.ipfs.IPFS;
@@ -80,6 +81,11 @@ public class Caver {
     public ContractWrapper contract;
 
     /**
+     * The ABIWrapper instance
+     */
+    public ABIWrapper abi;
+
+    /**
      * Creates a Caver instance
      */
     public Caver() {
@@ -105,6 +111,7 @@ public class Caver {
         account = new AccountWrapper();
         transaction = new TransactionWrapper(rpc.getKlay());
         contract = new ContractWrapper(this);
+        abi = new ABIWrapper();
     }
 
     /**

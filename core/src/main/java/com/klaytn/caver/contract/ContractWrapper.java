@@ -31,6 +31,10 @@ public class ContractWrapper {
      */
     private Caver caver;
 
+    /**
+     * Creates a ContractWrapper instance
+     * @param caver A Caver instance
+     */
     public ContractWrapper(Caver caver) {
         this.caver = caver;
     }

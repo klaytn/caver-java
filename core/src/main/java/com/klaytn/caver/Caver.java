@@ -17,6 +17,7 @@
 package com.klaytn.caver;
 
 import com.klaytn.caver.account.AccountWrapper;
+import com.klaytn.caver.contract.ContractWrapper;
 import com.klaytn.caver.ipfs.IPFS;
 import com.klaytn.caver.rpc.RPC;
 import com.klaytn.caver.transaction.TransactionWrapper;
@@ -67,11 +68,20 @@ public class Caver {
      */
     public IPFS ipfs;
 
-    /*
+    /**
      * The AccountWrapper instance
      */
     public AccountWrapper account;
 
+    /**
+     * The ContractWrapper instance.<p>
+     * It sets a HttpProvider that using DEFAULT_URL("http://localhost:8551").
+     */
+    public ContractWrapper contract;
+
+    /**
+     * Creates a Caver instance
+     */
     public Caver() {
         this(new HttpService(DEFAULT_URL));
     }
@@ -94,6 +104,7 @@ public class Caver {
         wallet = new KeyringContainer();
         account = new AccountWrapper();
         transaction = new TransactionWrapper(rpc.getKlay());
+        contract = new ContractWrapper(this);
     }
 
     /**

@@ -1,12 +1,11 @@
 package com.klaytn.caver.common;
 
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.abi.ABI;
-import com.klaytn.caver.abi.TypeDecoder;
-import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.abi.EventValues;
+import com.klaytn.caver.abi.TypeDecoder;
 import com.klaytn.caver.abi.datatypes.*;
 import com.klaytn.caver.abi.datatypes.generated.*;
+import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.contract.ContractIOType;
 import org.junit.Test;
 
@@ -14,18 +13,20 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 public class ABITest {
-
+    static Caver caver = new Caver(Caver.DEFAULT_URL);
     public static class encodeFunctionSig {
         @Test
         public void encodeFunctionSignatureTest() {
-            assertEquals("0xcdcd77c0", ABI.encodeFunctionSignature("baz(uint32,bool)"));
-            assertEquals("0xfce353f6", ABI.encodeFunctionSignature("bar(bytes3[2])"));
-            assertEquals("0xa5643bf2", ABI.encodeFunctionSignature("sam(bytes,bool,uint256[])"));
+            assertEquals("0xcdcd77c0", caver.abi.encodeFunctionSignature("baz(uint32,bool)"));
+            assertEquals("0xfce353f6", caver.abi.encodeFunctionSignature("bar(bytes3[2])"));
+            assertEquals("0xa5643bf2", caver.abi.encodeFunctionSignature("sam(bytes,bool,uint256[])"));
         }
     }
 
@@ -34,11 +35,11 @@ public class ABITest {
         public void encodeEventSignature() {
             assertEquals(
                     ("0x50cb9fe53daa9737b786ab3646f04d0150dc50ef4e75f59509d83667ad5adb20"),
-                    ABI.encodeEventSignature("Deposit(address,hash256,uint256)"));
+                    caver.abi.encodeEventSignature("Deposit(address,hash256,uint256)"));
 
             assertEquals(
                     ("0x71e71a8458267085d5ab16980fd5f114d2d37f232479c245d523ce8d23ca40ed"),
-                    ABI.encodeEventSignature("Notify(uint256,uint256)"));
+                    caver.abi.encodeEventSignature("Notify(uint256,uint256)"));
 
         }
     }
@@ -53,7 +54,7 @@ public class ABITest {
             List<String> typeList = Arrays.asList("uint32", "bool");
             List<Object> params = Arrays.asList(69, true);
 
-            assertEquals(expected, ABI.encodeFunctionCall(functionSig, typeList, params));
+            assertEquals(expected, caver.abi.encodeFunctionCall(functionSig, typeList, params));
         }
 
         @Test
@@ -66,7 +67,7 @@ public class ABITest {
             params.add(new byte[][] {"abc".getBytes(), "def".getBytes()});
 
 
-            assertEquals(expected, ABI.encodeFunctionCall(functionSig, typeList, params));
+            assertEquals(expected, caver.abi.encodeFunctionCall(functionSig, typeList, params));
         }
 
         @Test
@@ -81,75 +82,75 @@ public class ABITest {
                     new BigInteger[] {BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)}
             );
 
-            assertEquals(expected, ABI.encodeFunctionCall(functionSig, typeList, params));
+            assertEquals(expected, caver.abi.encodeFunctionCall(functionSig, typeList, params));
         }
     }
 
     public static class encodeParameter {
 
         public void encodeParamTest(String params, Object object, String expected) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-            assertEquals(expected, ABI.encodeParameter(params, object));
+            assertEquals(expected, caver.abi.encodeParameter(params, object));
         }
 
         public void encodeParametersTest(List<String> params, List<Object> objects, String expected) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-            assertEquals(expected, ABI.encodeParameters(params, objects));
+            assertEquals(expected, caver.abi.encodeParameters(params, objects));
         }
 
         @Test
         public void encodeBoolType() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
             assertEquals("0000000000000000000000000000000000000000000000000000000000000000",
-                    ABI.encodeParameter("bool", false));
+                    caver.abi.encodeParameter("bool", false));
 
             assertEquals("0000000000000000000000000000000000000000000000000000000000000001",
-                    ABI.encodeParameter("bool", true));
+                    caver.abi.encodeParameter("bool", true));
         }
 
         @Test
         public void encodeUintType() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
             assertEquals("00000000000000000000000000000000000000000000000000000000000000ff",
-                    ABI.encodeParameter("uint", BigInteger.valueOf(255)));
+                    caver.abi.encodeParameter("uint", BigInteger.valueOf(255)));
 
             assertEquals(
                     "000000000000000000000000000000000000000000000000000000000000ffff",
-                    ABI.encodeParameter("uint", BigInteger.valueOf(65535)));
+                    caver.abi.encodeParameter("uint", BigInteger.valueOf(65535)));
 
             assertEquals(
                     "0000000000000000000000000000000000000000000000000000000000010000",
-                    ABI.encodeParameter("uint", BigInteger.valueOf(65536)));
+                    caver.abi.encodeParameter("uint", BigInteger.valueOf(65536)));
 
             assertEquals(
                     "0000000000000000000000000000000000000000000000ffffffffffffffffff",
-                    ABI.encodeParameter("uint", new BigInteger("4722366482869645213695")));
+                    caver.abi.encodeParameter("uint", new BigInteger("4722366482869645213695")));
 
             assertEquals(
                     "0000000000000000000000000000000000000000000000000000000000000000",
-                    ABI.encodeParameter("uint", BigInteger.ZERO));
+                    caver.abi.encodeParameter("uint", BigInteger.ZERO));
         }
 
         @Test
         public void encodeIntType() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
             assertEquals(
                     ("0000000000000000000000000000000000000000000000000000000000000000"),
-                    ABI.encodeParameter("int", BigInteger.ZERO));
+                    caver.abi.encodeParameter("int", BigInteger.ZERO));
 
             assertEquals(
                     ("000000000000000000000000000000000000000000000000000000000000007f"),
-                    ABI.encodeParameter("int", 127));
+                    caver.abi.encodeParameter("int", 127));
 
             assertEquals(
                     ("0000000000000000000000000000000000000000000000000000000000007fff"),
-                    ABI.encodeParameter("int", 32767));
+                    caver.abi.encodeParameter("int", 32767));
 
             assertEquals(
                     ("000000000000000000000000000000000000000000000000000000007fffffff"),
-                    ABI.encodeParameter("int", 2147483647));
+                    caver.abi.encodeParameter("int", 2147483647));
         }
 
         @Test
         public void encodeAddressType() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
             assertEquals(
                     ("000000000000000000000000be5422d15f39373eb0a97ff8c10fbd0e40e29338"),
-                    ABI.encodeParameter("address", "0xbe5422d15f39373eb0a97ff8c10fbd0e40e29338"));
+                    caver.abi.encodeParameter("address", "0xbe5422d15f39373eb0a97ff8c10fbd0e40e29338"));
         }
 
         @Test
@@ -158,25 +159,25 @@ public class ABITest {
                     ("0000000000000000000000000000000000000000000000000000000000000020"
                             + "000000000000000000000000000000000000000000000000000000000000000d"
                             + "48656c6c6f2c20776f726c642100000000000000000000000000000000000000"),
-                    ABI.encodeParameter("string", "Hello, world!"));
+                    caver.abi.encodeParameter("string", "Hello, world!"));
         }
 
         @Test
         public void encodeStaticBytesType() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
             assertEquals("0001020304050000000000000000000000000000000000000000000000000000",
-                    ABI.encodeParameter("bytes6", new byte[] {0, 1, 2, 3, 4, 5}));
+                    caver.abi.encodeParameter("bytes6", new byte[] {0, 1, 2, 3, 4, 5}));
 
             assertEquals(
                     ("0000000000000000000000000000000000000000000000000000000000000000"),
-                    ABI.encodeParameter("bytes1", new byte[] {0}));
+                    caver.abi.encodeParameter("bytes1", new byte[] {0}));
 
             assertEquals(
                     ("7f00000000000000000000000000000000000000000000000000000000000000"),
-                    ABI.encodeParameter("bytes1", new byte[] {127}));
+                    caver.abi.encodeParameter("bytes1", new byte[] {127}));
 
             assertEquals(
                     ("6461766500000000000000000000000000000000000000000000000000000000"),
-                    ABI.encodeParameter("bytes4", "dave".getBytes()));
+                    caver.abi.encodeParameter("bytes4", "dave".getBytes()));
         }
 
         @Test
@@ -186,19 +187,19 @@ public class ABITest {
                     ("0000000000000000000000000000000000000000000000000000000000000020"
                         + "0000000000000000000000000000000000000000000000000000000000000006"
                         + "0001020304050000000000000000000000000000000000000000000000000000"),
-                    ABI.encodeParameter("bytes", new byte[] {0,1,2,3,4,5}));
+                    caver.abi.encodeParameter("bytes", new byte[] {0,1,2,3,4,5}));
 
             assertEquals(
                     ("0000000000000000000000000000000000000000000000000000000000000020"
                         + "0000000000000000000000000000000000000000000000000000000000000001"
                         + "0000000000000000000000000000000000000000000000000000000000000000"),
-                    ABI.encodeParameter("bytes", new byte[] {0}));
+                    caver.abi.encodeParameter("bytes", new byte[] {0}));
 
             assertEquals(
                     ("0000000000000000000000000000000000000000000000000000000000000020"
                         + "0000000000000000000000000000000000000000000000000000000000000004"
                         + "6461766500000000000000000000000000000000000000000000000000000000"),
-                    ABI.encodeParameter("bytes", "dave".getBytes()));
+                    caver.abi.encodeParameter("bytes", "dave".getBytes()));
 
 
             byte[] loremIpsum =  ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod "
@@ -227,7 +228,7 @@ public class ABITest {
                             + "63616563617420637570696461746174206e6f6e2070726f6964656e742c2073"
                             + "756e7420696e2063756c706120717569206f666669636961206465736572756e"
                             + "74206d6f6c6c697420616e696d20696420657374206c61626f72756d2e000000"),
-                    ABI.encodeParameter("bytes", loremIpsum));
+                    caver.abi.encodeParameter("bytes", loremIpsum));
         }
 
         @Test
@@ -238,14 +239,14 @@ public class ABITest {
                             + "0000000000000000000000000000000000000000000000000000000000000001"
                             + "0000000000000000000000000000000000000000000000000000000000000002"
                             + "0000000000000000000000000000000000000000000000000000000000000003"),
-                    ABI.encodeParameter("uint256[]", new BigInteger[] {BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)}));
+                    caver.abi.encodeParameter("uint256[]", new BigInteger[] {BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)}));
         }
 
         @Test
         public void encodeStaticArrayTest() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
             assertEquals("000000000000000000000000000000000000000000000000000000000000000a"
                     + "0000000000000000000000000000000000000000000000007fffffffffffffff",
-                    ABI.encodeParameter("uint256[2]", new BigInteger[] {BigInteger.valueOf(10), BigInteger.valueOf(Long.MAX_VALUE)}));
+                    caver.abi.encodeParameter("uint256[2]", new BigInteger[] {BigInteger.valueOf(10), BigInteger.valueOf(Long.MAX_VALUE)}));
         }
 
         @Test
@@ -1292,11 +1293,11 @@ public class ABITest {
 
     public static class decodeParameter {
         public void decodeParameterTest(String type, Object expectedValue, String value) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-            assertEquals(TypeDecoder.instantiateType(type, expectedValue), ABI.decodeParameter(type, value));
+            assertEquals(TypeDecoder.instantiateType(type, expectedValue), caver.abi.decodeParameter(type, value));
         }
 
         public void decodeParametersTest(List<String> type, List<Object> expectedValue, String value) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-            List<Type> resultList = ABI.decodeParameters(type, value);
+            List<Type> resultList = caver.abi.decodeParameters(type, value);
             for(int i=0; i<type.size(); i++) {
                 assertEquals(TypeDecoder.instantiateType(type.get(i), expectedValue.get(i)), resultList.get(i));
             }
@@ -1306,10 +1307,10 @@ public class ABITest {
         @Test
         public void decodeBoolType() throws ClassNotFoundException {
             assertEquals(
-                    ABI.decodeParameter("bool", "0000000000000000000000000000000000000000000000000000000000000000"),
+                    caver.abi.decodeParameter("bool", "0000000000000000000000000000000000000000000000000000000000000000"),
                     (new Bool(false)));
             assertEquals(
-                    ABI.decodeParameter("bool", "0000000000000000000000000000000000000000000000000000000000000001"),
+                    caver.abi.decodeParameter("bool", "0000000000000000000000000000000000000000000000000000000000000001"),
                     (new Bool(true)));
         }
 
@@ -1317,29 +1318,29 @@ public class ABITest {
         public void decodeUintType() throws ClassNotFoundException {
             Uint uint = new Uint256(BigInteger.valueOf(255));
             assertEquals(
-                    ABI.decodeParameter("uint256", "00000000000000000000000000000000000000000000000000000000000000ff"),
+                    caver.abi.decodeParameter("uint256", "00000000000000000000000000000000000000000000000000000000000000ff"),
                     uint);
 
 
             Uint uint2 = new Uint256(BigInteger.valueOf(65535));
             assertEquals(
-                    ABI.decodeParameter("uint256", "000000000000000000000000000000000000000000000000000000000000ffff"),
+                    caver.abi.decodeParameter("uint256", "000000000000000000000000000000000000000000000000000000000000ffff"),
                     uint2
             );
 
             Uint uint3 = new Uint256(BigInteger.valueOf(65536));
             assertEquals(
-                    ABI.decodeParameter("uint256", "0000000000000000000000000000000000000000000000000000000000010000"),
+                    caver.abi.decodeParameter("uint256", "0000000000000000000000000000000000000000000000000000000000010000"),
                     uint3);
 
             Uint uint4 = new Uint256(new BigInteger("4722366482869645213695"));
             assertEquals(
-                    ABI.decodeParameter("uint256", "0000000000000000000000000000000000000000000000ffffffffffffffffff"),
+                    caver.abi.decodeParameter("uint256", "0000000000000000000000000000000000000000000000ffffffffffffffffff"),
                     uint4);
 
             Uint uint5 = new Uint256(BigInteger.ZERO);
             assertEquals(
-                    ABI.decodeParameter("uint256", "0000000000000000000000000000000000000000000000000000000000000000"),
+                    caver.abi.decodeParameter("uint256", "0000000000000000000000000000000000000000000000000000000000000000"),
                     uint5
                     );
         }
@@ -1348,22 +1349,22 @@ public class ABITest {
         public void decodeIntType() throws ClassNotFoundException {
             Int int1 = new Int256(BigInteger.ZERO);
             assertEquals(
-                    ABI.decodeParameter("int256", "0000000000000000000000000000000000000000000000000000000000000000"),
+                    caver.abi.decodeParameter("int256", "0000000000000000000000000000000000000000000000000000000000000000"),
                     int1);
 
             Int int2 = new Int256(BigInteger.valueOf(127));
             assertEquals(
-                    ABI.decodeParameter("int256", "000000000000000000000000000000000000000000000000000000000000007f"),
+                    caver.abi.decodeParameter("int256", "000000000000000000000000000000000000000000000000000000000000007f"),
                     int2);
 
             Int int3 = new Int256(BigInteger.valueOf(32767));
             assertEquals(
-                    ABI.decodeParameter("int256", "0000000000000000000000000000000000000000000000000000000000007fff"),
+                    caver.abi.decodeParameter("int256", "0000000000000000000000000000000000000000000000000000000000007fff"),
                     int3);
 
             Int int4 = new Int256(BigInteger.valueOf(2147483647));
             assertEquals(
-                    ABI.decodeParameter("int256","000000000000000000000000000000000000000000000000000000007fffffff"),
+                    caver.abi.decodeParameter("int256","000000000000000000000000000000000000000000000000000000007fffffff"),
                     int4);
         }
 
@@ -1371,7 +1372,7 @@ public class ABITest {
         public void decodeAddressType() throws ClassNotFoundException {
             Address address = new Address("0xbe5422d15f39373eb0a97ff8c10fbd0e40e29338");
             assertEquals(
-                    ABI.decodeParameter("address","000000000000000000000000be5422d15f39373eb0a97ff8c10fbd0e40e29338"),
+                    caver.abi.decodeParameter("address","000000000000000000000000be5422d15f39373eb0a97ff8c10fbd0e40e29338"),
                     address);
         }
 
@@ -1379,7 +1380,7 @@ public class ABITest {
         public void decodeUtf8StringType() throws ClassNotFoundException {
             Utf8String string = new Utf8String("Hello, world!");
             assertEquals(
-                    ABI.decodeParameter("string",
+                    caver.abi.decodeParameter("string",
                             "0000000000000000000000000000000000000000000000000000000000000020"
                             + "000000000000000000000000000000000000000000000000000000000000000d"
                             + "48656c6c6f2c20776f726c642100000000000000000000000000000000000000"),
@@ -1390,22 +1391,22 @@ public class ABITest {
         public void decodeStaticBytesType() throws ClassNotFoundException {
             Bytes staticBytes = new Bytes6(new byte[] {0, 1, 2, 3, 4, 5});
             assertEquals(
-                    ABI.decodeParameter("bytes6", "0001020304050000000000000000000000000000000000000000000000000000"),
+                    caver.abi.decodeParameter("bytes6", "0001020304050000000000000000000000000000000000000000000000000000"),
                     staticBytes);
 
             Bytes empty = new Bytes1(new byte[] {0});
             assertEquals(
-                    ABI.decodeParameter("bytes1", "0000000000000000000000000000000000000000000000000000000000000000"),
+                    caver.abi.decodeParameter("bytes1", "0000000000000000000000000000000000000000000000000000000000000000"),
                     empty);
 
             Bytes ones = new Bytes1(new byte[] {127});
             assertEquals(
-                    ABI.decodeParameter("bytes1", "7f00000000000000000000000000000000000000000000000000000000000000"),
+                    caver.abi.decodeParameter("bytes1", "7f00000000000000000000000000000000000000000000000000000000000000"),
                     ones);
 
             Bytes dave = new Bytes4("dave".getBytes());
             assertEquals(
-                    ABI.decodeParameter("bytes4", "6461766500000000000000000000000000000000000000000000000000000000"),
+                    caver.abi.decodeParameter("bytes4", "6461766500000000000000000000000000000000000000000000000000000000"),
                     dave);
         }
 
@@ -1413,7 +1414,7 @@ public class ABITest {
         public void decodeDynamicBytesType() throws ClassNotFoundException {
             DynamicBytes dynamicBytes = new DynamicBytes(new byte[] {0, 1, 2, 3, 4, 5});
             assertEquals(
-                    ABI.decodeParameter("bytes",
+                    caver.abi.decodeParameter("bytes",
                             "0000000000000000000000000000000000000000000000000000000000000020"
                                     + "0000000000000000000000000000000000000000000000000000000000000006"
                                     + "0001020304050000000000000000000000000000000000000000000000000000"),
@@ -1421,7 +1422,7 @@ public class ABITest {
 
             DynamicBytes empty = new DynamicBytes(new byte[] {0});
             assertEquals(
-                    ABI.decodeParameter("bytes",
+                    caver.abi.decodeParameter("bytes",
                             "0000000000000000000000000000000000000000000000000000000000000020"
                             +"0000000000000000000000000000000000000000000000000000000000000001"
                             + "0000000000000000000000000000000000000000000000000000000000000000"),
@@ -1429,7 +1430,7 @@ public class ABITest {
 
             DynamicBytes dave = new DynamicBytes("dave".getBytes());
             assertEquals(
-                    ABI.decodeParameter("bytes",
+                    caver.abi.decodeParameter("bytes",
                             "0000000000000000000000000000000000000000000000000000000000000020"
                             +"0000000000000000000000000000000000000000000000000000000000000004"
                             + "6461766500000000000000000000000000000000000000000000000000000000"),
@@ -1446,7 +1447,7 @@ public class ABITest {
                                     + "deserunt mollit anim id est laborum.")
                                     .getBytes());
             assertEquals(
-                    ABI.decodeParameter("bytes",
+                    caver.abi.decodeParameter("bytes",
                             "0000000000000000000000000000000000000000000000000000000000000020"
                             +"00000000000000000000000000000000000000000000000000000000000001bd"
                             + "4c6f72656d20697073756d20646f6c6f722073697420616d65742c20636f6e73"
@@ -1476,7 +1477,7 @@ public class ABITest {
                             new Uint256(BigInteger.valueOf(3)));
 
             assertEquals(
-                    ABI.decodeParameter("uint256[]",
+                    caver.abi.decodeParameter("uint256[]",
                             "0000000000000000000000000000000000000000000000000000000000000020"
                             + "0000000000000000000000000000000000000000000000000000000000000003"
                             + "0000000000000000000000000000000000000000000000000000000000000001"
@@ -1488,7 +1489,7 @@ public class ABITest {
         @Test
         public void decodeStaticArrayTest() throws ClassCastException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
             StaticArray2 expected = new StaticArray2(Uint256.class, Arrays.asList(BigInteger.TEN, BigInteger.valueOf(Long.MAX_VALUE)));
-            StaticArray2 actual = (StaticArray2)ABI.decodeParameter("uint256[2]",
+            StaticArray2 actual = (StaticArray2)caver.abi.decodeParameter("uint256[2]",
                     "000000000000000000000000000000000000000000000000000000000000000a"
                             + "0000000000000000000000000000000000000000000000007fffffffffffffff");
 
@@ -2414,7 +2415,7 @@ public class ABITest {
             BigInteger decimals = BigInteger.valueOf(18);
             BigInteger value = BigInteger.valueOf(100_000).multiply(BigInteger.TEN.pow(decimals.intValue())); // 100000 * 10^18
 
-            EventValues eventValues = ABI.decodeLog(ioTypeList, nonIndexedData, topics);
+            EventValues eventValues = caver.abi.decodeLog(ioTypeList, nonIndexedData, topics);
 
             assertEquals(eventValues.getIndexedValues().get(0).getValue(), "0x0000000000000000000000000000000000000000");
             assertEquals(eventValues.getIndexedValues().get(1).getValue(), "0x2c8ad0ea2e0781db8b8c9242e07de3a5beabb71a");
@@ -2426,7 +2427,7 @@ public class ABITest {
         String TEST_ABI = "[{\"constant\":false,\"inputs\":[{\"name\":\"a\",\"type\":\"bytes32[]\"}],\"name\":\"h\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"components\":[{\"name\":\"a\",\"type\":\"uint256\"},{\"name\":\"b\",\"type\":\"uint256[]\"},{\"components\":[{\"name\":\"x\",\"type\":\"uint256\"},{\"name\":\"y\",\"type\":\"uint256\"}],\"name\":\"c\",\"type\":\"tuple[]\"}],\"name\":\"d\",\"type\":\"tuple[]\"}],\"name\":\"structArray\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"components\":[{\"name\":\"x\",\"type\":\"uint256\"},{\"name\":\"y\",\"type\":\"uint256\"}],\"name\":\"s\",\"type\":\"tuple\"}],\"name\":\"staticStruct\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"components\":[{\"name\":\"x\",\"type\":\"uint256\"},{\"name\":\"s\",\"type\":\"string\"}],\"name\":\"d\",\"type\":\"tuple\"}],\"name\":\"dynamicStruct\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"a\",\"type\":\"uint256\"}],\"name\":\"g\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"a\",\"type\":\"string\"}],\"name\":\"b\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"anonymous\":false,\"inputs\":[{\"components\":[{\"name\":\"x\",\"type\":\"uint256\"},{\"name\":\"y\",\"type\":\"uint256\"}],\"indexed\":true,\"name\":\"t\",\"type\":\"tuple\"}],\"name\":\"STRUCT_EVENT\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"t\",\"type\":\"uint256\"}],\"name\":\"EVENT\",\"type\":\"event\"}]";
 
 //        pragma solidity >=0.4.19 <0.7.0;
-//        pragma experimental ABIEncoderV2;
+//        pragma experimental caver.abiEncoderV2;
 //
 //        contract Test {
 //            event STRUCT_EVENT(T indexed t);
@@ -2445,16 +2446,15 @@ public class ABITest {
 //        }
         @Test
         public void buildFunctionStringTest() throws IOException {
-            Caver caver = new Caver(Caver.DEFAULT_URL);
             Contract contract = new Contract(caver, TEST_ABI);
 
-            assertEquals("b(string)", ABI.buildFunctionString(contract.getMethod("b")));
-            assertEquals("g(uint256)", ABI.buildFunctionString(contract.getMethod("g")));
-            assertEquals("h(bytes32[])", ABI.buildFunctionString(contract.getMethod("h")));
+            assertEquals("b(string)", caver.abi.buildFunctionString(contract.getMethod("b")));
+            assertEquals("g(uint256)", caver.abi.buildFunctionString(contract.getMethod("g")));
+            assertEquals("h(bytes32[])", caver.abi.buildFunctionString(contract.getMethod("h")));
 
-            assertEquals("staticStruct((uint256,uint256))", ABI.buildFunctionString(contract.getMethod("staticStruct")));
-            assertEquals("dynamicStruct((uint256,string))", ABI.buildFunctionString(contract.getMethod("dynamicStruct")));
-            assertEquals("structArray((uint256,uint256[],(uint256,uint256)[])[])", ABI.buildFunctionString(contract.getMethod("structArray")));
+            assertEquals("staticStruct((uint256,uint256))", caver.abi.buildFunctionString(contract.getMethod("staticStruct")));
+            assertEquals("dynamicStruct((uint256,string))", caver.abi.buildFunctionString(contract.getMethod("dynamicStruct")));
+            assertEquals("structArray((uint256,uint256[],(uint256,uint256)[])[])", caver.abi.buildFunctionString(contract.getMethod("structArray")));
         }
 
         @Test
@@ -2462,8 +2462,8 @@ public class ABITest {
             Caver caver = new Caver(Caver.DEFAULT_URL);
             Contract contract = new Contract(caver, TEST_ABI);
 
-            assertEquals("EVENT(uint256)", ABI.buildEventString(contract.getEvent("EVENT")));
-            assertEquals("STRUCT_EVENT((uint256,uint256))", ABI.buildEventString(contract.getEvent("STRUCT_EVENT")));
+            assertEquals("EVENT(uint256)", caver.abi.buildEventString(contract.getEvent("EVENT")));
+            assertEquals("STRUCT_EVENT((uint256,uint256))", caver.abi.buildEventString(contract.getEvent("STRUCT_EVENT")));
         }
     }
 }

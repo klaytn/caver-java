@@ -78,6 +78,9 @@ public class Caver {
      */
     public ContractWrapper contract;
 
+    /**
+     * Creates a Caver instance
+     */
     public Caver() {
         this(new HttpService(DEFAULT_URL));
     }

@@ -5,23 +5,14 @@ import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.kct.kip17.KIP17;
 import com.klaytn.caver.kct.kip17.KIP17DeployParams;
-import com.klaytn.caver.kct.kip7.KIP7;
-import com.klaytn.caver.methods.request.CallObject;
-import com.klaytn.caver.methods.response.Bytes;
 import com.klaytn.caver.methods.response.TransactionReceipt;
-import com.klaytn.caver.tx.gas.DefaultGasProvider;
-import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.KeyringContainer;
-import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.protocol.exceptions.TransactionException;
-import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -40,12 +31,12 @@ public class KIP17Test {
 
     public static void deployContract() throws Exception {
         Caver caver = new Caver(Caver.DEFAULT_URL);
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
 
         KIP17DeployParams kip7DeployParam = new KIP17DeployParams(CONTRACT_NAME, CONTRACT_SYMBOL);
         SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(45000));
-        kip17Contract = KIP17.deploy(caver, kip7DeployParam, LUMAN.getAddress());
+        kip17Contract = caver.kct.kip17.deploy(kip7DeployParam, LUMAN.getAddress());
     }
 
     public static class ConstructorTest {
@@ -57,8 +48,8 @@ public class KIP17Test {
         @Test
         public void deploy() throws Exception {
             Caver caver = new Caver(Caver.DEFAULT_URL);
-            caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
-            KIP17 contract = KIP17.deploy(caver, LUMAN.getAddress(), CONTRACT_NAME, CONTRACT_SYMBOL);
+            caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+            KIP17 contract = caver.kct.kip17.deploy(LUMAN.getAddress(), CONTRACT_NAME, CONTRACT_SYMBOL);
 
             assertNotNull(contract.getContractAddress());
         }
@@ -800,7 +791,7 @@ public class KIP17Test {
         @BeforeClass
         public static void initCaver() throws Exception {
             caver = new Caver(Caver.DEFAULT_URL);
-            caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+            caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
             deployContract();
         }
 
@@ -819,7 +810,7 @@ public class KIP17Test {
 
         @Test
         public void detectInterface_staticMethod() {
-            Map<String, Boolean> result = KIP17.detectInterface(kip17Contract.getCaver(), kip17Contract.getContractAddress());
+            Map<String, Boolean> result = caver.kct.kip17.detectInterface(kip17Contract.getContractAddress());
             assertTrue(result.get(KIP17.INTERFACE.IKIP17.getName()));
             assertTrue(result.get(KIP17.INTERFACE.IKIP17_METADATA.getName()));
             assertTrue(result.get(KIP17.INTERFACE.IKIP17_ENUMERABLE.getName()));
@@ -834,7 +825,7 @@ public class KIP17Test {
             Contract contract = new Contract(caver, abi_metadata_mintable);
             contract.deploy(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(10000000)), bytecodeWithFullMetadataMintable, "Test", "TST");
 
-            Map<String, Boolean> result = KIP17.detectInterface(caver, contract.getContractAddress());
+            Map<String, Boolean> result = caver.kct.kip17.detectInterface(contract.getContractAddress());
             assertTrue(result.get(KIP17.INTERFACE.IKIP17.getName()));
             assertTrue(result.get(KIP17.INTERFACE.IKIP17_METADATA.getName()));
             assertTrue(result.get(KIP17.INTERFACE.IKIP17_ENUMERABLE.getName()));
@@ -852,7 +843,7 @@ public class KIP17Test {
             Contract contract = new Contract(caver, abi_not_supported_kip13);
             contract.deploy(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(10000000)), byteCodeNotSupportedKIP13);
 
-            Map<String, Boolean> result = KIP17.detectInterface(caver, contract.getContractAddress());
+            Map<String, Boolean> result = caver.kct.kip17.detectInterface(contract.getContractAddress());
             assertTrue(result.get(KIP17.INTERFACE.IKIP17.getName()));
             assertTrue(result.get(KIP17.INTERFACE.IKIP17_METADATA.getName()));
             assertTrue(result.get(KIP17.INTERFACE.IKIP17_ENUMERABLE.getName()));

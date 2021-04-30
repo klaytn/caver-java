@@ -20,6 +20,7 @@ import com.klaytn.caver.abi.ABIWrapper;
 import com.klaytn.caver.account.AccountWrapper;
 import com.klaytn.caver.contract.ContractWrapper;
 import com.klaytn.caver.ipfs.IPFS;
+import com.klaytn.caver.kct.KCTWrapper;
 import com.klaytn.caver.rpc.RPC;
 import com.klaytn.caver.transaction.TransactionWrapper;
 import com.klaytn.caver.wallet.IWallet;
@@ -85,6 +86,11 @@ public class Caver {
     public ABIWrapper abi;
 
     /**
+     * The KCTWrapper instance
+     */
+    public KCTWrapper kct;
+
+    /**
      * Creates a Caver instance<p>
      * It sets a HttpProvider that using DEFAULT_URL("http://localhost:8551").
      */
@@ -112,6 +118,7 @@ public class Caver {
         transaction = new TransactionWrapper(rpc.getKlay());
         contract = new ContractWrapper(this);
         abi = new ABIWrapper();
+        kct = new KCTWrapper(this);
     }
 
     /**

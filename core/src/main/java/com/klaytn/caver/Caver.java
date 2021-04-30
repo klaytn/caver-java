@@ -75,8 +75,7 @@ public class Caver {
     public AccountWrapper account;
 
     /**
-     * The ContractWrapper instance.<p>
-     * It sets a HttpProvider that using DEFAULT_URL("http://localhost:8551").
+     * The ContractWrapper instance.
      */
     public ContractWrapper contract;
 
@@ -86,7 +85,8 @@ public class Caver {
     public ABIWrapper abi;
 
     /**
-     * Creates a Caver instance
+     * Creates a Caver instance<p>
+     * It sets a HttpProvider that using DEFAULT_URL("http://localhost:8551").
      */
     public Caver() {
         this(new HttpService(DEFAULT_URL));

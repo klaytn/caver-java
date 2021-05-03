@@ -46,6 +46,25 @@ public class KIP17Wrapper {
     }
 
     /**
+     * Creates a KIP17 instance
+     * @return KIP17
+     * @throws IOException
+     */
+    public KIP17 create() throws IOException {
+        return new KIP17(this.caver);
+    }
+
+    /**
+     * Creates a KIP17 instance
+     * @param contractAddress A contract address
+     * @return KIP17
+     * @throws IOException
+     */
+    public KIP17 create(String contractAddress) throws IOException {
+        return new KIP17(this.caver, contractAddress);
+    }
+
+    /**
      * Deploy a KIP-17 contract.
      * The deployer's keyring should be existed in `caver.wallet`.
      * @param deployer A deployer's address.

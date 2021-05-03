@@ -92,12 +92,8 @@ public class KIP17Test {
         @Test
         public void cloneTestWithSetWallet() throws IOException {
             Caver caver = new Caver(Caver.DEFAULT_URL);
-            KIP17 kip17 = new KIP17(caver);
-
-            KeyringContainer container = new KeyringContainer();
-            container.generate(3);
-
-            kip17.setWallet(container);
+            caver.wallet.generate(3);
+            KIP17 kip17 = caver.kct.kip17.create();
             KIP17 cloned = kip17.clone();
 
             assertEquals(3, ((KeyringContainer)cloned.getWallet()).length());

@@ -47,6 +47,25 @@ public class KIP7Wrapper {
     }
 
     /**
+     * Creates a KIP7 instance
+     * @return KIP7
+     * @throws IOException
+     */
+    public KIP7 create() throws IOException {
+        return new KIP7(this.caver);
+    }
+
+    /**
+     * Creates a KIP7 instance
+     * @param contractAddress A contract address
+     * @return KIP7
+     * @throws IOException
+     */
+    public KIP7 create(String contractAddress) throws IOException {
+        return new KIP7(this.caver, contractAddress);
+    }
+
+    /**
      * Deploy KIP-7 contract.
      * The deployer's keyring should be existed in `caver.wallet`.
      * @param deployer A deployer's address.

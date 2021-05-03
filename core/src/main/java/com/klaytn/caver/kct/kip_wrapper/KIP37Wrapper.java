@@ -45,6 +45,25 @@ public class KIP37Wrapper {
     }
 
     /**
+     * Creates a KIP37 instance
+     * @return KIP37
+     * @throws IOException
+     */
+    public KIP37 create() throws IOException {
+        return new KIP37(this.caver);
+    }
+
+    /**
+     * Creates a KIP37 instance
+     * @param contractAddress A contract address
+     * @return KIP37
+     * @throws IOException
+     */
+    public KIP37 create(String contractAddress) throws IOException {
+        return new KIP37(this.caver, contractAddress);
+    }
+
+    /**
      * Deploy a KIP-37 contract.
      * The deployer's keyring should be existed in `caver.wallet`.
      * @param uri The URI for token type

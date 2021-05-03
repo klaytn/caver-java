@@ -1,27 +1,21 @@
 package com.klaytn.caver.common;
 
-import com.klaytn.caver.common.transaction.FeeDelegatedValueTransferTest;
+import com.klaytn.caver.Caver;
 import com.klaytn.caver.utils.Utils;
-import com.klaytn.caver.wallet.keyring.KeyringFactory;
-import com.klaytn.caver.wallet.keyring.PrivateKey;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.function.Function;
 
 import static org.junit.Assert.*;
 
 public class UtilsTest {
-
+    static Caver caver = new Caver(Caver.DEFAULT_URL);
     public static class isAddressTest {
-
         @Test
         public void lowerCaseAddressTest() {
             String[] lowercase = new String[] {
@@ -32,7 +26,7 @@ public class UtilsTest {
             };
 
             for(int i=0; i<lowercase.length; i++) {
-                assertTrue(Utils.isAddress(lowercase[i]));
+                assertTrue(caver.utils.isAddress(lowercase[i]));
             }
         }
 
@@ -46,7 +40,7 @@ public class UtilsTest {
             };
 
             for(int i=0; i<uppercase.length; i++) {
-                assertTrue(i+" index fail", Utils.isAddress(uppercase[i]));
+                assertTrue(i+" index fail", caver.utils.isAddress(uppercase[i]));
             }
         }
 
@@ -60,7 +54,7 @@ public class UtilsTest {
             };
 
             for(int i=0; i<checksumAddress.length; i++) {
-                assertTrue(i+" index fail", Utils.isAddress(checksumAddress[i]));
+                assertTrue(i+" index fail", caver.utils.isAddress(checksumAddress[i]));
             }
         }
 
@@ -73,7 +67,7 @@ public class UtilsTest {
             };
 
             for(int i=0; i<invalidAddress.length; i++) {
-                assertFalse(Utils.isAddress(invalidAddress[i]));
+                assertFalse(caver.utils.isAddress(invalidAddress[i]));
             }
         }
     }
@@ -81,9 +75,9 @@ public class UtilsTest {
     public static class isValidPrivateKeyTest {
         @Test
         public void validPrivateKey() {
-            String key = PrivateKey.generate().getPrivateKey();
+            String key = caver.wallet.keyring.generateSingleKey();
 
-            assertTrue(Utils.isValidPrivateKey(key));
+            assertTrue(caver.utils.isValidPrivateKey(key));
         }
 
         @Test
@@ -94,7 +88,7 @@ public class UtilsTest {
             };
 
             for(int i=0; i<invalidAddress.length; i++) {
-                assertFalse(Utils.isAddress(invalidAddress[i]));
+                assertFalse(caver.utils.isAddress(invalidAddress[i]));
             }
         }
     }
@@ -102,8 +96,8 @@ public class UtilsTest {
     public static class isKlaytnWalletKeyTest {
         @Test
         public void validWalletKey() {
-            String walletKey = KeyringFactory.generate().getKlaytnWalletKey();
-            assertTrue(Utils.isKlaytnWalletKey(walletKey));
+            String walletKey = caver.wallet.keyring.generate().getKlaytnWalletKey();
+            assertTrue(caver.utils.isKlaytnWalletKey(walletKey));
         }
 
         @Test
@@ -118,7 +112,7 @@ public class UtilsTest {
             };
 
             for(int i=0; i<invalidWalletKey.length; i++) {
-                assertFalse(Utils.isAddress(invalidWalletKey[i]));
+                assertFalse(caver.utils.isAddress(invalidWalletKey[i]));
             }
         }
     }
@@ -126,49 +120,49 @@ public class UtilsTest {
     public static class isValidPublicKeyTest {
         @Test
         public void uncompressedKeyTest() {
-            String key = KeyringFactory.generate().getPublicKey();
-            assertTrue(Utils.isValidPublicKey(key));
+            String key = caver.wallet.keyring.generate().getPublicKey();
+            assertTrue(caver.utils.isValidPublicKey(key));
         }
 
         @Test
         public void uncompressedKeyWithTagTest() {
             String key = "0x04019b186993b620455077b6bc37bf61666725d8d87ab33eb113ac0414cd48d78ff46e5ea48c6f22e8f19a77e5dbba9d209df60cbcb841b7e3e81fe444ba829831";
-            assertTrue(Utils.isValidPublicKey(key));
+            assertTrue(caver.utils.isValidPublicKey(key));
         }
 
         @Test
         public void compressedKeyTest() {
-            String key = KeyringFactory.generate().getPublicKey();
-            key = Utils.compressPublicKey(key);
-            assertTrue(Utils.isValidPublicKey(key));
+            String key = caver.wallet.keyring.generate().getPublicKey();
+            key = caver.utils.compressPublicKey(key);
+            assertTrue(caver.utils.isValidPublicKey(key));
         }
 
         @Test
         public void invalidLength_UncompressedKeyTest() {
             String invalidLengthKey = "0a7694872b7f0862d896780c476eefe5dcbcab6145853401f95a610bbbb0f726c1013a286500f3b524834eaeb383d1a882e16f4923cef8a5316c33772b3437";
-            assertFalse(Utils.isValidPublicKey(invalidLengthKey));
+            assertFalse(caver.utils.isValidPublicKey(invalidLengthKey));
         }
 
         @Test
         public void invalidLength_CompressedKeyTest() {
 //            String invalidLengthKey = "03434dedfc2eceed1e98fddfde3ebc57512c57f017195988cd5de62b722656b943"
             String invalidLengthKey = "0x03434dedfc2eceed1e98fddfde3ebc57512c57f017195988cd5de62b722656b93";
-            String key = KeyringFactory.generate().getPublicKey();
-            key = Utils.compressPublicKey(key);
+            String key = caver.wallet.keyring.generate().getPublicKey();
+            key = caver.utils.compressPublicKey(key);
 
-            assertFalse(Utils.isValidPublicKey(invalidLengthKey));
+            assertFalse(caver.utils.isValidPublicKey(invalidLengthKey));
         }
 
         @Test
         public void invalidIndicator_CompressedKeyTest() {
             String invalidLengthKey = "0x05434dedfc2eceed1e98fddfde3ebc57512c57f017195988cd5de62b722656b943";
-            assertFalse(Utils.isValidPublicKey(invalidLengthKey));
+            assertFalse(caver.utils.isValidPublicKey(invalidLengthKey));
         }
 
         @Test
         public void invalidPoint() {
             String invalidPointKey = "0x4be11ff42d8fc1954fb9ed52296db1657564c5e38517764664fb7cf4306a1e163a2686aa755dd0291aa2f291c3560ef4bf4b46c671983ff3e23f11a1b744ff4a";
-            assertFalse(Utils.isValidPublicKey(invalidPointKey));
+            assertFalse(caver.utils.isValidPublicKey(invalidPointKey));
         }
     }
 
@@ -176,23 +170,23 @@ public class UtilsTest {
         @Test
         public void decompressPublicKey() {
             String compressed = "03434dedfc2eceed1e98fddfde3ebc57512c57f017195988cd5de62b722656b943";
-            String uncompressed = Utils.decompressPublicKey(compressed);
+            String uncompressed = caver.utils.decompressPublicKey(compressed);
 
-            assertTrue(Utils.isValidPublicKey(uncompressed));
+            assertTrue(caver.utils.isValidPublicKey(uncompressed));
         }
 
         @Test
         public void alreadyDecompressedKey() {
-            String expectedUncompressed = PrivateKey.generate().getPublicKey(false);
-            String actualUncompressed = Utils.decompressPublicKey(expectedUncompressed);
-            assertTrue(Utils.isValidPublicKey(actualUncompressed));
+            String expectedUncompressed = caver.wallet.keyring.generate().getPublicKey(false);
+            String actualUncompressed = caver.utils.decompressPublicKey(expectedUncompressed);
+            assertTrue(caver.utils.isValidPublicKey(actualUncompressed));
             assertEquals(expectedUncompressed, actualUncompressed);
         }
 
         @Test
         public void alreadyDecompressedKeyWithTag() {
             String expected = "0x04019b186993b620455077b6bc37bf61666725d8d87ab33eb113ac0414cd48d78ff46e5ea48c6f22e8f19a77e5dbba9d209df60cbcb841b7e3e81fe444ba829831";
-            String key = Utils.decompressPublicKey(expected);
+            String key = caver.utils.decompressPublicKey(expected);
 
             assertEquals(expected, key);
         }
@@ -201,26 +195,26 @@ public class UtilsTest {
     public static class compressedPublicKeyTest {
         @Test
         public void compressedPublicKey() {
-            String uncompressedKey = PrivateKey.generate().getPublicKey(false);
-            String compressed = Utils.compressPublicKey(uncompressedKey);
+            String uncompressedKey = caver.wallet.keyring.generate().getPublicKey(false);
+            String compressed = caver.utils.compressPublicKey(uncompressedKey);
 
-            assertTrue(Utils.isValidPublicKey(compressed));
+            assertTrue(caver.utils.isValidPublicKey(compressed));
         }
 
         @Test
         public void alreadyCompressedKey() {
-            String expectedCompressed = PrivateKey.generate().getPublicKey(true);
-            String actualCompressed = Utils.compressPublicKey(expectedCompressed);
-            assertTrue(Utils.isValidPublicKey(actualCompressed));
+            String expectedCompressed = caver.wallet.keyring.generate().getPublicKey(true);
+            String actualCompressed = caver.utils.compressPublicKey(expectedCompressed);
+            assertTrue(caver.utils.isValidPublicKey(actualCompressed));
             assertEquals(expectedCompressed, actualCompressed);
         }
 
         @Test
         public void compressedPublicKeyWithTag() {
             String key = "0x04019b186993b620455077b6bc37bf61666725d8d87ab33eb113ac0414cd48d78ff46e5ea48c6f22e8f19a77e5dbba9d209df60cbcb841b7e3e81fe444ba829831";
-            String expected = Utils.compressPublicKey("019b186993b620455077b6bc37bf61666725d8d87ab33eb113ac0414cd48d78ff46e5ea48c6f22e8f19a77e5dbba9d209df60cbcb841b7e3e81fe444ba829831");
+            String expected = caver.utils.compressPublicKey("019b186993b620455077b6bc37bf61666725d8d87ab33eb113ac0414cd48d78ff46e5ea48c6f22e8f19a77e5dbba9d209df60cbcb841b7e3e81fe444ba829831");
 
-            assertEquals(expected, Utils.compressPublicKey(key));
+            assertEquals(expected, caver.utils.compressPublicKey(key));
         }
     }
 
@@ -228,7 +222,7 @@ public class UtilsTest {
         @Test
         public void hashMessageTest() {
             String data = "0xdeadbeaf";
-            String actual = Utils.hashMessage(data);
+            String actual = caver.utils.hashMessage(data);
             assertEquals(66, actual.length());
         }
     }
@@ -239,10 +233,10 @@ public class UtilsTest {
 
         @Test
         public void parseKlaytnWalletKey() {
-            SingleKeyring keyring = KeyringFactory.generate();
+            SingleKeyring keyring = caver.wallet.keyring.generate();
             String walletKey = keyring.getKlaytnWalletKey();
 
-            String[] parsedData = Utils.parseKlaytnWalletKey(walletKey);
+            String[] parsedData = caver.utils.parseKlaytnWalletKey(walletKey);
             assertEquals(keyring.getKey().getPrivateKey(), parsedData[0]);
             assertEquals("0x00", parsedData[1]);
             assertEquals(keyring.getAddress(), parsedData[2]);
@@ -254,7 +248,7 @@ public class UtilsTest {
             expectedException.expectMessage("Invalid Klaytn wallet key.");
 
             String invalid = "0x63526af77dc34846a0909e5486f972c4a07074f0c94a2b9577675a6433098481" + "0x01" +"0xfc26de905386050894cddbb5a824318b96dde595";
-            String[] parsedData = Utils.parseKlaytnWalletKey(invalid);
+            String[] parsedData = caver.utils.parseKlaytnWalletKey(invalid);
         }
 
         @Test
@@ -263,7 +257,7 @@ public class UtilsTest {
             expectedException.expectMessage("Invalid Klaytn wallet key.");
 
             String invalid = "0x63526af77dc34846a0909e5486f972c4a07074f0c94a2b9577675a64330984" + "0x00" +"0xfc26de905386050894cddbb5a824318b96dde595";
-            String[] parsedData = Utils.parseKlaytnWalletKey(invalid);
+            String[] parsedData = caver.utils.parseKlaytnWalletKey(invalid);
         }
 
         @Test
@@ -272,7 +266,7 @@ public class UtilsTest {
             expectedException.expectMessage("Invalid Klaytn wallet key.");
 
             String invalid = "0x63526af77dc34846a0909e5486f972c4a07074f0c94a2b9577675a6433098481" + "0x00" +"0xf05386050894cddbb5a824318b96dde595";
-            String[] parsedData = Utils.parseKlaytnWalletKey(invalid);
+            String[] parsedData = caver.utils.parseKlaytnWalletKey(invalid);
         }
     }
 
@@ -287,7 +281,7 @@ public class UtilsTest {
             };
 
             for(int i=0; i<hex.length; i++) {
-                assertTrue(Utils.isHex(hex[i]));
+                assertTrue(caver.utils.isHex(hex[i]));
             }
         }
 
@@ -295,7 +289,7 @@ public class UtilsTest {
         public void invalidHexTest() {
             String invalidHex = "0xkkkkk";
 
-            assertFalse(Utils.isHex(invalidHex));
+            assertFalse(caver.utils.isHex(invalidHex));
         }
     }
 
@@ -309,7 +303,7 @@ public class UtilsTest {
             };
 
             for(int i=0; i<hex.length; i++) {
-                assertTrue(Utils.isHexStrict(hex[i]));
+                assertTrue(caver.utils.isHexStrict(hex[i]));
             }
         }
 
@@ -321,7 +315,7 @@ public class UtilsTest {
             };
 
             for(int i=0; i<hex.length; i++) {
-                assertFalse(Utils.isHexStrict(hex[i]));
+                assertFalse(caver.utils.isHexStrict(hex[i]));
             }
         }
     }
@@ -332,14 +326,14 @@ public class UtilsTest {
             String hex = "1234";
             String expected = "0x1234";
 
-            assertEquals(expected, Utils.addHexPrefix(hex));
+            assertEquals(expected, caver.utils.addHexPrefix(hex));
         }
 
         @Test
         public void alreadyPrefixed() {
             String hex = "0x1234";
 
-            assertEquals(hex, Utils.addHexPrefix(hex));
+            assertEquals(hex, caver.utils.addHexPrefix(hex));
         }
     }
 
@@ -349,14 +343,14 @@ public class UtilsTest {
             String hex = "0x1234";
             String expected = "1234";
 
-            assertEquals(expected, Utils.stripHexPrefix(hex));
+            assertEquals(expected, caver.utils.stripHexPrefix(hex));
         }
 
         @Test
         public void alreadyStripedTest() {
             String hex = "1234";
 
-            assertEquals(hex, Utils.stripHexPrefix(hex));
+            assertEquals(hex, caver.utils.stripHexPrefix(hex));
         }
     }
 
@@ -366,10 +360,10 @@ public class UtilsTest {
             String expected = "1";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, "peb");
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, "peb");
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", "peb");
+            converted = caver.utils.convertToPeb("1", "peb");
             assertEquals(expected, converted);
         }
 
@@ -378,10 +372,10 @@ public class UtilsTest {
             String expected = "1";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.peb);
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.peb);
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", Utils.KlayUnit.peb);
+            converted = caver.utils.convertToPeb("1", Utils.KlayUnit.peb);
             assertEquals(expected, converted);
         }
 
@@ -390,10 +384,10 @@ public class UtilsTest {
             String expected = "1000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, "kpeb");
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, "kpeb");
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", "kpeb");
+            converted = caver.utils.convertToPeb("1", "kpeb");
             assertEquals(expected, converted);
         }
 
@@ -402,10 +396,10 @@ public class UtilsTest {
             String expected = "1000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.kpeb);
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.kpeb);
             assertEquals(expected, converted.toString());
 
-            converted = Utils.convertToPeb("1", Utils.KlayUnit.kpeb);
+            converted = caver.utils.convertToPeb("1", Utils.KlayUnit.kpeb);
             assertEquals(expected, converted.toString());
         }
 
@@ -414,10 +408,10 @@ public class UtilsTest {
             String expected = "1000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, "Mpeb");
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, "Mpeb");
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", "Mpeb");
+            converted = caver.utils.convertToPeb("1", "Mpeb");
             assertEquals(expected, converted);
         }
 
@@ -426,10 +420,10 @@ public class UtilsTest {
             String expected = "1000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.Mpeb);
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.Mpeb);
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", Utils.KlayUnit.Mpeb);
+            converted = caver.utils.convertToPeb("1", Utils.KlayUnit.Mpeb);
             assertEquals(expected, converted);
         }
 
@@ -438,10 +432,10 @@ public class UtilsTest {
             String expected = "1000000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, "Gpeb");
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, "Gpeb");
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", "Gpeb");
+            converted = caver.utils.convertToPeb("1", "Gpeb");
             assertEquals(expected, converted);
         }
 
@@ -450,10 +444,10 @@ public class UtilsTest {
             String expected = "1000000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.Gpeb);
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.Gpeb);
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", Utils.KlayUnit.Gpeb);
+            converted = caver.utils.convertToPeb("1", Utils.KlayUnit.Gpeb);
             assertEquals(expected, converted);
         }
 
@@ -462,10 +456,10 @@ public class UtilsTest {
             String expected = "1000000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, "ston");
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, "ston");
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", "ston");
+            converted = caver.utils.convertToPeb("1", "ston");
             assertEquals(expected, converted);
         }
 
@@ -474,10 +468,10 @@ public class UtilsTest {
             String expected = "1000000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.ston);
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.ston);
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", Utils.KlayUnit.ston);
+            converted = caver.utils.convertToPeb("1", Utils.KlayUnit.ston);
             assertEquals(expected, converted);
         }
 
@@ -486,10 +480,10 @@ public class UtilsTest {
             String expected = "1000000000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, "uKLAY");
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, "uKLAY");
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", "uKLAY");
+            converted = caver.utils.convertToPeb("1", "uKLAY");
             assertEquals(expected, converted);
         }
 
@@ -498,10 +492,10 @@ public class UtilsTest {
             String expected = "1000000000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.uKLAY);
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.uKLAY);
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", Utils.KlayUnit.uKLAY);
+            converted = caver.utils.convertToPeb("1", Utils.KlayUnit.uKLAY);
             assertEquals(expected, converted);
         }
 
@@ -510,10 +504,10 @@ public class UtilsTest {
             String expected = "1000000000000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, "mKLAY");
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, "mKLAY");
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", "mKLAY");
+            converted = caver.utils.convertToPeb("1", "mKLAY");
             assertEquals(expected, converted);
         }
 
@@ -522,10 +516,10 @@ public class UtilsTest {
             String expected = "1000000000000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.mKLAY);
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.mKLAY);
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", Utils.KlayUnit.mKLAY);
+            converted = caver.utils.convertToPeb("1", Utils.KlayUnit.mKLAY);
             assertEquals(expected, converted);
         }
 
@@ -534,10 +528,10 @@ public class UtilsTest {
             String expected = "1000000000000000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, "KLAY");
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, "KLAY");
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", "KLAY");
+            converted = caver.utils.convertToPeb("1", "KLAY");
             assertEquals(expected, converted);
         }
 
@@ -546,10 +540,10 @@ public class UtilsTest {
             String expected = "1000000000000000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.KLAY);
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.KLAY);
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", Utils.KlayUnit.KLAY);
+            converted = caver.utils.convertToPeb("1", Utils.KlayUnit.KLAY);
             assertEquals(expected, converted);
         }
 
@@ -558,10 +552,10 @@ public class UtilsTest {
             String expected = "1000000000000000000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, "kKLAY");
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, "kKLAY");
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", "kKLAY");
+            converted = caver.utils.convertToPeb("1", "kKLAY");
             assertEquals(expected, converted);
         }
 
@@ -570,10 +564,10 @@ public class UtilsTest {
             String expected = "1000000000000000000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.kKLAY);
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.kKLAY);
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", Utils.KlayUnit.kKLAY);
+            converted = caver.utils.convertToPeb("1", Utils.KlayUnit.kKLAY);
             assertEquals(expected, converted);
         }
 
@@ -582,10 +576,10 @@ public class UtilsTest {
             String expected = "1000000000000000000000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, "MKLAY");
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, "MKLAY");
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", "MKLAY");
+            converted = caver.utils.convertToPeb("1", "MKLAY");
             assertEquals(expected, converted);
         }
 
@@ -594,10 +588,10 @@ public class UtilsTest {
             String expected = "1000000000000000000000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.MKLAY);
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.MKLAY);
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", Utils.KlayUnit.MKLAY);
+            converted = caver.utils.convertToPeb("1", Utils.KlayUnit.MKLAY);
             assertEquals(expected, converted);
         }
 
@@ -606,10 +600,10 @@ public class UtilsTest {
             String expected = "1000000000000000000000000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, "GKLAY");
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, "GKLAY");
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", "GKLAY");
+            converted = caver.utils.convertToPeb("1", "GKLAY");
             assertEquals(expected, converted);
         }
 
@@ -618,10 +612,10 @@ public class UtilsTest {
             String expected = "1000000000000000000000000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.GKLAY);
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.GKLAY);
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", Utils.KlayUnit.GKLAY);
+            converted = caver.utils.convertToPeb("1", Utils.KlayUnit.GKLAY);
             assertEquals(expected, converted);
         }
 
@@ -630,10 +624,10 @@ public class UtilsTest {
             String expected = "1000000000000000000000000000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, "TKLAY");
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, "TKLAY");
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", "TKLAY");
+            converted = caver.utils.convertToPeb("1", "TKLAY");
             assertEquals(expected, converted);
         }
 
@@ -642,10 +636,10 @@ public class UtilsTest {
             String expected = "1000000000000000000000000000000";
             String converted;
 
-            converted = Utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.TKLAY);
+            converted = caver.utils.convertToPeb(BigDecimal.ONE, Utils.KlayUnit.TKLAY);
             assertEquals(expected, converted);
 
-            converted = Utils.convertToPeb("1", Utils.KlayUnit.TKLAY);
+            converted = caver.utils.convertToPeb("1", Utils.KlayUnit.TKLAY);
             assertEquals(expected, converted);
         }
     }
@@ -656,10 +650,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = amount;
 
-            String converted = Utils.convertFromPeb(amount, "peb");
+            String converted = caver.utils.convertFromPeb(amount, "peb");
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), "peb");
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), "peb");
             assertEquals(expected, converted);
         }
 
@@ -668,10 +662,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = amount;
 
-            String converted = Utils.convertFromPeb(amount, Utils.KlayUnit.peb);
+            String converted = caver.utils.convertFromPeb(amount, Utils.KlayUnit.peb);
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.peb);
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.peb);
             assertEquals(expected, converted);
         }
 
@@ -680,10 +674,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1000000000000000000000000";
 
-            String converted = Utils.convertFromPeb(amount, "kpeb");
+            String converted = caver.utils.convertFromPeb(amount, "kpeb");
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), "kpeb");
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), "kpeb");
             assertEquals(expected, converted);
         }
 
@@ -692,10 +686,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1000000000000000000000000";
 
-            String converted = Utils.convertFromPeb(amount, Utils.KlayUnit.kpeb);
+            String converted = caver.utils.convertFromPeb(amount, Utils.KlayUnit.kpeb);
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.kpeb);
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.kpeb);
             assertEquals(expected, converted);
         }
 
@@ -704,10 +698,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1000000000000000000000";
 
-            String converted = Utils.convertFromPeb(amount, "Mpeb");
+            String converted = caver.utils.convertFromPeb(amount, "Mpeb");
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), "Mpeb");
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), "Mpeb");
             assertEquals(expected, converted);
         }
 
@@ -716,10 +710,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1000000000000000000000";
 
-            String converted = Utils.convertFromPeb(amount, Utils.KlayUnit.Mpeb);
+            String converted = caver.utils.convertFromPeb(amount, Utils.KlayUnit.Mpeb);
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.Mpeb);
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.Mpeb);
             assertEquals(expected, converted);
         }
 
@@ -728,10 +722,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1000000000000000000";
 
-            String converted = Utils.convertFromPeb(amount, "Gpeb");
+            String converted = caver.utils.convertFromPeb(amount, "Gpeb");
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), "Gpeb");
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), "Gpeb");
             assertEquals(expected, converted);
         }
         @Test
@@ -739,10 +733,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1000000000000000000";
 
-            String converted = Utils.convertFromPeb(amount, Utils.KlayUnit.Gpeb);
+            String converted = caver.utils.convertFromPeb(amount, Utils.KlayUnit.Gpeb);
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.Gpeb);
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.Gpeb);
             assertEquals(expected, converted);
         }
 
@@ -752,10 +746,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1000000000000000000";
 
-            String converted = Utils.convertFromPeb(amount, "ston");
+            String converted = caver.utils.convertFromPeb(amount, "ston");
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), "ston");
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), "ston");
             assertEquals(expected, converted);
         }
 
@@ -764,10 +758,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1000000000000000000";
 
-            String converted = Utils.convertFromPeb(amount, Utils.KlayUnit.ston);
+            String converted = caver.utils.convertFromPeb(amount, Utils.KlayUnit.ston);
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.ston);
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.ston);
             assertEquals(expected, converted);
         }
 
@@ -776,10 +770,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1000000000000000";
 
-            String converted = Utils.convertFromPeb(amount, "uKLAY");
+            String converted = caver.utils.convertFromPeb(amount, "uKLAY");
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), "uKLAY");
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), "uKLAY");
             assertEquals(expected, converted);
         }
 
@@ -788,10 +782,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1000000000000000";
 
-            String converted = Utils.convertFromPeb(amount, Utils.KlayUnit.uKLAY);
+            String converted = caver.utils.convertFromPeb(amount, Utils.KlayUnit.uKLAY);
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.uKLAY);
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.uKLAY);
             assertEquals(expected, converted);
         }
 
@@ -800,10 +794,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1000000000000";
 
-            String converted = Utils.convertFromPeb(amount, "mKLAY");
+            String converted = caver.utils.convertFromPeb(amount, "mKLAY");
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), "mKLAY");
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), "mKLAY");
             assertEquals(expected, converted);
         }
 
@@ -812,10 +806,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1000000000000";
 
-            String converted = Utils.convertFromPeb(amount, Utils.KlayUnit.mKLAY);
+            String converted = caver.utils.convertFromPeb(amount, Utils.KlayUnit.mKLAY);
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.mKLAY);
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.mKLAY);
             assertEquals(expected, converted);
         }
 
@@ -824,10 +818,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1000000000";
 
-            String converted = Utils.convertFromPeb(amount, "KLAY");
+            String converted = caver.utils.convertFromPeb(amount, "KLAY");
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), "KLAY");
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), "KLAY");
             assertEquals(expected, converted);
         }
 
@@ -836,10 +830,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1000000000";
 
-            String converted = Utils.convertFromPeb(amount, Utils.KlayUnit.KLAY);
+            String converted = caver.utils.convertFromPeb(amount, Utils.KlayUnit.KLAY);
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.KLAY);
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.KLAY);
             assertEquals(expected, converted);
         }
 
@@ -848,10 +842,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1000000";
 
-            String converted = Utils.convertFromPeb(amount, "kKLAY");
+            String converted = caver.utils.convertFromPeb(amount, "kKLAY");
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), "kKLAY");
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), "kKLAY");
             assertEquals(expected, converted);
         }
 
@@ -860,10 +854,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1000000";
 
-            String converted = Utils.convertFromPeb(amount, Utils.KlayUnit.kKLAY);
+            String converted = caver.utils.convertFromPeb(amount, Utils.KlayUnit.kKLAY);
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.kKLAY);
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.kKLAY);
             assertEquals(expected, converted);
         }
 
@@ -872,10 +866,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1000";
 
-            String converted = Utils.convertFromPeb(amount, "MKLAY");
+            String converted = caver.utils.convertFromPeb(amount, "MKLAY");
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), "MKLAY");
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), "MKLAY");
             assertEquals(expected, converted);
         }
 
@@ -884,10 +878,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1000";
 
-            String converted = Utils.convertFromPeb(amount, Utils.KlayUnit.MKLAY);
+            String converted = caver.utils.convertFromPeb(amount, Utils.KlayUnit.MKLAY);
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.MKLAY);
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.MKLAY);
             assertEquals(expected, converted);
         }
 
@@ -896,10 +890,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1";
 
-            String converted = Utils.convertFromPeb(amount, "GKLAY");
+            String converted = caver.utils.convertFromPeb(amount, "GKLAY");
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), "GKLAY");
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), "GKLAY");
             assertEquals(expected, converted);
         }
 
@@ -908,10 +902,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000";
             String expected = "1";
 
-            String converted = Utils.convertFromPeb(amount, Utils.KlayUnit.GKLAY);
+            String converted = caver.utils.convertFromPeb(amount, Utils.KlayUnit.GKLAY);
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.GKLAY);
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.GKLAY);
             assertEquals(expected, converted);
         }
 
@@ -920,10 +914,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000000";
             String expected = "1";
 
-            String converted = Utils.convertFromPeb(amount, "TKLAY");
+            String converted = caver.utils.convertFromPeb(amount, "TKLAY");
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), "TKLAY");
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), "TKLAY");
             assertEquals(expected, converted);
         }
 
@@ -932,10 +926,10 @@ public class UtilsTest {
             String amount = "1000000000000000000000000000000";
             String expected = "1";
 
-            String converted = Utils.convertFromPeb(amount, Utils.KlayUnit.TKLAY);
+            String converted = caver.utils.convertFromPeb(amount, Utils.KlayUnit.TKLAY);
             assertEquals(expected, converted);
 
-            converted = Utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.TKLAY);
+            converted = caver.utils.convertFromPeb(new BigDecimal(amount), Utils.KlayUnit.TKLAY);
             assertEquals(expected, converted);
         }
     }
@@ -951,7 +945,7 @@ public class UtilsTest {
             };
 
             for(int i=0; i<valid.length; i++) {
-                assertTrue(Utils.isNumber(valid[i]));
+                assertTrue(caver.utils.isNumber(valid[i]));
             }
         }
 
@@ -963,7 +957,7 @@ public class UtilsTest {
             };
 
             for(int i=0; i<invalid.length; i++) {
-                assertFalse(Utils.isNumber(invalid[i]));
+                assertFalse(caver.utils.isNumber(invalid[i]));
             }
         }
     }
@@ -975,7 +969,7 @@ public class UtilsTest {
                     "0x01", "0x", "0x"
             );
 
-            assertTrue(Utils.isEmptySig(emptySig));
+            assertTrue(caver.utils.isEmptySig(emptySig));
         }
 
         @Test
@@ -985,7 +979,7 @@ public class UtilsTest {
                     new SignatureData("0x01", "0x", "0x"),
             };
 
-            assertTrue(Utils.isEmptySig(Arrays.asList(emptySigArr)));
+            assertTrue(caver.utils.isEmptySig(Arrays.asList(emptySigArr)));
         }
 
         @Test
@@ -996,7 +990,7 @@ public class UtilsTest {
                     "0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567"
             );
 
-            assertFalse(Utils.isEmptySig(signatureData));
+            assertFalse(caver.utils.isEmptySig(signatureData));
         }
 
         @Test
@@ -1014,14 +1008,14 @@ public class UtilsTest {
                     )
             };
 
-            assertFalse(Utils.isEmptySig(Arrays.asList(signatureDataArr)));
+            assertFalse(caver.utils.isEmptySig(Arrays.asList(signatureDataArr)));
         }
     }
 
     public static class generateRandomBytesTest {
         @Test
         public void generateRandomBytes() {
-            byte[] arr = Utils.generateRandomBytes(32);
+            byte[] arr = caver.utils.generateRandomBytes(32);
 
             assertEquals(32, arr.length);
         }

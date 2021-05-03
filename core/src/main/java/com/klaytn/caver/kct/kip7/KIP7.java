@@ -213,8 +213,8 @@ public class KIP7 extends Contract {
      * }</pre>
      *
      * @param caver A Caver instance.
-     * @param contractAddress
-     * @return
+     * @param contractAddress A contract address.
+     * @return Map&lt;String, Boolean&gt;
      */
     public static Map<String, Boolean> detectInterface(Caver caver, String contractAddress) {
         KIP13 kip13;

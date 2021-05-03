@@ -46,7 +46,7 @@ public class KIP37Wrapper {
 
     /**
      * Deploy a KIP-37 contract.
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * The deployer's keyring should be existed in `caver.wallet`.
      * @param uri The URI for token type
      * @param deployer A deployer's address
      * @return KIP37

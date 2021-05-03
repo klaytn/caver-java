@@ -47,7 +47,7 @@ public class KIP17Wrapper {
 
     /**
      * Deploy a KIP-17 contract.
-     * It must add deployer's keyring in caver.wallet.
+     * The deployer's keyring should be existed in `caver.wallet`.
      * @param deployer A deployer's address.
      * @param name A KIP-17 contract name
      * @param symbol A KIP-17 contract symbol
@@ -66,7 +66,7 @@ public class KIP17Wrapper {
 
     /**
      * Deploy KIP17 contract
-     * It must add deployer's keyring in caver.wallet.
+     * The deployer's keyring should be existed in `caver.wallet`.
      * @param tokenInfo The KIP-17 contract's deploy parameter values.
      * @param deployer A deployer's address.
      * @return KIP17

@@ -48,7 +48,7 @@ public class KIP7Wrapper {
 
     /**
      * Deploy KIP-7 contract.
-     * It must add deployer's keyring in caver.wallet.
+     * The deployer's keyring should be existed in `caver.wallet`.
      * @param deployer A deployer's address.
      * @param name A KIP-7 contract name.
      * @param symbol A KIP-7 contract symbol.
@@ -69,7 +69,7 @@ public class KIP7Wrapper {
 
     /**
      * Deploy KIP-7 contract.
-     * It must add deployer's keyring in caver.wallet.
+     * The deployer's keyring should be existed in `caver.wallet`.
      * @param tokenInfo The KIP-7 contract's deploy parameter values
      * @param deployer A deployer's address
      * @return KIP7
@@ -97,8 +97,8 @@ public class KIP7Wrapper {
      * result.get(KIP7.INTERFACE_ID_IKIP7_PAUSABLE);
      * }</pre>
      *
-     * @param contractAddress
-     * @return
+     * @param contractAddress A contract address.
+     * @return Map&lt;String, Boolean&gt;
      */
     public Map<String, Boolean> detectInterface(String contractAddress) {
         return KIP7.detectInterface(this.caver, contractAddress) ;

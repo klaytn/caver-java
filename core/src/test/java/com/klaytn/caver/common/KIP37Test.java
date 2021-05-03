@@ -21,7 +21,6 @@ import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.kct.kip37.KIP37;
 import com.klaytn.caver.kct.kip7.KIP7;
 import com.klaytn.caver.methods.response.TransactionReceipt;
-import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -44,10 +43,10 @@ public class KIP37Test {
 
     public static KIP37 deployContract(String uri) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         Caver caver = new Caver(Caver.DEFAULT_URL);
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
-        caver.wallet.add(KeyringFactory.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
 
-        return KIP37.deploy(caver, uri, LUMAN.getAddress());
+        return caver.kct.kip37.deploy(uri, LUMAN.getAddress());
     }
 
     public static boolean createToken(KIP37 kip37, BigInteger tokenId, BigInteger initialSupply, String URI, String sender) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
@@ -64,8 +63,8 @@ public class KIP37Test {
         @Test
         public void deploy() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
             Caver caver = new Caver(Caver.DEFAULT_URL);
-            caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
-            KIP37 contract = KIP37.deploy(caver, tokenURI, LUMAN.getAddress());
+            caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+            KIP37 contract = caver.kct.kip37.deploy(tokenURI, LUMAN.getAddress());
 
             assertNotNull(contract.getContractAddress());
         }
@@ -470,7 +469,7 @@ public class KIP37Test {
     public static class BurnableTest {
         @BeforeClass
         public static void init() throws Exception {
-            kip37= deployContract(tokenURI);
+            kip37 = deployContract(tokenURI);
             if(!createToken(kip37, BigInteger.ZERO, BigInteger.valueOf(1000), tokenURI, LUMAN.getAddress())) {
                 fail();
             }
@@ -541,6 +540,7 @@ public class KIP37Test {
     }
 
     public static class IKIP37Test {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
         @BeforeClass
         public static void init() throws Exception {
             kip37 = deployContract(tokenURI);
@@ -636,7 +636,7 @@ public class KIP37Test {
         @Test
         public void safeTransferFrom() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
             String from = LUMAN.getAddress();
-            String to = KeyringFactory.generate().getAddress();
+            String to = caver.wallet.keyring.generate().getAddress();
             BigInteger tokenId = BigInteger.valueOf(2);
             BigInteger values = BigInteger.valueOf(100);
 
@@ -651,7 +651,7 @@ public class KIP37Test {
         @Test
         public void safeTransferFromStringID() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
             String from = LUMAN.getAddress();
-            String to = KeyringFactory.generate().getAddress();
+            String to = caver.wallet.keyring.generate().getAddress();
             String tokenId = "0x2";
             BigInteger values = BigInteger.valueOf(100);
 
@@ -666,7 +666,7 @@ public class KIP37Test {
         @Test
         public void safeTransferFromWithoutData() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
             String from = LUMAN.getAddress();
-            String to = KeyringFactory.generate().getAddress();
+            String to = caver.wallet.keyring.generate().getAddress();
             BigInteger tokenId = BigInteger.valueOf(2);
             BigInteger values = BigInteger.valueOf(100);
 
@@ -681,7 +681,7 @@ public class KIP37Test {
         @Test
         public void safeTransferFromStringIDWithoutData() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
             String from = LUMAN.getAddress();
-            String to = KeyringFactory.generate().getAddress();
+            String to = caver.wallet.keyring.generate().getAddress();
             String tokenId = "0x2";
             BigInteger values = BigInteger.valueOf(100);
 
@@ -698,7 +698,7 @@ public class KIP37Test {
             BigInteger[] tokenIds = new BigInteger[] {BigInteger.valueOf(2), BigInteger.valueOf(3)};
             BigInteger[] values = new BigInteger[] {BigInteger.valueOf(100), BigInteger.valueOf(100)};
 
-            String to = KeyringFactory.generate().getAddress();
+            String to = caver.wallet.keyring.generate().getAddress();
 
             TransactionReceipt.TransactionReceiptData receiptData = kip37.safeBatchTransferFrom(LUMAN.getAddress(), to, tokenIds, values, "data", new SendOptions(LUMAN.getAddress()));
             if(!receiptData.getStatus().equals("0x1")) {
@@ -714,7 +714,7 @@ public class KIP37Test {
             String[] tokenIds = new String[] {"0x2", "0x3"};
             BigInteger[] values = new BigInteger[] {BigInteger.valueOf(100), BigInteger.valueOf(100)};
 
-            String to = KeyringFactory.generate().getAddress();
+            String to = caver.wallet.keyring.generate().getAddress();
 
             TransactionReceipt.TransactionReceiptData receiptData = kip37.safeBatchTransferFrom(LUMAN.getAddress(), to, tokenIds, values, "data", new SendOptions(LUMAN.getAddress()));
             if(!receiptData.getStatus().equals("0x1")) {
@@ -730,7 +730,7 @@ public class KIP37Test {
             BigInteger[] tokenIds = new BigInteger[] {BigInteger.valueOf(2), BigInteger.valueOf(3)};
             BigInteger[] values = new BigInteger[] {BigInteger.valueOf(100), BigInteger.valueOf(100)};
 
-            String to = KeyringFactory.generate().getAddress();
+            String to = caver.wallet.keyring.generate().getAddress();
 
             TransactionReceipt.TransactionReceiptData receiptData = kip37.safeBatchTransferFrom(LUMAN.getAddress(), to, tokenIds, values, new SendOptions(LUMAN.getAddress()));
             if(!receiptData.getStatus().equals("0x1")) {
@@ -746,7 +746,7 @@ public class KIP37Test {
             String[] tokenIds = new String[] {"0x2", "0x3"};
             BigInteger[] values = new BigInteger[] {BigInteger.valueOf(100), BigInteger.valueOf(100)};
 
-            String to = KeyringFactory.generate().getAddress();
+            String to = caver.wallet.keyring.generate().getAddress();
 
             TransactionReceipt.TransactionReceiptData receiptData = kip37.safeBatchTransferFrom(LUMAN.getAddress(), to, tokenIds, values, new SendOptions(LUMAN.getAddress()));
             if(!receiptData.getStatus().equals("0x1")) {
@@ -763,7 +763,7 @@ public class KIP37Test {
 
             String from = LUMAN.getAddress();
             String operator = BRANDON.getAddress();
-            String to = KeyringFactory.generate().getAddress();
+            String to = caver.wallet.keyring.generate().getAddress();
 
             if(!kip37.isApprovedForAll(from, operator)) {
                 TransactionReceipt.TransactionReceiptData receiptData = kip37.setApprovalForAll(operator, true, new SendOptions(from));
@@ -786,7 +786,7 @@ public class KIP37Test {
 
             String from = LUMAN.getAddress();
             String operator = BRANDON.getAddress();
-            String to = KeyringFactory.generate().getAddress();
+            String to = caver.wallet.keyring.generate().getAddress();
 
             if(!kip37.isApprovedForAll(from, operator)) {
                 TransactionReceipt.TransactionReceiptData receiptData = kip37.setApprovalForAll(operator, true, new SendOptions(from));
@@ -810,7 +810,7 @@ public class KIP37Test {
 
             String from = LUMAN.getAddress();
             String operator = BRANDON.getAddress();
-            String to = KeyringFactory.generate().getAddress();
+            String to = caver.wallet.keyring.generate().getAddress();
 
             if(!kip37.isApprovedForAll(from, operator)) {
                 TransactionReceipt.TransactionReceiptData receiptData = kip37.setApprovalForAll(operator, true, new SendOptions(from));
@@ -835,7 +835,7 @@ public class KIP37Test {
 
             String from = LUMAN.getAddress();
             String operator = BRANDON.getAddress();
-            String to = KeyringFactory.generate().getAddress();
+            String to = caver.wallet.keyring.generate().getAddress();
 
             if(!kip37.isApprovedForAll(from, operator)) {
                 TransactionReceipt.TransactionReceiptData receiptData = kip37.setApprovalForAll(operator, true, new SendOptions(from));
@@ -967,7 +967,7 @@ public class KIP37Test {
         @BeforeClass
         public static void initCaver() throws Exception {
             caver = new Caver(Caver.DEFAULT_URL);
-            caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+            caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
             kip37 = deployContract(tokenURI);
         }
 
@@ -985,7 +985,7 @@ public class KIP37Test {
 
         @Test
         public void detectInterface_staticMethod() {
-            Map<String, Boolean> result = KIP37.detectInterface(kip37.getCaver(), kip37.getContractAddress());
+            Map<String, Boolean> result = caver.kct.kip37.detectInterface(kip37.getContractAddress());
             assertTrue(result.get(KIP37.INTERFACE.IKIP37.getName()));
             assertTrue(result.get(KIP37.INTERFACE.IKIP37_BURNABLE.getName()));
             assertTrue(result.get(KIP37.INTERFACE.IKIP37_METADATA.getName()));
@@ -998,7 +998,7 @@ public class KIP37Test {
             Contract contract = new Contract(caver, abi_mintable);
             contract.deploy(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(10000000)), byteCodeWithMintable, "uri");
 
-            Map<String, Boolean> result = KIP37.detectInterface(caver, contract.getContractAddress());
+            Map<String, Boolean> result = caver.kct.kip37.detectInterface(contract.getContractAddress());
             assertTrue(result.get(KIP37.INTERFACE.IKIP37.getName()));
             assertFalse(result.get(KIP37.INTERFACE.IKIP37_BURNABLE.getName()));
             assertTrue(result.get(KIP37.INTERFACE.IKIP37_METADATA.getName()));
@@ -1011,7 +1011,7 @@ public class KIP37Test {
             Contract contract = new Contract(caver, abi_without_pausable_burnable);
             contract.deploy(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(10000000)), byteCodeWithoutBurnablePausable, "uri");
 
-            Map<String, Boolean> result = KIP37.detectInterface(caver, contract.getContractAddress());
+            Map<String, Boolean> result = caver.kct.kip37.detectInterface(contract.getContractAddress());
             assertTrue(result.get(KIP37.INTERFACE.IKIP37.getName()));
             assertFalse(result.get(KIP37.INTERFACE.IKIP37_BURNABLE.getName()));
             assertTrue(result.get(KIP37.INTERFACE.IKIP37_METADATA.getName()));
@@ -1027,7 +1027,7 @@ public class KIP37Test {
             Contract contract = new Contract(caver, abi_not_supported_kip13);
             contract.deploy(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(10000000)), byteCodeNotSupportedKIP13);
 
-            Map<String, Boolean> result = KIP7.detectInterface(caver, contract.getContractAddress());
+            Map<String, Boolean> result = caver.kct.kip37.detectInterface(contract.getContractAddress());
         }
     }
 
@@ -1037,7 +1037,7 @@ public class KIP37Test {
         @BeforeClass
         public static void initCaver() throws Exception {
             caver = new Caver(Caver.DEFAULT_URL);
-            caver.wallet.add(KeyringFactory.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+            caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
         }
 
         @Test
@@ -1045,7 +1045,7 @@ public class KIP37Test {
             String expected = "https://token-cdn-domain/000000000000000000000000000000000000000000000000000000000004cce0.json";
 
             String tokenURI = "https://token-cdn-domain/{id}.json";
-            KIP37 kip37 = KIP37.deploy(caver, tokenURI, LUMAN.getAddress());
+            KIP37 kip37 = caver.kct.kip37.deploy(tokenURI, LUMAN.getAddress());
 
             String uriFromStr = kip37.uri("0x4cce0");
             assertEquals(expected, uriFromStr);
@@ -1057,7 +1057,7 @@ public class KIP37Test {
         @Test
         public void uriWithoutID() throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
             String tokenURI = "https://token-cdn-domain/example.json";
-            KIP37 kip37 = KIP37.deploy(caver, tokenURI, LUMAN.getAddress());
+            KIP37 kip37 = caver.kct.kip37.deploy(tokenURI, LUMAN.getAddress());
 
             String uriFromStr = kip37.uri("0x4cce0");
             assertEquals(tokenURI, uriFromStr);

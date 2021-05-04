@@ -17,6 +17,9 @@ plugins {
     id 'io.codearte.nexus-staging' version '0.30.0'
 }
 
+//It should only be applied on the ROOT project in a build.
+apply plugin: 'io.codearte.nexus-staging'
+
 allprojects {
     version '1.6.1'
     group 'com.klaytn.caver'

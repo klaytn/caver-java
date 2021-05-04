@@ -41,7 +41,6 @@ allprojects {
 }
 
 configure(subprojects.findAll {it.name != 'integration-test' }) {
-    apply plugin: 'maven'
     apply plugin: 'signing'
     apply plugin: 'maven-publish'
 

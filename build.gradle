@@ -10,17 +10,15 @@ buildscript {
 plugins {
     id 'java'
 
-    id "com.jfrog.bintray" version "1.8.4"
     id 'maven-publish'
-
-    id 'maven'
     id 'signing'
     id 'idea'
+
+    id 'io.codearte.nexus-staging' version '0.30.0'
 }
 
 allprojects {
-
-    version '1.6.0'
+    version '1.6.1'
     group 'com.klaytn.caver'
     description 'caver-java project'
 
@@ -37,86 +35,41 @@ allprojects {
     javadoc {
         options.encoding = 'UTF-8'
     }
-
 }
 
-subprojects {
-    apply plugin: 'java'
-
-    dependencies {
-        testCompile "junit:junit:$junitVersion"
-        testCompile "ch.qos.logback:logback-core:1.2.3",
-                "ch.qos.logback:logback-classic:1.2.3"
-    }
-
-    repositories {
-        mavenCentral()
-    }
-}
-
-configure(subprojects.findAll { it.name != 'integration-test' }) {
-
+configure(subprojects.findAll {it.name != 'integration-test' }) {
     apply plugin: 'maven'
     apply plugin: 'signing'
     apply plugin: 'maven-publish'
-    apply plugin: 'com.jfrog.bintray'
 
     // Deploy
     task javadocJar(type: Jar) {
-        classifier = 'javadoc'
+        archiveClassifier = 'javadoc'
         from javadoc
     }
 
     task sourcesJar(type: Jar) {
-        classifier = 'sources'
+        archiveClassifier = 'sources'
         from sourceSets.main.allSource
-    }
-
-    task testJar(type: Jar) {
-        classifier = 'tests'
-        from sourceSets.test.output
-    }
-
-    ext {
-        isSnapshotVersion = project.version.endsWith("-SNAPSHOT")
-    }
-
-    artifacts {
-        archives sourcesJar, javadocJar
     }
 
     ext {
         ossrhUsername = project.hasProperty('ossrhUsername') ? project.property('ossrhUsername') : System.getenv('OSSRH_USERNAME')
         ossrhPassword = project.hasProperty('ossrhPassword') ? project.property('ossrhPassword') : System.getenv('OSSRH_PASSWORD')
-        ossrhRepoUrl = project.hasProperty('ossrhRepoUrl') ? project.property('ossrhRepoUrl') : System.getenv('OSSRH_REPO_URL')
-        bintrayUser = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-        bintrayKey = project.hasProperty('bintrayKey') ? project.property('bintrayKey') : System.getenv('BINTRAY_KEY')
-        bintrayGpgPassphrase = project.hasProperty('bintrayGpgPassphrase') ? project.property('bintrayGpgPassphrase') : System.getenv('BINTRAY_GPG_PASSPHRASE')
-        isSnapshotVersion = project.version.endsWith("-SNAPSHOT")
     }
 
     publishing {
         publications {
             mavenJava(MavenPublication) {
                 from components.java
-
-                artifact sourcesJar {
-                    classifier 'sources'
-                }
-
-                artifact testJar {
-                    classifier 'tests'
-                }
-
-                artifact javadocJar {
-                    classifier 'javadoc'
-                }
+                artifact sourcesJar
+                artifact javadocJar
 
                 pom {
                     name = project.name
                     description = project.description
                     version = project.version
-                    url = "https://"
+                    url = "https://docs.klaytn.com/"
                     licenses {
                         license {
                             name = "The Apache License, Version 2.0"
@@ -139,125 +92,21 @@ configure(subprojects.findAll { it.name != 'integration-test' }) {
                 }
             }
         }
-    }
-
-    uploadArchives {
         repositories {
-            mavenDeployer {
-
-                onlyIf {
-                    isSnapshotVersion && ossrhUsername != '' && ossrhPassword != '' && ossrhRepoUrl != ''
-                }
-
-                repository(url: ossrhRepoUrl) {
-                    authentication(
-                            userName: ossrhUsername,
-                            password: ossrhPassword
-                    )
-                }
-
-                pom.project {
-                    name 'caver'
-                    packaging 'jar'
-                    description project.description
-                    url 'https://docs.klaytn.com'
-
-                    licenses {
-                        license {
-                            name = "The Apache License, Version 2.0"
-                            url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-                            distribution = "repo"
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id = "KlaytnDev"
-                            name = "caver-java Authors"
-                            email = "developer@klaytn.com"
-                        }
-                    }
-
-                    scm {
-                        connection = "scm:git:https://*.git"
-                        developerConnection = "scm:git://*.git"
-                        url = "https://*.git"
-                    }
+            maven {
+                url "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                credentials {
+                    username ossrhUsername
+                    password ossrhPassword
                 }
             }
         }
     }
 
-    bintray {
-        user = bintrayUser
-        key = bintrayKey
-        publications = ['mavenJava']
-        publish = true
-        pkg {
-            desc = project.description
-            repo = 'maven'
-            name = 'caver-java'
-            userOrg = 'klaytn'
-            licenses = ['Apache-2.0']
-            issueTrackerUrl = 'https://*'
-            vcsUrl = 'https://*.git'
-            websiteUrl = 'https://docs.klaytn.com'
-            publicDownloadNumbers = true
-
-            version {
-                name = project.version
-                desc = project.description
-                gpg {
-                    sign = true
-                    passphrase = bintrayGpgPassphrase
-                }
-                mavenCentralSync {
-                    sync = false
-                    user = ossrhUsername
-                    password = ossrhPassword
-                    close = '1'
-                }
-            }
-        }
-    }
-
-    task release {
-        dependsOn 'build'
-        dependsOn 'uploadArchives'
-
-        doLast {
-            if (isSnapshotVersion) {
-
-                if (!ossrhUsername || !ossrhPassword || !ossrhRepoUrl) {
-                    throw new InvalidUserDataException("Required parameters missing:  'ossrhUsername', 'ossrhPassword', 'ossrhRepoUrl'")
-                }
-
-                logger.lifecycle(" - ossrhUsername={}", ossrhUsername)
-                logger.lifecycle(" - ossrhPassword={}", ossrhPassword ? "provided" : "not_provided")
-                logger.lifecycle(" - ossrhRepoUrl={}", ossrhRepoUrl)
-            } else {
-                if (!ossrhUsername || !ossrhPassword || !ossrhRepoUrl) {
-                    throw new InvalidUserDataException("Required parameters missing:  'ossrhUsername', 'ossrhPassword', 'ossrhRepoUrl'")
-                }
-                if (!bintrayUser || !bintrayKey || !bintrayGpgPassphrase) {
-                    throw new InvalidUserDataException("Required parameters missing:  'bintrayUser', 'bintrayKey', 'bintrayGpgPassphrase'")
-                }
-                logger.lifecycle(" - ossrhUsername={}", ossrhUsername)
-                logger.lifecycle(" - ossrhPassword={}", ossrhPassword ? "provided" : "not_provided")
-                logger.lifecycle(" - ossrhRepoUrl={}", ossrhRepoUrl)
-                logger.lifecycle(" - bintrayUser={}", bintrayUser)
-                logger.lifecycle(" - bintrayKey={}", bintrayKey ? "provided" : "not_provided")
-                logger.lifecycle(" - bintrayGpgPassphrase={}", bintrayGpgPassphrase ? "provided" : "not_provided")
-            }
-        }
-
-        // Snapshots go to nexus, non-snapshots go to bintray.
-        if (isSnapshotVersion) {
-            dependsOn 'uploadArchives'
-            tasks.findByName('uploadArchives').mustRunAfter 'build'
-        } else {
-            dependsOn 'bintrayUpload'
-            tasks.findByName('bintrayUpload').mustRunAfter 'build'
-        }
+    signing {
+        def signingKey = findProperty("signingKey")
+        def signingPassword = findProperty("signingPassword")
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign publishing.publications.mavenJava
     }
 }

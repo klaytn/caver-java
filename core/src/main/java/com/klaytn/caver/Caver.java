@@ -67,7 +67,7 @@ public class Caver {
     public TransactionWrapper transaction;
 
     /**
-     * The IPFS instance.
+     * The IPFSWrapper instance.
      */
     public IPFSWrapper ipfs;
 

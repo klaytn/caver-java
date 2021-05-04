@@ -2,14 +2,13 @@ package com.klaytn.caver.ipfs;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.methods.response.TransactionReceipt;
+import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.transaction.type.ValueTransferMemo;
-import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import org.junit.Test;
 import org.web3j.protocol.exceptions.TransactionException;
-import org.web3j.utils.Numeric;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -17,7 +16,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 
 import static com.klaytn.caver.base.Accounts.BRANDON;
-import static com.klaytn.caver.base.Accounts.LUMAN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -41,17 +39,18 @@ public class IPFSTest {
     }
 
     public TransactionReceipt.TransactionReceiptData sendFileHash(Caver caver, String fileHash) throws IOException, TransactionException {
-        SingleKeyring klayProvider_keyring = KeyringFactory.createFromPrivateKey(key_klayProvider);
+        SingleKeyring klayProvider_keyring = caver.wallet.keyring.createFromPrivateKey(key_klayProvider);
         caver.wallet.add(klayProvider_keyring);
 
-        ValueTransferMemo tx = new ValueTransferMemo.Builder()
-                .setKlaytnCall(caver.rpc.klay)
-                .setFrom(klayProvider_keyring.getAddress())
-                .setTo(BRANDON.getAddress())
-                .setGas(BigInteger.valueOf(25000))
-                .setValue("0x00")
-                .setInput(fileHash)
-                .build();
+
+        ValueTransferMemo tx = caver.transaction.valueTransferMemo.create(
+                TxPropertyBuilder.valueTransferMemo()
+                        .setFrom(klayProvider_keyring.getAddress())
+                        .setTo(BRANDON.getAddress())
+                        .setGas(BigInteger.valueOf(25000))
+                        .setValue("0x00")
+                        .setInput(fileHash)
+        );
 
         caver.wallet.sign(klayProvider_keyring.getAddress(), tx);
 
@@ -64,18 +63,20 @@ public class IPFSTest {
 
     @Test
     public void fromHex() {
+        Caver caver = new Caver();
         String multiHashData = "0x12209cbc07c3f991725836a3aa2a581ca2029198aa420b9d99bc0e131d9f3e2cbe47";
         String expectedEncodedString = "QmYtUc4iTCbbfVSDNKvtQqrfyezPPnFvE33wFmutw9PBBk";
 
-        assertEquals(IPFS.fromHex(multiHashData), expectedEncodedString);
+        assertEquals(caver.ipfs.fromHex(multiHashData), expectedEncodedString);
     }
 
     @Test
     public void toHex() {
+        Caver caver = new Caver();
         String encodedMultiHash = "QmYtUc4iTCbbfVSDNKvtQqrfyezPPnFvE33wFmutw9PBBk";
         String expectedMultiHashData = "0x12209cbc07c3f991725836a3aa2a581ca2029198aa420b9d99bc0e131d9f3e2cbe47";
 
-        assertEquals(IPFS.toHex(encodedMultiHash), expectedMultiHashData);
+        assertEquals(caver.ipfs.toHex(encodedMultiHash), expectedMultiHashData);
     }
 
     @Test
@@ -123,10 +124,10 @@ public class IPFSTest {
         createFile(fileName, text);
         String encodedHash = caver.ipfs.add(fileName);
 
-        TransactionReceipt.TransactionReceiptData receiptData = sendFileHash(caver, IPFS.toHex(encodedHash));
+        TransactionReceipt.TransactionReceiptData receiptData = sendFileHash(caver, caver.ipfs.toHex(encodedHash));
         String multiHash = receiptData.getInput();
 
-        String encoded = IPFS.fromHex(multiHash);
+        String encoded = caver.ipfs.fromHex(multiHash);
         byte[] data = caver.ipfs.get(encoded);
 
         assertEquals(text, new String(data));

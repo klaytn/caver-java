@@ -19,7 +19,7 @@ package com.klaytn.caver;
 import com.klaytn.caver.abi.ABIWrapper;
 import com.klaytn.caver.account.AccountWrapper;
 import com.klaytn.caver.contract.ContractWrapper;
-import com.klaytn.caver.ipfs.IPFS;
+import com.klaytn.caver.ipfs.IPFSWrapper;
 import com.klaytn.caver.kct.KCTWrapper;
 import com.klaytn.caver.rpc.RPC;
 import com.klaytn.caver.transaction.TransactionWrapper;
@@ -69,7 +69,7 @@ public class Caver {
     /**
      * The IPFS instance.
      */
-    public IPFS ipfs;
+    public IPFSWrapper ipfs;
 
     /**
      * The AccountWrapper instance
@@ -117,7 +117,7 @@ public class Caver {
      * @param service Web3jService
      */
     public Caver(Web3jService service) {
-        ipfs = new IPFS();
+        ipfs = new IPFSWrapper();
         rpc = new RPC(service);
         wallet = new KeyringContainer();
         account = new AccountWrapper();
@@ -169,10 +169,10 @@ public class Caver {
     }
 
     /**
-     * Getter for IPFS
-     * @return IPFS
+     * Getter for IPFSWrapper
+     * @return IPFSWrapper
      */
-    public IPFS getIpfs() {
+    public IPFSWrapper getIpfs() {
         return ipfs;
     }
 

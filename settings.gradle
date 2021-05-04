@@ -3,5 +3,3 @@ include 'codegen'
 include 'core'
 include 'console'
 include 'integration-test'
-
-enableFeaturePreview('STABLE_PUBLISHING')

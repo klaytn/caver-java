@@ -201,7 +201,7 @@ public class KeyringContainer implements IWallet{
             return false;
         }
         //deallocate keyring object created for keyringContainer.
-        AbstractKeyring removed = this.addressKeyringMap.remove(address);
+        AbstractKeyring removed = this.addressKeyringMap.remove(address.toLowerCase());
         removed = null;
 
         return true;

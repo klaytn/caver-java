@@ -9,13 +9,10 @@ import com.klaytn.caver.transaction.type.AccountUpdate;
 import com.klaytn.caver.transaction.type.FeeDelegatedValueTransfer;
 import com.klaytn.caver.transaction.type.ValueTransfer;
 import com.klaytn.caver.utils.Utils;
-import com.klaytn.caver.wallet.KeyringContainer;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -535,6 +532,34 @@ public class KeyringContainerTest {
             assertTrue(result);
             assertEquals(0, caver.wallet.length());
             assertNull(caver.wallet.getKeyring(keyringToAdd.getAddress()));
+        }
+
+        @Test
+        public void keyringWithChecksumAddress() {
+            String checksumAddress = "0xAF00B68464538Ee586b4f20C22b8A4ad28Ac4761";
+            SingleKeyring singleKeyring = caver.wallet.keyring.create(
+                    checksumAddress,
+                    caver.wallet.keyring.generateSingleKey()
+            );
+            caver.wallet.add(singleKeyring);
+            caver.wallet.remove(singleKeyring.getAddress());
+            assertEquals("Should remove singleKeyring having checksum address from caver.wallet", caver.wallet.length() , 0);
+
+            MultipleKeyring multipleKeyring = caver.wallet.keyring.createWithMultipleKey(
+                    checksumAddress,
+                    caver.wallet.keyring.generateMultipleKeys(3)
+            );
+            caver.wallet.add(multipleKeyring);
+            caver.wallet.remove(multipleKeyring.getAddress());
+            assertEquals("Should remove multipleKeyring having checksum address from caver.wallet", caver.wallet.length(), 0);
+
+            RoleBasedKeyring roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(
+                    checksumAddress,
+                    caver.wallet.keyring.generateRolBasedKeys(new int[]{2, 2, 1})
+            );
+            caver.wallet.add(roleBasedKeyring);
+            caver.wallet.remove(multipleKeyring.getAddress());
+            assertEquals("Should remove roleBasedKeyring having checksum address from caver.wallet", caver.wallet.length(), 0);
         }
     }
 

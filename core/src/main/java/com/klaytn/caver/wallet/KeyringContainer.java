@@ -22,7 +22,7 @@ import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
-import com.klaytn.caver.wallet.keyring.KeyringFactoryWrapper;
+import com.klaytn.caver.wallet.keyring.wrapper.KeyringFactoryWrapper;
 import com.klaytn.caver.wallet.keyring.MessageSigned;
 
 import java.io.IOException;

@@ -16,17 +16,16 @@
 
 package com.klaytn.caver;
 
-import com.klaytn.caver.abi.ABIWrapper;
-import com.klaytn.caver.account.AccountWrapper;
-import com.klaytn.caver.contract.ContractWrapper;
-import com.klaytn.caver.ipfs.IPFSWrapper;
-import com.klaytn.caver.kct.KCTWrapper;
+import com.klaytn.caver.abi.wrapper.ABIWrapper;
+import com.klaytn.caver.account.wrapper.AccountWrapper;
+import com.klaytn.caver.contract.wrapper.ContractWrapper;
+import com.klaytn.caver.ipfs.wrapper.IPFSWrapper;
+import com.klaytn.caver.kct.wrapper.KCTWrapper;
 import com.klaytn.caver.rpc.RPC;
-import com.klaytn.caver.transaction.TransactionWrapper;
-import com.klaytn.caver.utils.UtilsWrapper;
+import com.klaytn.caver.transaction.wrapper.TransactionWrapper;
+import com.klaytn.caver.utils.wrapper.UtilsWrapper;
 import com.klaytn.caver.wallet.IWallet;
 import com.klaytn.caver.wallet.KeyringContainer;
-import okhttp3.OkHttpClient;
 import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.http.HttpService;
 

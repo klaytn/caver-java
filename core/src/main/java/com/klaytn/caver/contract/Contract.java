@@ -722,6 +722,8 @@ public class Contract {
                 events.put(event.getName(), event);
             } else if(element.get("type").asText().equals("constructor")) {
                 ContractMethod method = objectMapper.readValue(element.toString(), ContractMethod.class);
+                //add a constructor info in methods.
+                methods.put("constructor", method);
                 this.constructor = method;
             }
         }

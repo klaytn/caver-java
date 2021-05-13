@@ -117,7 +117,8 @@ public class SendOptions {
      * Creates a SendOptions instance.
      * @param from The address of the sender.
      * @param gas The maximum amount of gas the transaction is allowed to use.
-     * @param value The amount of KLAY in peb to be transferred.
+     * @param feePayer The address of fee payer.
+     * @param feeRatio The fee ratio of the fee payer.
      */
     public SendOptions(String from, String gas, String feePayer, String feeRatio) {
         this(from, gas, "0x0", true, feePayer, feeRatio);
@@ -127,7 +128,8 @@ public class SendOptions {
      * Creates a SendOptions instance.
      * @param from The address of the sender.
      * @param gas The maximum amount of gas the transaction is allowed to use.
-     * @param value The amount of KLAY in peb to be transferred.
+     * @param feePayer The address of fee payer.
+     * @param feeRatio The fee ratio of the fee payer.
      */
     public SendOptions(String from, BigInteger gas, String feePayer, BigInteger feeRatio) {
         this(from, gas, BigInteger.ZERO, true, feePayer, feeRatio);
@@ -326,15 +328,13 @@ public class SendOptions {
             throw new IllegalArgumentException("Before set a 'feePayer' field, it should set a 'feeDelegation' field to true.");
         }
 
-        if(feePayer == null || feePayer.equals("0x")) {
-            feePayer = Utils.DEFAULT_ZERO_ADDRESS;
-        }
+        if(feePayer != null) {
+            if(!Utils.isAddress(feePayer)) {
+                throw new IllegalArgumentException("Invalid address. : " + feePayer);
+            }
 
-        if(!Utils.isAddress(feePayer)) {
-            throw new IllegalArgumentException("Invalid address. : " + feePayer);
+            this.feePayer = feePayer;
         }
-
-        this.feePayer = feePayer;
     }
 
     /**
@@ -359,6 +359,7 @@ public class SendOptions {
         }
 
         if(feeRatio == null || feeRatio.isEmpty()) {
+            this.feeRatio = "0x0";
             return;
         }
 

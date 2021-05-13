@@ -56,85 +56,12 @@ public class SendOptions {
      * The fee ratio of the fee payer.
      * The valid range is between 1 and 99. Zero(0) is not allowed. 100 and above are not allowed as well.
      */
-    String feeRatio;
-
-    public static class Builder {
-        String from;
-        String gas;
-        String value = "0x0";
-        boolean feeDelegation;
-        String feePayer;
-        String feeRatio;
-
-        public Builder() {
-        }
-
-        public Builder setFrom(String from) {
-            this.from = from;
-            return this;
-        }
-
-        public Builder setGas(BigInteger gas) {
-            return setGas(Numeric.toHexStringWithPrefix(gas));
-        }
-
-        public Builder setGas(String gas) {
-            this.gas = gas;
-            return this;
-        }
-
-        public Builder setValue(BigInteger value) {
-            return setGas(Numeric.toHexStringWithPrefix(value));
-        }
-
-        public Builder setValue(String value) {
-            this.value = value;
-            return this;
-        }
-
-        public Builder setFeeDelegation(boolean feeDelegation) {
-            this.feeDelegation = feeDelegation;
-            return this;
-        }
-
-        public Builder setFeePayer(String feePayer) {
-            this.feePayer = feePayer;
-            return this;
-        }
-
-        public Builder setFeeRatio(BigInteger feeRatio) {
-            return setFeeRatio(Numeric.toHexStringWithPrefix(feeRatio));
-        }
-
-        public Builder setFeeRatio(String feeRatio) {
-            this.feeRatio = feeRatio;
-            return this;
-        }
-
-        public SendOptions build() {
-            return new SendOptions(this);
-        }
-    }
+    String feeRatio = "0x0";
 
     /**
      * Creates a SendOptions instance.
      */
     public SendOptions() { }
-
-    /**
-     * Creates a SendOptions instance
-     * @param builder The SendOptions.Builder instance.
-     */
-    public SendOptions(Builder builder) {
-        this(
-                builder.from,
-                builder.gas,
-                builder.value,
-                builder.feeDelegation,
-                builder.feePayer,
-                builder.feeRatio
-        );
-    }
 
     /**
      * Creates a SendOptions instance.

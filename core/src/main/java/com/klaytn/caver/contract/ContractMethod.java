@@ -804,7 +804,7 @@ public class ContractMethod {
                 feePayer = sendOption.getFeePayer();
             }
 
-            if(!sendOption.getFeeRatio().equals("0x0")) {
+            if(sendOption.getFeeRatio() != null) {
                 feeRatio = sendOption.getFeeRatio();
             }
         }
@@ -958,7 +958,7 @@ public class ContractMethod {
     private AbstractTransaction createTransaction(SendOptions sendOptions, String encoded) {
         if(getType().equals("constructor")) { // contract deploy
             if(sendOptions.isFeeDelegation()) { // fee delegation transaction
-                if(sendOptions.getFeeRatio().equals("0x0")) {
+                if(sendOptions.getFeeRatio() == null) {
                     return caver.transaction.feeDelegatedSmartContractDeploy.create(
                             TxPropertyBuilder.feeDelegatedSmartContractDeploy()
                                     .setFrom(sendOptions.getFrom())
@@ -989,7 +989,7 @@ public class ContractMethod {
             }
         } else { // contract execution
             if(sendOptions.isFeeDelegation()) { // fee delegation transaction
-                if(sendOptions.getFeeRatio().equals("0x0")) {
+                if(sendOptions.getFeeRatio() == null) {
                     return caver.transaction.feeDelegatedSmartContractExecution.create(
                             TxPropertyBuilder.feeDelegatedSmartContractExecution()
                                     .setFrom(sendOptions.getFrom())

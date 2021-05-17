@@ -826,20 +826,20 @@ public class ContractMethod {
      * @param options SendOption instance.
      */
     private void checkSendOption(SendOptions options) {
-        if(options.getFrom() == null || ! Utils.isAddress(options.getFrom())) {
+        if(options.getFrom() == null || !Utils.isAddress(options.getFrom())) {
             throw new IllegalArgumentException("Invalid 'from' parameter : " + options.getFrom());
         }
 
-        if(options.getGas() == null || ! Utils.isNumber(options.getGas())) {
+        if(options.getGas() == null || !Utils.isNumber(options.getGas())) {
             throw new IllegalArgumentException("Invalid 'gas' parameter : " + options.getGas());
         }
 
-        if(options.getValue() == null || ! Utils.isNumber(options.getValue())) {
+        if(options.getValue() == null || !Utils.isNumber(options.getValue())) {
             throw new IllegalArgumentException("Invalid 'value' parameter : " + options.getValue());
         }
 
         if(options.isFeeDelegation()) {
-            if(options.getFeePayer() == null || Utils.isAddress(options.getFeePayer())) {
+            if(options.getFeePayer() == null || !Utils.isAddress(options.getFeePayer())) {
                 throw new IllegalArgumentException("Invalid 'feePayer' parameter : " + options.getFeePayer());
             }
 

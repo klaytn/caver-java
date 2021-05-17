@@ -56,7 +56,7 @@ public class SendOptions {
      * The fee ratio of the fee payer.
      * The valid range is between 1 and 99. Zero(0) is not allowed. 100 and above are not allowed as well.
      */
-    String feeRatio = "0x0";
+    String feeRatio;
 
     /**
      * Creates a SendOptions instance.
@@ -279,7 +279,7 @@ public class SendOptions {
         }
 
         if(feeRatio == null || feeRatio.isEmpty()) {
-            this.feeRatio = "0x0";
+            this.feeRatio = null;
             return;
         }
 

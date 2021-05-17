@@ -75,7 +75,7 @@ public class FeeDelegatedSmartContractDeploy extends AbstractFeeDelegatedTransac
         String codeFormat = Numeric.toHexStringWithPrefix(CodeFormat.EVM);
 
         public Builder() {
-            super(TransactionType.TxTypeSmartContractDeploy.toString());
+            super(TransactionType.TxTypeFeeDelegatedSmartContractDeploy.toString());
         }
 
         public Builder setTo(String to) {

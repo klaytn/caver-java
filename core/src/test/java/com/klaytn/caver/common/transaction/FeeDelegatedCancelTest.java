@@ -5,6 +5,7 @@ import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.type.FeeDelegatedCancel;
 import com.klaytn.caver.transaction.type.FeeDelegatedSmartContractExecution;
+import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Before;
 import org.junit.Rule;
@@ -73,6 +74,7 @@ public class FeeDelegatedCancelTest {
                     .build();
 
             assertNotNull(txObj);
+            assertEquals(TransactionType.TxTypeFeeDelegatedCancel.toString(), txObj.getType());
         }
 
         @Test

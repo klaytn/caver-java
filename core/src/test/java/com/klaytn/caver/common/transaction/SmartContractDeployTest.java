@@ -4,6 +4,7 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.type.SmartContractDeploy;
+import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.utils.CodeFormat;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.PrivateKey;
@@ -85,6 +86,7 @@ public class SmartContractDeployTest {
                     .build();
 
             assertNotNull(txObj);
+            assertEquals(TransactionType.TxTypeSmartContractDeploy.toString(), txObj.getType());
         }
 
         @Test

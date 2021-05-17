@@ -4,6 +4,7 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.type.FeeDelegatedCancelWithRatio;
+import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Before;
 import org.junit.Rule;
@@ -75,6 +76,7 @@ public class FeeDelegatedCancelWithRatioTest {
                     .build();
 
             assertNotNull(txObj);
+            assertEquals(TransactionType.TxTypeFeeDelegatedCancelWithRatio.toString(), txObj.getType());
         }
 
         @Test
@@ -297,6 +299,7 @@ public class FeeDelegatedCancelWithRatioTest {
             );
 
             assertNotNull(txObj);
+            assertEquals(TransactionType.TxTypeFeeDelegatedCancelWithRatio.toString(), txObj.getType());
         }
 
         @Test

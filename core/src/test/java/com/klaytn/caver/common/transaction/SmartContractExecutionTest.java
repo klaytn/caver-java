@@ -4,6 +4,7 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.type.SmartContractExecution;
+import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.PrivateKey;
 import com.klaytn.caver.wallet.keyring.RoleBasedKeyring;
@@ -82,6 +83,7 @@ public class SmartContractExecutionTest {
                     .build();
 
             assertNotNull(txObj);
+            assertEquals(TransactionType.TxTypeSmartContractExecution.toString(), txObj.getType());
         }
 
         @Test
@@ -347,6 +349,7 @@ public class SmartContractExecutionTest {
             );
 
             assertNotNull(txObj);
+            assertEquals(TransactionType.TxTypeSmartContractExecution.toString(), txObj.getType());
         }
 
         @Test

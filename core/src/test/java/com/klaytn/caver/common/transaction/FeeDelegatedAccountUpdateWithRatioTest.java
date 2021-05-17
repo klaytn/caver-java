@@ -6,6 +6,7 @@ import com.klaytn.caver.account.WeightedMultiSigOptions;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.type.FeeDelegatedAccountUpdateWithRatio;
+import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Before;
 import org.junit.Rule;
@@ -367,6 +368,7 @@ public class FeeDelegatedAccountUpdateWithRatioTest {
         public void BuilderTest() {
             txObj = builder.build();
             assertNotNull(txObj);
+            assertEquals(TransactionType.TxTypeFeeDelegatedAccountUpdateWithRatio.toString(), txObj.getType());
         }
 
         @Test

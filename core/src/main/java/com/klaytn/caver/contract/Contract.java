@@ -187,28 +187,12 @@ public class Contract {
      * @throws InvocationTargetException
      */
     public Contract deploy(ContractDeployParams deployParam, SendOptions sendOptions, TransactionReceiptProcessor processor) throws TransactionException, IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException {
-        String input = ABI.encodeContractDeploy(this.getConstructor(), deployParam.getBytecode(), deployParam.getDeployParams());
+        deployParam.getDeployParams().add(0, deployParam.getBytecode());
+        TransactionReceipt.TransactionReceiptData receiptData = this.getMethod("constructor").send(deployParam.getDeployParams(), sendOptions, processor);
 
-        SmartContractDeploy smartContractDeploy = new SmartContractDeploy.Builder()
-                .setKlaytnCall(caver.rpc.klay)
-                .setFrom(sendOptions.getFrom())
-                .setInput(input)
-                .setCodeFormat(CodeFormat.EVM)
-                .setHumanReadable(false)
-                .setGas(sendOptions.getGas())
-                .build();
-
-        this.wallet.sign(sendOptions.getFrom(), smartContractDeploy);
-
-        Bytes32 response = caver.rpc.klay.sendRawTransaction(smartContractDeploy.getRawTransaction()).send();
-        if(response.hasError()) {
-            throw new IOException(response.getError().getMessage());
-        }
-
-        TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(response.getResult());
-
-        String contractAddress = receipt.getContractAddress();
+        String contractAddress = receiptData.getContractAddress();
         this.setContractAddress(contractAddress);
+
         return this;
     }
 

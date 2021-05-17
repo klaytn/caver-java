@@ -100,7 +100,9 @@ public class SendOptions {
      * @param value The amount of KLAY in peb to be transferred.
      */
     public SendOptions(String from, String gas, String value) {
-        this(from, gas, value, false, null, null);
+        setFrom(from);
+        setGas(gas);
+        setValue(value);
     }
 
     /**
@@ -110,91 +112,9 @@ public class SendOptions {
      * @param value The amount of KLAY in peb to be transferred.
      */
     public SendOptions(String from, BigInteger gas, BigInteger value) {
-        this(from, gas, value, false, null, null);
-    }
-
-    /**
-     * Creates a SendOptions instance.
-     * @param from The address of the sender.
-     * @param gas The maximum amount of gas the transaction is allowed to use.
-     * @param feePayer The address of fee payer.
-     * @param feeRatio The fee ratio of the fee payer.
-     */
-    public SendOptions(String from, String gas, String feePayer, String feeRatio) {
-        this(from, gas, "0x0", true, feePayer, feeRatio);
-    }
-
-    /**
-     * Creates a SendOptions instance.
-     * @param from The address of the sender.
-     * @param gas The maximum amount of gas the transaction is allowed to use.
-     * @param feePayer The address of fee payer.
-     * @param feeRatio The fee ratio of the fee payer.
-     */
-    public SendOptions(String from, BigInteger gas, String feePayer, BigInteger feeRatio) {
-        this(from, gas, BigInteger.ZERO, true, feePayer, feeRatio);
-    }
-
-    /**
-     * Creates a SendOptions instance.
-     * It enables a fee delegation feature.
-     * @param from The address of the sender.
-     * @param gas The maximum amount of gas the transaction is allowed to use.
-     * @param value The amount of KLAY in peb to be transferred.
-     * @param feePayer The address of fee payer.
-     * @param feeRatio The fee ratio of the fee payer.
-     */
-    public SendOptions(String from, String gas, String value, String feePayer, String feeRatio) {
-        this(from, gas, value, true, feePayer, feeRatio);
-    }
-
-    /**
-     * Creates a SendOptions instance.
-     * It enables a fee delegation feature.
-     * @param from The address of the sender.
-     * @param gas The maximum amount of gas the transaction is allowed to use.
-     * @param value The amount of KLAY in peb to be transferred.
-     * @param feePayer The address of fee payer.
-     * @param feeRatio The fee ratio of the fee payer.
-     */
-    public SendOptions(String from, BigInteger gas, BigInteger value, String feePayer, BigInteger feeRatio) {
-        this(from, gas, value, true, feePayer, feeRatio);
-    }
-
-    /**
-     * Creates a SendOptions instance.
-     * @param from The address of the sender.
-     * @param gas The maximum amount of gas the transaction is allowed to use.
-     * @param value The amount of KLAY in peb to be transferred.
-     * @param feeDelegation The flag whether fee delegation feature is active.
-     * @param feePayer The address of the fee payer.
-     * @param feeRatio The fee ratio of the fee payer.
-     */
-    public SendOptions(String from, String gas, String value, boolean feeDelegation, String feePayer, String feeRatio) {
         setFrom(from);
         setGas(gas);
         setValue(value);
-        setFeeDelegation(feeDelegation);
-        setFeePayer(feePayer);
-        setFeeRatio(feeRatio);
-    }
-
-    /**
-     * Creates a SendOptions instance.
-     * @param from The address of the sender.
-     * @param gas The maximum amount of gas the transaction is allowed to use.
-     * @param value The amount of KLAY in peb to be transferred.
-     * @param feeDelegation The flag whether fee delegation feature is active.
-     * @param feePayer The address of the fee payer.
-     * @param feeRatio The fee ratio of the fee payer.
-     */
-    public SendOptions(String from, BigInteger gas, BigInteger value, boolean feeDelegation, String feePayer, BigInteger feeRatio) {
-        setFrom(from);
-        setGas(gas);
-        setValue(value);
-        setFeeDelegation(feeDelegation);
-        setFeePayer(feePayer);
-        setFeeRatio(feeRatio);
     }
 
     /**

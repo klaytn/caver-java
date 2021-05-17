@@ -943,12 +943,33 @@ public class ContractMethod {
             if(sendOption.getGas() != null) {
                 gas = sendOption.getGas();
             }
-            if(! sendOption.getValue().equals("0x0")) {
+            if(!sendOption.getValue().equals("0x0")) {
                 value = sendOption.getValue();
+            }
+
+            if(sendOption.isFeeDelegation()) {
+                isFeeDelegation = sendOption.isFeeDelegation();
+            }
+
+            if(sendOption.getFeePayer() != null) {
+                feePayer = sendOption.getFeePayer();
+            }
+
+            if(!sendOption.getFeeRatio().equals("0x0")) {
+                feeRatio = sendOption.getFeeRatio();
             }
         }
 
-        return new SendOptions(from, gas, value);
+        SendOptions options = new SendOptions(from, gas, value);
+        options.setFeeDelegation(isFeeDelegation);
+
+        if(options.isFeeDelegation()) {
+            options.setFeePayer(feePayer);
+            options.setFeeRatio(feeRatio);
+        }
+
+
+        return options;
     }
 
     /**

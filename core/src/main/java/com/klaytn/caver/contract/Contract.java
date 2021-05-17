@@ -711,5 +711,14 @@ public class Contract {
                 this.constructor = method;
             }
         }
+        //if the constructor is not existed in ABI, creates a dummy instance and adds it.
+        if(methods.get("constructor") == null) {
+            ContractMethod method = new ContractMethod();
+            method.setType(ContractMethod.TYPE_CONSTRUCTOR);
+            method.setInputs(new ArrayList<ContractIOType>());
+
+            methods.put("constructor", method);
+            this.constructor = method;
+        }
     }
 }

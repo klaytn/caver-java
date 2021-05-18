@@ -244,10 +244,6 @@ public class SendOptions {
      * @param feePayer The address of fee payer.
      */
     public void setFeePayer(String feePayer) {
-        if(!isFeeDelegation()) {
-            throw new IllegalArgumentException("Before set a 'feePayer' field, it should set a 'feeDelegation' field to true.");
-        }
-
         if(feePayer != null) {
             if(!Utils.isAddress(feePayer)) {
                 throw new IllegalArgumentException("Invalid address. : " + feePayer);
@@ -270,14 +266,6 @@ public class SendOptions {
      * @param feeRatio A fee ratio of the fee payer represented as a hexadecimal string.
      */
     public void setFeeRatio(String feeRatio) {
-        if(!isFeeDelegation()) {
-            throw new IllegalArgumentException("Before set a 'feeRatio' field, it should set a 'feeDelegation' field to true.");
-        }
-
-        if(getFeePayer().equals(Utils.DEFAULT_ZERO_ADDRESS)) {
-            throw new IllegalArgumentException("Before set a 'feeRatio' field, it should set a 'feePayer' field.");
-        }
-
         if(feeRatio == null || feeRatio.isEmpty()) {
             this.feeRatio = null;
             return;

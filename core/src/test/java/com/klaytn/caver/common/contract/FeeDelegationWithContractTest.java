@@ -29,7 +29,9 @@ import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.utils.Utils;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.web3j.protocol.exceptions.TransactionException;
 
 import java.io.IOException;
@@ -246,6 +248,9 @@ public class FeeDelegationWithContractTest {
     }
 
     public static class deployAndSendFeeDelegatedTransaction {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
         static Caver caver;
         static String sender;
         static String feePayer;
@@ -361,10 +366,28 @@ public class FeeDelegationWithContractTest {
 
             String value = (String)contract.call("get", keyString).get(0).getValue();
             assertEquals(valueString, value);
+        }
+
+        @Test
+        public void throw_Exception_execute_contractMethod() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("The fee payer value is not valid. feePayer address - " );
+
+            Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
+            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            sendOptions.setFeeDelegation(true);
+
+            String keyString = "contract";
+            String valueString = "so convenient";
+
+            TransactionReceipt.TransactionReceiptData receiptData = contract.getMethod("set").send(Arrays.asList(keyString, valueString), sendOptions);
         }
     }
 
     public static class deployAndSendFeeDelegatedWithRatioTransaction {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
         static Caver caver;
         static String sender;
         static String feePayer;
@@ -490,6 +513,22 @@ public class FeeDelegationWithContractTest {
 
             String value = (String)contract.call("get", keyString).get(0).getValue();
             assertEquals(valueString, value);
+        }
+
+        @Test
+        public void throwException_execute_contractMethod() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("The fee payer value is not valid. feePayer address - " );
+
+            Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
+            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            sendOptions.setFeeDelegation(true);
+            sendOptions.setFeeRatio(BigInteger.valueOf(10));
+
+            String keyString = "contract";
+            String valueString = "so convenient";
+
+            TransactionReceipt.TransactionReceiptData receiptData = contract.getMethod("set").send(Arrays.asList(keyString, valueString), sendOptions);
         }
     }
 

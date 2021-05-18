@@ -250,7 +250,10 @@ public class ContractMethod {
         SendOptions determinedOption = makeSendOption(options);
         AbstractTransaction transaction = sign(arguments, determinedOption);
 
-        if(determinedOption.isFeeDelegation() && determinedOption.getFeePayer() != null) {
+        if(determinedOption.isFeeDelegation()) {
+            if(determinedOption.getFeePayer() == null || !Utils.isAddress(determinedOption.getFeePayer())) {
+                throw new IllegalArgumentException("The fee payer value is not valid. feePayer address - " + determinedOption.getFeePayer());
+            }
             transaction = this.wallet.signAsFeePayer(determinedOption.getFeePayer(), (AbstractFeeDelegatedTransaction)transaction);
         }
 

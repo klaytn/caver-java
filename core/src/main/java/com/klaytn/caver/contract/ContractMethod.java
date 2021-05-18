@@ -198,6 +198,13 @@ public class ContractMethod {
      *   - arguments[0] : Smart contract's bytecode.
      *   - others : The constructor arguments to deploy smart contract.
      * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
+     * <code>
+     *     String sender = "0x{sender address}";
+     *     Contract contract = new Contract(caver, abiWithoutConstructor);
+     *     SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+     *
+     *     TransactionReceipt.TransactionReceiptData deployed = contract.getMethod("constructor").send(Arrays.asList(byteCodeWithoutConstructor), sendOptions);
+     * </code>
      * </pre>
      * @param arguments A List of parameter to call smart contract method.
      * @param options An option to deploy or execute smart contract method.
@@ -220,6 +227,13 @@ public class ContractMethod {
      * If the 'type' field is a "constructor", the arguments parsed as follow.
      *   - arguments[0] : Smart contract's bytecode.
      *   - others : The constructor arguments to deploy smart contract.
+     * <code>
+     *     String sender = "0x{sender address}";
+     *     Contract contract = new Contract(caver, abiWithoutConstructor);
+     *     SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+     *
+     *     TransactionReceipt.TransactionReceiptData deployed = contract.getMethod("constructor").send(Arrays.asList(byteCodeWithoutConstructor), sendOptions, new PollingTransactionReceiptProcessor(caver, 1000, 15));
+     * </code>
      * </pre>
      * @param arguments A List of parameter to call smart contract method.
      * @param options An option to deploy or execute smart contract method.
@@ -271,6 +285,16 @@ public class ContractMethod {
      * If the 'type' field is a "constructor", the arguments parsed as follow.
      *   - arguments[0] : Smart contract's bytecode.
      *   - others : The constructor arguments to deploy smart contract.
+     * <code>
+     *     String sender = "0x{address}"
+     *     Contract contract = new Contract(caver, abiWithConstructor);
+     *     SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+     *
+     *     String constructor_param1 = "key";
+     *     String constructor_param2 = "valueString";
+     *
+     *     AbstractTransaction transaction = contract.getMethod("constructor").sign(Arrays.asList(byteCodeWithConstructor, constructor_param1, constructor_param2), sendOptions);
+     * </code>
      * </pre>
      * @param arguments The list of arguments to deploy or execute a smart contract.
      * @param sendOptions An option to deploy or execute smart contract method.
@@ -283,12 +307,10 @@ public class ContractMethod {
      * @throws IOException
      */
     public AbstractTransaction sign(List<Object> arguments, SendOptions sendOptions) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException {
+        String encoded = encodeABI(arguments);
         //Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
         //Passed parameter "options" has higher priority than "defaultSendOption" field.
         SendOptions determinedOption = makeSendOption(sendOptions);
-        checkSendOption(determinedOption);
-
-        String encoded = encodeABI(arguments);
 
         AbstractTransaction transaction = createTransaction(determinedOption, encoded);
         return caver.wallet.sign(determinedOption.getFrom(), transaction);
@@ -321,6 +343,16 @@ public class ContractMethod {
      * If the 'type' field is a "constructor", the arguments parsed as follow.
      *   - arguments[0] : Smart contract's bytecode.
      *   - others : The constructor arguments to deploy smart contract.
+     * <code>
+     *     String sender = "0x{address}"
+     *     Contract contract = new Contract(caver, abiWithConstructor);
+     *     SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+     *
+     *     String constructor_param1 = "key";
+     *     String constructor_param2 = "valueString";
+     *
+     *     AbstractTransaction transaction = contract.getMethod("constructor").signAsFeePayer(Arrays.asList(byteCodeWithConstructor, constructor_param1, constructor_param2), sendOptions);
+     * </code>
      * </pre>
      * @param arguments The list of arguments to deploy or execute a smart contract.
      * @param sendOptions An option to deploy or execute smart contract method.
@@ -960,6 +992,8 @@ public class ContractMethod {
     }
 
     private AbstractTransaction createTransaction(SendOptions sendOptions, String encoded) {
+        checkSendOption(sendOptions);
+
         if(getType().equals("constructor")) { // contract deploy
             if(sendOptions.isFeeDelegation()) { // fee delegation transaction
                 if(sendOptions.getFeeRatio() == null) {

@@ -290,8 +290,7 @@ public class Contract {
      * @throws IllegalAccessException
      */
     public List<Type> call(CallObject callObject, String methodName, Object... methodArguments) throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        ContractMethod contractMethod = this.getMethod(methodName);
-        return contractMethod.call(Arrays.asList(methodArguments), callObject);
+        return this.getMethod(methodName).call(Arrays.asList(methodArguments), callObject);
     }
 
     /**
@@ -320,9 +319,7 @@ public class Contract {
      * @throws ClassNotFoundException
      */
     public List<Type> callWithSolidityType(CallObject callObject, String methodName, Type... methodArguments) throws IOException, ClassNotFoundException {
-        ContractMethod contractMethod = this.getMethod(methodName);
-
-        return contractMethod.callWithSolidityWrapper(Arrays.asList(methodArguments), callObject);
+        return this.getMethod(methodName).callWithSolidityWrapper(Arrays.asList(methodArguments), callObject);
     }
 
     /**
@@ -472,9 +469,10 @@ public class Contract {
      * <code>
      *     String abi = "Contract ABI data"
      *     String bytecode = "0x{Contract bytecode}"
+     *     SendOptions sendOptions = new SendOptions(from, gas);
      *
      *     Contract contract = new Contract(caver, abi);
-     *     contract.sign("constructor", bytecode, constructor_param1, constructor_param2...)
+     *     contract.sign(sendOptions, "constructor", bytecode, constructor_param1, constructor_param2...)
      * </code>
      * </pre>
      * @param sendOptions An option to deploy or execute smart contract method.
@@ -561,6 +559,7 @@ public class Contract {
      * <code>
      *     String abi = "Contract ABI data"
      *     String bytecode = "0x{Contract bytecode}"
+     *     SendOptions sendOptions = new SendOptions(from, gas);
      *
      *     Contract contract = new Contract(caver, abi);
      *     contract.sign("constructor", bytecode, constructor_param1, constructor_param2...)

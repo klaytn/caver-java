@@ -839,7 +839,11 @@ public class ContractMethod {
         }
 
         if(options.isFeeDelegation()) {
-            if(options.getFeePayer() == null || !Utils.isAddress(options.getFeePayer())) {
+            if(options.getFeePayer() == null || options.getFeePayer().equals("0x")) {
+                options.setFeePayer(Utils.DEFAULT_ZERO_ADDRESS);
+            }
+
+            if(!Utils.isAddress(options.getFeePayer())) {
                 throw new IllegalArgumentException("Invalid 'feePayer' parameter : " + options.getFeePayer());
             }
 

@@ -3,6 +3,7 @@ package com.klaytn.caver.common.transaction;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
+import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.transaction.type.ValueTransferMemo;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.PrivateKey;
@@ -81,6 +82,7 @@ public class ValueTransferMemoTest {
                     .build();
 
             assertNotNull(txObj);
+            assertEquals(TransactionType.TxTypeValueTransferMemo.toString(), txObj.getType());
         }
 
         @Test
@@ -324,6 +326,7 @@ public class ValueTransferMemoTest {
             );
 
             assertNotNull(txObj);
+            assertEquals(TransactionType.TxTypeValueTransferMemo.toString(), txObj.getType());
         }
 
         @Test

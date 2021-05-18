@@ -60,7 +60,7 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
         String input;
 
         public Builder() {
-            super(TransactionType.TxTypeSmartContractExecution.toString());
+            super(TransactionType.TxTypeFeeDelegatedSmartContractExecution.toString());
         }
 
         public Builder setTo(String to) {

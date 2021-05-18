@@ -4,6 +4,7 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.type.FeeDelegatedChainDataAnchoring;
+import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Before;
 import org.junit.Rule;
@@ -71,6 +72,8 @@ public class FeeDelegatedChainDataAnchoringTest {
                     .setSignatures(senderSignatureData)
                     .setFeePayerSignatures(feePayerSignatureData)
                     .build();
+
+            assertEquals(TransactionType.TxTypeFeeDelegatedChainDataAnchoring.toString(), txObj.getType());
         }
 
         @Test
@@ -283,6 +286,7 @@ public class FeeDelegatedChainDataAnchoringTest {
             );
 
             assertNotNull(txObj);
+            assertEquals(TransactionType.TxTypeFeeDelegatedChainDataAnchoring.toString(), txObj.getType());
         }
 
         @Test

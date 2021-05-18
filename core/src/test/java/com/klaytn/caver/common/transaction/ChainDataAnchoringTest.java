@@ -4,6 +4,7 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.type.ChainDataAnchoring;
+import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.PrivateKey;
 import com.klaytn.caver.wallet.keyring.SignatureData;
@@ -77,6 +78,7 @@ public class ChainDataAnchoringTest {
                     .build();
 
             assertNotNull(txObj);
+            assertEquals(TransactionType.TxTypeChainDataAnchoring.toString(), txObj.getType());
         }
 
         @Test
@@ -246,6 +248,7 @@ public class ChainDataAnchoringTest {
             );
 
             assertNotNull(txObj);
+            assertEquals(TransactionType.TxTypeChainDataAnchoring.toString(), txObj.getType());
         }
 
         @Test

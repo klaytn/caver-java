@@ -3,6 +3,7 @@ package com.klaytn.caver.common.transaction;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.type.FeeDelegatedSmartContractExecutionWithRatio;
+import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Before;
 import org.junit.Rule;
@@ -81,6 +82,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
                     .build();
 
             assertNotNull(txObj);
+            assertEquals(TransactionType.TxTypeFeeDelegatedSmartContractExecutionWithRatio.toString(), txObj.getType());
         }
 
         @Test
@@ -460,6 +462,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             );
 
             assertNotNull(txObj);
+            assertEquals(TransactionType.TxTypeFeeDelegatedSmartContractExecutionWithRatio.toString(), txObj.getType());
         }
 
         @Test

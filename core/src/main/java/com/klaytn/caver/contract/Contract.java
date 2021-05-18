@@ -527,7 +527,7 @@ public class Contract {
      *     String bytecode = "0x{Contract bytecode}"
      *
      *     Contract contract = new Contract(caver, abi);
-     *     contract.sign("constructor", bytecode, constructor_param1, constructor_param2...)
+     *     contract. signAsFeePayer("constructor", bytecode, constructor_param1, constructor_param2...)
      * </code>
      * It is used defaultSendOption field to sendOptions.
      * </pre>
@@ -559,7 +559,7 @@ public class Contract {
      *     SendOptions sendOptions = new SendOptions(from, gas);
      *
      *     Contract contract = new Contract(caver, abi);
-     *     contract.sign("constructor", bytecode, constructor_param1, constructor_param2...)
+     *     contract. signAsFeePayer("constructor", bytecode, constructor_param1, constructor_param2...)
      * </code>
      * </pre>
      * @param sendOptions An option to execute smart contract method.

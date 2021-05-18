@@ -3,6 +3,7 @@ package com.klaytn.caver.common.transaction;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
+import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.transaction.type.ValueTransfer;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.SignatureData;
@@ -66,6 +67,7 @@ public class ValueTransferTest {
                     .build();
 
             assertNotNull(valueTransfer);
+            assertEquals(TransactionType.TxTypeValueTransfer.toString(), valueTransfer.getType());
         }
 
         @Test
@@ -278,6 +280,7 @@ public class ValueTransferTest {
 
             assertNotNull(valueTransfer);
             validateInstance(valueTransfer);
+            assertEquals(TransactionType.TxTypeValueTransfer.toString(), valueTransfer.getType());
         }
 
         @Test

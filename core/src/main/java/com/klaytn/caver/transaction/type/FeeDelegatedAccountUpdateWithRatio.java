@@ -48,7 +48,7 @@ public class FeeDelegatedAccountUpdateWithRatio extends AbstractFeeDelegatedWith
         Account account;
 
         public Builder() {
-            super(TransactionType.TxTypeFeeDelegatedAccountUpdate.toString());
+            super(TransactionType.TxTypeFeeDelegatedAccountUpdateWithRatio.toString());
         }
 
         public Builder setAccount(Account account) {

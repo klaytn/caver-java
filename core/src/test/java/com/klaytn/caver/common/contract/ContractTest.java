@@ -724,6 +724,7 @@ public class ContractTest {
             contract.deploy(contractDeployParam, options);
             contractAddress = contract.getContractAddress();
         } catch (Exception e) {
+            e.printStackTrace();
             fail();
         }
     }
@@ -1303,4 +1304,5 @@ public class ContractTest {
         contract.setWallet(container);
         assertEquals(3, ((KeyringContainer)contract.getWallet()).length());
     }
+
 }

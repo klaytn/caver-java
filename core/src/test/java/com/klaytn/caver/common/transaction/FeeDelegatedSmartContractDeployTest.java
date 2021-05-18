@@ -4,6 +4,7 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.type.FeeDelegatedSmartContractDeploy;
+import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.utils.CodeFormat;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Before;
@@ -81,6 +82,7 @@ public class FeeDelegatedSmartContractDeployTest {
                     .build();
 
             assertNotNull(txObj);
+            assertEquals(TransactionType.TxTypeFeeDelegatedSmartContractDeploy.toString(), txObj.getType());
         }
 
         @Test
@@ -347,6 +349,7 @@ public class FeeDelegatedSmartContractDeployTest {
             );
 
             assertNotNull(txObj);
+            assertEquals(TransactionType.TxTypeFeeDelegatedSmartContractDeploy.toString(), txObj.getType());
         }
 
         @Test

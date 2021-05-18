@@ -63,6 +63,7 @@ public class LegacyTransactionTest {
             assertNotNull(legacyTransaction.getNonce());
             assertNotNull(legacyTransaction.getGasPrice());
             assertNotNull(legacyTransaction.getChainId());
+            assertEquals(TransactionType.TxTypeLegacyTransaction.toString(), legacyTransaction.getType());
         }
 
         @Test
@@ -149,6 +150,7 @@ public class LegacyTransactionTest {
                     .build();
 
             assertNotNull(legacyTransaction);
+            assertEquals(TransactionType.TxTypeLegacyTransaction.toString(), legacyTransaction.getType());
         }
 
         @Test

@@ -229,8 +229,8 @@ jobs:
               version=v$(.circleci/version.sh)
 
               echo "Publishing a major release! version=$version"
-              ./graldew clean publish --stacktrace --debug
-              ./graldew closeAndReleaseRepository --stacktrace --debug
+              ./gradlew clean publish --stacktrace --debug
+              ./gradlew closeAndReleaseRepository --stacktrace --debug
 
 
   android_publish:
@@ -261,8 +261,8 @@ jobs:
 
               version=v$(.circleci/version.sh)
               echo "Publishing a major android release! version=$version"
-              ./graldew clean publish --stacktrace --debug
-              ./graldew closeAndReleaseRepository --stacktrace --debug
+              ./gradlew clean publish --stacktrace --debug
+              ./gradlew closeAndReleaseRepository --stacktrace --debug
 
 workflows:
   version: 2

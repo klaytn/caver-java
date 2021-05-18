@@ -29,7 +29,6 @@ import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
-import com.klaytn.caver.transaction.type.SmartContractExecution;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.IWallet;
 import org.slf4j.Logger;

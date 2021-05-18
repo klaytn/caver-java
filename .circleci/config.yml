@@ -232,9 +232,6 @@ jobs:
               ./graldew clean publish --stacktrace --debug
               ./graldew closeAndReleaseRepository --stacktrace --debug
 
-              #./gradlew release --stacktrace --debug
-              #./gradlew bintrayUpload --stacktrace --debug
-
 
   android_publish:
     <<: *android_machine_ubuntu
@@ -266,9 +263,6 @@ jobs:
               echo "Publishing a major android release! version=$version"
               ./graldew clean publish --stacktrace --debug
               ./graldew closeAndReleaseRepository --stacktrace --debug
-
-              #./gradlew release --stacktrace --debug
-              #./gradlew bintrayUpload --stacktrace --debug
 
 workflows:
   version: 2

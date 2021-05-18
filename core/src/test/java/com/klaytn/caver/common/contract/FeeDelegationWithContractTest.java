@@ -30,14 +30,12 @@ import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.utils.Utils;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.web3j.ens.Contracts;
 import org.web3j.protocol.exceptions.TransactionException;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Collections;
 
 import static com.klaytn.caver.base.Accounts.BRANDON;
 import static com.klaytn.caver.base.Accounts.LUMAN;

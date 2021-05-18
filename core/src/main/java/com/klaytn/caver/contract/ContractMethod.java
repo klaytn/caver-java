@@ -311,7 +311,7 @@ public class ContractMethod {
      * @throws IllegalAccessException
      * @throws IOException
      */
-    public AbstractTransaction signAsFeePayer(List<Object> arguments) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException {
+    public AbstractFeeDelegatedTransaction signAsFeePayer(List<Object> arguments) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException {
         return signAsFeePayer(arguments, null);
     }
 
@@ -332,7 +332,7 @@ public class ContractMethod {
      * @throws IllegalAccessException
      * @throws IOException
      */
-    public AbstractTransaction signAsFeePayer(List<Object> arguments, SendOptions sendOptions) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException {
+    public AbstractFeeDelegatedTransaction signAsFeePayer(List<Object> arguments, SendOptions sendOptions) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException {
         // Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
         // Passed parameter "options" has higher priority than "defaultSendOption" field.
         SendOptions determinedOption = makeSendOption(sendOptions);
@@ -540,7 +540,7 @@ public class ContractMethod {
      * @return AbstractTransaction
      * @throws IOException
      */
-    public AbstractTransaction signAsFeePayerWithSolidityWrapper(List<Type> wrapperArguments) throws IOException {
+    public AbstractFeeDelegatedTransaction signAsFeePayerWithSolidityWrapper(List<Type> wrapperArguments) throws IOException {
         return signAsFeePayerWithSolidityWrapper(wrapperArguments, null);
     }
 
@@ -554,7 +554,7 @@ public class ContractMethod {
      * @return AbstractTransaction
      * @throws IOException
      */
-    public AbstractTransaction signAsFeePayerWithSolidityWrapper(List<Type> wrapperArguments, SendOptions sendOptions) throws IOException {
+    public AbstractFeeDelegatedTransaction signAsFeePayerWithSolidityWrapper(List<Type> wrapperArguments, SendOptions sendOptions) throws IOException {
         if(!getType().equals(TYPE_FUNCTION)) {
             throw new RuntimeException("This method can be used only to encode function with passed argument.");
         }

@@ -25,6 +25,7 @@ import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.KlayLogs;
 import com.klaytn.caver.methods.response.TransactionReceipt;
+import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
@@ -576,7 +577,7 @@ public class Contract {
      * @throws InstantiationException
      * @throws IllegalAccessException
      */
-    public AbstractTransaction signAsFeePayer(SendOptions sendOptions, String methodName, Object... methodArguments) throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public AbstractFeeDelegatedTransaction signAsFeePayer(SendOptions sendOptions, String methodName, Object... methodArguments) throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         return this.getMethod(methodName).signAsFeePayer(Arrays.asList(methodArguments), sendOptions);
     }
 
@@ -595,7 +596,7 @@ public class Contract {
      * @throws InstantiationException
      * @throws IllegalAccessException
      */
-    public AbstractTransaction signAsFeePayerWithSolidityType(String methodName, Type... methodArguments) throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public AbstractFeeDelegatedTransaction signAsFeePayerWithSolidityType(String methodName, Type... methodArguments) throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         return this.getMethod(methodName).signAsFeePayerWithSolidityWrapper(Arrays.asList(methodArguments));
     }
 
@@ -609,7 +610,7 @@ public class Contract {
      * @return AbstractTransaction
      * @throws IOException
      */
-    public AbstractTransaction signAsFeePayerWithSolidityType(SendOptions sendOptions, String methodName, Type... methodArguments) throws IOException {
+    public AbstractFeeDelegatedTransaction signAsFeePayerWithSolidityType(SendOptions sendOptions, String methodName, Type... methodArguments) throws IOException {
         return this.getMethod(methodName).signAsFeePayerWithSolidityWrapper(Arrays.asList(methodArguments), sendOptions);
     }
 

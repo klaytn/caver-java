@@ -173,8 +173,6 @@ public class ContractMethod {
      * If the 'type' field is a "constructor", the arguments parsed as follow.
      *   - arguments[0] : Smart contract's bytecode.
      *   - others : The constructor arguments to deploy smart contract.
-     * It is used defaultSendOption field to sendOptions.
-     * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
      * <code>
      *     Caver caver = new Caver(Caver.DEFAULT_URL);
      *     String abi = "abi";
@@ -190,6 +188,8 @@ public class ContractMethod {
      *
      *     TransactionReceipt.TransactionReceiptData deployed = contract.getMethod("constructor").send(Arrays.asList(bytecode, constructor_param1, constructor_param2...));
      * </code>
+     * It is used defaultSendOption field to sendOptions.
+     * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
      * </pre>
      * @param arguments A List of parameter to call smart contract method.
      * @return TransactionReceiptData
@@ -211,7 +211,6 @@ public class ContractMethod {
      * If the 'type' field is a "constructor", the arguments parsed as follow.
      *   - arguments[0] : Smart contract's bytecode.
      *   - others : The constructor arguments to deploy smart contract.
-     * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
      * <code>
      *     Caver caver = new Caver(Caver.DEFAULT_URL);
      *     String abi = "abi";
@@ -226,6 +225,7 @@ public class ContractMethod {
      *
      *     TransactionReceipt.TransactionReceiptData deployed = contract.getMethod("constructor").send(Arrays.asList(bytecode, constructor_param1, constructor_param2...), sendOptions);
      * </code>
+     * It sets TransactionReceiptProcessor to PollingTransactionReceiptProcessor.
      * </pre>
      * @param arguments A List of parameter to call smart contract method.
      * @param options An option to deploy or execute smart contract method.
@@ -296,7 +296,6 @@ public class ContractMethod {
      * If the 'type' field is a "constructor", the arguments parsed as follow.
      *   - arguments[0] : Smart contract's bytecode.
      *   - others : The constructor arguments to deploy smart contract.
-     * It is used defaultSendOption field to sendOptions.
      * <code>
      *     Caver caver = new Caver(Caver.DEFAULT_URL);
      *
@@ -313,6 +312,7 @@ public class ContractMethod {
      *
      *     TransactionReceipt.TransactionReceiptData deployed = contract.getMethod("constructor").sign(Arrays.asList(bytecode, constructor_param1, constructor_param2...));
      * </code>
+     * It is used defaultSendOption field to sendOptions.
      * </pre>
      * @param arguments The list of arguments to deploy or execute a smart contract.
      * @return AbstractTransaction
@@ -374,7 +374,6 @@ public class ContractMethod {
      * If the 'type' field is a "constructor", the arguments parsed as follow.
      *   - arguments[0] : Smart contract's bytecode.
      *   - others : The constructor arguments to deploy smart contract.
-     * It is used defaultSendOption field to sendOptions.
      * <code>
      *     Caver caver = new Caver(Caver.DEFAULT_URL);
      *
@@ -392,6 +391,7 @@ public class ContractMethod {
      *     contract.setDefaultSendOptions(sendOptions);
      *     AbstractTransaction transaction = contract.getMethod("constructor").signAsFeePayer(Arrays.asList(bytecode, constructor_param1, constructor_param2....));
      * </code>
+     * It is used defaultSendOption field to sendOptions.
      * </pre>
      * @param arguments The list of arguments to deploy or execute a smart contract.
      * @return AbstractTransaction

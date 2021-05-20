@@ -550,7 +550,6 @@ public class Contract {
      *
      *     contract.signAsFeePayer("constructor", bytecode, constructor_param1, constructor_param2...)
      * </code>
-     * It is used defaultSendOption field to sendOptions.
      * </pre>
      * @param methodName The smart contract's method name to create a transaction and sign it.
      * @param methodArguments The list of arguments to execute or deploy a smart contract.

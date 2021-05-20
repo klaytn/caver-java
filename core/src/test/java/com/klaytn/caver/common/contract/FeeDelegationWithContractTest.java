@@ -156,8 +156,12 @@ public class FeeDelegationWithContractTest {
             sender = LUMAN.getAddress();
             feePayer = BRANDON.getAddress();
 
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
+
             Contract contract = new Contract(caver, abiWithConstructor);
-            Contract deployed = contract.deploy(new SendOptions(sender, BigInteger.valueOf(3000000)), byteCodeWithConstructor, "key", "value");
+            Contract deployed = contract.deploy(sendOptions, byteCodeWithConstructor, "key", "value");
 
             contractAddress = deployed.getContractAddress();
         }
@@ -165,7 +169,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contract_withoutConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithoutConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
 
             Contract deployed = contract.deploy(sendOptions, byteCodeWithoutConstructor);
             assertNotNull(deployed.getContractAddress());
@@ -174,7 +180,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contract_withConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
 
             String keyString = "key";
             String valueString = "valueString";
@@ -186,7 +194,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contractMethod_withoutConstructor() throws TransactionException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithoutConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
 
             TransactionReceipt.TransactionReceiptData deployed = contract.getMethod("constructor").send(Arrays.asList(byteCodeWithoutConstructor), sendOptions);
             assertNotNull(deployed.getContractAddress());
@@ -198,7 +208,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contractMethod_withConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
 
             String keyString = "key";
             String valueString = "valueString";
@@ -213,7 +225,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contract() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
 
             String keyString = "contract";
             String valueString = "so convenient";
@@ -231,7 +245,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contractMethod() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
 
             String keyString = "contract";
             String valueString = "so convenient";
@@ -265,8 +281,12 @@ public class FeeDelegationWithContractTest {
             sender = LUMAN.getAddress();
             feePayer = BRANDON.getAddress();
 
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
+
             Contract contract = new Contract(caver, abiWithConstructor);
-            Contract deployed = contract.deploy(new SendOptions(sender, BigInteger.valueOf(3000000)), byteCodeWithConstructor, "key", "value");
+            Contract deployed = contract.deploy(sendOptions, byteCodeWithConstructor, "key", "value");
 
             contractAddress = deployed.getContractAddress();
         }
@@ -274,7 +294,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contract_withoutConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithoutConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -285,7 +308,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contract_withConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -299,7 +325,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contractMethod_withoutConstructor() throws TransactionException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithoutConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -314,7 +343,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contractMethod_withConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -331,7 +363,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contract() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -351,7 +386,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contractMethod() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -374,7 +412,10 @@ public class FeeDelegationWithContractTest {
             expectedException.expectMessage("The fee payer value is not valid. feePayer address - " );
 
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
 
             String keyString = "contract";
@@ -402,8 +443,12 @@ public class FeeDelegationWithContractTest {
             sender = LUMAN.getAddress();
             feePayer = BRANDON.getAddress();
 
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
+
             Contract contract = new Contract(caver, abiWithConstructor);
-            Contract deployed = contract.deploy(new SendOptions(sender, BigInteger.valueOf(3000000)), byteCodeWithConstructor, "key", "value");
+            Contract deployed = contract.deploy(sendOptions, byteCodeWithConstructor, "key", "value");
 
             contractAddress = deployed.getContractAddress();
         }
@@ -411,7 +456,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contract_withoutConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithoutConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
             sendOptions.setFeeRatio(BigInteger.valueOf(10));
@@ -423,7 +471,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contract_withConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
             sendOptions.setFeeRatio(BigInteger.valueOf(10));
@@ -438,7 +489,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contractMethod_withoutConstructor() throws TransactionException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithoutConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
             sendOptions.setFeeRatio(BigInteger.valueOf(10));
@@ -455,7 +509,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contractMethod_withConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
             sendOptions.setFeeRatio(BigInteger.valueOf(10));
@@ -474,7 +531,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contract() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
             sendOptions.setFeeRatio(BigInteger.valueOf(10));
@@ -496,7 +556,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contractMethod() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
             sendOptions.setFeeRatio(BigInteger.valueOf(10));
@@ -521,7 +584,10 @@ public class FeeDelegationWithContractTest {
             expectedException.expectMessage("The fee payer value is not valid. feePayer address - " );
 
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeeRatio(BigInteger.valueOf(10));
 
@@ -547,8 +613,12 @@ public class FeeDelegationWithContractTest {
             sender = LUMAN.getAddress();
             feePayer = BRANDON.getAddress();
 
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
+
             Contract contract = new Contract(caver, abiWithConstructor);
-            Contract deployed = contract.deploy(new SendOptions(sender, BigInteger.valueOf(3000000)), byteCodeWithConstructor, "key", "value");
+            Contract deployed = contract.deploy(sendOptions, byteCodeWithConstructor, "key", "value");
 
             contractAddress = deployed.getContractAddress();
         }
@@ -556,7 +626,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contract_withoutConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithoutConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
 
             AbstractTransaction transaction = contract.sign(sendOptions, "constructor", byteCodeWithoutConstructor);
             assertFalse(Utils.isEmptySig(transaction.getSignatures()));
@@ -572,7 +645,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contract_withConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
 
             String keyString = "key";
             String valueString = "valueString";
@@ -591,7 +667,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contractMethod_withoutConstructor() throws TransactionException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithoutConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
 
             AbstractTransaction transaction = contract.getMethod("constructor").sign(Arrays.asList(byteCodeWithoutConstructor), sendOptions);
             assertFalse(Utils.isEmptySig(transaction.getSignatures()));
@@ -607,7 +686,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contractMethod_withConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
 
             String keyString = "key";
             String valueString = "valueString";
@@ -626,7 +708,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contract() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
 
             String keyString = "contract";
             String valueString = "so convenient";
@@ -651,7 +736,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contractMethod() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
 
             String keyString = "contract";
             String valueString = "so convenient";
@@ -676,7 +764,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contractWithSolidityType() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
 
             String keyString = "contract";
             String valueString = "so convenient";
@@ -701,7 +792,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contractMethodWithSolidityType() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
 
             String keyString = "contract";
             String valueString = "so convenient";
@@ -739,8 +833,12 @@ public class FeeDelegationWithContractTest {
             sender = LUMAN.getAddress();
             feePayer = BRANDON.getAddress();
 
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
+
             Contract contract = new Contract(caver, abiWithConstructor);
-            Contract deployed = contract.deploy(new SendOptions(sender, BigInteger.valueOf(3000000)), byteCodeWithConstructor, "key", "value");
+            Contract deployed = contract.deploy(sendOptions, byteCodeWithConstructor, "key", "value");
 
             contractAddress = deployed.getContractAddress();
         }
@@ -748,7 +846,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contract_withoutConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithoutConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -767,7 +868,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contract_withConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -789,7 +893,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contractMethod_withoutConstructor() throws TransactionException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithoutConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -808,7 +915,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contractMethod_withConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -830,7 +940,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contract() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -858,7 +971,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contractMethod() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -886,7 +1002,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contractWithSolidityType() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -914,7 +1033,10 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contractMethodWithSolidityType() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -955,8 +1077,12 @@ public class FeeDelegationWithContractTest {
             sender = LUMAN.getAddress();
             feePayer = BRANDON.getAddress();
 
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
+
             Contract contract = new Contract(caver, abiWithConstructor);
-            Contract deployed = contract.deploy(new SendOptions(sender, BigInteger.valueOf(3000000)), byteCodeWithConstructor, "key", "value");
+            Contract deployed = contract.deploy(sendOptions, byteCodeWithConstructor, "key", "value");
 
             contractAddress = deployed.getContractAddress();
         }
@@ -964,7 +1090,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contract_withoutConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithoutConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
             sendOptions.setFeeRatio(BigInteger.TEN);
@@ -985,7 +1113,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contract_withConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
             sendOptions.setFeeRatio(BigInteger.TEN);
@@ -1009,7 +1139,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contractMethod_withoutConstructor() throws TransactionException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithoutConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
             sendOptions.setFeeRatio(BigInteger.TEN);
@@ -1030,7 +1162,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contractMethod_withConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
             sendOptions.setFeeRatio(BigInteger.TEN);
@@ -1054,7 +1188,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contract() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
             sendOptions.setFeeRatio(BigInteger.TEN);
@@ -1084,7 +1220,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contractMethod() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
             sendOptions.setFeeRatio(BigInteger.TEN);
@@ -1114,7 +1252,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contractWithSolidityType() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
             sendOptions.setFeeRatio(BigInteger.TEN);
@@ -1144,7 +1284,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contractMethodWithSolidityType() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
             sendOptions.setFeeRatio(BigInteger.TEN);
@@ -1196,7 +1338,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contract_withoutConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithoutConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -1215,7 +1359,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contract_withConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -1237,7 +1383,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contractMethod_withoutConstructor() throws TransactionException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithoutConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -1256,7 +1404,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void deploy_contractMethod_withConstructor() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -1278,7 +1428,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contract() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -1306,7 +1458,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contractMethod() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -1334,7 +1488,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contractWithSolidityType() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -1362,7 +1518,9 @@ public class FeeDelegationWithContractTest {
         @Test
         public void execute_contractMethodWithSolidityType() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             Contract contract = new Contract(caver, abiWithConstructor, contractAddress);
-            SendOptions sendOptions = new SendOptions(sender, BigInteger.valueOf(3000000));
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 
@@ -1409,7 +1567,9 @@ public class FeeDelegationWithContractTest {
             contract = new Contract(caver, abiWithoutConstructor);
             contract.getDefaultSendOptions().setFeeDelegation(true);
 
-            sendOptions = new SendOptions(sender, BigInteger.valueOf(1000000));
+            sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeePayer(feePayer);
 
             deployedContract = new Contract(caver, abiWithConstructor);
@@ -1574,7 +1734,9 @@ public class FeeDelegationWithContractTest {
             contract = new Contract(caver, abiWithoutConstructor);
             contract.getDefaultSendOptions().setFeePayer(feePayer);
 
-            sendOptions = new SendOptions(sender, BigInteger.valueOf(1000000));
+            sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
 
             deployedContract = new Contract(caver, abiWithConstructor);
@@ -1739,7 +1901,9 @@ public class FeeDelegationWithContractTest {
             contract = new Contract(caver, abiWithoutConstructor);
             contract.getDefaultSendOptions().setFeeRatio(BigInteger.TEN);
 
-            sendOptions = new SendOptions(sender, BigInteger.valueOf(1000000));
+            sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
             sendOptions.setFeeDelegation(true);
             sendOptions.setFeePayer(feePayer);
 

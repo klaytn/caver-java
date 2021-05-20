@@ -433,10 +433,17 @@ public class Contract {
      *   - arguments[0] : Smart contract's bytecode.
      *   - others : The constructor arguments to deploy smart contract.
      * <code>
-     *     String abi = "Contract ABI data"
-     *     String bytecode = "0x{Contract bytecode}"
+     *     Caver caver = new Caver(Caver.DEFAULT_URL);
+     *     String abi = "abi";
+     *     String bytecode = "Contract bytecode";
      *
-     *     Contract contract = new Contract(caver, abi);
+     *     SendOptions sendOptions = new SendOptions();
+     *     sendOptions.setFrom("0x{from}");
+     *     sendOptions.setGas(BigInteger.valueOf(100000000));
+     *
+     *     Contract contract = caver.contract.create(abi);
+     *     contract.setDefaultSendOptions(sendOptions);
+     *
      *     contract.sign("constructor", bytecode, constructor_param1, constructor_param2...)
      * </code>
      * It is used defaultSendOption field to sendOptions.
@@ -464,11 +471,16 @@ public class Contract {
      *   - arguments[0] : Smart contract's bytecode.
      *   - others : The constructor arguments to deploy smart contract.
      * <code>
-     *     String abi = "Contract ABI data"
-     *     String bytecode = "0x{Contract bytecode}"
-     *     SendOptions sendOptions = new SendOptions(from, gas);
+     *     Caver caver = new Caver(Caver.DEFAULT_URL);
+     *     String abi = "abi";
+     *     String bytecode = "Contract bytecode";
      *
-     *     Contract contract = new Contract(caver, abi);
+     *     Contract contract = caver.contract.create(abi);
+     *
+     *     SendOptions sendOptions = new SendOptions();
+     *     sendOptions.setFrom("0x{from}");
+     *     sendOptions.setGas(BigInteger.valueOf(100000000));
+     *
      *     contract.sign(sendOptions, "constructor", bytecode, constructor_param1, constructor_param2...)
      * </code>
      * </pre>
@@ -523,11 +535,20 @@ public class Contract {
      *   - arguments[0] : Smart contract's bytecode.
      *   - others : The constructor arguments to deploy smart contract.
      * <code>
-     *     String abi = "Contract ABI data"
-     *     String bytecode = "0x{Contract bytecode}"
+     *     Caver caver = new Caver(Caver.DEFAULT_URL);
+     *     String abi = "Contract ABI data";
+     *     String bytecode = "Contract bytecode";
      *
-     *     Contract contract = new Contract(caver, abi);
-     *     contract. signAsFeePayer("constructor", bytecode, constructor_param1, constructor_param2...)
+     *     SendOptions sendOptions = new SendOptions();
+     *     sendOptions.setFrom("0x{from}");
+     *     sendOptions.setGas(BigInteger.valueOf(100000000));
+     *     sendOptions.setFeeDelegation(true);
+     *     sendOptions.setFeePayer("0x{feePayer}");
+     *
+     *     Contract contract = caver.contract.create(abi);
+     *     contract.setDefaultSendOptions(sendOptions);
+     *
+     *     contract.signAsFeePayer("constructor", bytecode, constructor_param1, constructor_param2...)
      * </code>
      * It is used defaultSendOption field to sendOptions.
      * </pre>
@@ -554,12 +575,18 @@ public class Contract {
      *   - arguments[0] : Smart contract's bytecode.
      *   - others : The constructor arguments to deploy smart contract.
      * <code>
-     *     String abi = "Contract ABI data"
-     *     String bytecode = "0x{Contract bytecode}"
-     *     SendOptions sendOptions = new SendOptions(from, gas);
+     *     Caver caver = new Caver(Caver.DEFAULT_URL);
+     *     String abi = "Contract ABI data";
+     *     String bytecode = "Contract bytecode";
      *
-     *     Contract contract = new Contract(caver, abi);
-     *     contract. signAsFeePayer("constructor", bytecode, constructor_param1, constructor_param2...)
+     *     SendOptions sendOptions = new SendOptions();
+     *     sendOptions.setFrom("0x{from}");
+     *     sendOptions.setGas(BigInteger.valueOf(100000000));
+     *     sendOptions.setFeeDelegation(true);
+     *     sendOptions.setFeePayer("0x{feePayer}");
+     *
+     *     Contract contract = caver.contract.create(abi);
+     *     contract.signAsFeePayer(sendOptions, "constructor", bytecode, constructor_param1, constructor_param2...)
      * </code>
      * </pre>
      * @param sendOptions An option to execute smart contract method.

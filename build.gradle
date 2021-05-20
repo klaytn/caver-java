@@ -116,8 +116,10 @@ configure(subprojects.findAll {it.name != 'integration-test' }) {
 
     signing {
         def signingPassword = ossrhSigningPassword
-        def signingKey = (ossrhSigningKey_base64 == null? null:
-                new String(Base64.getMimeDecoder().decode(ossrhSigningKey_base64.toString()), "utf-8"))
+
+        def signingKey_base64 = ossrhSigningKey_base64
+        def signingKey = (signingKey_base64 == null? null:
+                new String(Base64.getMimeDecoder().decode(signingKey_base64.toString()), "utf-8"))
 
         useInMemoryPgpKeys(signingKey, signingPassword)
 

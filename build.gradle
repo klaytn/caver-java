@@ -65,6 +65,8 @@ configure(subprojects.findAll {it.name != 'integration-test' }) {
     ext {
         ossrhUsername = project.hasProperty('ossrhUsername') ? project.property('ossrhUsername') : System.getenv('OSSRH_USERNAME')
         ossrhPassword = project.hasProperty('ossrhPassword') ? project.property('ossrhPassword') : System.getenv('OSSRH_PASSWORD')
+        ossrhSigningKey_base64 = project.hasProperty('signingKey')? project.property('signingKey') : System.getenv('ORG_GRADLE_PROJECT_signingKey')
+        ossrhSigningPassword = project.hasProperty('signingKey')? project.property('signingPassword') : System.getenv('ORG_GRADLE_PROJECT_signingPassword')
     }
 
     publishing {
@@ -113,9 +115,14 @@ configure(subprojects.findAll {it.name != 'integration-test' }) {
     }
 
     signing {
-        def signingKey = findProperty("signingKey")
-        def signingPassword = findProperty("signingPassword")
+        def signingPassword = ossrhSigningPassword
+
+        def signingKey_base64 = ossrhSigningKey_base64
+        def signingKey = (signingKey_base64 == null? null:
+                new String(Base64.getMimeDecoder().decode(signingKey_base64.toString()), "utf-8"))
+
         useInMemoryPgpKeys(signingKey, signingPassword)
+
         sign publishing.publications.mavenJava
     }
 }

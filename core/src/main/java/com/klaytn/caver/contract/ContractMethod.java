@@ -365,7 +365,7 @@ public class ContractMethod {
         SendOptions determinedOption = makeSendOption(sendOptions);
 
         AbstractTransaction transaction = createTransaction(determinedOption, encoded);
-        return caver.wallet.sign(determinedOption.getFrom(), transaction);
+        return this.wallet.sign(determinedOption.getFrom(), transaction);
     }
 
     /**
@@ -452,7 +452,7 @@ public class ContractMethod {
         String encoded = encodeABI(arguments);
 
         AbstractFeeDelegatedTransaction transaction = (AbstractFeeDelegatedTransaction)createTransaction(determinedOption, encoded);
-        return caver.wallet.signAsFeePayer(determinedOption.getFeePayer(), transaction);
+        return this.wallet.signAsFeePayer(determinedOption.getFeePayer(), transaction);
     }
 
     /**
@@ -635,7 +635,7 @@ public class ContractMethod {
         String encoded = encodeABIWithSolidityWrapper(wrapperArguments);
 
         AbstractTransaction transaction = createTransaction(determinedOption, encoded);
-        return caver.wallet.sign(determinedOption.getFrom(), transaction);
+        return this.wallet.sign(determinedOption.getFrom(), transaction);
     }
 
     /**
@@ -678,7 +678,7 @@ public class ContractMethod {
         String encoded = encodeABIWithSolidityWrapper(wrapperArguments);
 
         AbstractFeeDelegatedTransaction transaction = (AbstractFeeDelegatedTransaction)createTransaction(determinedOption, encoded);
-        return caver.wallet.signAsFeePayer(determinedOption.getFeePayer(), transaction);
+        return this.wallet.signAsFeePayer(determinedOption.getFeePayer(), transaction);
     }
 
     /**

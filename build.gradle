@@ -125,4 +125,9 @@ configure(subprojects.findAll {it.name != 'integration-test' }) {
 
         sign publishing.publications.mavenJava
     }
+
+    nexusStaging {
+        username= ossrhUsername
+        password= ossrhPassword
+    }
 }

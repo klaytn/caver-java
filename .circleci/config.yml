@@ -56,7 +56,7 @@ build_test: &build_test
     name: "Build and test"
     command: |
         ./gradlew clean
-        ./gradlew build --scan --debug
+        ./gradlew build --debug
 
 jobs:
   build:

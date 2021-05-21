@@ -107,7 +107,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Deploy KIP-7 contract.
+     * Deploy KIP-7 contract.<p>
      * It must add deployer's keyring in caver.wallet.
      * @param caver A Caver instance.
      * @param deployer A deployer's address.
@@ -166,7 +166,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Deploy KIP-7 contract.
+     * Deploy KIP-7 contract.<p>
      * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
      * @param caver A Caver instance.
      * @param deployer A deployer's address.
@@ -227,7 +227,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Deploy KIP-7 contract.
+     * Deploy KIP-7 contract.<p>
      * It must add deployer's keyring in caver.wallet.
      * @param caver A Caver instance
      * @param tokenInfo The KIP-7 contract's deploy parameter values
@@ -278,7 +278,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Deploy KIP-7 contract.
+     * Deploy KIP-7 contract.<p>
      * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
      * @param caver A Caver instance
      * @param tokenInfo The KIP-7 contract's deploy parameter values
@@ -604,8 +604,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "approve" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "approve" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param spender The address is approved to withdraw the tokens.
      * @param amount Amount the token amount will be approved.
@@ -623,7 +623,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "approve" in KIP-7 standard contract.
+     * Execute a method "approve" in KIP-7 standard contract.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param spender The address is approved to withdraw the tokens.
      * @param amount Amount the token amount will be approved.
@@ -645,8 +645,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "transfer" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "transfer" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param recipient The address of the account to receive the token.
      * @param amount The token amount will be transferred.
@@ -664,7 +664,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "transfer" in KIP-7 standard contract.
+     * Execute a method "transfer" in KIP-7 standard contract.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param recipient The address of the account to receive the token.
      * @param amount The token amount will be transferred.
@@ -686,8 +686,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "transferFrom" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "transferFrom" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sender The current owner of the tokens.
      * @param recipient The address of the account to receive the token.
@@ -706,7 +706,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "transferFrom" in KIP-7 standard contract.
+     * Execute a method "transferFrom" in KIP-7 standard contract.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sender The current owner of the tokens.
      * @param recipient The address of the account to receive the token.
@@ -729,8 +729,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "safeTransfer" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "safeTransfer" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param recipient The address of the account to receive the token.
      * @param amount The token amount will be transferred.
@@ -748,7 +748,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "safeTransfer" in KIP-7 standard contract.
+     * Execute a method "safeTransfer" in KIP-7 standard contract.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param recipient The address of the account to receive the token.
      * @param amount The token amount will be transferred.
@@ -770,8 +770,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "safeTransfer" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "safeTransfer" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param recipient The address of the account to receive the token.
      * @param amount The token amount will be transferred.
@@ -790,7 +790,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "safeTransfer" in KIP-7 standard contract.
+     * Execute a method "safeTransfer" in KIP-7 standard contract.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param recipient The address of the account to receive the token.
      * @param amount The token amount will be transferred.
@@ -813,8 +813,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "safeTransfer" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "safeTransfer" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sender The current owner of the tokens.
      * @param recipient The address of the account to receive the token.
@@ -833,7 +833,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "safeTransfer" in KIP-7 standard contract.
+     * Execute a method "safeTransfer" in KIP-7 standard contract.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sender The current owner of the tokens.
      * @param recipient The address of the account to receive the token.
@@ -856,8 +856,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "safeTransferFrom" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "safeTransferFrom" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sender The current owner of the tokens.
      * @param recipient The address of the account to receive the token.
@@ -877,7 +877,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "safeTransferFrom" in KIP-7 standard contract.
+     * Execute a method "safeTransferFrom" in KIP-7 standard contract.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sender The current owner of the tokens.
      * @param recipient The address of the account to receive the token.
@@ -901,9 +901,9 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "mint" in KIP-7 standard contract.
-     * Caller must have "Minter" Permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "mint" in KIP-7 standard contract.<p>
+     * Caller must have "Minter" Permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account that will receive the minted token
      * @param amount The token amount to mint
@@ -921,8 +921,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "mint" in KIP-7 standard contract.
-     * Caller must have "Minter" Permission.
+     * Execute a method "mint" in KIP-7 standard contract.<p>
+     * Caller must have "Minter" Permission.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account that will receive the minted token
      * @param amount The token amount to mint
@@ -944,9 +944,9 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "addMinter" in KIP-7 standard contract.
-     * Caller must have "Minter" Permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "addMinter" in KIP-7 standard contract.<p>
+     * Caller must have "Minter" Permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account to be given the minting permission
      * @return TransactionReceipt.TransactionReceiptData
@@ -963,9 +963,9 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "addMinter" in KIP-7 standard contract.
-     * Caller must have "Minter" Permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "addMinter" in KIP-7 standard contract.<p>
+     * Caller must have "Minter" Permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account to be given the minting permission
      * @param sendParam A SendOptions need to execute contract's method.
@@ -986,9 +986,9 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "renounceMinter" in KIP-7 standard contract.
-     * Caller must have "Minter" Permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "renounceMinter" in KIP-7 standard contract.<p>
+     * Caller must have "Minter" Permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1004,9 +1004,9 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "renounceMinter" in KIP-7 standard contract.
-     * Caller must have "Minter" Permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "renounceMinter" in KIP-7 standard contract.<p>
+     * Caller must have "Minter" Permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
@@ -1026,8 +1026,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "burn" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "burn" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param amount The token amount to be burned
      * @return TransactionReceipt.TransactionReceiptData
@@ -1044,7 +1044,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "burn" in KIP-7 standard contract.
+     * Execute a method "burn" in KIP-7 standard contract.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param amount The token amount to be burned
      * @param sendParam A SendOptions need to execute contract's method.
@@ -1065,8 +1065,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "burnFrom" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "burnFrom" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account will be deducted is the The token amount to be burned
      * @param amount The token amount to be burned
@@ -1084,8 +1084,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "burnFrom" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "burnFrom" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account will be deducted is the The token amount to be burned
      * @param amount The token amount to be burned
@@ -1107,9 +1107,9 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "addPauser" in KIP-7 standard contract.
-     * Caller must have Pauser permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "addPauser" in KIP-7 standard contract.<p>
+     * Caller must have Pauser permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account to be given the pausing permission
      * @return TransactionReceipt.TransactionReceiptData
@@ -1126,8 +1126,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "addPauser" in KIP-7 standard contract.
-     * Caller must have Pauser permission.
+     * Execute a method "addPauser" in KIP-7 standard contract.<p>
+     * Caller must have Pauser permission.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account to be given the pausing permission
      * @param sendParam A SendOptions need to execute contract's method.
@@ -1148,9 +1148,9 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "pause" in KIP-7 standard contract.
-     * Caller must have Pauser permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "pause" in KIP-7 standard contract.<p>
+     * Caller must have Pauser permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1166,8 +1166,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "pause" in KIP-7 standard contract.
-     * Caller must have Pauser permission.
+     * Execute a method "pause" in KIP-7 standard contract.<p>
+     * Caller must have Pauser permission.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
@@ -1187,9 +1187,9 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "unpause" in KIP-7 standard contract.
-     * Caller must have Pauser permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "unpause" in KIP-7 standard contract.<p>
+     * Caller must have Pauser permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1205,8 +1205,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "unpause" in KIP-7 standard contract.
-     * Caller must have Pauser permission.
+     * Execute a method "unpause" in KIP-7 standard contract.<p>
+     * Caller must have Pauser permission.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
@@ -1226,9 +1226,9 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "unpause" in KIP-7 standard contract.
-     * Caller must have Pauser permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "unpause" in KIP-7 standard contract.<p>
+     * Caller must have Pauser permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1244,8 +1244,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "unpause" in KIP-7 standard contract.
-     * Caller must have Pauser permission.
+     * Execute a method "unpause" in KIP-7 standard contract.<p>
+     * Caller must have Pauser permission.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData

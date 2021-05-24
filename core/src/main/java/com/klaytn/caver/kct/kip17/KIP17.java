@@ -21,7 +21,6 @@ import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.contract.ContractDeployParams;
 import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.kct.kip13.KIP13;
-import com.klaytn.caver.kct.kip7.KIP7;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.IWallet;
@@ -34,8 +33,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class KIP17 extends Contract {
 
@@ -1257,7 +1254,7 @@ public class KIP17 extends Contract {
         String from = kip17.getDefaultSendOptions().getFrom();
         String gas = kip17.getDefaultSendOptions().getGas();
         String value = kip17.getDefaultSendOptions().getValue();
-        boolean feeDelegation = kip17.getDefaultSendOptions().isFeeDelegation();
+        Boolean feeDelegation = kip17.getDefaultSendOptions().getFeeDelegation();
         String feePayer = kip17.getDefaultSendOptions().getFeePayer();
         String feeRatio = kip17.getDefaultSendOptions().getFeeRatio();
 
@@ -1280,8 +1277,8 @@ public class KIP17 extends Contract {
             value = sendOptions.getValue();
         }
 
-        if(feeDelegation || sendOptions.isFeeDelegation()) {
-            feeDelegation = true;
+        if(sendOptions.getFeeDelegation() != null) {
+            feeDelegation = sendOptions.getFeeDelegation();
         }
 
         if(sendOptions.getFeePayer() != null) {
@@ -1292,7 +1289,7 @@ public class KIP17 extends Contract {
             feeRatio = sendOptions.getFeeRatio();
         }
 
-        if(!feeDelegation && (feePayer != null || feeRatio != null)) {
+        if((feeDelegation == null || !feeDelegation) && (feePayer != null || feeRatio != null)) {
             throw new IllegalArgumentException("To use fee delegation with KCT, please set 'feeDelegation' field to true.");
         }
 

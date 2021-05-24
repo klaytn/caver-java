@@ -1268,7 +1268,7 @@ public class KIP7 extends Contract {
         String from = kip7.getDefaultSendOptions().getFrom();
         String gas = kip7.getDefaultSendOptions().getGas();
         String value = kip7.getDefaultSendOptions().getValue();
-        boolean feeDelegation = kip7.getDefaultSendOptions().isFeeDelegation();
+        Boolean feeDelegation = kip7.getDefaultSendOptions().getFeeDelegation();
         String feePayer = kip7.getDefaultSendOptions().getFeePayer();
         String feeRatio = kip7.getDefaultSendOptions().getFeeRatio();
 
@@ -1291,8 +1291,8 @@ public class KIP7 extends Contract {
             value = sendOptions.getValue();
         }
 
-        if(feeDelegation || sendOptions.isFeeDelegation()) {
-            feeDelegation = true;
+        if(sendOptions.getFeeDelegation() != null) {
+            feeDelegation = sendOptions.getFeeDelegation();
         }
 
         if(sendOptions.getFeePayer() != null) {
@@ -1303,7 +1303,7 @@ public class KIP7 extends Contract {
             feeRatio = sendOptions.getFeeRatio();
         }
 
-        if(!feeDelegation && (feePayer != null || feeRatio != null)) {
+        if((feeDelegation == null || !feeDelegation) && (feePayer != null || feeRatio != null)) {
             throw new IllegalArgumentException("To use fee delegation with KCT, please set 'feeDelegation' field to true.");
         }
 

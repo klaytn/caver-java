@@ -56,7 +56,7 @@ build_test: &build_test
     name: "Build and test"
     command: |
         ./gradlew clean
-        ./gradlew build --scan --debug
+        ./gradlew build --debug
 
 jobs:
   build:
@@ -229,6 +229,7 @@ jobs:
               version=v$(.circleci/version.sh)
 
               echo "Publishing a major release! version=$version"
+              ./gradlew clean build --stacktrace --debug
               ./gradlew clean publish --stacktrace --debug
               ./gradlew closeAndReleaseRepository --stacktrace --debug
 
@@ -261,6 +262,7 @@ jobs:
 
               version=v$(.circleci/version.sh)
               echo "Publishing a major android release! version=$version"
+              ./gradlew clean build --stacktrace --debug
               ./gradlew clean publish --stacktrace --debug
               ./gradlew closeAndReleaseRepository --stacktrace --debug
 

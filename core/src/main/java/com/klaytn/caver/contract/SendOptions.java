@@ -22,7 +22,8 @@ import org.web3j.utils.Numeric;
 import java.math.BigInteger;
 
 /**
- * Representing a options to send SmartContractExecution transaction.
+ * Representing a options to create a SmartContractDeploy, SmartContractExecution, FeeDelegatedSmartContractDeploy,
+ * FeeDelegatedSmartContractExecution, FeeDelegatedSmartContractDeployWithRatio, FeeDelegatedSmartContractExecutionWithRatio transaction.
  */
 public class SendOptions {
 
@@ -42,26 +43,40 @@ public class SendOptions {
     String value = "0x0";
 
     /**
-     * Creates a SendOption instance.
+     * The flag whether fee delegation feature is active.
      */
-    public SendOptions() {
-
-    }
+    boolean feeDelegation = false;
 
     /**
-     * Creates a SendOption instance.
+     * The address of fee payer.
+     */
+    String feePayer;
+
+    /**
+     * The fee ratio of the fee payer.
+     * The valid range is between 1 and 99. Zero(0) is not allowed. 100 and above are not allowed as well.
+     */
+    String feeRatio;
+
+    /**
+     * Creates a SendOptions instance.
+     */
+    public SendOptions() { }
+
+    /**
+     * Creates a SendOptions instance.
      * It should only be used when executing KIP7 / KIP7 class methods.
      * Because if gas passed to the method is null, the KIP7 / KIP7 class method automatically estimates gas.
-     * @param from The address of the sender
+     * @param from The address of the sender.
      */
     public SendOptions(String from) {
         this(from, (String)null);
     }
 
     /**
-     * Creates a SendOption instance.
+     * Creates a SendOptions instance.
      * It sets value to 0x0.
-     * @param from The address of the sender
+     * @param from The address of the sender.
      * @param gas The maximum amount of gas the transaction is allowed to use.
      */
     public SendOptions(String from, String gas) {
@@ -69,9 +84,9 @@ public class SendOptions {
     }
 
     /**
-     * Creates a SendOption instance.
+     * Creates a SendOptions instance.
      * It sets value to 0x0.
-     * @param from The address of the sender
+     * @param from The address of the sender.
      * @param gas The maximum amount of gas the transaction is allowed to use.
      */
     public SendOptions(String from, BigInteger gas) {
@@ -79,8 +94,8 @@ public class SendOptions {
     }
 
     /**
-     * Creates a SendOption instance.
-     * @param from The address of the sender
+     * Creates a SendOptions instance.
+     * @param from The address of the sender.
      * @param gas The maximum amount of gas the transaction is allowed to use.
      * @param value The amount of KLAY in peb to be transferred.
      */
@@ -91,8 +106,8 @@ public class SendOptions {
     }
 
     /**
-     * Creates a SendOption instance.
-     * @param from The address of the sender
+     * Creates a SendOptions instance.
+     * @param from The address of the sender.
      * @param gas The maximum amount of gas the transaction is allowed to use.
      * @param value The amount of KLAY in peb to be transferred.
      */
@@ -124,6 +139,30 @@ public class SendOptions {
      */
     public String getValue() {
         return value;
+    }
+
+    /**
+     * Getter function for feeDelegation flag.
+     * @return The flag whether fee delegation feature is active.
+     */
+    public boolean isFeeDelegation() {
+        return feeDelegation;
+    }
+
+    /**
+     * Getter function for fee payer.
+     * @return The address of fee payer
+     */
+    public String getFeePayer() {
+        return feePayer;
+    }
+
+    /**
+     * Getter function for fee ratio.
+     * @return The fee ratio of the fee payer.
+     */
+    public String getFeeRatio() {
+        return feeRatio;
     }
 
     /**
@@ -178,8 +217,6 @@ public class SendOptions {
         } else {
             this.value = "0x0";
         }
-
-
     }
 
     /**
@@ -192,5 +229,57 @@ public class SendOptions {
         } else {
             this.value = "0x0";
         }
+    }
+
+    /**
+     * Setter function for feeDelegation.
+     * @param feeDelegation The flag whether fee delegation feature is active.
+     */
+    public void setFeeDelegation(boolean feeDelegation) {
+        this.feeDelegation = feeDelegation;
+    }
+
+    /**
+     * Setter function for feePayer
+     * @param feePayer The address of fee payer.
+     */
+    public void setFeePayer(String feePayer) {
+        if(feePayer != null) {
+            if(!Utils.isAddress(feePayer)) {
+                throw new IllegalArgumentException("Invalid address. : " + feePayer);
+            }
+
+            this.feePayer = feePayer;
+        }
+    }
+
+    /**
+     * Setter function for feeRatio.
+     * @param feeRatio A fee ratio of the fee payer.
+     */
+    public void setFeeRatio(BigInteger feeRatio) {
+        setFeeRatio(Numeric.toHexStringWithPrefix(feeRatio));
+    }
+
+    /**
+     * Setter function for feeRatio.
+     * @param feeRatio A fee ratio of the fee payer represented as a hexadecimal string.
+     */
+    public void setFeeRatio(String feeRatio) {
+        if(feeRatio == null || feeRatio.isEmpty()) {
+            this.feeRatio = null;
+            return;
+        }
+
+        if(!Utils.isNumber(feeRatio) && !Utils.isHex(feeRatio)) {
+            throw new IllegalArgumentException("Invalid type of feeRatio: feeRatio should be number type or hex number string");
+        }
+
+        int feeRatioVal = Numeric.toBigInt(feeRatio).intValue();
+        if(feeRatioVal <= 0 || feeRatioVal >= 100) {
+            throw new IllegalArgumentException("Invalid feeRatio: feeRatio is out of range. [1,99]");
+        }
+
+        this.feeRatio = feeRatio;
     }
 }

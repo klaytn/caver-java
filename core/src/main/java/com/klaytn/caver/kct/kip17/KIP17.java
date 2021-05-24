@@ -132,7 +132,7 @@ public class KIP17 extends Contract {
 
     /**
      * Deploy a KIP-17 contract.<p>
-     * It must add deployer's keyring in `caver.wallet`.<p>
+     * The deployer's keyring should be added in `caver.wallet`. <p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
      * <pre>
      * <code>
@@ -240,7 +240,7 @@ public class KIP17 extends Contract {
 
     /**
      * Deploy KIP-17 contract.<p>
-     * It must add deployer's keyring in `caver.wallet`.<p>
+     * The deployer's keyring should be added in `caver.wallet`. <p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
      * <pre>
      * <code>

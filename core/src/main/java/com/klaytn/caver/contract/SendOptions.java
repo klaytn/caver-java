@@ -45,7 +45,7 @@ public class SendOptions {
     /**
      * The flag whether fee delegation feature is active.
      */
-    boolean feeDelegation = false;
+    Boolean feeDelegation;
 
     /**
      * The address of fee payer.
@@ -145,7 +145,7 @@ public class SendOptions {
      * Getter function for feeDelegation flag.
      * @return The flag whether fee delegation feature is active.
      */
-    public boolean isFeeDelegation() {
+    public Boolean getFeeDelegation() {
         return feeDelegation;
     }
 
@@ -235,7 +235,7 @@ public class SendOptions {
      * Setter function for feeDelegation.
      * @param feeDelegation The flag whether fee delegation feature is active.
      */
-    public void setFeeDelegation(boolean feeDelegation) {
+    public void setFeeDelegation(Boolean feeDelegation) {
         this.feeDelegation = feeDelegation;
     }
 

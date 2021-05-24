@@ -17,8 +17,10 @@
 package com.klaytn.caver.kct.kip7.wrapper;
 
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.kct.kip7.KIP7;
 import com.klaytn.caver.kct.kip7.KIP7DeployParams;
+import com.klaytn.caver.wallet.IWallet;
 import org.web3j.protocol.exceptions.TransactionException;
 
 import java.io.IOException;
@@ -66,7 +68,7 @@ public class KIP7Wrapper {
     }
 
     /**
-     * Deploy KIP-7 contract.
+     * Deploy KIP-7 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.
      * @param deployer A deployer's address.
      * @param name A KIP-7 contract name.
@@ -83,11 +85,103 @@ public class KIP7Wrapper {
      * @throws TransactionException
      */
     public KIP7 deploy(String deployer, String name, String symbol, int decimals, BigInteger initialSupply) throws NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
-        return KIP7.deploy(this.caver, deployer, name, symbol, decimals, initialSupply, this.caver.getWallet());
+        return KIP7.deploy(this.caver, deployer, name, symbol, decimals, initialSupply);
     }
 
     /**
-     * Deploy KIP-7 contract.
+     * Deploy KIP-7 contract.<p>
+     * The deployer's keyring should be added in `caver.wallet`. <p>
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
+     * <pre>
+     * <code>
+     *     SendOptions sendOptions = new SendOptions();
+     *     sendOptions.setFrom("deployer address");
+     *     sendOptions.setGas(BigInteger.valueOf(gas value));
+     *     sendOptions.setFeeDelegation(true);
+     *     sendOptions.setFeePayer("fee payer address");
+     *
+     *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
+     *     caver.kct.kip7.deploy(sendOptions, name, symbol, decimals, initialSupply);
+     * </code>
+     * </pre>
+     * @param sendOptions The send options to deploy a contract.
+     * @param name A KIP-7 contract name.
+     * @param symbol A KIP-7 contract symbol.
+     * @param decimals A KIP-7 contract decimals.
+     * @param initialSupply A KIP-7 contract initial supply.
+     * @return KIP7
+     * @throws TransactionException
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public KIP7 deploy(SendOptions sendOptions, String name, String symbol, int decimals, BigInteger initialSupply) throws TransactionException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        return KIP7.deploy(this.caver, sendOptions, name, symbol, decimals, initialSupply);
+    }
+
+    /**
+     * Deploy KIP-7 contract.<p>
+     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * @param caver A Caver instance.
+     * @param deployer A deployer's address.
+     * @param name A KIP-7 contract name.
+     * @param symbol A KIP-7 contract symbol.
+     * @param decimals A KIP-7 contract decimals.
+     * @param initialSupply A KIP-7 contract initial supply.
+     * @param wallet The class instance implemented IWallet to sign transaction.
+     * @return KIP7
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public KIP7 deploy(String deployer, String name, String symbol, int decimals, BigInteger initialSupply, IWallet wallet) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        return KIP7.deploy(this.caver, deployer, name, symbol, decimals, initialSupply, wallet);
+    }
+
+    /**
+     * Deploy KIP-7 contract. <p>
+     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
+     * <pre>
+     * <code>
+     *     SendOptions sendOptions = new SendOptions();
+     *     sendOptions.setFrom("deployer address");
+     *     sendOptions.setGas(BigInteger.valueOf(gas value));
+     *     sendOptions.setFeeDelegation(true);
+     *     sendOptions.setFeePayer("fee payer address");
+     *
+     *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
+     *     KIP7 kip7 = caver.kct.kip7.deploy(sendOptions, name, symbol, decimals, initialSupply, caver.getWallet());
+     * </code>
+     * </pre>
+     * @param sendOptions The send options to deploy a contract.
+     * @param name A KIP-7 contract name.
+     * @param symbol A KIP-7 contract symbol.
+     * @param decimals A KIP-7 contract decimals.
+     * @param initialSupply A KIP-7 contract initial supply.
+     * @param wallet The class instance implemented IWallet to sign transaction.
+     * @return KIP7
+     * @throws NoSuchMethodException
+     * @throws TransactionException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
+    public KIP7 deploy(SendOptions sendOptions, String name, String symbol, int decimals, BigInteger initialSupply, IWallet wallet) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        return KIP7.deploy(this.caver, sendOptions, name, symbol, decimals, initialSupply, wallet);
+    }
+
+    /**
+     * Deploy KIP-7 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.
      * @param tokenInfo The KIP-7 contract's deploy parameter values
      * @param deployer A deployer's address
@@ -101,7 +195,90 @@ public class KIP7Wrapper {
      * @throws TransactionException
      */
     public KIP7 deploy(KIP7DeployParams tokenInfo, String deployer) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-        return KIP7.deploy(this.caver, tokenInfo, deployer, this.caver.getWallet());
+        return KIP7.deploy(this.caver, tokenInfo, deployer);
+    }
+
+    /**
+     * Deploy KIP-7 contract.<p>
+     * The deployer's keyring should be added in `caver.wallet`. <p>
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
+     * <pre>
+     * <code>
+     *     SendOptions sendOptions = new SendOptions();
+     *     sendOptions.setFrom("deployer address");
+     *     sendOptions.setGas(BigInteger.valueOf(gas value));
+     *     sendOptions.setFeeDelegation(true);
+     *     sendOptions.setFeePayer("fee payer address");
+     *
+     *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
+     *     KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, sendOptions);
+     * </code>
+     * </pre>
+     * @param tokenInfo The KIP-7 contract's deploy parameter values
+     * @param sendOptions The send options to deploy a contract.
+     * @return KIP7
+     * @throws TransactionException
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public KIP7 deploy(KIP7DeployParams tokenInfo, SendOptions sendOptions) throws TransactionException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        return KIP7.deploy(this.caver, tokenInfo, sendOptions);
+    }
+
+    /**
+     * Deploy KIP-7 contract.<p>
+     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * @param caver A Caver instance
+     * @param tokenInfo The KIP-7 contract's deploy parameter values
+     * @param deployer A deployer's address
+     * @param wallet The class instance implemented IWallet to sign transaction.
+     * @return KIP7
+     * @throws IOException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public KIP7 deploy(KIP7DeployParams tokenInfo, String deployer, IWallet wallet) throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return KIP7.deploy(this.caver, tokenInfo, deployer, wallet);
+    }
+
+    /**
+     * Deploy KIP-7 contract.<p>
+     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
+     * <pre>
+     * <code>
+     *     SendOptions sendOptions = new SendOptions();
+     *     sendOptions.setFrom("deployer address");
+     *     sendOptions.setGas(BigInteger.valueOf(gas value));
+     *     sendOptions.setFeeDelegation(true);
+     *     sendOptions.setFeePayer("fee payer address");
+     *
+     *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
+     *     KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, sendOptions, caver.getWallet());
+     * </code>
+     * </pre>
+     * @param tokenInfo The KIP-7 contract's deploy parameter values
+     * @param sendOptions The send options to deploy a contract.
+     * @param wallet The class instance implemented IWallet to sign transaction.
+     * @return KIP7
+     * @throws IOException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public KIP7 deploy(KIP7DeployParams tokenInfo, SendOptions sendOptions, IWallet wallet) throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return KIP7.deploy(this.caver, tokenInfo, sendOptions, wallet);
     }
 
     /**

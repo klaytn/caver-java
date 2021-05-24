@@ -17,7 +17,10 @@
 package com.klaytn.caver.kct.kip37.wrapper;
 
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.kct.kip37.KIP37;
+import com.klaytn.caver.kct.kip37.KIP37DeployParams;
+import com.klaytn.caver.wallet.IWallet;
 import org.web3j.protocol.exceptions.TransactionException;
 
 import java.io.IOException;
@@ -64,10 +67,10 @@ public class KIP37Wrapper {
     }
 
     /**
-     * Deploy a KIP-37 contract.
+     * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.
-     * @param uri The URI for token type
-     * @param deployer A deployer's address
+     * @param uri The URI for token type.
+     * @param deployer A deployer's address.
      * @return KIP37
      * @throws IOException
      * @throws NoSuchMethodException
@@ -78,7 +81,188 @@ public class KIP37Wrapper {
      * @throws TransactionException
      */
     public KIP37 deploy(String uri, String deployer) throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
-        return KIP37.deploy(this.caver, uri, deployer, this.caver.getWallet());
+        return KIP37.deploy(this.caver, uri, deployer);
+    }
+
+    /**
+     * Deploy a KIP-37 contract.<p>
+     * The deployer's keyring should be existed in `caver.wallet`.<p>
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
+     * <pre>
+     * <code>
+     *     SendOptions sendOptions = new SendOptions();
+     *     sendOptions.setFrom("deployer address");
+     *     sendOptions.setGas(BigInteger.valueOf(gas value));
+     *     sendOptions.setFeeDelegation(true);
+     *     sendOptions.setFeePayer("fee payer address");
+     *
+     *     KIP37 kip37 = caver.kct.kip37.deploy(uri, sendOptions);
+     * </code>
+     * </pre>
+     * @param uri The URI for token type.
+     * @param sendOptions The send options to deploy a contract.
+     * @return KIP37
+     * @throws IOException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public KIP37 deploy(String uri, SendOptions sendOptions) throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return KIP37.deploy(this.caver, uri, sendOptions);
+    }
+
+    /**
+     * Deploy a KIP-37 contract.<p>
+     * The deployer's keyring should be existed in `caver.wallet`.<p>
+     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * @param uri The URI for token type.
+     * @param deployer A deployer's address.
+     * @param wallet The class instance implemented IWallet to sign transaction.
+     * @return KIP37
+     * @throws IOException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public KIP37 deploy(String uri, String deployer, IWallet wallet) throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return KIP37.deploy(this.caver, uri, deployer, wallet);
+    }
+
+    /**
+     * Deploy a KIP-37 contract.<p>
+     * The deployer's keyring should be existed in `caver.wallet`.<p>
+     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
+     * <pre>
+     * <code>
+     *     SendOptions sendOptions = new SendOptions();
+     *     sendOptions.setFrom("deployer address");
+     *     sendOptions.setGas(BigInteger.valueOf(gas value));
+     *     sendOptions.setFeeDelegation(true);
+     *     sendOptions.setFeePayer("fee payer address");
+     *
+     *     KIP37 kip37 = caver.kct.kip37.deploy(uri, sendOptions, caver.getWallet());
+     * </code>
+     * </pre>
+     * @param uri The URI for token type.
+     * @param sendOptions The send options to deploy a contract.
+     * @param wallet The class instance implemented IWallet to sign transaction.
+     * @return
+     * @throws IOException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public KIP37 deploy(String uri, SendOptions sendOptions, IWallet wallet) throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return KIP37.deploy(this.caver, uri, sendOptions, wallet);
+    }
+
+    /**
+     * Deploy a KIP-37 contract.<p>
+     * The deployer's keyring should be existed in `caver.wallet`.<p>
+     * @param tokenInfo The KIP-37 contract's deploy parameter values.
+     * @param deployer A deployer's address
+     * @return KIP37
+     * @throws TransactionException
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public KIP37 deploy(KIP37DeployParams tokenInfo, String deployer) throws TransactionException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        return KIP37.deploy(this.caver, tokenInfo, deployer, this.caver.getWallet());
+    }
+
+    /**
+     * Deploy a KIP-37 contract.<p>
+     * The deployer's keyring should be existed in `caver.wallet`.<p>
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in SendOptions.
+     * <pre>
+     * <code>
+     *     SendOptions sendOptions = new SendOptions();
+     *     sendOptions.setFrom("deployer address");
+     *     sendOptions.setGas(BigInteger.valueOf(gas value));
+     *     sendOptions.setFeeDelegation(true);
+     *     sendOptions.setFeePayer("fee payer address");
+     *
+     *     KIP37 kip37 = caver.kct.kip37.deploy(new KIP37DeployParams(uri), sendOptions);
+     * </code>
+     * </pre>
+     * @param tokenInfo The KIP-37 contract's deploy parameter values.
+     * @param sendOptions The send options to deploy a contract.
+     * @return KIP37
+     * @throws TransactionException
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public KIP37 deploy(KIP37DeployParams tokenInfo, SendOptions sendOptions) throws TransactionException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        return KIP37.deploy(this.caver, tokenInfo, sendOptions, this.caver.getWallet());
+    }
+
+    /**
+     * Deploy a KIP-37 contract.<p>
+     * The deployer's keyring should be existed in `caver.wallet`.<p>
+     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * @param tokenInfo The KIP-37 contract's deploy parameter values.
+     * @param deployer A deployer's address
+     * @param wallet The class instance implemented IWallet to sign transaction.
+     * @return KIP37
+     * @throws IOException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws TransactionException
+     */
+    public KIP37 deploy(KIP37DeployParams tokenInfo, String deployer, IWallet wallet) throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        return KIP37.deploy(caver, tokenInfo, deployer, wallet);
+    }
+
+    /**
+     * Deploy a KIP-37 contract.<p>
+     * The deployer's keyring should be existed in `caver.wallet`.<p>
+     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * <pre>
+     * <code>
+     *     SendOptions sendOptions = new SendOptions();
+     *     sendOptions.setFrom("deployer address");
+     *     sendOptions.setGas(BigInteger.valueOf(gas value));
+     *     sendOptions.setFeeDelegation(true);
+     *     sendOptions.setFeePayer("fee payer address");
+     *
+     *     KIP37 kip37 = caver.kct.kip37.deploy(new KIP37DeployParams(uri), sendOptions, caver.getWallet());
+     * </code>
+     * </pre>
+     * @param tokenInfo The KIP-37 contract's deploy parameter values.
+     * @param sendOptions The send options to deploy a contract.
+     * @param wallet The class instance implemented IWallet to sign transaction.
+     * @return KIP37
+     * @throws TransactionException
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public KIP37 deploy(KIP37DeployParams tokenInfo, SendOptions sendOptions, IWallet wallet) throws TransactionException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        return KIP37.deploy(this.caver, tokenInfo, sendOptions, wallet);
     }
 
     /**

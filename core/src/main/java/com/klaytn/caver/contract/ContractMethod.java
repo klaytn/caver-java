@@ -280,7 +280,7 @@ public class ContractMethod {
         SendOptions determinedOption = makeSendOption(options);
         AbstractTransaction transaction = sign(arguments, determinedOption);
 
-        if(determinedOption.isFeeDelegation()) {
+        if(determinedOption.getFeeDelegation() != null && determinedOption.getFeeDelegation()) {
             if(determinedOption.getFeePayer() == null || !Utils.isAddress(determinedOption.getFeePayer())) {
                 throw new IllegalArgumentException("The fee payer value is not valid. feePayer address - " + determinedOption.getFeePayer());
             }
@@ -443,7 +443,7 @@ public class ContractMethod {
         // Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
         // Passed parameter "options" has higher priority than "defaultSendOption" field.
         SendOptions determinedOption = makeSendOption(sendOptions);
-        if(!determinedOption.isFeeDelegation()) {
+        if(determinedOption == null || !determinedOption.getFeeDelegation()) {
             throw new RuntimeException("'feeDelegation' field in SendOptions must set a true.");
         }
 
@@ -593,7 +593,7 @@ public class ContractMethod {
 
         AbstractTransaction transaction = signWithSolidityWrapper(wrapperArguments, determinedOption);
 
-        if(determinedOption.isFeeDelegation() && determinedOption.getFeePayer() != null) {
+        if((determinedOption.getFeeDelegation() != null && determinedOption.getFeeDelegation()) && determinedOption.getFeePayer() != null) {
             transaction = this.wallet.signAsFeePayer(determinedOption.getFeePayer(), (AbstractFeeDelegatedTransaction)transaction);
         }
 
@@ -669,7 +669,7 @@ public class ContractMethod {
         // Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
         // Passed parameter "options" has higher priority than "defaultSendOption" field.
         SendOptions determinedOption = makeSendOption(sendOptions);
-        if(!determinedOption.isFeeDelegation()) {
+        if(determinedOption == null || !determinedOption.getFeeDelegation()) {
             throw new RuntimeException("'feeDelegation' field in SendOptions must set a true.");
         }
 
@@ -888,7 +888,7 @@ public class ContractMethod {
         String from = defaultSendOption.getFrom();
         String gas = defaultSendOption.getGas();
         String value = defaultSendOption.getValue();
-        boolean isFeeDelegation = defaultSendOption.isFeeDelegation();
+        Boolean isFeeDelegation = defaultSendOption.getFeeDelegation();
         String feePayer = defaultSendOption.getFeePayer();
         String feeRatio = defaultSendOption.getFeeRatio();
 
@@ -903,8 +903,8 @@ public class ContractMethod {
                 value = sendOption.getValue();
             }
 
-            if(sendOption.isFeeDelegation()) {
-                isFeeDelegation = sendOption.isFeeDelegation();
+            if(sendOption.getFeeDelegation() != null) {
+                isFeeDelegation = sendOption.getFeeDelegation();
             }
 
             if(sendOption.getFeePayer() != null) {
@@ -919,7 +919,7 @@ public class ContractMethod {
         SendOptions options = new SendOptions(from, gas, value);
         options.setFeeDelegation(isFeeDelegation);
 
-        if(options.isFeeDelegation()) {
+        if(options.getFeeDelegation() != null && options.getFeeDelegation()) {
             options.setFeePayer(feePayer);
             options.setFeeRatio(feeRatio);
         }
@@ -945,7 +945,7 @@ public class ContractMethod {
             throw new IllegalArgumentException("Invalid 'value' parameter : " + options.getValue());
         }
 
-        if(options.isFeeDelegation()) {
+        if(options.getFeeDelegation() != null && options.getFeeDelegation()) {
             if(options.getFeePayer() == null || options.getFeePayer().equals("0x")) {
                 options.setFeePayer(Utils.DEFAULT_ZERO_ADDRESS);
             }
@@ -1070,7 +1070,7 @@ public class ContractMethod {
         checkSendOption(sendOptions);
 
         if(getType().equals("constructor")) { // contract deploy
-            if(sendOptions.isFeeDelegation()) { // fee delegation transaction
+            if(sendOptions.getFeeDelegation() != null && sendOptions.getFeeDelegation()) { // fee delegation transaction
                 if(sendOptions.getFeeRatio() == null) {
                     return caver.transaction.feeDelegatedSmartContractDeploy.create(
                             TxPropertyBuilder.feeDelegatedSmartContractDeploy()
@@ -1101,7 +1101,7 @@ public class ContractMethod {
                 );
             }
         } else { // contract execution
-            if(sendOptions.isFeeDelegation()) { // fee delegation transaction
+            if(sendOptions.getFeeDelegation() != null && sendOptions.getFeeDelegation()) { // fee delegation transaction
                 if(sendOptions.getFeeRatio() == null) {
                     return caver.transaction.feeDelegatedSmartContractExecution.create(
                             TxPropertyBuilder.feeDelegatedSmartContractExecution()

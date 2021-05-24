@@ -132,8 +132,8 @@ public class KIP17 extends Contract {
 
     /**
      * Deploy a KIP-17 contract.<p>
-     * It must add deployer's keyring in caver.wallet.<p>
-     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in SendOptions.
+     * It must add deployer's keyring in `caver.wallet`.<p>
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
      * <pre>
      * <code>
      *     SendOptions sendOptions = new SendOptions();
@@ -142,7 +142,7 @@ public class KIP17 extends Contract {
      *     sendOptions.setFeeDelegation(true);
      *     sendOptions.setFeePayer("fee payer address");
      *
-     *     KIP17 kip17 = KIP17.deploy(caver, sendOptions, name, symbol);
+     *     KIP17 kip17 = caver.kct.kip17.deploy(caver, sendOptions, name, symbol);
      * </code>
      * </pre>
      * @param caver A Caver instance.
@@ -188,7 +188,7 @@ public class KIP17 extends Contract {
     /**
      * Deploy KIP-17 contract. <p>
      * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
-     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in SendOptions.
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
      * <pre>
      * <code>
      *     SendOptions sendOptions = new SendOptions();
@@ -197,7 +197,7 @@ public class KIP17 extends Contract {
      *     sendOptions.setFeeDelegation(true);
      *     sendOptions.setFeePayer("fee payer address");
      *
-     *     KIP17 kip17 = KIP17.deploy(caver, sendOptions, name, symbol, caver.getWallet());
+     *     KIP17 kip17 = caver.kct.kip17.deploy(caver, sendOptions, name, symbol, caver.getWallet());
      * </code>
      * </pre>
      * @param caver A Caver instance.
@@ -240,8 +240,8 @@ public class KIP17 extends Contract {
 
     /**
      * Deploy KIP-17 contract.<p>
-     * It must add deployer's keyring in caver.wallet.<p>
-     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in SendOptions.
+     * It must add deployer's keyring in `caver.wallet`.<p>
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
      * <pre>
      * <code>
      *     SendOptions sendOptions = new SendOptions();
@@ -251,7 +251,7 @@ public class KIP17 extends Contract {
      *     sendOptions.setFeePayer("fee payer address");
      *
      *     KIP17DeployParams tokenInfo = new KIP17DeployParams(name, symbol);
-     *     KIP17 kip17 = KIP17.deploy(caver, tokenInfo, sendOptions);
+     *     KIP17 kip17 = caver.kct.kip17.deploy(caver, tokenInfo, sendOptions);
      * </code>
      * </pre>
      * @param caver A Caver instance.
@@ -297,7 +297,7 @@ public class KIP17 extends Contract {
     /**
      * Deploy KIP-17 contract.<p>
      * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
-     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in SendOptions.
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
      * <pre>
      * <code>
      *     SendOptions sendOptions = new SendOptions();
@@ -307,7 +307,7 @@ public class KIP17 extends Contract {
      *     sendOptions.setFeePayer("fee payer address");
      *
      *     KIP17DeployParams tokenInfo = new KIP17DeployParams(name, symbol);
-     *     KIP17 kip17 = KIP17.deploy(caver, tokenInfo, sendOptions, caver.getWallet());
+     *     KIP17 kip17 = caver.kct.kip17.deploy(caver, tokenInfo, sendOptions, caver.getWallet());
      * </code>
      * </pre>
      * @param caver A Caver instance.

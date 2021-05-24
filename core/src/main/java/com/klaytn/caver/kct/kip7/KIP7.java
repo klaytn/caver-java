@@ -141,7 +141,7 @@ public class KIP7 extends Contract {
      *     sendOptions.setFeeDelegation(true);
      *     sendOptions.setFeePayer("fee payer address");
      *
-     *     KIP7 kip7 = caver.kct.kip7.deploy(caver, sendOptions, name, symbol, decimals, initialSupply);
+     *     KIP7 kip7 = caver.kct.kip7.deploy(sendOptions, name, symbol, decimals, initialSupply);
      * </code>
      * </pre>
      * @param caver A Caver instance.
@@ -200,7 +200,7 @@ public class KIP7 extends Contract {
      *     sendOptions.setFeeDelegation(true);
      *     sendOptions.setFeePayer("fee payer address");
      *
-     *     KIP7 kip7 = caver.kct.kip7.deploy(caver, sendOptions, name, symbol, decimals, initialSupply, caver.getWallet());
+     *     KIP7 kip7 = caver.kct.kip7.deploy(sendOptions, name, symbol, decimals, initialSupply, caver.getWallet());
      * </code>
      * </pre>
      * @param caver A Caver instance.
@@ -256,7 +256,7 @@ public class KIP7 extends Contract {
      *     sendOptions.setFeePayer("fee payer address");
      *
      *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
-     *     KIP7 kip7 = caver.kct.kip7.deploy(caver, tokenInfo, sendOptions);
+     *     KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, sendOptions);
      * </code>
      * </pre>
      * @param caver A Caver instance
@@ -312,7 +312,7 @@ public class KIP7 extends Contract {
      *     sendOptions.setFeePayer("fee payer address");
      *
      *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
-     *     KIP7 kip7 = caver.kct.kip7.deploy(caver, tokenInfo, sendOptions, caver.getWallet());
+     *     KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, sendOptions, caver.getWallet());
      * </code>
      * </pre>
      * @param caver A Caver instance

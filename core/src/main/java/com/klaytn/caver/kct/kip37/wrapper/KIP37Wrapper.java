@@ -147,7 +147,7 @@ public class KIP37Wrapper {
      *     sendOptions.setFeeDelegation(true);
      *     sendOptions.setFeePayer("fee payer address");
      *
-     *     KIP37 kip37 = caver.kct.kip37.deploy(caver, uri, sendOptions, caver.getWallet());
+     *     KIP37 kip37 = caver.kct.kip37.deploy(uri, sendOptions, caver.getWallet());
      * </code>
      * </pre>
      * @param uri The URI for token type.

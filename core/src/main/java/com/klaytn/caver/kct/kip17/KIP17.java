@@ -142,7 +142,7 @@ public class KIP17 extends Contract {
      *     sendOptions.setFeeDelegation(true);
      *     sendOptions.setFeePayer("fee payer address");
      *
-     *     KIP17 kip17 = caver.kct.kip17.deploy(caver, sendOptions, name, symbol);
+     *     KIP17 kip17 = caver.kct.kip17.deploy(sendOptions, name, symbol);
      * </code>
      * </pre>
      * @param caver A Caver instance.
@@ -197,7 +197,7 @@ public class KIP17 extends Contract {
      *     sendOptions.setFeeDelegation(true);
      *     sendOptions.setFeePayer("fee payer address");
      *
-     *     KIP17 kip17 = caver.kct.kip17.deploy(caver, sendOptions, name, symbol, caver.getWallet());
+     *     KIP17 kip17 = caver.kct.kip17.deploy(sendOptions, name, symbol, caver.getWallet());
      * </code>
      * </pre>
      * @param caver A Caver instance.
@@ -251,7 +251,7 @@ public class KIP17 extends Contract {
      *     sendOptions.setFeePayer("fee payer address");
      *
      *     KIP17DeployParams tokenInfo = new KIP17DeployParams(name, symbol);
-     *     KIP17 kip17 = caver.kct.kip17.deploy(caver, tokenInfo, sendOptions);
+     *     KIP17 kip17 = caver.kct.kip17.deploy(tokenInfo, sendOptions);
      * </code>
      * </pre>
      * @param caver A Caver instance.
@@ -307,7 +307,7 @@ public class KIP17 extends Contract {
      *     sendOptions.setFeePayer("fee payer address");
      *
      *     KIP17DeployParams tokenInfo = new KIP17DeployParams(name, symbol);
-     *     KIP17 kip17 = caver.kct.kip17.deploy(caver, tokenInfo, sendOptions, caver.getWallet());
+     *     KIP17 kip17 = caver.kct.kip17.deploy(tokenInfo, sendOptions, caver.getWallet());
      * </code>
      * </pre>
      * @param caver A Caver instance.

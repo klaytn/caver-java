@@ -158,7 +158,7 @@ public class KIP7Wrapper {
      *     sendOptions.setFeePayer("fee payer address");
      *
      *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
-     *     caver.kct.kip7.deploy(sendOptions, name, symbol, decimals, initialSupply, caver.getWallet());
+     *     KIP7 kip7 = caver.kct.kip7.deploy(sendOptions, name, symbol, decimals, initialSupply, caver.getWallet());
      * </code>
      * </pre>
      * @param sendOptions The send options to deploy a contract.
@@ -211,7 +211,7 @@ public class KIP7Wrapper {
      *     sendOptions.setFeePayer("fee payer address");
      *
      *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
-     *     kip7.deploy(caver, tokenInfo, sendOptions);
+     *     KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, sendOptions);
      * </code>
      * </pre>
      * @param tokenInfo The KIP-7 contract's deploy parameter values
@@ -262,7 +262,7 @@ public class KIP7Wrapper {
      *     sendOptions.setFeePayer("fee payer address");
      *
      *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
-     *     kip7.deploy(caver, tokenInfo, sendOptions, caver.getWallet());
+     *     KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, sendOptions, caver.getWallet());
      * </code>
      * </pre>
      * @param tokenInfo The KIP-7 contract's deploy parameter values

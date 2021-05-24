@@ -87,7 +87,7 @@ public class KIP37Wrapper {
     /**
      * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.<p>
-     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in SendOptions.
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
      * <pre>
      * <code>
      *     SendOptions sendOptions = new SendOptions();
@@ -138,7 +138,7 @@ public class KIP37Wrapper {
      * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.<p>
      * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
-     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in SendOptions.
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
      * <pre>
      * <code>
      *     SendOptions sendOptions = new SendOptions();

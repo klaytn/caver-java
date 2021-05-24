@@ -139,7 +139,7 @@ public class KIP37 extends Contract {
      *     sendOptions.setFeeDelegation(true);
      *     sendOptions.setFeePayer("fee payer address");
      *
-     *     KIP37 kip37 = KIP37.deploy(caver, uri, sendOptions);
+     *     KIP37 kip37 = caver.kct.kip37.deploy(caver, uri, sendOptions);
      * </code>
      * </pre>
      * @param caver A Caver instance.
@@ -196,7 +196,7 @@ public class KIP37 extends Contract {
      *     sendOptions.setFeeDelegation(true);
      *     sendOptions.setFeePayer("fee payer address");
      *
-     *     KIP37 kip37 = KIP37.deploy(caver, uri, sendOptions, caver.getWallet());
+     *     KIP37 kip37 = caver.kct.kip37.deploy(caver, uri, sendOptions, caver.getWallet());
      * </code>
      * </pre>
      * @param caver A Caver instance.

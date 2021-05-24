@@ -141,8 +141,7 @@ public class KIP7 extends Contract {
      *     sendOptions.setFeeDelegation(true);
      *     sendOptions.setFeePayer("fee payer address");
      *
-     *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
-     *     kip7.deploy(caver, sendOptions, name, symbol, decimals, initialSupply);
+     *     KIP7 kip7 = KIP7.deploy(caver, sendOptions, name, symbol, decimals, initialSupply);
      * </code>
      * </pre>
      * @param caver A Caver instance.
@@ -201,8 +200,7 @@ public class KIP7 extends Contract {
      *     sendOptions.setFeeDelegation(true);
      *     sendOptions.setFeePayer("fee payer address");
      *
-     *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
-     *     kip7.deploy(caver, sendOptions, name, symbol, decimals, initialSupply, caver.getWallet());
+     *     KIP7 kip7 = KIP7.deploy(caver, sendOptions, name, symbol, decimals, initialSupply, caver.getWallet());
      * </code>
      * </pre>
      * @param caver A Caver instance.
@@ -258,7 +256,7 @@ public class KIP7 extends Contract {
      *     sendOptions.setFeePayer("fee payer address");
      *
      *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
-     *     kip7.deploy(caver, tokenInfo, sendOptions);
+     *     KIP7 kip7 = KIP7.deploy(caver, tokenInfo, sendOptions);
      * </code>
      * </pre>
      * @param caver A Caver instance
@@ -314,7 +312,7 @@ public class KIP7 extends Contract {
      *     sendOptions.setFeePayer("fee payer address");
      *
      *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
-     *     kip7.deploy(caver, tokenInfo, sendOptions, caver.getWallet());
+     *     KIP7 kip7 = KIP7.deploy(caver, tokenInfo, sendOptions, caver.getWallet());
      * </code>
      * </pre>
      * @param caver A Caver instance
@@ -1270,6 +1268,9 @@ public class KIP7 extends Contract {
         String from = kip7.getDefaultSendOptions().getFrom();
         String gas = kip7.getDefaultSendOptions().getGas();
         String value = kip7.getDefaultSendOptions().getValue();
+        boolean feeDelegation = kip7.getDefaultSendOptions().isFeeDelegation();
+        String feePayer = kip7.getDefaultSendOptions().getFeePayer();
+        String feeRatio = kip7.getDefaultSendOptions().getFeeRatio();
 
         if(sendOptions.getFrom() != null) {
             from = sendOptions.getFrom();
@@ -1290,7 +1291,30 @@ public class KIP7 extends Contract {
             value = sendOptions.getValue();
         }
 
-        newSendOptions = new SendOptions(from, gas, value);
+        if(feeDelegation || sendOptions.isFeeDelegation()) {
+            feeDelegation = true;
+        }
+
+        if(sendOptions.getFeePayer() != null) {
+            feePayer = sendOptions.getFeePayer();
+        }
+
+        if(sendOptions.getFeeRatio() != null) {
+            feeRatio = sendOptions.getFeeRatio();
+        }
+
+        if(!feeDelegation && (feePayer != null || feeRatio != null)) {
+            throw new IllegalArgumentException("To use fee delegation with KCT, please set 'feeDelegation' field to true.");
+        }
+
+        newSendOptions = new SendOptions();
+        newSendOptions.setFrom(from);
+        newSendOptions.setGas(gas);
+        newSendOptions.setValue(value);
+        newSendOptions.setFeeDelegation(feeDelegation);
+        newSendOptions.setFeePayer(feePayer);
+        newSendOptions.setFeeRatio(feeRatio);
+
         return newSendOptions;
     }
 

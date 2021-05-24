@@ -4,8 +4,16 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.kct.kip7.KIP7;
+import com.klaytn.caver.kct.kip7.KIP7ConstantData;
 import com.klaytn.caver.kct.kip7.KIP7DeployParams;
+import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.TransactionReceipt;
+import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
+import com.klaytn.caver.transaction.AbstractTransaction;
+import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
+import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
+import com.klaytn.caver.transaction.type.FeeDelegatedSmartContractExecution;
+import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.KeyringContainer;
 import org.junit.Before;
@@ -718,6 +726,217 @@ public class KIP7Test {
             contract.deploy(new SendOptions(LUMAN.getAddress(), BigInteger.valueOf(10000000)), byteCodeNotSupportedKIP13);
 
             Map<String, Boolean> result = caver.kct.kip7.detectInterface(contract.getContractAddress());
+        }
+    }
+
+    public static class FeeDelegationTest {
+        static Caver caver;
+        static String contractAddress;
+        static String sender;
+        static String feePayer;
+
+        @BeforeClass
+        public static void init() throws TransactionException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+            caver = new Caver(Caver.DEFAULT_URL);
+            caver.wallet.add(caver.wallet.keyring.create(LUMAN.getAddress(), "0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+            caver.wallet.add(caver.wallet.keyring.create(BRANDON.getAddress(), "0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
+
+            sender = LUMAN.getAddress();
+            feePayer = BRANDON.getAddress();
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(sender);
+            sendOptions.setGas(BigInteger.valueOf(3000000));
+
+            KIP7DeployParams kip7DeployParam = new KIP7DeployParams(CONTRACT_NAME, CONTRACT_SYMBOL, CONTRACT_DECIMALS, CONTRACT_INITIAL_SUPPLY);
+
+            KIP7 kip7 = caver.kct.kip7.deploy(kip7DeployParam, sender);
+            contractAddress = kip7.getContractAddress();
+        }
+
+        @Test
+        public void deploy() throws TransactionException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(LUMAN.getAddress());
+            sendOptions.setGas(BigInteger.valueOf(10000000));
+            sendOptions.setFeeDelegation(true);
+            sendOptions.setFeePayer(BRANDON.getAddress());
+            sendOptions.setFeeRatio(BigInteger.valueOf(10));
+
+            KIP7 kip7 = caver.kct.kip7.deploy(sendOptions, CONTRACT_NAME, CONTRACT_SYMBOL, CONTRACT_DECIMALS, CONTRACT_INITIAL_SUPPLY);
+            assertNotNull(kip7.getContractAddress());
+        }
+
+        @Test
+        public void addMinter_FD() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+            KIP7 kip7 = caver.kct.kip7.create(contractAddress);
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(LUMAN.getAddress());
+            sendOptions.setGas(BigInteger.valueOf(10000000));
+            sendOptions.setFeeDelegation(true);
+            sendOptions.setFeePayer(BRANDON.getAddress());
+
+            TransactionReceipt.TransactionReceiptData receiptData = kip7.addMinter(caver.wallet.keyring.generate().getAddress(), sendOptions);
+
+            assertEquals(TransactionType.TxTypeFeeDelegatedSmartContractExecution.toString(), receiptData.getType());
+            assertEquals("0x1", receiptData.getStatus());
+            assertEquals(sendOptions.getFrom(), receiptData.getFrom());
+            assertEquals(contractAddress, receiptData.getTo());
+            assertEquals(sendOptions.getFeePayer(), receiptData.getFeePayer());
+        }
+
+        @Test
+        public void addMinter_FDWithRatio() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+            KIP7 kip7 = caver.kct.kip7.create(contractAddress);
+
+            SendOptions sendOptions = new SendOptions();
+            sendOptions.setFrom(LUMAN.getAddress());
+            sendOptions.setGas(BigInteger.valueOf(10000000));
+            sendOptions.setFeeDelegation(true);
+            sendOptions.setFeePayer(BRANDON.getAddress());
+            sendOptions.setFeeRatio(BigInteger.valueOf(10));
+
+            TransactionReceipt.TransactionReceiptData receiptData = kip7.addMinter(caver.wallet.keyring.generate().getAddress(), sendOptions);
+
+            assertEquals(TransactionType.TxTypeFeeDelegatedSmartContractExecutionWithRatio.toString(), receiptData.getType());
+            assertEquals("0x1", receiptData.getStatus());
+            assertEquals(sendOptions.getFrom(), receiptData.getFrom());
+            assertEquals(contractAddress, receiptData.getTo());
+            assertEquals(sendOptions.getFeePayer(), receiptData.getFeePayer());
+            assertEquals(sendOptions.getFeeRatio(), receiptData.getFeeRatio());
+        }
+
+        @Test
+        public void addMinter_defaultOptions_FDWithRatio() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+            SendOptions defaultSendOptions = new SendOptions();
+            defaultSendOptions.setFrom(LUMAN.getAddress());
+            defaultSendOptions.setGas(BigInteger.valueOf(10000000));
+            defaultSendOptions.setFeeDelegation(true);
+            defaultSendOptions.setFeePayer(BRANDON.getAddress());
+            defaultSendOptions.setFeeRatio(BigInteger.valueOf(10));
+
+            KIP7 kip7 = caver.kct.kip7.create(contractAddress);
+            kip7.setDefaultSendOptions(defaultSendOptions);
+
+            TransactionReceipt.TransactionReceiptData receiptData = kip7.addMinter(caver.wallet.keyring.generate().getAddress());
+
+            assertEquals(TransactionType.TxTypeFeeDelegatedSmartContractExecutionWithRatio.toString(), receiptData.getType());
+            assertEquals("0x1", receiptData.getStatus());
+            assertEquals(defaultSendOptions.getFrom(), receiptData.getFrom());
+            assertEquals(contractAddress, receiptData.getTo());
+            assertEquals(defaultSendOptions.getFeePayer(), receiptData.getFeePayer());
+            assertEquals(defaultSendOptions.getFeeRatio(), receiptData.getFeeRatio());
+        }
+
+        @Test
+        public void addMinter_overwrite_defaultOptions_FDWithRatio() throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+            SendOptions defaultOptions = new SendOptions();
+            defaultOptions.setFrom(LUMAN.getAddress());
+            defaultOptions.setGas(BigInteger.valueOf(10000000));
+            defaultOptions.setFeeDelegation(false);
+            defaultOptions.setFeePayer(BRANDON.getAddress());
+            defaultOptions.setFeeRatio(BigInteger.valueOf(10));
+
+            KIP7 kip7 = caver.kct.kip7.create(contractAddress);
+            kip7.setDefaultSendOptions(defaultOptions);
+
+            SendOptions options = new SendOptions();
+            options.setFrom(LUMAN.getAddress());
+            options.setGas(BigInteger.valueOf(20000000));
+            options.setFeeDelegation(true);
+            options.setFeePayer(BRANDON.getAddress());
+            options.setFeeRatio(BigInteger.valueOf(30));
+
+            TransactionReceipt.TransactionReceiptData receiptData = kip7.addMinter(caver.wallet.keyring.generate().getAddress(), options);
+
+            assertEquals(TransactionType.TxTypeFeeDelegatedSmartContractExecutionWithRatio.toString(), receiptData.getType());
+            assertEquals("0x1", receiptData.getStatus());
+            assertEquals(options.getFrom(), receiptData.getFrom());
+            assertEquals(contractAddress, receiptData.getTo());
+            assertEquals(options.getGas(), receiptData.getGas());
+            assertEquals(options.getFeePayer(), receiptData.getFeePayer());
+            assertEquals(options.getFeeRatio(), receiptData.getFeeRatio());
+        }
+
+        @Test
+        public void sign_constructor() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, TransactionException {
+            KIP7 kip7 = caver.kct.kip7.create();
+
+            SendOptions options = new SendOptions();
+            options.setFrom(LUMAN.getAddress());
+            options.setGas(BigInteger.valueOf(20000000));
+            options.setFeeDelegation(true);
+            options.setFeePayer(BRANDON.getAddress());
+
+            AbstractFeeDelegatedTransaction signed = (AbstractFeeDelegatedTransaction)kip7.sign(options, "constructor", KIP7ConstantData.BINARY, CONTRACT_NAME, CONTRACT_SYMBOL, CONTRACT_DECIMALS, CONTRACT_INITIAL_SUPPLY);
+            assertEquals(TransactionType.TxTypeFeeDelegatedSmartContractDeploy.toString(), signed.getType());
+            assertEquals(options.getFrom(), signed.getFrom());
+            assertEquals(options.getFeePayer(), signed.getFeePayer());
+            assertFalse(Utils.isEmptySig(signed.getSignatures()));
+            assertTrue(Utils.isEmptySig(signed.getFeePayerSignatures()));
+
+            caver.wallet.signAsFeePayer(feePayer, signed);
+
+            Bytes32 txHash = caver.rpc.klay.sendRawTransaction(signed).send();
+            TransactionReceiptProcessor receiptProcessor = new PollingTransactionReceiptProcessor(caver, 1000, 15);
+
+            TransactionReceipt.TransactionReceiptData receiptData = receiptProcessor.waitForTransactionReceipt(txHash.getResult());
+            assertNotNull(receiptData.getContractAddress());
+            assertEquals("0x1", receiptData.getStatus());
+        }
+
+        @Test
+        public void sign_addMinter() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, TransactionException {
+            KIP7 kip7 = caver.kct.kip7.create(contractAddress);
+
+            SendOptions options = new SendOptions();
+            options.setFrom(LUMAN.getAddress());
+            options.setGas(BigInteger.valueOf(20000000));
+            options.setFeeDelegation(true);
+            options.setFeePayer(BRANDON.getAddress());
+
+            AbstractFeeDelegatedTransaction signed = (AbstractFeeDelegatedTransaction)kip7.sign(options, "addMinter", caver.wallet.keyring.generate().getAddress());
+            assertEquals(TransactionType.TxTypeFeeDelegatedSmartContractExecution.toString(), signed.getType());
+            assertEquals(options.getFrom(), signed.getFrom());
+            assertEquals(options.getFeePayer(), signed.getFeePayer());
+            assertFalse(Utils.isEmptySig(signed.getSignatures()));
+            assertTrue(Utils.isEmptySig(signed.getFeePayerSignatures()));
+
+            caver.wallet.signAsFeePayer(feePayer, signed);
+
+            Bytes32 txHash = caver.rpc.klay.sendRawTransaction(signed).send();
+            TransactionReceiptProcessor receiptProcessor = new PollingTransactionReceiptProcessor(caver, 1000, 15);
+
+            TransactionReceipt.TransactionReceiptData receiptData = receiptProcessor.waitForTransactionReceipt(txHash.getResult());
+            assertEquals("0x1", receiptData.getStatus());
+        }
+
+        @Test
+        public void signAsFeePayer_addMinter() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, TransactionException {
+            KIP7 kip7 = caver.kct.kip7.create(contractAddress);
+
+            SendOptions options = new SendOptions();
+            options.setFrom(LUMAN.getAddress());
+            options.setGas(BigInteger.valueOf(20000000));
+            options.setFeeDelegation(true);
+            options.setFeePayer(BRANDON.getAddress());
+
+            AbstractFeeDelegatedTransaction signed = kip7.signAsFeePayer(options, "addMinter", caver.wallet.keyring.generate().getAddress());
+
+            assertEquals(TransactionType.TxTypeFeeDelegatedSmartContractExecution.toString(), signed.getType());
+            assertEquals(options.getFrom(), signed.getFrom());
+            assertEquals(options.getFeePayer(), signed.getFeePayer());
+            assertTrue(Utils.isEmptySig(signed.getSignatures()));
+            assertFalse(Utils.isEmptySig(signed.getFeePayerSignatures()));
+
+            caver.wallet.sign(sender, signed);
+
+            Bytes32 txHash = caver.rpc.klay.sendRawTransaction(signed).send();
+            TransactionReceiptProcessor receiptProcessor = new PollingTransactionReceiptProcessor(caver, 1000, 15);
+
+            TransactionReceipt.TransactionReceiptData receiptData = receiptProcessor.waitForTransactionReceipt(txHash.getResult());
+            assertEquals("0x1", receiptData.getStatus());
         }
     }
 

@@ -443,7 +443,7 @@ public class ContractMethod {
         // Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
         // Passed parameter "options" has higher priority than "defaultSendOption" field.
         SendOptions determinedOption = makeSendOption(sendOptions);
-        if(!determinedOption.getFeeDelegation()) {
+        if(determinedOption == null || !determinedOption.getFeeDelegation()) {
             throw new RuntimeException("'feeDelegation' field in SendOptions must set a true.");
         }
 
@@ -669,7 +669,7 @@ public class ContractMethod {
         // Make SendOptions instance by comparing with defaultSendOption and passed parameter "options"
         // Passed parameter "options" has higher priority than "defaultSendOption" field.
         SendOptions determinedOption = makeSendOption(sendOptions);
-        if(!determinedOption.getFeeDelegation()) {
+        if(determinedOption == null || !determinedOption.getFeeDelegation()) {
             throw new RuntimeException("'feeDelegation' field in SendOptions must set a true.");
         }
 

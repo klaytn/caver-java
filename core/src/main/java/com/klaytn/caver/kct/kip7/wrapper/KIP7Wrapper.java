@@ -125,7 +125,6 @@ public class KIP7Wrapper {
     /**
      * Deploy KIP-7 contract.<p>
      * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
-     * @param caver A Caver instance.
      * @param deployer A deployer's address.
      * @param name A KIP-7 contract name.
      * @param symbol A KIP-7 contract symbol.
@@ -232,7 +231,6 @@ public class KIP7Wrapper {
     /**
      * Deploy KIP-7 contract.<p>
      * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
-     * @param caver A Caver instance
      * @param tokenInfo The KIP-7 contract's deploy parameter values
      * @param deployer A deployer's address
      * @param wallet The class instance implemented IWallet to sign transaction.

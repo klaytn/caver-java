@@ -60,7 +60,6 @@ start_test_network: &start_test_network
 build_test: &build_test
   run:
     name: "Build and test"
-    no_output_timeout: 20m
     command: |
         ./gradlew clean
         ./gradlew build --debug -x :android_instrumented_test:build
@@ -68,6 +67,7 @@ build_test: &build_test
 build_test_android: &build_test_android
   run:
     name: "Build and test"
+    no_output_timeout: 20m
     command: |
       ./gradlew clean
       ./gradlew connectedAndroidTest

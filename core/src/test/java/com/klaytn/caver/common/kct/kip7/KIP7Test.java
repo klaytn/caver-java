@@ -21,6 +21,8 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
 
@@ -32,6 +34,8 @@ import java.util.Map;
 import static com.klaytn.caver.base.Accounts.*;
 import static org.junit.Assert.*;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({KIP7Test.ConstructorTest.class, KIP7Test.PausableTest.class, KIP7Test.BurnableTest.class, KIP7Test.MintableTest.class, KIP7Test.CommonTest.class, KIP7Test.DetectInterfaceTest.class})
 public class KIP7Test {
 
     public static KIP7 kip7contract;

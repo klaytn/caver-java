@@ -19,7 +19,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class KeyringTest {
+@RunWith(Suite.class)
+@Suite.SuiteClasses({KeyringTest.generateTest.class, KeyringTest.createFromPrivateKeyTest.class, KeyringTest.createFromKlaytnWalletKeyTest.class, KeyringTest.copyTest.class, KeyringTest.createWithSingleKeyTest.class, KeyringTest.createWithMultipleKeyTest.class, KeyringTest.createWithRoleBasedKeyTest.class, KeyringTest.copyTest.class, KeyringTest.signWithKeyTest.class, KeyringTest.signWithKeysTest.class, KeyringTest.signMessageTest.class, KeyringTest.recoverTest.class, KeyringTest.decryptTest.class, KeyringTest.encryptTest.class, KeyringTest.encryptV3Test.class, KeyringTest.getKeyByRoleTest.class, KeyringTest.getKlaytnWalletKeyTest.class, KeyringTest.getPublicKeyTest.class, KeyringTest.isDecoupledTest.class, KeyringTest.toAccountTest.class})
+class KeyringTest {
 
     public static void checkValidateSingleKey(SingleKeyring actualKeyring, String expectedAddress, String expectedPrivateKey) {
         assertTrue(Utils.isAddress(actualKeyring.getAddress()));

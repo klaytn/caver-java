@@ -1,6 +1,6 @@
 buildscript {
     ext.javapoetVersion = '1.7.0'
-    ext.web3jVersion = '4.6.0'
+    ext.web3jVersion = '4.6.0-android'
     ext.picocliVersion = '3.0.0'
     ext.junitVersion = '4.12'
     ext.slf4jVersion = '1.7.25'
@@ -22,13 +22,15 @@ apply plugin: 'io.codearte.nexus-staging'
 
 
 allprojects {
-    version '1.6.1'
+    version '1.6.1-android'
     group 'com.klaytn.caver'
     description 'caver-java project'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
+}
 
+configure(allprojects.findAll {it.name != 'android_instrumented_test'}) {
     apply plugin: 'java'
 
     repositories {
@@ -47,7 +49,7 @@ allprojects {
     }
 }
 
-configure(subprojects.findAll {it.name != 'integration-test' }) {
+configure(subprojects.findAll {it.name != 'integration-test' && it.name != 'android_instrumented_test' }) {
     apply plugin: 'signing'
     apply plugin: 'maven-publish'
 

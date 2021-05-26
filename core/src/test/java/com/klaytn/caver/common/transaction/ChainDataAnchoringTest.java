@@ -12,6 +12,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -21,7 +23,8 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ChainDataAnchoringTest.createInstanceBuilder.class, ChainDataAnchoringTest.createInstance.class, ChainDataAnchoringTest.getRLPEncodingTest.class, ChainDataAnchoringTest.signTest.class, ChainDataAnchoringTest.signWithKeysTest.class, ChainDataAnchoringTest.appendSignaturesTest.class, ChainDataAnchoringTest.combineSignatureTest.class, ChainDataAnchoringTest.getRawTransactionTest.class, ChainDataAnchoringTest.getTransactionHashTest.class, ChainDataAnchoringTest.getSenderTxHashTest.class, ChainDataAnchoringTest.getRLPEncodingForSignatureTest.class})
 public class ChainDataAnchoringTest {
 
     static Caver caver = new Caver(Caver.DEFAULT_URL);

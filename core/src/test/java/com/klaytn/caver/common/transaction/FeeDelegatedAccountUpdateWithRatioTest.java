@@ -12,6 +12,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -22,7 +24,8 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-
+@RunWith(Suite.class)
+@Suite.SuiteClasses({FeeDelegatedAccountUpdateWithRatioTest.createInstanceBuilder.class, FeeDelegatedAccountUpdateWithRatioTest.createInstance.class, FeeDelegatedAccountUpdateWithRatioTest.getRLPEncodingTest.class, FeeDelegatedAccountUpdateWithRatioTest.signAsFeePayer_OneKeyTest.class, FeeDelegatedAccountUpdateWithRatioTest.signAsFeePayer_AllKeyTest.class, FeeDelegatedAccountUpdateWithRatioTest.appendFeePayerSignaturesTest.class, FeeDelegatedAccountUpdateWithRatioTest.combineSignatureTest.class, FeeDelegatedAccountUpdateWithRatioTest.getRawTransactionTest.class, FeeDelegatedAccountUpdateWithRatioTest.getTransactionHashTest.class, FeeDelegatedAccountUpdateWithRatioTest.getSenderTxHashTest.class, FeeDelegatedAccountUpdateWithRatioTest.getRLPEncodingForFeePayerSignatureTest.class})
 public class FeeDelegatedAccountUpdateWithRatioTest {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
 

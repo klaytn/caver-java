@@ -13,14 +13,20 @@ machine_ubuntu: &machine_ubuntu
 android_machine_ubuntu: &android_machine_ubuntu
   working_directory: ~/circleci-caver-java-android
   machine:
-    image: ubuntu-1604:201903-01
+    image: android:202102-01
+
+setup_android_test_files: &setup_android_test_files
+  run:
+    name: "Setup android instrumented test environment"
+    command: |
+        bash .circleci/setup_android_instrumented_test.sh
 
 pull_klaytn_image: &pull_klaytn_image
   run:
     name: "Pull and tag Klaytn image"
     command: |
-          docker pull klaytn/build_base:latest
-          docker image tag klaytn/build_base:latest klaytn
+        docker pull klaytn/build_base:latest
+        docker image tag klaytn/build_base:latest klaytn
 
 check_test_network: &check_test_network
   run:
@@ -56,7 +62,15 @@ build_test: &build_test
     name: "Build and test"
     command: |
         ./gradlew clean
-        ./gradlew build --debug
+        ./gradlew build --debug -x :android_instrumented_test:build
+
+build_test_android: &build_test_android
+  run:
+    name: "Build and test"
+    command: |
+      ./gradlew clean
+      ./gradlew connectedAndroidTest
+      ./gradlew build --debug -x :android_instrumented_test:build -x test
 
 jobs:
   build:
@@ -76,6 +90,8 @@ jobs:
               awk '/version '\''/' build.gradle
             fi
       - *build_test
+      - store_test_results:
+          path: core/build/test-results/test
       - persist_to_workspace:
           root: ~/
           paths: 
@@ -85,6 +101,7 @@ jobs:
     <<: *android_machine_ubuntu
     steps:
       - checkout
+      - *setup_android_test_files
       - *pull_klaytn_image
       - *start_test_network
       - *check_test_network
@@ -107,7 +124,30 @@ jobs:
 
             awk '/version '\''/' build.gradle
             awk '/ext.web3jVersion = '\''/' build.gradle
-      - *build_test
+      - run:
+          name: Create avd
+          command: |
+            SYSTEM_IMAGES="system-images;android-29;default;x86"
+            sdkmanager "$SYSTEM_IMAGES"
+            echo "no" | avdmanager --verbose create avd -n test -k "$SYSTEM_IMAGES"
+      - run:
+          name: Launch emulator
+          command: |
+            emulator -avd test -delay-adb -verbose -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          background: true
+      - run:
+          name: Wait for emulator to start
+          command: |
+            circle-android wait-for-boot
+      - run:
+          name: Disable emulator animations
+          command: |
+            adb shell settings put global window_animation_scale 0.0
+            adb shell settings put global transition_animation_scale 0.0
+            adb shell settings put global animator_duration_scale 0.0
+      - *build_test_android
+      - store_test_results:
+          path: android_instrumented_test/build/outputs/androidTest-results/connected
       - persist_to_workspace:
           root: ~/
           paths: 

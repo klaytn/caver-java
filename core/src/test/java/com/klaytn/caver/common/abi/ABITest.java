@@ -8,6 +8,8 @@ import com.klaytn.caver.abi.datatypes.generated.*;
 import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.contract.ContractIOType;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -19,6 +21,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ABITest.encodeFunctionSig.class, ABITest.encodeEventSig.class, ABITest.encodeFunctionCall.class, ABITest.decodeParameter.class, ABITest.decodeLog.class, ABITest.buildFunctionEventString.class})
 public class ABITest {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
     public static class encodeFunctionSig {

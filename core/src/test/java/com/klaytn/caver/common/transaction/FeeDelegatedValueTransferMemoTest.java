@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -19,7 +21,8 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-
+@RunWith(Suite.class)
+@Suite.SuiteClasses({FeeDelegatedValueTransferMemoTest.createInstanceBuilder.class, FeeDelegatedValueTransferMemoTest.createInstance.class, FeeDelegatedValueTransferMemoTest.getRLPEncodingTest.class, FeeDelegatedValueTransferMemoTest.signAsFeePayer_OneKeyTest.class, FeeDelegatedValueTransferMemoTest.signAsFeePayer_AllKeyTest.class, FeeDelegatedValueTransferMemoTest.appendFeePayerSignaturesTest.class, FeeDelegatedValueTransferMemoTest.combineSignatureTest.class, FeeDelegatedValueTransferMemoTest.getRawTransactionTest.class, FeeDelegatedValueTransferMemoTest.getTransactionHashTest.class, FeeDelegatedValueTransferMemoTest.getSenderTxHashTest.class, FeeDelegatedValueTransferMemoTest.getRLPEncodingForFeePayerSignatureTest.class})
 public class FeeDelegatedValueTransferMemoTest {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
     static String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";

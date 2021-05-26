@@ -11,6 +11,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -20,7 +22,8 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-
+@RunWith(Suite.class)
+@Suite.SuiteClasses({FeeDelegatedCancelTest.createInstanceBuilder.class, FeeDelegatedCancelTest.createInstance.class, FeeDelegatedCancelTest.getRLPEncodingTest.class, FeeDelegatedCancelTest.signAsFeePayer_OneKeyTest.class})
 public class FeeDelegatedCancelTest {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
     static String senderPrivateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";

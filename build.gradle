@@ -1,6 +1,6 @@
 buildscript {
     ext.javapoetVersion = '1.7.0'
-    ext.web3jVersion = '4.6.0-android'
+    ext.web3jVersion = '4.6.0'
     ext.picocliVersion = '3.0.0'
     ext.junitVersion = '4.12'
     ext.slf4jVersion = '1.7.25'
@@ -22,7 +22,7 @@ apply plugin: 'io.codearte.nexus-staging'
 
 
 allprojects {
-    version '1.6.1-android'
+    version '1.6.1'
     group 'com.klaytn.caver'
     description 'caver-java project'
 

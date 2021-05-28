@@ -90,6 +90,7 @@ jobs:
               sed -i "s/version '.*'/version '${CIRCLE_TAG:1}'/" build.gradle
               awk '/version '\''/' build.gradle
             fi
+            export LOCAL_JVM=true
       - *build_test
       - store_test_results:
           path: core/build/test-results/test

@@ -11,9 +11,9 @@ import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -24,8 +24,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({CancelTest.createInstanceBuilder.class, CancelTest.createInstance.class, CancelTest.getRLPEncodingTest.class, CancelTest.signWithKeyTest.class, CancelTest.signWithKeysTest.class, CancelTest.appendSignaturesTest.class, CancelTest.combineSignatureTest.class, CancelTest.getRawTransactionTest.class, CancelTest.getTransactionHashTest.class, CancelTest.getSenderTxHashTest.class, CancelTest.getRLPEncodingForSignatureTest.class})
+@RunWith(Enclosed.class)
 public class CancelTest {
 
     static Caver caver = new Caver(Caver.DEFAULT_URL);

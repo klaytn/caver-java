@@ -18,9 +18,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.protocol.exceptions.TransactionException;
 
 import java.io.IOException;
@@ -32,8 +32,7 @@ import static com.klaytn.caver.base.Accounts.BRANDON;
 import static com.klaytn.caver.base.Accounts.LUMAN;
 import static org.junit.Assert.*;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({KIP17Test.BurnableTest.class, KIP17Test.CommonTest.class, KIP17Test.DetectInterfaceTest.class, KIP17Test.EnumerableTest.class, KIP17Test.MintableTest.class, KIP17Test.PausableTest.class})
+@RunWith(Enclosed.class)
 public class KIP17Test {
     public static KIP17 kip17Contract;
     public static final String CONTRACT_NAME = "NFT";

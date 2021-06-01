@@ -11,9 +11,9 @@ import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -24,8 +24,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({FeeDelegatedAccountUpdateWithRatioTest.createInstanceBuilder.class, FeeDelegatedAccountUpdateWithRatioTest.createInstance.class, FeeDelegatedAccountUpdateWithRatioTest.getRLPEncodingTest.class, FeeDelegatedAccountUpdateWithRatioTest.signAsFeePayer_OneKeyTest.class, FeeDelegatedAccountUpdateWithRatioTest.signAsFeePayer_AllKeyTest.class, FeeDelegatedAccountUpdateWithRatioTest.appendFeePayerSignaturesTest.class, FeeDelegatedAccountUpdateWithRatioTest.combineSignatureTest.class, FeeDelegatedAccountUpdateWithRatioTest.getRawTransactionTest.class, FeeDelegatedAccountUpdateWithRatioTest.getTransactionHashTest.class, FeeDelegatedAccountUpdateWithRatioTest.getSenderTxHashTest.class, FeeDelegatedAccountUpdateWithRatioTest.getRLPEncodingForFeePayerSignatureTest.class})
+@RunWith(Enclosed.class)
 public class FeeDelegatedAccountUpdateWithRatioTest {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
 
@@ -314,42 +313,6 @@ public class FeeDelegatedAccountUpdateWithRatioTest {
         return expectedData;
     }
 
-    public static class ExpectedData {
-        FeeDelegatedAccountUpdateWithRatio.Builder builder;
-        String expectedRLPEncoding;
-        String expectedTransactionHash;
-        String expectedSenderTransactionHash;
-        String expectedRLPEncodingForFeePayerSigning;
-
-        public ExpectedData(FeeDelegatedAccountUpdateWithRatio.Builder builder, String expectedRLPEncoding, String expectedTransactionHash, String expectedSenderTransactionHash, String expectedRLPEncodingForFeePayerSigning) {
-            this.builder = builder;
-            this.expectedRLPEncoding = expectedRLPEncoding;
-            this.expectedTransactionHash = expectedTransactionHash;
-            this.expectedSenderTransactionHash = expectedSenderTransactionHash;
-            this.expectedRLPEncodingForFeePayerSigning = expectedRLPEncodingForFeePayerSigning;
-        }
-
-        public FeeDelegatedAccountUpdateWithRatio.Builder getBuilder() {
-            return builder;
-        }
-
-        public String getExpectedRLPEncoding() {
-            return expectedRLPEncoding;
-        }
-
-        public String getExpectedTransactionHash() {
-            return expectedTransactionHash;
-        }
-
-        public String getExpectedSenderTransactionHash() {
-            return expectedSenderTransactionHash;
-        }
-
-        public String getExpectedRLPEncodingForFeePayerSigning() {
-            return expectedRLPEncodingForFeePayerSigning;
-        }
-    }
-
     public static AbstractKeyring generateRoleBaseKeyring(int[] numArr, String address) {
         List<String[]> arr = caver.wallet.keyring.generateRoleBasedKeys(numArr, "entropy");
         return caver.wallet.keyring.createWithRoleBasedKey(address, arr);
@@ -364,7 +327,7 @@ public class FeeDelegatedAccountUpdateWithRatioTest {
 
         @Before
         public void preSetup() {
-            builder = setLegacyData().getBuilder();
+            builder = setLegacyData().getFDAUWRBuilder();
         }
 
         @Test
@@ -712,7 +675,7 @@ public class FeeDelegatedAccountUpdateWithRatioTest {
         @Test
         public void getRLPEncoding() {
             for(ExpectedData expectedData : expectedDataList) {
-                FeeDelegatedAccountUpdateWithRatio txObj = expectedData.getBuilder().build();
+                FeeDelegatedAccountUpdateWithRatio txObj = expectedData.getFDAUWRBuilder().build();
                 assertEquals(expectedData.getExpectedRLPEncoding(), txObj.getRLPEncoding());
             }
         }
@@ -725,7 +688,7 @@ public class FeeDelegatedAccountUpdateWithRatioTest {
             String nonce = null;
 
             ExpectedData expectedData = setLegacyData();
-            FeeDelegatedAccountUpdateWithRatio.Builder builder = expectedData.getBuilder();
+            FeeDelegatedAccountUpdateWithRatio.Builder builder = expectedData.getFDAUWRBuilder();
 
             mTxObj = builder.setNonce(nonce).build();
 
@@ -740,7 +703,7 @@ public class FeeDelegatedAccountUpdateWithRatioTest {
             String gasPrice = null;
 
             ExpectedData expectedData = setLegacyData();
-            FeeDelegatedAccountUpdateWithRatio.Builder builder = expectedData.getBuilder();
+            FeeDelegatedAccountUpdateWithRatio.Builder builder = expectedData.getFDAUWRBuilder();
 
             mTxObj = builder.setGasPrice(gasPrice).build();
 
@@ -1427,7 +1390,7 @@ public class FeeDelegatedAccountUpdateWithRatioTest {
         @Test
         public void getRawTransaction() {
             for(ExpectedData expectedData : expectedDataList) {
-                FeeDelegatedAccountUpdateWithRatio txObj = expectedData.getBuilder().build();
+                FeeDelegatedAccountUpdateWithRatio txObj = expectedData.getFDAUWRBuilder().build();
                 assertEquals(expectedData.getExpectedRLPEncoding(), txObj.getRawTransaction());
             }
         }
@@ -1453,7 +1416,7 @@ public class FeeDelegatedAccountUpdateWithRatioTest {
         @Test
         public void getTransactionHash() {
             for(ExpectedData expectedData : expectedDataList) {
-                FeeDelegatedAccountUpdateWithRatio txObj = expectedData.getBuilder().build();
+                FeeDelegatedAccountUpdateWithRatio txObj = expectedData.getFDAUWRBuilder().build();
                 assertEquals(expectedData.getExpectedTransactionHash(), txObj.getTransactionHash());
             }
         }
@@ -1465,7 +1428,7 @@ public class FeeDelegatedAccountUpdateWithRatioTest {
 
             String nonce = null;
 
-            mTxObj = expectedDataList.get(0).getBuilder().setNonce(nonce).build();
+            mTxObj = expectedDataList.get(0).getFDAUWRBuilder().setNonce(nonce).build();
 
             String txHash = mTxObj.getTransactionHash();
         }
@@ -1477,7 +1440,7 @@ public class FeeDelegatedAccountUpdateWithRatioTest {
 
             String gasPrice = null;
 
-            mTxObj = expectedDataList.get(0).getBuilder().setGasPrice(gasPrice).build();
+            mTxObj = expectedDataList.get(0).getFDAUWRBuilder().setGasPrice(gasPrice).build();
 
             String txHash = mTxObj.getTransactionHash();
         }
@@ -1503,7 +1466,7 @@ public class FeeDelegatedAccountUpdateWithRatioTest {
         @Test
         public void getSenderTransactionHash() {
             for(ExpectedData expectedData : expectedDataList) {
-                FeeDelegatedAccountUpdateWithRatio txObj = expectedData.getBuilder().build();
+                FeeDelegatedAccountUpdateWithRatio txObj = expectedData.getFDAUWRBuilder().build();
                 assertEquals(expectedData.getExpectedSenderTransactionHash(), txObj.getSenderTxHash());
             }
         }
@@ -1515,7 +1478,7 @@ public class FeeDelegatedAccountUpdateWithRatioTest {
 
             String nonce = null;
 
-            mTxObj = expectedDataList.get(0).getBuilder().setNonce(nonce).build();
+            mTxObj = expectedDataList.get(0).getFDAUWRBuilder().setNonce(nonce).build();
             mTxObj.getSenderTxHash();
         }
 
@@ -1526,7 +1489,7 @@ public class FeeDelegatedAccountUpdateWithRatioTest {
 
             String gasPrice = null;
 
-            mTxObj = expectedDataList.get(0).getBuilder().setGasPrice(gasPrice).build();
+            mTxObj = expectedDataList.get(0).getFDAUWRBuilder().setGasPrice(gasPrice).build();
 
             mTxObj.getSenderTxHash();
         }
@@ -1552,7 +1515,7 @@ public class FeeDelegatedAccountUpdateWithRatioTest {
         @Test
         public void getRLPEncodingForFeePayerSignature() {
             for(ExpectedData expectedData : expectedDataList) {
-                FeeDelegatedAccountUpdateWithRatio txObj = expectedData.getBuilder().build();
+                FeeDelegatedAccountUpdateWithRatio txObj = expectedData.getFDAUWRBuilder().build();
                 assertEquals(expectedData.getExpectedRLPEncodingForFeePayerSigning(), txObj.getRLPEncodingForFeePayerSignature());
             }
         }
@@ -1564,7 +1527,7 @@ public class FeeDelegatedAccountUpdateWithRatioTest {
 
             String nonce = null;
 
-            mTxObj = expectedDataList.get(0).getBuilder().setNonce(nonce).build();
+            mTxObj = expectedDataList.get(0).getFDAUWRBuilder().setNonce(nonce).build();
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }
@@ -1576,7 +1539,7 @@ public class FeeDelegatedAccountUpdateWithRatioTest {
 
             String gasPrice = null;
 
-            mTxObj = expectedDataList.get(0).getBuilder().setGasPrice(gasPrice).build();
+            mTxObj = expectedDataList.get(0).getFDAUWRBuilder().setGasPrice(gasPrice).build();
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }
@@ -1588,7 +1551,7 @@ public class FeeDelegatedAccountUpdateWithRatioTest {
 
             String chainID = null;
 
-            mTxObj = expectedDataList.get(0).getBuilder().setChainId(chainID).build();
+            mTxObj = expectedDataList.get(0).getFDAUWRBuilder().setChainId(chainID).build();
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }

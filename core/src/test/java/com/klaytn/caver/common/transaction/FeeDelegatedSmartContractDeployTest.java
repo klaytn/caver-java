@@ -10,9 +10,9 @@ import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -22,8 +22,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({FeeDelegatedSmartContractDeployTest.createInstanceBuilder.class, FeeDelegatedSmartContractDeployTest.createInstance.class, FeeDelegatedSmartContractDeployTest.getRLPEncodingTest.class, FeeDelegatedSmartContractDeployTest.signAsFeePayer_OneKeyTest.class, FeeDelegatedSmartContractDeployTest.signAsFeePayer_AllKeyTest.class, FeeDelegatedSmartContractDeployTest.appendFeePayerSignaturesTest.class, FeeDelegatedSmartContractDeployTest.combineSignatureTest.class, FeeDelegatedSmartContractDeployTest.getRawTransactionTest.class, FeeDelegatedSmartContractDeployTest.getTransactionHashTest.class, FeeDelegatedSmartContractDeployTest.getSenderTxHashTest.class, FeeDelegatedSmartContractDeployTest.getRLPEncodingForFeePayerSignatureTest.class})
+@RunWith(Enclosed.class)
 public class FeeDelegatedSmartContractDeployTest {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
     static String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";

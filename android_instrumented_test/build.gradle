@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.3'
+        classpath "com.android.tools.build:gradle:$project.andoridToolsVersion"
     }
 
 }
@@ -18,15 +18,13 @@ repositories {
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdkVersion project.androidSdkVersion
+    buildToolsVersion "$project.androidBuildToolsVersion"
 
     defaultConfig {
         applicationId "com.klaytn.caver.android_instrumented_test"
-        minSdkVersion 24
-        targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion project.androidMinSdkVersion
+        targetSdkVersion project.androidTargetSdkVersion
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -39,8 +37,8 @@ android {
 
 dependencies {
     implementation project(':core')
-    androidTestImplementation "androidx.test.ext:junit:1.1.2"
+    androidTestImplementation "androidx.test.ext:junit:$project.androidxJunitVersion"
     androidTestImplementation "junit:junit:$project.junitVersion"
-    androidTestImplementation "androidx.test:runner:1.3.0"
-    androidTestImplementation "androidx.test:rules:1.3.0"
+    androidTestImplementation "androidx.test:runner:$project.androidxTestRunnerVersion"
+    androidTestImplementation "androidx.test:rules:$project.androidxTestRulesVersion"
 }

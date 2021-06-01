@@ -12,9 +12,9 @@ import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -24,8 +24,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({SmartContractExecutionTest.createInstanceBuilder.class, SmartContractExecutionTest.createInstance.class, SmartContractExecutionTest.getRLPEncodingTest.class, SmartContractExecutionTest.signWithKeyTest.class, SmartContractExecutionTest.signWithKeysTest.class, SmartContractExecutionTest.appendSignaturesTest.class, SmartContractExecutionTest.combineSignatureTest.class, SmartContractExecutionTest.getRawTransactionTest.class, SmartContractExecutionTest.getTransactionHashTest.class, SmartContractExecutionTest.getSenderTxHashTest.class, SmartContractExecutionTest.getRLPEncodingForSignatureTest.class})
+@RunWith(Enclosed.class)
 public class SmartContractExecutionTest {
 
     static Caver caver = new Caver(Caver.DEFAULT_URL);

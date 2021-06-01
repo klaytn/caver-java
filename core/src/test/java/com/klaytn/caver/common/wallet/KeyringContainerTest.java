@@ -12,9 +12,9 @@ import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -22,8 +22,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({KeyringContainerTest.generateTest.class, KeyringContainerTest.newKeyringTest.class, KeyringContainerTest.getKeyringTest.class, KeyringContainerTest.addTest.class, KeyringContainerTest.removeTest.class, KeyringContainerTest.signMessageTest.class, KeyringContainerTest.signTest.class, KeyringContainerTest.signAsFeePayerTest.class})
+@RunWith(Enclosed.class)
 public class KeyringContainerTest {
 
     static void validateSingleKeyring(AbstractKeyring actual, String expectAddress, String expectKey) {

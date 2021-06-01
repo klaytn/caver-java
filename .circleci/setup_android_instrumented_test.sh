@@ -16,7 +16,6 @@ mkdir -p $ANDROID_TEST_CAVER_DIR
 # 1. Copy unit test files of core to re-use without re-writing same test-cases just for instrumented test.
 cp -r $CORE_TEST_CAVER_DIR/base $ANDROID_TEST_CAVER_DIR/
 cp -r $CORE_TEST_CAVER_DIR/common $ANDROID_TEST_CAVER_DIR/
-cp -r $CORE_TEST_CAVER_DIR/ipfs $ANDROID_TEST_CAVER_DIR/
 
 # 2. To make instrumented test works, we need to replace some contents.
 find  $ANDROID_TEST_CAVER_DIR -type f -name '*.java' | xargs sed -i 's/package com.klaytn.caver/package com.klaytn.caver.android_instrumented_test/g'

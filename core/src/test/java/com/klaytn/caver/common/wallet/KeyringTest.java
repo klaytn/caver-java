@@ -5,9 +5,9 @@ import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.crypto.CipherException;
 import org.web3j.utils.Numeric;
 
@@ -19,8 +19,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({KeyringTest.generateTest.class, KeyringTest.createFromPrivateKeyTest.class, KeyringTest.createFromKlaytnWalletKeyTest.class, KeyringTest.copyTest.class, KeyringTest.createWithSingleKeyTest.class, KeyringTest.createWithMultipleKeyTest.class, KeyringTest.createWithRoleBasedKeyTest.class, KeyringTest.copyTest.class, KeyringTest.signWithKeyTest.class, KeyringTest.signWithKeysTest.class, KeyringTest.signMessageTest.class, KeyringTest.recoverTest.class, KeyringTest.decryptTest.class, KeyringTest.encryptTest.class, KeyringTest.encryptV3Test.class, KeyringTest.getKeyByRoleTest.class, KeyringTest.getKlaytnWalletKeyTest.class, KeyringTest.getPublicKeyTest.class, KeyringTest.isDecoupledTest.class, KeyringTest.toAccountTest.class})
+@RunWith(Enclosed.class)
 public class KeyringTest {
 
     public static void checkValidateSingleKey(SingleKeyring actualKeyring, String expectedAddress, String expectedPrivateKey) {

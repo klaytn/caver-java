@@ -81,9 +81,6 @@ public class IPFSTest {
 
     @Test
     public void addFile() throws IOException {
-        if (System.getenv("LOCAL_JVM") == null) {
-            return;
-        }
         createFile(fileName, text);
         Caver caver = new Caver();
         caver.ipfs.setIPFSNode("ipfs.infura.io", 5001, true);
@@ -121,9 +118,6 @@ public class IPFSTest {
 
     @Test
     public void integrationTest() throws IOException, TransactionException {
-        if (System.getenv("LOCAL_JVM") == null) {
-            return;
-        }
         Caver caver = new Caver();
         caver.ipfs.setIPFSNode("ipfs.infura.io", 5001, true);
 

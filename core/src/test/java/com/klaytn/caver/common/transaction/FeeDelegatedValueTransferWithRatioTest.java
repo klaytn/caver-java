@@ -9,9 +9,9 @@ import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -22,8 +22,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({FeeDelegatedValueTransferWithRatioTest.createInstanceBuilder.class, FeeDelegatedValueTransferWithRatioTest.createInstance.class, FeeDelegatedValueTransferWithRatioTest.getRLPEncodingTest.class, FeeDelegatedValueTransferWithRatioTest.signAsFeePayer_OneKeyTest.class, FeeDelegatedValueTransferWithRatioTest.signAsFeePayer_AllKeyTest.class, FeeDelegatedValueTransferWithRatioTest.appendFeePayerSignaturesTest.class, FeeDelegatedValueTransferWithRatioTest.combineSignatureTest.class, FeeDelegatedValueTransferWithRatioTest.getRawTransactionTest.class, FeeDelegatedValueTransferWithRatioTest.getTransactionHashTest.class, FeeDelegatedValueTransferWithRatioTest.getSenderTxHashTest.class, FeeDelegatedValueTransferWithRatioTest.getRLPEncodingForFeePayerSignatureTest.class})
+@RunWith(Enclosed.class)
 public class FeeDelegatedValueTransferWithRatioTest {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
 

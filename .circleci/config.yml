@@ -66,12 +66,12 @@ build_test: &build_test
 
 build_test_android: &build_test_android
   run:
-    name: "Build and test"
+    name: "Build without unit tests and do instrumented test on Android Emulator"
     no_output_timeout: 20m
     command: |
       ./gradlew clean
-      ./gradlew connectedAndroidTest
       ./gradlew build --debug -x :android_instrumented_test:build -x test
+      ./gradlew connectedDebugAndroidTest --debug --stacktrace
 
 jobs:
   build:

@@ -41,6 +41,6 @@ dependencies {
     androidTestImplementation "junit:junit:$project.junitVersion"
     androidTestImplementation "androidx.test:runner:$project.androidxTestRunnerVersion"
     androidTestImplementation "androidx.test:rules:$project.androidxTestRulesVersion"
-    androidTestImplementation "ch.qos.logback:logback-core:1.2.3",
-            "ch.qos.logback:logback-classic:1.2.3"
+    androidTestImplementation "ch.qos.logback:logback-core:$project.logbackVersion",
+            "ch.qos.logback:logback-classic:$project.logbackVersion"
 }

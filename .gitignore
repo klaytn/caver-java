@@ -72,7 +72,8 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
-## Gitignores for Android Project
+### Gitignores for Android Project
+## This gitignore is from "https://github.com/github/gitignore/blob/master/Android.gitignore"
 # Built application files
 *.apk
 *.aar
@@ -88,7 +89,6 @@ fabric.properties
 # Generated files
 bin/
 gen/
-out/
 #  Uncomment the following line in case you need and you don't have the release build type files in your app
 # release/
 

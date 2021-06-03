@@ -18,7 +18,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 import org.web3j.protocol.exceptions.TransactionException;
 
 import java.io.IOException;
@@ -30,6 +32,7 @@ import static com.klaytn.caver.base.Accounts.BRANDON;
 import static com.klaytn.caver.base.Accounts.LUMAN;
 import static org.junit.Assert.*;
 
+@RunWith(Enclosed.class)
 public class KIP17Test {
     public static KIP17 kip17Contract;
     public static final String CONTRACT_NAME = "NFT";

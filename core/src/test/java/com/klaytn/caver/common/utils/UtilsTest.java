@@ -6,13 +6,16 @@ import com.klaytn.caver.wallet.keyring.SignatureData;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
+@RunWith(Enclosed.class)
 public class UtilsTest {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
     public static class isAddressTest {

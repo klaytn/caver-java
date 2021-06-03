@@ -11,7 +11,9 @@ import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -22,6 +24,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+@RunWith(Enclosed.class)
 public class FeeDelegatedAccountUpdateTest {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
 
@@ -297,63 +300,6 @@ public class FeeDelegatedAccountUpdateTest {
         return expectedData;
     }
 
-
-    public static class ExpectedData {
-        FeeDelegatedAccountUpdate.Builder builder;
-        String expectedRLPEncoding;
-        String expectedTransactionHash;
-        String expectedSenderTransactionHash;
-        String expectedRLPEncodingForFeePayerSigning;
-
-        public ExpectedData(FeeDelegatedAccountUpdate.Builder builder, String expectedRLPEncoding, String expectedTransactionHash, String expectedSenderTransactionHash, String expectedRLPEncodingForFeePayerSigning) {
-            this.builder = builder;
-            this.expectedRLPEncoding = expectedRLPEncoding;
-            this.expectedTransactionHash = expectedTransactionHash;
-            this.expectedSenderTransactionHash = expectedSenderTransactionHash;
-            this.expectedRLPEncodingForFeePayerSigning = expectedRLPEncodingForFeePayerSigning;
-        }
-
-        public FeeDelegatedAccountUpdate.Builder getBuilder() {
-            return builder;
-        }
-
-        public void setBuilder(FeeDelegatedAccountUpdate.Builder builder) {
-            this.builder = builder;
-        }
-
-        public String getExpectedRLPEncoding() {
-            return expectedRLPEncoding;
-        }
-
-        public void setExpectedRLPEncoding(String expectedRLPEncoding) {
-            this.expectedRLPEncoding = expectedRLPEncoding;
-        }
-
-        public String getExpectedTransactionHash() {
-            return expectedTransactionHash;
-        }
-
-        public void setExpectedTransactionHash(String expectedTransactionHash) {
-            this.expectedTransactionHash = expectedTransactionHash;
-        }
-
-        public String getExpectedSenderTransactionHash() {
-            return expectedSenderTransactionHash;
-        }
-
-        public void setExpectedSenderTransactionHash(String expectedSenderTransactionHash) {
-            this.expectedSenderTransactionHash = expectedSenderTransactionHash;
-        }
-
-        public String getExpectedRLPEncodingForFeePayerSigning() {
-            return expectedRLPEncodingForFeePayerSigning;
-        }
-
-        public void setExpectedRLPEncodingForFeePayerSigning(String expectedRLPEncodingForFeePayerSigning) {
-            this.expectedRLPEncodingForFeePayerSigning = expectedRLPEncodingForFeePayerSigning;
-        }
-    }
-
     public static AbstractKeyring generateRoleBaseKeyring(int[] numArr, String address) {
         List<String[]> arr = caver.wallet.keyring.generateRoleBasedKeys(numArr, "entropy");
         return caver.wallet.keyring.createWithRoleBasedKey(address, arr);
@@ -368,7 +314,7 @@ public class FeeDelegatedAccountUpdateTest {
 
         @Before
         public void preSetup() {
-            builder = setLegacyData().getBuilder();
+            builder = setLegacyData().getFDAUBuilder();
         }
 
         @Test
@@ -620,7 +566,7 @@ public class FeeDelegatedAccountUpdateTest {
         @Test
         public void getRLPEncoding() {
             for(ExpectedData expectedData : expectedDataList) {
-                FeeDelegatedAccountUpdate txObj = expectedData.getBuilder().build();
+                FeeDelegatedAccountUpdate txObj = expectedData.getFDAUBuilder().build();
                 assertEquals(expectedData.getExpectedRLPEncoding(), txObj.getRLPEncoding());
             }
         }
@@ -633,7 +579,7 @@ public class FeeDelegatedAccountUpdateTest {
             String nonce = null;
 
             ExpectedData expectedData = setLegacyData();
-            FeeDelegatedAccountUpdate.Builder builder = expectedData.getBuilder();
+            FeeDelegatedAccountUpdate.Builder builder = expectedData.getFDAUBuilder();
 
             mTxObj = builder.setNonce(nonce).build();
 
@@ -648,7 +594,7 @@ public class FeeDelegatedAccountUpdateTest {
             String gasPrice = null;
 
             ExpectedData expectedData = setLegacyData();
-            FeeDelegatedAccountUpdate.Builder builder = expectedData.getBuilder();
+            FeeDelegatedAccountUpdate.Builder builder = expectedData.getFDAUBuilder();
 
             mTxObj = builder.setGasPrice(gasPrice).build();
 
@@ -1318,7 +1264,7 @@ public class FeeDelegatedAccountUpdateTest {
         @Test
         public void getRawTransaction() {
             for(ExpectedData expectedData : expectedDataList) {
-                FeeDelegatedAccountUpdate txObj = expectedData.getBuilder().build();
+                FeeDelegatedAccountUpdate txObj = expectedData.getFDAUBuilder().build();
                 assertEquals(expectedData.getExpectedRLPEncoding(), txObj.getRawTransaction());
             }
         }
@@ -1344,7 +1290,7 @@ public class FeeDelegatedAccountUpdateTest {
         @Test
         public void getTransactionHash() {
             for(ExpectedData expectedData : expectedDataList) {
-                FeeDelegatedAccountUpdate txObj = expectedData.getBuilder().build();
+                FeeDelegatedAccountUpdate txObj = expectedData.getFDAUBuilder().build();
                 assertEquals(expectedData.getExpectedTransactionHash(), txObj.getTransactionHash());
             }
         }
@@ -1356,7 +1302,7 @@ public class FeeDelegatedAccountUpdateTest {
 
             String nonce = null;
 
-            mTxObj = expectedDataList.get(0).getBuilder().setNonce(nonce).build();
+            mTxObj = expectedDataList.get(0).getFDAUBuilder().setNonce(nonce).build();
 
             String txHash = mTxObj.getTransactionHash();
         }
@@ -1368,7 +1314,7 @@ public class FeeDelegatedAccountUpdateTest {
 
             String gasPrice = null;
 
-            mTxObj = expectedDataList.get(0).getBuilder().setGasPrice(gasPrice).build();
+            mTxObj = expectedDataList.get(0).getFDAUBuilder().setGasPrice(gasPrice).build();
 
             String txHash = mTxObj.getTransactionHash();
         }
@@ -1394,7 +1340,7 @@ public class FeeDelegatedAccountUpdateTest {
         @Test
         public void getSenderTransactionHash() {
             for(ExpectedData expectedData : expectedDataList) {
-                FeeDelegatedAccountUpdate txObj = expectedData.getBuilder().build();
+                FeeDelegatedAccountUpdate txObj = expectedData.getFDAUBuilder().build();
                 assertEquals(expectedData.getExpectedSenderTransactionHash(), txObj.getSenderTxHash());
             }
         }
@@ -1406,7 +1352,7 @@ public class FeeDelegatedAccountUpdateTest {
 
             String nonce = null;
 
-            mTxObj = expectedDataList.get(0).getBuilder().setNonce(nonce).build();
+            mTxObj = expectedDataList.get(0).getFDAUBuilder().setNonce(nonce).build();
             mTxObj.getSenderTxHash();
         }
 
@@ -1417,7 +1363,7 @@ public class FeeDelegatedAccountUpdateTest {
 
             String gasPrice = null;
 
-            mTxObj = expectedDataList.get(0).getBuilder().setGasPrice(gasPrice).build();
+            mTxObj = expectedDataList.get(0).getFDAUBuilder().setGasPrice(gasPrice).build();
 
             mTxObj.getSenderTxHash();
         }
@@ -1443,7 +1389,7 @@ public class FeeDelegatedAccountUpdateTest {
         @Test
         public void getRLPEncodingForFeePayerSignature() {
             for(ExpectedData expectedData : expectedDataList) {
-                FeeDelegatedAccountUpdate txObj = expectedData.getBuilder().build();
+                FeeDelegatedAccountUpdate txObj = expectedData.getFDAUBuilder().build();
                 assertEquals(expectedData.getExpectedRLPEncodingForFeePayerSigning(), txObj.getRLPEncodingForFeePayerSignature());
             }
         }
@@ -1455,7 +1401,7 @@ public class FeeDelegatedAccountUpdateTest {
 
             String nonce = null;
 
-            mTxObj = expectedDataList.get(0).getBuilder().setNonce(nonce).build();
+            mTxObj = expectedDataList.get(0).getFDAUBuilder().setNonce(nonce).build();
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }
@@ -1467,7 +1413,7 @@ public class FeeDelegatedAccountUpdateTest {
 
             String gasPrice = null;
 
-            mTxObj = expectedDataList.get(0).getBuilder().setGasPrice(gasPrice).build();
+            mTxObj = expectedDataList.get(0).getFDAUBuilder().setGasPrice(gasPrice).build();
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }
@@ -1479,7 +1425,7 @@ public class FeeDelegatedAccountUpdateTest {
 
             String chainID = null;
 
-            mTxObj = expectedDataList.get(0).getBuilder().setChainId(chainID).build();
+            mTxObj = expectedDataList.get(0).getFDAUBuilder().setChainId(chainID).build();
 
             mTxObj.getRLPEncodingForFeePayerSignature();
         }

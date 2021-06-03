@@ -6,9 +6,9 @@ import com.klaytn.caver.utils.AccountKeyPublicUtils;
 import com.klaytn.caver.utils.Utils;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
@@ -18,6 +18,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+@RunWith(Enclosed.class)
 public class AccountKeyTest {
 
     public static class AccountKeyFailTests {

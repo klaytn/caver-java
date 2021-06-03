@@ -26,6 +26,8 @@ import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.runner.RunWith;
 import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -50,6 +52,7 @@ import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
+@RunWith(Enclosed.class)
 public class RpcTest extends Accounts {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
     static Klay klay = caver.rpc.klay;

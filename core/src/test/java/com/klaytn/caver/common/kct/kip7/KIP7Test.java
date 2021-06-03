@@ -20,7 +20,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
 
@@ -32,6 +34,7 @@ import java.util.Map;
 import static com.klaytn.caver.base.Accounts.*;
 import static org.junit.Assert.*;
 
+@RunWith(Enclosed.class)
 public class KIP7Test {
 
     public static KIP7 kip7contract;

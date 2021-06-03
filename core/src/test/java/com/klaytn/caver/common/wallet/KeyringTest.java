@@ -5,9 +5,9 @@ import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.crypto.CipherException;
 import org.web3j.utils.Numeric;
 
@@ -19,6 +19,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+@RunWith(Enclosed.class)
 public class KeyringTest {
 
     public static void checkValidateSingleKey(SingleKeyring actualKeyring, String expectedAddress, String expectedPrivateKey) {

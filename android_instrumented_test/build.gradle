@@ -1,0 +1,46 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:$project.andoridToolsVersion"
+    }
+
+}
+
+repositories {
+    google()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion project.androidSdkVersion
+    buildToolsVersion "$project.androidBuildToolsVersion"
+
+    defaultConfig {
+        applicationId "com.klaytn.caver.android_instrumented_test"
+        minSdkVersion project.androidMinSdkVersion
+        targetSdkVersion project.androidTargetSdkVersion
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+}
+
+dependencies {
+    implementation project(':core')
+    androidTestImplementation "androidx.test.ext:junit:$project.androidxJunitVersion"
+    androidTestImplementation "junit:junit:$project.junitVersion"
+    androidTestImplementation "androidx.test:runner:$project.androidxTestRunnerVersion"
+    androidTestImplementation "androidx.test:rules:$project.androidxTestRulesVersion"
+    androidTestImplementation "ch.qos.logback:logback-core:$project.logbackVersion",
+            "ch.qos.logback:logback-classic:$project.logbackVersion"
+}

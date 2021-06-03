@@ -14,6 +14,7 @@ android_machine_ubuntu: &android_machine_ubuntu
   working_directory: ~/circleci-caver-java-android
   machine:
     image: android:202102-01
+  resource_class: large
 
 setup_android_test_files: &setup_android_test_files
   run:

@@ -21,6 +21,13 @@ setup_android_test_files: &setup_android_test_files
     command: |
         bash .circleci/setup_android_instrumented_test.sh
 
+adb_logging: &adb_logging
+  run:
+    name: "Start Logging of android emulator"
+    command: |
+      adb logcat > adb.log
+    background: true
+
 pull_klaytn_image: &pull_klaytn_image
   run:
     name: "Pull and tag Klaytn image"
@@ -146,6 +153,7 @@ jobs:
             adb shell settings put global window_animation_scale 0.0
             adb shell settings put global transition_animation_scale 0.0
             adb shell settings put global animator_duration_scale 0.0
+      - *adb_logging
       - *build_test_android
       - store_test_results:
           path: android_instrumented_test/build/outputs/androidTest-results/connected

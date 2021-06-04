@@ -279,7 +279,7 @@ jobs:
               version=v$(.circleci/version.sh)
 
               echo "Publishing a major release! version=$version"
-              ./gradlew clean build --stacktrace --debug
+              ./gradlew clean build --debug -x :android_instrumented_test:build
               ./gradlew clean publish --stacktrace --debug
               ./gradlew closeAndReleaseRepository --stacktrace --debug
 

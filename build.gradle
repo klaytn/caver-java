@@ -34,13 +34,13 @@ allprojects {
     version '1.6.1'
     group 'com.klaytn.caver'
     description 'caver-java project'
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
 }
 
 configure(allprojects.findAll {it.name != 'android_instrumented_test'}) {
     apply plugin: 'java'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
     repositories {
         mavenCentral()

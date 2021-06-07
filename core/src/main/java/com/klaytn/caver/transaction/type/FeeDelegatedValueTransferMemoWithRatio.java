@@ -60,7 +60,7 @@ public class FeeDelegatedValueTransferMemoWithRatio extends AbstractFeeDelegated
         String input;
 
         public Builder() {
-            super(TransactionType.TxTypeFeeDelegatedValueTransferMemo.toString());
+            super(TransactionType.TxTypeFeeDelegatedValueTransferMemoWithRatio.toString());
         }
 
         public Builder setTo(String to) {
@@ -117,7 +117,7 @@ public class FeeDelegatedValueTransferMemoWithRatio extends AbstractFeeDelegated
     public FeeDelegatedValueTransferMemoWithRatio(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, String to, String value, String input) {
         super(
                 klaytnCall,
-                TransactionType.TxTypeFeeDelegatedValueTransferMemo.toString(),
+                TransactionType.TxTypeFeeDelegatedValueTransferMemoWithRatio.toString(),
                 from,
                 nonce,
                 gas,

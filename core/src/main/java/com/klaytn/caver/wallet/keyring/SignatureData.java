@@ -25,7 +25,6 @@ import org.web3j.rlp.RlpType;
 import org.web3j.utils.Bytes;
 import org.web3j.utils.Numeric;
 
-import javax.rmi.CORBA.Util;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;

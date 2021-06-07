@@ -3,13 +3,14 @@ package com.klaytn.caver.common.transaction;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.type.FeeDelegatedSmartContractExecutionWithRatio;
+import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.wallet.keyring.*;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -19,9 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
-
+@RunWith(Enclosed.class)
 public class FeeDelegatedSmartContractExecutionWithRatioTest {
     static Caver caver = new Caver(Caver.DEFAULT_URL);
     static String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
@@ -58,8 +58,8 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
     static String expectedRLPEncodingForFeePayerSigning = "0xf876b85cf85a328204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a94a94f5374fce5edbc8e2a8697c15331677e6ebf0ba46353586b000000000000000000000000bc5951f055a85f41a3b62fd6f68ab7de76d299b21e945a0043070275d9f6054307ee7348bd660849d90f018080";
 
     public static AbstractKeyring generateRoleBaseKeyring(int[] numArr, String address) {
-        List<String[]> arr = KeyringFactory.generateRoleBasedKeys(numArr, "entropy");
-        return KeyringFactory.createWithRoleBasedKey(address, arr);
+        List<String[]> arr = caver.wallet.keyring.generateRoleBasedKeys(numArr, "entropy");
+        return caver.wallet.keyring.createWithRoleBasedKey(address, arr);
     }
 
     public static class createInstanceBuilder {
@@ -84,6 +84,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
                     .build();
 
             assertNotNull(txObj);
+            assertEquals(TransactionType.TxTypeFeeDelegatedSmartContractExecutionWithRatio.toString(), txObj.getType());
         }
 
         @Test
@@ -463,6 +464,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             );
 
             assertNotNull(txObj);
+            assertEquals(TransactionType.TxTypeFeeDelegatedSmartContractExecutionWithRatio.toString(), txObj.getType());
         }
 
         @Test
@@ -863,7 +865,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
 
         @Before
         public void before() {
-            keyring = KeyringFactory.createWithSingleKey(feePayer, feePayerPrivateKey);
+            keyring = caver.wallet.keyring.createWithSingleKey(feePayer, feePayerPrivateKey);
             klaytnWalletKey = keyring.getKlaytnWalletKey();
 
             txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
@@ -883,8 +885,8 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
 
         @Test
         public void signAsFeePayer_String() throws IOException {
-            String feePayerPrivateKey = PrivateKey.generate().getPrivateKey();
-            String feePayer = new PrivateKey(feePayerPrivateKey).getDerivedAddress();
+            String feePayerPrivateKey = caver.wallet.keyring.generateSingleKey();
+            String feePayer = caver.wallet.keyring.createFromPrivateKey(feePayerPrivateKey).getAddress();
 
             txObj = new FeeDelegatedSmartContractExecutionWithRatio.Builder()
                     .setNonce(nonce)
@@ -925,12 +927,12 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         @Test
         public void signAsFeePayer_multipleKey() throws IOException {
             String[] keyArr = {
-                    PrivateKey.generate().getPrivateKey(),
+                    caver.wallet.keyring.generateSingleKey(),
                     feePayerPrivateKey,
-                    PrivateKey.generate().getPrivateKey()
+                    caver.wallet.keyring.generateSingleKey()
             };
 
-            MultipleKeyring keyring = KeyringFactory.createWithMultipleKey(feePayer, keyArr);
+            MultipleKeyring keyring = caver.wallet.keyring.createWithMultipleKey(feePayer, keyArr);
             txObj.signAsFeePayer(keyring, 1);
             assertEquals(1, txObj.getFeePayerSignatures().size());
         }
@@ -939,20 +941,19 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         public void signAsFeePayer_roleBasedKey() throws IOException {
             String[][] keyArr = {
                     {
-                            PrivateKey.generate().getPrivateKey(),
-                            PrivateKey.generate().getPrivateKey(),
-
+                            caver.wallet.keyring.generateSingleKey(),
+                            caver.wallet.keyring.generateSingleKey(),
                     },
                     {
-                            PrivateKey.generate().getPrivateKey()
+                            caver.wallet.keyring.generateSingleKey()
                     },
                     {
-                            PrivateKey.generate().getPrivateKey(),
+                            caver.wallet.keyring.generateSingleKey(),
                             feePayerPrivateKey
                     }
             };
 
-            RoleBasedKeyring roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(feePayer, Arrays.asList(keyArr));
+            RoleBasedKeyring roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(feePayer, Arrays.asList(keyArr));
             txObj.signAsFeePayer(roleBasedKeyring, 1);
             assertEquals(1, txObj.getFeePayerSignatures().size());
         }
@@ -962,7 +963,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The feePayer address of the transaction is different with the address of the keyring to use.");
 
-            SingleKeyring keyring = KeyringFactory.createWithSingleKey(feePayerPrivateKey, PrivateKey.generate().getPrivateKey());
+            SingleKeyring keyring = caver.wallet.keyring.generate();
             txObj.signAsFeePayer(keyring, 0);
         }
 
@@ -971,7 +972,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
 
-            AbstractKeyring keyring = generateRoleBaseKeyring(new int[]{3,3,3}, feePayer);
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[]{3, 3, 3}, feePayer);
             txObj.signAsFeePayer(keyring, 4);
         }
     }
@@ -999,9 +1000,18 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
                     .setSignatures(senderSignatureData)
                     .build();
 
-            singleKeyring = KeyringFactory.createWithSingleKey(feePayer, KeyringFactory.generateSingleKey());
-            multipleKeyring = KeyringFactory.createWithMultipleKey(feePayer, KeyringFactory.generateMultipleKeys(8));
-            roleBasedKeyring = KeyringFactory.createWithRoleBasedKey(feePayer, KeyringFactory.generateRolBasedKeys(new int[]{3,4,5}));
+            singleKeyring = caver.wallet.keyring.createWithSingleKey(
+                    feePayer,
+                    caver.wallet.keyring.generateSingleKey()
+            );
+            multipleKeyring = caver.wallet.keyring.createWithMultipleKey(
+                    feePayer,
+                    caver.wallet.keyring.generateMultipleKeys(8)
+            );
+            roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(
+                    feePayer,
+                    caver.wallet.keyring.generateRolBasedKeys(new int[]{3, 4, 5})
+            );
         }
 
         @Test
@@ -1033,7 +1043,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The feePayer address of the transaction is different with the address of the keyring to use.");
 
-            SingleKeyring keyring = KeyringFactory.createFromPrivateKey(PrivateKey.generate().getPrivateKey());
+            SingleKeyring keyring = caver.wallet.keyring.generate();
             mTxObj.signAsFeePayer(keyring);
         }
     }
@@ -1356,7 +1366,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
                     .build();
 
 
-            String[] rlpEncodedStrings = new String[] {
+            String[] rlpEncodedStrings = new String[]{
                     "0x32f8e0038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ec4c301808094ad3bd7a7df94367e8b0443dd10e86330750ebf0cf847f845820feaa09d6fb034ed27fa0baf8ba2650b48e087d261ab7716eae4df9299236ddce7dd08a053b1c7ab56349cbb5515e27737846f97862e3f20409b183c3c6b4a918cd20920",
                     "0x32f8e0038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ec4c301808094ad3bd7a7df94367e8b0443dd10e86330750ebf0cf847f845820fe9a019315d03a16242c6d754bd006883376e211b6f8af486d1b41a0705878e3bb100a06d463477534b9c5e82196cb8c8982bc0e3c9120b14c2db3df0f4d1c9dc04c657",
             };
@@ -1404,7 +1414,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
 
 
             String rlpEncodedString = "0x32f9015a038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ef8d5f845820fe9a0b95ed5ff6d9cd8d02e3031ea4ddf38d42803817b5ecc086828f497787699bf5ba0105105455d4af28cc943e43e375316b57205e6eb664407b3bc1a7eca9ecd6c8ff845820fe9a058cf881d440cd88e2a1d0999b4b0eec72b36f7c13a793fcba7d509c544c06505a025bdcc5b6f7619169397508d38da290faa54b01c83c582d1dfa0ba250b7a1871f845820fe9a0fa309605c494a338e4cd92c7bedeafa25387f57e0b5f6e18f9d8da90edea9e44a055d173d614d096f23eb9a01fd894f961d266985df6503d5176d047eb3b3ef5ed80c4c3018080";
-            SignatureData[] expectedSignatures = new SignatureData[] {
+            SignatureData[] expectedSignatures = new SignatureData[]{
                     new SignatureData(
                             "0x0fe9",
                             "0xb95ed5ff6d9cd8d02e3031ea4ddf38d42803817b5ecc086828f497787699bf5b",
@@ -1426,7 +1436,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
 
             String rlpEncodedStringsWithFeePayerSignatures = "0x32f9016e038505d21dba0083030d4094f14274fd5f22f436e3a2d3f3b167f9f241c33db58094e862a5ddac7f82f57eaea34f3f915121a6da1bb2b844a9059cbb000000000000000000000000ad3bd7a7df94367e8b0443dd10e86330750ebf0c00000000000000000000000000000000000000000000000000000002540be4001ec4c301808094ad3bd7a7df94367e8b0443dd10e86330750ebf0cf8d5f845820fe9a0c7a060a2e28476e4567bc76964f826153149a07c061e389b51f34f3863f65a31a01bfd20aca5b410ca369113150c16af4d9f9c72907aaaf34896427ef1f1a51ebbf845820feaa09d6fb034ed27fa0baf8ba2650b48e087d261ab7716eae4df9299236ddce7dd08a053b1c7ab56349cbb5515e27737846f97862e3f20409b183c3c6b4a918cd20920f845820fe9a019315d03a16242c6d754bd006883376e211b6f8af486d1b41a0705878e3bb100a06d463477534b9c5e82196cb8c8982bc0e3c9120b14c2db3df0f4d1c9dc04c657";
 
-            SignatureData[] expectedFeePayerSignatures = new SignatureData[] {
+            SignatureData[] expectedFeePayerSignatures = new SignatureData[]{
                     new SignatureData(
                             "0x0fe9",
                             "0xc7a060a2e28476e4567bc76964f826153149a07c061e389b51f34f3863f65a31",
@@ -1556,7 +1566,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
@@ -1633,7 +1643,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
@@ -1710,7 +1720,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
@@ -1735,7 +1745,7 @@ public class FeeDelegatedSmartContractExecutionWithRatioTest {
         }
 
         @Test
-        public void throwException_NotDefined_chainID() {
+        public void throwException_NotDefined_ChainID() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
 

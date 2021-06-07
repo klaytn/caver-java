@@ -2,19 +2,18 @@ package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.AbstractTransaction;
-import com.klaytn.caver.transaction.type.LegacyTransaction;
 import com.klaytn.caver.transaction.TransactionHasher;
+import com.klaytn.caver.transaction.TxPropertyBuilder;
+import com.klaytn.caver.transaction.type.LegacyTransaction;
 import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
-import com.klaytn.caver.wallet.keyring.KeyringFactory;
-import com.klaytn.caver.wallet.keyring.PrivateKey;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -23,8 +22,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+@RunWith(Enclosed.class)
 public class LegacyTransactionTest {
 
     public static class createInstance {
@@ -35,76 +36,37 @@ public class LegacyTransactionTest {
         String nonce = "0x4D2";
         String gas = "0xf4240";
         String gasPrice = "0x19";
+        String from = "0x";
         String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
         String chainID = "0x1";
         String input = "0x31323334";
         String value = "0xa";
 
-        @Test
-        public void create() {
-            AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(privateKey);
+        Caver caver = new Caver(Caver.DEFAULT_URL);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction(
-                    null,
-                    keyring.getAddress(),
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    input,
-                    value
+        @Test
+        public void createInstance() throws IOException {
+            AbstractKeyring keyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setFrom(keyring.getAddress())
+                            .setNonce("0x")
+                            .setGas(gas)
+                            .setGasPrice("0x")
+                            .setChainId("0x")
+                            .setTo(to)
+                            .setInput(input)
+                            .setValue(value)
             );
+
             assertNotNull(legacyTransaction);
-        }
-
-        @Test
-        public void createWithRPC() throws IOException {
-            String gas = "0x0f4240";
-            String to = "7b65b75d204abed71587c9e519a89277766ee1d0";
-            String input = "0x31323334";
-            String value = "0x0a";
-
-            Caver caver = new Caver(Caver.DEFAULT_URL);
-            AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(privateKey);
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction(
-                    caver.rpc.getKlay(),
-                    keyring.getAddress(),
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    input,
-                    value
-            );
 
             legacyTransaction.fillTransaction();
             assertNotNull(legacyTransaction.getNonce());
             assertNotNull(legacyTransaction.getGasPrice());
             assertNotNull(legacyTransaction.getChainId());
-        }
-
-        @Test
-        public void throwException_missing_value() {
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("value is missing");
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction(
-                    null,
-                    "0x",
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    input,
-                    null
-            );
+            assertEquals(TransactionType.TxTypeLegacyTransaction.toString(), legacyTransaction.getType());
         }
 
         @Test
@@ -114,17 +76,16 @@ public class LegacyTransactionTest {
 
             String value = "invalid";
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction(
-                    null,
-                    "0x",
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    input,
-                    value
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setInput(input)
+                            .setValue(value)
             );
         }
 
@@ -133,22 +94,18 @@ public class LegacyTransactionTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("Invalid address.");
 
-            String gas = "0xf4240";
             String to = "invalid";
-            String input = "0x31323334";
-            String value = "0xa";
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction(
-                    null,
-                    "0x",
-                    nonce,
-                    gas,
-                    gasPrice,
-                    chainID,
-                    null,
-                    to,
-                    input,
-                    value
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setInput(input)
+                            .setValue(value)
             );
         }
 
@@ -157,14 +114,16 @@ public class LegacyTransactionTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("gas is missing");
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setValue(value)
-                    .setTo(to)
-                    .build();
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setFrom(from)
+                            .setNonce(nonce)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setInput(input)
+                            .setValue(value)
+            );
         }
     }
 
@@ -172,14 +131,14 @@ public class LegacyTransactionTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
-        String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
-        String nonce = "0x4D2";
-        String gas = "0xf4240";
-        String gasPrice = "0x19";
-        String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
-        String chainID = "0x1";
-        String input = "0x31323334";
-        String value = "0xa";
+        static String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
+        static String nonce = "0x4D2";
+        static String gas = "0xf4240";
+        static String gasPrice = "0x19";
+        static String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
+        static String chainID = "0x1";
+        static String input = "0x31323334";
+        static String value = "0xa";
 
         @Test
         public void BuilderTest() {
@@ -194,11 +153,11 @@ public class LegacyTransactionTest {
                     .build();
 
             assertNotNull(legacyTransaction);
+            assertEquals(TransactionType.TxTypeLegacyTransaction.toString(), legacyTransaction.getType());
         }
 
         @Test
         public void BuilderTestWithBigInteger() {
-
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setNonce(nonce)
                     .setGas(gas)
@@ -223,7 +182,7 @@ public class LegacyTransactionTest {
             String value = "0x0a";
 
             Caver caver = new Caver(Caver.DEFAULT_URL);
-            AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(privateKey);
+            AbstractKeyring keyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
                     .setKlaytnCall(caver.rpc.getKlay())
@@ -313,7 +272,7 @@ public class LegacyTransactionTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
-        static Caver caver;
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
 
         static AbstractKeyring coupledKeyring;
         static AbstractKeyring deCoupledKeyring;
@@ -330,22 +289,25 @@ public class LegacyTransactionTest {
         static String expectedRawTransaction = "0xf8668204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a843132333425a0b2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9a029da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567";
 
         public static LegacyTransaction createLegacyTransaction() {
-            return new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setValue(value)
-                    .setTo(to)
-                    .build();
+            return caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setValue(value)
+                            .setTo(to)
+            );
         }
 
         @BeforeClass
         public static void preSetup() {
-            caver = Caver.build(Caver.DEFAULT_URL);
-            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
-            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), PrivateKey.generate().getPrivateKey());
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(
+                    caver.wallet.keyring.generate().getAddress(),
+                    caver.wallet.keyring.generateSingleKey()
+            );
         }
 
         @Test
@@ -402,16 +364,17 @@ public class LegacyTransactionTest {
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("The from address of the transaction is different with the address of the keyring to use");
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(Numeric.toBigInt(gas))
-                    .setGasPrice(Numeric.toBigInt(gasPrice))
-                    .setChainId(Numeric.toBigInt(chainID))
-                    .setInput(input)
-                    .setValue(Numeric.toBigInt(value))
-                    .setFrom("0x7b65b75d204abed71587c9e519a89277766aaaa1")
-                    .setTo(to)
-                    .build();
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(Numeric.toBigInt(gas))
+                            .setGasPrice(Numeric.toBigInt(gasPrice))
+                            .setChainId(Numeric.toBigInt(chainID))
+                            .setInput(input)
+                            .setValue(Numeric.toBigInt(value))
+                            .setFrom("0x7b65b75d204abed71587c9e519a89277766aaaa1")
+                            .setTo(to)
+            );
 
             legacyTransaction.sign(coupledKeyring);
         }
@@ -421,7 +384,7 @@ public class LegacyTransactionTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
-        static Caver caver;
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
 
         static AbstractKeyring coupledKeyring;
         static AbstractKeyring deCoupledKeyring;
@@ -438,22 +401,25 @@ public class LegacyTransactionTest {
         static String expectedRawTransaction = "0xf8668204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a843132333425a0b2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9a029da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567";
 
         public static LegacyTransaction createLegacyTransaction() {
-            return new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setInput(input)
-                    .setValue(value)
-                    .setTo(to)
-                    .build();
+            return caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setInput(input)
+                            .setValue(value)
+                            .setTo(to)
+            );
         }
 
         @BeforeClass
         public static void preSetup() {
-            caver = Caver.build(Caver.DEFAULT_URL);
-            coupledKeyring = KeyringFactory.createFromPrivateKey(privateKey);
-            deCoupledKeyring = KeyringFactory.createWithSingleKey(PrivateKey.generate().getDerivedAddress(), PrivateKey.generate().getPrivateKey());
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(
+                    caver.wallet.keyring.generate().getAddress(),
+                    caver.wallet.keyring.generateSingleKey()
+            );
         }
 
         @Test
@@ -484,7 +450,7 @@ public class LegacyTransactionTest {
         public void signWithKeys_KeyString_KlaytnWalletKeyFormat() throws IOException {
             LegacyTransaction legacyTransaction = createLegacyTransaction();
 
-            String klaytnKey = privateKey + "0x00" + KeyringFactory.createFromPrivateKey(privateKey).getAddress();
+            String klaytnKey = privateKey + "0x00" + caver.wallet.keyring.createFromPrivateKey(privateKey).getAddress();
             AbstractTransaction tx = legacyTransaction.sign(klaytnKey, TransactionHasher::getHashForSignature);
 
             assertEquals(expectedRawTransaction, tx.getRawTransaction());
@@ -514,7 +480,7 @@ public class LegacyTransactionTest {
 
             LegacyTransaction legacyTransaction = createLegacyTransaction();
 
-            String klaytnKey = privateKey + "0x00" + KeyringFactory.generate().getAddress();
+            String klaytnKey = privateKey + "0x00" + caver.wallet.keyring.generate().getAddress();
             legacyTransaction.sign(klaytnKey);
         }
 
@@ -524,13 +490,16 @@ public class LegacyTransactionTest {
             expectedException.expectMessage("A legacy transaction cannot be signed with a decoupled keyring.");
 
             String[] privateKeyArr = {
-                    PrivateKey.generate().getPrivateKey(),
-                    PrivateKey.generate().getPrivateKey(),
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey()
             };
 
             LegacyTransaction legacyTransaction = createLegacyTransaction();
 
-            AbstractKeyring keyring = KeyringFactory.createWithMultipleKey(PrivateKey.generate().getDerivedAddress(), privateKeyArr);
+            AbstractKeyring keyring = caver.wallet.keyring.createWithMultipleKey(
+                    caver.wallet.keyring.generate().getAddress(),
+                    privateKeyArr
+            );
             legacyTransaction.sign(keyring);
         }
 
@@ -541,22 +510,25 @@ public class LegacyTransactionTest {
 
             String[][] privateKeyArr = {
                     {
-                        PrivateKey.generate().getPrivateKey(),
-                        PrivateKey.generate().getPrivateKey(),
+                            caver.wallet.keyring.generateSingleKey(),
+                            caver.wallet.keyring.generateSingleKey()
                     },
                     {
-                        PrivateKey.generate().getPrivateKey(),
-                        PrivateKey.generate().getPrivateKey(),
+                            caver.wallet.keyring.generateSingleKey(),
+                            caver.wallet.keyring.generateSingleKey()
                     },
                     {
-                        PrivateKey.generate().getPrivateKey(),
-                        PrivateKey.generate().getPrivateKey(),
+                            caver.wallet.keyring.generateSingleKey(),
+                            caver.wallet.keyring.generateSingleKey()
                     }
             };
 
             LegacyTransaction legacyTransaction = createLegacyTransaction();
 
-            AbstractKeyring keyring = KeyringFactory.createWithRoleBasedKey(PrivateKey.generate().getDerivedAddress(), Arrays.asList(privateKeyArr));
+            AbstractKeyring keyring = caver.wallet.keyring.createWithRoleBasedKey(
+                    caver.wallet.keyring.generate().getAddress(),
+                    Arrays.asList(privateKeyArr)
+            );
             legacyTransaction.sign(keyring);
         }
 
@@ -573,27 +545,28 @@ public class LegacyTransactionTest {
             String input = "0x31323334";
             String value = "0xa";
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setFrom("0x7b65b75d204abed71587c9e519a89277766aaaa1")
-                    .setInput(input)
-                    .setValue(value)
-                    .setTo(to)
-                    .build();
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setFrom("0x7b65b75d204abed71587c9e519a89277766aaaa1")
+                            .setInput(input)
+                            .setValue(value)
+                            .setTo(to)
+            );
 
-            AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(privateKey);
+            AbstractKeyring keyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
             legacyTransaction.sign(keyring);
         }
     }
 
-
-
     public static class getRLPEncodingTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
+
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
 
         @Test
         public void getRLPEncoding() {
@@ -614,16 +587,17 @@ public class LegacyTransactionTest {
             List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setSignatures(list)
-                    .setTo(to)
-                    .build();
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setSignatures(list)
+                            .setTo(to)
+            );
 
             String expectedRLP = "0xf8668204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a843132333425a0b2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9a029da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567";
 
@@ -652,15 +626,16 @@ public class LegacyTransactionTest {
             List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setSignatures(list)
-                    .setTo(to)
-                    .build();
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setSignatures(list)
+                            .setTo(to)
+            );
 
             legacyTransaction.getRLPEncoding();
         }
@@ -686,15 +661,16 @@ public class LegacyTransactionTest {
             List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setSignatures(list)
-                    .setTo(to)
-                    .build();
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setSignatures(list)
+                            .setTo(to)
+            );
 
             legacyTransaction.getRLPEncoding();
         }
@@ -704,8 +680,7 @@ public class LegacyTransactionTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
-        static Caver caver;
-
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
 
         static String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
 
@@ -718,14 +693,15 @@ public class LegacyTransactionTest {
             String nonce = "0x3a";
             BigInteger chainID = BigInteger.valueOf(2019);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setTo(to)
-                    .build();
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setTo(to)
+            );
 
             String rlpEncoded = "0xf8673a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae0180820feaa0ade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6ea038160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e";
             List<String> rlpList = new ArrayList<>();
@@ -746,15 +722,17 @@ public class LegacyTransactionTest {
 
             SignatureData emptySig = SignatureData.getEmptySignature();
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setGas(gas)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setTo(to)
-                    .setSignatures(emptySig)
-                    .build();
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setGas(gas)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setTo(to)
+                            .setSignatures(emptySig)
+            );
 
             String rlpEncoded = "0xf8673a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae0180820feaa0ade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6ea038160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e";
+
             List<String> rlpList = new ArrayList<>();
             rlpList.add(rlpEncoded);
             String combined = legacyTransaction.combineSignedRawTransactions(rlpList);
@@ -783,16 +761,16 @@ public class LegacyTransactionTest {
             List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setSignatures(list)
-                    .setTo(to)
-                    .build();
-
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setSignatures(list)
+                            .setTo(to)
+            );
 
             String rlpEncoded = "0xf8673a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae0180820feaa0ade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6ea038160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e";
             List<String> rlpList = new ArrayList<>();
@@ -813,14 +791,15 @@ public class LegacyTransactionTest {
             String nonce = "0x3F";
             BigInteger chainID = BigInteger.valueOf(2019);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setTo(to)
-                    .build();
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setTo(to)
+            );
 
             String rlpEncoded = "0xf8673a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae0180820feaa0ade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6ea038160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e";
 
@@ -832,40 +811,73 @@ public class LegacyTransactionTest {
     }
 
     public static class getRawTransactionTest {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
+        static String to = "0x8723590d5D60e35f7cE0Db5C09D3938b26fF80Ae";
+        static BigInteger value = BigInteger.ONE;
+        static BigInteger gas = BigInteger.valueOf(90000);
+        static String gasPrice = "0x5d21dba00";
+        static String nonce = "0x3a";
+        static BigInteger chainID = BigInteger.valueOf(2019);
+
+        static SignatureData signatureData = new SignatureData(
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+        );
 
         @Test
         public void getRawTransaction() {
-            String to = "0x8723590d5D60e35f7cE0Db5C09D3938b26fF80Ae";
-            BigInteger value = BigInteger.ONE;
-            BigInteger gas = BigInteger.valueOf(90000);
-            String gasPrice = "0x5d21dba00";
-            String nonce = "0x3a";
-            BigInteger chainID = BigInteger.valueOf(2019);
-
-            SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setSignatures(signatureData)
+                            .setTo(to)
             );
-
-            List<SignatureData> list = new ArrayList<>();
-            list.add(signatureData);
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setSignatures(list)
-                    .setTo(to)
-                    .build();
-
 
             String expected = "0xf8673a8505d21dba0083015f90948723590d5d60e35f7ce0db5c09d3938b26ff80ae0180820feaa0ade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6ea038160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e";
             String raw = legacyTransaction.getRawTransaction();
 
             assertEquals(expected, raw);
+        }
+
+        @Test
+        public void throwException_NotDefined_Nonce() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("nonce is undefined.");
+
+            caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setSignatures(signatureData)
+                            .setTo(to)
+            ).getRawTransaction();
+        }
+
+        @Test
+        public void throwException_NotDefined_GasPrice() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("gasPrice is undefined.");
+
+            caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setSignatures(signatureData)
+                            .setTo(to)
+            ).getRawTransaction();
         }
     }
 
@@ -873,35 +885,34 @@ public class LegacyTransactionTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+        static String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
+        static String value = "0xa";
+        static String gas = "0xf4240";
+        static String gasPrice = "0x19";
+        static BigInteger nonce = BigInteger.valueOf(1234);
+        static String chainID = "0x1";
+        static String input = "0x31323334";
+
+        static SignatureData signatureData = new SignatureData(
+                Numeric.hexStringToByteArray("0x25"),
+                Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
+                Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
+        );
+
         @Test
         public void getTransactionHash() {
-            String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
-            String value = "0xa";
-            String gas = "0xf4240";
-            String gasPrice = "0x19";
-            BigInteger nonce = BigInteger.valueOf(1234);
-            String chainID = "0x1";
-            String input = "0x31323334";
-
-            SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x25"),
-                    Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
-                    Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setTo(to)
+                            .setSignatures(signatureData)
             );
-
-            List<SignatureData> list = new ArrayList<>();
-            list.add(signatureData);
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setTo(to)
-                    .setSignatures(list)
-                    .build();
 
             String expected = "0xe434257753bf31a130c839fec0bd34fc6ea4aa256b825288ee82db31c2ed7524";
             String txHash = legacyTransaction.getTransactionHash();
@@ -914,64 +925,35 @@ public class LegacyTransactionTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
-            String value = "0xa";
-            String gas = "0xf4240";
-            String gasPrice = "0x19";
-            String chainID = "0x1";
-            String input = "0x31323334";
-
-            SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x25"),
-                    Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
-                    Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setTo(to)
+                            .setSignatures(signatureData)
             );
-
-            List<SignatureData> list = new ArrayList<>();
-            list.add(signatureData);
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setTo(to)
-                    .build();
 
             legacyTransaction.getRawTransaction();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
-            String value = "0xa";
-            String gas = "0xf4240";
-            BigInteger nonce = BigInteger.valueOf(1234);
-            String chainID = "0x1";
-            String input = "0x31323334";
-
-            SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x25"),
-                    Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
-                    Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setTo(to)
+                            .setSignatures(signatureData)
             );
-
-            List<SignatureData> list = new ArrayList<>();
-            list.add(signatureData);
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setTo(to)
-                    .setSignatures(list)
-                    .build();
 
             String expected = "0xe434257753bf31a130c839fec0bd34fc6ea4aa256b825288ee82db31c2ed7524";
             String txHash = legacyTransaction.getTransactionHash();
@@ -984,35 +966,34 @@ public class LegacyTransactionTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+        static String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
+        static String value = "0xa";
+        static String gas = "0xf4240";
+        static String gasPrice = "0x19";
+        static BigInteger nonce = BigInteger.valueOf(1234);
+        static String chainID = "0x1";
+        static String input = "0x31323334";
+
+        static SignatureData signatureData = new SignatureData(
+                Numeric.hexStringToByteArray("0x25"),
+                Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
+                Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
+        );
+
         @Test
         public void getSenderTxHash() {
-            String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
-            String value = "0xa";
-            String gas = "0xf4240";
-            String gasPrice = "0x19";
-            BigInteger nonce = BigInteger.valueOf(1234);
-            String chainID = "0x1";
-            String input = "0x31323334";
-
-            SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x25"),
-                    Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
-                    Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setTo(to)
+                            .setSignatures(signatureData)
             );
-
-            List<SignatureData> list = new ArrayList<>();
-            list.add(signatureData);
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setTo(to)
-                    .setSignatures(list)
-                    .build();
 
             String expected = "0xe434257753bf31a130c839fec0bd34fc6ea4aa256b825288ee82db31c2ed7524";
             String txHash = legacyTransaction.getSenderTxHash();
@@ -1025,65 +1006,35 @@ public class LegacyTransactionTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
-            String value = "0xa";
-            String gas = "0xf4240";
-            String gasPrice = "0x19";
-            String chainID = "0x1";
-            String input = "0x31323334";
-
-            SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x25"),
-                    Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
-                    Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setTo(to)
+                            .setSignatures(signatureData)
             );
-
-            List<SignatureData> list = new ArrayList<>();
-            list.add(signatureData);
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setTo(to)
-                    .setSignatures(list)
-                    .build();
 
             legacyTransaction.getSenderTxHash();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
-            String value = "0xa";
-            String gas = "0xf4240";
-            BigInteger nonce = BigInteger.valueOf(1234);
-            String chainID = "0x1";
-            String input = "0x31323334";
-
-            SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x25"),
-                    Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
-                    Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setTo(to)
+                            .setSignatures(signatureData)
             );
-
-            List<SignatureData> list = new ArrayList<>();
-            list.add(signatureData);
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setTo(to)
-                    .setSignatures(list)
-                    .build();
 
 
             String txHash = legacyTransaction.getSenderTxHash();
@@ -1094,35 +1045,34 @@ public class LegacyTransactionTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+        static String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
+        static String value = "0xa";
+        static String gas = "0xf4240";
+        static String gasPrice = "0x19";
+        static BigInteger nonce = BigInteger.valueOf(1234);
+        static String chainID = "0x1";
+        static String input = "0x31323334";
+
+        static SignatureData signatureData = new SignatureData(
+                Numeric.hexStringToByteArray("0x25"),
+                Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
+                Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
+        );
+
         @Test
         public void getRLPEncodingForSignature() {
-            String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
-            String value = "0xa";
-            String gas = "0xf4240";
-            String gasPrice = "0x19";
-            BigInteger nonce = BigInteger.valueOf(1234);
-            String chainID = "0x1";
-            String input = "0x31323334";
-
-            SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x25"),
-                    Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
-                    Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setTo(to)
+                            .setSignatures(signatureData)
             );
-
-            List<SignatureData> list = new ArrayList<>();
-            list.add(signatureData);
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setTo(to)
-                    .setSignatures(list)
-                    .build();
 
             String expected = "0xe68204d219830f4240947b65b75d204abed71587c9e519a89277766ee1d00a8431323334018080";
             String rlpEncodedSign = legacyTransaction.getRLPEncodingForSignature();
@@ -1135,65 +1085,35 @@ public class LegacyTransactionTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
-            String value = "0xa";
-            String gas = "0xf4240";
-            String gasPrice = "0x19";
-            String chainID = "0x1";
-            String input = "0x31323334";
-
-            SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x25"),
-                    Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
-                    Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setTo(to)
+                            .setSignatures(signatureData)
             );
-
-            List<SignatureData> list = new ArrayList<>();
-            list.add(signatureData);
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setTo(to)
-                    .setSignatures(list)
-                    .build();
 
             String encoded = legacyTransaction.getRLPEncodingForSignature();
         }
 
         @Test
-        public void throwException_NotDefined_gasPrice() {
+        public void throwException_NotDefined_GasPrice() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
-            String value = "0xa";
-            String gas = "0xf4240";
-            BigInteger nonce = BigInteger.valueOf(1234);
-            String chainID = "0x1";
-            String input = "0x31323334";
-
-            SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x25"),
-                    Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
-                    Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setTo(to)
+                            .setSignatures(signatureData)
             );
-
-            List<SignatureData> list = new ArrayList<>();
-            list.add(signatureData);
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setInput(input)
-                    .setTo(to)
-                    .setSignatures(list)
-                    .build();
 
             String encoded = legacyTransaction.getRLPEncodingForSignature();
 
@@ -1204,31 +1124,16 @@ public class LegacyTransactionTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
 
-            String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
-            String value = "0xa";
-            String gas = "0xf4240";
-            String gasPrice = "0x19";
-            BigInteger nonce = BigInteger.valueOf(1234);
-            String input = "0x31323334";
-
-            SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x25"),
-                    Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
-                    Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setValue(value)
+                            .setInput(input)
+                            .setTo(to)
+                            .setSignatures(signatureData)
             );
-
-            List<SignatureData> list = new ArrayList<>();
-            list.add(signatureData);
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setValue(value)
-                    .setInput(input)
-                    .setTo(to)
-                    .setSignatures(list)
-                    .build();
 
             String encoded = legacyTransaction.getRLPEncodingForSignature();
         }
@@ -1238,29 +1143,31 @@ public class LegacyTransactionTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+        static String to = "0x8723590d5D60e35f7cE0Db5C09D3938b26fF80Ae";
+        static BigInteger value = BigInteger.ONE;
+        static BigInteger gas = BigInteger.valueOf(90000);
+        static String gasPrice = "0x19";
+        static String nonce = "0x3a";
+        static BigInteger chainID = BigInteger.valueOf(2019);
+
+        static SignatureData signatureData = new SignatureData(
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+        );
+
         @Test
         public void appendSignature() {
-            String to = "0x8723590d5D60e35f7cE0Db5C09D3938b26fF80Ae";
-            BigInteger value = BigInteger.ONE;
-            BigInteger gas = BigInteger.valueOf(90000);
-            String gasPrice = "0x5d21dba00";
-            String nonce = "0x3a";
-            BigInteger chainID = BigInteger.valueOf(2019);
-
-            SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
             );
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setTo(to)
-                    .setValue(value)
-                    .build();
 
             legacyTransaction.appendSignatures(signatureData);
 
@@ -1269,30 +1176,18 @@ public class LegacyTransactionTest {
 
         @Test
         public void appendSignatureWithEmptySig() {
-            String to = "0x8723590d5D60e35f7cE0Db5C09D3938b26fF80Ae";
-            BigInteger value = BigInteger.ONE;
-            BigInteger gas = BigInteger.valueOf(90000);
-            String gasPrice = "0x5d21dba00";
-            String nonce = "0x3a";
-            BigInteger chainID = BigInteger.valueOf(2019);
-
             SignatureData emptySignature = SignatureData.getEmptySignature();
 
-            SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
+                            .setSignatures(emptySignature)
             );
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setTo(to)
-                    .setValue(value)
-                    .setSignatures(emptySignature)
-                    .build();
 
             legacyTransaction.appendSignatures(signatureData);
 
@@ -1301,30 +1196,18 @@ public class LegacyTransactionTest {
 
         @Test
         public void appendSignatureList() {
-            String to = "0x8723590d5D60e35f7cE0Db5C09D3938b26fF80Ae";
-            BigInteger value = BigInteger.ONE;
-            BigInteger gas = BigInteger.valueOf(90000);
-            String gasPrice = "0x5d21dba00";
-            String nonce = "0x3a";
-            BigInteger chainID = BigInteger.valueOf(2019);
-
-            SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
-            );
-
             List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setTo(to)
-                    .build();
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setTo(to)
+            );
 
             legacyTransaction.appendSignatures(list);
 
@@ -1333,33 +1216,21 @@ public class LegacyTransactionTest {
 
         @Test
         public void appendSignatureList_EmptySig() {
-            String to = "0x8723590d5D60e35f7cE0Db5C09D3938b26fF80Ae";
-            BigInteger value = BigInteger.ONE;
-            BigInteger gas = BigInteger.valueOf(90000);
-            String gasPrice = "0x5d21dba00";
-            String nonce = "0x3a";
-            BigInteger chainID = BigInteger.valueOf(2019);
-
-            SignatureData emptySignature = SignatureData.getEmptySignature();
-
-            SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
-            );
-
             List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setTo(to)
-                    .setSignatures(emptySignature)
-                    .build();
+            SignatureData emptySignature = SignatureData.getEmptySignature();
+
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setTo(to)
+                            .setSignatures(emptySignature)
+            );
 
             legacyTransaction.appendSignatures(list);
 
@@ -1371,31 +1242,16 @@ public class LegacyTransactionTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("Signatures already defined." + TransactionType.TxTypeLegacyTransaction.toString() + " cannot include more than one signature.");
 
-            String to = "0x8723590d5D60e35f7cE0Db5C09D3938b26fF80Ae";
-            BigInteger value = BigInteger.ONE;
-            BigInteger gas = BigInteger.valueOf(90000);
-            String gasPrice = "0x5d21dba00";
-            String nonce = "0x3a";
-            BigInteger chainID = BigInteger.valueOf(2019);
-
-            SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setTo(to)
+                            .setSignatures(signatureData)
             );
-
-            List<SignatureData> list = new ArrayList<>();
-            list.add(signatureData);
-
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setTo(to)
-                    .setSignatures(list)
-                    .build();
 
             legacyTransaction.appendSignatures(signatureData);
         }
@@ -1405,31 +1261,19 @@ public class LegacyTransactionTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("Signatures already defined." + TransactionType.TxTypeLegacyTransaction.toString() + " cannot include more than one signature.");
 
-            String to = "0x8723590d5D60e35f7cE0Db5C09D3938b26fF80Ae";
-            BigInteger value = BigInteger.ONE;
-            BigInteger gas = BigInteger.valueOf(90000);
-            String gasPrice = "0x5d21dba00";
-            String nonce = "0x3a";
-            BigInteger chainID = BigInteger.valueOf(2019);
-
-            SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
-            );
-
             List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setValue(value)
-                    .setTo(to)
-                    .setSignatures(list)
-                    .build();
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setTo(to)
+                            .setSignatures(list)
+            );
 
             legacyTransaction.appendSignatures(list);
         }
@@ -1439,31 +1283,19 @@ public class LegacyTransactionTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("Signatures are too long " + TransactionType.TxTypeLegacyTransaction.toString() + " cannot include more than one signature.");
 
-            String to = "0x8723590d5D60e35f7cE0Db5C09D3938b26fF80Ae";
-            BigInteger value = BigInteger.ONE;
-            BigInteger gas = BigInteger.valueOf(90000);
-            String gasPrice = "0x5d21dba00";
-            String nonce = "0x3a";
-            BigInteger chainID = BigInteger.valueOf(2019);
-
-            SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x0fea"),
-                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
-                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
-            );
-
             List<SignatureData> list = new ArrayList<>();
             list.add(signatureData);
             list.add(signatureData);
 
-            LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()
-                    .setNonce(nonce)
-                    .setGas(gas)
-                    .setGasPrice(gasPrice)
-                    .setChainId(chainID)
-                    .setTo(to)
-                    .setValue(value)
-                    .build();
+            LegacyTransaction legacyTransaction = caver.transaction.legacyTransaction.create(
+                    TxPropertyBuilder.legacyTransaction()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
+            );
 
             legacyTransaction.appendSignatures(list);
         }

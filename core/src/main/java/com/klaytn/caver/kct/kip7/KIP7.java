@@ -107,7 +107,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Deploy KIP-7 contract.
+     * Deploy KIP-7 contract.<p>
      * It must add deployer's keyring in caver.wallet.
      * @param caver A Caver instance.
      * @param deployer A deployer's address.
@@ -130,7 +130,42 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Deploy KIP-7 contract.
+     * Deploy KIP-7 contract.<p>
+     * It must add deployer's keyring in caver.wallet.<p>
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
+     * <pre>
+     * <code>
+     *     SendOptions sendOptions = new SendOptions();
+     *     sendOptions.setFrom("deployer address");
+     *     sendOptions.setGas(BigInteger.valueOf(gas value));
+     *     sendOptions.setFeeDelegation(true);
+     *     sendOptions.setFeePayer("fee payer address");
+     *
+     *     KIP7 kip7 = caver.kct.kip7.deploy(sendOptions, name, symbol, decimals, initialSupply);
+     * </code>
+     * </pre>
+     * @param caver A Caver instance.
+     * @param sendOptions The send options to deploy a contract.
+     * @param name A KIP-7 contract name.
+     * @param symbol A KIP-7 contract symbol.
+     * @param decimals A KIP-7 contract decimals.
+     * @param initialSupply A KIP-7 contract initial supply.
+     * @return KIP7
+     * @throws TransactionException
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public static KIP7 deploy(Caver caver, SendOptions sendOptions, String name, String symbol, int decimals, BigInteger initialSupply) throws TransactionException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        KIP7DeployParams params = new KIP7DeployParams(name, symbol, decimals, initialSupply);
+        return deploy(caver, params, sendOptions);
+    }
+
+    /**
+     * Deploy KIP-7 contract.<p>
      * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
      * @param caver A Caver instance.
      * @param deployer A deployer's address.
@@ -154,8 +189,44 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Deploy KIP-7 contract.
-     * It must add deployer's keyring in caver.wallet.
+     * Deploy KIP-7 contract. <p>
+     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
+     * <pre>
+     * <code>
+     *     SendOptions sendOptions = new SendOptions();
+     *     sendOptions.setFrom("deployer address");
+     *     sendOptions.setGas(BigInteger.valueOf(gas value));
+     *     sendOptions.setFeeDelegation(true);
+     *     sendOptions.setFeePayer("fee payer address");
+     *
+     *     KIP7 kip7 = caver.kct.kip7.deploy(sendOptions, name, symbol, decimals, initialSupply, caver.getWallet());
+     * </code>
+     * </pre>
+     * @param caver A Caver instance.
+     * @param sendOptions The send options to deploy a contract.
+     * @param name A KIP-7 contract name.
+     * @param symbol A KIP-7 contract symbol.
+     * @param decimals A KIP-7 contract decimals.
+     * @param initialSupply A KIP-7 contract initial supply.
+     * @param wallet The class instance implemented IWallet to sign transaction.
+     * @return KIP7
+     * @throws TransactionException
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public static KIP7 deploy(Caver caver, SendOptions sendOptions, String name, String symbol, int decimals, BigInteger initialSupply, IWallet wallet) throws TransactionException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        KIP7DeployParams params = new KIP7DeployParams(name, symbol, decimals, initialSupply);
+        return deploy(caver, params, sendOptions, wallet);
+    }
+
+    /**
+     * Deploy KIP-7 contract.<p>
+     * The deployer's keyring should be added in `caver.wallet`.
      * @param caver A Caver instance
      * @param tokenInfo The KIP-7 contract's deploy parameter values
      * @param deployer A deployer's address
@@ -173,7 +244,39 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Deploy KIP-7 contract.
+     * Deploy KIP-7 contract.<p>
+     * The deployer's keyring should be added in `caver.wallet`. <p>
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
+     * <pre>
+     * <code>
+     *     SendOptions sendOptions = new SendOptions();
+     *     sendOptions.setFrom("deployer address");
+     *     sendOptions.setGas(BigInteger.valueOf(gas value));
+     *     sendOptions.setFeeDelegation(true);
+     *     sendOptions.setFeePayer("fee payer address");
+     *
+     *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
+     *     KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, sendOptions);
+     * </code>
+     * </pre>
+     * @param caver A Caver instance
+     * @param tokenInfo The KIP-7 contract's deploy parameter values
+     * @param sendOptions The send options to deploy a contract.
+     * @return KIP7
+     * @throws NoSuchMethodException
+     * @throws TransactionException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
+    public static KIP7 deploy(Caver caver, KIP7DeployParams tokenInfo, SendOptions sendOptions) throws NoSuchMethodException, TransactionException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        return deploy(caver, tokenInfo, sendOptions, caver.getWallet());
+    }
+
+    /**
+     * Deploy KIP-7 contract.<p>
      * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
      * @param caver A Caver instance
      * @param tokenInfo The KIP-7 contract's deploy parameter values
@@ -189,9 +292,45 @@ public class KIP7 extends Contract {
      * @throws TransactionException
      */
     public static KIP7 deploy(Caver caver, KIP7DeployParams tokenInfo, String deployer, IWallet wallet) throws IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, TransactionException {
+        SendOptions sendOptions = new SendOptions();
+        sendOptions.setFrom(deployer);
+        sendOptions.setGas(BigInteger.valueOf(4000000));
+
+        return deploy(caver, tokenInfo, sendOptions, wallet);
+    }
+
+    /**
+     * Deploy KIP-7 contract.<p>
+     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
+     * <pre>
+     * <code>
+     *     SendOptions sendOptions = new SendOptions();
+     *     sendOptions.setFrom("deployer address");
+     *     sendOptions.setGas(BigInteger.valueOf(gas value));
+     *     sendOptions.setFeeDelegation(true);
+     *     sendOptions.setFeePayer("fee payer address");
+     *
+     *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
+     *     KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, sendOptions, caver.getWallet());
+     * </code>
+     * </pre>
+     * @param caver A Caver instance
+     * @param tokenInfo The KIP-7 contract's deploy parameter values
+     * @param sendOptions The send options to deploy a contract.
+     * @param wallet The class instance implemented IWallet to sign transaction.
+     * @return KIP7
+     * @throws IOException
+     * @throws TransactionException
+     * @throws ClassNotFoundException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public static KIP7 deploy(Caver caver, KIP7DeployParams tokenInfo, SendOptions sendOptions, IWallet wallet) throws IOException, TransactionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         List deployArgument = Arrays.asList(tokenInfo.getName(), tokenInfo.getSymbol(), tokenInfo.getDecimals(), tokenInfo.getInitialSupply());
         ContractDeployParams contractDeployParams = new ContractDeployParams(KIP7ConstantData.BINARY, deployArgument);
-        SendOptions sendOptions = new SendOptions(deployer, BigInteger.valueOf(4000000));
 
         KIP7 kip7 = new KIP7(caver);
         kip7.setWallet(wallet);
@@ -213,8 +352,8 @@ public class KIP7 extends Contract {
      * }</pre>
      *
      * @param caver A Caver instance.
-     * @param contractAddress
-     * @return
+     * @param contractAddress A contract address.
+     * @return Map&lt;String, Boolean&gt;
      */
     public static Map<String, Boolean> detectInterface(Caver caver, String contractAddress) {
         KIP13 kip13;
@@ -463,8 +602,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "approve" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "approve" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param spender The address is approved to withdraw the tokens.
      * @param amount Amount the token amount will be approved.
@@ -482,7 +621,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "approve" in KIP-7 standard contract.
+     * Execute a method "approve" in KIP-7 standard contract.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param spender The address is approved to withdraw the tokens.
      * @param amount Amount the token amount will be approved.
@@ -504,8 +643,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "transfer" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "transfer" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param recipient The address of the account to receive the token.
      * @param amount The token amount will be transferred.
@@ -523,7 +662,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "transfer" in KIP-7 standard contract.
+     * Execute a method "transfer" in KIP-7 standard contract.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param recipient The address of the account to receive the token.
      * @param amount The token amount will be transferred.
@@ -545,8 +684,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "transferFrom" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "transferFrom" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sender The current owner of the tokens.
      * @param recipient The address of the account to receive the token.
@@ -565,7 +704,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "transferFrom" in KIP-7 standard contract.
+     * Execute a method "transferFrom" in KIP-7 standard contract.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sender The current owner of the tokens.
      * @param recipient The address of the account to receive the token.
@@ -588,8 +727,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "safeTransfer" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "safeTransfer" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param recipient The address of the account to receive the token.
      * @param amount The token amount will be transferred.
@@ -607,7 +746,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "safeTransfer" in KIP-7 standard contract.
+     * Execute a method "safeTransfer" in KIP-7 standard contract.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param recipient The address of the account to receive the token.
      * @param amount The token amount will be transferred.
@@ -629,8 +768,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "safeTransfer" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "safeTransfer" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param recipient The address of the account to receive the token.
      * @param amount The token amount will be transferred.
@@ -649,7 +788,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "safeTransfer" in KIP-7 standard contract.
+     * Execute a method "safeTransfer" in KIP-7 standard contract.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param recipient The address of the account to receive the token.
      * @param amount The token amount will be transferred.
@@ -672,8 +811,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "safeTransfer" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "safeTransfer" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sender The current owner of the tokens.
      * @param recipient The address of the account to receive the token.
@@ -692,7 +831,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "safeTransfer" in KIP-7 standard contract.
+     * Execute a method "safeTransfer" in KIP-7 standard contract.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sender The current owner of the tokens.
      * @param recipient The address of the account to receive the token.
@@ -715,8 +854,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "safeTransferFrom" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "safeTransferFrom" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sender The current owner of the tokens.
      * @param recipient The address of the account to receive the token.
@@ -736,7 +875,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "safeTransferFrom" in KIP-7 standard contract.
+     * Execute a method "safeTransferFrom" in KIP-7 standard contract.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sender The current owner of the tokens.
      * @param recipient The address of the account to receive the token.
@@ -760,9 +899,9 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "mint" in KIP-7 standard contract.
-     * Caller must have "Minter" Permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "mint" in KIP-7 standard contract.<p>
+     * Caller must have "Minter" Permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account that will receive the minted token
      * @param amount The token amount to mint
@@ -780,8 +919,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "mint" in KIP-7 standard contract.
-     * Caller must have "Minter" Permission.
+     * Execute a method "mint" in KIP-7 standard contract.<p>
+     * Caller must have "Minter" Permission.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account that will receive the minted token
      * @param amount The token amount to mint
@@ -803,9 +942,9 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "addMinter" in KIP-7 standard contract.
-     * Caller must have "Minter" Permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "addMinter" in KIP-7 standard contract.<p>
+     * Caller must have "Minter" Permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account to be given the minting permission
      * @return TransactionReceipt.TransactionReceiptData
@@ -822,9 +961,9 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "addMinter" in KIP-7 standard contract.
-     * Caller must have "Minter" Permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "addMinter" in KIP-7 standard contract.<p>
+     * Caller must have "Minter" Permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account to be given the minting permission
      * @param sendParam A SendOptions need to execute contract's method.
@@ -845,9 +984,9 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "renounceMinter" in KIP-7 standard contract.
-     * Caller must have "Minter" Permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "renounceMinter" in KIP-7 standard contract.<p>
+     * Caller must have "Minter" Permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -863,9 +1002,9 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "renounceMinter" in KIP-7 standard contract.
-     * Caller must have "Minter" Permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "renounceMinter" in KIP-7 standard contract.<p>
+     * Caller must have "Minter" Permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
@@ -885,8 +1024,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "burn" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "burn" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param amount The token amount to be burned
      * @return TransactionReceipt.TransactionReceiptData
@@ -903,7 +1042,7 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "burn" in KIP-7 standard contract.
+     * Execute a method "burn" in KIP-7 standard contract.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param amount The token amount to be burned
      * @param sendParam A SendOptions need to execute contract's method.
@@ -924,8 +1063,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "burnFrom" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "burnFrom" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account will be deducted is the The token amount to be burned
      * @param amount The token amount to be burned
@@ -943,8 +1082,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "burnFrom" in KIP-7 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "burnFrom" in KIP-7 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account will be deducted is the The token amount to be burned
      * @param amount The token amount to be burned
@@ -966,9 +1105,9 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "addPauser" in KIP-7 standard contract.
-     * Caller must have Pauser permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "addPauser" in KIP-7 standard contract.<p>
+     * Caller must have Pauser permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account to be given the pausing permission
      * @return TransactionReceipt.TransactionReceiptData
@@ -985,8 +1124,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "addPauser" in KIP-7 standard contract.
-     * Caller must have Pauser permission.
+     * Execute a method "addPauser" in KIP-7 standard contract.<p>
+     * Caller must have Pauser permission.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param account The account to be given the pausing permission
      * @param sendParam A SendOptions need to execute contract's method.
@@ -1007,9 +1146,9 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "pause" in KIP-7 standard contract.
-     * Caller must have Pauser permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "pause" in KIP-7 standard contract.<p>
+     * Caller must have Pauser permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1025,8 +1164,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "pause" in KIP-7 standard contract.
-     * Caller must have Pauser permission.
+     * Execute a method "pause" in KIP-7 standard contract.<p>
+     * Caller must have Pauser permission.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
@@ -1046,9 +1185,9 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "unpause" in KIP-7 standard contract.
-     * Caller must have Pauser permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "unpause" in KIP-7 standard contract.<p>
+     * Caller must have Pauser permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1064,8 +1203,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "unpause" in KIP-7 standard contract.
-     * Caller must have Pauser permission.
+     * Execute a method "unpause" in KIP-7 standard contract.<p>
+     * Caller must have Pauser permission.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
@@ -1085,9 +1224,9 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "unpause" in KIP-7 standard contract.
-     * Caller must have Pauser permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute a method "unpause" in KIP-7 standard contract.<p>
+     * Caller must have Pauser permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.
      * If a gas value in default sendOptions has null, it will automatically set gas value through estimateGas().
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1103,8 +1242,8 @@ public class KIP7 extends Contract {
     }
 
     /**
-     * Execute a method "unpause" in KIP-7 standard contract.
-     * Caller must have Pauser permission.
+     * Execute a method "unpause" in KIP-7 standard contract.<p>
+     * Caller must have Pauser permission.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
@@ -1129,6 +1268,9 @@ public class KIP7 extends Contract {
         String from = kip7.getDefaultSendOptions().getFrom();
         String gas = kip7.getDefaultSendOptions().getGas();
         String value = kip7.getDefaultSendOptions().getValue();
+        Boolean feeDelegation = kip7.getDefaultSendOptions().getFeeDelegation();
+        String feePayer = kip7.getDefaultSendOptions().getFeePayer();
+        String feeRatio = kip7.getDefaultSendOptions().getFeeRatio();
 
         if(sendOptions.getFrom() != null) {
             from = sendOptions.getFrom();
@@ -1149,7 +1291,30 @@ public class KIP7 extends Contract {
             value = sendOptions.getValue();
         }
 
-        newSendOptions = new SendOptions(from, gas, value);
+        if(sendOptions.getFeeDelegation() != null) {
+            feeDelegation = sendOptions.getFeeDelegation();
+        }
+
+        if(sendOptions.getFeePayer() != null) {
+            feePayer = sendOptions.getFeePayer();
+        }
+
+        if(sendOptions.getFeeRatio() != null) {
+            feeRatio = sendOptions.getFeeRatio();
+        }
+
+        if((feeDelegation == null || !feeDelegation) && (feePayer != null || feeRatio != null)) {
+            throw new IllegalArgumentException("To use fee delegation with KCT, please set 'feeDelegation' field to true.");
+        }
+
+        newSendOptions = new SendOptions();
+        newSendOptions.setFrom(from);
+        newSendOptions.setGas(gas);
+        newSendOptions.setValue(value);
+        newSendOptions.setFeeDelegation(feeDelegation);
+        newSendOptions.setFeePayer(feePayer);
+        newSendOptions.setFeeRatio(feeRatio);
+
         return newSendOptions;
     }
 

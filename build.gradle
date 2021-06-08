@@ -31,7 +31,7 @@ apply plugin: 'io.codearte.nexus-staging'
 
 
 allprojects {
-    version '1.6.1'
+    version '1.6.2'
     group 'com.klaytn.caver'
     description 'caver-java project'
 

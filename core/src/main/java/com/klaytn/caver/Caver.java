@@ -176,6 +176,17 @@ public class Caver {
     }
 
     /**
+     * Setter for Rpc.
+     * @param rpc The JSON-RPC API instance
+     */
+    public void setRpc(RPC rpc) {
+        this.rpc = rpc;
+        this.transaction = new TransactionWrapper(this.rpc.getKlay());
+        this.contract = new ContractWrapper(this);
+        this.kct = new KCTWrapper(this);
+    }
+
+    /**
      * @deprecated Please use <code>caver.rpc.klay</code> instead.
      * @see RPC#klay
      */

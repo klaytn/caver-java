@@ -384,7 +384,6 @@ workflows:
     - release_PR:
         requires:
           - major_publish
-          - android_publish
         filters:
           tags:
             only: /^v[0-9]+\.[0-9]+\.[0-9]+-rc.*/
@@ -403,3 +402,5 @@ workflows:
     - major_publish:
         <<: *test_steps
         <<: *stage_publish
+        requires:
+          - android_publish

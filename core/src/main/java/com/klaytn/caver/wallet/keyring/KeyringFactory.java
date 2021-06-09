@@ -283,10 +283,11 @@ public class KeyringFactory {
             }
         }
 
+        String address = Utils.addHexPrefix(keystore.getAddress());
         if(keystore.getVersion() == KeyStore.KEY_STORE_VERSION_V3) {
             KeyStore.Crypto crypto = keystore.getCrypto();
             String privateKey = KeyStore.Crypto.decryptCrypto(crypto, password);
-            return KeyringFactory.create(keystore.getAddress(), privateKey);
+            return KeyringFactory.create(address, privateKey);
         }
 
         List keyring = keystore.getKeyring();
@@ -314,12 +315,12 @@ public class KeyringFactory {
         boolean isRoleBased = privateKeyList.stream().skip(1).anyMatch(array -> array.length > 0);
 
         if(isRoleBased) {
-            return KeyringFactory.createWithRoleBasedKey(keystore.getAddress(), privateKeyList);
+            return KeyringFactory.createWithRoleBasedKey(address, privateKeyList);
         } else {
             if(privateKeyList.get(0).length > 1) {
-                return KeyringFactory.createWithMultipleKey(keystore.getAddress(), privateKeyList.get(0));
+                return KeyringFactory.createWithMultipleKey(address, privateKeyList.get(0));
             } else {
-                return KeyringFactory.createWithSingleKey(keystore.getAddress(), privateKeyList.get(0)[0]);
+                return KeyringFactory.createWithSingleKey(address, privateKeyList.get(0)[0]);
             }
         }
     }

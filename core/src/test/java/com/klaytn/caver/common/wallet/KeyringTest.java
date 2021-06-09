@@ -1549,7 +1549,6 @@ public class KeyringTest {
             checkValidKeyring(expect, actual);
         }
 
-        //CA-KEYRING-081
         @Test
         public void jsonStringV4NoHexPrefixAddress() throws IOException, CipherException {
             String password = "password";
@@ -1574,7 +1573,6 @@ public class KeyringTest {
             checkValidKeyring(expect, actual);
         }
 
-        //CA-KEYRING-082
         @Test
         public void jsonStringV3NoHexPrefixAddress() throws IOException, CipherException {
             String password = "password";

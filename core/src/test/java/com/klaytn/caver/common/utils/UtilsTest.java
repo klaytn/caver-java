@@ -224,10 +224,23 @@ public class UtilsTest {
     public static class hashMessageTest {
         @Test
         public void hashMessageTest() {
-            String data = "0xdeadbeaf";
-            String actual = caver.utils.hashMessage(data);
-            assertEquals(66, actual.length());
+            String[] message = {"some data", "test data", "caver-java", "sign data", "0xaabbccdd", "0x11223344", "0x33445566"};
+            String[] expected = {
+                    "0x5373135dbda1d8f2eaee73adcc07d03cd3bbc2510b3bfdbd4fcf9de2f34c505e",
+                    "0x416066097cb5808c62e1d7129249b37e661838ed49d6c3347a4a3f290020e952",
+                    "0x096f523188dc1ddc620db4ec828733c0db209491849b85bb6bbd31d1498239cf",
+                    "0x4c4865cee1cda8a2a3130be37a7739324a78ea36f39b18ae7dfecee5e5ce6fa2",
+                    "0x4f8b23edb1db90554d99eb9667a950c78445f5efc6aaccb4d0243ee82f89b475",
+                    "0x18ecf869a4437f5d036af0b25b2cb43362f857e19394e32e148439c99c768d1e",
+                    "0x257527206116286147dd9827b21905add9c42ab16034ae6d6e9c2954199d0f08"
+            };
+
+            for(int i=0; i<message.length; i++) {
+                assertEquals(expected[i], Utils.hashMessage(message[i]));
+            }
         }
+
+
     }
 
     public static class parseKlaytnWalletKeyTest {
@@ -1021,6 +1034,38 @@ public class UtilsTest {
             byte[] arr = caver.utils.generateRandomBytes(32);
 
             assertEquals(32, arr.length);
+        }
+    }
+
+    public static class recoverTest {
+        public void checkAddress(String expect, String actual) {
+            expect = Numeric.prependHexPrefix(expect);
+            actual = Numeric.prependHexPrefix(actual);
+
+            assertEquals(expect, actual);
+        }
+
+        @Test
+        public void withMessageAndSignature() throws SignatureException {
+            String expectedSignedMessage = "0xc69018da9396c4b87947e0784625af7475caf46e2af9cf57a44673ff0f625258642d8993751ae67271bcc131aa065adccf9f16fc4953f9c48f4a80d675c09ae81b";
+            String expectedAddress = "0xb6a1f97502431e6f8d701f9e192c3cc43c07351a";
+            String message = "Klaytn Test";
+
+            SignatureData signatureData = Utils.decodeSignature(expectedSignedMessage);
+            String actualAddress = Utils.recover(message, signatureData);
+
+            checkAddress(expectedAddress, actualAddress);
+        }
+
+        @Test
+        public void alreadyPrefix() throws SignatureException {
+            SingleKeyring keyring = KeyringFactory.generate();
+            String message = "Some data";
+
+            MessageSigned signed = keyring.signMessage(message, 0, 0);
+            String actualAddress = Utils.recover(signed.getMessageHash(), signed.getSignatures().get(0), true);
+
+            checkAddress(keyring.getAddress(), actualAddress);
         }
     }
 }

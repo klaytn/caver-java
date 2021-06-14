@@ -197,10 +197,17 @@ public class Utils {
      * @return String
      */
     public static String hashMessage(String message) {
-        final String preamble = "\\x19Klaytn Signed Message:\\n";
+        final String preamble = "\u0019Klaytn Signed Message:\n";
 
-        String klaytnMessage =  preamble + message.length() + message;
-        return Hash.sha3(klaytnMessage);
+        byte[] messageArr = Utils.isHexStrict(message)? Numeric.hexStringToByteArray(message) : message.getBytes();
+        byte[] preambleArr = preamble.concat(String.valueOf(messageArr.length)).getBytes();
+
+        // klayMessage is concatenated array (preambleArr + messageArr)
+        byte[] klayMessage = BytesUtils.concat(preambleArr, messageArr);
+        byte[] result =  Hash.sha3(klayMessage);
+
+        //return data after converting to hex string.
+        return Numeric.toHexString(result);
     }
 
     /**

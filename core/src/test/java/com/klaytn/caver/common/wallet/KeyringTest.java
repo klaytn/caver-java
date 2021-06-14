@@ -1187,50 +1187,6 @@ public class KeyringTest {
 //        }
     }
 
-    public static class recoverTest {
-        public void checkAddress(String expect, String actual) {
-            expect = Numeric.prependHexPrefix(expect);
-            actual = Numeric.prependHexPrefix(actual);
-
-            assertEquals(expect, actual);
-        }
-
-        //CA-KEYRING-073
-//        @Test
-//        public void withSignedMessage() throws SignatureException {
-//            SingleKeyring keyring = KeyringFactory.generate();
-//            String message = "Some data";
-//            MessageSigned signed = keyring.signMessage(message, 0, 0);
-//
-//            String actualAddr = Utils.recover(signed);
-//            checkAddress(keyring.getAddress(), actualAddr);
-//        }
-
-        //CA-KEYRING-074
-        @Test
-        public void withMessageAndSignature() throws SignatureException {
-            SingleKeyring keyring = KeyringFactory.generate();
-            String message = "Some data";
-
-            MessageSigned signed = keyring.signMessage(message, 0, 0);
-            String actualAddr = Utils.recover(signed.getMessage(), signed.getSignatures().get(0));
-
-            checkAddress(keyring.getAddress(), actualAddr);
-        }
-
-        //CA-KEYRING-075
-        @Test
-        public void alreadyPrefix() throws SignatureException {
-            SingleKeyring keyring = KeyringFactory.generate();
-            String message = "Some data";
-
-            MessageSigned signed = keyring.signMessage(message, 0, 0);
-            String actualAddr = Utils.recover(signed.getMessageHash(), signed.getSignatures().get(0), true);
-
-            checkAddress(keyring.getAddress(), actualAddr);
-        }
-    }
-
     public static class decryptTest {
 
         String jsonV3 = "{\n" +

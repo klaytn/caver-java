@@ -294,4 +294,13 @@ public class UtilsWrapper {
     public byte[] generateRandomBytes(int size) {
         return Utils.generateRandomBytes(size);
     }
+
+    /**
+     * Decodes a raw signature data that composed of R(32 byte) + S(32 byte) + V(1byte).
+     * @param rawSig A signature data to decode. It composed of R(32 byte) + S(32 byte) + V(1byte).
+     * @return SignatureData
+     */
+    public SignatureData decodeSignature(String rawSig) {
+        return Utils.decodeSignature(rawSig);
+    }
 }

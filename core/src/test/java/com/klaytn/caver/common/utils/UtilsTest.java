@@ -1055,8 +1055,8 @@ public class UtilsTest {
             String expectedAddress = "0xb6a1f97502431e6f8d701f9e192c3cc43c07351a";
             String message = "Klaytn Test";
 
-            SignatureData signatureData = Utils.decodeSignature(expectedSignedMessage);
-            String actualAddress = Utils.recover(message, signatureData);
+            SignatureData signatureData = caver.utils.decodeSignature(expectedSignedMessage);
+            String actualAddress = caver.utils.recover(message, signatureData);
 
             checkAddress(expectedAddress, actualAddress);
         }
@@ -1067,7 +1067,7 @@ public class UtilsTest {
             String message = "Some data";
 
             MessageSigned signed = keyring.signMessage(message, 0, 0);
-            String actualAddress = Utils.recover(signed.getMessageHash(), signed.getSignatures().get(0), true);
+            String actualAddress = caver.utils.recover(signed.getMessageHash(), signed.getSignatures().get(0), true);
 
             checkAddress(keyring.getAddress(), actualAddress);
         }
@@ -1093,7 +1093,7 @@ public class UtilsTest {
             };
 
             for(int i=0; i < rawSigDataArr.length; i++) {
-                assertEquals(signatureData[i], Utils.decodeSignature(rawSigDataArr[i]));
+                assertEquals(signatureData[i], caver.utils.decodeSignature(rawSigDataArr[i]));
             }
         }
 
@@ -1103,7 +1103,7 @@ public class UtilsTest {
             expectedException.expectMessage("Invalid signature data. The sig data length must 65 byte.");
 
             String rawSigData = "0xaaaaaa";
-            Utils.decodeSignature(rawSigData);
+            caver.utils.decodeSignature(rawSigData);
         }
     }
 }

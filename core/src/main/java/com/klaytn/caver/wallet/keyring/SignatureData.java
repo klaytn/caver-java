@@ -55,9 +55,9 @@ public class SignatureData {
      * @param s The ECDSA Signature data S
      */
     public SignatureData(String v, String r, String s) {
-        this.v = v;
-        this.r = r;
-        this.s = s;
+        this.v = Utils.addHexPrefix(v);
+        this.r = Utils.addHexPrefix(r);
+        this.s = Utils.addHexPrefix(s);
     }
 
     /**

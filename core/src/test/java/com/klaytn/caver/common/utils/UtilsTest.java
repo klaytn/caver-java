@@ -2,6 +2,8 @@ package com.klaytn.caver.common.utils;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.utils.Utils;
+import com.klaytn.caver.wallet.keyring.KeyringFactory;
+import com.klaytn.caver.wallet.keyring.MessageSigned;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import org.junit.Rule;
@@ -9,8 +11,10 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.web3j.utils.Numeric;
 
 import java.math.BigDecimal;
+import java.security.SignatureException;
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
@@ -224,10 +228,23 @@ public class UtilsTest {
     public static class hashMessageTest {
         @Test
         public void hashMessageTest() {
-            String data = "0xdeadbeaf";
-            String actual = caver.utils.hashMessage(data);
-            assertEquals(66, actual.length());
+            String[] message = {"some data", "test data", "caver-java", "sign data", "0xaabbccdd", "0x11223344", "0x33445566"};
+            String[] expected = {
+                    "0x5373135dbda1d8f2eaee73adcc07d03cd3bbc2510b3bfdbd4fcf9de2f34c505e",
+                    "0x416066097cb5808c62e1d7129249b37e661838ed49d6c3347a4a3f290020e952",
+                    "0x096f523188dc1ddc620db4ec828733c0db209491849b85bb6bbd31d1498239cf",
+                    "0x4c4865cee1cda8a2a3130be37a7739324a78ea36f39b18ae7dfecee5e5ce6fa2",
+                    "0x4f8b23edb1db90554d99eb9667a950c78445f5efc6aaccb4d0243ee82f89b475",
+                    "0x18ecf869a4437f5d036af0b25b2cb43362f857e19394e32e148439c99c768d1e",
+                    "0x257527206116286147dd9827b21905add9c42ab16034ae6d6e9c2954199d0f08"
+            };
+
+            for(int i=0; i<message.length; i++) {
+                assertEquals(expected[i], Utils.hashMessage(message[i]));
+            }
         }
+
+
     }
 
     public static class parseKlaytnWalletKeyTest {
@@ -1021,6 +1038,72 @@ public class UtilsTest {
             byte[] arr = caver.utils.generateRandomBytes(32);
 
             assertEquals(32, arr.length);
+        }
+    }
+
+    public static class recoverTest {
+        public void checkAddress(String expect, String actual) {
+            expect = Numeric.prependHexPrefix(expect);
+            actual = Numeric.prependHexPrefix(actual);
+
+            assertEquals(expect, actual);
+        }
+
+        @Test
+        public void withMessageAndSignature() throws SignatureException {
+            String expectedSignedMessage = "0xc69018da9396c4b87947e0784625af7475caf46e2af9cf57a44673ff0f625258642d8993751ae67271bcc131aa065adccf9f16fc4953f9c48f4a80d675c09ae81b";
+            String expectedAddress = "0xb6a1f97502431e6f8d701f9e192c3cc43c07351a";
+            String message = "Klaytn Test";
+
+            SignatureData signatureData = caver.utils.decodeSignature(expectedSignedMessage);
+            String actualAddress = caver.utils.recover(message, signatureData);
+
+            checkAddress(expectedAddress, actualAddress);
+        }
+
+        @Test
+        public void alreadyPrefix() throws SignatureException {
+            SingleKeyring keyring = KeyringFactory.generate();
+            String message = "Some data";
+
+            MessageSigned signed = keyring.signMessage(message, 0, 0);
+            String actualAddress = caver.utils.recover(signed.getMessageHash(), signed.getSignatures().get(0), true);
+
+            checkAddress(keyring.getAddress(), actualAddress);
+        }
+    }
+
+    public static class decodeSignatureTest {
+
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        @Test
+        public void decodeSignatureTest() {
+            String[] rawSigDataArr = {
+                    "0xc69018da9396c4b87947e0784625af7475caf46e2af9cf57a44673ff0f625258642d8993751ae67271bcc131aa065adccf9f16fc4953f9c48f4a80d675c09ae81b",
+                    "0x4c78ba080e717534772c4a9714b06a12f8d41062fca72885dafa8f1e1d6d78de35a50522df6361d16c05d1368bb9d86da1054f153301d5dedc6658d222616edd1b",
+                    "0xacfc5c417a8506eb1bd8394553fbde4a9097ea854bdbbe0de2bfaebcc9a26f45521773632317323f3d3da09bf06185af1ee0481ef0d1abb8a790f3a110eadfc31c"
+            };
+
+            SignatureData[] signatureData = {
+                    new SignatureData("1b", "c69018da9396c4b87947e0784625af7475caf46e2af9cf57a44673ff0f625258", "642d8993751ae67271bcc131aa065adccf9f16fc4953f9c48f4a80d675c09ae8"),
+                    new SignatureData("1b", "4c78ba080e717534772c4a9714b06a12f8d41062fca72885dafa8f1e1d6d78de", "35a50522df6361d16c05d1368bb9d86da1054f153301d5dedc6658d222616edd"),
+                    new SignatureData("1c", "acfc5c417a8506eb1bd8394553fbde4a9097ea854bdbbe0de2bfaebcc9a26f45", "521773632317323f3d3da09bf06185af1ee0481ef0d1abb8a790f3a110eadfc3")
+            };
+
+            for(int i=0; i < rawSigDataArr.length; i++) {
+                assertEquals(signatureData[i], caver.utils.decodeSignature(rawSigDataArr[i]));
+            }
+        }
+
+        @Test
+        public void throwException_invalidLength() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("Invalid signature data. The sig data length must 65 byte.");
+
+            String rawSigData = "0xaaaaaa";
+            caver.utils.decodeSignature(rawSigData);
         }
     }
 }

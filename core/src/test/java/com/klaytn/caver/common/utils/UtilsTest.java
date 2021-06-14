@@ -2,6 +2,8 @@ package com.klaytn.caver.common.utils;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.utils.Utils;
+import com.klaytn.caver.wallet.keyring.KeyringFactory;
+import com.klaytn.caver.wallet.keyring.MessageSigned;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import org.junit.Rule;
@@ -9,8 +11,10 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.web3j.utils.Numeric;
 
 import java.math.BigDecimal;
+import java.security.SignatureException;
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
@@ -1066,6 +1070,40 @@ public class UtilsTest {
             String actualAddress = Utils.recover(signed.getMessageHash(), signed.getSignatures().get(0), true);
 
             checkAddress(keyring.getAddress(), actualAddress);
+        }
+    }
+
+    public static class decodeSignatureTest {
+
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        @Test
+        public void decodeSignatureTest() {
+            String[] rawSigDataArr = {
+                    "0xc69018da9396c4b87947e0784625af7475caf46e2af9cf57a44673ff0f625258642d8993751ae67271bcc131aa065adccf9f16fc4953f9c48f4a80d675c09ae81b",
+                    "0x4c78ba080e717534772c4a9714b06a12f8d41062fca72885dafa8f1e1d6d78de35a50522df6361d16c05d1368bb9d86da1054f153301d5dedc6658d222616edd1b",
+                    "0xacfc5c417a8506eb1bd8394553fbde4a9097ea854bdbbe0de2bfaebcc9a26f45521773632317323f3d3da09bf06185af1ee0481ef0d1abb8a790f3a110eadfc31c"
+            };
+
+            SignatureData[] signatureData = {
+                    new SignatureData("1b", "c69018da9396c4b87947e0784625af7475caf46e2af9cf57a44673ff0f625258", "642d8993751ae67271bcc131aa065adccf9f16fc4953f9c48f4a80d675c09ae8"),
+                    new SignatureData("1b", "4c78ba080e717534772c4a9714b06a12f8d41062fca72885dafa8f1e1d6d78de", "35a50522df6361d16c05d1368bb9d86da1054f153301d5dedc6658d222616edd"),
+                    new SignatureData("1c", "acfc5c417a8506eb1bd8394553fbde4a9097ea854bdbbe0de2bfaebcc9a26f45", "521773632317323f3d3da09bf06185af1ee0481ef0d1abb8a790f3a110eadfc3")
+            };
+
+            for(int i=0; i < rawSigDataArr.length; i++) {
+                assertEquals(signatureData[i], Utils.decodeSignature(rawSigDataArr[i]));
+            }
+        }
+
+        @Test
+        public void throwException_invalidLength() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("Invalid signature data. The sig data length must 65 byte.");
+
+            String rawSigData = "0xaaaaaa";
+            Utils.decodeSignature(rawSigData);
         }
     }
 }

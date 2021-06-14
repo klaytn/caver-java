@@ -24,8 +24,11 @@ import org.web3j.crypto.Keys;
 import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -406,6 +409,25 @@ public class Utils {
             throw new SignatureException("Could not recover public key from signature");
         }
         return Numeric.prependHexPrefix(Keys.getAddress(key));
+    }
+
+    /**
+     * Decodes a raw signature data that composed of R(32 byte) + S(32 byte) + V(1byte).
+     * @param rawSig A signature data to decode. It composed of R(32 byte) + S(32 byte) + V(1byte).
+     * @return SignatureData
+     */
+    public static SignatureData decodeSignature(String rawSig) {
+        String noPrefixSigData = Utils.stripHexPrefix(rawSig);
+
+        if(noPrefixSigData.length() != 130) {
+            throw new RuntimeException("Invalid signature data. The sig data length must 65 byte.");
+        }
+
+        String r = noPrefixSigData.substring(0, 64);
+        String s = noPrefixSigData.substring(64, 128);
+        String v = noPrefixSigData.substring(128);
+
+        return new SignatureData(v, r, s);
     }
 
     /**

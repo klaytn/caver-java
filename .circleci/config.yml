@@ -90,8 +90,7 @@ build_test: &build_test
 
 build_test_android: &build_test_android
   run:
-    name: "Build without unit tests and do instrumented test on Android Emulator"
-    no_output_timeout: 20m
+    name: "Build"
     command: |
       ./gradlew clean
       ./gradlew build --debug -x :android_instrumented_test:build -x test
@@ -185,6 +184,7 @@ jobs:
       - *adb_logging
       - run:
           name: Run instrumented test on android emulator
+          no_output_timeout: 40m
           command: ./gradlew connectedDebugAndroidTest --debug --stacktrace
       - store_test_results:
           path: android_instrumented_test/build/outputs/androidTest-results/connected

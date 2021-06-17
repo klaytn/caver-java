@@ -90,7 +90,7 @@ build_test: &build_test
 
 build_test_android: &build_test_android
   run:
-    name: "Build"
+    name: "Build android"
     command: |
       ./gradlew clean
       ./gradlew build --debug -x :android_instrumented_test:build -x test

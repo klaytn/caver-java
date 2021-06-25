@@ -30,10 +30,10 @@ public class CaverTest {
         WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
         HttpService httpService = new HttpService(Caver.DEFAULT_URL);
 
-        caver.setProvider(webSocketService);
+        caver.setCurrentProvider(webSocketService);
         assertTrue(caver.rpc.getWeb3jService() instanceof WebSocketService);
 
-        caver.setProvider(httpService);
+        caver.setCurrentProvider(httpService);
         assertTrue(caver.rpc.getWeb3jService() instanceof HttpService);
     }
 
@@ -45,10 +45,10 @@ public class CaverTest {
 
         caver.setRpc(new RPC(webSocketService));
         assertTrue(caver.rpc.getWeb3jService() instanceof WebSocketService);
-        assertTrue(caver.getProvider() instanceof WebSocketService);
+        assertTrue(caver.getCurrentProvider() instanceof WebSocketService);
 
         caver.setRpc(new RPC(httpService));
         assertTrue(caver.rpc.getWeb3jService() instanceof HttpService);
-        assertTrue(caver.getProvider() instanceof HttpService);
+        assertTrue(caver.getCurrentProvider() instanceof HttpService);
     }
 }

@@ -53,7 +53,7 @@ public class Caver {
     /**
      * The network provider to execute JSON-RPC API.
      */
-    private Web3jService provider;
+    public Web3jService currentProvider;
 
     /**
      * The JSON-RPC API instance
@@ -121,7 +121,7 @@ public class Caver {
      * @param service Web3jService
      */
     public Caver(Web3jService service) {
-        setProvider(service);
+        setCurrentProvider(service);
         ipfs = new IPFSWrapper();
         wallet = new KeyringContainer();
         account = new AccountWrapper();
@@ -183,8 +183,8 @@ public class Caver {
      */
     public void setRpc(RPC rpc) {
         //If it sets a new RPC instance through setRPC() directly , it also needs to set a provider field.
-        if(this.provider != rpc.getWeb3jService()) {
-            this.provider = rpc.getWeb3jService();
+        if(this.currentProvider != rpc.getWeb3jService()) {
+            this.currentProvider = rpc.getWeb3jService();
         }
 
         this.rpc = rpc;
@@ -195,19 +195,11 @@ public class Caver {
 
     /**
      * Setter for provider.
-     * @param provider The network provider to execute JSON-RPC API.
+     * @param currentProvider The network provider to execute JSON-RPC API.
      */
-    public void setProvider(Web3jService provider) {
-        this.provider = provider;
-        setRpc(new RPC(provider));
-    }
-
-    /**
-     * Getter function for provider.
-     * @return Web3jService
-     */
-    public Web3jService getProvider() {
-        return provider;
+    public void setCurrentProvider(Web3jService currentProvider) {
+        this.currentProvider = currentProvider;
+        setRpc(new RPC(currentProvider));
     }
 
     /**

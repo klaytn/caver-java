@@ -1,6 +1,7 @@
 buildscript {
     ext.javapoetVersion = '1.7.0'
     ext.web3jVersion = '4.6.0'
+    ext.web3j_androidVersion = '4.6.0-android'
     ext.picocliVersion = '3.0.0'
     ext.junitVersion = '4.12'
     ext.slf4jVersion = '1.7.25'
@@ -34,6 +35,14 @@ allprojects {
     version '1.6.3'
     group 'com.klaytn.caver'
     description 'caver-java project'
+
+    ext {
+        isAndroidBuild = project.version.endsWith("-android");
+        ossrhUsername = project.hasProperty('ossrhUsername') ? project.property('ossrhUsername') : System.getenv('OSSRH_USERNAME')
+        ossrhPassword = project.hasProperty('ossrhPassword') ? project.property('ossrhPassword') : System.getenv('OSSRH_PASSWORD')
+        ossrhSigningKey_base64 = project.hasProperty('signingKey')? project.property('signingKey') : System.getenv('ORG_GRADLE_PROJECT_signingKey')
+        ossrhSigningPassword = project.hasProperty('signingKey')? project.property('signingPassword') : System.getenv('ORG_GRADLE_PROJECT_signingPassword')
+    }
 }
 
 configure(allprojects.findAll {it.name != 'android_instrumented_test'}) {
@@ -71,13 +80,6 @@ configure(subprojects.findAll {it.name != 'integration-test' && it.name != 'andr
     task sourcesJar(type: Jar) {
         archiveClassifier = 'sources'
         from sourceSets.main.allSource
-    }
-
-    ext {
-        ossrhUsername = project.hasProperty('ossrhUsername') ? project.property('ossrhUsername') : System.getenv('OSSRH_USERNAME')
-        ossrhPassword = project.hasProperty('ossrhPassword') ? project.property('ossrhPassword') : System.getenv('OSSRH_PASSWORD')
-        ossrhSigningKey_base64 = project.hasProperty('signingKey')? project.property('signingKey') : System.getenv('ORG_GRADLE_PROJECT_signingKey')
-        ossrhSigningPassword = project.hasProperty('signingKey')? project.property('signingPassword') : System.getenv('ORG_GRADLE_PROJECT_signingPassword')
     }
 
     publishing {

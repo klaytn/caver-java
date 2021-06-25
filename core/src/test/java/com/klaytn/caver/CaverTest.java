@@ -45,10 +45,10 @@ public class CaverTest {
 
         caver.setRpc(new RPC(webSocketService));
         assertTrue(caver.rpc.getWeb3jService() instanceof WebSocketService);
-        assertTrue(caver.getCurrentProvider() instanceof WebSocketService);
+        assertTrue(caver.currentProvider instanceof WebSocketService);
 
         caver.setRpc(new RPC(httpService));
         assertTrue(caver.rpc.getWeb3jService() instanceof HttpService);
-        assertTrue(caver.getCurrentProvider() instanceof HttpService);
+        assertTrue(caver.currentProvider instanceof HttpService);
     }
 }

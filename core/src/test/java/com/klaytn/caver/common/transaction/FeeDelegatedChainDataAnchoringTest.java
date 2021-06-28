@@ -643,7 +643,7 @@ public class FeeDelegatedChainDataAnchoringTest {
             );
             roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(
                     feePayer,
-                    caver.wallet.keyring.generateRolBasedKeys(new int[]{3, 4, 5})
+                    caver.wallet.keyring.generateRoleBasedKeys(new int[]{3, 4, 5})
             );
         }
 

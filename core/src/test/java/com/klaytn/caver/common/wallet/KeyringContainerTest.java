@@ -558,7 +558,7 @@ public class KeyringContainerTest {
 
             RoleBasedKeyring roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(
                     checksumAddress,
-                    caver.wallet.keyring.generateRolBasedKeys(new int[]{2, 2, 1})
+                    caver.wallet.keyring.generateRoleBasedKeys(new int[]{2, 2, 1})
             );
             caver.wallet.add(roleBasedKeyring);
             caver.wallet.remove(multipleKeyring.getAddress());

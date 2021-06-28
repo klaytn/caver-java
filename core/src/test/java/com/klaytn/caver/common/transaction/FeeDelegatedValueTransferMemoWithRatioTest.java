@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -1053,7 +1052,7 @@ public class FeeDelegatedValueTransferMemoWithRatioTest {
 
             singleKeyring = caver.wallet.keyring.createWithSingleKey(feePayer, feePayerPrivateKey);
             multipleKeyring = caver.wallet.keyring.createWithMultipleKey(feePayer, caver.wallet.keyring.generateMultipleKeys(8));
-            roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(feePayer, caver.wallet.keyring.generateRolBasedKeys(new int[]{3, 4, 5}));
+            roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(feePayer, caver.wallet.keyring.generateRoleBasedKeys(new int[]{3, 4, 5}));
         }
 
         @Test

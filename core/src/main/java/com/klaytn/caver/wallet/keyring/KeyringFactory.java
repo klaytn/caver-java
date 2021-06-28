@@ -101,7 +101,7 @@ public class KeyringFactory {
      * @param numArr An array containing the number of keys for each role.
      * @return List
      */
-    public static List<String[]> generateRolBasedKeys(int[] numArr) {
+    public static List<String[]> generateRoleBasedKeys(int[] numArr) {
         return generateRoleBasedKeys(numArr, null);
     }
 

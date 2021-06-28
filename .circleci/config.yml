@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 defaults: &defaults
   working_directory: ~/circleci-caver-java-major
@@ -16,7 +16,7 @@ android_machine_ubuntu: &android_machine_ubuntu
     image: android:202102-01
   resource_class: large
 
-command:
+commands:
   notify-success:
     steps:
       - run:

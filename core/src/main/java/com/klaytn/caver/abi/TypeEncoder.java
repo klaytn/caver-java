@@ -240,8 +240,8 @@ public class TypeEncoder {
     static <T extends Type> String encodeDynamicArray(DynamicArray<T> value) {
         int size = value.getValue().size();
         String encodedLength = encode(new Uint(BigInteger.valueOf(size)));
-        String valuesOffsets = encodeArrayValuesOffsets(value);
-        String encodedValues = encodeArrayValues(value);
+        String valuesOffsets = (size == 0) ? "" : encodeArrayValuesOffsets(value);
+        String encodedValues = (size == 0) ? "" : encodeArrayValues(value);
 
         StringBuilder result = new StringBuilder();
         result.append(encodedLength);

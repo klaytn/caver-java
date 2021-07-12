@@ -16,9 +16,17 @@
 
 package com.klaytn.caver.methods.response;
 
+import com.klaytn.caver.rpc.Governance;
 import com.klaytn.caver.utils.Utils;
 import org.web3j.protocol.core.Response;
 
+/**
+ * The class represented to store the response data of the following methods.
+ * <ul>
+ *     <li>{@link Governance#getMyVotingPower()}</li>
+ *     <li>{@link Governance#getTotalVotingPower()}</li>
+ * </ul>
+ */
 public class GovernanceVotingPower extends Response<Float> {
     @Override
     public String toString() {

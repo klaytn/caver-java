@@ -16,11 +16,19 @@
 
 package com.klaytn.caver.methods.response;
 
+import com.klaytn.caver.rpc.Governance;
 import com.klaytn.caver.utils.Utils;
 import org.web3j.protocol.core.Response;
 
 import java.util.List;
 
+/**
+ * The class represented to store the response data of the following methods.
+ * <ul>
+ *     <li>{@link Governance#getIdxCache()}</li>
+ *     <li>{@link Governance#getIdxCacheFromDb()}</li>
+ * </ul>
+ */
 public class GovernanceIdxCache extends Response<List<String>> {
     @Override
     public String toString() {

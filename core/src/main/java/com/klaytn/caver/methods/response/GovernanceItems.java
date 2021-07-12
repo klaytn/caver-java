@@ -16,11 +16,21 @@
 
 package com.klaytn.caver.methods.response;
 
+import com.klaytn.caver.rpc.Governance;
 import com.klaytn.caver.utils.Utils;
 import org.web3j.protocol.core.Response;
 
+import java.math.BigInteger;
 import java.util.Map;
 
+/**
+ * The class represented to store the response data of the following method.
+ * <ul>
+ *     <li>{@link Governance#getItemsAt()}</li>
+ *     <li>{@link Governance#getItemCacheFromDb(BigInteger)}</li>
+ *     <li>{@link Governance#getPendingChanges()}</li>
+ * </ul>
+ */
 public class GovernanceItems extends Response<Map<String, Object>> {
     @Override
     public String toString() {

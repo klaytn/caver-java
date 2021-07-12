@@ -210,4 +210,9 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
             return Utils.printString(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return Utils.printString(this);
+    }
 }

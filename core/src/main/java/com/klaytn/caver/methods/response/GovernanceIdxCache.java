@@ -22,4 +22,8 @@ import org.web3j.protocol.core.Response;
 import java.util.List;
 
 public class GovernanceIdxCache extends Response<List<String>> {
+    @Override
+    public String toString() {
+        return Utils.printString(this);
+    }
 }

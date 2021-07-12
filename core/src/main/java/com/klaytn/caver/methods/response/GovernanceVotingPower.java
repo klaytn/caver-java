@@ -16,7 +16,12 @@
 
 package com.klaytn.caver.methods.response;
 
+import com.klaytn.caver.utils.Utils;
 import org.web3j.protocol.core.Response;
 
 public class GovernanceVotingPower extends Response<Float> {
+    @Override
+    public String toString() {
+        return Utils.printString(this);
+    }
 }

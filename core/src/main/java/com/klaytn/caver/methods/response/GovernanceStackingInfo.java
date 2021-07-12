@@ -144,4 +144,8 @@ public class GovernanceStackingInfo extends Response<GovernanceStackingInfo.Stak
             return Utils.printString(this);
         }
     }
+    @Override
+    public String toString() {
+        return Utils.printString(this);
+    }
 }

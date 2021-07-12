@@ -960,12 +960,12 @@ public class RpcTest extends Accounts {
             String modeKey = "governance.governancemode";
             String modeValue = "single";
 
-            Bytes response = caver.rpc.gov.vote(modeKey, modeValue).send();
+            Bytes response = caver.rpc.governance.vote(modeKey, modeValue).send();
 
             String epochKey = "istanbul.epoch";
             BigInteger epochValue = BigInteger.valueOf(86400);
 
-            response = caver.rpc.gov.vote(epochKey, epochValue).send();
+            response = caver.rpc.governance.vote(epochKey, epochValue).send();
 
             Thread.sleep(5000);
         }
@@ -975,7 +975,7 @@ public class RpcTest extends Accounts {
             String modeKey = "governance.governancemode";
             String modeValue = "single";
 
-            Bytes response = caver.rpc.gov.vote(modeKey, modeValue).send();
+            Bytes response = caver.rpc.governance.vote(modeKey, modeValue).send();
 
             assertFalse(response.hasError());
             assertEquals("Your vote was successfully placed.", response.getResult());
@@ -983,14 +983,14 @@ public class RpcTest extends Accounts {
             String unitPriceKey = "governance.unitprice";
             BigInteger unitPriceValue = new BigInteger("25000000000");
 
-            response = caver.rpc.gov.vote(unitPriceKey, unitPriceValue).send();
+            response = caver.rpc.governance.vote(unitPriceKey, unitPriceValue).send();
             assertFalse(response.hasError());
             assertEquals("Your vote was successfully placed.", response.getResult());
 
             String epochKey = "istanbul.epoch";
             BigInteger epochValue = BigInteger.valueOf(86400);
 
-            response = caver.rpc.gov.vote(epochKey, epochValue).send();
+            response = caver.rpc.governance.vote(epochKey, epochValue).send();
 
             assertFalse(response.hasError());
             assertEquals("Your vote was successfully placed.", response.getResult());
@@ -998,7 +998,7 @@ public class RpcTest extends Accounts {
             String sizeKey = "istanbul.committeesize";
             BigInteger sizeValue = BigInteger.valueOf(7);
 
-            response = caver.rpc.gov.vote(epochKey, epochValue).send();
+            response = caver.rpc.governance.vote(epochKey, epochValue).send();
 
             assertFalse(response.hasError());
             assertEquals("Your vote was successfully placed.", response.getResult());
@@ -1006,7 +1006,7 @@ public class RpcTest extends Accounts {
             String mintKey = "reward.mintingamount";
             String mintValue = "9600000000000000000";
 
-            response = caver.rpc.gov.vote(mintKey, mintValue).send();
+            response = caver.rpc.governance.vote(mintKey, mintValue).send();
 
             assertFalse(response.hasError());
             assertEquals("Your vote was successfully placed.", response.getResult());
@@ -1014,7 +1014,7 @@ public class RpcTest extends Accounts {
             String ratioKey = "reward.ratio";
             String ratioValue = "34/54/12";
 
-            response = caver.rpc.gov.vote(ratioKey, ratioValue).send();
+            response = caver.rpc.governance.vote(ratioKey, ratioValue).send();
 
             assertFalse(response.hasError());
             assertEquals("Your vote was successfully placed.", response.getResult());
@@ -1022,7 +1022,7 @@ public class RpcTest extends Accounts {
             String coeffKey = "reward.useginicoeff";
             boolean coeffValue = true;
 
-            response = caver.rpc.gov.vote(coeffKey, coeffValue).send();
+            response = caver.rpc.governance.vote(coeffKey, coeffValue).send();
 
             assertFalse(response.hasError());
             assertEquals("Your vote was successfully placed.", response.getResult());
@@ -1030,7 +1030,7 @@ public class RpcTest extends Accounts {
             String txFeeKey = "reward.deferredtxfee";
             boolean txFeeValue = true;
 
-            response = caver.rpc.gov.vote(txFeeKey, txFeeValue).send();
+            response = caver.rpc.governance.vote(txFeeKey, txFeeValue).send();
 
             assertFalse(response.hasError());
             assertEquals("Your vote was successfully placed.", response.getResult());
@@ -1038,7 +1038,7 @@ public class RpcTest extends Accounts {
             String stakingKey = "reward.minimumstake";
             String stakingValue = "5000000";
 
-            response = caver.rpc.gov.vote(stakingKey, stakingValue).send();
+            response = caver.rpc.governance.vote(stakingKey, stakingValue).send();
 
             assertFalse(response.hasError());
             assertEquals("Your vote was successfully placed.", response.getResult());
@@ -1046,57 +1046,57 @@ public class RpcTest extends Accounts {
 
         @Test
         public void showTally() throws IOException {
-            GovernanceTally response = caver.rpc.gov.showTally().send();
+            GovernanceTally response = caver.rpc.governance.showTally().send();
             assertFalse(response.hasError());
             assertNotNull(response.getResult());
         }
 
         @Test
         public void getTotalVotingPower() throws IOException {
-            GovernanceVotingPower response = caver.rpc.gov.getTotalVotingPower().send();
+            GovernanceVotingPower response = caver.rpc.governance.getTotalVotingPower().send();
             assertNotNull(response);
         }
 
         @Test
         public void getMyVotingPower() throws IOException {
-            GovernanceVotingPower response = caver.rpc.gov.getMyVotingPower().send();
+            GovernanceVotingPower response = caver.rpc.governance.getMyVotingPower().send();
             assertNotNull(response);
         }
 
         @Test
         public void getMyVotes() throws IOException {
-            GovernanceMyVotes response = caver.rpc.gov.getMyVotes().send();
+            GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
             assertNotNull(response);
             assertFalse(response.hasError());
         }
 
         @Test
         public void getChainConfig() throws IOException {
-            GovernanceChainConfig response = caver.rpc.gov.getChainConfig().send();
+            GovernanceChainConfig response = caver.rpc.governance.getChainConfig().send();
             assertNotNull(response);
             assertFalse(response.hasError());
         }
 
         @Test
         public void getNodeAddress() throws IOException {
-            Bytes20 response = caver.rpc.gov.getNodeAddress().send();
+            Bytes20 response = caver.rpc.governance.getNodeAddress().send();
             assertNotNull(response);
             assertFalse(response.hasError());
         }
 
         @Test
         public void getItemsAt() throws IOException {
-            GovernanceItems response = caver.rpc.gov.getItemsAt().send();
+            GovernanceItems response = caver.rpc.governance.getItemsAt().send();
             assertNotNull(response);
             assertFalse(response.hasError());
 
             Map<String, Object> gov_item = response.getResult();
 
-            response = caver.rpc.gov.getItemsAt(DefaultBlockParameterName.LATEST).send();
+            response = caver.rpc.governance.getItemsAt(DefaultBlockParameterName.LATEST).send();
             assertNotNull(response);
             assertFalse(response.hasError());
 
-            response = caver.rpc.gov.getItemsAt(BigInteger.ZERO).send();
+            response = caver.rpc.governance.getItemsAt(BigInteger.ZERO).send();
             assertNotNull(response);
             assertFalse(response.hasError());
 
@@ -1107,7 +1107,7 @@ public class RpcTest extends Accounts {
 
         @Test
         public void getPendingChanges() throws IOException {
-            GovernanceItems response = caver.rpc.gov.getPendingChanges().send();
+            GovernanceItems response = caver.rpc.governance.getPendingChanges().send();
             assertNotNull(response);
             assertFalse(response.hasError());
 
@@ -1117,47 +1117,47 @@ public class RpcTest extends Accounts {
 
         @Test
         public void getVotes() throws IOException {
-            GovernanceNodeVotes response = caver.rpc.gov.getVotes().send();
+            GovernanceNodeVotes response = caver.rpc.governance.getVotes().send();
             assertNotNull(response);
             assertFalse(response.hasError());
         }
 
         @Test
         public void getIdxCache() throws IOException {
-            GovernanceIdxCache response = caver.rpc.gov.getIdxCache().send();
+            GovernanceIdxCache response = caver.rpc.governance.getIdxCache().send();
             assertNotNull(response);
             assertFalse(response.hasError());
         }
 
         @Test
         public void getIdxCacheFromDb() throws IOException {
-            GovernanceIdxCache response = caver.rpc.gov.getIdxCacheFromDb().send();
+            GovernanceIdxCache response = caver.rpc.governance.getIdxCacheFromDb().send();
             assertNotNull(response);
             assertFalse(response.hasError());
         }
 
         @Test
         public void getItemCacheFromDb() throws IOException {
-            GovernanceItems response = caver.rpc.gov.getItemCacheFromDb(BigInteger.ZERO).send();
+            GovernanceItems response = caver.rpc.governance.getItemCacheFromDb(BigInteger.ZERO).send();
             assertNotNull(response);
             assertFalse(response.hasError());
         }
 
         @Test
         public void getStakingInfo() throws IOException {
-            GovernanceStakingInfo response = caver.rpc.gov.getStakingInfo().send();
+            GovernanceStakingInfo response = caver.rpc.governance.getStakingInfo().send();
             assertNotNull(response);
             assertFalse(response.hasError());
 
-            response = caver.rpc.gov.getStakingInfo("latest").send();
+            response = caver.rpc.governance.getStakingInfo("latest").send();
             assertNotNull(response);
             assertFalse(response.hasError());
 
-            response = caver.rpc.gov.getStakingInfo(DefaultBlockParameterName.LATEST).send();
+            response = caver.rpc.governance.getStakingInfo(DefaultBlockParameterName.LATEST).send();
             assertNotNull(response);
             assertFalse(response.hasError());
 
-            response = caver.rpc.gov.getStakingInfo(BigInteger.ZERO).send();
+            response = caver.rpc.governance.getStakingInfo(BigInteger.ZERO).send();
             assertNotNull(response);
             assertFalse(response.hasError());
         }

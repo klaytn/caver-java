@@ -43,7 +43,7 @@ public class RPC implements Batcher {
     /**
      * The API class related governance.
      */
-    public Governance gov;
+    public Governance governance;
 
     /**
      * Constructor for RPC
@@ -53,7 +53,7 @@ public class RPC implements Batcher {
         this.web3jService = web3jService;
         this.klay = new Klay(web3jService);
         this.net = new Net(web3jService);
-        this.gov = new Governance(web3jService);
+        this.governance = new Governance(web3jService);
     }
 
     /**
@@ -72,7 +72,7 @@ public class RPC implements Batcher {
         this.web3jService = web3jService;
         this.klay = new Klay(web3jService);
         this.net = new Net(web3jService);
-        this.gov = new Governance(web3jService);
+        this.governance = new Governance(web3jService);
     }
 
     /**

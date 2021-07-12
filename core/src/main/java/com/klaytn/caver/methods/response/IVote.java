@@ -1,5 +1,5 @@
-package com.klaytn.caver.methods.response;/*
- * Copyright 2021 The caver-java Authors
+/*
+ * Copyright 202 The caver-java Authors
  *
  * Licensed under the Apache License, Version 2.0 (the “License”);
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@ package com.klaytn.caver.methods.response;/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.klaytn.caver.methods.response;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

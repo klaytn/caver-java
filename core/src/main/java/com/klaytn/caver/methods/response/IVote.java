@@ -148,7 +148,7 @@ public interface IVote {
         }
 
         /**
-         * Get the value of governance unit price.
+         * Get the value of GOVERNANCE_UNIT_PRICE.
          * @param list The list instance to find value.
          * @return BigInteger
          */
@@ -557,7 +557,7 @@ public interface IVote {
         }
 
         /**
-         * Convert a Object to String.<p>
+         * Convert an Object to String.<p>
          * If the VoteItem mapped to key is not existed or the type of VoteItem mapped to key is not valid, It will throw RuntimeException.
          * @param key The key mapped to value.
          * @param value The value converted to string.
@@ -569,7 +569,7 @@ public interface IVote {
         }
 
         /**
-         * Convert a Object to boolean.<p>
+         * Convert an Object to boolean.<p>
          * If the VoteItem mapped to key is not existed or the type of VoteItem mapped to key is not valid, It will throw RuntimeException.
          * @param key The key mapped to value.
          * @param value The value converted to string.
@@ -581,7 +581,7 @@ public interface IVote {
         }
 
         /**
-         * Convert a Object to BigInteger.<p>
+         * Convert an Object to BigInteger.<p>
          * If the VoteItem mapped to key is not existed or the type of VoteItem mapped to key is not valid, It will throw RuntimeException.
          * @param key The key mapped to value.
          * @param value The value converted to BigInteger.
@@ -593,7 +593,7 @@ public interface IVote {
         }
 
         /**
-         * Convert a Object to BigInteger.
+         * Convert an Object to BigInteger.
          * @param value The value converted to BigInteger.
          * @return BigIneger.
          */

@@ -23,7 +23,7 @@ import org.web3j.protocol.core.Response;
 import java.math.BigInteger;
 import java.util.List;
 
-public class GovernanceStackingInfo extends Response<GovernanceStackingInfo.StakingInfo> {
+public class GovernanceStakingInfo extends Response<GovernanceStakingInfo.StakingInfo> {
     public static class StakingInfo {
         @JsonProperty("UseGini")
         private boolean useGini;

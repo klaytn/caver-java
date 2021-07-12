@@ -1145,7 +1145,7 @@ public class RpcTest extends Accounts {
 
         @Test
         public void getStakingInfo() throws IOException {
-            GovernanceStackingInfo response = caver.rpc.gov.getStakingInfo().send();
+            GovernanceStakingInfo response = caver.rpc.gov.getStakingInfo().send();
             assertNotNull(response);
             assertFalse(response.hasError());
 

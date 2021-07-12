@@ -498,7 +498,7 @@ public class Governance {
      * </pre>
      * @return Request&lt;?, GovernanceStackingInfo&gt;
      */
-    public Request<?, GovernanceStackingInfo> getStakingInfo() {
+    public Request<?, GovernanceStakingInfo> getStakingInfo() {
         return getStakingInfo(DefaultBlockParameterName.LATEST);
     }
 
@@ -512,7 +512,7 @@ public class Governance {
      * @param blockNumber The block number.
      * @return Request&lt;?, GovernanceStackingInfo&gt;
      */
-    public Request<?, GovernanceStackingInfo> getStakingInfo(BigInteger blockNumber) {
+    public Request<?, GovernanceStakingInfo> getStakingInfo(BigInteger blockNumber) {
         return getStakingInfo(DefaultBlockParameter.valueOf(blockNumber));
     }
 
@@ -526,7 +526,7 @@ public class Governance {
      * @param blockTag The block tag.
      * @return Request&lt;?, GovernanceStackingInfo&gt;
      */
-    public Request<?, GovernanceStackingInfo> getStakingInfo(String blockTag) {
+    public Request<?, GovernanceStakingInfo> getStakingInfo(String blockTag) {
         DefaultBlockParameterName blockTagName = DefaultBlockParameterName.fromString(blockTag);
         return getStakingInfo(blockTagName);
     }
@@ -541,16 +541,16 @@ public class Governance {
      * @param blockTag The block tag.
      * @return Request&lt;?, GovernanceStackingInfo&gt;
      */
-    public Request<?, GovernanceStackingInfo> getStakingInfo(DefaultBlockParameterName blockTag) {
+    public Request<?, GovernanceStakingInfo> getStakingInfo(DefaultBlockParameterName blockTag) {
         return getStakingInfo((DefaultBlockParameter)blockTag);
     }
 
-    Request<?, GovernanceStackingInfo> getStakingInfo(DefaultBlockParameter blockParam) {
+    Request<?, GovernanceStakingInfo> getStakingInfo(DefaultBlockParameter blockParam) {
         return new Request<>(
                 "governance_getStakingInfo",
                 Arrays.asList(blockParam),
                 provider,
-                GovernanceStackingInfo.class
+                GovernanceStakingInfo.class
         );
     }
 }

@@ -327,6 +327,7 @@ public class Governance {
     /**
      * Returns governance items at specific block.<p>
      * It is the result of previous voting of the block and used as configuration for chain at the given block number.
+     * <pre>
      * {@code
      * GovernanceItems response = caver.rpc.gov.getItemsAt(BigInteger.ZERO).send();
      * Map<String, Object> governanceItem = response.getResult();
@@ -343,11 +344,14 @@ public class Governance {
     /**
      * Returns governance items at specific block.<p>
      * It is the result of previous voting of the block and used as configuration for chain at the given block number.
+     * <pre>
      * {@code
      * GovernanceItems response = caver.rpc.gov.getItemsAt("latest").send();
      * Map<String, Object> governanceItem = response.getResult();
      *
      * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
+     * }
+     * </pre>
      * @param blockTag The block tag to query
      * @return Request&lt;?, GovernanceItems&gt;
      */
@@ -359,11 +363,14 @@ public class Governance {
     /**
      * Returns governance items at specific block.<p>
      * It is the result of previous voting of the block and used as configuration for chain at the given block number.
+     * <pre>
      * {@code
      * GovernanceItems response = caver.rpc.gov.getItemsAt(DefaultBlockParameterName.LATEST).send();
      * Map<String, Object> governanceItem = response.getResult();
      *
      * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
+     * }
+     * </pre>
      * @param blockTag The block tag to query
      * @return Request&lt;?, GovernanceItems&gt;
      */

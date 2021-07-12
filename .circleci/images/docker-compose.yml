@@ -31,7 +31,7 @@ services:
         --rpccorsdomain "*" \
         --datadir "/klaytn" \
         --port "32323" \
-        --rpcapi "db,klay,net,web3,miner,personal,txpool,debug,admin,istanbul" \
+        --rpcapi "db,klay,net,web3,miner,personal,txpool,debug,admin,istanbul,governance" \
         --ws \
         --wsaddr "0.0.0.0" \
         --wsport "8552" \

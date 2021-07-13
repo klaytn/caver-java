@@ -42,6 +42,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static com.klaytn.caver.base.LocalValues.LOCAL_NETWORK_ID;
@@ -945,6 +946,404 @@ public class RpcTest extends Accounts {
             KlayPeerCount klayPeerCount = caver.rpc.net.getPeerCountByType().send();
             KlayPeerCount.PeerCount peerCount = klayPeerCount.getResult();
             assertTrue(peerCount.getTotal().intValue() >= 0);
+        }
+    }
+
+    public static class GovernanceAPITest {
+        static Caver caver;
+
+
+        @BeforeClass
+        public static void init() throws InterruptedException, IOException {
+            caver = new Caver(Caver.DEFAULT_URL);
+
+            String modeKey = "governance.governancemode";
+            String modeValue = "single";
+
+            Bytes response = caver.rpc.governance.vote(modeKey, modeValue).send();
+
+            String epochKey = "istanbul.epoch";
+            BigInteger epochValue = BigInteger.valueOf(86400);
+
+            response = caver.rpc.governance.vote(epochKey, epochValue).send();
+
+            Thread.sleep(5000);
+        }
+
+        @Test
+        public void vote() throws IOException {
+            String modeKey = "governance.governancemode";
+            String modeValue = "single";
+
+            Bytes response = caver.rpc.governance.vote(modeKey, modeValue).send();
+
+            assertFalse(response.hasError());
+            assertEquals("Your vote was successfully placed.", response.getResult());
+
+            String unitPriceKey = "governance.unitprice";
+            BigInteger unitPriceValue = new BigInteger("25000000000");
+
+            response = caver.rpc.governance.vote(unitPriceKey, unitPriceValue).send();
+            assertFalse(response.hasError());
+            assertEquals("Your vote was successfully placed.", response.getResult());
+
+            String epochKey = "istanbul.epoch";
+            BigInteger epochValue = BigInteger.valueOf(86400);
+
+            response = caver.rpc.governance.vote(epochKey, epochValue).send();
+
+            assertFalse(response.hasError());
+            assertEquals("Your vote was successfully placed.", response.getResult());
+
+            String sizeKey = "istanbul.committeesize";
+            BigInteger sizeValue = BigInteger.valueOf(7);
+
+            response = caver.rpc.governance.vote(epochKey, epochValue).send();
+
+            assertFalse(response.hasError());
+            assertEquals("Your vote was successfully placed.", response.getResult());
+
+            String mintKey = "reward.mintingamount";
+            String mintValue = "9600000000000000000";
+
+            response = caver.rpc.governance.vote(mintKey, mintValue).send();
+
+            assertFalse(response.hasError());
+            assertEquals("Your vote was successfully placed.", response.getResult());
+
+            String ratioKey = "reward.ratio";
+            String ratioValue = "34/54/12";
+
+            response = caver.rpc.governance.vote(ratioKey, ratioValue).send();
+
+            assertFalse(response.hasError());
+            assertEquals("Your vote was successfully placed.", response.getResult());
+
+            String coeffKey = "reward.useginicoeff";
+            boolean coeffValue = true;
+
+            response = caver.rpc.governance.vote(coeffKey, coeffValue).send();
+
+            assertFalse(response.hasError());
+            assertEquals("Your vote was successfully placed.", response.getResult());
+
+            String txFeeKey = "reward.deferredtxfee";
+            boolean txFeeValue = true;
+
+            response = caver.rpc.governance.vote(txFeeKey, txFeeValue).send();
+
+            assertFalse(response.hasError());
+            assertEquals("Your vote was successfully placed.", response.getResult());
+
+            String stakingKey = "reward.minimumstake";
+            String stakingValue = "5000000";
+
+            response = caver.rpc.governance.vote(stakingKey, stakingValue).send();
+
+            assertFalse(response.hasError());
+            assertEquals("Your vote was successfully placed.", response.getResult());
+        }
+
+        @Test
+        public void showTally() throws IOException {
+            GovernanceTally response = caver.rpc.governance.showTally().send();
+            assertFalse(response.hasError());
+            assertNotNull(response.getResult());
+        }
+
+        @Test
+        public void getTotalVotingPower() throws IOException {
+            GovernanceVotingPower response = caver.rpc.governance.getTotalVotingPower().send();
+            assertNotNull(response);
+        }
+
+        @Test
+        public void getMyVotingPower() throws IOException {
+            GovernanceVotingPower response = caver.rpc.governance.getMyVotingPower().send();
+            assertNotNull(response);
+        }
+
+        @Test
+        public void getMyVotes() throws IOException {
+            GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void getChainConfig() throws IOException {
+            GovernanceChainConfig response = caver.rpc.governance.getChainConfig().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void getNodeAddress() throws IOException {
+            Bytes20 response = caver.rpc.governance.getNodeAddress().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void getItemsAt() throws IOException {
+            GovernanceItems response = caver.rpc.governance.getItemsAt().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+
+            Map<String, Object> gov_item = response.getResult();
+
+            response = caver.rpc.governance.getItemsAt(DefaultBlockParameterName.LATEST).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+
+            response = caver.rpc.governance.getItemsAt(BigInteger.ZERO).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+
+            String mode = IVote.VoteItem.getGovernanceMode(response.getResult());
+            System.out.println(mode);
+
+        }
+
+        @Test
+        public void getPendingChanges() throws IOException {
+            GovernanceItems response = caver.rpc.governance.getPendingChanges().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+
+            String mode = (String)response.getResult().get("governance.governancemode");
+            assertEquals("single", mode);
+        }
+
+        @Test
+        public void getVotes() throws IOException {
+            GovernanceNodeVotes response = caver.rpc.governance.getVotes().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void getIdxCache() throws IOException {
+            GovernanceIdxCache response = caver.rpc.governance.getIdxCache().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void getIdxCacheFromDb() throws IOException {
+            GovernanceIdxCache response = caver.rpc.governance.getIdxCacheFromDb().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void getItemCacheFromDb() throws IOException {
+            GovernanceItems response = caver.rpc.governance.getItemCacheFromDb(BigInteger.ZERO).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void getStakingInfo() throws IOException {
+            GovernanceStakingInfo response = caver.rpc.governance.getStakingInfo().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+
+            response = caver.rpc.governance.getStakingInfo("latest").send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+
+            response = caver.rpc.governance.getStakingInfo(DefaultBlockParameterName.LATEST).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+
+            response = caver.rpc.governance.getStakingInfo(BigInteger.ZERO).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void parseGovernanceItem() throws IOException {
+            String json = "{\n" +
+                    "  \"governance.governancemode\": \"single\",\n" +
+                    "  \"governance.governingnode\": \"0x7bf29f69b3a120dae17bca6cf344cf23f2daf208\",\n" +
+                    "  \"governance.unitprice\": 25000000000,\n" +
+                    "  \"istanbul.committeesize\": 13,\n" +
+                    "  \"istanbul.epoch\": 30,\n" +
+                    "  \"istanbul.policy\": 2,\n" +
+                    "  \"reward.deferredtxfee\": true,\n" +
+                    "  \"reward.minimumstake\": \"5000000\",\n" +
+                    "  \"reward.mintingamount\": \"9600000000000000000\",\n" +
+                    "  \"reward.proposerupdateinterval\": 30,\n" +
+                    "  \"reward.ratio\": \"34/54/12\",\n" +
+                    "  \"reward.stakingupdateinterval\": 60,\n" +
+                    "  \"reward.useginicoeff\": true\n" +
+                    "}";
+
+            ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
+            Map<String, Object> item = mapper.readValue(json, Map.class);
+
+            assertEquals("single", IVote.VoteItem.getGovernanceMode(item));
+            assertEquals("0x7bf29f69b3a120dae17bca6cf344cf23f2daf208", IVote.VoteItem.getGoverningNode(item));
+            assertEquals(new BigInteger("25000000000"), IVote.VoteItem.getUnitPrice(item));
+            assertEquals(BigInteger.valueOf(13), IVote.VoteItem.getCommitteeSize(item));
+            assertEquals(BigInteger.valueOf(30), IVote.VoteItem.getEpoch(item));
+            assertEquals(BigInteger.valueOf(2), IVote.VoteItem.getPolicy(item));
+            assertTrue(IVote.VoteItem.getDeferredTxFee(item));
+            assertEquals("5000000", IVote.VoteItem.getMinimumStake(item));
+            assertEquals("9600000000000000000", IVote.VoteItem.getMintingAmount(item));
+            assertEquals("34/54/12", IVote.VoteItem.getRatio(item));
+            assertTrue(IVote.VoteItem.getUseGinicoeff(item));
+            assertEquals(BigInteger.valueOf(30), IVote.VoteItem.getProposerUpdateInterval(item));
+            assertEquals(BigInteger.valueOf(60), IVote.VoteItem.getStakingUpdateInterval(item));
+        }
+
+        @Test
+        public void parseChainConfig() throws IOException {
+            String json = "{\n" +
+                    "  \"chainId\": 1001,\n" +
+                    "  \"deriveShaImpl\": 2,\n" +
+                    "  \"governance\": {\n" +
+                    "    \"governanceMode\": \"ballot\",\n" +
+                    "    \"governingNode\": \"0xe733cb4d279da696f30d470f8c04decb54fcb0d2\",\n" +
+                    "    \"reward\": {\n" +
+                    "      \"deferredTxFee\": true,\n" +
+                    "      \"minimumStake\": 5000000,\n" +
+                    "      \"mintingAmount\": 9600000000000000000,\n" +
+                    "      \"proposerUpdateInterval\": 3600,\n" +
+                    "      \"ratio\": \"34/54/12\",\n" +
+                    "      \"stakingUpdateInterval\": 20,\n" +
+                    "      \"useGiniCoeff\": false\n" +
+                    "    }\n" +
+                    "  },\n" +
+                    "  \"istanbul\": {\n" +
+                    "    \"epoch\": 20,\n" +
+                    "    \"policy\": 2,\n" +
+                    "    \"sub\": 1\n" +
+                    "  },\n" +
+                    "  \"unitPrice\": 25000000000\n" +
+                    "}";
+
+            ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
+            GovernanceChainConfig.ChainConfigData item = mapper.readValue(json, GovernanceChainConfig.ChainConfigData.class);
+
+            assertEquals(1001, item.getChainid());
+            assertEquals(2, item.getDeriveshaimpl());
+            assertEquals("ballot", item.getGovernance().getGovernanceMode());
+            assertEquals("0xe733cb4d279da696f30d470f8c04decb54fcb0d2", item.getGovernance().getGoverningNode());
+            assertEquals(true, item.getGovernance().getReward().getDeferredTxFee());
+            assertEquals(new BigInteger("5000000"), item.getGovernance().getReward().getMinimumStake());
+            assertEquals(new BigInteger("9600000000000000000"), item.getGovernance().getReward().getMintingAmount());
+            assertEquals(new BigInteger("3600"), item.getGovernance().getReward().getProposerUpdateInterval());
+            assertEquals("34/54/12", item.getGovernance().getReward().getRatio());
+            assertEquals(new BigInteger("20"), item.getGovernance().getReward().getStakingUpdateInterval());
+            assertEquals(false, item.getGovernance().getReward().getUseGiniCoeff());
+            assertEquals(BigInteger.valueOf(20), item.getIstanbul().getEpoch());
+            assertEquals(BigInteger.valueOf(2), item.getIstanbul().getPolicy());
+            assertEquals(BigInteger.valueOf(1), item.getIstanbul().getSub());
+
+            System.out.println(item);
+        }
+
+        @Test
+        public void parseTally() throws IOException {
+            String json = "{\n" +
+                    "  \"jsonrpc\": \"2.0\",\n" +
+                    "  \"id\": 0,\n" +
+                    "  \"result\": [\n" +
+                    "    {\n" +
+                    "      \"ApprovalPercentage\": 36.2,\n" +
+                    "      \"Key\": \"governance.unitprice\",\n" +
+                    "      \"Value\": 25000000000\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"ApprovalPercentage\": 72.5,\n" +
+                    "      \"Key\": \"reward.mintingamount\",\n" +
+                    "      \"Value\": \"9600000000000000000\"\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}";
+
+            ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
+            GovernanceTally item = mapper.readValue(json, GovernanceTally.class);
+
+            GovernanceTally.TallyData item1 = item.getResult().get(0);
+            assertEquals(36.2f, item1.getApprovalPercentage());
+            assertEquals(new BigInteger("25000000000"), IVote.VoteItem.getUnitPrice(item1));
+
+            GovernanceTally.TallyData item2 = (GovernanceTally.TallyData)item.getResult().get(1);
+            assertEquals(72.5f, item2.getApprovalPercentage());
+            assertEquals("9600000000000000000", IVote.VoteItem.getMintingAmount(item2));
+        }
+
+        @Test
+        public void paresNodeVotes() throws IOException {
+            String json = "{\n" +
+                    "  \"jsonrpc\": \"2.0\",\n" +
+                    "  \"id\": 0,\n" +
+                    "  \"result\": [\n" +
+                    "    {\n" +
+                    "      \"key\": \"reward.minimumstake\",\n" +
+                    "      \"validator\": \"0xe733cb4d279da696f30d470f8c04decb54fcb0d2\",\n" +
+                    "      \"value\": \"5000000\"\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"key\": \"reward.useginicoeff\",\n" +
+                    "      \"validator\": \"0xa5bccb4d279419abe2d470f8c04dec0789ac2d54\",\n" +
+                    "      \"value\": false\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}";
+            ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
+            GovernanceNodeVotes vote = mapper.readValue(json, GovernanceNodeVotes.class);
+
+            List voteList = vote.getResult();
+            GovernanceNodeVotes.NodeVote nodeVote = (GovernanceNodeVotes.NodeVote)voteList.get(0);
+            assertEquals("5000000", IVote.VoteItem.getMinimumStake(voteList));
+            assertEquals("5000000", IVote.VoteItem.getMinimumStake(nodeVote));
+
+            GovernanceNodeVotes.NodeVote nodeVote1 = (GovernanceNodeVotes.NodeVote)voteList.get(1);
+            assertFalse(IVote.VoteItem.getUseGinicoeff(voteList));
+            assertFalse(IVote.VoteItem.getUseGinicoeff(nodeVote1));
+
+            assertEquals("0xe733cb4d279da696f30d470f8c04decb54fcb0d2", nodeVote.getValidator());
+            assertEquals("0xa5bccb4d279419abe2d470f8c04dec0789ac2d54", nodeVote1.getValidator());
+        }
+
+        @Test
+        public void paresMyVotes() throws IOException {
+            String json = "{\n" +
+                    "  \"jsonrpc\": \"2.0\",\n" +
+                    "  \"id\": 0,\n" +
+                    "  \"result\": [\n" +
+                    "    {\n" +
+                    "      \"Key\": \"reward.useginicoeff\",\n" +
+                    "      \"Value\": true,\n" +
+                    "      \"Casted\": true,\n" +
+                    "      \"BlockNum\": 2014\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"Key\": \"governance.governancemode\",\n" +
+                    "      \"Value\": \"single\",\n" +
+                    "      \"Casted\": true,\n" +
+                    "      \"BlockNum\": 2610\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}";
+
+            ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
+            GovernanceMyVotes vote = mapper.readValue(json, GovernanceMyVotes.class);
+
+            List voteList = vote.getResult();
+            GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
+            assertTrue(IVote.VoteItem.getUseGinicoeff(voteList));
+            assertTrue(IVote.VoteItem.getUseGinicoeff(myVote));
+            GovernanceMyVotes.MyVote myVote1 = (GovernanceMyVotes.MyVote)voteList.get(1);
+            assertEquals("single", IVote.VoteItem.getGovernanceMode(voteList));
+            assertEquals("single", IVote.VoteItem.getGovernanceMode(myVote1));
+
+            System.out.println(vote);
+            System.out.println(myVote1);
         }
     }
 }

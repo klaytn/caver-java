@@ -16,12 +16,15 @@
 
 package com.klaytn.caver.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.bouncycastle.math.ec.ECPoint;
 import org.web3j.crypto.ECDSASignature;
 import org.web3j.crypto.Hash;
 import org.web3j.crypto.Keys;
 import org.web3j.crypto.Sign;
+import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.utils.Numeric;
 
 import java.io.ByteArrayOutputStream;
@@ -478,6 +481,15 @@ public class Utils {
         byte[] bytes = new byte[size];
         SecureRandomUtils.secureRandom().nextBytes(bytes);
         return bytes;
+    }
+
+    public static String printString(Object o){
+        ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
+        try {
+            return mapper.writeValueAsString(o);
+        } catch(JsonProcessingException e) {
+            throw new RuntimeException("Cannot covert to a String.", e);
+        }
     }
 
     public enum KlayUnit {

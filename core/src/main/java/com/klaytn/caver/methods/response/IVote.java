@@ -20,6 +20,13 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The interface represented to handle Vote item in Governance API's response class.
+ * @see GovernanceItems
+ * @see GovernanceMyVotes
+ * @see GovernanceNodeVotes
+ * @see GovernanceTally
+ */
 public interface IVote {
     enum VoteItem {
         GOVERNANCE_GOVERNANCE_MODE("governance.governancemode", "String"),
@@ -76,6 +83,13 @@ public interface IVote {
 
         /**
          * Get the value of GOVERNANCE_GOVERNANCE_MODE.
+         * <pre>Example :
+         * {@code
+         * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
+         * Map<String, Object> governanceItem = response.getResult();
+         *
+         * String value = IVote.VoteItem.getGovernanceMode(governanceItem);
+         * }</pre>
          * @param map The map instance to find value.
          * @return String
          */
@@ -85,6 +99,13 @@ public interface IVote {
 
         /**
          * Get the value of GOVERNANCE_GOVERNANCE_MODE.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         *
+         * String value = IVote.VoteItem.getGovernanceMode(voteList);
+         * }</pre>
          * @param list The list instance to find value.
          * @return String
          */
@@ -99,6 +120,14 @@ public interface IVote {
 
         /**
          * Get the value of GOVERNANCE_GOVERNANCE_MODE.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
+         *
+         * String value = IVote.VoteItem.getGovernanceMode(myVote);
+         * }</pre>
          * @param vote The instance that implemented IVote to find value.
          * @return String
          */
@@ -108,6 +137,13 @@ public interface IVote {
 
         /**
          * Get the value of GOVERNANCE_GOVERNING_NODE.
+         * <pre>Example :
+         * {@code
+         * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
+         * Map<String, Object> governanceItem = response.getResult();
+         *
+         * String value = IVote.VoteItem.getGoverningNode(governanceItem);
+         * }</pre>
          * @param map The map instance to find value.
          * @return String
          */
@@ -117,6 +153,13 @@ public interface IVote {
 
         /**
          * Get the value of GOVERNANCE_GOVERNING_NODE.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         *
+         * String value = IVote.VoteItem.getGoverningNode(voteList);
+         * }</pre>
          * @param list The list instance to find value.
          * @return String
          */
@@ -131,6 +174,14 @@ public interface IVote {
 
         /**
          * Get the value of GOVERNANCE_GOVERNING_NODE.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
+         *
+         * String value = IVote.VoteItem.getGoverningNode(myVote);
+         * }</pre>
          * @param vote The instance that implemented IVote to find value.
          * @return String
          */
@@ -140,6 +191,13 @@ public interface IVote {
 
         /**
          * Get the value of GOVERNANCE_UNIT_PRICE.
+         * <pre>Example :
+         * {@code
+         * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
+         * Map<String, Object> governanceItem = response.getResult();
+         *
+         * BigInteger value = IVote.VoteItem.getUnitPrice(governanceItem);
+         * }</pre>
          * @param map The map instance to find value.
          * @return BigInteger
          */
@@ -149,6 +207,13 @@ public interface IVote {
 
         /**
          * Get the value of GOVERNANCE_UNIT_PRICE.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         *
+         * BigInteger value = IVote.VoteItem.getUnitPrice(voteList);
+         * }</pre>
          * @param list The list instance to find value.
          * @return BigInteger
          */
@@ -163,6 +228,14 @@ public interface IVote {
 
         /**
          * Get the value of GOVERNANCE_UNIT_PRICE.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
+         *
+         * BigInteger value = IVote.VoteItem.getUnitPrice(myVote);
+         * }</pre>
          * @param vote The instance implemented IVote to find value.
          * @return BigInteger
          */
@@ -172,6 +245,13 @@ public interface IVote {
 
         /**
          * Get the value of GOVERNANCE_ADD_VALIDATOR.
+         * <pre>Example :
+         * {@code
+         * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
+         * Map<String, Object> governanceItem = response.getResult();
+         *
+         * String value = IVote.VoteItem.getAddValidator(governanceItem);
+         * }</pre>
          * @param map The map instance to find value.
          * @return String
          */
@@ -181,6 +261,13 @@ public interface IVote {
 
         /**
          * Get the value of GOVERNANCE_ADD_VALIDATOR.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         *
+         * String value = IVote.VoteItem.getAddValidator(voteList);
+         * }</pre>
          * @param list The list instance to find value.
          * @return String
          */
@@ -195,6 +282,14 @@ public interface IVote {
 
         /**
          * Get the value of GOVERNANCE_ADD_VALIDATOR.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
+         *
+         * String value = IVote.VoteItem.getAddValidator(myVote);
+         * }</pre>
          * @param vote The instance implemented IVote to find value.
          * @return String
          */
@@ -204,6 +299,13 @@ public interface IVote {
 
         /**
          * Get the value of GOVERNANCE_REMOVE_VALIDATOR.
+         * <pre>Example :
+         * {@code
+         * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
+         * Map<String, Object> governanceItem = response.getResult();
+         *
+         * String value = IVote.VoteItem.getRemoveValidator(governanceItem);
+         * }</pre>
          * @param map The map instance to find value.
          * @return String
          */
@@ -213,6 +315,13 @@ public interface IVote {
 
         /**
          * Get the value of GOVERNANCE_REMOVE_VALIDATOR.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         *
+         * String value = IVote.VoteItem.getRemoveValidator(voteList);
+         * }</pre>
          * @param list The list instance to find value.
          * @return String
          */
@@ -227,6 +336,14 @@ public interface IVote {
 
         /**
          * Get the value of GOVERNANCE_REMOVE_VALIDATOR.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
+         *
+         * String value = IVote.VoteItem.getRemoveValidator(myVote);
+         * }</pre>
          * @param vote The instance implemented IVote to find value.
          * @return String
          */
@@ -236,6 +353,13 @@ public interface IVote {
 
         /**
          * Get the value of ISTANBUL_EPOCH.
+         * <pre>Example :
+         * {@code
+         * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
+         * Map<String, Object> governanceItem = response.getResult();
+         *
+         * BigInteger value = IVote.VoteItem.getEpoch(governanceItem);
+         * }</pre>
          * @param map The map instance to find value.
          * @return BigInteger
          */
@@ -245,6 +369,13 @@ public interface IVote {
 
         /**
          * Get the value of ISTANBUL_EPOCH.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         *
+         * BigInteger value = IVote.VoteItem.getEpoch(voteList);
+         * }</pre>
          * @param list The list instance to find value.
          * @return BigInteger
          */
@@ -259,6 +390,14 @@ public interface IVote {
 
         /**
          * Get the value of ISTANBUL_EPOCH.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
+         *
+         * BigInteger value = IVote.VoteItem.getEpoch(myVote);
+         * }</pre>
          * @param vote The instance that implemented IVote to find value.
          * @return BigInteger
          */
@@ -268,6 +407,13 @@ public interface IVote {
 
         /**
          * Get the value of ISTANBUL_COMMITTEE_SIZE.
+         * <pre>Example :
+         * {@code
+         * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
+         * Map<String, Object> governanceItem = response.getResult();
+         *
+         * BigInteger value = IVote.VoteItem.getCommitteeSize(governanceItem);
+         * }</pre>
          * @param map The map instance to find value.
          * @return
          */
@@ -277,6 +423,13 @@ public interface IVote {
 
         /**
          * Get the value of ISTANBUL_COMMITTEE_SIZE.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         *
+         * BigInteger value = IVote.VoteItem.getCommitteeSize(voteList);
+         * }</pre>
          * @param list The list instance to find value.
          * @return BigInteger
          */
@@ -291,6 +444,14 @@ public interface IVote {
 
         /**
          * Get the value of ISTANBUL_COMMITTEE_SIZE.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
+         *
+         * BigInteger value = IVote.VoteItem.getCommitteeSize(myVote);
+         * }</pre>
          * @param vote The instance that implemented IVote to find value.
          * @return BigInteger
          */
@@ -300,6 +461,13 @@ public interface IVote {
 
         /**
          * Get the value of ISTANBUL_POLICY.
+         * <pre>Example :
+         * {@code
+         * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
+         * Map<String, Object> governanceItem = response.getResult();
+         *
+         * BigInteger value = IVote.VoteItem.getPolicy(governanceItem);
+         * }</pre>
          * @param map The mpa instance to find value.
          * @return BigInteger
          */
@@ -309,6 +477,13 @@ public interface IVote {
 
         /**
          * Get the value of ISTANBUL_POLICY.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         *
+         * BigInteger value = IVote.VoteItem.getPolicy(voteList);
+         * }</pre>
          * @param list The list instance to find value.
          * @return BigInteger
          */
@@ -323,6 +498,14 @@ public interface IVote {
 
         /**
          * Get the value of ISTANBUL_POLICY.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
+         *
+         * BigInteger value = IVote.VoteItem.getPolicy(myVote));
+         * }</pre>
          * @param vote The instance that implemented IVote to find value.
          * @return BigInteger
          */
@@ -332,6 +515,13 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_MINTING_AMOUNT.
+         * <pre>Example :
+         * {@code
+         * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
+         * Map<String, Object> governanceItem = response.getResult();
+         *
+         * String value = IVote.VoteItem.getMintingAmount(governanceItem);
+         * }</pre>
          * @param map The map instance to find value.
          * @return String
          */
@@ -341,6 +531,13 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_MINTING_AMOUNT.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         *
+         * String value = IVote.VoteItem.getMintingAmount(voteList);
+         * }</pre>
          * @param list The list instance to find value..
          * @return String
          */
@@ -355,6 +552,14 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_MINTING_AMOUNT.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
+         *
+         * String value = IVote.VoteItem.getMintingAmount(myVote);
+         * }</pre>
          * @param vote The instance that implemented IVote to find value.
          * @return String
          */
@@ -365,6 +570,13 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_RATIO.
+         * <pre>Example :
+         * {@code
+         * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
+         * Map<String, Object> governanceItem = response.getResult();
+         *
+         * String value = IVote.VoteItem.getRatio(governanceItem);
+         * }</pre>
          * @param map The list instance to find value.
          * @return String
          */
@@ -374,6 +586,13 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_RATIO.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         *
+         * String value = IVote.VoteItem.getRatio(voteList);
+         * }</pre>
          * @param list The list instance to find value.
          * @return String
          */
@@ -388,6 +607,14 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_RATIO.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
+         *
+         * String value = IVote.VoteItem.getRatio(myVote);
+         * }</pre>
          * @param vote The instance that implemented IVote to find value.
          * @return String
          */
@@ -398,6 +625,13 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_USE_GINICOEFF.
+         * <pre>Example :
+         * {@code
+         * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
+         * Map<String, Object> governanceItem = response.getResult();
+         *
+         * boolean value = IVote.VoteItem.getUseGinicoeff(governanceItem);
+         * }</pre>
          * @param map The map instance to find value.
          * @return boolean
          */
@@ -407,6 +641,13 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_USE_GINICOEFF.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         *
+         * boolean value = IVote.VoteItem.getUseGinicoeff(voteList);
+         * }</pre>
          * @param list The list instance to find value.
          * @return boolean
          */
@@ -421,6 +662,14 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_USE_GINICOEFF.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
+         *
+         * boolean value = IVote.VoteItem.getUseGinicoeff(myVote);
+         * }</pre>
          * @param vote The instance that implemented IVote to find value.
          * @return Boolean
          */
@@ -430,6 +679,13 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_USE_DEFERRED_TX_FEE.
+         * <pre>Example :
+         * {@code
+         * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
+         * Map<String, Object> governanceItem = response.getResult();
+         *
+         * boolean value = IVote.VoteItem.getDeferredTxFee(governanceItem);
+         * }</pre>
          * @param map The map instance to find value.
          * @return Boolean
          */
@@ -439,6 +695,13 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_USE_DEFERRED_TX_FEE.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         *
+         * boolean value = IVote.VoteItem.getDeferredTxFee(voteList);
+         * }</pre>
          * @param list The list instance to find value.
          * @return Boolean
          */
@@ -453,6 +716,14 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_USE_DEFERRED_TX_FEE.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
+         *
+         * boolean value = IVote.VoteItem.getDeferredTxFee(myVote);
+         * }</pre>
          * @param vote The instance that implemented IVote to find value.
          * @return Boolean
          */
@@ -462,6 +733,13 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_MINIMUM_STAKE.
+         * <pre>Example :
+         * {@code
+         * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
+         * Map<String, Object> governanceItem = response.getResult();
+         *
+         * String value = IVote.VoteItem.getMinimumStake(governanceItem);
+         * }</pre>
          * @param map The map instance to find value.
          * @return String
          */
@@ -471,6 +749,13 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_MINIMUM_STAKE.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         *
+         * String value = IVote.VoteItem.getMinimumStake(voteList);
+         * }</pre>
          * @param list The list instance to find value.
          * @return String
          */
@@ -485,6 +770,14 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_MINIMUM_STAKE.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
+         *
+         * String value = IVote.VoteItem.getMinimumStake(myVote);
+         * }</pre>
          * @param vote The instance that implemented IVote to find value.
          * @return String
          */
@@ -494,6 +787,13 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_PROPOSER_UPDATE_INTERVAL.
+         * <pre>Example :
+         * {@code
+         * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
+         * Map<String, Object> governanceItem = response.getResult();
+         *
+         * BigInteger value = IVote.VoteItem.getProposerUpdateInterval(governanceItem);
+         * }</pre>
          * @param map The map instance to find value.
          * @return BigInteger
          */
@@ -503,6 +803,13 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_PROPOSER_UPDATE_INTERVAL.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         *
+         * BigInteger value = IVote.VoteItem.getProposerUpdateInterval(voteList);
+         * }</pre>
          * @param list The list instance to find value.
          * @return BigInteger
          */
@@ -517,6 +824,14 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_PROPOSER_UPDATE_INTERVAL.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
+         *
+         * BigInteger value = IVote.VoteItem.getProposerUpdateInterval(myVote);
+         * }</pre>
          * @param vote The instance that implemented IVote to find value.
          * @return BigInteger
          */
@@ -526,6 +841,13 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_STAKING_UPDATE_INTERVAL.
+         * <pre>Example :
+         * {@code
+         * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
+         * Map<String, Object> governanceItem = response.getResult();
+         *
+         * BigInteger value = IVote.VoteItem.getStakingUpdateInterval(governanceItem);
+         * }</pre>
          * @param map The map instance to find value.
          * @return BigInteger
          */
@@ -535,6 +857,13 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_STAKING_UPDATE_INTERVAL.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         *
+         * BigInteger value = IVote.VoteItem.getStakingUpdateInterval(voteList);
+         * }</pre>
          * @param list The list instance to find value.
          * @return BigInteger
          */
@@ -549,6 +878,14 @@ public interface IVote {
 
         /**
          * Get the value of REWARD_STAKING_UPDATE_INTERVAL.
+         * <pre>Example :
+         * {@code
+         * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
+         * List voteList = response.getResult();
+         * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
+         *
+         * BigInteger value = IVote.VoteItem.getStakingUpdateInterval(myVote);
+         * }</pre>
          * @param vote The instance that implemented IVote to find value.
          * @return BigInteger
          */

@@ -47,7 +47,7 @@ public class Governance {
      * <pre>Example :
      * {@code
      * String value = "single";
-     * Bytes response = caver.rpc.gov.vote(IVote.VoteItem.GOVERNANCE_GOVERNANCE_MODE.getKey(), value);
+     * Bytes response = caver.rpc.governance.vote(IVote.VoteItem.GOVERNANCE_GOVERNANCE_MODE.getKey(), value);
      * }
      * </pre>
      * @param key The name of the configuration setting to be changed. See the {@link IVote.VoteItem}.
@@ -66,7 +66,7 @@ public class Governance {
      * String key = "governance.governancemode";
      * String value = "single";
      *
-     * Bytes response = caver.rpc.gov.vote(key, value);
+     * Bytes response = caver.rpc.governance.vote(key, value);
      * }
      * </pre>
      * @param key The name of the configuration setting to be changed. See the {@link IVote.VoteItem}.
@@ -93,7 +93,7 @@ public class Governance {
      * {@code
      * BigInteger unitPriceValue = new BigInteger("25000000000");
      *
-     * Bytes response = caver.rpc.gov.vote(IVote.VoteItem.GOVERNANCE_UNIT_PRICE.getKey(), unitPriceValue).send();
+     * Bytes response = caver.rpc.governance.vote(IVote.VoteItem.GOVERNANCE_UNIT_PRICE.getKey(), unitPriceValue).send();
      * }
      * </pre>
      * @param key The name of the configuration setting to be changed. See the {@link IVote.VoteItem}.
@@ -112,7 +112,7 @@ public class Governance {
      * String key = "governance.unitprice";
      * BigInteger unitPriceValue = new BigInteger("25000000000");
      *
-     * Bytes response = caver.rpc.gov.vote(key, value);
+     * Bytes response = caver.rpc.governance.vote(key, value);
      * }
      * </pre>
      * @param key The name of the configuration setting to be changed. See the {@link IVote.VoteItem}.
@@ -139,7 +139,7 @@ public class Governance {
      * {@code
      * boolean value = true;
      *
-     * Bytes response = caver.rpc.gov.vote(IVote.VoteItem.REWARD_USE_GINICOEFF.getKey(), value).send();
+     * Bytes response = caver.rpc.governance.vote(IVote.VoteItem.REWARD_USE_GINICOEFF.getKey(), value).send();
      * }
      * </pre>
      * @param key The name of the configuration setting to be changed. See the {@link IVote.VoteItem}.
@@ -163,7 +163,7 @@ public class Governance {
      * String key = "reward.useginicoeff";
      * boolean value = true;
      *
-     * Bytes response = caver.rpc.gov.vote(key, value);
+     * Bytes response = caver.rpc.governance.vote(key, value);
      * }
      * </pre>
      * @param key The name of the configuration setting to be changed. See the {@link IVote.VoteItem}.
@@ -188,7 +188,7 @@ public class Governance {
      * It shows the aggregated approval rate in percentage. When it goes over 50%, the vote passed.
      * <pre>Example :
      * {@code
-     * GovernanceTally response = caver.rpc.gov.showTally().send();
+     * GovernanceTally response = caver.rpc.governance.showTally().send();
      * GovernanceTally.TallyData item = item.getResult().get(0);
      *
      * float percent = item.getApprovalPercentage();
@@ -211,7 +211,7 @@ public class Governance {
      * In "none", "single" governance mode, totalVotingPower don't provide any information.
      * <pre>Example :
      * {@code
-     * GovernanceVotingPower response = caver.rpc.gov.getTotalVotingPower().send();
+     * GovernanceVotingPower response = caver.rpc.governance.getTotalVotingPower().send();
      * }
      * </pre>
      * @return Request&lt;?, GovernanceTally&gt;
@@ -230,7 +230,7 @@ public class Governance {
      * In "none", "single" governance mode, totalVotingPower don't provide any information.
      * <pre>Example :
      * {@code
-     * GovernanceVotingPower response = caver.rpc.gov.getMyVotingPower().send();
+     * GovernanceVotingPower response = caver.rpc.governance.getMyVotingPower().send();
      * }
      * </pre>
      * @return Request&lt;?, GovernanceVotingPower&gt;
@@ -249,7 +249,7 @@ public class Governance {
      * Each vote is stored in a block when the user's node generates a new block. After current epoch ends, this information is cleared.
      * <pre>Example :
      * {@code
-     * GovernanceMyVotes response = caver.rpc.gov.getMyVotes().send();
+     * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
      * List voteList = response.getResult();
      * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
      *
@@ -274,7 +274,7 @@ public class Governance {
      * To see the current information, please use {@link Governance#getItemsAt()}
      * <pre>Example :
      * {@code
-     * GovernanceChainConfig response = caver.rpc.gov.getChainConfig().send();
+     * GovernanceChainConfig response = caver.rpc.governance.getChainConfig().send();
      * }
      * </pre>
      * @return Request&lt;?, GovernanceChainConfig&gt;
@@ -293,7 +293,7 @@ public class Governance {
      * It is derived from the nodekey and used to sign consensus messages. And the value of "governingnode" has to be one of validator's node address.
      * <pre>Example :
      * {@code
-     * Bytes20 response = caver.rpc.gov.getNodeAddress().send();
+     * Bytes20 response = caver.rpc.governance.getNodeAddress().send();
      * }
      * </pre>
      * @return Request&lt;?, Bytes20&gt;
@@ -313,7 +313,7 @@ public class Governance {
      * It pass the latest block tag as a parameter.
      * <pre>Example :
      * {@code
-     * GovernanceItems response = caver.rpc.gov.getItemsAt().send();
+     * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
      * Map<String, Object> governanceItem = response.getResult();
      *
      * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
@@ -329,7 +329,7 @@ public class Governance {
      * It is the result of previous voting of the block and used as configuration for chain at the given block number.
      * <pre>Example :
      * {@code
-     * GovernanceItems response = caver.rpc.gov.getItemsAt(BigInteger.ZERO).send();
+     * GovernanceItems response = caver.rpc.governance.getItemsAt(BigInteger.ZERO).send();
      * Map<String, Object> governanceItem = response.getResult();
      *
      * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
@@ -346,7 +346,7 @@ public class Governance {
      * It is the result of previous voting of the block and used as configuration for chain at the given block number.
      * <pre>Example :
      * {@code
-     * GovernanceItems response = caver.rpc.gov.getItemsAt("latest").send();
+     * GovernanceItems response = caver.rpc.governance.getItemsAt("latest").send();
      * Map<String, Object> governanceItem = response.getResult();
      *
      * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
@@ -365,7 +365,7 @@ public class Governance {
      * It is the result of previous voting of the block and used as configuration for chain at the given block number.
      * <pre>Example :
      * {@code
-     * GovernanceItems response = caver.rpc.gov.getItemsAt(DefaultBlockParameterName.LATEST).send();
+     * GovernanceItems response = caver.rpc.governance.getItemsAt(DefaultBlockParameterName.LATEST).send();
      * Map<String, Object> governanceItem = response.getResult();
      *
      * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
@@ -392,7 +392,7 @@ public class Governance {
      *  At the end of the current epoch, these changes will be finalized and the result will be in effect from the epoch after next epoch.
      *  <pre>Example :
      *  {@code
-     *  GovernanceItems response = caver.rpc.gov.getPendingChanges().send();
+     *  GovernanceItems response = caver.rpc.governance.getPendingChanges().send();
      *  Map<String, Object> governanceItem = response.getResult();
      *
      *  String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
@@ -413,7 +413,7 @@ public class Governance {
      * Returns the votes from all nodes in the epoch. These votes are gathered from the header of each block.
      * <pre>Example :
      * {@code
-     * GovernanceNodeVotes response = caver.rpc.gov.getVotes().send();
+     * GovernanceNodeVotes response = caver.rpc.governance.getVotes().send();
      * List list = response.getResult();
      * GovernanceNodeVotes.NodeVote item = (GovernanceNodeVotes.NodeVote)list.get(0);
      *
@@ -437,7 +437,7 @@ public class Governance {
      * idxCache contains the block numbers where governance change happened. The cache can have up to 1000 block numbers in memory by default.
      * <pre>Example :
      * {@code
-     * GovernanceIdxCache response = caver.rpc.gov.getIdxCache().send();
+     * GovernanceIdxCache response = caver.rpc.governance.getIdxCache().send();
      * }</pre>
      * @return Request&lt;?, GovernanceIdxCache&gt;
      */
@@ -455,7 +455,7 @@ public class Governance {
      * The result of idxCacheFromDb is the same or longer than that of idxCache.
      * <pre>Example :
      * {@code
-     * GovernanceIdxCache response = caver.rpc.gov.getIdxCacheFromDb().send();
+     * GovernanceIdxCache response = caver.rpc.governance.getIdxCacheFromDb().send();
      * }
      * </pre>
      * @return Request&lt;?, GovernanceIdxCache&gt;
@@ -473,7 +473,7 @@ public class Governance {
      * Returns  the governance information stored in the given block. If no changes were stored in the given block, the function returns null.
      * <pre>Example :
      * {@code
-     * GovernanceItems response = caver.rpc.gov.getItemCacheFromDb(BigInteger.ZERO).send();
+     * GovernanceItems response = caver.rpc.governance.getItemCacheFromDb(BigInteger.ZERO).send();
      * }
      * </pre>
      * @param blockNumber A block number to query the governance change made in the block.
@@ -493,7 +493,7 @@ public class Governance {
      * It passes the latest block tag as a parameter.
      * <pre>Example :
      * {@code
-     * GovernanceStackingInfo response = caver.rpc.gov.getStakingInfo().send();
+     * GovernanceStackingInfo response = caver.rpc.governance.getStakingInfo().send();
      * }
      * </pre>
      * @return Request&lt;?, GovernanceStackingInfo&gt;
@@ -506,7 +506,7 @@ public class Governance {
      * Returns staking information at a specific block.<p>
      * <pre>Example :
      * {@code
-     * GovernanceStackingInfo response = caver.rpc.gov.getStakingInfo(BigInteger.ZERO).send();
+     * GovernanceStackingInfo response = caver.rpc.governance.getStakingInfo(BigInteger.ZERO).send();
      * }
      * </pre>
      * @param blockNumber The block number.
@@ -520,7 +520,7 @@ public class Governance {
      * Returns staking information at a specific block.<p>
      * <pre>Example :
      * {@code
-     * GovernanceStackingInfo response = caver.rpc.gov.getStakingInfo("latest").send();
+     * GovernanceStackingInfo response = caver.rpc.governance.getStakingInfo("latest").send();
      * }
      * </pre>
      * @param blockTag The block tag.
@@ -535,7 +535,7 @@ public class Governance {
      * Returns staking information at a specific block.<p>
      * <pre>Example :
      * {@code
-     * GovernanceStackingInfo response = caver.rpc.gov.getStakingInfo(DefaultBlockParameterName.LATEST).send();
+     * GovernanceStackingInfo response = caver.rpc.governance.getStakingInfo(DefaultBlockParameterName.LATEST).send();
      * }
      * </pre>
      * @param blockTag The block tag.

@@ -16,14 +16,19 @@
 
 package com.klaytn.caver.abi.wrapper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.abi.ABI;
 import com.klaytn.caver.abi.EventValues;
 import com.klaytn.caver.abi.datatypes.Type;
 import com.klaytn.caver.contract.ContractEvent;
 import com.klaytn.caver.contract.ContractIOType;
 import com.klaytn.caver.contract.ContractMethod;
+import com.klaytn.caver.utils.Utils;
+import org.web3j.protocol.ObjectMapperFactory;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -244,5 +249,37 @@ public class ABIWrapper {
      */
     public EventValues decodeLog(List<ContractIOType> inputs, String data, List<String> topics) throws ClassNotFoundException {
         return ABI.decodeLog(inputs, data, topics);
+    }
+
+    /**
+     * Decodes a function call data that composed of function selector and encoded input argument.
+     * <pre>Example :
+     * {@code
+     *  String encodedData = "0x24ee0.....";
+     *  String abi = "{\n" +
+     *                     "  \"name\":\"myMethod\",\n" +
+     *                     "  \"type\":\"function\",\n" +
+     *                     "  \"inputs\":[\n" +
+     *                     "    {\n" +
+     *                     "      \"type\":\"uint256\",\n" +
+     *                     "      \"name\":\"myNumber\"\n" +
+     *                     "    },\n" +
+     *                     "    {\n" +
+     *                     "      \"type\":\"string\",\n" +
+     *                     "      \"name\":\"mystring\"\n" +
+     *                     "    }\n" +
+     *                     "  ]\n" +
+     *                     "}";
+     *
+     * List<Type> params = caver.abi.decodeFunctionCall(abi, encoded);
+     * }
+     * </pre>
+     * @param functionAbi The abi json string of a function.
+     * @param encodedString The encode function call data string.
+     * @return List&lt;Type&gt;
+     * @throws ClassNotFoundException
+     */
+    public List<Type> decodeFunctionCall(String functionAbi, String encodedString) throws ClassNotFoundException {
+        return ABI.decodeFunctionCall(functionAbi, encodedString);
     }
 }

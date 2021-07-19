@@ -840,7 +840,7 @@ public class ContractMethod {
      * Setter function for function signature.
      * @param signature A function signature
      */
-    void setSignature(String signature) {
+    public void setSignature(String signature) {
         this.signature = signature;
     }
 

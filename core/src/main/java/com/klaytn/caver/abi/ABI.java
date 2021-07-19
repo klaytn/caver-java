@@ -16,13 +16,17 @@
 
 package com.klaytn.caver.abi;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.abi.datatypes.*;
 import com.klaytn.caver.contract.ContractEvent;
 import com.klaytn.caver.contract.ContractIOType;
 import com.klaytn.caver.contract.ContractMethod;
+import com.klaytn.caver.utils.Utils;
 import org.web3j.crypto.Hash;
+import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.utils.Numeric;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -334,4 +338,81 @@ public class ABI {
         return new EventValues(indexedValues, nonIndexedValues);
     }
 
+    /**
+     * Decodes a function call data that composed of function selector and encoded input argument.
+     * <pre>Example :
+     * {@code
+     *  String encodedData = "0x24ee0.....";
+     *  String abi = "{\n" +
+     *                     "  \"name\":\"myMethod\",\n" +
+     *                     "  \"type\":\"function\",\n" +
+     *                     "  \"inputs\":[\n" +
+     *                     "    {\n" +
+     *                     "      \"type\":\"uint256\",\n" +
+     *                     "      \"name\":\"myNumber\"\n" +
+     *                     "    },\n" +
+     *                     "    {\n" +
+     *                     "      \"type\":\"string\",\n" +
+     *                     "      \"name\":\"mystring\"\n" +
+     *                     "    }\n" +
+     *                     "  ]\n" +
+     *                     "}";
+     *
+     * List<Type> params = caver.abi.decodeFunctionCall(abi, encoded);
+     * }
+     * </pre>
+     * @param functionAbi The abi json string of a function.
+     * @param encodedString The encode function call data string.
+     * @return List&lt;Type&gt;
+     * @throws ClassNotFoundException
+     */
+    public static List<Type> decodeFunctionCall(String functionAbi, String encodedString) throws ClassNotFoundException {
+        try {
+            ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
+            ContractMethod method = mapper.readValue(functionAbi, ContractMethod.class);
+            method.setSignature(ABI.encodeFunctionSignature(method));
+
+            if(method.getName() == null || method.getName().isEmpty() || method.getInputs() == null) {
+                throw new IllegalArgumentException("Insufficient info in abi object: The function name and inputs must be defined inside the abi function object.");
+            }
+
+            return decodeFunctionCall(method, encodedString);
+        } catch(IOException e) {
+            throw new IllegalArgumentException("Invalid abi parameter type: To decode function call, you need to pass an abi object of the function as a first parameter.", e);
+        }
+    }
+
+    private static List<Type> decodeFunctionCall(ContractMethod method, String encodedString) throws ClassNotFoundException {
+        String encoded = Utils.stripHexPrefix(encodedString);
+        String functionSignature = encoded.substring(0, 8);
+        String encodedParams = encoded.substring(8);
+
+        //Combine the method passed as a parameter and its ContractMethod instances that represented overloading function to it into a list.
+        List<ContractMethod> methodList = new ArrayList<>();
+        methodList.add(method);
+        if(method.getNextContractMethods().size() > 0) {
+            methodList.addAll(method.getNextContractMethods());
+        }
+
+        ContractMethod findMethod = null;
+
+        //find a ContractMethod instance that matched function signature.
+        for(ContractMethod contractMethod : methodList) {
+            if(contractMethod.getSignature().equals(functionSignature)) {
+                findMethod = contractMethod;
+            }
+        }
+
+        if(findMethod == null) {
+            throw new IllegalArgumentException("Invalid function signature: The function signature of the abi as a parameter and the function signatures extracted from the function call string do not match.");
+        }
+
+        List<String> inputs = findMethod.getInputs()
+                .stream()
+                .map(ContractIOType::getTypeAsString)
+                .collect(Collectors.toList());
+
+        List<Type> decoded = decodeParameters(inputs, encodedParams);
+        return decoded;
+    }
 }

@@ -258,7 +258,7 @@ public class ABI {
     }
 
     /**
-     * Decodes a ABI encoded parameter.
+     * Decodes an ABI encoded parameter.
      * @param solidityType A solidity type string.
      * @param encoded The ABI byte code to decode
      * @return Type
@@ -269,7 +269,7 @@ public class ABI {
     }
 
     /**
-     * Decodes a ABI encoded parameters.
+     * Decodes an ABI encoded parameters.
      * @param solidityTypeList A List of solidity type string.
      * @param encoded The ABI byte code to decode
      * @return List
@@ -286,9 +286,9 @@ public class ABI {
     }
 
     /**
-     * Decodes a ABI encoded parameters.
+     * Decodes an ABI encoded output parameters.
      * @param method A ContractMethod instance.
-     * @param encoded The ABI byte code to decoed
+     * @param encoded The ABI byte code to decoded
      * @return List
      * @throws ClassNotFoundException
      */
@@ -303,7 +303,7 @@ public class ABI {
     }
 
     /**
-     * Decodes a ABI-encoded log data and indexed topic data
+     * Decodes an ABI encoded log data and indexed topic data
      * @param inputs A list of ContractIOType instance.
      * @param data An ABI-encoded in the data field of a log
      * @param topics A list of indexed parameter topics of the log.

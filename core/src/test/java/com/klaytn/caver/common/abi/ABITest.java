@@ -7,8 +7,10 @@ import com.klaytn.caver.abi.datatypes.*;
 import com.klaytn.caver.abi.datatypes.generated.*;
 import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.contract.ContractIOType;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
@@ -21,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Enclosed.class)
 public class ABITest {
@@ -2554,6 +2557,149 @@ public class ABITest {
 
             assertEquals("EVENT(uint256)", caver.abi.buildEventString(contract.getEvent("EVENT")));
             assertEquals("STRUCT_EVENT((uint256,uint256))", caver.abi.buildEventString(contract.getEvent("STRUCT_EVENT")));
+        }
+    }
+
+    public static class decodeFunctionCall_ABIString {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        public static void checkParams(List<Type> expected, List<Type> actual) {
+            assertTrue(expected.size() == actual.size());
+            for(int i=0; i<expected.size(); i++) {
+                assertEquals(expected.get(i), actual.get(i));
+            }
+        }
+
+        @Test
+        public void decodeFunctionCall() throws ClassNotFoundException {
+            Caver caver = new Caver(Caver.DEFAULT_URL);
+
+            String encoded = "0x24ee0097000000000000000000000000000000000000000000000000000000008bd02b7b0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000748656c6c6f212500000000000000000000000000000000000000000000000000";
+            String abi = "{\n" +
+                    "  \"name\":\"myMethod\",\n" +
+                    "  \"type\":\"function\",\n" +
+                    "  \"inputs\":[\n" +
+                    "    {\n" +
+                    "      \"type\":\"uint256\",\n" +
+                    "      \"name\":\"myNumber\"\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"type\":\"string\",\n" +
+                    "      \"name\":\"mystring\"\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}";
+            List<Type> expectedParams = Arrays.asList(new Uint256(new BigInteger("2345675643")), new Utf8String("Hello!%"));
+
+            List<Type> actualParams = caver.abi.decodeFunctionCall(abi, encoded);
+            checkParams(expectedParams, actualParams);
+        }
+
+        @Test
+        public void decodeFunctionCallWithoutHexPrefix() throws ClassNotFoundException {
+            Caver caver = new Caver(Caver.DEFAULT_URL);
+
+            String encoded = "24ee0097000000000000000000000000000000000000000000000000000000008bd02b7b0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000748656c6c6f212500000000000000000000000000000000000000000000000000";
+            String abi = "{\n" +
+                    "  \"name\":\"myMethod\",\n" +
+                    "  \"type\":\"function\",\n" +
+                    "  \"inputs\":[\n" +
+                    "    {\n" +
+                    "      \"type\":\"uint256\",\n" +
+                    "      \"name\":\"myNumber\"\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"type\":\"string\",\n" +
+                    "      \"name\":\"mystring\"\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}";
+            List<Type> expectedParams = Arrays.asList(new Uint256(new BigInteger("2345675643")), new Utf8String("Hello!%"));
+
+            List<Type> actualParams = caver.abi.decodeFunctionCall(abi, encoded);
+            checkParams(expectedParams, actualParams);
+        }
+
+        @Test
+        public void throwException_notMatchedFunctionSig() throws ClassNotFoundException {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid function signature: The function signature of the abi as a parameter and the function signatures extracted from the function call string do not match.");
+
+            String encoded = "24ff0097000000000000000000000000000000000000000000000000000000008bd02b7b0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000748656c6c6f212500000000000000000000000000000000000000000000000000";
+            String abi = "{\n" +
+                    "  \"name\":\"myMethod\",\n" +
+                    "  \"type\":\"function\",\n" +
+                    "  \"inputs\":[\n" +
+                    "    {\n" +
+                    "      \"type\":\"uint256\",\n" +
+                    "      \"name\":\"myNumber\"\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"type\":\"string\",\n" +
+                    "      \"name\":\"mystring\"\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}";
+
+            List<Type> actualParams = caver.abi.decodeFunctionCall(abi, encoded);
+        }
+
+        @Test
+        public void throwException_notEnoughFunctionInfo_NoName() throws ClassNotFoundException {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Insufficient info in abi object: The function name and inputs must be defined inside the abi function object.");
+
+            String encoded = "24ff0097000000000000000000000000000000000000000000000000000000008bd02b7b0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000748656c6c6f212500000000000000000000000000000000000000000000000000";
+            String abi = "{\n" +
+                    "  \"type\":\"function\",\n" +
+                    "  \"inputs\":[\n" +
+                    "    {\n" +
+                    "      \"type\":\"uint256\",\n" +
+                    "      \"name\":\"myNumber\"\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"type\":\"string\",\n" +
+                    "      \"name\":\"mystring\"\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}";
+
+            caver.abi.decodeFunctionCall(abi, encoded);
+        }
+
+        @Test
+        public void throwException_notEnoughFunctionInfo_NoInput() throws ClassNotFoundException {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Insufficient info in abi object: The function name and inputs must be defined inside the abi function object.");
+
+            String encoded = "24ff0097000000000000000000000000000000000000000000000000000000008bd02b7b0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000748656c6c6f212500000000000000000000000000000000000000000000000000";
+            String abi = "{\n" +
+                    "  \"name\":\"myMethod\",\n" +
+                    "  \"type\":\"function\"\n" +
+                    "}";
+
+            caver.abi.decodeFunctionCall(abi, encoded);
+        }
+
+        @Test
+        public void throwException_invalidABIString() throws ClassNotFoundException {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid abi parameter type: To decode function call, you need to pass an abi object of the function as a first parameter.");
+
+            String encoded = "24ff0097000000000000000000000000000000000000000000000000000000008bd02b7b0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000748656c6c6f212500000000000000000000000000000000000000000000000000";
+            String abi = "[\n" +
+                    "  {\n" +
+                    "    \"type\":\"uint256\",\n" +
+                    "    \"name\":\"myNumber\"\n" +
+                    "  },\n" +
+                    "  {\n" +
+                    "    \"type\":\"string\",\n" +
+                    "    \"name\":\"mystring\"\n" +
+                    "  }\n" +
+                    "]";
+
+            caver.abi.decodeFunctionCall(abi, encoded);
         }
     }
 }

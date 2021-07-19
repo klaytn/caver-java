@@ -255,25 +255,6 @@ public class ABI {
      */
     public static String encodeParameters(List<Type> parameters) {
         return new DefaultFunctionEncoder().encodeParameters(parameters);
-//        int dynamicDataOffset = getLength(parameters) * Type.MAX_BYTE_LENGTH;
-//        StringBuilder result = new StringBuilder();
-//        StringBuilder dynamicData = new StringBuilder();
-//
-//        for (Type parameter:parameters) {
-//            String encodedValue = TypeEncoder.encode(parameter);
-//
-//            if (isDynamic(parameter)) {
-//                String encodedDataOffset = TypeEncoder.encode(new Uint(BigInteger.valueOf(dynamicDataOffset)));
-//                result.append(encodedDataOffset);
-//                dynamicData.append(encodedValue);
-//                dynamicDataOffset += encodedValue.length() >> 1;
-//            } else {
-//                result.append(encodedValue);
-//            }
-//        }
-//        result.append(dynamicData);
-//
-//        return result.toString();
     }
 
     /**
@@ -353,21 +334,4 @@ public class ABI {
         return new EventValues(indexedValues, nonIndexedValues);
     }
 
-//    private static int getLength(List<Type> parameters) {
-//        int count = 0;
-//        for (Type type:parameters) {
-//            if (type instanceof StaticArray) {
-//                count += ((StaticArray) type).getValue().size();
-//            } else {
-//                count++;
-//            }
-//        }
-//        return count;
-//    }
-
-//    private static boolean isDynamic(Type parameter) {
-//        return parameter instanceof DynamicBytes
-//                || parameter instanceof Utf8String
-//                || parameter instanceof DynamicArray;
-//    }
 }

@@ -86,14 +86,20 @@ build_test: &build_test
     name: "Build"
     command: |
         ./gradlew clean
-        ./gradlew build --debug -x :android_instrumented_test:build -x test
+        ./gradlew build --debug -x test
 
 build_test_android: &build_test_android
   run:
     name: "Build android"
     command: |
       ./gradlew clean
-      ./gradlew build --debug -x :android_instrumented_test:build -x test
+      ./gradlew build --debug -x test
+
+include_android_instrumented_test_as_subproject: &include_android_instrumented_test_as_subproject
+  run:
+    name: "Insert phrase `include 'android_instrumented_test'` at the end of the `settings.gradle`."
+    command: |
+      sed -i -e '$ainclude '\''android_instrumented_test'\''' settings.gradle
 
 check_android_version: &check_android_version
   run:
@@ -132,7 +138,7 @@ jobs:
       - *check_test_network
       - run:
           name: "Test"
-          command: ./gradlew clean test -x :android_instrumented_test:test --debug
+          command: ./gradlew clean test --debug
       - store_test_results:
           path: core/build/test-results/test
 
@@ -155,6 +161,7 @@ jobs:
     <<: *android_machine_ubuntu
     steps:
       - checkout
+      - *include_android_instrumented_test_as_subproject
       - *setup_android_test_files
       - *pull_klaytn_image
       - *start_test_network

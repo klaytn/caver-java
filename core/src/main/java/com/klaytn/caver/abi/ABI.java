@@ -369,12 +369,13 @@ public class ABI {
     public static List<Type> decodeFunctionCall(String functionAbi, String encodedString) throws ClassNotFoundException {
         try {
             ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
-            ContractMethod method = mapper.readValue(functionAbi, ContractMethod.class);
-            method.setSignature(ABI.encodeFunctionSignature(method));
 
+            ContractMethod method = mapper.readValue(functionAbi, ContractMethod.class);
             if(method.getName() == null || method.getName().isEmpty() || method.getInputs() == null) {
                 throw new IllegalArgumentException("Insufficient info in abi object: The function name and inputs must be defined inside the abi function object.");
             }
+
+            method.setSignature(ABI.encodeFunctionSignature(method));
 
             return decodeFunctionCall(method, encodedString);
         } catch(IOException e) {
@@ -398,7 +399,8 @@ public class ABI {
 
         //find a ContractMethod instance that matched function signature.
         for(ContractMethod contractMethod : methodList) {
-            if(contractMethod.getSignature().equals(functionSignature)) {
+            String signature = Utils.stripHexPrefix(contractMethod.getSignature());
+            if(signature.equals(functionSignature)) {
                 findMethod = contractMethod;
             }
         }

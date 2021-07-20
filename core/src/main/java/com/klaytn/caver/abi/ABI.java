@@ -383,27 +383,20 @@ public class ABI {
         }
     }
 
-    private static List<Type> decodeFunctionCall(ContractMethod method, String encodedString) throws ClassNotFoundException {
+    /**
+     * Decodes a function call data that composed of function selector and encoded input argument.
+     * @param method The ContractMethod instance to decode ABI-encoded string.
+     * @param encodedString The encode function call data string.
+     * @return List&lt;Type&gt;
+     * @throws ClassNotFoundException
+     */
+    public static List<Type> decodeFunctionCall(ContractMethod method, String encodedString) throws ClassNotFoundException {
         String encoded = Utils.stripHexPrefix(encodedString);
         String functionSignature = encoded.substring(0, 8);
         String encodedParams = encoded.substring(8);
 
-        //Combine the method passed as a parameter and its ContractMethod instances that represented overloading function to it into a list.
-        List<ContractMethod> methodList = new ArrayList<>();
-        methodList.add(method);
-        if(method.getNextContractMethods().size() > 0) {
-            methodList.addAll(method.getNextContractMethods());
-        }
-
-        ContractMethod findMethod = null;
-
-        //find a ContractMethod instance that matched function signature.
-        for(ContractMethod contractMethod : methodList) {
-            String signature = Utils.stripHexPrefix(contractMethod.getSignature());
-            if(signature.equals(functionSignature)) {
-                findMethod = contractMethod;
-            }
-        }
+        //Find a ContractMethod included overloaded function.
+        ContractMethod findMethod = method.findMethodBySignature(functionSignature);
 
         if(findMethod == null) {
             throw new IllegalArgumentException("Invalid function signature: The function signature of the abi as a parameter and the function signatures extracted from the function call string do not match.");
@@ -415,6 +408,7 @@ public class ABI {
                 .collect(Collectors.toList());
 
         List<Type> decoded = decodeParameters(inputs, encodedParams);
+
         return decoded;
     }
 }

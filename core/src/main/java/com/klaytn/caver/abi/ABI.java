@@ -391,7 +391,7 @@ public class ABI {
      * Contract contract = caver.contract.create(contractABI);
      * ContractMethod method = contract.getMethod("myFunction");
      *
-     * List<Type> result = ABI.decodeFunctionCall(method, "0x{ABI-encoded string}");
+     * List<Type> result = caver.abi.decodeFunctionCall(method, "0x{ABI-encoded string}");
      * }</pre>
      * @param method The ContractMethod instance to decode ABI-encoded string.
      * @param encodedString The encode function call data string.

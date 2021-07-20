@@ -16,10 +16,13 @@
 package com.klaytn.caver.common.kct.kip37;
 
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.abi.datatypes.*;
+import com.klaytn.caver.abi.datatypes.generated.Uint256;
 import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.kct.kip37.KIP37;
 import com.klaytn.caver.kct.kip37.KIP37ConstantData;
+import com.klaytn.caver.kct.kip7.KIP7;
 import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
@@ -35,12 +38,17 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.web3j.protocol.exceptions.TransactionException;
+import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.klaytn.caver.base.Accounts.*;
 import static org.junit.Assert.*;
@@ -1284,5 +1292,81 @@ public class KIP37Test {
             assertEquals("0x1", receiptData.getStatus());
         }
     }
-    
+
+    public static class decodeFunctionCall {
+
+        public void checkTypeAndValue(List<Object> expected, List<Type> actual) {
+            assertEquals(expected.size(), actual.size());
+
+            for(int i=0; i<actual.size(); i++) {
+                assertEquals(expected.get(i), actual.get(i).getValue());
+            }
+        }
+
+        @Test
+        public void decodeFunctionCall() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException {
+            Caver caver = new Caver(Caver.DEFAULT_URL);
+            KIP37 kip37 = caver.kct.kip37.create();
+
+            List<Object> expected = new ArrayList<>();
+            String encoded = kip37.encodeABI("pause");
+            List<Type> actual = kip37.decodeFunctionCall(encoded);
+            checkTypeAndValue(expected, actual);
+
+            expected = Arrays.asList(LUMAN.getAddress(), BigInteger.ONE);
+            encoded = kip37.encodeABI("balanceOf", LUMAN.getAddress(), BigInteger.ONE);
+            actual = kip37.decodeFunctionCall(encoded);
+            checkTypeAndValue(expected, actual);
+
+            expected = Arrays.asList(LUMAN.getAddress());
+            encoded = kip37.encodeABI("isMinter", LUMAN.getAddress());
+            actual = kip37.decodeFunctionCall(encoded);
+            checkTypeAndValue(expected, actual);
+
+            expected = Arrays.asList(LUMAN.getAddress(), BRANDON.getAddress(), BigInteger.valueOf(2), BigInteger.valueOf(100), "0x1234");
+            encoded = kip37.encodeABI("safeTransferFrom", LUMAN.getAddress(), BRANDON.getAddress(),  BigInteger.valueOf(2), BigInteger.valueOf(100), "0x1234");
+            actual = kip37.decodeFunctionCall(encoded);
+            assertEquals(expected.get(0), actual.get(0).getValue());
+            assertEquals(expected.get(1), actual.get(1).getValue());
+            assertEquals(expected.get(2), actual.get(2).getValue());
+            assertEquals(expected.get(3), actual.get(3).getValue());
+            assertEquals(expected.get(4), Numeric.toHexString((byte[]) actual.get(4).getValue()));
+        }
+
+        @Test
+        public void decodeFunctionCall_OverrideFunction() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+            Caver caver = new Caver(Caver.DEFAULT_URL);
+            KIP37 kip37 = caver.kct.kip37.create();
+
+            BigInteger tokenID = BigInteger.ONE;
+            Uint256 tokenIdSol = new Uint256(tokenID);
+            Address to = new Address(BRANDON.getAddress());
+            Uint256 amount = new Uint256(BigInteger.ONE);
+
+            String encoded = kip37.encodeABIWithSolidityType("mint", tokenIdSol, to, amount);
+            List<Type> actual = kip37.decodeFunctionCall(encoded);
+
+            assertEquals(tokenIdSol, actual.get(0));
+            assertEquals(to, actual.get(1));
+            assertEquals(amount, actual.get(2));
+
+
+            String[] toArr = new String[] {WAYNE.getAddress(), BRANDON.getAddress()};
+            List<Address> addressList = Arrays.stream(toArr).map(Address::new).collect(Collectors.toList());
+            DynamicArray<Address> toListSol = new DynamicArray<Address>(Address.class, addressList);
+
+            BigInteger[] mintAmountArr = new BigInteger[] {BigInteger.TEN, BigInteger.TEN};
+            List<Uint256> valueList = Arrays.stream(mintAmountArr).map(Uint256::new).collect(Collectors.toList());
+            DynamicArray<Uint256> valuesSol = new DynamicArray<Uint256>(Uint256.class, valueList);
+
+            encoded = kip37.encodeABIWithSolidityType("mint", tokenIdSol, toListSol, valuesSol);
+            actual = kip37.decodeFunctionCall(encoded);
+
+            assertEquals(tokenIdSol, actual.get(0));
+            assertEquals(toListSol, actual.get(1));
+            assertEquals(valuesSol, actual.get(2));
+        }
+    }
+
+
 }

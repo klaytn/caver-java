@@ -1,11 +1,13 @@
 package com.klaytn.caver.common.kct.kip17;
 
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.abi.datatypes.Type;
 import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.kct.kip17.KIP17;
 import com.klaytn.caver.kct.kip17.KIP17ConstantData;
 import com.klaytn.caver.kct.kip17.KIP17DeployParams;
+import com.klaytn.caver.kct.kip7.KIP7;
 import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
@@ -26,6 +28,9 @@ import org.web3j.protocol.exceptions.TransactionException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import static com.klaytn.caver.base.Accounts.BRANDON;
@@ -1068,5 +1073,42 @@ public class KIP17Test {
             TransactionReceipt.TransactionReceiptData receiptData = receiptProcessor.waitForTransactionReceipt(txHash.getResult());
             assertEquals("0x1", receiptData.getStatus());
         }
+    }
+
+    public static class decodeFunctionCall {
+        public void checkTypeAndValue(List<Object> expected, List<Type> actual) {
+            assertEquals(expected.size(), actual.size());
+
+            for(int i=0; i<actual.size(); i++) {
+                assertEquals(expected.get(i), actual.get(i).getValue());
+            }
+        }
+
+        @Test
+        public void decodeFunctionCall() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+            Caver caver = new Caver(Caver.DEFAULT_URL);
+            KIP17 kip17 = caver.kct.kip17.create();
+
+            List<Object> expected = new ArrayList<>();
+            String encoded = kip17.encodeABI("pause");
+            List<Type> actual = kip17.decodeFunctionCall(encoded);
+            checkTypeAndValue(expected, actual);
+
+            expected = Arrays.asList(LUMAN.getAddress());
+            encoded = kip17.encodeABI("balanceOf", LUMAN.getAddress());
+            actual = kip17.decodeFunctionCall(encoded);
+            checkTypeAndValue(expected, actual);
+
+            expected = Arrays.asList(BRANDON.getAddress(), LUMAN.getAddress(), BigInteger.valueOf(10));
+            encoded = kip17.encodeABI("transferFrom", BRANDON.getAddress(), LUMAN.getAddress(), BigInteger.valueOf(10));
+            actual = kip17.decodeFunctionCall(encoded);
+            checkTypeAndValue(expected, actual);
+
+            expected = Arrays.asList(LUMAN.getAddress());
+            encoded = kip17.encodeABI("isMinter", LUMAN.getAddress());
+            actual = kip17.decodeFunctionCall(encoded);
+            checkTypeAndValue(expected, actual);
+        }
+
     }
 }

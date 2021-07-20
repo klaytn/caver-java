@@ -929,6 +929,40 @@ public class ContractMethod {
     }
 
     /**
+     * Find a ContractMethod instance that has the function signature same as passed as a parameter.
+     * @param functionSignature The function signature to find a ContractMethod instance.
+     * @return ContractMethod
+     */
+    public ContractMethod findMethodBySignature(String functionSignature) {
+        if(this.getType().equals(TYPE_CONSTRUCTOR)) {
+            return null;
+        }
+
+        ContractMethod findMethod = null;
+
+        List<ContractMethod> methodList = getAllMethod();
+        for(ContractMethod contractMethod : methodList) {
+            String signature = Utils.stripHexPrefix(contractMethod.getSignature());
+            if(signature.equals(functionSignature)) {
+                findMethod = contractMethod;
+            }
+        }
+
+        return findMethod;
+    }
+
+    private List<ContractMethod> getAllMethod() {
+        List<ContractMethod> methodList = new ArrayList<>();
+        methodList.add(this);
+
+        if(this.getNextContractMethods().size() > 0) {
+            methodList.addAll(this.getNextContractMethods());
+        }
+
+        return methodList;
+    }
+
+    /**
      * Before executing SmartContractExecution transaction, check SendOptions field is valid.
      * @param options SendOption instance.
      */

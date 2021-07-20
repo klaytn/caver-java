@@ -29,6 +29,7 @@ import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
+import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.IWallet;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
@@ -694,6 +695,53 @@ public class Contract {
     public String estimateGasWithSolidityType(CallObject callObject, String methodName, Type... methodArguments) throws IOException {
         ContractMethod method = this.getMethod(methodName);
         return method.estimateGasWithSolidityWrapper(Arrays.asList(methodArguments), callObject);
+    }
+
+    /**
+     * Decodes a function call data that composed of function selector and encoded input argument.
+     * <pre>Example :
+     * {@code
+     * String contractABI = ".....";
+     * Contract contract = caver.contract.create(contractABI);
+     *
+     * List<Type> decoded = contract.decodeFunctionCall("0x{encoded function call data}");
+     * }
+     * </pre>
+     * @param encodedString The encoded function call data string.
+     * @return List&lt;Type&gt;
+     * @throws ClassNotFoundException
+     */
+    public List<Type> decodeFunctionCall(String encodedString) throws ClassNotFoundException {
+        String encoded = Utils.stripHexPrefix(encodedString);
+        String functionSignature = encoded.substring(0, 8);
+
+        //Search all ContractMethods to find the ContractMethod corresponding to the function signature passed as a parameter.
+        ContractMethod findMethod = this.findContractMethodBySignature(functionSignature);
+        if(findMethod == null) {
+            throw new IllegalArgumentException("Invalid function signature: Cannot find the contract method matched the function signatures extracted from the function call string.");
+        }
+
+        return ABI.decodeFunctionCall(findMethod, encodedString);
+    }
+
+    /**
+     * Find a ContractMethod instance that has the function signature same as passed as a parameter.
+     * @param functionSignature The function signature to find a ContractMethod instance.
+     * @return ContractMethod
+     */
+    public ContractMethod findContractMethodBySignature(String functionSignature) {
+        ContractMethod findMethod = null;
+
+        for(String key : this.getMethods().keySet()) {
+            ContractMethod method = this.getMethod(key);
+
+            findMethod = method.findMethodBySignature(functionSignature);
+            if(findMethod != null) {
+                break;
+            }
+        }
+
+        return findMethod;
     }
 
     /**

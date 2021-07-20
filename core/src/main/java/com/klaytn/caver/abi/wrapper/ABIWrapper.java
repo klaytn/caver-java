@@ -282,4 +282,23 @@ public class ABIWrapper {
     public List<Type> decodeFunctionCall(String functionAbi, String encodedString) throws ClassNotFoundException {
         return ABI.decodeFunctionCall(functionAbi, encodedString);
     }
+
+    /**
+     * Decodes a function call data that composed of function selector and encoded input argument.
+     * <pre>Example :
+     * {@code
+     * String contractABI = "...";
+     * Contract contract = caver.contract.create(contractABI);
+     * ContractMethod method = contract.getMethod("myFunction");
+     *
+     * List<Type> result = caver.abi.decodeFunctionCall(method, "0x{ABI-encoded string}");
+     * }</pre>
+     * @param method The ContractMethod instance to decode ABI-encoded string.
+     * @param encodedString The encode function call data string.
+     * @return List&lt;Type&gt;
+     * @throws ClassNotFoundException
+     */
+    public List<Type> decodeFunctionCall(ContractMethod method, String encodedString) throws ClassNotFoundException {
+        return ABI.decodeFunctionCall(method, encodedString);
+    }
 }

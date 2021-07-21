@@ -17,6 +17,11 @@
 package com.klaytn.caver.kct.kip37;
 
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.abi.datatypes.Address;
+import com.klaytn.caver.abi.datatypes.DynamicArray;
+import com.klaytn.caver.abi.datatypes.NumericType;
+import com.klaytn.caver.abi.datatypes.Type;
+import com.klaytn.caver.abi.datatypes.generated.Uint256;
 import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.contract.ContractDeployParams;
 import com.klaytn.caver.contract.SendOptions;
@@ -24,12 +29,6 @@ import com.klaytn.caver.kct.kip13.KIP13;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.IWallet;
-
-import com.klaytn.caver.abi.datatypes.Address;
-import com.klaytn.caver.abi.datatypes.DynamicArray;
-import com.klaytn.caver.abi.datatypes.NumericType;
-import com.klaytn.caver.abi.datatypes.Type;
-import com.klaytn.caver.abi.datatypes.generated.Uint256;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
 
@@ -37,7 +36,10 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class KIP37 extends Contract {
@@ -87,6 +89,27 @@ public class KIP37 extends Contract {
         public String getId() {
             return id;
         }
+    }
+
+    /**
+     * Creates a KIP37 instance.
+     * @param caver A Caver instance.
+     * @return KIP37
+     * @throws IOException
+     */
+    public static KIP37 create(Caver caver) throws IOException {
+        return new KIP37(caver);
+    }
+
+    /**
+     * Creates a KIP37 instance.
+     * @param caver A Caver instance.
+     * @param contractAddress A contract address
+     * @return KIP37
+     * @throws IOException
+     */
+    public static KIP37 create(Caver caver, String contractAddress) throws IOException {
+        return new KIP37(caver, contractAddress);
     }
 
     /**

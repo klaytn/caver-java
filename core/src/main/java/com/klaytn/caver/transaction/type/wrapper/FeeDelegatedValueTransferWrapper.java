@@ -18,6 +18,9 @@ package com.klaytn.caver.transaction.type.wrapper;
 
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.type.FeeDelegatedValueTransfer;
+import com.klaytn.caver.wallet.keyring.SignatureData;
+
+import java.util.List;
 
 /**
  * Represents a FeeDelegatedValueTransferWrapper
@@ -66,9 +69,26 @@ public class FeeDelegatedValueTransferWrapper {
      * @return FeeDelegatedValueTransfer
      */
     public FeeDelegatedValueTransfer create(FeeDelegatedValueTransfer.Builder builder) {
-        return builder
-                .setKlaytnCall(this.klaytnCall)
-                .build();
+        builder.setKlaytnCall(this.klaytnCall);
+        return FeeDelegatedValueTransfer.create(builder);
+    }
+
+    /**
+     * Creates a FeeDelegatedValueTransfer instance.
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A sender signature list.
+     * @param feePayer A fee payer address
+     * @param feePayerSignatures A fee payer signature list
+     * @param to The account address that will receive the transferred value.
+     * @param value The amount of KLAY in peb to be transferred.
+     * @return FeeDelegatedValueTransfer
+     */
+    public FeeDelegatedValueTransfer create(String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures, String to, String value) {
+        return FeeDelegatedValueTransfer.create(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, feePayer, feePayerSignatures, to, value);
     }
 
     /**

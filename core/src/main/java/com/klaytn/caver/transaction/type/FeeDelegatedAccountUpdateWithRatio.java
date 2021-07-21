@@ -64,6 +64,34 @@ public class FeeDelegatedAccountUpdateWithRatio extends AbstractFeeDelegatedWith
     /**
      * Creates a FeeDelegatedAccountUpdateWithRatio instance.
      * @param builder FeeDelegatedAccountUpdateWithRatio.Builder instance.
+     * @return FeeDelegatedAccountUpdateWithRatio
+     */
+    public static FeeDelegatedAccountUpdateWithRatio create(FeeDelegatedAccountUpdateWithRatio.Builder builder) {
+        return new FeeDelegatedAccountUpdateWithRatio(builder);
+    }
+
+    /**
+     * Creates a FeeDelegatedAccountUpdateWithRatio instance.
+     * @param klaytnCall Klay RPC instance
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A Signature list
+     * @param feePayer A fee payer address.
+     * @param feePayerSignatures A fee payer signature list.
+     * @param feeRatio A fee ratio of the fee payer.
+     * @param account An account instance includes account key to be updated to the account in the network.
+     * @return FeeDelegatedAccountUpdateWithRatio
+     */
+    public static FeeDelegatedAccountUpdateWithRatio create(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, Account account) {
+        return new FeeDelegatedAccountUpdateWithRatio(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, feePayer, feePayerSignatures, feeRatio, account);
+    }
+
+    /**
+     * Creates a FeeDelegatedAccountUpdateWithRatio instance.
+     * @param builder FeeDelegatedAccountUpdateWithRatio.Builder instance.
      */
     public FeeDelegatedAccountUpdateWithRatio(Builder builder) {
         super(builder);

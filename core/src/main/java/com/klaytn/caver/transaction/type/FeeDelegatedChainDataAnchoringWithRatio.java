@@ -63,6 +63,34 @@ public class FeeDelegatedChainDataAnchoringWithRatio extends AbstractFeeDelegate
     /**
      * Creates a FeeDelegatedChainDataAnchoringWithRatio instance.
      * @param builder FeeDelegatedChainDataAnchoringWithRatio.Builder instance.
+     * @return FeeDelegatedChainDataAnchoringWithRatio
+     */
+    public static FeeDelegatedChainDataAnchoringWithRatio create(FeeDelegatedChainDataAnchoringWithRatio.Builder builder) {
+        return new FeeDelegatedChainDataAnchoringWithRatio(builder);
+    }
+
+    /**
+     * Creates a FeeDelegatedChainDataAnchoringWithRatio instance.
+     * @param klaytnCall Klay RPC instance
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A signature list
+     * @param feePayer The address of the fee payer.
+     * @param feePayerSignatures The fee payers's signatures.
+     * @param feeRatio A fee ratio of the fee payer.
+     * @param input The data of the service chain.
+     * @return FeeDelegatedChainDataAnchoringWithRatio
+     */
+    public static FeeDelegatedChainDataAnchoringWithRatio create(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, String input) {
+        return new FeeDelegatedChainDataAnchoringWithRatio(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, feePayer, feePayerSignatures, feeRatio, input);
+    }
+
+    /**
+     * Creates a FeeDelegatedChainDataAnchoringWithRatio instance.
+     * @param builder FeeDelegatedChainDataAnchoringWithRatio.Builder instance.
      */
     public FeeDelegatedChainDataAnchoringWithRatio(Builder builder) {
         super(builder);

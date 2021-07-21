@@ -86,6 +86,36 @@ public class FeeDelegatedSmartContractExecutionWithRatio extends AbstractFeeDele
     /**
      * Creates a FeeDelegatedSmartContractExecutionWithRatio instance.
      * @param builder FeeDelegatedSmartContractExecutionWithRatio.Builder instance.
+     * @return FeeDelegatedSmartContractExecutionWithRatio
+     */
+    public static FeeDelegatedSmartContractExecutionWithRatio create(FeeDelegatedSmartContractExecutionWithRatio.Builder builder) {
+        return new FeeDelegatedSmartContractExecutionWithRatio(builder);
+    }
+
+    /**
+     * Creates a FeeDelegatedSmartContractExecutionWithRatio instance.
+     * @param klaytnCall Klay RPC instance
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID.
+     * @param signatures A sender signature list.
+     * @param feePayer A fee payer address.
+     * @param feePayerSignatures A fee payer signature list.
+     * @param feeRatio A fee ratio of the fee payer.
+     * @param to The account address that will receive the transferred value.
+     * @param value The amount of KLAY in peb to be transferred.
+     * @param input The data attached to the transaction, used for transaction execution.
+     * @return FeeDelegatedSmartContractExecutionWithRatio
+     */
+    public static FeeDelegatedSmartContractExecutionWithRatio create(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, String to, String value, String input) {
+        return new FeeDelegatedSmartContractExecutionWithRatio(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, feePayer, feePayerSignatures, feeRatio, to, value, input);
+    }
+
+    /**
+     * Creates a FeeDelegatedSmartContractExecutionWithRatio instance.
+     * @param builder FeeDelegatedSmartContractExecutionWithRatio.Builder instance.
      */
     public FeeDelegatedSmartContractExecutionWithRatio(Builder builder) {
         super(builder);

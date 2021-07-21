@@ -18,6 +18,10 @@ package com.klaytn.caver.transaction.type.wrapper;
 
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.type.ValueTransfer;
+import com.klaytn.caver.transaction.type.ValueTransferMemo;
+import com.klaytn.caver.wallet.keyring.SignatureData;
+
+import java.util.List;
 
 /**
  * Represents a ValueTransferWrapper
@@ -66,9 +70,25 @@ public class ValueTransferWrapper {
      * @return ValueTransfer
      */
     public ValueTransfer create(ValueTransfer.Builder builder) {
-        return builder
-                .setKlaytnCall(this.klaytnCall)
-                .build();
+        builder.setKlaytnCall(klaytnCall);
+        return ValueTransfer.create(builder);
+    }
+
+    /**
+     * Creates a ValueTransferMemo instance
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A Signature list
+     * @param to The account address that will receive the transferred value.
+     * @param value The amount of KLAY in peb to be transferred.
+     * @param input The message data attached to the transaction.
+     * @return ValueTransferMemo
+     */
+    public ValueTransferMemo create(String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String value, String input) {
+        return ValueTransferMemo.create(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, to, value, input);
     }
 
     /**

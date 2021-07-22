@@ -27,7 +27,7 @@ import java.io.IOException;
 public class TransactionHelper {
 
     /**
-     * Query transaction from Klaytn and converts to a caver transaction instance.
+     * Querys transaction from Klaytn and converts to a caver transaction instance.
      * @see com.klaytn.caver.transaction.wrapper.TransactionWrapper#getTransactionByHash(String) 
      * <pre>Example :
      * {@code

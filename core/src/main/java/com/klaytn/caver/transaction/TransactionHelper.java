@@ -37,7 +37,6 @@ public class TransactionHelper {
      * @param klay The Klay instance.
      * @param transactionHash The transaction hash string to query from Klaytn.
      * @return AbstractTransaction
-     * @throws IOException
      */
     public static AbstractTransaction getTransactionByHash(Klay klay, String transactionHash) {
         try {

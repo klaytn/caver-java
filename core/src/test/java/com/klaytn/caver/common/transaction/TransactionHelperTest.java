@@ -41,6 +41,7 @@ import org.web3j.protocol.exceptions.TransactionException;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
@@ -66,9 +67,11 @@ public class TransactionHelperTest {
         @BeforeClass
         public static void init() throws IOException {
             caver = new Caver(Caver.DEFAULT_URL);
-
+            //For loading resource file when executing android_instrumented_test, using below codes.
+            //https://stackoverflow.com/a/35071636
+            InputStream in = caver.getClass().getClassLoader().getResourceAsStream("TransactionSample.json");
             ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
-            sampleTxData = mapper.readValue(new File("src/test/resources/TransactionSample.json"), new TypeReference<Map<String, Transaction.TransactionData>>(){});
+            sampleTxData = mapper.readValue(in, new TypeReference<Map<String, Transaction.TransactionData>>(){});
         }
 
         @Test

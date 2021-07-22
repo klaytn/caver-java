@@ -19,6 +19,7 @@ package com.klaytn.caver.transaction.wrapper;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.transaction.TransactionDecoder;
+import com.klaytn.caver.transaction.TransactionHelper;
 import com.klaytn.caver.transaction.type.wrapper.*;
 
 /**
@@ -27,6 +28,9 @@ import com.klaytn.caver.transaction.type.wrapper.*;
  * 2. This class should be accessed via `caver.transaction`
  */
 public class TransactionWrapper {
+
+    private Klay klay;
+
     /**
      * LegacyTransactionWrapper instance
      */
@@ -142,6 +146,8 @@ public class TransactionWrapper {
      * @param klaytnCall Klay RPC instance
      */
     public TransactionWrapper(Klay klaytnCall) {
+        this.klay = klaytnCall;
+
         this.legacyTransaction = new LegacyTransactionWrapper(klaytnCall);
 
         this.valueTransfer = new ValueTransferWrapper(klaytnCall);
@@ -180,5 +186,19 @@ public class TransactionWrapper {
      */
     public AbstractTransaction decode(String rlpEncoded) {
         return TransactionDecoder.decode(rlpEncoded);
+    }
+
+    /**
+     * Query transaction from Klaytn and converts to a caver transaction instance.
+     * <pre>Example :
+     * {@code
+     * AbstractTransaction tx = caver.transaction.getTransactionByHash("0x{txHash}");
+     * }
+     * </pre>
+     * @param transactionHash The transaction hash string to query from Klaytn.
+     * @return AbstractTransaction
+     */
+    public AbstractTransaction getTransactionByHash(String transactionHash) {
+        return TransactionHelper.getTransactionByHash(klay, transactionHash);
     }
 }

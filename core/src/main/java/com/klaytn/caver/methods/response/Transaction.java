@@ -347,7 +347,6 @@ public class Transaction extends Response<Transaction.TransactionData> {
         /**
          * Convert TransactionData to Caver's transaction instance.
          * @param klay The Klay instance to fill gasPrice, chainId and nonce fields when signing a transaction.
-         * @param this The TransactionData instance.
          * @return AbstractTransaction.
          */
         public AbstractTransaction convertToCaverTransaction(Klay klay) {

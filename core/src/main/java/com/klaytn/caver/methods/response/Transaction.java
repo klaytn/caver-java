@@ -347,57 +347,57 @@ public class Transaction extends Response<Transaction.TransactionData> {
         /**
          * Convert TransactionData to Caver's transaction instance.
          * @param klay The Klay instance to fill gasPrice, chainId and nonce fields when signing a transaction.
-         * @param txObject The TransactionData instance.
+         * @param this The TransactionData instance.
          * @return AbstractTransaction.
          */
-        public AbstractTransaction convertToCaverTransaction(Klay klay, TransactionData txObject) {
-            switch (TransactionType.valueOf(txObject.getType())) {
+        public AbstractTransaction convertToCaverTransaction(Klay klay) {
+            switch (TransactionType.valueOf(this.getType())) {
                 case TxTypeLegacyTransaction:
-                    return LegacyTransaction.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getTo(), txObject.getInput(), txObject.getValue());
+                    return LegacyTransaction.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getTo(), this.getInput(), this.getValue());
                 case TxTypeValueTransfer:
-                    return ValueTransfer.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getTo(), txObject.getValue());
+                    return ValueTransfer.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getTo(), this.getValue());
                 case TxTypeFeeDelegatedValueTransfer:
-                    return FeeDelegatedValueTransfer.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getTo(), txObject.getValue());
+                    return FeeDelegatedValueTransfer.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getFeePayer(), this.getFeePayerSignatures(), this.getTo(), this.getValue());
                 case TxTypeFeeDelegatedValueTransferWithRatio:
-                    return FeeDelegatedValueTransferWithRatio.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getFeeRatio(), txObject.getTo(), txObject.getValue());
+                    return FeeDelegatedValueTransferWithRatio.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getFeePayer(), this.getFeePayerSignatures(), this.getFeeRatio(), this.getTo(), this.getValue());
                 case TxTypeValueTransferMemo:
-                    return ValueTransferMemo.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getTo(), txObject.getValue(), txObject.getInput());
+                    return ValueTransferMemo.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getTo(), this.getValue(), this.getInput());
                 case TxTypeFeeDelegatedValueTransferMemo:
-                    return FeeDelegatedValueTransferMemo.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getTo(), txObject.getValue(), txObject.getInput());
+                    return FeeDelegatedValueTransferMemo.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getFeePayer(), this.getFeePayerSignatures(), this.getTo(), this.getValue(), this.getInput());
                 case TxTypeFeeDelegatedValueTransferMemoWithRatio:
-                    return FeeDelegatedValueTransferMemoWithRatio.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getFeeRatio(), txObject.getTo(), txObject.getValue(), txObject.getInput());
+                    return FeeDelegatedValueTransferMemoWithRatio.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getFeePayer(), this.getFeePayerSignatures(), this.getFeeRatio(), this.getTo(), this.getValue(), this.getInput());
                 case TxTypeAccountUpdate:
-                    return AccountUpdate.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), Account.createFromRLPEncoding(txObject.getFrom(), txObject.getKey()));
+                    return AccountUpdate.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), Account.createFromRLPEncoding(this.getFrom(), this.getKey()));
                 case TxTypeFeeDelegatedAccountUpdate:
-                    return FeeDelegatedAccountUpdate.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), Account.createFromRLPEncoding(txObject.getFrom(), txObject.getKey()));
+                    return FeeDelegatedAccountUpdate.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getFeePayer(), this.getFeePayerSignatures(), Account.createFromRLPEncoding(this.getFrom(), this.getKey()));
                 case TxTypeFeeDelegatedAccountUpdateWithRatio:
-                    return FeeDelegatedAccountUpdateWithRatio.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getFeeRatio(), Account.createFromRLPEncoding(txObject.getFrom(), txObject.getKey()));
+                    return FeeDelegatedAccountUpdateWithRatio.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getFeePayer(), this.getFeePayerSignatures(), this.getFeeRatio(), Account.createFromRLPEncoding(this.getFrom(), this.getKey()));
                 case TxTypeSmartContractDeploy:
-                    return SmartContractDeploy.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getTo(), txObject.getValue(), txObject.getInput(), false, Numeric.toHexStringWithPrefix(CodeFormat.EVM));
+                    return SmartContractDeploy.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getTo(), this.getValue(), this.getInput(), false, Numeric.toHexStringWithPrefix(CodeFormat.EVM));
                 case TxTypeFeeDelegatedSmartContractDeploy:
-                    return FeeDelegatedSmartContractDeploy.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getTo(), txObject.getValue(), txObject.getInput(), false, Numeric.toHexStringWithPrefix(CodeFormat.EVM));
+                    return FeeDelegatedSmartContractDeploy.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getFeePayer(), this.getFeePayerSignatures(), this.getTo(), this.getValue(), this.getInput(), false, Numeric.toHexStringWithPrefix(CodeFormat.EVM));
                 case TxTypeFeeDelegatedSmartContractDeployWithRatio:
-                    return FeeDelegatedSmartContractDeployWithRatio.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getFeeRatio(), txObject.getTo(), txObject.getValue(), txObject.getInput(), false, Numeric.toHexStringWithPrefix(CodeFormat.EVM));
+                    return FeeDelegatedSmartContractDeployWithRatio.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getFeePayer(), this.getFeePayerSignatures(), this.getFeeRatio(), this.getTo(), this.getValue(), this.getInput(), false, Numeric.toHexStringWithPrefix(CodeFormat.EVM));
                 case TxTypeSmartContractExecution:
-                    return SmartContractExecution.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getTo(), txObject.getValue(), txObject.getInput());
+                    return SmartContractExecution.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getTo(), this.getValue(), this.getInput());
                 case TxTypeFeeDelegatedSmartContractExecution:
-                    return FeeDelegatedSmartContractExecution.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getTo(), txObject.getValue(), txObject.getInput());
+                    return FeeDelegatedSmartContractExecution.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getFeePayer(), this.getFeePayerSignatures(), this.getTo(), this.getValue(), this.getInput());
                 case TxTypeFeeDelegatedSmartContractExecutionWithRatio:
-                    return FeeDelegatedSmartContractExecutionWithRatio.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getFeeRatio(), txObject.getTo(), txObject.getValue(), txObject.getInput());
+                    return FeeDelegatedSmartContractExecutionWithRatio.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getFeePayer(), this.getFeePayerSignatures(), this.getFeeRatio(), this.getTo(), this.getValue(), this.getInput());
                 case TxTypeCancel:
-                    return Cancel.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures());
+                    return Cancel.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures());
                 case TxTypeFeeDelegatedCancel:
-                    return FeeDelegatedCancel.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures());
+                    return FeeDelegatedCancel.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getFeePayer(), this.getFeePayerSignatures());
                 case TxTypeFeeDelegatedCancelWithRatio:
-                    return FeeDelegatedCancelWithRatio.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getFeeRatio());
+                    return FeeDelegatedCancelWithRatio.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getFeePayer(), this.getFeePayerSignatures(), this.getFeeRatio());
                 case TxTypeChainDataAnchoring:
-                    return ChainDataAnchoring.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getInput());
+                    return ChainDataAnchoring.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getInput());
                 case TxTypeFeeDelegatedChainDataAnchoring:
-                    return FeeDelegatedChainDataAnchoring.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getInput());
+                    return FeeDelegatedChainDataAnchoring.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getFeePayer(), this.getFeePayerSignatures(), this.getInput());
                 case TxTypeFeeDelegatedChainDataAnchoringWithRatio:
-                    return FeeDelegatedChainDataAnchoringWithRatio.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getFeeRatio(), txObject.getInput());
+                    return FeeDelegatedChainDataAnchoringWithRatio.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), "", this.getSignatures(), this.getFeePayer(), this.getFeePayerSignatures(), this.getFeeRatio(), this.getInput());
                 default:
-                    throw new RuntimeException("Invalid transaction type : Cannot create a transaction instance that has Tx type :" + txObject.getType());
+                    throw new RuntimeException("Invalid transaction type : Cannot create a transaction instance that has Tx type :" + this.getType());
             }
         }
     }

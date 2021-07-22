@@ -46,7 +46,7 @@ public class TransactionHelper {
             }
 
             Transaction.TransactionData txObject = response.getResult();
-            return txObject.convertToCaverTransaction(klay, txObject);
+            return txObject.convertToCaverTransaction(klay);
         } catch(IOException e) {
             throw new RuntimeException("Failed to get transaction from Klaytn with" + transactionHash, e);
         }

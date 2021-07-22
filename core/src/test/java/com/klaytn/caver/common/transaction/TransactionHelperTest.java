@@ -74,112 +74,112 @@ public class TransactionHelperTest {
         @Test
         public void legacyTransaction() {
             Transaction.TransactionData txObject = sampleTxData.get("legacyTransaction");
-            LegacyTransaction legacyTransaction = (LegacyTransaction)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            LegacyTransaction legacyTransaction = (LegacyTransaction)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, legacyTransaction);
         }
 
         @Test
         public void valueTransfer() {
             Transaction.TransactionData txObject = sampleTxData.get("valueTransfer");
-            ValueTransfer valueTransfer = (ValueTransfer)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            ValueTransfer valueTransfer = (ValueTransfer)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, valueTransfer);
 
             txObject = sampleTxData.get("feeDelegatedValueTransfer");
-            FeeDelegatedValueTransfer fdValueTransfer = (FeeDelegatedValueTransfer)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            FeeDelegatedValueTransfer fdValueTransfer = (FeeDelegatedValueTransfer)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, fdValueTransfer);
 
             txObject = sampleTxData.get("feeDelegatedValueTransferWithRatio");
-            FeeDelegatedValueTransferWithRatio fdValueTransferWithRatio = (FeeDelegatedValueTransferWithRatio)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            FeeDelegatedValueTransferWithRatio fdValueTransferWithRatio = (FeeDelegatedValueTransferWithRatio)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, fdValueTransferWithRatio);
         }
 
         @Test
         public void valueTransferMemo() {
             Transaction.TransactionData txObject = sampleTxData.get("valueTransferMemo");
-            ValueTransferMemo valueTransferMemo = (ValueTransferMemo)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            ValueTransferMemo valueTransferMemo = (ValueTransferMemo)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, valueTransferMemo);
 
             txObject = sampleTxData.get("feeDelegatedValueTransferMemo");
-            FeeDelegatedValueTransferMemo fdValueTransferMemo = (FeeDelegatedValueTransferMemo)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            FeeDelegatedValueTransferMemo fdValueTransferMemo = (FeeDelegatedValueTransferMemo)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, fdValueTransferMemo);
 
             txObject = sampleTxData.get("feeDelegatedValueTransferMemoWithRatio");
-            FeeDelegatedValueTransferMemoWithRatio fdValueTransferMemoWithRatio = (FeeDelegatedValueTransferMemoWithRatio)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            FeeDelegatedValueTransferMemoWithRatio fdValueTransferMemoWithRatio = (FeeDelegatedValueTransferMemoWithRatio)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, fdValueTransferMemoWithRatio);
         }
 
         @Test
         public void smartContractDeploy() {
             Transaction.TransactionData txObject = sampleTxData.get("smartContractDeploy");
-            SmartContractDeploy smartContractDeploy = (SmartContractDeploy)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            SmartContractDeploy smartContractDeploy = (SmartContractDeploy)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, smartContractDeploy);
 
             txObject = sampleTxData.get("feeDelegatedSmartContractDeploy");
-            FeeDelegatedSmartContractDeploy fdSmartContractDeploy = (FeeDelegatedSmartContractDeploy)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            FeeDelegatedSmartContractDeploy fdSmartContractDeploy = (FeeDelegatedSmartContractDeploy)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, fdSmartContractDeploy);
 
             txObject = sampleTxData.get("feeDelegatedSmartContractDeployWithRatio");
-            FeeDelegatedSmartContractDeployWithRatio fdSmartContractDeployWithRatio = (FeeDelegatedSmartContractDeployWithRatio)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            FeeDelegatedSmartContractDeployWithRatio fdSmartContractDeployWithRatio = (FeeDelegatedSmartContractDeployWithRatio)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, fdSmartContractDeployWithRatio);
         }
 
         @Test
         public void smartContractExecution() {
             Transaction.TransactionData txObject = sampleTxData.get("smartContractExecution");
-            SmartContractExecution smartContractExecution = (SmartContractExecution)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            SmartContractExecution smartContractExecution = (SmartContractExecution)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, smartContractExecution);
 
             txObject = sampleTxData.get("feeDelegatedSmartContractExecution");
-            FeeDelegatedSmartContractExecution fdSmartContractExecution = (FeeDelegatedSmartContractExecution)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            FeeDelegatedSmartContractExecution fdSmartContractExecution = (FeeDelegatedSmartContractExecution)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, fdSmartContractExecution);
 
             txObject = sampleTxData.get("feeDelegatedSmartContractExecutionWithRatio");
-            FeeDelegatedSmartContractExecutionWithRatio fdSmartContractExecutionWithRatio = (FeeDelegatedSmartContractExecutionWithRatio)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            FeeDelegatedSmartContractExecutionWithRatio fdSmartContractExecutionWithRatio = (FeeDelegatedSmartContractExecutionWithRatio)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, fdSmartContractExecutionWithRatio);
         }
 
         @Test
         public void accountUpdate() {
             Transaction.TransactionData txObject = sampleTxData.get("accountUpdate");
-            AccountUpdate accountUpdate = (AccountUpdate)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            AccountUpdate accountUpdate = (AccountUpdate)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, accountUpdate);
 
             txObject = sampleTxData.get("feeDelegatedAccountUpdate");
-            FeeDelegatedAccountUpdate feeDelegatedAccountUpdate = (FeeDelegatedAccountUpdate)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            FeeDelegatedAccountUpdate feeDelegatedAccountUpdate = (FeeDelegatedAccountUpdate)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, feeDelegatedAccountUpdate);
 
             txObject = sampleTxData.get("feeDelegatedAccountUpdateWithRatio");
-            FeeDelegatedAccountUpdateWithRatio fdSmartContractExecutionWithRatio = (FeeDelegatedAccountUpdateWithRatio)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            FeeDelegatedAccountUpdateWithRatio fdSmartContractExecutionWithRatio = (FeeDelegatedAccountUpdateWithRatio)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, fdSmartContractExecutionWithRatio);
         }
 
         @Test
         public void chainDataAnchoring() {
             Transaction.TransactionData txObject = sampleTxData.get("chainDataAnchoring");
-            ChainDataAnchoring chainDataAnchoring = (ChainDataAnchoring)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            ChainDataAnchoring chainDataAnchoring = (ChainDataAnchoring)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, chainDataAnchoring);
 
             txObject = sampleTxData.get("feeDelegatedChainDataAnchoring");
-            FeeDelegatedChainDataAnchoring fdChainDataAnchoring = (FeeDelegatedChainDataAnchoring)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            FeeDelegatedChainDataAnchoring fdChainDataAnchoring = (FeeDelegatedChainDataAnchoring)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, fdChainDataAnchoring);
 
             txObject = sampleTxData.get("feeDelegatedChainDataAnchoringWithRatio");
-            FeeDelegatedChainDataAnchoringWithRatio fdChainDataAnchoringWithRatio = (FeeDelegatedChainDataAnchoringWithRatio)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            FeeDelegatedChainDataAnchoringWithRatio fdChainDataAnchoringWithRatio = (FeeDelegatedChainDataAnchoringWithRatio)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, fdChainDataAnchoringWithRatio);
         }
 
         @Test
         public void cancel() {
             Transaction.TransactionData txObject = sampleTxData.get("cancel");
-            Cancel cancel = (Cancel)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            Cancel cancel = (Cancel)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, cancel);
 
             txObject = sampleTxData.get("feeDelegatedCancel");
-            FeeDelegatedCancel fdCancel = (FeeDelegatedCancel)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            FeeDelegatedCancel fdCancel = (FeeDelegatedCancel)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, fdCancel);
 
             txObject = sampleTxData.get("feeDelegatedCancelWithRatio");
-            FeeDelegatedCancelWithRatio fdCancelWithRatio = (FeeDelegatedCancelWithRatio)txObject.convertToCaverTransaction(caver.rpc.klay, txObject);
+            FeeDelegatedCancelWithRatio fdCancelWithRatio = (FeeDelegatedCancelWithRatio)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, fdCancelWithRatio);
         }
     }

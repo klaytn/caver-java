@@ -91,8 +91,37 @@ public class FeeDelegatedSmartContractExecution extends AbstractFeeDelegatedTran
     /**
      * Creates a FeeDelegatedSmartContractExecution instance
      * @param builder FeeDelegatedSmartContractExecution.Builder instance.
+     * @return FeeDelegatedSmartContractExecution
      */
-    public FeeDelegatedSmartContractExecution(Builder builder) {
+    public static FeeDelegatedSmartContractExecution create(FeeDelegatedSmartContractExecution.Builder builder) {
+        return new FeeDelegatedSmartContractExecution(builder);
+    }
+
+    /**
+     * Creates a FeeDelegatedSmartContractExecution instance
+     * @param klaytnCall Klay RPC instance
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID.
+     * @param signatures A sender signature list.
+     * @param feePayer A fee payer address.
+     * @param feePayerSignatures A fee payer signature list.
+     * @param to The account address that will receive the transferred value.
+     * @param value The amount of KLAY in peb to be transferred.
+     * @param input The data attached to the transaction, used for transaction execution.
+     * @return FeeDelegatedSmartContractExecution
+     */
+    public static FeeDelegatedSmartContractExecution create(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures, String to, String value, String input) {
+        return new FeeDelegatedSmartContractExecution(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, feePayer, feePayerSignatures, to, value, input);
+    }
+
+    /**
+     * Creates a FeeDelegatedSmartContractExecution instance
+     * @param builder FeeDelegatedSmartContractExecution.Builder instance.
+     */
+    public FeeDelegatedSmartContractExecution(FeeDelegatedSmartContractExecution.Builder builder) {
         super(builder);
         setTo(builder.to);
         setValue(builder.value);

@@ -18,6 +18,9 @@ package com.klaytn.caver.transaction.type.wrapper;
 
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.type.FeeDelegatedSmartContractExecutionWithRatio;
+import com.klaytn.caver.wallet.keyring.SignatureData;
+
+import java.util.List;
 
 /**
  * Represents a FeeDelegatedSmartContractExecutionWithRatioWrapper
@@ -61,6 +64,36 @@ public class FeeDelegatedSmartContractExecutionWithRatioWrapper {
     }
 
     /**
+     * Creates a FeeDelegatedSmartContractExecutionWithRatio instance using FeeDelegatedSmartContractExecutionWithRatio.Builder
+     * @param builder FeeDelegatedSmartContractExecutionWithRatio.Builder
+     * @return FeeDelegatedSmartContractExecutionWithRatio
+     */
+    public FeeDelegatedSmartContractExecutionWithRatio create(FeeDelegatedSmartContractExecutionWithRatio.Builder builder) {
+        builder.setKlaytnCall(this.klaytnCall);
+        return FeeDelegatedSmartContractExecutionWithRatio.create(builder);
+    }
+
+    /**
+     * Creates a FeeDelegatedSmartContractExecutionWithRatio instance.
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID.
+     * @param signatures A sender signature list.
+     * @param feePayer A fee payer address.
+     * @param feePayerSignatures A fee payer signature list.
+     * @param feeRatio A fee ratio of the fee payer.
+     * @param to The account address that will receive the transferred value.
+     * @param value The amount of KLAY in peb to be transferred.
+     * @param input The data attached to the transaction, used for transaction execution.
+     * @return FeeDelegatedSmartContractExecutionWithRatio
+     */
+    public FeeDelegatedSmartContractExecutionWithRatio create(String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, String to, String value, String input) {
+        return FeeDelegatedSmartContractExecutionWithRatio.create(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, feePayer, feePayerSignatures, feeRatio, to, value, input);
+    }
+
+    /**
      * Decodes a RLP-encoded FeeDelegatedSmartContractExecutionWithRatio string.
      * @param rlpEncoded RLP-encoded FeeDelegatedSmartContractExecutionWithRatio string.
      * @return FeeDelegatedSmartContractExecutionWithRatio
@@ -76,16 +109,5 @@ public class FeeDelegatedSmartContractExecutionWithRatioWrapper {
      */
     public FeeDelegatedSmartContractExecutionWithRatio decode(byte[] rlpEncoded) {
         return FeeDelegatedSmartContractExecutionWithRatio.decode(rlpEncoded);
-    }
-
-    /**
-     * Creates a FeeDelegatedSmartContractExecutionWithRatio instance using FeeDelegatedSmartContractExecutionWithRatio.Builder
-     * @param builder FeeDelegatedSmartContractExecutionWithRatio.Builder
-     * @return FeeDelegatedSmartContractExecutionWithRatio
-     */
-    public FeeDelegatedSmartContractExecutionWithRatio create(FeeDelegatedSmartContractExecutionWithRatio.Builder builder) {
-        return builder
-                .setKlaytnCall(this.klaytnCall)
-                .build();
     }
 }

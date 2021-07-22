@@ -64,8 +64,35 @@ public class FeeDelegatedAccountUpdate extends AbstractFeeDelegatedTransaction {
     /**
      * Creates a FeeDelegatedAccountUpdate instance.
      * @param builder FeeDelegatedAccountUpdate.Builder instance.
+     * @return FeeDelegatedAccountUpdate
      */
-    public FeeDelegatedAccountUpdate(Builder builder) {
+    public static FeeDelegatedAccountUpdate create(FeeDelegatedAccountUpdate.Builder builder) {
+        return new FeeDelegatedAccountUpdate(builder);
+    }
+
+    /**
+     * Creates a FeeDelegatedAccountUpdate instance.
+     * @param klaytnCall Klay RPC instance
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A Signature list
+     * @param feePayer A fee payer address.
+     * @param feePayerSignatures A fee payer signature list.
+     * @param account An account instance includes account key to be updated to the account in the network.
+     * @return FeeDelegatedAccountUpdate
+     */
+    public static FeeDelegatedAccountUpdate create(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures, Account account) {
+        return new FeeDelegatedAccountUpdate(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, feePayer, feePayerSignatures, account);
+    }
+
+    /**
+     * Creates a FeeDelegatedAccountUpdate instance.
+     * @param builder FeeDelegatedAccountUpdate.Builder instance.
+     */
+    public FeeDelegatedAccountUpdate(FeeDelegatedAccountUpdate.Builder builder) {
         super(builder);
         setAccount(builder.account);
     }

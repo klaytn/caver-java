@@ -48,10 +48,34 @@ public class Cancel extends AbstractTransaction {
     }
 
     /**
+     * Create a Cancel instance.
+     * @param builder Cancel.builder instance
+     * @return Cancel
+     */
+    public static Cancel create(Cancel.Builder builder) {
+        return new Cancel(builder);
+    }
+
+    /**
+     * Creates a Cancel instance.
+     * @param klaytnCall Klay RPC instance
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A Signature list
+     * @return Cancel
+     */
+    public static Cancel create(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures) {
+        return new Cancel(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures);
+    }
+
+    /**
      * Creates a Cancel instance
      * @param builder Cancel.builder instance
      */
-    private Cancel(Cancel.Builder builder) {
+    public Cancel(Cancel.Builder builder) {
         super(builder);
     }
 

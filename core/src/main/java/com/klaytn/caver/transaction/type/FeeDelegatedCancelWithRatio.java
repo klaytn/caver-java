@@ -51,6 +51,33 @@ public class FeeDelegatedCancelWithRatio extends AbstractFeeDelegatedWithRatioTr
     /**
      * Creates a FeeDelegatedCancelWithRatio instance.
      * @param builder FeeDelegatedCancelWithRatio.Builder instance.
+     * @return FeeDelegatedCancelWithRatio
+     */
+    public static FeeDelegatedCancelWithRatio create(FeeDelegatedCancelWithRatio.Builder builder) {
+        return new FeeDelegatedCancelWithRatio(builder);
+    }
+
+    /**
+     * Creates a FeeDelegatedCancelWithRatio instance.
+     * @param klaytnCall Klay RPC instance
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A signature list
+     * @param feePayer The address of the fee payer.
+     * @param feePayerSignatures The fee payers's signatures.
+     * @param feeRatio A fee ratio of the fee payer.
+     * @return FeeDelegatedCancelWithRatio
+     */
+    public static FeeDelegatedCancelWithRatio create(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio) {
+        return new FeeDelegatedCancelWithRatio(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, feePayer, feePayerSignatures, feeRatio);
+    }
+
+    /**
+     * Creates a FeeDelegatedCancelWithRatio instance.
+     * @param builder FeeDelegatedCancelWithRatio.Builder instance.
      */
     public FeeDelegatedCancelWithRatio(Builder builder) {
         super(builder);

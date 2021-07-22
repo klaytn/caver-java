@@ -90,8 +90,35 @@ public class ValueTransferMemo extends AbstractTransaction {
     /**
      * Creates a ValueTransferMemo instance
      * @param builder ValueTransferMemo.Builder instance.
+     * @return ValueTransferMemo
      */
-    public ValueTransferMemo(Builder builder) {
+    public static ValueTransferMemo create(ValueTransferMemo.Builder builder) {
+        return new ValueTransferMemo(builder);
+    }
+
+    /**
+     * Creates a ValueTransferMemo instance
+     * @param klaytnCall Klay RPC instance
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A Signature list
+     * @param to The account address that will receive the transferred value.
+     * @param value The amount of KLAY in peb to be transferred.
+     * @param input The message data attached to the transaction.
+     * @return ValueTransferMemo
+     */
+    public static ValueTransferMemo create(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String value, String input) {
+        return new ValueTransferMemo(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, to, value, input);
+    }
+
+    /**
+     * Creates a ValueTransferMemo instance
+     * @param builder ValueTransferMemo.Builder instance.
+     */
+    public ValueTransferMemo(ValueTransferMemo.Builder builder) {
         super(builder);
         setTo(builder.to);
         setValue(builder.value);

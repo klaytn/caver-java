@@ -21,7 +21,12 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.klaytn.caver.account.Account;
 import com.klaytn.caver.crypto.KlaySignatureData;
+import com.klaytn.caver.rpc.Klay;
+import com.klaytn.caver.transaction.AbstractTransaction;
+import com.klaytn.caver.transaction.type.*;
+import com.klaytn.caver.utils.CodeFormat;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.web3j.protocol.core.Response;
 import org.web3j.utils.Numeric;
@@ -143,8 +148,7 @@ public class Transaction extends Response<Transaction.TransactionData> {
          */
         private String value;
 
-        public TransactionData() {
-        }
+        public TransactionData() {}
 
         public TransactionData(String blockHash, String blockNumber, String codeFormat, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, String from, String gas, String gasPrice, String hash, boolean humanReadable, String key, String input, String nonce, String senderTxHash, List<SignatureData> signatures, String to, String transactionIndex, String type, String typeInt, String value) {
             this.blockHash = blockHash;
@@ -338,6 +342,63 @@ public class Transaction extends Response<Transaction.TransactionData> {
 
         public void setKey(String key) {
             this.key = key;
+        }
+
+        /**
+         * Convert TransactionData to Caver's transaction instance.
+         * @param klay The Klay instance to fill gasPrice, chainId and nonce fields when signing a transaction.
+         * @param txObject The TransactionData instance.
+         * @return AbstractTransaction.
+         */
+        public AbstractTransaction convertToCaverTransaction(Klay klay, TransactionData txObject) {
+            switch (TransactionType.valueOf(txObject.getType())) {
+                case TxTypeLegacyTransaction:
+                    return LegacyTransaction.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getTo(), txObject.getInput(), txObject.getValue());
+                case TxTypeValueTransfer:
+                    return ValueTransfer.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getTo(), txObject.getValue());
+                case TxTypeFeeDelegatedValueTransfer:
+                    return FeeDelegatedValueTransfer.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getTo(), txObject.getValue());
+                case TxTypeFeeDelegatedValueTransferWithRatio:
+                    return FeeDelegatedValueTransferWithRatio.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getFeeRatio(), txObject.getTo(), txObject.getValue());
+                case TxTypeValueTransferMemo:
+                    return ValueTransferMemo.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getTo(), txObject.getValue(), txObject.getInput());
+                case TxTypeFeeDelegatedValueTransferMemo:
+                    return FeeDelegatedValueTransferMemo.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getTo(), txObject.getValue(), txObject.getInput());
+                case TxTypeFeeDelegatedValueTransferMemoWithRatio:
+                    return FeeDelegatedValueTransferMemoWithRatio.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getFeeRatio(), txObject.getTo(), txObject.getValue(), txObject.getInput());
+                case TxTypeAccountUpdate:
+                    return AccountUpdate.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), Account.createFromRLPEncoding(txObject.getFrom(), txObject.getKey()));
+                case TxTypeFeeDelegatedAccountUpdate:
+                    return FeeDelegatedAccountUpdate.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), Account.createFromRLPEncoding(txObject.getFrom(), txObject.getKey()));
+                case TxTypeFeeDelegatedAccountUpdateWithRatio:
+                    return FeeDelegatedAccountUpdateWithRatio.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getFeeRatio(), Account.createFromRLPEncoding(txObject.getFrom(), txObject.getKey()));
+                case TxTypeSmartContractDeploy:
+                    return SmartContractDeploy.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getTo(), txObject.getValue(), txObject.getInput(), false, Numeric.toHexStringWithPrefix(CodeFormat.EVM));
+                case TxTypeFeeDelegatedSmartContractDeploy:
+                    return FeeDelegatedSmartContractDeploy.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getTo(), txObject.getValue(), txObject.getInput(), false, Numeric.toHexStringWithPrefix(CodeFormat.EVM));
+                case TxTypeFeeDelegatedSmartContractDeployWithRatio:
+                    return FeeDelegatedSmartContractDeployWithRatio.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getFeeRatio(), txObject.getTo(), txObject.getValue(), txObject.getInput(), false, Numeric.toHexStringWithPrefix(CodeFormat.EVM));
+                case TxTypeSmartContractExecution:
+                    return SmartContractExecution.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getTo(), txObject.getValue(), txObject.getInput());
+                case TxTypeFeeDelegatedSmartContractExecution:
+                    return FeeDelegatedSmartContractExecution.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getTo(), txObject.getValue(), txObject.getInput());
+                case TxTypeFeeDelegatedSmartContractExecutionWithRatio:
+                    return FeeDelegatedSmartContractExecutionWithRatio.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getFeeRatio(), txObject.getTo(), txObject.getValue(), txObject.getInput());
+                case TxTypeCancel:
+                    return Cancel.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures());
+                case TxTypeFeeDelegatedCancel:
+                    return FeeDelegatedCancel.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures());
+                case TxTypeFeeDelegatedCancelWithRatio:
+                    return FeeDelegatedCancelWithRatio.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getFeeRatio());
+                case TxTypeChainDataAnchoring:
+                    return ChainDataAnchoring.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getInput());
+                case TxTypeFeeDelegatedChainDataAnchoring:
+                    return FeeDelegatedChainDataAnchoring.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getInput());
+                case TxTypeFeeDelegatedChainDataAnchoringWithRatio:
+                    return FeeDelegatedChainDataAnchoringWithRatio.create(klay, txObject.getFrom(), txObject.getNonce(), txObject.getGas(), txObject.getGasPrice(), "", txObject.getSignatures(), txObject.getFeePayer(), txObject.getFeePayerSignatures(), txObject.getFeeRatio(), txObject.getInput());
+                default:
+                    throw new RuntimeException("Invalid transaction type : Cannot create a transaction instance that has Tx type :" + txObject.getType());
+            }
         }
     }
 

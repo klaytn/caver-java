@@ -18,6 +18,9 @@ package com.klaytn.caver.transaction.type.wrapper;
 
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.type.Cancel;
+import com.klaytn.caver.wallet.keyring.SignatureData;
+
+import java.util.List;
 
 /**
  * Represents a CancelWrapper
@@ -66,9 +69,22 @@ public class CancelWrapper {
      * @return Cancel
      */
     public Cancel create(Cancel.Builder builder) {
-        return builder
-                .setKlaytnCall(this.klaytnCall)
-                .build();
+        builder.setKlaytnCall(this.klaytnCall);
+        return Cancel.create(builder);
+    }
+
+    /**
+     * Creates a Cancel instance.
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A Signature list
+     * @return Cancel
+     */
+    public Cancel create(String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures) {
+        return Cancel.create(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures);
     }
 
     /**

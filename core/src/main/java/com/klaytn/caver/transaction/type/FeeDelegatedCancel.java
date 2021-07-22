@@ -52,8 +52,34 @@ public class FeeDelegatedCancel extends AbstractFeeDelegatedTransaction {
     /**
      * Creates a FeeDelegatedCancel instance.
      * @param builder FeeDelegatedCancel.Builder instance.
+     * @return FeeDelegatedCancel
      */
-    public FeeDelegatedCancel(Builder builder) {
+    public static FeeDelegatedCancel create(FeeDelegatedCancel.Builder builder) {
+        return new FeeDelegatedCancel(builder);
+    }
+
+    /**
+     * Creates a FeeDelegatedCancel instance.
+     * @param klaytnCall Klay RPC instance
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A signature list
+     * @param feePayer A fee payer address.
+     * @param feePayerSignatures A fee payer signature list.
+     * @return FeeDelegatedCancel
+     */
+    public static FeeDelegatedCancel create(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures) {
+        return new FeeDelegatedCancel(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, feePayer, feePayerSignatures);
+    }
+
+    /**
+     * Creates a FeeDelegatedCancel instance.
+     * @param builder FeeDelegatedCancel.Builder instance.
+     */
+    public FeeDelegatedCancel(FeeDelegatedCancel.Builder builder) {
         super(builder);
     }
 
@@ -68,7 +94,6 @@ public class FeeDelegatedCancel extends AbstractFeeDelegatedTransaction {
      * @param signatures A signature list
      * @param feePayer A fee payer address.
      * @param feePayerSignatures A fee payer signature list.
-     * Creates a FeeDelegatedAccountUpdate instance.
      */
     public FeeDelegatedCancel(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures) {
         super(

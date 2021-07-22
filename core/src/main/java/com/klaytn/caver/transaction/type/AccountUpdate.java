@@ -63,6 +63,31 @@ public class AccountUpdate extends AbstractTransaction {
     /**
      * Creates an AccountUpdate instance.
      * @param builder AccountUpdate.Builder instance.
+     * @return AccountUpdate
+     */
+    public static AccountUpdate create(AccountUpdate.Builder builder) {
+        return new AccountUpdate(builder);
+    }
+
+    /**
+     * Creates an AccountUpdate instance.
+     * @param klaytnCall Klay RPC instance.
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A Signature list
+     * @param account The Account instance contains AccountKey to be updated to the account.
+     * @return AccountUpdate
+     */
+    public static AccountUpdate create(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, Account account) {
+        return new AccountUpdate(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, account);
+    }
+
+    /**
+     * Creates an AccountUpdate instance.
+     * @param builder AccountUpdate.Builder instance.
      */
     public AccountUpdate(AccountUpdate.Builder builder) {
         super(builder);

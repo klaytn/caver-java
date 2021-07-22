@@ -121,6 +121,37 @@ public class FeeDelegatedSmartContractDeploy extends AbstractFeeDelegatedTransac
     /**
      * Creates a FeeDelegatedSmartContractDeploy instance.
      * @param builder FeeDelegatedSmartContractDeploy.Builder instance.
+     * @return FeeDelegatedSmartContractDeploy
+     */
+    public static FeeDelegatedSmartContractDeploy create(FeeDelegatedSmartContractDeploy.Builder builder) {
+        return new FeeDelegatedSmartContractDeploy(builder);
+    }
+
+    /**
+     * Creates a FeeDelegatedSmartContractDeploy instance.
+     * @param klaytnCall Klay RPC instance
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A Signature list
+     * @param feePayer A fee payer address.
+     * @param feePayerSignatures A fee payer signature list.
+     * @param to The account address that will receive the transferred value.
+     * @param value The amount of KLAY in peb to be transferred.
+     * @param input The data attached to the transaction, used for transaction execution.
+     * @param humanReadable Is human-readable address.
+     * @param codeFormat The code format of smart contract code
+     * @return FeeDelegatedSmartContractDeploy
+     */
+    public static FeeDelegatedSmartContractDeploy create(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures, String to, String value, String input, boolean humanReadable, String codeFormat) {
+        return new FeeDelegatedSmartContractDeploy(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, feePayer, feePayerSignatures, to, value, input, humanReadable, codeFormat);
+    }
+
+    /**
+     * Creates a FeeDelegatedSmartContractDeploy instance.
+     * @param builder FeeDelegatedSmartContractDeploy.Builder instance.
      */
     public FeeDelegatedSmartContractDeploy(FeeDelegatedSmartContractDeploy.Builder builder) {
         super(builder);
@@ -133,7 +164,7 @@ public class FeeDelegatedSmartContractDeploy extends AbstractFeeDelegatedTransac
     }
 
     /**
-     * Creates a SmartContractDeploy instance.
+     * Creates a FeeDelegatedSmartContractDeploy instance.
      * @param klaytnCall Klay RPC instance
      * @param from The address of the sender.
      * @param nonce A value used to uniquely identify a sender’s transaction.

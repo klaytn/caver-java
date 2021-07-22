@@ -47,7 +47,7 @@ public class ContractWrapper {
      * @throws IOException
      */
     public Contract create(String abi) throws IOException {
-        return new Contract(this.caver, abi);
+        return Contract.create(caver, abi);
     }
 
     /**
@@ -58,6 +58,6 @@ public class ContractWrapper {
      * @throws IOException
      */
     public Contract create(String abi, String contractAddress) throws IOException {
-        return new Contract(this.caver, abi, contractAddress);
+        return Contract.create(caver, abi, contractAddress);
     }
 }

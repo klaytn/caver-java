@@ -18,6 +18,9 @@ package com.klaytn.caver.transaction.type.wrapper;
 
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.type.SmartContractDeploy;
+import com.klaytn.caver.wallet.keyring.SignatureData;
+
+import java.util.List;
 
 /**
  * Represents a SmartContractDeployWrapper
@@ -66,9 +69,27 @@ public class SmartContractDeployWrapper {
      * @return SmartContractDeploy
      */
     public SmartContractDeploy create(SmartContractDeploy.Builder builder) {
-        return builder
-                .setKlaytnCall(this.klaytnCall)
-                .build();
+        builder.setKlaytnCall(this.klaytnCall);
+        return SmartContractDeploy.create(builder);
+    }
+
+    /**
+     * Creates a SmartContractDeploy instance.
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A Signature list
+     * @param to The account address that will receive the transferred value.
+     * @param value The amount of KLAY in peb to be transferred.
+     * @param input The message data attached to the transaction.
+     * @param humanReadable Is human-readable address.
+     * @param codeFormat The code format of smart contract code
+     * @return SmartContractDeploy
+     */
+    public SmartContractDeploy create(String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String value, String input, boolean humanReadable, String codeFormat) {
+        return SmartContractDeploy.create(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, to, value, input, humanReadable, codeFormat);
     }
 
     /**

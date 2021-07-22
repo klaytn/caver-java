@@ -90,8 +90,38 @@ public class FeeDelegatedValueTransferMemoWithRatio extends AbstractFeeDelegated
     /**
      * Creates a FeeDelegatedValueTransferMemoWithRatio instance.
      * @param builder FeeDelegatedValueTransferMemoWithRatio.Builder instance.
+     * @return FeeDelegatedValueTransferMemoWithRatio
      */
-    public FeeDelegatedValueTransferMemoWithRatio(Builder builder) {
+    public static FeeDelegatedValueTransferMemoWithRatio create(FeeDelegatedValueTransferMemoWithRatio.Builder builder) {
+        return new FeeDelegatedValueTransferMemoWithRatio(builder);
+    }
+
+    /**
+     * Creates a FeeDelegatedValueTransferMemoWithRatio instance.
+     * @param klaytnCall Klay RPC instance
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID.
+     * @param signatures A sender signature list.
+     * @param feePayer A fee payer address.
+     * @param feePayerSignatures A fee payer signature list.
+     * @param feeRatio  A fee ratio of the fee payer.
+     * @param to The account adderss that will receive the transferred value.
+     * @param value The amount of KLAY in peb to be transferred.
+     * @param input The message data attached to the transaction.
+     * @return FeeDelegatedValueTransferMemoWithRatio
+     */
+    public static FeeDelegatedValueTransferMemoWithRatio create(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, String to, String value, String input) {
+        return new FeeDelegatedValueTransferMemoWithRatio(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, feePayer, feePayerSignatures, feeRatio, to, value, input);
+    }
+
+    /**
+     * Creates a FeeDelegatedValueTransferMemoWithRatio instance.
+     * @param builder FeeDelegatedValueTransferMemoWithRatio.Builder instance.
+     */
+    public FeeDelegatedValueTransferMemoWithRatio(FeeDelegatedValueTransferMemoWithRatio.Builder builder) {
         super(builder);
         setTo(builder.to);
         setValue(builder.value);

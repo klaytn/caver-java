@@ -17,6 +17,7 @@
 package com.klaytn.caver.kct.kip7;
 
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.abi.datatypes.Type;
 import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.contract.ContractDeployParams;
 import com.klaytn.caver.contract.SendOptions;
@@ -24,7 +25,6 @@ import com.klaytn.caver.kct.kip13.KIP13;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.IWallet;
-import com.klaytn.caver.abi.datatypes.Type;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
 
@@ -32,7 +32,10 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class KIP7 extends Contract {
 
@@ -85,7 +88,26 @@ public class KIP7 extends Contract {
         }
     }
 
+    /**
+     * Creates a KIP7 instance.
+     * @param caver A Caver instance.
+     * @return KIP7
+     * @throws IOException
+     */
+    public static KIP7 create(Caver caver) throws IOException {
+        return new KIP7(caver);
+    }
 
+    /**
+     * Creates a KIP7 instance.
+     * @param caver A Caver instance.
+     * @param contractAddress A contract address
+     * @return KIP7
+     * @throws IOException
+     */
+    public static KIP7 create(Caver caver, String contractAddress) throws IOException {
+        return new KIP7(caver, contractAddress);
+    }
 
     /**
      * Creates a KIP7 instance.

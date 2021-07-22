@@ -16,8 +16,12 @@
 
 package com.klaytn.caver.transaction.type.wrapper;
 
+import com.klaytn.caver.account.Account;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.type.AccountUpdate;
+import com.klaytn.caver.wallet.keyring.SignatureData;
+
+import java.util.List;
 
 /**
  * Represents an AccountUpdateWrapper
@@ -66,9 +70,23 @@ public class AccountUpdateWrapper {
      * @return AccountUpdate
      */
     public AccountUpdate create(AccountUpdate.Builder builder) {
-        return builder
-                .setKlaytnCall(this.klaytnCall)
-                .build();
+        builder.setKlaytnCall(this.klaytnCall);
+        return AccountUpdate.create(builder);
+    }
+
+    /**
+     * Creates an AccountUpdate instance.
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A Signature list
+     * @param account The Account instance contains AccountKey to be updated to the account.
+     * @return AccountUpdate
+     */
+    public AccountUpdate create(String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, Account account) {
+        return AccountUpdate.create(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, account);
     }
 
     /**

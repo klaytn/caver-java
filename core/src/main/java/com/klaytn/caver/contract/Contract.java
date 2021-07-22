@@ -94,6 +94,29 @@ public class Contract {
      * Creates a Contract instance.
      * @param caver A Caver instance.
      * @param abi A contract's ABI(Application Binary interface) json string.
+     * @return Contract
+     * @throws IOException
+     */
+    public static Contract create(Caver caver, String abi) throws IOException {
+        return new Contract(caver, abi);
+    }
+
+    /**
+     * Creates a Contract instance.
+     * @param caver A Caver instance.
+     * @param abi A contract's ABI(Application Binary interface) json string.
+     * @param contractAddress An address string of contract deployed on Klaytn.
+     * @return Contract
+     * @throws IOException
+     */
+    public static Contract create(Caver caver, String abi, String contractAddress) throws IOException {
+        return new Contract(caver, abi, contractAddress);
+    }
+
+    /**
+     * Creates a Contract instance.
+     * @param caver A Caver instance.
+     * @param abi A contract's ABI(Application Binary interface) json string.
      * @throws IOException
      */
     public Contract(Caver caver, String abi) throws IOException{

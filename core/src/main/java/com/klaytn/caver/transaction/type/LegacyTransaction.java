@@ -83,8 +83,35 @@ public class LegacyTransaction extends AbstractTransaction {
     /**
      * Creates a LegacyTransaction instance.
      * @param builder LegacyTransaction.Builder instance.
+     * @return LegacyTransaction
      */
-    private LegacyTransaction(Builder builder) {
+    public static LegacyTransaction create(LegacyTransaction.Builder builder) {
+        return new LegacyTransaction(builder);
+    }
+
+    /**
+     * Create a LegacyTransaction instance.
+     * @param klaytnCall Klay RPC instance
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A Signature list
+     * @param to The account address that will receive the transferred value.
+     * @param input Data attached to the transaction, used for transaction execution.
+     * @param value The amount of KLAY in peb to be transferred.
+     * @return LegacyTransaction
+     */
+    public static LegacyTransaction create(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String input, String value) {
+        return new LegacyTransaction(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, to, input, value);
+    }
+
+    /**
+     * Creates a LegacyTransaction instance.
+     * @param builder LegacyTransaction.Builder instance.
+     */
+    public LegacyTransaction(LegacyTransaction.Builder builder) {
         super(builder);
 
         setTo(builder.to);

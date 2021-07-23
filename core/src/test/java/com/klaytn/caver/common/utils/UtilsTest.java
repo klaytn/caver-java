@@ -1117,7 +1117,7 @@ public class UtilsTest {
             MessageSigned data = keyring.signMessage(message, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
 
             String actual =  caver.utils.recoverPublicKey(data.getMessage(), data.getSignatures().get(0));
-            assertEquals(keyring.getPublicKey(), actual);
+            assertEquals(Utils.addHexPrefix(keyring.getPublicKey()), actual);
         }
 
         @Test
@@ -1127,7 +1127,7 @@ public class UtilsTest {
             String message = "Some data";
             MessageSigned data = keyring.signMessage(message, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
 
-            String actual =  caver.utils.recoverPublicKey(data.getMessage(), data.getSignatures().get(0), true);
+            String actual =  caver.utils.recoverPublicKey(data.getMessageHash(), data.getSignatures().get(0), true);
             assertEquals(Utils.addHexPrefix(keyring.getPublicKey()), actual);
         }
 

@@ -27,11 +27,8 @@ import org.web3j.crypto.Sign;
 import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.utils.Numeric;
 
-import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -39,6 +36,7 @@ import java.util.regex.Pattern;
 public class Utils {
     public static final int LENGTH_ADDRESS_STRING = 40;
     public static final int LENGTH_PRIVATE_KEY_STRING = 64;
+    public static final int LENGTH_PUBLIC_KEY_STRING_DECOMPRESSED = 128;
 
     public static final String DEFAULT_ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -359,27 +357,50 @@ public class Utils {
     }
 
     /**
-     * Recovers the address that was used to sign the given data.
-     * This function automatically creates a message hash by appending a Klaytn sign prefix to the message.
-     * @param message A plain message when using signed.
-     * @param signatureData The signature values in KlaySignatureData
+     * Recovers the public key that was used to sign the given data.<p>
+     * This method hashes the message with klaytn prefix automatically.
+     * <pre>Example :
+     * {@code
+     * String message = "Some Message";
+     * SignatureData signatureData = new SignatureData(
+     *     "0x1b",
+     *     "0x8213e560e7bbe1f2e28fd69cbbb41c9108b84c98cd7c2c88d3c8e3549fd6ab10",
+     *     "0x3ca40c9e20c1525348d734a6724db152b9244bff6e0ff0c2b811d61d8f874f00"
+     * );
+     *
+     * String publicKey = caver.utils.recoverPublicKey(message, signatureData);
+     * }
+     * </pre>
+     * @param message The raw message string.
+     * @param signatureData The {@link SignatureData} to recover public key.
      * @return String
-     * @throws SignatureException It throws when recover operation has failed.
+     * @throws SignatureException
      */
-    public static String recover(String message, SignatureData signatureData) throws SignatureException {
-        return recover(message, signatureData, false);
+    public static String recoverPublicKey(String message, SignatureData signatureData) throws SignatureException {
+        return recoverPublicKey(message, signatureData, false);
     }
 
-
     /**
-     * Recovers the address that was used to sign the given data.
-     * @param message A plain message or hashed message.
-     * @param signatureData The signature values in KlaySignatureData
+     * Recovers the public key that was used to sign the given data.
+     * <pre>Example :
+     * {@code
+     * String message = "Some Message";
+     * SignatureData signatureData = new SignatureData(
+     *     "0x1b",
+     *     "0x8213e560e7bbe1f2e28fd69cbbb41c9108b84c98cd7c2c88d3c8e3549fd6ab10",
+     *     "0x3ca40c9e20c1525348d734a6724db152b9244bff6e0ff0c2b811d61d8f874f00"
+     * );
+     *
+     * String publicKey = caver.utils.recoverPublicKey(message, signatureData, false);
+     * }
+     * </pre>
+     * @param message The raw message string. If this message is already hashed with Klaytn prefix, the third parameter should be true.
+     * @param signatureData The {@link SignatureData} to recover public key.
      * @param isPrefixed If true, the message param already hashed by appending a Klaytn sign prefix to the message.
      * @return String
-     * @throws SignatureException It throws when recover operation has failed.
+     * @throws SignatureException
      */
-    public static String recover(String message, SignatureData signatureData, boolean isPrefixed) throws SignatureException {
+    public static String recoverPublicKey(String message, SignatureData signatureData, boolean isPrefixed) throws SignatureException {
         String messageHash = message;
         if(!isPrefixed) {
             messageHash = Utils.hashMessage(message);
@@ -411,7 +432,51 @@ public class Utils {
         if (key == null) {
             throw new SignatureException("Could not recover public key from signature");
         }
-        return Numeric.prependHexPrefix(Keys.getAddress(key));
+
+        return Numeric.toHexStringWithPrefixZeroPadded(key, LENGTH_PUBLIC_KEY_STRING_DECOMPRESSED);
+    }
+
+    /**
+     * Returns an address which is derived by a public key(handles both compressed format and decompressed format).<p>
+     * This function simply converts the public key string into address from by hashing it.<p>
+     * It has nothing to do with the actual account in the Klaytn.
+     * <pre>Example :
+     * {@code
+     * String address = caver.utils.publicKeyToAddress("0x{public key}");
+     * }
+     * </pre>
+     * @param publicKey The public key string to get the address.
+     * @return String
+     */
+    public static String publicKeyToAddress(String publicKey) {
+        publicKey = Utils.decompressPublicKey(publicKey);
+        return addHexPrefix(Keys.getAddress(publicKey));
+    }
+
+    /**
+     * Recovers the address that was used to sign the given data.
+     * This function automatically creates a message hash by appending a Klaytn sign prefix to the message.
+     * @param message A plain message when using signed.
+     * @param signatureData The signature values in KlaySignatureData
+     * @return String
+     * @throws SignatureException It throws when recover operation has failed.
+     */
+    public static String recover(String message, SignatureData signatureData) throws SignatureException {
+        return recover(message, signatureData, false);
+    }
+
+
+    /**
+     * Recovers the address that was used to sign the given data.
+     * @param message A plain message or hashed message.
+     * @param signatureData The signature values in KlaySignatureData
+     * @param isPrefixed If true, the message param already hashed by appending a Klaytn sign prefix to the message.
+     * @return String
+     * @throws SignatureException It throws when recover operation has failed.
+     */
+    public static String recover(String message, SignatureData signatureData, boolean isPrefixed) throws SignatureException {
+        String publicKey = recoverPublicKey(message, signatureData, isPrefixed);
+        return publicKeyToAddress(publicKey);
     }
 
     /**

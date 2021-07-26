@@ -1,6 +1,7 @@
 package com.klaytn.caver.common.utils;
 
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.account.AccountKeyRoleBased;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.MessageSigned;
@@ -1104,6 +1105,66 @@ public class UtilsTest {
 
             String rawSigData = "0xaaaaaa";
             caver.utils.decodeSignature(rawSigData);
+        }
+    }
+
+    public static class recoverPublicKeyTest {
+        @Test
+        public void recoverWithMessage() throws SignatureException {
+            SingleKeyring keyring = caver.wallet.keyring.generate();
+
+            String message = "Some data";
+            MessageSigned data = keyring.signMessage(message, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+
+            String actual =  caver.utils.recoverPublicKey(data.getMessage(), data.getSignatures().get(0));
+            assertEquals(Utils.addHexPrefix(keyring.getPublicKey()), actual);
+        }
+
+        @Test
+        public void recoverWithMessageHash() throws SignatureException {
+            SingleKeyring keyring = caver.wallet.keyring.generate();
+
+            String message = "Some data";
+            MessageSigned data = keyring.signMessage(message, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+
+            String actual =  caver.utils.recoverPublicKey(data.getMessageHash(), data.getSignatures().get(0), true);
+            assertEquals(Utils.addHexPrefix(keyring.getPublicKey()), actual);
+        }
+
+        @Test
+        public void recoverWithSampleData() throws SignatureException {
+            String expected = "0xb5df4d5e6b4ee7a136460b911a69030fdd42c18ed067bcc2e25eda1b851314fad994c5fe946aad01ca2e348d4ff3094960661a8bc095f358538af54aeea48ff3";
+
+            String message = "Some Message";
+            SignatureData signatureData = new SignatureData(
+                    "0x1b",
+                    "0x8213e560e7bbe1f2e28fd69cbbb41c9108b84c98cd7c2c88d3c8e3549fd6ab10",
+                    "0x3ca40c9e20c1525348d734a6724db152b9244bff6e0ff0c2b811d61d8f874f00"
+            );
+
+            String actual = caver.utils.recoverPublicKey(message, signatureData);
+            assertEquals(expected, actual);
+        }
+    }
+
+    public static class publicKeyToAddress {
+        @Test
+        public void publicKeyToAddressWithDecompressedFormat() {
+            String expected = "0x5b2840bcbc2be07fb12d9129ed3a02d8e4465944";
+            String publicKey = "0x68ffedd4a1d9fefa38f6ed9d58f0b85741a90ad604ab901c130c1fea42eab666dec186a48ad4db56b14898e8e18fe0176d926a2c1ffeeb6b6df805ec0bf41eb8";
+
+            String actual = caver.utils.publicKeyToAddress(publicKey);
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        public void publicKeyToAddressWithCompressedFormat() {
+            String expected = "0x5b2840bcbc2be07fb12d9129ed3a02d8e4465944";
+            String publicKey = "0x68ffedd4a1d9fefa38f6ed9d58f0b85741a90ad604ab901c130c1fea42eab666dec186a48ad4db56b14898e8e18fe0176d926a2c1ffeeb6b6df805ec0bf41eb8";
+
+            publicKey = Utils.compressPublicKey(publicKey);
+            String actual = caver.utils.publicKeyToAddress(publicKey);
+            assertEquals(expected, actual);
         }
     }
 }

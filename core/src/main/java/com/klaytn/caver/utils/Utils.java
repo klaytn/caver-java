@@ -396,13 +396,13 @@ public class Utils {
      * </pre>
      * @param message The raw message string. If this message is already hashed with Klaytn prefix, the third parameter should be true.
      * @param signatureData The {@link SignatureData} to recover public key.
-     * @param isPrefixed If true, the message param already hashed by appending a Klaytn sign prefix to the message.
+     * @param isHashed If true, the message param already hashed by appending a Klaytn sign prefix to the message.
      * @return String
      * @throws SignatureException
      */
-    public static String recoverPublicKey(String message, SignatureData signatureData, boolean isPrefixed) throws SignatureException {
+    public static String recoverPublicKey(String message, SignatureData signatureData, boolean isHashed) throws SignatureException {
         String messageHash = message;
-        if(!isPrefixed) {
+        if(!isHashed) {
             messageHash = Utils.hashMessage(message);
         }
 
@@ -470,12 +470,12 @@ public class Utils {
      * Recovers the address that was used to sign the given data.
      * @param message A plain message or hashed message.
      * @param signatureData The signature values in KlaySignatureData
-     * @param isPrefixed If true, the message param already hashed by appending a Klaytn sign prefix to the message.
+     * @param isHashed If true, the message param already hashed by appending a Klaytn sign prefix to the message.
      * @return String
      * @throws SignatureException It throws when recover operation has failed.
      */
-    public static String recover(String message, SignatureData signatureData, boolean isPrefixed) throws SignatureException {
-        String publicKey = recoverPublicKey(message, signatureData, isPrefixed);
+    public static String recover(String message, SignatureData signatureData, boolean isHashed) throws SignatureException {
+        String publicKey = recoverPublicKey(message, signatureData, isHashed);
         return publicKeyToAddress(publicKey);
     }
 

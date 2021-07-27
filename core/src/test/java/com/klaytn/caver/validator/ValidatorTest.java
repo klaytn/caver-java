@@ -17,6 +17,7 @@
 package com.klaytn.caver.validator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.klaytn.caver.Caver;
 import com.klaytn.caver.account.AccountKeyLegacy;
 import com.klaytn.caver.methods.response.AccountKey;
 import com.klaytn.caver.rpc.Klay;
@@ -25,6 +26,8 @@ import com.klaytn.caver.wallet.keyring.SignatureData;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.runner.RunWith;
 import org.web3j.protocol.ObjectMapperFactory;
 
 import java.io.IOException;
@@ -37,7 +40,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-
+@RunWith(Enclosed.class)
 public class ValidatorTest {
     public static class AccountKeyLegacyTest {
         static String address = "0xa84a1ce657e9d5b383cece6f4ba365e23fa234dd";

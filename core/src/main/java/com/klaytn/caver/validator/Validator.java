@@ -162,9 +162,9 @@ public class Validator {
         Account account = new Account(address, accountKey);
 
         if(accountKey instanceof AccountKeyLegacy) {
-            return validateAccountKeyLegacy(account, pubKeys.get(0));
+            return validateAccountKeyLegacy(account, pubKeys);
         } else if(accountKey instanceof AccountKeyPublic) {
-            return validateAccountKeyPublic(account, pubKeys.get(0));
+            return validateAccountKeyPublic(account, pubKeys);
         } else if(accountKey instanceof AccountKeyWeightedMultiSig) {
             return validateAccountKeyWeightedMultiSig(account, pubKeys);
         } else if(accountKey instanceof AccountKeyRoleBased) {
@@ -176,12 +176,28 @@ public class Validator {
         }
     }
 
-    private boolean validateAccountKeyLegacy(Account account, String publicKey) {
-        return account.getAddress().equals(Utils.publicKeyToAddress(publicKey));
+    private boolean validateAccountKeyLegacy(Account account, List<String> publicKeys) {
+        boolean isValid = false;
+        for(String publicKey : publicKeys) {
+            if(account.getAddress().equals(Utils.publicKeyToAddress(publicKey))) {
+                isValid = true;
+                break;
+            }
+        }
+        return isValid;
     }
 
-    private boolean validateAccountKeyPublic(Account account, String publicKey) {
-        return ((AccountKeyPublic)account.getAccountKey()).getPublicKey().equals(publicKey);
+    private boolean validateAccountKeyPublic(Account account, List<String> publicKeys) {
+        boolean isValid = false;
+
+        AccountKeyPublic accountKeyPublic = (AccountKeyPublic)account.getAccountKey();
+        for(String publicKey : publicKeys) {
+            if(accountKeyPublic.getPublicKey().equals(publicKey)) {
+                isValid = true;
+            }
+        }
+
+        return isValid;
     }
 
     private boolean validateAccountKeyWeightedMultiSig(Account account, List<String> publicKeys) {
@@ -213,9 +229,9 @@ public class Validator {
 
         // TODO: If an invalid signature is included, it should be changed to return false.
         if(roleKey instanceof AccountKeyLegacy) {
-            return validateAccountKeyLegacy(roleAccount, publicKeys.get(0));
+            return validateAccountKeyLegacy(roleAccount, publicKeys);
         } else if(roleKey instanceof AccountKeyPublic) {
-            return validateAccountKeyPublic(roleAccount, publicKeys.get(0));
+            return validateAccountKeyPublic(roleAccount, publicKeys);
         } else if(roleKey instanceof AccountKeyWeightedMultiSig) {
             return validateAccountKeyWeightedMultiSig(roleAccount, publicKeys);
         } else if(roleKey instanceof AccountKeyFail || roleKey instanceof AccountKeyNil){

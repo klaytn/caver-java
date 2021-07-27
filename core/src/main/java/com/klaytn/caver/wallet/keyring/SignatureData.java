@@ -121,6 +121,34 @@ public class SignatureData {
         setV(Numeric.toHexStringWithPrefix(BigInteger.valueOf(v)));
     }
 
+    /**
+     * Refines the array containing signatures
+     *   - Removes duplicate signatures
+     *   - Removes the default empty signature("0x01", "0x", "0x")
+     *   - For an empty signature array, return an array containing the default empty signature("0x01", "0x", "0x")
+     * @param signatureDataList The list of SignatureData
+     * @return List&lt;String&gt;
+     */
+    public static List<SignatureData> refineSignature(List<SignatureData> signatureDataList) {
+        SignatureData emptySig = SignatureData.getEmptySignature();
+
+        List<SignatureData> refinedList = new ArrayList<>();
+
+        for(SignatureData signData : signatureDataList) {
+            if(! Utils.isEmptySig(signData)) {
+                if(!refinedList.contains(signData)) {
+                    refinedList.add(signData);
+                }
+            }
+        }
+
+        if(refinedList.size() == 0) {
+            refinedList.add(emptySig);
+        }
+
+        return refinedList;
+    }
+
 
     /**
      * Returns the RLP-encoded string of this signature.

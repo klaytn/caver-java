@@ -137,6 +137,8 @@ public class Validator {
                 throw new RuntimeException("error code : " + accountKey.getError().getCode() + " error message : " + accountKey.getError().getMessage());
             }
 
+            signatures = SignatureData.refineSignature(signatures);
+
             //Extract public keys from signatures.
             List<String> pubKeys = new ArrayList<>();
             for(SignatureData signature : signatures) {

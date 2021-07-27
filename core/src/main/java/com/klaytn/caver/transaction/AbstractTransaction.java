@@ -509,26 +509,13 @@ abstract public class AbstractTransaction {
      *   - Removes duplicate signatures
      *   - Removes the default empty signature("0x01", "0x", "0x")
      *   - For an empty signature array, return an array containing the default empty signature("0x01", "0x", "0x")
-     * @param signatureDataList
-     * @return
+     * @param signatureDataList The list of {@link SignatureData}
+     * @return List&lt;String&gt;
      */
     public List<SignatureData> refineSignature(List<SignatureData> signatureDataList) {
         boolean isLegacy = this.getType().equals(TransactionType.TxTypeLegacyTransaction.toString());
-        SignatureData emptySig = SignatureData.getEmptySignature();
 
-        List<SignatureData> refinedList = new ArrayList<>();
-
-        for(SignatureData signData : signatureDataList) {
-            if(!Utils.isEmptySig(signData)) {
-                if(!refinedList.contains(signData)) {
-                    refinedList.add(signData);
-                }
-            }
-        }
-
-        if(refinedList.size() == 0) {
-            refinedList.add(emptySig);
-        }
+        List<SignatureData> refinedList = SignatureData.refineSignature(signatureDataList);
 
         if(isLegacy && refinedList.size() > 1) {
             throw new RuntimeException("LegacyTransaction cannot have multiple signature.");

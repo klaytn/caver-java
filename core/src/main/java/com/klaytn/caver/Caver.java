@@ -24,6 +24,7 @@ import com.klaytn.caver.kct.wrapper.KCTWrapper;
 import com.klaytn.caver.rpc.RPC;
 import com.klaytn.caver.transaction.wrapper.TransactionWrapper;
 import com.klaytn.caver.utils.wrapper.UtilsWrapper;
+import com.klaytn.caver.validator.Validator;
 import com.klaytn.caver.wallet.IWallet;
 import com.klaytn.caver.wallet.KeyringContainer;
 import org.web3j.protocol.Web3jService;
@@ -99,6 +100,11 @@ public class Caver {
      * The UtilsWrapper instance
      */
     public UtilsWrapper utils;
+
+    /**
+     * The Validator instance
+     */
+    public Validator validator;
 
     /**
      * Creates a Caver instance<p>
@@ -188,9 +194,10 @@ public class Caver {
         }
 
         this.rpc = rpc;
-        this.transaction = new TransactionWrapper(this.rpc.getKlay());
         this.contract = new ContractWrapper(this);
         this.kct = new KCTWrapper(this);
+        this.transaction = new TransactionWrapper(this.rpc.getKlay());
+        this.validator = new Validator(this.rpc.getKlay());
     }
 
     /**

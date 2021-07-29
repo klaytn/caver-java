@@ -168,11 +168,11 @@ public class LegacyTransaction extends AbstractTransaction {
             RlpList rlpList = RlpDecoder.decode(rlpEncoded);
             List<RlpType> values = ((RlpList) rlpList.getValues().get(0)).getValues();
 
-            String nonce = ((RlpString) values.get(0)).asString();
-            String gasPrice = ((RlpString) values.get(1)).asString();
-            String gas = ((RlpString) values.get(2)).asString();
+            BigInteger nonce = ((RlpString) values.get(0)).asPositiveBigInteger();
+            BigInteger gasPrice = ((RlpString) values.get(1)).asPositiveBigInteger();
+            BigInteger gas = ((RlpString) values.get(2)).asPositiveBigInteger();
             String to = ((RlpString) values.get(3)).asString();
-            String value = ((RlpString) values.get(4)).asString();
+            BigInteger value = ((RlpString) values.get(4)).asPositiveBigInteger();
             String input = ((RlpString) values.get(5)).asString();
 
             LegacyTransaction legacyTransaction = new LegacyTransaction.Builder()

@@ -1354,4 +1354,78 @@ public class FeeDelegatedChainDataAnchoringTest {
             mTxObj.getRLPEncodingForFeePayerSignature();
         }
     }
+
+    public static class recoverPublicKeyTest {
+        List<String> expectedPublicKeyList = Arrays.asList(
+                "0xfbda4ac2c04336609f7e5a363c71c1565b442d552b82cbd0e75bbabaf215fd28b69ce88a6b9f2a463f1420bd9a0992413254748a7ab46d5ba78d09b35cf0e912",
+                "0xa234bd09ea829cb39dd2f5aced2318039f30ce5fe28f5eb28a256bac8617eb5db57ac7683fa21a01c8cbd2ca31c2cf93c97871c73896bf051f9bc0885c87ebe2",
+                "0x6ed39def6b25fc001790d267922281483c372b5d2486ae955ece1f1b64b19aea85392c8555947a1c63577439afdb74c77ef07d50520435d31cf4afb3dfe0074f"
+        );
+
+        List<String> expectedFeePayerPublicKeyList = Arrays.asList(
+                "0x2b557d80ddac3a0bbcc8a7861773ca7434c969e2721a574bb94a1e3aa5ceed3819f08a82b31682c038f9f691fb38ee4aaf7e016e2c973a1bd1e48a51f60a54ea",
+                "0x1a1cfe1e2ec4b15520c57c20c2460981a2f16003c8db11a0afc282abf929fa1c1868f60f91b330c423aa660913d86acc2a0b1b15e7ba1fe571e5928a19825a7e",
+                "0xdea23a89dbbde1a0c26466c49c1edd32785432389641797038c2b53815cb5c73d6cf5355986fd9a22a68bb57b831857fd1636362b383bd632966392714b60d72"
+        );
+
+        List<SignatureData> expectedSigData = Arrays.asList(
+                new SignatureData(
+                        "0x0fe9",
+                        "0x8e0f6116cf3627c8adc6f689da53fe43945d7d25e79e48b765b6e5a83de2d945",
+                        "0x286a8ec630d0f4c87e41e64dbeb5c6ed5e81b1948785dbcd39cde2d071ef4f71"
+                ),
+                new SignatureData(
+                        "0x0fea",
+                        "0xedbf01e5bf50aa81402240995e052399ee5926f525bde435d9bd810cbc84496b",
+                        "0x5eb7888a9a60fe8a5d687f6bf098b7117cc303b5d35a0c27fd940543826594f3"
+                ),
+                new SignatureData(
+                        "0x0fea",
+                        "0xf1bbf5a8555f6a789df1fdfd52661fbff709ac23fcc61a7fdf7cc73362a2a17c",
+                        "0x144164861a7c4c16e01378a8cb92649ce73ddf16646d6123694f658e0985eb1d"
+                )
+        );
+
+        List<SignatureData> expectedFeePayerSigData = Arrays.asList(
+                new SignatureData(
+                        "0x0fe9",
+                        "0x27126a519f2b62e94b1515390a0b7de7069c2521fb4d94e9ddd7b02825409497",
+                        "0x7dbcc819bd881b40889399b8ff5bee2622868a143267854f2599e53a0aef4fc4"
+                ),
+                new SignatureData(
+                        "0x0fea",
+                        "0xd2afd9d7d93317e5c85dd29b78ce189a8c74918e20f4f95d7c659fda023626f5",
+                        "0x5a141c460eccafbbcf201ae043884d5b8d285de718c4f86312aac50ac01c4013"
+                ),
+                new SignatureData(
+                        "0x0fe9",
+                        "0xd2927037328b8a811803c0a905d7cc72a8b7223646ec245f20e5a57d1c65d85a",
+                        "0x4c121bb1c839339d0db45f6205eb9faf972f1a01929276987265dc4e2e85c1bd"
+                )
+        );
+
+        FeeDelegatedChainDataAnchoring tx = new FeeDelegatedChainDataAnchoring.Builder()
+                .setFrom("0xf21460730845e3652aa3cc9bc13b345e4f53984a")
+                .setFeePayer("0xb5db72925b1b6b79299a1a49ae226cd7861083ac")
+                .setChainId("0x7e3")
+                .setGasPrice("0x5d21dba00")
+                .setNonce("0x0")
+                .setGas("0x2faf080")
+                .setInput("0x01")
+                .setSignatures(expectedSigData)
+                .setFeePayerSignatures(expectedFeePayerSigData)
+                .build();
+
+        @Test
+        public void recoverPublicKey() {
+            List<String> publicKeys = tx.recoverPublicKeys();
+            assertEquals(expectedPublicKeyList, publicKeys);
+        }
+
+        @Test
+        public void recoverFeePayerPublicKey() {
+            List<String> publicKeys = tx.recoverFeePayerPublicKeys();
+            assertEquals(expectedFeePayerPublicKeyList, publicKeys);
+        }
+    }
 }

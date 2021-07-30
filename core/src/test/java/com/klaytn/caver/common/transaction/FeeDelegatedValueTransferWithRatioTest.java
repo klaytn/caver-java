@@ -1726,4 +1726,80 @@ public class FeeDelegatedValueTransferWithRatioTest {
             mTxObj.getRLPEncodingForFeePayerSignature();
         }
     }
+
+    public static class recoverPublicKeyTest {
+        List<String> expectedPublicKeyList = Arrays.asList(
+                "0xfbda4ac2c04336609f7e5a363c71c1565b442d552b82cbd0e75bbabaf215fd28b69ce88a6b9f2a463f1420bd9a0992413254748a7ab46d5ba78d09b35cf0e912",
+                "0xa234bd09ea829cb39dd2f5aced2318039f30ce5fe28f5eb28a256bac8617eb5db57ac7683fa21a01c8cbd2ca31c2cf93c97871c73896bf051f9bc0885c87ebe2",
+                "0x6ed39def6b25fc001790d267922281483c372b5d2486ae955ece1f1b64b19aea85392c8555947a1c63577439afdb74c77ef07d50520435d31cf4afb3dfe0074f"
+        );
+
+        List<String> expectedFeePayerPublicKeyList = Arrays.asList(
+                "0x2b557d80ddac3a0bbcc8a7861773ca7434c969e2721a574bb94a1e3aa5ceed3819f08a82b31682c038f9f691fb38ee4aaf7e016e2c973a1bd1e48a51f60a54ea",
+                "0x1a1cfe1e2ec4b15520c57c20c2460981a2f16003c8db11a0afc282abf929fa1c1868f60f91b330c423aa660913d86acc2a0b1b15e7ba1fe571e5928a19825a7e",
+                "0xdea23a89dbbde1a0c26466c49c1edd32785432389641797038c2b53815cb5c73d6cf5355986fd9a22a68bb57b831857fd1636362b383bd632966392714b60d72"
+        );
+
+        List<SignatureData> expectedSigData = Arrays.asList(
+                new SignatureData(
+                        "0x0fe9",
+                        "0x6f9f0e03201564ec8a32c4cbff016a0c85b87f03e274707b21671cdf326c662a",
+                        "0x77cffd7d2ea37d9a000ccbb68e5976f749ec964074cd68fe6c2c174102f28315"
+                ),
+                new SignatureData(
+                        "0x0fe9",
+                        "0xa5e4d1569d1c4bc5a9e0e4fef09b0b5e0224402c486baf5887aede88246eba9f",
+                        "0x5199e243bef005dc37eefcf144355aaa9687d3f2b0a3535bad4f4c9464c3a609"
+                ),
+                new SignatureData(
+                        "0x0fea",
+                        "0x91b1b9ce709a58eda8348070572ded1d42578eb3fdc18907e15e890878609e90",
+                        "0x16be616510baab5f1b09db15d54debc3fea2a3be8c6f2ff974e4e912ca085ec9"
+                )
+        );
+
+        List<SignatureData> expectedFeePayerSigData = Arrays.asList(
+                new SignatureData(
+                        "0x0fe9",
+                        "0xdb7685be27d4a207a779e5f9c21aada2b975c84901024ccda9cf3c4f4448c3c3",
+                        "0x1571b03b29527f991f17ad563558cecd1f1d688fa828020e175b80c2c2383c2c"
+                ),
+                new SignatureData(
+                        "0x0fe9",
+                        "0x5750ff286dbc47570ef8930e71f426af4ea5a4d83094af2132d5a218abd82032",
+                        "0x465f8d1d966693997f09054e66d5250a44751bfa168d4a1ef29908b6620ee4c7"
+                ),
+                new SignatureData(
+                        "0x0fe9",
+                        "0x4ec6f1ae409dcdccdccbef67094974a70acc13b01a306fb51cee0ea5f47d3228",
+                        "0x03ee9a9fe8376ccbacd9adf0d930280900ce1c7c165a334e013cf5de4a83da9d"
+                )
+        );
+
+        FeeDelegatedValueTransferWithRatio tx = new FeeDelegatedValueTransferWithRatio.Builder()
+                .setFrom("0x07a9a76ef778676c3bd2b334edcf581db31a85e5")
+                .setFeePayer("0xb5db72925b1b6b79299a1a49ae226cd7861083ac")
+                .setFeeRatio("0x63")
+                .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                .setValue("0x1")
+                .setChainId("0x7e3")
+                .setGasPrice("0x5d21dba00")
+                .setNonce("0x0")
+                .setGas("0x2faf080")
+                .setSignatures(expectedSigData)
+                .setFeePayerSignatures(expectedFeePayerSigData)
+                .build();
+
+        @Test
+        public void recoverPublicKey() {
+            List<String> publicKeys = tx.recoverPublicKeys();
+            assertEquals(expectedPublicKeyList, publicKeys);
+        }
+
+        @Test
+        public void recoverFeePayerPublicKey() {
+            List<String> publicKeys = tx.recoverFeePayerPublicKeys();
+            assertEquals(expectedFeePayerPublicKeyList, publicKeys);
+        }
+    }
 }

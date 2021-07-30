@@ -1300,4 +1300,14 @@ public class LegacyTransactionTest {
             legacyTransaction.appendSignatures(list);
         }
     }
+
+    public static class decodeTest {
+        @Test
+        public void decodeTest() {
+            String rawTx = "0xf868808505d21dba008402faf0809459177716c34ac6e49e295a0e78e33522f14d61ee0180820fe9a0ecdec357060dbbb4bd3790e98b1733ec3a0b02b7e4ec7a5622f93cd9bee229fea00a4a5e28753e7c1d999b286fb07933c5bf353079b8ed4d1ed509a838b48be02c";
+            LegacyTransaction tx = LegacyTransaction.decode(rawTx);
+
+            assertEquals(rawTx, tx.getRawTransaction());
+        }
+    }
 }

@@ -22,6 +22,8 @@ import com.klaytn.caver.transaction.TransactionDecoder;
 import com.klaytn.caver.transaction.TransactionHelper;
 import com.klaytn.caver.transaction.type.wrapper.*;
 
+import java.util.List;
+
 /**
  * Represents a TransactionWrapper
  * 1. This class contains all types of transaction wrapper classes as member variables
@@ -200,5 +202,35 @@ public class TransactionWrapper {
      */
     public AbstractTransaction getTransactionByHash(String transactionHash) {
         return TransactionHelper.getTransactionByHash(klay, transactionHash);
+    }
+
+    /**
+     * Recovers the public keys from "signatures" filed in raw transaction string.<p>
+     * If you want to derive an address from public key, please use {@link com.klaytn.caver.utils.Utils#publicKeyToAddress(String)}
+     * <pre>Example :
+     * {@code
+     * List<String> publicKeys = caver.transaction.recoverPublicKeys("0x{RLP-encoded transaction string}");
+     * }
+     * </pre>
+     * @param rawTx The RLP-encoded transaction string to recover public keys from "signatures".
+     * @return List&lt;String&gt;
+     */
+    public List<String> recoverPublicKeys(String rawTx) {
+        return TransactionHelper.recoverPublicKeys(rawTx);
+    }
+
+    /**
+     * Recovers the public keys from "feePayerSignatures" filed in raw transaction string.<p>
+     * If you want to derive an address from public key, please use {@link com.klaytn.caver.utils.Utils#publicKeyToAddress(String)}
+     * <pre>Example :
+     * {@code
+     * List<String> publicKeys = caver.transaction.recoverFeePayerPublicKeys("0x{RLP-encoded transaction string}");
+     * }
+     * </pre>
+     * @param rawTx The RLP-encoded transaction string to recover public keys from "signatures".
+     * @return List&lt;String&gt;
+     */
+    public List<String> recoverFeePayerPublicKeys(String rawTx) {
+        return TransactionHelper.recoverFeePayerPublicKeys(rawTx);
     }
 }

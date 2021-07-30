@@ -26,6 +26,7 @@ import org.web3j.utils.Bytes;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
+import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -164,6 +165,49 @@ public class SignatureData {
                 RlpString.create(Bytes.trimLeadingZeroes(r)),
                 RlpString.create(Bytes.trimLeadingZeroes(s))
         );
+    }
+
+    /**
+     * Get a recover id from signatureData
+     * @return int
+     */
+    @JsonIgnore
+    public int getRecoverId() {
+        int v = Numeric.toBigInt(this.getV()).intValue() & 0xFFFF;
+
+        if (v < 27) {
+            throw new RuntimeException("v byte out of range: " + v);
+        }
+
+        // https://eips.ethereum.org/EIPS/eip-155
+        // - v = parity value(Recovery Id) {0,1} + 27
+        // - v =  parity value(Recovery Id) {0,1} + chainId * 2 + 35
+        if(v < 35) {
+            // v = parity value {0,1} + 27
+            return v - 27;
+        } 
+
+        // v =  parity value(Recovery Id) {0,1} + chainId * 2 + 35
+        return ((v - 35) % 2) == 0 ? 0 : 1;
+    }
+
+    /**
+     * Get chain id from signatureData
+     * @return BigInteger
+     */
+    @JsonIgnore
+    public BigInteger getChainId() {
+        int v = Numeric.toBigInt(this.getV()).intValue() & 0xFFFF;
+
+        if (v < 35) {
+            throw new RuntimeException("Cannot extract chainId from V value : " + v);
+        }
+
+        // v =  parity value {0,1} + chainId * 2 + 35
+        int parity = this.getRecoverId();
+        int chainId = (v - 35 - parity) >> 1;
+
+        return BigInteger.valueOf(chainId);
     }
 
     /**

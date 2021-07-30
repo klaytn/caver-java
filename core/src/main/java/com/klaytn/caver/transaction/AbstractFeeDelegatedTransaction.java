@@ -31,6 +31,8 @@ import org.web3j.rlp.RlpType;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -320,6 +322,46 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
         }
 
         return true;
+    }
+
+    /**
+     * Recovers the public key strings from "feePayerSignatures" field in transaction object.<p>
+     * If you want to derive an address from public key, please use {@link Utils#publicKeyToAddress(String)}.
+     * <pre>Example :
+     * {@code
+     * List<String> publicKeys = tx.recoverFeePayerPublicKeys();
+     * }
+     * </pre>
+     * @return List&lt;String&gt;
+     */
+    public List<String> recoverFeePayerPublicKeys() {
+        try {
+            if(Utils.isEmptySig(this.getFeePayerSignatures())) {
+                throw new RuntimeException("Failed to recover public keys from signatures: signatures is empty.");
+            }
+
+            // For recover signature. We need to find chainId from signatures' v field.
+            // The V value in Tx signatures is set by [parity value {0,1} + chainId * 2 + 35]
+            // https://eips.ethereum.org/EIPS/eip-155
+            if(this.getChainId().equals("0x")) {
+                BigInteger chainId = this.getFeePayerSignatures().get(0).getChainId();
+                setChainId(chainId);
+            }
+
+            String sigHash = TransactionHasher.getHashForFeePayerSignature(this);
+
+            List<String> publicKeyList = new ArrayList<>();
+            for(SignatureData signatureData : this.getFeePayerSignatures()) {
+                if(Numeric.toBigInt(this.getChainId()).compareTo(signatureData.getChainId()) != 0) {
+                    throw new RuntimeException("Invalid Signature data : chain id is not matched.");
+                }
+
+                publicKeyList.add(Utils.recoverPublicKey(sigHash, signatureData, true));
+            }
+            return publicKeyList;
+        } catch(SignatureException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

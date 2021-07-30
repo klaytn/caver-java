@@ -205,7 +205,7 @@ public class TransactionWrapper {
     }
 
     /**
-     * Recovers the public key from "signature" filed in raw transaction string.<p>
+     * Recovers the public keys from "signatures" filed in raw transaction string.<p>
      * If you want to derive an address from public key, please use {@link com.klaytn.caver.utils.Utils#publicKeyToAddress(String)}
      * <pre>Example :
      * {@code
@@ -220,7 +220,7 @@ public class TransactionWrapper {
     }
 
     /**
-     * Recovers the public key from "feePayerSignature" filed in raw transaction string.<p>
+     * Recovers the public keys from "feePayerSignatures" filed in raw transaction string.<p>
      * If you want to derive an address from public key, please use {@link com.klaytn.caver.utils.Utils#publicKeyToAddress(String)}
      * <pre>Example :
      * {@code

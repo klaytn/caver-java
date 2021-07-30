@@ -185,10 +185,10 @@ public class SignatureData {
         if(v < 35) {
             // v = parity value {0,1} + 27
             return v - 27;
-        } else {
-            // v =  parity value(Recovery Id) {0,1} + chainId * 2 + 35
-            return ((v - 35) % 2) == 0 ? 0 : 1;
-        }
+        } 
+
+        // v =  parity value(Recovery Id) {0,1} + chainId * 2 + 35
+        return ((v - 35) % 2) == 0 ? 0 : 1;
     }
 
     /**

@@ -337,7 +337,7 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
     public List<String> recoverFeePayerPublicKeys() {
         try {
             if(Utils.isEmptySig(this.getFeePayerSignatures())) {
-                throw new RuntimeException("Failed to recover public keys from signatures: signatures is empty.");
+                throw new RuntimeException("Failed to recover public keys from feePayerSignatures: feePayerSignatures is empty.");
             }
 
             // For recover signature. We need to find chainId from signatures' v field.

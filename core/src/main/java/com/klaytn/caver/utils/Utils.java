@@ -416,18 +416,12 @@ public class Utils {
             throw new IllegalArgumentException("s must be 32 bytes");
         }
 
-        int header = Numeric.toBigInt(signatureData.getV()).intValue() & 0xFF;
-        // The header byte: 0x1B = first key with even y, 0x1C = first key with odd y,
-        //                  0x1D = second key with even y, 0x1E = second key with odd y
-        if (header < 27 || header > 34) {
-            throw new SignatureException("Header byte out of range: " + header);
-        }
+       int recId = signatureData.getRecoverId();
 
         ECDSASignature sig = new ECDSASignature(
                 new BigInteger(1, r),
                 new BigInteger(1, s));
 
-        int recId = header - 27;
         BigInteger key = Sign.recoverFromSignature(recId, sig, Numeric.hexStringToByteArray(messageHash));
         if (key == null) {
             throw new SignatureException("Could not recover public key from signature");

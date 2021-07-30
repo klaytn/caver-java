@@ -1161,19 +1161,19 @@ public class ChainDataAnchoringTest {
         public void recoverPublicKey() {
             List<SignatureData> expectedSigData = Arrays.asList(
                     new SignatureData(
-                            "0x0fea",
-                            "0xac0efc65393b4136e474c8185af7f44491e797d8aa2e07d6853703c4efdbf7dc",
-                            "0x3691224986fec26012fe329f6bed56c6964a3d4f3bc8ff704131970735cd0a2f"
+                            "0x0fe9",
+                            "0xa39cf5423469b5a5b86e33b5524646385ceff9f668e3df9896f8415075244cb2",
+                            "0x18e29b0ef01370561703f6dfd56982ec17fdc29a6b2e3c42ee44947f2fc475b8"
                     ),
                     new SignatureData(
                             "0x0fea",
-                            "0x04f1bbc8767546157bdae445b7e88722c0f94a29efa47d1a3d2241954c3bc816",
-                            "0x5701a35937563b3a7542c5766a6218698424c60c0a63b8e463ba88b21e6dbee3"
+                            "0x911a055d5e29205086dbe7847fe0a916ad636b861f3eaf70a8ea7f24b6205e25",
+                            "0x5d01c8c0f3e8797ac2bd8e18795bd78f0682c6eabfa197061059e37daa2709d0"
                     ),
                     new SignatureData(
-                            "0x0fea",
-                            "0xb1f2d463eee52f6f03f3a5320eb863f964a89b1fdc466ccc93ae22b96044e6ef",
-                            "0x3ea104cc4de8f071d9b5cc3da4197b3299408d7da44e8359bb7b36fde9bf3b30"
+                            "0x0fe9",
+                            "0x65a8769cb8363a9ba20f82ee5cbc4f57dd0cbf315361354d5e009963f2c47d99",
+                            "0x2e39afc5004f8d65954568f8143bbaa1a8fb8fca0e981b513ee41308a46d5988"
                     )
             );
 
@@ -1183,6 +1183,7 @@ public class ChainDataAnchoringTest {
                     .setGasPrice("0x5d21dba00")
                     .setNonce("0x0")
                     .setGas("0x2faf080")
+                    .setInput("0x1")
                     .setSignatures(expectedSigData)
                     .build();
 

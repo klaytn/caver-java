@@ -18,9 +18,14 @@ package com.klaytn.caver.validator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.account.Account;
 import com.klaytn.caver.account.AccountKeyLegacy;
 import com.klaytn.caver.methods.response.AccountKey;
 import com.klaytn.caver.rpc.Klay;
+import com.klaytn.caver.transaction.type.AccountUpdate;
+import com.klaytn.caver.transaction.type.FeeDelegatedValueTransfer;
+import com.klaytn.caver.transaction.type.LegacyTransaction;
+import com.klaytn.caver.transaction.type.ValueTransfer;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
@@ -28,6 +33,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.web3j.protocol.ObjectMapperFactory;
 
 import java.io.IOException;
@@ -42,7 +48,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(Enclosed.class)
 public class ValidatorTest {
-    public static class AccountKeyLegacyTest {
+    public static class validatedSignedMessage_AccountKeyLegacy {
         static String address = "0xa84a1ce657e9d5b383cece6f4ba365e23fa234dd";
         static String privateKey = "0x7db91b4606aa4421eeb85d03601562f966693e38957d5e79a29edda0e85b2225";
 
@@ -98,7 +104,7 @@ public class ValidatorTest {
         }
     }
 
-    public static class AccountKeyPublicTest {
+    public static class validatedSignedMessage_AccountKeyPublic {
         static String address = "0xa84a1ce657e9d5b383cece6f4ba365e23fa234dd";
         static String privateKey = "0xf95c224b63f5658281ad853b3f582051eb9bca9b3e5475a8d3e4315abf42cb02";
         static String message = "Some Message";
@@ -167,7 +173,7 @@ public class ValidatorTest {
         }
     }
 
-    public static class AccountKeyFailTest {
+    public static class validatedSignedMessage_AccountKeyFail {
         static String address = "0xa84a1ce657e9d5b383cece6f4ba365e23fa234dd";
         static String message = "Some Message";
 
@@ -202,7 +208,7 @@ public class ValidatorTest {
         }
     }
 
-    public static class AccountKeyWeightedMultiSigTest {
+    public static class validatedSignedMessage_AccountKeyWeightedMultiSig {
         static String address = "0xa84a1ce657e9d5b383cece6f4ba365e23fa234dd";
         static List<String> privateKeys = Arrays.asList(
                 "0xc707902dba449d0ce3b47675db728ad795b63a4ae748dc4f7265e05305ae7424",
@@ -342,7 +348,7 @@ public class ValidatorTest {
         }
     }
 
-    public static class AccountKeyRoleBasedTest {
+    public static class validatedSignedMessage_AccountKeyRoleBased {
         static String address = "0xa84a1ce657e9d5b383cece6f4ba365e23fa234dd";
         static String[][] privateKeyArr = {
                 {
@@ -548,6 +554,1123 @@ public class ValidatorTest {
             Validator validator = new Validator(klay);
             assertFalse(validator.validateSignedMessage(message, roleFeePayerSignatures, address));
         }
+    }
 
+    public static class validateSender_AccountKeyLegacy {
+        static AccountKey accountKey;
+
+        @BeforeClass
+        public static void init() {
+            accountKey = new AccountKey();
+            accountKey.setResult(new AccountKey.AccountKeyData(AccountKeyLegacy.getType(), new AccountKeyLegacy()));
+        }
+
+        @Test
+        public void withValidateSignature() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            LegacyTransaction tx = new LegacyTransaction.Builder()
+                    .setFrom("0xf21460730845e3652aa3cc9bc13b345e4f53984a")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setSignatures(new SignatureData(
+                            "0x0fe9",
+                            "0xecdec357060dbbb4bd3790e98b1733ec3a0b02b7e4ec7a5622f93cd9bee229fe",
+                            "0x0a4a5e28753e7c1d999b286fb07933c5bf353079b8ed4d1ed509a838b48be02c"
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertTrue(validator.validateSender(tx));
+        }
+
+        @Test
+        public void withInvalidSignature() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            LegacyTransaction tx = new LegacyTransaction.Builder()
+                    .setFrom("0xf21460730845e3652aa3cc9bc13b345e4f53984a")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setSignatures(new SignatureData(
+                            "0x0fe9",
+                            "0x86c8ecbfd892be41d48443a2243274beb6daed3f72895045965a3baede4c350e",
+                            "0x69ea748aff6e4c106d3a8ba597d8f134745b76f12dacb581318f9da07351511a"
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertFalse(validator.validateSender(tx));
+        }
+    }
+
+    public static class validateSender_AccountKeyPublic {
+        static AccountKey accountKey;
+
+        @BeforeClass
+        public static void init() throws IOException {
+            String publicKeyJson = "{\n" +
+                    "  \"keyType\":2,\n" +
+                    "  \"key\":{\n" +
+                    "    \"x\":\"0x8bb6aaeb2d96d024754d3b50babf116cece68977acbe8ba6a66f14d5217c60d9\",\n" +
+                    "    \"y\":\"0x6af020a0568661e7c72e753e80efe084a3aed9f9ac87bf44d09ce67aad3d4e01\"\n" +
+                    "  }\n" +
+                    "}";
+
+            ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
+            AccountKey.AccountKeyData accountKeyData = mapper.readValue(publicKeyJson, AccountKey.AccountKeyData.class);
+            accountKey = new AccountKey();
+            accountKey.setResult(accountKeyData);
+        }
+
+        @Test
+        public void withValidateSignature() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            ValueTransfer tx = new ValueTransfer.Builder()
+                    .setFrom("0xf21460730845e3652aa3cc9bc13b345e4f53984a")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setSignatures(new SignatureData(
+                            "0x0fea",
+                            "0x2b5934c6d26bb3e65edf099d79c57c743d2f70744ca09d3ba9a1099edff9f173",
+                            "0x0797886edff4b449c1a599943e3a6003ae9e46b3f3f34862ced327e43fba3a6a"
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertTrue(validator.validateSender(tx));
+        }
+
+        @Test
+        public void withInvalidSignature() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            ValueTransfer tx = new ValueTransfer.Builder()
+                    .setFrom("0xf21460730845e3652aa3cc9bc13b345e4f53984a")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setSignatures(new SignatureData(
+                            "0x0fe9",
+                            "0x86c8ecbfd892be41d48443a2243274beb6daed3f72895045965a3baede4c350e",
+                            "0x69ea748aff6e4c106d3a8ba597d8f134745b76f12dacb581318f9da07351511a"
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertFalse(validator.validateSender(tx));
+        }
+    }
+
+    public static class validateSender_AccountKeyFail {
+        static AccountKey accountKey;
+
+        @BeforeClass
+        public static void init() throws IOException {
+            String accountKeyDataJson = "{\n" +
+                    "  \"keyType\":3,\n" +
+                    "  \"key\":{}\n" +
+                    "}";
+
+            ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
+            AccountKey.AccountKeyData accountKeyData = mapper.readValue(accountKeyDataJson, AccountKey.AccountKeyData.class);
+            accountKey = new AccountKey();
+            accountKey.setResult(accountKeyData);
+        }
+
+        @Test
+        public void withValidSignature() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            ValueTransfer tx = new ValueTransfer.Builder()
+                    .setFrom("0xf21460730845e3652aa3cc9bc13b345e4f53984a")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setSignatures(new SignatureData(
+                            "0x0fea",
+                            "0x2b5934c6d26bb3e65edf099d79c57c743d2f70744ca09d3ba9a1099edff9f173",
+                            "0x0797886edff4b449c1a599943e3a6003ae9e46b3f3f34862ced327e43fba3a6a"
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertFalse(validator.validateSender(tx));
+        }
+    }
+
+    public static class validateSender_AccountKeyWeightedMultiSig {
+        static AccountKey accountKey;
+
+        @BeforeClass
+        public static void init() throws IOException {
+            String json = "{\n" +
+                    "  \"keyType\":4,\n" +
+                    "  \"key\":{\n" +
+                    "    \"threshold\":3,\n" +
+                    "    \"keys\":[\n" +
+                    "      {\n" +
+                    "        \"weight\":2,\n" +
+                    "        \"key\":{\n" +
+                    "          \"x\":\"0x8bb6aaeb2d96d024754d3b50babf116cece68977acbe8ba6a66f14d5217c60d9\",\n" +
+                    "          \"y\":\"0x6af020a0568661e7c72e753e80efe084a3aed9f9ac87bf44d09ce67aad3d4e01\"\n" +
+                    "        }\n" +
+                    "      },\n" +
+                    "      {\n" +
+                    "        \"weight\":1,\n" +
+                    "        \"key\":{\n" +
+                    "          \"x\":\"0xc7751c794337a93e4db041fb5401c2c816cf0a099d8fd4b1f3f555aab5dfead2\",\n" +
+                    "          \"y\":\"0x417521bb0c03d8637f350df15ef6a6cb3cdb806bd9d10bc71982dd03ff5d9ddd\"\n" +
+                    "        }\n" +
+                    "      },\n" +
+                    "      {\n" +
+                    "        \"weight\":1,\n" +
+                    "        \"key\":{\n" +
+                    "          \"x\":\"0x3919091ba17c106dd034af508cfe00b963d173dffab2c7702890e25a96d107ca\",\n" +
+                    "          \"y\":\"0x1bb4f148ee1984751e57d2435468558193ce84ab9a7731b842e9672e40dc0f22\"\n" +
+                    "        }\n" +
+                    "      }\n" +
+                    "    ]\n" +
+                    "  }\n" +
+                    "}";
+
+            ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
+            AccountKey.AccountKeyData accountKeyData = mapper.readValue(json, AccountKey.AccountKeyData.class);
+            accountKey = new AccountKey();
+            accountKey.setResult(accountKeyData);
+        }
+
+        @Test
+        public void withValidateSignature() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            ValueTransfer tx = new ValueTransfer.Builder()
+                    .setFrom("0xf21460730845e3652aa3cc9bc13b345e4f53984a")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x2b5934c6d26bb3e65edf099d79c57c743d2f70744ca09d3ba9a1099edff9f173",
+                                    "0x0797886edff4b449c1a599943e3a6003ae9e46b3f3f34862ced327e43fba3a6a"
+                            ),
+                            new SignatureData(
+                                    "0x0fe9",
+                                    "0x63177648732ef855f800eb9f80f68501abb507f84c0d660286a6e0801334a1d2",
+                                    "0x620a996623c114f2df35b11ec8ac4f3758d3ad89cf81ba13614e51908cfe9218"
+                            ),
+                            new SignatureData(
+                                    "0x0fe9",
+                                    "0x86c8ecbfd892be41d48443a2243274beb6daed3f72895045965a3baede4c350e",
+                                    "0x69ea748aff6e4c106d3a8ba597d8f134745b76f12dacb581318f9da07351511a"
+                            )
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertTrue(validator.validateSender(tx));
+        }
+
+        @Test
+        public void withInvalidSignature() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            ValueTransfer tx = new ValueTransfer.Builder()
+                    .setFrom("0xf21460730845e3652aa3cc9bc13b345e4f53984a")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fe9",
+                                    "0x86c8ecbfd892be41d48443a2243274beb6daed3f72895045965a3baede4c350e",
+                                    "0x69ea748aff6e4c106d3a8ba597d8f134745b76f12dacb581318f9da07351511a"
+                            )
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertFalse(validator.validateSender(tx));
+        }
+
+        @Test
+        public void lessThanThreshold() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            ValueTransfer tx = new ValueTransfer.Builder()
+                    .setFrom("0xf21460730845e3652aa3cc9bc13b345e4f53984a")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x2b5934c6d26bb3e65edf099d79c57c743d2f70744ca09d3ba9a1099edff9f173",
+                                    "0x0797886edff4b449c1a599943e3a6003ae9e46b3f3f34862ced327e43fba3a6a"
+                            )
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertFalse(validator.validateSender(tx));
+        }
+    }
+
+    public static class validateSender_AccountKeyRoleBased {
+        static AccountKey accountKey;
+
+        @BeforeClass
+        public static void init() throws IOException {
+            String json = "{\n" +
+                    "  \"keyType\":5,\n" +
+                    "  \"key\":[\n" +
+                    "    {\n" +
+                    "      \"keyType\":4,\n" +
+                    "      \"key\":{\n" +
+                    "        \"threshold\":2,\n" +
+                    "        \"keys\":[\n" +
+                    "          {\n" +
+                    "            \"weight\":1,\n" +
+                    "            \"key\":{\n" +
+                    "              \"x\":\"0x8bb6aaeb2d96d024754d3b50babf116cece68977acbe8ba6a66f14d5217c60d9\",\n" +
+                    "              \"y\":\"0x6af020a0568661e7c72e753e80efe084a3aed9f9ac87bf44d09ce67aad3d4e01\"\n" +
+                    "            }\n" +
+                    "          },\n" +
+                    "          {\n" +
+                    "            \"weight\":1,\n" +
+                    "            \"key\":{\n" +
+                    "              \"x\":\"0xc7751c794337a93e4db041fb5401c2c816cf0a099d8fd4b1f3f555aab5dfead2\",\n" +
+                    "              \"y\":\"0x417521bb0c03d8637f350df15ef6a6cb3cdb806bd9d10bc71982dd03ff5d9ddd\"\n" +
+                    "            }\n" +
+                    "          },\n" +
+                    "          {\n" +
+                    "            \"weight\":1,\n" +
+                    "            \"key\":{\n" +
+                    "              \"x\":\"0x3919091ba17c106dd034af508cfe00b963d173dffab2c7702890e25a96d107ca\",\n" +
+                    "              \"y\":\"0x1bb4f148ee1984751e57d2435468558193ce84ab9a7731b842e9672e40dc0f22\"\n" +
+                    "            }\n" +
+                    "          }\n" +
+                    "        ]\n" +
+                    "      }\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"keyType\":4,\n" +
+                    "      \"key\":{\n" +
+                    "        \"threshold\":2,\n" +
+                    "        \"keys\":[\n" +
+                    "          {\n" +
+                    "            \"weight\":1,\n" +
+                    "            \"key\":{\n" +
+                    "              \"x\":\"0x8bb6aaeb2d96d024754d3b50babf116cece68977acbe8ba6a66f14d5217c60d9\",\n" +
+                    "              \"y\":\"0x6af020a0568661e7c72e753e80efe084a3aed9f9ac87bf44d09ce67aad3d4e01\"\n" +
+                    "            }\n" +
+                    "          },\n" +
+                    "          {\n" +
+                    "            \"weight\":1,\n" +
+                    "            \"key\":{\n" +
+                    "              \"x\":\"0xc7751c794337a93e4db041fb5401c2c816cf0a099d8fd4b1f3f555aab5dfead2\",\n" +
+                    "              \"y\":\"0x417521bb0c03d8637f350df15ef6a6cb3cdb806bd9d10bc71982dd03ff5d9ddd\"\n" +
+                    "            }\n" +
+                    "          }\n" +
+                    "        ]\n" +
+                    "      }\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"keyType\":4,\n" +
+                    "      \"key\":{\n" +
+                    "        \"threshold\":2,\n" +
+                    "        \"keys\":[\n" +
+                    "          {\n" +
+                    "            \"weight\":1,\n" +
+                    "            \"key\":{\n" +
+                    "              \"x\":\"0x8bb6aaeb2d96d024754d3b50babf116cece68977acbe8ba6a66f14d5217c60d9\",\n" +
+                    "              \"y\":\"0x6af020a0568661e7c72e753e80efe084a3aed9f9ac87bf44d09ce67aad3d4e01\"\n" +
+                    "            }\n" +
+                    "          },\n" +
+                    "          {\n" +
+                    "            \"weight\":1,\n" +
+                    "            \"key\":{\n" +
+                    "              \"x\":\"0xc7751c794337a93e4db041fb5401c2c816cf0a099d8fd4b1f3f555aab5dfead2\",\n" +
+                    "              \"y\":\"0x417521bb0c03d8637f350df15ef6a6cb3cdb806bd9d10bc71982dd03ff5d9ddd\"\n" +
+                    "            }\n" +
+                    "          }\n" +
+                    "        ]\n" +
+                    "      }\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}";
+
+            ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
+            AccountKey.AccountKeyData accountKeyData = mapper.readValue(json, AccountKey.AccountKeyData.class);
+            accountKey = new AccountKey();
+            accountKey.setResult(accountKeyData);
+        }
+
+        @Test
+        public void withValidSignature() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            ValueTransfer tx = new ValueTransfer.Builder()
+                    .setFrom("0xf21460730845e3652aa3cc9bc13b345e4f53984a")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x2b5934c6d26bb3e65edf099d79c57c743d2f70744ca09d3ba9a1099edff9f173",
+                                    "0x0797886edff4b449c1a599943e3a6003ae9e46b3f3f34862ced327e43fba3a6a"
+                            ),
+                            new SignatureData(
+                                    "0x0fe9",
+                                    "0x63177648732ef855f800eb9f80f68501abb507f84c0d660286a6e0801334a1d2",
+                                    "0x620a996623c114f2df35b11ec8ac4f3758d3ad89cf81ba13614e51908cfe9218"
+                            ),
+                            new SignatureData(
+                                    "0x0fe9",
+                                    "0x86c8ecbfd892be41d48443a2243274beb6daed3f72895045965a3baede4c350e",
+                                    "0x69ea748aff6e4c106d3a8ba597d8f134745b76f12dacb581318f9da07351511a"
+                            )
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertTrue(validator.validateSender(tx));
+        }
+
+        @Test
+        public void withInvalidSignature() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            ValueTransfer tx = new ValueTransfer.Builder()
+                    .setFrom("0xf21460730845e3652aa3cc9bc13b345e4f53984a")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fe9",
+                                    "0x86c8ecbfd892be41d48443a2243274beb6daed3f72895045965a3baede4c350e",
+                                    "0x69ea748aff6e4c106d3a8ba597d8f134745b76f12dacb581318f9da07351511a"
+                            )
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertFalse(validator.validateSender(tx));
+        }
+
+        @Test
+        public void validSignatureWithAccountUpdateRole() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            AccountUpdate tx = new AccountUpdate.Builder()
+                    .setFrom("0xf21460730845e3652aa3cc9bc13b345e4f53984a")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setAccount(Account.createWithAccountKeyLegacy("0xf21460730845e3652aa3cc9bc13b345e4f53984a"))
+                    .setSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x84299d74e8b491d7272d86b5ff4f4f4605830406befd360c90adaae56af99359",
+                                    "0x196240cda43810ba4c19dd865435b991a9c16a91859357777594fb9e77d02d01"
+                            ),
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0xaf27d2163b85e3de5f8b7fee56df509be231d3935890515bfe783e2f38c1c092",
+                                    "0x1b5d6ff80bd3964ce311c658cdeac0e43a2171a87bb287695c9be2b3517651e9"
+                            ),
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0xf17ec890c3eeae90702f811b4bb880c6631913bb307207bf0bccbcdc229f571a",
+                                    "0x6f2f203218cc8ddbab785cd59dec47105c7919ab4192295c8307c9a0701605ed"
+                            )
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertTrue(validator.validateSender(tx));
+        }
+    }
+
+    public static class validateFeePayer_AccountKeyLegacy {
+        static AccountKey accountKey;
+        static FeeDelegatedValueTransfer.Builder txBuilder;
+
+        @BeforeClass
+        public static void init() {
+            accountKey = new AccountKey();
+            accountKey.setResult(new AccountKey.AccountKeyData(AccountKeyLegacy.getType(), new AccountKeyLegacy()));
+
+            txBuilder = new FeeDelegatedValueTransfer.Builder()
+                    .setFrom("0x07a9a76ef778676c3bd2b334edcf581db31a85e5")
+                    .setFeePayer("0xb5db72925b1b6b79299a1a49ae226cd7861083ac")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0xcb2bbf04a12ec3a06163c30ce8782739ec4745a53e265aa9443f1c0d678bb871",
+                                    "0x7dd348c7d8fce6be36b661f116973d1c36cc92a389ad4a1a4053bd486060a083"
+                            ),
+                            new SignatureData(
+                                    "0x0fe9",
+                                    "0x6d5dfca992d6833c0da272578bc6ea941be45f44fb2fa114310ebe18d673ed52",
+                                    "0x4dc5cd7985c9ce7d44d46d65e65c995a4a8c97159a1eed8b2efb0510b981ab7c"
+                            ),
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x945151edf556fbcebf832092d4534b9a3b1f3d46f85bce09e7d7211070cb57be",
+                                    "0x1617c8f918f96970baddd12f240a9824eca6b29d91eb7333adacb987f2dcd8dd"
+                            )
+                    ))
+                    .setFeePayerSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x86fd17d788e89a6e0639395b3c0a04f916103debd6cbe639d6f4ff5034dde3e8",
+                                    "0x0795551c551d9096234c290689767f34f2d409c95166ab18d216dbc93845ba16"
+                            ),
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x0653b6d1cdb90462094b089ce8e2fed0e3b8ec2c44125965e1a5af286644c758",
+                                    "0x259b10e3bf594d48535fd0d95e15d095897c8d075c01dd56e7417d5943b0d53a"
+                            ),
+                            new SignatureData(
+                                    "0x0fe9",
+                                    "0xce8d051427adab10d1dc93de49123aeab18ba8aadedce0d57ef5b7fa451b1f4f",
+                                    "0x4fe2a845d92ff48abca3e1d59637fab5f4a4e3172d91772d9bfce60760edc506"
+                            )
+                    ));
+        }
+
+        @Test
+        public void withValidSignature() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            FeeDelegatedValueTransfer tx = txBuilder.build();
+
+            Validator validator = new Validator(klay);
+            assertTrue(validator.validateFeePayer(tx));
+        }
+
+        @Test
+        public void withInvalidSignature() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            FeeDelegatedValueTransfer tx = new FeeDelegatedValueTransfer.Builder()
+                    .setFrom("0x07a9a76ef778676c3bd2b334edcf581db31a85e5")
+                    .setFeePayer("0xb5db72925b1b6b79299a1a49ae226cd7861083ac")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setFeePayerSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x945151edf556fbcebf832092d4534b9a3b1f3d46f85bce09e7d7211070cb57be",
+                                    "0x1617c8f918f96970baddd12f240a9824eca6b29d91eb7333adacb987f2dcd8dd"
+                            )
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertFalse(validator.validateFeePayer(tx));
+        }
+    }
+
+    public static class validateFeePayer_AccountKeyPublic {
+        static AccountKey accountKey;
+
+        @BeforeClass
+        public static void init() throws IOException {
+            String publicKeyJson = "{\n" +
+                    "  \"keyType\":2,\n" +
+                    "  \"key\":{\n" +
+                    "    \"x\":\"0x2b557d80ddac3a0bbcc8a7861773ca7434c969e2721a574bb94a1e3aa5ceed38\",\n" +
+                    "    \"y\":\"0x19f08a82b31682c038f9f691fb38ee4aaf7e016e2c973a1bd1e48a51f60a54ea\"\n" +
+                    "  }\n" +
+                    "}";
+
+            ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
+            AccountKey.AccountKeyData accountKeyData = mapper.readValue(publicKeyJson, AccountKey.AccountKeyData.class);
+            accountKey = new AccountKey();
+            accountKey.setResult(accountKeyData);
+        }
+
+        @Test
+        public void withValidSignature() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            FeeDelegatedValueTransfer tx = new FeeDelegatedValueTransfer.Builder()
+                    .setFrom("0x07a9a76ef778676c3bd2b334edcf581db31a85e5")
+                    .setFeePayer("0xb5db72925b1b6b79299a1a49ae226cd7861083ac")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setFeePayerSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x86fd17d788e89a6e0639395b3c0a04f916103debd6cbe639d6f4ff5034dde3e8",
+                                    "0x0795551c551d9096234c290689767f34f2d409c95166ab18d216dbc93845ba16"
+                            ),
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x0653b6d1cdb90462094b089ce8e2fed0e3b8ec2c44125965e1a5af286644c758",
+                                    "0x259b10e3bf594d48535fd0d95e15d095897c8d075c01dd56e7417d5943b0d53a"
+                            ),
+                            new SignatureData(
+                                    "0x0fe9",
+                                    "0xce8d051427adab10d1dc93de49123aeab18ba8aadedce0d57ef5b7fa451b1f4f",
+                                    "0x4fe2a845d92ff48abca3e1d59637fab5f4a4e3172d91772d9bfce60760edc506"
+                            )
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertTrue(validator.validateFeePayer(tx));
+        }
+
+        @Test
+        public void withInvalidSignature() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            FeeDelegatedValueTransfer tx = new FeeDelegatedValueTransfer.Builder()
+                    .setFrom("0x07a9a76ef778676c3bd2b334edcf581db31a85e5")
+                    .setFeePayer("0xb5db72925b1b6b79299a1a49ae226cd7861083ac")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setFeePayerSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x945151edf556fbcebf832092d4534b9a3b1f3d46f85bce09e7d7211070cb57be",
+                                    "0x1617c8f918f96970baddd12f240a9824eca6b29d91eb7333adacb987f2dcd8dd"
+                            )
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertFalse(validator.validateFeePayer(tx));
+        }
+    }
+
+    public static class validateFeePayer_AccountKeyFail {
+        static AccountKey accountKey;
+
+        @BeforeClass
+        public static void init() throws IOException {
+            String accountKeyDataJson = "{\n" +
+                    "  \"keyType\":3,\n" +
+                    "  \"key\":{}\n" +
+                    "}";
+
+            ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
+            AccountKey.AccountKeyData accountKeyData = mapper.readValue(accountKeyDataJson, AccountKey.AccountKeyData.class);
+            accountKey = new AccountKey();
+            accountKey.setResult(accountKeyData);
+        }
+
+        @Test
+        public void withValidSignature() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            FeeDelegatedValueTransfer tx = new FeeDelegatedValueTransfer.Builder()
+                    .setFrom("0x07a9a76ef778676c3bd2b334edcf581db31a85e5")
+                    .setFeePayer("0xb5db72925b1b6b79299a1a49ae226cd7861083ac")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setFeePayerSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x86fd17d788e89a6e0639395b3c0a04f916103debd6cbe639d6f4ff5034dde3e8",
+                                    "0x0795551c551d9096234c290689767f34f2d409c95166ab18d216dbc93845ba16"
+                            ),
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x0653b6d1cdb90462094b089ce8e2fed0e3b8ec2c44125965e1a5af286644c758",
+                                    "0x259b10e3bf594d48535fd0d95e15d095897c8d075c01dd56e7417d5943b0d53a"
+                            ),
+                            new SignatureData(
+                                    "0x0fe9",
+                                    "0xce8d051427adab10d1dc93de49123aeab18ba8aadedce0d57ef5b7fa451b1f4f",
+                                    "0x4fe2a845d92ff48abca3e1d59637fab5f4a4e3172d91772d9bfce60760edc506"
+                            )
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertFalse(validator.validateFeePayer(tx));
+        }
+    }
+
+    public static class validatedFeePayer_AccountKeyWeightedMultiSig {
+        static AccountKey accountKey;
+
+        @BeforeClass
+        public static void init() throws IOException {
+            String json = "{\n" +
+                    "  \"keyType\":4,\n" +
+                    "  \"key\":{\n" +
+                    "    \"threshold\":3,\n" +
+                    "    \"keys\":[\n" +
+                    "      {\n" +
+                    "        \"weight\":2,\n" +
+                    "        \"key\":{\n" +
+                    "          \"x\":\"0x2b557d80ddac3a0bbcc8a7861773ca7434c969e2721a574bb94a1e3aa5ceed38\",\n" +
+                    "          \"y\":\"0x19f08a82b31682c038f9f691fb38ee4aaf7e016e2c973a1bd1e48a51f60a54ea\"\n" +
+                    "        }\n" +
+                    "      },\n" +
+                    "      {\n" +
+                    "        \"weight\":1,\n" +
+                    "        \"key\":{\n" +
+                    "          \"x\":\"0x1a1cfe1e2ec4b15520c57c20c2460981a2f16003c8db11a0afc282abf929fa1c\",\n" +
+                    "          \"y\":\"0x1868f60f91b330c423aa660913d86acc2a0b1b15e7ba1fe571e5928a19825a7e\"\n" +
+                    "        }\n" +
+                    "      },\n" +
+                    "      {\n" +
+                    "        \"weight\":1,\n" +
+                    "        \"key\":{\n" +
+                    "          \"x\":\"0xdea23a89dbbde1a0c26466c49c1edd32785432389641797038c2b53815cb5c73\",\n" +
+                    "          \"y\":\"0xd6cf5355986fd9a22a68bb57b831857fd1636362b383bd632966392714b60d72\"\n" +
+                    "        }\n" +
+                    "      }\n" +
+                    "    ]\n" +
+                    "  }\n" +
+                    "}";
+
+            ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
+            AccountKey.AccountKeyData accountKeyData = mapper.readValue(json, AccountKey.AccountKeyData.class);
+            accountKey = new AccountKey();
+            accountKey.setResult(accountKeyData);
+        }
+
+        @Test
+        public void withValidateSignature() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            FeeDelegatedValueTransfer tx = new FeeDelegatedValueTransfer.Builder()
+                    .setFrom("0x07a9a76ef778676c3bd2b334edcf581db31a85e5")
+                    .setFeePayer("0xb5db72925b1b6b79299a1a49ae226cd7861083ac")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setFeePayerSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x86fd17d788e89a6e0639395b3c0a04f916103debd6cbe639d6f4ff5034dde3e8",
+                                    "0x0795551c551d9096234c290689767f34f2d409c95166ab18d216dbc93845ba16"
+                            ),
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x0653b6d1cdb90462094b089ce8e2fed0e3b8ec2c44125965e1a5af286644c758",
+                                    "0x259b10e3bf594d48535fd0d95e15d095897c8d075c01dd56e7417d5943b0d53a"
+                            ),
+                            new SignatureData(
+                                    "0x0fe9",
+                                    "0xce8d051427adab10d1dc93de49123aeab18ba8aadedce0d57ef5b7fa451b1f4f",
+                                    "0x4fe2a845d92ff48abca3e1d59637fab5f4a4e3172d91772d9bfce60760edc506"
+                            )
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertTrue(validator.validateFeePayer(tx));
+        }
+
+        @Test
+        public void withInvalidSignature() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            FeeDelegatedValueTransfer tx = new FeeDelegatedValueTransfer.Builder()
+                    .setFrom("0x07a9a76ef778676c3bd2b334edcf581db31a85e5")
+                    .setFeePayer("0xb5db72925b1b6b79299a1a49ae226cd7861083ac")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setFeePayerSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x945151edf556fbcebf832092d4534b9a3b1f3d46f85bce09e7d7211070cb57be",
+                                    "0x1617c8f918f96970baddd12f240a9824eca6b29d91eb7333adacb987f2dcd8dd"
+                            )
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertFalse(validator.validateFeePayer(tx));
+        }
+
+        @Test
+        public void lessThanThreshold() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            FeeDelegatedValueTransfer tx = new FeeDelegatedValueTransfer.Builder()
+                    .setFrom("0x07a9a76ef778676c3bd2b334edcf581db31a85e5")
+                    .setFeePayer("0xb5db72925b1b6b79299a1a49ae226cd7861083ac")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setFeePayerSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fe9",
+                                    "0xce8d051427adab10d1dc93de49123aeab18ba8aadedce0d57ef5b7fa451b1f4f",
+                                    "0x4fe2a845d92ff48abca3e1d59637fab5f4a4e3172d91772d9bfce60760edc506"
+                            )
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertFalse(validator.validateFeePayer(tx));
+        }
+    }
+
+    public static class validateFeePayer_AccountKeyRoleBased {
+        static AccountKey accountKey;
+
+        @BeforeClass
+        public static void init() throws IOException {
+            String json = "{\n" +
+                    "  \"keyType\":5,\n" +
+                    "  \"key\":[\n" +
+                    "    {\n" +
+                    "      \"keyType\":4,\n" +
+                    "      \"key\":{\n" +
+                    "        \"threshold\":2,\n" +
+                    "        \"keys\":[\n" +
+                    "          {\n" +
+                    "            \"weight\":1,\n" +
+                    "            \"key\":{\n" +
+                    "              \"x\":\"0x8bb6aaeb2d96d024754d3b50babf116cece68977acbe8ba6a66f14d5217c60d9\",\n" +
+                    "              \"y\":\"0x6af020a0568661e7c72e753e80efe084a3aed9f9ac87bf44d09ce67aad3d4e01\"\n" +
+                    "            }\n" +
+                    "          },\n" +
+                    "          {\n" +
+                    "            \"weight\":1,\n" +
+                    "            \"key\":{\n" +
+                    "              \"x\":\"0xc7751c794337a93e4db041fb5401c2c816cf0a099d8fd4b1f3f555aab5dfead2\",\n" +
+                    "              \"y\":\"0x417521bb0c03d8637f350df15ef6a6cb3cdb806bd9d10bc71982dd03ff5d9ddd\"\n" +
+                    "            }\n" +
+                    "          },\n" +
+                    "          {\n" +
+                    "            \"weight\":1,\n" +
+                    "            \"key\":{\n" +
+                    "              \"x\":\"0x3919091ba17c106dd034af508cfe00b963d173dffab2c7702890e25a96d107ca\",\n" +
+                    "              \"y\":\"0x1bb4f148ee1984751e57d2435468558193ce84ab9a7731b842e9672e40dc0f22\"\n" +
+                    "            }\n" +
+                    "          }\n" +
+                    "        ]\n" +
+                    "      }\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"keyType\":4,\n" +
+                    "      \"key\":{\n" +
+                    "        \"threshold\":2,\n" +
+                    "        \"keys\":[\n" +
+                    "          {\n" +
+                    "            \"weight\":1,\n" +
+                    "            \"key\":{\n" +
+                    "              \"x\":\"0x8bb6aaeb2d96d024754d3b50babf116cece68977acbe8ba6a66f14d5217c60d9\",\n" +
+                    "              \"y\":\"0x6af020a0568661e7c72e753e80efe084a3aed9f9ac87bf44d09ce67aad3d4e01\"\n" +
+                    "            }\n" +
+                    "          },\n" +
+                    "          {\n" +
+                    "            \"weight\":1,\n" +
+                    "            \"key\":{\n" +
+                    "              \"x\":\"0xc7751c794337a93e4db041fb5401c2c816cf0a099d8fd4b1f3f555aab5dfead2\",\n" +
+                    "              \"y\":\"0x417521bb0c03d8637f350df15ef6a6cb3cdb806bd9d10bc71982dd03ff5d9ddd\"\n" +
+                    "            }\n" +
+                    "          }\n" +
+                    "        ]\n" +
+                    "      }\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"keyType\":4,\n" +
+                    "      \"key\":{\n" +
+                    "        \"threshold\":2,\n" +
+                    "        \"keys\":[\n" +
+                    "          {\n" +
+                    "            \"weight\":2,\n" +
+                    "            \"key\":{\n" +
+                    "              \"x\":\"0x2b557d80ddac3a0bbcc8a7861773ca7434c969e2721a574bb94a1e3aa5ceed38\",\n" +
+                    "              \"y\":\"0x19f08a82b31682c038f9f691fb38ee4aaf7e016e2c973a1bd1e48a51f60a54ea\"\n" +
+                    "            }\n" +
+                    "          },\n" +
+                    "          {\n" +
+                    "            \"weight\":1,\n" +
+                    "            \"key\":{\n" +
+                    "              \"x\":\"0x1a1cfe1e2ec4b15520c57c20c2460981a2f16003c8db11a0afc282abf929fa1c\",\n" +
+                    "              \"y\":\"0x1868f60f91b330c423aa660913d86acc2a0b1b15e7ba1fe571e5928a19825a7e\"\n" +
+                    "            }\n" +
+                    "          },\n" +
+                    "          {\n" +
+                    "            \"weight\":1,\n" +
+                    "            \"key\":{\n" +
+                    "              \"x\":\"0xdea23a89dbbde1a0c26466c49c1edd32785432389641797038c2b53815cb5c73\",\n" +
+                    "              \"y\":\"0xd6cf5355986fd9a22a68bb57b831857fd1636362b383bd632966392714b60d72\"\n" +
+                    "            }\n" +
+                    "          }\n" +
+                    "        ]\n" +
+                    "      }\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}";
+
+            ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
+            AccountKey.AccountKeyData accountKeyData = mapper.readValue(json, AccountKey.AccountKeyData.class);
+            accountKey = new AccountKey();
+            accountKey.setResult(accountKeyData);
+        }
+
+        @Test
+        public void withValidSignature() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            FeeDelegatedValueTransfer tx = new FeeDelegatedValueTransfer.Builder()
+                    .setFrom("0x07a9a76ef778676c3bd2b334edcf581db31a85e5")
+                    .setFeePayer("0xb5db72925b1b6b79299a1a49ae226cd7861083ac")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setFeePayerSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x86fd17d788e89a6e0639395b3c0a04f916103debd6cbe639d6f4ff5034dde3e8",
+                                    "0x0795551c551d9096234c290689767f34f2d409c95166ab18d216dbc93845ba16"
+                            ),
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x0653b6d1cdb90462094b089ce8e2fed0e3b8ec2c44125965e1a5af286644c758",
+                                    "0x259b10e3bf594d48535fd0d95e15d095897c8d075c01dd56e7417d5943b0d53a"
+                            ),
+                            new SignatureData(
+                                    "0x0fe9",
+                                    "0xce8d051427adab10d1dc93de49123aeab18ba8aadedce0d57ef5b7fa451b1f4f",
+                                    "0x4fe2a845d92ff48abca3e1d59637fab5f4a4e3172d91772d9bfce60760edc506"
+                            )
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertTrue(validator.validateFeePayer(tx));
+        }
+
+        @Test
+        public void withInvalidFeePayerSignature() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            FeeDelegatedValueTransfer tx = new FeeDelegatedValueTransfer.Builder()
+                    .setFrom("0x07a9a76ef778676c3bd2b334edcf581db31a85e5")
+                    .setFeePayer("0xb5db72925b1b6b79299a1a49ae226cd7861083ac")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setFeePayerSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fe9",
+                                    "0x86c8ecbfd892be41d48443a2243274beb6daed3f72895045965a3baede4c350e",
+                                    "0x69ea748aff6e4c106d3a8ba597d8f134745b76f12dacb581318f9da07351511a"
+                            )
+                    ))
+                    .build();
+
+            Validator validator = new Validator(klay);
+            assertFalse(validator.validateFeePayer(tx));
+        }
+    }
+
+    public static class validateTransaction {
+        static ValueTransfer.Builder txBuilder;
+        static FeeDelegatedValueTransfer.Builder fdTxBuilder;
+        static AccountKey accountKey;
+
+        @BeforeClass
+        public static void init() {
+            accountKey = new AccountKey();
+            accountKey.setResult(new AccountKey.AccountKeyData(AccountKeyLegacy.getType(), new AccountKeyLegacy()));
+
+            txBuilder = new ValueTransfer.Builder()
+                    .setFrom("0xf21460730845e3652aa3cc9bc13b345e4f53984a")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setSignatures(new SignatureData(
+                            "0x0fea",
+                            "0x2b5934c6d26bb3e65edf099d79c57c743d2f70744ca09d3ba9a1099edff9f173",
+                            "0x0797886edff4b449c1a599943e3a6003ae9e46b3f3f34862ced327e43fba3a6a"
+                    ));
+
+            fdTxBuilder = new FeeDelegatedValueTransfer.Builder()
+                    .setFrom("0x07a9a76ef778676c3bd2b334edcf581db31a85e5")
+                    .setFeePayer("0xb5db72925b1b6b79299a1a49ae226cd7861083ac")
+                    .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                    .setValue("0x1")
+                    .setChainId("0x7e3")
+                    .setGasPrice("0x5d21dba00")
+                    .setNonce("0x0")
+                    .setGas("0x2faf080")
+                    .setSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0xcb2bbf04a12ec3a06163c30ce8782739ec4745a53e265aa9443f1c0d678bb871",
+                                    "0x7dd348c7d8fce6be36b661f116973d1c36cc92a389ad4a1a4053bd486060a083"
+                            ),
+                            new SignatureData(
+                                    "0x0fe9",
+                                    "0x6d5dfca992d6833c0da272578bc6ea941be45f44fb2fa114310ebe18d673ed52",
+                                    "0x4dc5cd7985c9ce7d44d46d65e65c995a4a8c97159a1eed8b2efb0510b981ab7c"
+                            ),
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x945151edf556fbcebf832092d4534b9a3b1f3d46f85bce09e7d7211070cb57be",
+                                    "0x1617c8f918f96970baddd12f240a9824eca6b29d91eb7333adacb987f2dcd8dd"
+                            )
+                    ))
+                    .setFeePayerSignatures(Arrays.asList(
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x86fd17d788e89a6e0639395b3c0a04f916103debd6cbe639d6f4ff5034dde3e8",
+                                    "0x0795551c551d9096234c290689767f34f2d409c95166ab18d216dbc93845ba16"
+                            ),
+                            new SignatureData(
+                                    "0x0fea",
+                                    "0x0653b6d1cdb90462094b089ce8e2fed0e3b8ec2c44125965e1a5af286644c758",
+                                    "0x259b10e3bf594d48535fd0d95e15d095897c8d075c01dd56e7417d5943b0d53a"
+                            ),
+                            new SignatureData(
+                                    "0x0fe9",
+                                    "0xce8d051427adab10d1dc93de49123aeab18ba8aadedce0d57ef5b7fa451b1f4f",
+                                    "0x4fe2a845d92ff48abca3e1d59637fab5f4a4e3172d91772d9bfce60760edc506"
+                            )
+                    ));
+        }
+
+        @Test
+        public void isCallValidateSender() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            Validator validator = new Validator(klay);
+
+            Validator spyValidator = Mockito.spy(validator);
+            spyValidator.validateTransaction(txBuilder.build());
+
+            Mockito.verify(spyValidator).validateSender(any());
+        }
+
+        @Test
+        public void isCallValidateFeePayer() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            Validator validator = new Validator(klay);
+
+            Validator spyValidator = Mockito.spy(validator);
+            spyValidator.validateTransaction(fdTxBuilder.build());
+
+            Mockito.verify(spyValidator).validateSender(any());
+            Mockito.verify(spyValidator).validateFeePayer(any());
+        }
+
+        @Test
+        public void validateTransaction() throws IOException {
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            Validator validator = new Validator(klay);
+            assertTrue(validator.validateTransaction(txBuilder.build()));
+            assertTrue(validator.validateTransaction(fdTxBuilder.build()));
+        }
     }
 }

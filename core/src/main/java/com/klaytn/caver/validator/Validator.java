@@ -19,6 +19,8 @@ package com.klaytn.caver.validator;
 import com.klaytn.caver.account.*;
 import com.klaytn.caver.methods.response.AccountKey;
 import com.klaytn.caver.rpc.Klay;
+import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
+import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 
@@ -154,7 +156,90 @@ public class Validator {
         }
     }
 
-     private boolean validateWithAccountType(String address, IAccountKey accountKey, List<String> pubKeys, int role) {
+    /**
+     * Validates the sender of the transaction.<p>
+     * This function compares the public keys of the account key of sender with the public keys recovered from signatures field.
+     * <pre>Example :
+     * {@code
+     * ValueTransfer tx = caver.transaction.valueTransfer.create(...);
+     * boolean isValid = caver.validator.validateSender(tx);
+     * }
+     * </pre>
+     *
+     * @param tx An instance of transaction to validate
+     * @return boolean
+     */
+    public boolean validateSender(AbstractTransaction tx) {
+        try {
+            //Loading Account Key.
+            AccountKey accountKey = klay.getAccountKey(tx.getFrom()).send();
+            if(accountKey.hasError()) {
+                throw new RuntimeException("error code : " + accountKey.getError().getCode() + " error message : " + accountKey.getError().getMessage());
+            }
+
+            List<String> publicKeys = tx.recoverPublicKeys();
+            int role = tx.getType().contains("AccountUpdate") ? AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex() : AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex();
+
+            return validateWithAccountType(tx.getFrom(), accountKey.getResult().getAccountKey(), publicKeys, role);
+        } catch(IOException e) {
+            throw new RuntimeException("Failed to get AccountKey from Klaytn", e);
+        }
+    }
+
+    /**
+     * Validates the fee payer in the transaction.<p>
+     * This function compares the public keys of the account key of the fee payer with the public keys recovered from feePayerSignatures field.
+     * <pre>Example :
+     * {@code
+     * ValueTransfer tx = caver.transaction.valueTransfer.create(...);
+     * boolean isValid = caver.validator.validateSender(tx);
+     * }
+     * </pre>
+     *
+     * @param tx An instance of transaction to validate
+     * @return boolean
+     */
+    public boolean validateFeePayer(AbstractFeeDelegatedTransaction tx) {
+        try {
+            //Loading Account Key.
+            AccountKey accountKey = klay.getAccountKey(tx.getFeePayer()).send();
+            if(accountKey.hasError()) {
+                throw new RuntimeException("error code : " + accountKey.getError().getCode() + " error message : " + accountKey.getError().getMessage());
+            }
+
+            List<String> publicKeys = tx.recoverFeePayerPublicKeys();
+            int role = AccountKeyRoleBased.RoleGroup.FEE_PAYER.getIndex();
+
+            return validateWithAccountType(tx.getFeePayer(), accountKey.getResult().getAccountKey(), publicKeys, role);
+        } catch(IOException e) {
+            throw new RuntimeException("Failed to get AccountKey from Klaytn", e);
+        }
+    }
+
+    /**
+     * Validates a transaction.<p>
+     * This function compares the public keys of the account key of sender with the public keys recovered from signatures field.<p>
+     * If the transaction is fee-delegated with the `feePayerSignatures` variable inside, this function compares the public keys recovered from `feePayerSignatures` with the public keys of the fee payer.
+     * {@code
+     * ValueTransfer tx = caver.transaction.valueTransfer.create(...);
+     * boolean isValid = caver.validator.validateSender(tx);
+     * }
+     * </pre>
+     *
+     * @param tx An instance of transaction to validate.
+     * @return boolean
+     */
+    public boolean validateTransaction(AbstractTransaction tx) {
+        boolean isValid = this.validateSender(tx);
+
+        if(isValid && tx instanceof AbstractFeeDelegatedTransaction) {
+            isValid = this.validateFeePayer((AbstractFeeDelegatedTransaction)tx);
+        }
+
+        return isValid;
+    }
+
+    private boolean validateWithAccountType(String address, IAccountKey accountKey, List<String> pubKeys, int role) {
         // For accounts that have not yet been applied in Klaytn's state, the return value of `caver.rpc.klay.getAccountKey` is null.
         // In this case, the account's key has never been updated, so the logic is the same as in AccountKeyLegacy.
         if(accountKey == null) {

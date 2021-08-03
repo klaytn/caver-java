@@ -220,6 +220,7 @@ public class Validator {
      * Validates a transaction.<p>
      * This function compares the public keys of the account key of sender with the public keys recovered from signatures field.<p>
      * If the transaction is fee-delegated with the `feePayerSignatures` variable inside, this function compares the public keys recovered from `feePayerSignatures` with the public keys of the fee payer.
+     * <pre>Example
      * {@code
      * ValueTransfer tx = caver.transaction.valueTransfer.create(...);
      * boolean isValid = caver.validator.validateSender(tx);

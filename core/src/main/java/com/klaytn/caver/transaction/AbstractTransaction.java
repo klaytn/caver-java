@@ -37,6 +37,7 @@ import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.SignatureException;
 import java.util.*;
 import java.util.function.Function;
 
@@ -509,32 +510,59 @@ abstract public class AbstractTransaction {
      *   - Removes duplicate signatures
      *   - Removes the default empty signature("0x01", "0x", "0x")
      *   - For an empty signature array, return an array containing the default empty signature("0x01", "0x", "0x")
-     * @param signatureDataList
-     * @return
+     * @param signatureDataList The list of {@link SignatureData}
+     * @return List&lt;String&gt;
      */
     public List<SignatureData> refineSignature(List<SignatureData> signatureDataList) {
         boolean isLegacy = this.getType().equals(TransactionType.TxTypeLegacyTransaction.toString());
-        SignatureData emptySig = SignatureData.getEmptySignature();
 
-        List<SignatureData> refinedList = new ArrayList<>();
-
-        for(SignatureData signData : signatureDataList) {
-            if(!Utils.isEmptySig(signData)) {
-                if(!refinedList.contains(signData)) {
-                    refinedList.add(signData);
-                }
-            }
-        }
-
-        if(refinedList.size() == 0) {
-            refinedList.add(emptySig);
-        }
+        List<SignatureData> refinedList = SignatureData.refineSignature(signatureDataList);
 
         if(isLegacy && refinedList.size() > 1) {
             throw new RuntimeException("LegacyTransaction cannot have multiple signature.");
         }
 
         return refinedList;
+    }
+
+    /**
+     * Recovers the public key strings from "signatures" field in transaction object.<p>
+     * If you want to derive an address from public key, please use {@link Utils#publicKeyToAddress(String)}.
+     * <pre>Example :
+     * {@code
+     * List<String> publicKeys = tx.recoverPublicKeys();
+     * }
+     * </pre>
+     * @return List&lt;String&gt;
+     */
+    public List<String> recoverPublicKeys() {
+        try {
+            if(Utils.isEmptySig(this.getSignatures())) {
+                throw new RuntimeException("Failed to recover public keys from signatures: signatures is empty.");
+            }
+
+            // For recover signature. We need to find chainId from signatures' v field.
+            // The V value in Tx signatures is set by [parity value {0,1} + chainId * 2 + 35]
+            // https://eips.ethereum.org/EIPS/eip-155
+            if(this.getChainId().equals("0x")) {
+                BigInteger chainId = this.getSignatures().get(0).getChainId();
+                setChainId(chainId);
+            }
+
+            String sigHash = TransactionHasher.getHashForSignature(this);
+
+            List<String> publicKeyList = new ArrayList<>();
+            for(SignatureData signatureData : this.getSignatures()) {
+                if(Numeric.toBigInt(this.getChainId()).compareTo(signatureData.getChainId()) != 0) {
+                    throw new RuntimeException("Invalid Signature data : chain id is not matched.");
+                }
+
+                publicKeyList.add(Utils.recoverPublicKey(sigHash, signatureData, true));
+            }
+            return publicKeyList;
+        } catch(SignatureException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

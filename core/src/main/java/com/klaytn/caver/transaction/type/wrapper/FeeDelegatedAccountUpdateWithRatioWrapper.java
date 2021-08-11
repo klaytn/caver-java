@@ -16,8 +16,12 @@
 
 package com.klaytn.caver.transaction.type.wrapper;
 
+import com.klaytn.caver.account.Account;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.type.FeeDelegatedAccountUpdateWithRatio;
+import com.klaytn.caver.wallet.keyring.SignatureData;
+
+import java.util.List;
 
 /**
  * Represents a FeeDelegatedAccountUpdateWithRatioWrapper
@@ -66,9 +70,26 @@ public class FeeDelegatedAccountUpdateWithRatioWrapper {
      * @return FeeDelegatedAccountUpdateWithRatio
      */
     public FeeDelegatedAccountUpdateWithRatio create(FeeDelegatedAccountUpdateWithRatio.Builder builder) {
-        return builder
-                .setKlaytnCall(this.klaytnCall)
-                .build();
+        builder.setKlaytnCall(this.klaytnCall);
+        return FeeDelegatedAccountUpdateWithRatio.create(builder);
+    }
+
+    /**
+     * Creates a FeeDelegatedAccountUpdateWithRatio instance.
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A Signature list
+     * @param feePayer A fee payer address.
+     * @param feePayerSignatures A fee payer signature list.
+     * @param feeRatio A fee ratio of the fee payer.
+     * @param account An account instance includes account key to be updated to the account in the network.
+     * @return FeeDelegatedAccountUpdateWithRatio
+     */
+    public FeeDelegatedAccountUpdateWithRatio create(String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, Account account) {
+        return FeeDelegatedAccountUpdateWithRatio.create(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, feePayer, feePayerSignatures, feeRatio, account);
     }
 
     /**

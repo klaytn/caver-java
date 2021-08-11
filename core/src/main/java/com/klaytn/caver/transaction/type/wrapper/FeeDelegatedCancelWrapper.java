@@ -18,6 +18,9 @@ package com.klaytn.caver.transaction.type.wrapper;
 
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.type.FeeDelegatedCancel;
+import com.klaytn.caver.wallet.keyring.SignatureData;
+
+import java.util.List;
 
 /**
  * Represents a FeeDelegatedCancelWrapper
@@ -66,9 +69,24 @@ public class FeeDelegatedCancelWrapper {
      * @return FeeDelegatedCancel
      */
     public FeeDelegatedCancel create(FeeDelegatedCancel.Builder builder) {
-        return builder
-                .setKlaytnCall(this.klaytnCall)
-                .build();
+       builder.setKlaytnCall(this.klaytnCall);
+       return FeeDelegatedCancel.create(builder);
+    }
+
+    /**
+     * Creates a FeeDelegatedCancel instance.
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A signature list
+     * @param feePayer A fee payer address.
+     * @param feePayerSignatures A fee payer signature list.
+     * @return FeeDelegatedCancel
+     */
+    public FeeDelegatedCancel create(String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures) {
+        return FeeDelegatedCancel.create(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, feePayer, feePayerSignatures);
     }
 
     /**

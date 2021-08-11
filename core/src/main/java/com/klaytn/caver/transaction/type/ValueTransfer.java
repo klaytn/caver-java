@@ -79,8 +79,34 @@ public class ValueTransfer extends AbstractTransaction {
     /**
      * Creates a ValueTransfer instance.
      * @param builder ValueTransfer.Builder instance.
+     * @return ValueTransfer
      */
-    public ValueTransfer(Builder builder) {
+    public static ValueTransfer create(ValueTransfer.Builder builder) {
+        return new ValueTransfer(builder);
+    }
+
+    /**
+     * Creates a ValueTransfer instance.
+     * @param klaytnCall Klay RPC instance
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A Signature list
+     * @param to The account address that will receive the transferred value.
+     * @param value The amount of KLAY in peb to be transferred.
+     * @return ValueTransfer
+     */
+    public static ValueTransfer create(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String value) {
+        return new ValueTransfer(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, to, value);
+    }
+
+    /**
+     * Creates a ValueTransfer instance.
+     * @param builder ValueTransfer.Builder instance.
+     */
+    public ValueTransfer(ValueTransfer.Builder builder) {
         super(builder);
         setTo(builder.to);
         setValue(builder.value);

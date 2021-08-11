@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -1053,7 +1052,7 @@ public class FeeDelegatedValueTransferMemoWithRatioTest {
 
             singleKeyring = caver.wallet.keyring.createWithSingleKey(feePayer, feePayerPrivateKey);
             multipleKeyring = caver.wallet.keyring.createWithMultipleKey(feePayer, caver.wallet.keyring.generateMultipleKeys(8));
-            roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(feePayer, caver.wallet.keyring.generateRolBasedKeys(new int[]{3, 4, 5}));
+            roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(feePayer, caver.wallet.keyring.generateRoleBasedKeys(new int[]{3, 4, 5}));
         }
 
         @Test
@@ -1825,6 +1824,83 @@ public class FeeDelegatedValueTransferMemoWithRatioTest {
             );
 
             mTxObj.getRLPEncodingForFeePayerSignature();
+        }
+    }
+
+    public static class recoverPublicKeyTest {
+        List<String> expectedPublicKeyList = Arrays.asList(
+                "0xfbda4ac2c04336609f7e5a363c71c1565b442d552b82cbd0e75bbabaf215fd28b69ce88a6b9f2a463f1420bd9a0992413254748a7ab46d5ba78d09b35cf0e912",
+                "0xa234bd09ea829cb39dd2f5aced2318039f30ce5fe28f5eb28a256bac8617eb5db57ac7683fa21a01c8cbd2ca31c2cf93c97871c73896bf051f9bc0885c87ebe2",
+                "0x6ed39def6b25fc001790d267922281483c372b5d2486ae955ece1f1b64b19aea85392c8555947a1c63577439afdb74c77ef07d50520435d31cf4afb3dfe0074f"
+        );
+
+        List<String> expectedFeePayerPublicKeyList = Arrays.asList(
+                "0x2b557d80ddac3a0bbcc8a7861773ca7434c969e2721a574bb94a1e3aa5ceed3819f08a82b31682c038f9f691fb38ee4aaf7e016e2c973a1bd1e48a51f60a54ea",
+                "0x1a1cfe1e2ec4b15520c57c20c2460981a2f16003c8db11a0afc282abf929fa1c1868f60f91b330c423aa660913d86acc2a0b1b15e7ba1fe571e5928a19825a7e",
+                "0xdea23a89dbbde1a0c26466c49c1edd32785432389641797038c2b53815cb5c73d6cf5355986fd9a22a68bb57b831857fd1636362b383bd632966392714b60d72"
+        );
+
+        List<SignatureData> expectedSigData = Arrays.asList(
+                new SignatureData(
+                        "0x0fe9",
+                        "0xce82f1c80ff7abd6c345177a655e1f8764280f4077bf864ff74393e17a8d8408",
+                        "0x7382964f32e0b572a828a2ae8d78fca28eab0b5b1636a8a899de78c8c0f6fb12"
+                ),
+                new SignatureData(
+                        "0x0fea",
+                        "0x7153102d1714210ac9610c3b6d6ab2d207eddf7af0f887813d0c4a9082329aa2",
+                        "0x12c672dbbb99483e2b783f635ff53b02abd1e065b508b42b24a9a9e21721395c"
+                ),
+                new SignatureData(
+                        "0x0fe9",
+                        "0x7c30e08534153db8686c32618e37f7afe2763f5d5836ddff2d681c5f3af167d2",
+                        "0x4ddeb74725b5e6644396c002e9fd53c3c08b7b819043f126baa59543460fed49"
+                )
+        );
+
+        List<SignatureData> expectedFeePayerSigData = Arrays.asList(
+                new SignatureData(
+                        "0x0fea",
+                        "0x8e250033adf8cf1cff0403fa9488bb30efed8e8c22b895533798e915a4be8c4f",
+                        "0x4d7617488ab70e25e83bb4ecb30cc9af7523baaad16a1346e7d78222b5c0095a"
+                ),
+                new SignatureData(
+                        "0x0fe9",
+                        "0x10c8f757761eac2f5f4af9aa5d1040b852ca150a3952a3757c983c0582230166",
+                        "0x18e1f62542058fe8dbe14566d4029366aeb4a8c94d7d13254ed655c5d8d13f2d"
+                ),
+                new SignatureData(
+                        "0x0fe9",
+                        "0x5fd3f6054c328e57aecbad46dcd396be2828c8e6c25f4cd527958d917812da93",
+                        "0x7d9378cd09aa856c1e86fa9462ad54c91ecc63c315afb132a07745c07a9109c9"
+                )
+        );
+
+        FeeDelegatedValueTransferMemoWithRatio tx = new FeeDelegatedValueTransferMemoWithRatio.Builder()
+                .setFrom("0x07a9a76ef778676c3bd2b334edcf581db31a85e5")
+                .setFeePayer("0xb5db72925b1b6b79299a1a49ae226cd7861083ac")
+                .setFeeRatio("0x63")
+                .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                .setValue("0x1")
+                .setInput("0x68656c6c6f")
+                .setChainId("0x7e3")
+                .setGasPrice("0x5d21dba00")
+                .setNonce("0x0")
+                .setGas("0x2faf080")
+                .setSignatures(expectedSigData)
+                .setFeePayerSignatures(expectedFeePayerSigData)
+                .build();
+
+        @Test
+        public void recoverPublicKey() {
+            List<String> publicKeys = tx.recoverPublicKeys();
+            assertEquals(expectedPublicKeyList, publicKeys);
+        }
+
+        @Test
+        public void recoverFeePayerPublicKey() {
+            List<String> publicKeys = tx.recoverFeePayerPublicKeys();
+            assertEquals(expectedFeePayerPublicKeyList, publicKeys);
         }
     }
 }

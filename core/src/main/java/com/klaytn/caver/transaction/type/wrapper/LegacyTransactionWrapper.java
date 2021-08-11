@@ -18,6 +18,9 @@ package com.klaytn.caver.transaction.type.wrapper;
 
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.type.LegacyTransaction;
+import com.klaytn.caver.wallet.keyring.SignatureData;
+
+import java.util.List;
 
 /**
  * Represents a LegacyTransactionWrapper
@@ -66,9 +69,25 @@ public class LegacyTransactionWrapper {
      * @return LegacyTransaction
      */
     public LegacyTransaction create(LegacyTransaction.Builder builder) {
-        return builder
-                .setKlaytnCall(this.klaytnCall)
-                .build();
+        builder.setKlaytnCall(this.klaytnCall);
+        return LegacyTransaction.create(builder);
+    }
+
+    /**
+     * Create a LegacyTransaction instance.
+     * @param from The address of the sender.
+     * @param nonce A value used to uniquely identify a sender’s transaction.
+     * @param gas The maximum amount of gas the transaction is allowed to use.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param chainId Network ID
+     * @param signatures A Signature list
+     * @param to The account address that will receive the transferred value.
+     * @param input Data attached to the transaction, used for transaction execution.
+     * @param value The amount of KLAY in peb to be transferred.
+     * @return LegacyTransaction
+     */
+    public LegacyTransaction create(String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String input, String value) {
+        return LegacyTransaction.create(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, to, input, value);
     }
 
     /**

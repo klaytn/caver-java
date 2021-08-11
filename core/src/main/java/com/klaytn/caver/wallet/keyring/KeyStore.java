@@ -82,7 +82,7 @@ public class KeyStore {
     /**
      * An keyring in KeyStore V4
      */
-    private List keyRing;
+    private List keyring;
 
     /**
      * An ID in KeyStore
@@ -107,7 +107,7 @@ public class KeyStore {
     @JsonSetter("keyring")
     @JsonDeserialize(using = KeyStore.KeyRingDeserializer.class)
     public void setKeyring(List keyRing) {
-        this.keyRing = keyRing;
+        this.keyring = keyRing;
     }
 
     /**
@@ -115,7 +115,7 @@ public class KeyStore {
      * @return List
      */
     public List getKeyring() {
-        return this.keyRing;
+        return this.keyring;
     }
 
     /**

@@ -1305,4 +1305,75 @@ public class ContractTest {
         assertEquals(3, ((KeyringContainer)contract.getWallet()).length());
     }
 
+    @Test
+    public void decodeFunctionCall() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        String contractABI = "[\n" +
+                "  {\n" +
+                "    \"constant\":true,\n" +
+                "    \"inputs\":[\n" +
+                "      {\n" +
+                "        \"name\":\"key\",\n" +
+                "        \"type\":\"string\"\n" +
+                "      }\n" +
+                "    ],\n" +
+                "    \"name\":\"get\",\n" +
+                "    \"outputs\":[\n" +
+                "      {\n" +
+                "        \"name\":\"\",\n" +
+                "        \"type\":\"string\"\n" +
+                "      }\n" +
+                "    ],\n" +
+                "    \"payable\":false,\n" +
+                "    \"stateMutability\":\"view\",\n" +
+                "    \"type\":\"function\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"constant\":false,\n" +
+                "    \"inputs\":[\n" +
+                "      {\n" +
+                "        \"name\":\"key\",\n" +
+                "        \"type\":\"string\"\n" +
+                "      },\n" +
+                "      {\n" +
+                "        \"name\":\"value\",\n" +
+                "        \"type\":\"string\"\n" +
+                "      }\n" +
+                "    ],\n" +
+                "    \"name\":\"set\",\n" +
+                "    \"outputs\":[],\n" +
+                "    \"payable\":false,\n" +
+                "    \"stateMutability\":\"nonpayable\",\n" +
+                "    \"type\":\"function\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"constant\":true,\n" +
+                "    \"inputs\":[],\n" +
+                "    \"name\":\"getFirstValue\",\n" +
+                "    \"outputs\":[\n" +
+                "      {\n" +
+                "        \"name\":\"\",\n" +
+                "        \"type\":\"string\"\n" +
+                "      }\n" +
+                "    ],\n" +
+                "    \"payable\":false,\n" +
+                "    \"stateMutability\":\"view\",\n" +
+                "    \"type\":\"function\"\n" +
+                "  }\n" +
+                "]";
+
+        Caver caver = new Caver(Caver.DEFAULT_URL);
+        Contract contract = caver.contract.create(contractABI);
+
+        String encodedString = contract.encodeABI("set", "keyString", "valueString");
+        List<Type> decoded = contract.decodeFunctionCall(encodedString);
+
+        assertEquals(2, decoded.size());
+        assertEquals("keyString", decoded.get(0).getValue());
+        assertEquals("valueString", decoded.get(1).getValue());
+
+        encodedString = contract.encodeABI("getFirstValue");
+        decoded = contract.decodeFunctionCall(encodedString);
+
+        assertEquals(0, decoded.size());
+    }
 }

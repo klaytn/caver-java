@@ -824,7 +824,7 @@ public class FeeDelegatedSmartContractExecutionTest {
             );
             roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(
                     feePayer,
-                    caver.wallet.keyring.generateRolBasedKeys(new int[]{3, 4, 5})
+                    caver.wallet.keyring.generateRoleBasedKeys(new int[]{3, 4, 5})
             );
         }
 
@@ -1575,6 +1575,82 @@ public class FeeDelegatedSmartContractExecutionTest {
             );
 
             mTxObj.getRLPEncodingForFeePayerSignature();
+        }
+    }
+
+    public static class recoverPublicKeyTest {
+        List<String> expectedPublicKeyList = Arrays.asList(
+                "0xfbda4ac2c04336609f7e5a363c71c1565b442d552b82cbd0e75bbabaf215fd28b69ce88a6b9f2a463f1420bd9a0992413254748a7ab46d5ba78d09b35cf0e912",
+                "0xa234bd09ea829cb39dd2f5aced2318039f30ce5fe28f5eb28a256bac8617eb5db57ac7683fa21a01c8cbd2ca31c2cf93c97871c73896bf051f9bc0885c87ebe2",
+                "0x6ed39def6b25fc001790d267922281483c372b5d2486ae955ece1f1b64b19aea85392c8555947a1c63577439afdb74c77ef07d50520435d31cf4afb3dfe0074f"
+        );
+
+        List<String> expectedFeePayerPublicKeyList = Arrays.asList(
+                "0x2b557d80ddac3a0bbcc8a7861773ca7434c969e2721a574bb94a1e3aa5ceed3819f08a82b31682c038f9f691fb38ee4aaf7e016e2c973a1bd1e48a51f60a54ea",
+                "0x1a1cfe1e2ec4b15520c57c20c2460981a2f16003c8db11a0afc282abf929fa1c1868f60f91b330c423aa660913d86acc2a0b1b15e7ba1fe571e5928a19825a7e",
+                "0xdea23a89dbbde1a0c26466c49c1edd32785432389641797038c2b53815cb5c73d6cf5355986fd9a22a68bb57b831857fd1636362b383bd632966392714b60d72"
+        );
+
+        List<SignatureData> expectedSigData = Arrays.asList(
+                new SignatureData(
+                        "0x0fe9",
+                        "0x42f52da40e7648cec0eb5d7f84bc5b3c4218bfc5d8056476af620e1e42cb63a5",
+                        "0x478057f9e32cdc46b57be7c5022a6d81f61e07b515481332df3479662084afff"
+                ),
+                new SignatureData(
+                        "0x0fea",
+                        "0x6e2d666a01df1804531c0da5cc25a3ddfcb99d506110a2c1fe2a21b09e94c562",
+                        "0x19c980243caec5d9f008be963d600d904ea3aa9ac8c453acc0d137f05b171607"
+                ),
+                new SignatureData(
+                        "0x0fe9",
+                        "0xcefeda599c36faffa7241e217230c6af1c87f69dd1360673c382f2529a8ab044",
+                        "0x6c3da66cd9bcd4cdf3a854da2b30ce36449554cac771aaaf4c70047906b0cd89"
+                )
+        );
+
+        List<SignatureData> expectedFeePayerSigData = Arrays.asList(
+                new SignatureData(
+                        "0x0fe9",
+                        "0x27cb27294a4a7f7fb9c1aa30348ee6b591412cfcefe4f0c28dbebdd290970703",
+                        "0x750c5466ec44e07ac67c8950b4150a654503ca13e451508595711c1b83b44d8a"
+                ),
+                new SignatureData(
+                        "0x0fea",
+                        "0x2b672a1f4ddac03256bcecb96b834ecc0e74430b787f722ba610f3f270d9e8a1",
+                        "0x0e10fa45ae7f06989ef1facd543458c24f37cd8d38d9a937d18a6d39dbcf82ad"
+                ),
+                new SignatureData(
+                        "0x0fea",
+                        "0xef6acf5c104eaf67dbd9b8de636362c0fb9445f979d948f50a95fab7a16f3d62",
+                        "0x2bfb69ad74351e9a17d529cb186df78a1e7431d3575384986aa130b233aa24d8"
+                )
+        );
+
+        FeeDelegatedSmartContractExecution tx = new FeeDelegatedSmartContractExecution.Builder()
+                .setFrom("0xf21460730845e3652aa3cc9bc13b345e4f53984a")
+                .setFeePayer("0xb5db72925b1b6b79299a1a49ae226cd7861083ac")
+                .setTo("0x59177716c34ac6e49e295a0e78e33522f14d61ee")
+                .setValue("0x1")
+                .setChainId("0x7e3")
+                .setGasPrice("0x5d21dba00")
+                .setNonce("0x0")
+                .setGas("0x2faf080")
+                .setInput("0xd95aced7000000000000000000000000640a4c021cb5889fa1d37378f04a36ad452862240000000000000000000000000000000000000000000000000000000000000001")
+                .setSignatures(expectedSigData)
+                .setFeePayerSignatures(expectedFeePayerSigData)
+                .build();
+
+        @Test
+        public void recoverPublicKey() {
+            List<String> publicKeys = tx.recoverPublicKeys();
+            assertEquals(expectedPublicKeyList, publicKeys);
+        }
+
+        @Test
+        public void recoverFeePayerPublicKey() {
+            List<String> publicKeys = tx.recoverFeePayerPublicKeys();
+            assertEquals(expectedFeePayerPublicKeyList, publicKeys);
         }
     }
 

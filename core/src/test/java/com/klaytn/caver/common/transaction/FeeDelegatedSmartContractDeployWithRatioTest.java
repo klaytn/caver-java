@@ -1035,7 +1035,7 @@ public class FeeDelegatedSmartContractDeployWithRatioTest {
 
             singleKeyring = caver.wallet.keyring.createWithSingleKey(feePayer, feePayerPrivateKey);
             multipleKeyring = caver.wallet.keyring.createWithMultipleKey(feePayer, caver.wallet.keyring.generateMultipleKeys(8));
-            roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(feePayer, caver.wallet.keyring.generateRolBasedKeys(new int[]{3, 4, 5}));
+            roleBasedKeyring = caver.wallet.keyring.createWithRoleBasedKey(feePayer, caver.wallet.keyring.generateRoleBasedKeys(new int[]{3, 4, 5}));
         }
 
         @Test
@@ -1876,4 +1876,79 @@ public class FeeDelegatedSmartContractDeployWithRatioTest {
         }
     }
 
+    public static class recoverPublicKeyTest {
+        List<String> expectedPublicKeyList = Arrays.asList(
+                "0xfbda4ac2c04336609f7e5a363c71c1565b442d552b82cbd0e75bbabaf215fd28b69ce88a6b9f2a463f1420bd9a0992413254748a7ab46d5ba78d09b35cf0e912",
+                "0xa234bd09ea829cb39dd2f5aced2318039f30ce5fe28f5eb28a256bac8617eb5db57ac7683fa21a01c8cbd2ca31c2cf93c97871c73896bf051f9bc0885c87ebe2",
+                "0x6ed39def6b25fc001790d267922281483c372b5d2486ae955ece1f1b64b19aea85392c8555947a1c63577439afdb74c77ef07d50520435d31cf4afb3dfe0074f"
+        );
+
+        List<String> expectedFeePayerPublicKeyList = Arrays.asList(
+                "0x2b557d80ddac3a0bbcc8a7861773ca7434c969e2721a574bb94a1e3aa5ceed3819f08a82b31682c038f9f691fb38ee4aaf7e016e2c973a1bd1e48a51f60a54ea",
+                "0x1a1cfe1e2ec4b15520c57c20c2460981a2f16003c8db11a0afc282abf929fa1c1868f60f91b330c423aa660913d86acc2a0b1b15e7ba1fe571e5928a19825a7e",
+                "0xdea23a89dbbde1a0c26466c49c1edd32785432389641797038c2b53815cb5c73d6cf5355986fd9a22a68bb57b831857fd1636362b383bd632966392714b60d72"
+        );
+
+        List<SignatureData> expectedSigData = Arrays.asList(
+                new SignatureData(
+                        "0x0fe9",
+                        "0x7f4202d99aead9a883a04a03888c5a7474695765c7bdeab953a4c023370134f3",
+                        "0x35f2d08de9ca8807f0590458e79857a883ea8650373a44acd79d1897ac7feac6"
+                ),
+                new SignatureData(
+                        "0x0fea",
+                        "0x9cb21ad8ca5f27a5aa9ec478ab693441404f95ca270d763b4792e6ae6cdaae4d",
+                        "0x64854ca9e3cbd20e6c7548c41c96b497c3291bf99aa0eb4752cd0540d20eb833"
+                ),
+                new SignatureData(
+                        "0x0fea",
+                        "0x4161b6ba2491efda4c031742a136f815b3aa0c0d97f5896a62c253b43d72bccf",
+                        "0x6e646db88b41eda38c9d108d44e0d839387f4dfb8fbacff2cbf85e25c573935d"
+                )
+        );
+
+        List<SignatureData> expectedFeePayerSigData = Arrays.asList(
+                new SignatureData(
+                        "0x0fe9",
+                        "0xc9d4fdd99ee0017b5e0cd16b02e1777a0bbee4e322a9dfe9740fde617d9b28d1",
+                        "0x52501774839c3c2593988b29fc7c49dbcfc4137c5ad33e59d7cb007a97e6838a"
+                ),
+                new SignatureData(
+                        "0x0fe9",
+                        "0x7f53da21c754c396bc9f4210d18b61eb79721c7887798c20010e84e0fde5907d",
+                        "0x088c05176dd8a26f0de12c07b8f3f9e980c74050cfdf2c9d53703e82a6784c4f"
+                ),
+                new SignatureData(
+                        "0x0fe9",
+                        "0x39a00b4f2f9d00a23fe1eb66eba9459db59ffeeb724c6172651659150171d677",
+                        "0x0c105c691bc2425e19828aacc9d03839144e1916c6b7691001d1046e55e4f11c"
+                )
+        );
+
+        FeeDelegatedSmartContractDeployWithRatio tx = new FeeDelegatedSmartContractDeployWithRatio.Builder()
+                .setFrom("0xf21460730845e3652aa3cc9bc13b345e4f53984a")
+                .setFeePayer("0xb5db72925b1b6b79299a1a49ae226cd7861083ac")
+                .setFeeRatio("0x63")
+                .setValue("0x1")
+                .setChainId("0x7e3")
+                .setGasPrice("0x5d21dba00")
+                .setNonce("0x0")
+                .setGas("0x2faf080")
+                .setInput("0x60806040526000805534801561001457600080fd5b506101ea806100246000396000f30060806040526004361061006d576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd1461007257806342cbb15c1461009d578063767800de146100c8578063b22636271461011f578063d14e62b814610150575b600080fd5b34801561007e57600080fd5b5061008761017d565b6040518082815260200191505060405180910390f35b3480156100a957600080fd5b506100b2610183565b6040518082815260200191505060405180910390f35b3480156100d457600080fd5b506100dd61018b565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34801561012b57600080fd5b5061014e60048036038101908080356000191690602001909291905050506101b1565b005b34801561015c57600080fd5b5061017b600480360381019080803590602001909291905050506101b4565b005b60005481565b600043905090565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b50565b80600081905550505600a165627a7a7230582053c65686a3571c517e2cf4f741d842e5ee6aa665c96ce70f46f9a594794f11eb0029")
+                .setSignatures(expectedSigData)
+                .setFeePayerSignatures(expectedFeePayerSigData)
+                .build();
+
+        @Test
+        public void recoverPublicKey() {
+            List<String> publicKeys = tx.recoverPublicKeys();
+            assertEquals(expectedPublicKeyList, publicKeys);
+        }
+
+        @Test
+        public void recoverFeePayerPublicKey() {
+            List<String> publicKeys = tx.recoverFeePayerPublicKeys();
+            assertEquals(expectedFeePayerPublicKeyList, publicKeys);
+        }
+    }
 }

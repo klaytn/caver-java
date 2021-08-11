@@ -41,13 +41,19 @@ public class RPC implements Batcher {
     public Net net;
 
     /**
+     * The API class related governance.
+     */
+    public Governance governance;
+
+    /**
      * Constructor for RPC
      * @param web3jService JSON-RPC service instance
      */
     public RPC(Web3jService web3jService) {
         this.web3jService = web3jService;
-        klay = new Klay(web3jService);
-        net = new Net(web3jService);
+        this.klay = new Klay(web3jService);
+        this.net = new Net(web3jService);
+        this.governance = new Governance(web3jService);
     }
 
     /**
@@ -64,6 +70,9 @@ public class RPC implements Batcher {
      */
     public void setWeb3jService(Web3jService web3jService) {
         this.web3jService = web3jService;
+        this.klay = new Klay(web3jService);
+        this.net = new Net(web3jService);
+        this.governance = new Governance(web3jService);
     }
 
     /**

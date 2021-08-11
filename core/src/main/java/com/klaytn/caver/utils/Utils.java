@@ -16,19 +16,19 @@
 
 package com.klaytn.caver.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.bouncycastle.math.ec.ECPoint;
 import org.web3j.crypto.ECDSASignature;
 import org.web3j.crypto.Hash;
 import org.web3j.crypto.Keys;
 import org.web3j.crypto.Sign;
+import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.utils.Numeric;
 
-import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
 public class Utils {
     public static final int LENGTH_ADDRESS_STRING = 40;
     public static final int LENGTH_PRIVATE_KEY_STRING = 64;
+    public static final int LENGTH_PUBLIC_KEY_STRING_DECOMPRESSED = 128;
 
     public static final String DEFAULT_ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -356,6 +357,97 @@ public class Utils {
     }
 
     /**
+     * Recovers the public key that was used to sign the given data.<p>
+     * This method hashes the message with klaytn prefix automatically.
+     * <pre>Example :
+     * {@code
+     * String message = "Some Message";
+     * SignatureData signatureData = new SignatureData(
+     *     "0x1b",
+     *     "0x8213e560e7bbe1f2e28fd69cbbb41c9108b84c98cd7c2c88d3c8e3549fd6ab10",
+     *     "0x3ca40c9e20c1525348d734a6724db152b9244bff6e0ff0c2b811d61d8f874f00"
+     * );
+     *
+     * String publicKey = caver.utils.recoverPublicKey(message, signatureData);
+     * }
+     * </pre>
+     * @param message The raw message string.
+     * @param signatureData The {@link SignatureData} to recover public key.
+     * @return String
+     * @throws SignatureException
+     */
+    public static String recoverPublicKey(String message, SignatureData signatureData) throws SignatureException {
+        return recoverPublicKey(message, signatureData, false);
+    }
+
+    /**
+     * Recovers the public key that was used to sign the given data.
+     * <pre>Example :
+     * {@code
+     * String message = "Some Message";
+     * SignatureData signatureData = new SignatureData(
+     *     "0x1b",
+     *     "0x8213e560e7bbe1f2e28fd69cbbb41c9108b84c98cd7c2c88d3c8e3549fd6ab10",
+     *     "0x3ca40c9e20c1525348d734a6724db152b9244bff6e0ff0c2b811d61d8f874f00"
+     * );
+     *
+     * String publicKey = caver.utils.recoverPublicKey(message, signatureData, false);
+     * }
+     * </pre>
+     * @param message The raw message string. If this message is already hashed with Klaytn prefix, the third parameter should be true.
+     * @param signatureData The {@link SignatureData} to recover public key.
+     * @param isHashed If true, the message param already hashed by appending a Klaytn sign prefix to the message.
+     * @return String
+     * @throws SignatureException
+     */
+    public static String recoverPublicKey(String message, SignatureData signatureData, boolean isHashed) throws SignatureException {
+        String messageHash = message;
+        if(!isHashed) {
+            messageHash = Utils.hashMessage(message);
+        }
+
+        byte[] r = Numeric.hexStringToByteArray(signatureData.getR());
+        byte[] s = Numeric.hexStringToByteArray(signatureData.getS());
+
+        if(r == null || r.length != 32) {
+            throw new IllegalArgumentException("r must be 32 bytes");
+        }
+        if(s == null || s.length != 32) {
+            throw new IllegalArgumentException("s must be 32 bytes");
+        }
+
+       int recId = signatureData.getRecoverId();
+
+        ECDSASignature sig = new ECDSASignature(
+                new BigInteger(1, r),
+                new BigInteger(1, s));
+
+        BigInteger key = Sign.recoverFromSignature(recId, sig, Numeric.hexStringToByteArray(messageHash));
+        if (key == null) {
+            throw new SignatureException("Could not recover public key from signature");
+        }
+
+        return Numeric.toHexStringWithPrefixZeroPadded(key, LENGTH_PUBLIC_KEY_STRING_DECOMPRESSED);
+    }
+
+    /**
+     * Returns an address which is derived by a public key(handles both compressed format and decompressed format).<p>
+     * This function simply converts the public key string into address from by hashing it.<p>
+     * It has nothing to do with the actual account in the Klaytn.
+     * <pre>Example :
+     * {@code
+     * String address = caver.utils.publicKeyToAddress("0x{public key}");
+     * }
+     * </pre>
+     * @param publicKey The public key string to get the address.
+     * @return String
+     */
+    public static String publicKeyToAddress(String publicKey) {
+        publicKey = Utils.decompressPublicKey(publicKey);
+        return addHexPrefix(Keys.getAddress(publicKey));
+    }
+
+    /**
      * Recovers the address that was used to sign the given data.
      * This function automatically creates a message hash by appending a Klaytn sign prefix to the message.
      * @param message A plain message when using signed.
@@ -372,43 +464,13 @@ public class Utils {
      * Recovers the address that was used to sign the given data.
      * @param message A plain message or hashed message.
      * @param signatureData The signature values in KlaySignatureData
-     * @param isPrefixed If true, the message param already hashed by appending a Klaytn sign prefix to the message.
+     * @param isHashed If true, the message param already hashed by appending a Klaytn sign prefix to the message.
      * @return String
      * @throws SignatureException It throws when recover operation has failed.
      */
-    public static String recover(String message, SignatureData signatureData, boolean isPrefixed) throws SignatureException {
-        String messageHash = message;
-        if(!isPrefixed) {
-            messageHash = Utils.hashMessage(message);
-        }
-
-        byte[] r = Numeric.hexStringToByteArray(signatureData.getR());
-        byte[] s = Numeric.hexStringToByteArray(signatureData.getS());
-
-        if(r == null || r.length != 32) {
-            throw new IllegalArgumentException("r must be 32 bytes");
-        }
-        if(s == null || s.length != 32) {
-            throw new IllegalArgumentException("s must be 32 bytes");
-        }
-
-        int header = Numeric.toBigInt(signatureData.getV()).intValue() & 0xFF;
-        // The header byte: 0x1B = first key with even y, 0x1C = first key with odd y,
-        //                  0x1D = second key with even y, 0x1E = second key with odd y
-        if (header < 27 || header > 34) {
-            throw new SignatureException("Header byte out of range: " + header);
-        }
-
-        ECDSASignature sig = new ECDSASignature(
-                new BigInteger(1, r),
-                new BigInteger(1, s));
-
-        int recId = header - 27;
-        BigInteger key = Sign.recoverFromSignature(recId, sig, Numeric.hexStringToByteArray(messageHash));
-        if (key == null) {
-            throw new SignatureException("Could not recover public key from signature");
-        }
-        return Numeric.prependHexPrefix(Keys.getAddress(key));
+    public static String recover(String message, SignatureData signatureData, boolean isHashed) throws SignatureException {
+        String publicKey = recoverPublicKey(message, signatureData, isHashed);
+        return publicKeyToAddress(publicKey);
     }
 
     /**
@@ -478,6 +540,15 @@ public class Utils {
         byte[] bytes = new byte[size];
         SecureRandomUtils.secureRandom().nextBytes(bytes);
         return bytes;
+    }
+
+    public static String printString(Object o){
+        ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
+        try {
+            return mapper.writeValueAsString(o);
+        } catch(JsonProcessingException e) {
+            throw new RuntimeException("Cannot covert to a String.", e);
+        }
     }
 
     public enum KlayUnit {

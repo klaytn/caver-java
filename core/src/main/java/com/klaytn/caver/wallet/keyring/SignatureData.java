@@ -26,6 +26,7 @@ import org.web3j.utils.Bytes;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
+import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,6 +122,34 @@ public class SignatureData {
         setV(Numeric.toHexStringWithPrefix(BigInteger.valueOf(v)));
     }
 
+    /**
+     * Refines the array containing signatures
+     *   - Removes duplicate signatures
+     *   - Removes the default empty signature("0x01", "0x", "0x")
+     *   - For an empty signature array, return an array containing the default empty signature("0x01", "0x", "0x")
+     * @param signatureDataList The list of SignatureData
+     * @return List&lt;String&gt;
+     */
+    public static List<SignatureData> refineSignature(List<SignatureData> signatureDataList) {
+        SignatureData emptySig = SignatureData.getEmptySignature();
+
+        List<SignatureData> refinedList = new ArrayList<>();
+
+        for(SignatureData signData : signatureDataList) {
+            if(! Utils.isEmptySig(signData)) {
+                if(!refinedList.contains(signData)) {
+                    refinedList.add(signData);
+                }
+            }
+        }
+
+        if(refinedList.size() == 0) {
+            refinedList.add(emptySig);
+        }
+
+        return refinedList;
+    }
+
 
     /**
      * Returns the RLP-encoded string of this signature.
@@ -136,6 +165,49 @@ public class SignatureData {
                 RlpString.create(Bytes.trimLeadingZeroes(r)),
                 RlpString.create(Bytes.trimLeadingZeroes(s))
         );
+    }
+
+    /**
+     * Get a recover id from signatureData
+     * @return int
+     */
+    @JsonIgnore
+    public int getRecoverId() {
+        int v = Numeric.toBigInt(this.getV()).intValue() & 0xFFFF;
+
+        if (v < 27) {
+            throw new RuntimeException("v byte out of range: " + v);
+        }
+
+        // https://eips.ethereum.org/EIPS/eip-155
+        // - v = parity value(Recovery Id) {0,1} + 27
+        // - v =  parity value(Recovery Id) {0,1} + chainId * 2 + 35
+        if(v < 35) {
+            // v = parity value {0,1} + 27
+            return v - 27;
+        } 
+
+        // v =  parity value(Recovery Id) {0,1} + chainId * 2 + 35
+        return ((v - 35) % 2) == 0 ? 0 : 1;
+    }
+
+    /**
+     * Get chain id from signatureData
+     * @return BigInteger
+     */
+    @JsonIgnore
+    public BigInteger getChainId() {
+        int v = Numeric.toBigInt(this.getV()).intValue() & 0xFFFF;
+
+        if (v < 35) {
+            throw new RuntimeException("Cannot extract chainId from V value : " + v);
+        }
+
+        // v =  parity value {0,1} + chainId * 2 + 35
+        int parity = this.getRecoverId();
+        int chainId = (v - 35 - parity) >> 1;
+
+        return BigInteger.valueOf(chainId);
     }
 
     /**

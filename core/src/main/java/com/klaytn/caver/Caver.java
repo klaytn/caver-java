@@ -24,6 +24,7 @@ import com.klaytn.caver.kct.wrapper.KCTWrapper;
 import com.klaytn.caver.rpc.RPC;
 import com.klaytn.caver.transaction.wrapper.TransactionWrapper;
 import com.klaytn.caver.utils.wrapper.UtilsWrapper;
+import com.klaytn.caver.validator.Validator;
 import com.klaytn.caver.wallet.IWallet;
 import com.klaytn.caver.wallet.KeyringContainer;
 import org.web3j.protocol.Web3jService;
@@ -49,6 +50,11 @@ public class Caver {
      */
     @Deprecated
     Net net;
+
+    /**
+     * The network provider to execute JSON-RPC API.
+     */
+    public Web3jService currentProvider;
 
     /**
      * The JSON-RPC API instance
@@ -96,6 +102,11 @@ public class Caver {
     public UtilsWrapper utils;
 
     /**
+     * The Validator instance
+     */
+    public Validator validator;
+
+    /**
      * Creates a Caver instance<p>
      * It sets a HttpProvider that using DEFAULT_URL("http://localhost:8551").
      */
@@ -116,14 +127,11 @@ public class Caver {
      * @param service Web3jService
      */
     public Caver(Web3jService service) {
+        setCurrentProvider(service);
         ipfs = new IPFSWrapper();
-        rpc = new RPC(service);
         wallet = new KeyringContainer();
         account = new AccountWrapper();
-        transaction = new TransactionWrapper(rpc.getKlay());
-        contract = new ContractWrapper(this);
         abi = new ABIWrapper();
-        kct = new KCTWrapper(this);
         utils = new UtilsWrapper();
     }
 
@@ -180,10 +188,25 @@ public class Caver {
      * @param rpc The JSON-RPC API instance
      */
     public void setRpc(RPC rpc) {
+        //If it sets a new RPC instance through setRPC() directly , it also needs to set a provider field.
+        if(this.currentProvider != rpc.getWeb3jService()) {
+            this.currentProvider = rpc.getWeb3jService();
+        }
+
         this.rpc = rpc;
-        this.transaction = new TransactionWrapper(this.rpc.getKlay());
         this.contract = new ContractWrapper(this);
         this.kct = new KCTWrapper(this);
+        this.transaction = new TransactionWrapper(this.rpc.getKlay());
+        this.validator = new Validator(this.rpc.getKlay());
+    }
+
+    /**
+     * Setter for provider.
+     * @param currentProvider The network provider to execute JSON-RPC API.
+     */
+    public void setCurrentProvider(Web3jService currentProvider) {
+        this.currentProvider = currentProvider;
+        setRpc(new RPC(currentProvider));
     }
 
     /**

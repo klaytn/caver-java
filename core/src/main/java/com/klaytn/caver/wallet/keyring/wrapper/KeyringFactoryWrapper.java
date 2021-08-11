@@ -91,8 +91,8 @@ public class KeyringFactoryWrapper {
      * @param numArr An array containing the number of keys for each role.
      * @return List
      */
-    public List<String[]> generateRolBasedKeys(int[] numArr) {
-        return KeyringFactory.generateRolBasedKeys(numArr);
+    public List<String[]> generateRoleBasedKeys(int[] numArr) {
+        return KeyringFactory.generateRoleBasedKeys(numArr);
     }
 
     /**

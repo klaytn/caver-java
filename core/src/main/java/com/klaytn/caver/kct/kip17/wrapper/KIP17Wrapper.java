@@ -53,7 +53,7 @@ public class KIP17Wrapper {
      * @throws IOException
      */
     public KIP17 create() throws IOException {
-        return new KIP17(this.caver);
+        return KIP17.create(this.caver);
     }
 
     /**
@@ -63,7 +63,7 @@ public class KIP17Wrapper {
      * @throws IOException
      */
     public KIP17 create(String contractAddress) throws IOException {
-        return new KIP17(this.caver, contractAddress);
+        return KIP17.create(this.caver, contractAddress);
     }
 
     /**

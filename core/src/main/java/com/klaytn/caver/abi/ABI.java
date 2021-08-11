@@ -16,13 +16,17 @@
 
 package com.klaytn.caver.abi;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.abi.datatypes.*;
 import com.klaytn.caver.contract.ContractEvent;
 import com.klaytn.caver.contract.ContractIOType;
 import com.klaytn.caver.contract.ContractMethod;
+import com.klaytn.caver.utils.Utils;
 import org.web3j.crypto.Hash;
+import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.utils.Numeric;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -255,29 +259,10 @@ public class ABI {
      */
     public static String encodeParameters(List<Type> parameters) {
         return new DefaultFunctionEncoder().encodeParameters(parameters);
-//        int dynamicDataOffset = getLength(parameters) * Type.MAX_BYTE_LENGTH;
-//        StringBuilder result = new StringBuilder();
-//        StringBuilder dynamicData = new StringBuilder();
-//
-//        for (Type parameter:parameters) {
-//            String encodedValue = TypeEncoder.encode(parameter);
-//
-//            if (isDynamic(parameter)) {
-//                String encodedDataOffset = TypeEncoder.encode(new Uint(BigInteger.valueOf(dynamicDataOffset)));
-//                result.append(encodedDataOffset);
-//                dynamicData.append(encodedValue);
-//                dynamicDataOffset += encodedValue.length() >> 1;
-//            } else {
-//                result.append(encodedValue);
-//            }
-//        }
-//        result.append(dynamicData);
-//
-//        return result.toString();
     }
 
     /**
-     * Decodes a ABI encoded parameter.
+     * Decodes an ABI encoded parameter.
      * @param solidityType A solidity type string.
      * @param encoded The ABI byte code to decode
      * @return Type
@@ -288,7 +273,7 @@ public class ABI {
     }
 
     /**
-     * Decodes a ABI encoded parameters.
+     * Decodes an ABI encoded parameters.
      * @param solidityTypeList A List of solidity type string.
      * @param encoded The ABI byte code to decode
      * @return List
@@ -305,9 +290,9 @@ public class ABI {
     }
 
     /**
-     * Decodes a ABI encoded parameters.
+     * Decodes an ABI encoded output parameters.
      * @param method A ContractMethod instance.
-     * @param encoded The ABI byte code to decoed
+     * @param encoded The ABI byte code to decoded
      * @return List
      * @throws ClassNotFoundException
      */
@@ -322,7 +307,7 @@ public class ABI {
     }
 
     /**
-     * Decodes a ABI-encoded log data and indexed topic data
+     * Decodes an ABI encoded log data and indexed topic data
      * @param inputs A list of ContractIOType instance.
      * @param data An ABI-encoded in the data field of a log
      * @param topics A list of indexed parameter topics of the log.
@@ -353,21 +338,85 @@ public class ABI {
         return new EventValues(indexedValues, nonIndexedValues);
     }
 
-//    private static int getLength(List<Type> parameters) {
-//        int count = 0;
-//        for (Type type:parameters) {
-//            if (type instanceof StaticArray) {
-//                count += ((StaticArray) type).getValue().size();
-//            } else {
-//                count++;
-//            }
-//        }
-//        return count;
-//    }
+    /**
+     * Decodes a function call data that composed of function selector and encoded input argument.
+     * <pre>Example :
+     * {@code
+     *  String encodedData = "0x24ee0.....";
+     *  String abi = "{\n" +
+     *                     "  \"name\":\"myMethod\",\n" +
+     *                     "  \"type\":\"function\",\n" +
+     *                     "  \"inputs\":[\n" +
+     *                     "    {\n" +
+     *                     "      \"type\":\"uint256\",\n" +
+     *                     "      \"name\":\"myNumber\"\n" +
+     *                     "    },\n" +
+     *                     "    {\n" +
+     *                     "      \"type\":\"string\",\n" +
+     *                     "      \"name\":\"mystring\"\n" +
+     *                     "    }\n" +
+     *                     "  ]\n" +
+     *                     "}";
+     *
+     * List<Type> params = caver.abi.decodeFunctionCall(abi, encoded);
+     * }
+     * </pre>
+     * @param functionAbi The abi json string of a function.
+     * @param encodedString The encode function call data string.
+     * @return List&lt;Type&gt;
+     * @throws ClassNotFoundException
+     */
+    public static List<Type> decodeFunctionCall(String functionAbi, String encodedString) throws ClassNotFoundException {
+        try {
+            ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
 
-//    private static boolean isDynamic(Type parameter) {
-//        return parameter instanceof DynamicBytes
-//                || parameter instanceof Utf8String
-//                || parameter instanceof DynamicArray;
-//    }
+            ContractMethod method = mapper.readValue(functionAbi, ContractMethod.class);
+            if(method.getName() == null || method.getName().isEmpty() || method.getInputs() == null) {
+                throw new IllegalArgumentException("Insufficient info in abi object: The function name and inputs must be defined inside the abi function object.");
+            }
+
+            method.setSignature(ABI.encodeFunctionSignature(method));
+
+            return decodeFunctionCall(method, encodedString);
+        } catch(IOException e) {
+            throw new IllegalArgumentException("Invalid abi parameter type: To decode function call, you need to pass an abi object of the function as a first parameter.", e);
+        }
+    }
+
+    /**
+     * Decodes a function call data that composed of function selector and encoded input argument.
+     * <pre>Example :
+     * {@code
+     * String contractABI = "...";
+     * Contract contract = caver.contract.create(contractABI);
+     * ContractMethod method = contract.getMethod("myFunction");
+     *
+     * List<Type> result = caver.abi.decodeFunctionCall(method, "0x{ABI-encoded string}");
+     * }</pre>
+     * @param method The ContractMethod instance to decode ABI-encoded string.
+     * @param encodedString The encode function call data string.
+     * @return List&lt;Type&gt;
+     * @throws ClassNotFoundException
+     */
+    public static List<Type> decodeFunctionCall(ContractMethod method, String encodedString) throws ClassNotFoundException {
+        String encoded = Utils.stripHexPrefix(encodedString);
+        String functionSignature = encoded.substring(0, 8);
+        String encodedParams = encoded.substring(8);
+
+        //Find a ContractMethod included overloaded function.
+        ContractMethod findMethod = method.findMethodBySignature(functionSignature);
+
+        if(findMethod == null) {
+            throw new IllegalArgumentException("Invalid function signature: The function signature of the abi as a parameter and the function signatures extracted from the function call string do not match.");
+        }
+
+        List<String> inputs = findMethod.getInputs()
+                .stream()
+                .map(ContractIOType::getTypeAsString)
+                .collect(Collectors.toList());
+
+        List<Type> decoded = decodeParameters(inputs, encodedParams);
+
+        return decoded;
+    }
 }

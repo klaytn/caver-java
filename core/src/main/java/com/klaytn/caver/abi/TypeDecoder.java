@@ -358,7 +358,7 @@ public class TypeDecoder {
     static <T extends Type> T decodeStaticArray(
             String input, int offset, TypeReference<T> typeReference, int length) {
 
-        BiFunction<List<T>, String, T> function =
+        BiFunction<List<T>, Class<T>, T> function =
                 (elements, typeName) -> {
                     if (elements.isEmpty()) {
                         throw new UnsupportedOperationException(
@@ -427,13 +427,9 @@ public class TypeDecoder {
 
         int length = decodeUintAsInt(input, offset);
 
-        BiFunction<List<T>, String, T> function =
-                (elements, typeName) -> {
-                    Class baseTypeCls = Array.class.isAssignableFrom(elements.get(0).getClass())
-                            ? (Class<T>) elements.get(0).getClass()
-                            : (Class<T>) AbiTypes.getType(elements.get(0).getTypeAsString());
-
-                    return (T) new DynamicArray(baseTypeCls, elements);
+        BiFunction<List<T>, Class<T>, T> function =
+                (elements, elementTypeCls) -> {
+                    return (T) new DynamicArray(elementTypeCls, elements);
                 };
 
         int valueOffset = offset + MAX_BYTE_LENGTH_FOR_HEX_STRING;
@@ -673,7 +669,7 @@ public class TypeDecoder {
             int startOffset,
             TypeReference<T> typeReference,
             int length,
-            BiFunction<List<T>, String, T> consumer) {
+            BiFunction<List<T>, Class<T>, T> consumer) {
 
         try {
             TypeReference<T> elementTypeRef = typeReference.getSubTypeReference();
@@ -706,8 +702,7 @@ public class TypeDecoder {
                 }
 
                 //Instantiate element type.
-                String typeName = getSimpleTypeName(elementTypeCls);
-                return consumer.apply(elements, typeName);
+                return consumer.apply(elements, elementTypeCls);
             }
             // Element type is a array type.
             else if (Array.class.isAssignableFrom(elementTypeCls)) {
@@ -740,8 +735,7 @@ public class TypeDecoder {
                 }
 
                 //Instantiate element type.
-                String typeName = getSimpleTypeName(elementTypeCls);
-                return consumer.apply(elements, typeName);
+                return consumer.apply(elements, elementTypeCls);
             }
             // element type is a atomic type.
             else {
@@ -768,8 +762,7 @@ public class TypeDecoder {
                 }
 
                 //Instantiate element type.
-                String typeName = getSimpleTypeName(elementTypeCls);
-                return consumer.apply(elements, typeName);
+                return consumer.apply(elements, elementTypeCls);
             }
         } catch (ClassNotFoundException e) {
             throw new UnsupportedOperationException(

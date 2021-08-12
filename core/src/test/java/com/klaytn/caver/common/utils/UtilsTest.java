@@ -296,6 +296,7 @@ public class UtilsTest {
         public void validHexTest() {
             String[] hex = new String[] {
                     "0x1234",
+                    "0X1234",
                     "ffff",
                     "0xaaaa",
                     "34567"
@@ -320,7 +321,11 @@ public class UtilsTest {
             String[] hex = new String[] {
                     "0x1234",
                     "0xaaaa",
-                    "0xffff"
+                    "0xffff",
+                    "0X1234",
+                    "0Xaaaa",
+                    "0Xffff"
+
             };
 
             for(int i=0; i<hex.length; i++) {
@@ -352,19 +357,19 @@ public class UtilsTest {
 
         @Test
         public void alreadyPrefixed() {
-            String hex = "0x1234";
-
-            assertEquals(hex, caver.utils.addHexPrefix(hex));
+            String expected = "0x1234";
+            assertEquals(expected, caver.utils.addHexPrefix("0x1234"));
+            assertEquals(expected, caver.utils.addHexPrefix("0X1234"));
         }
     }
 
     public static class stripHexPrefixTest {
         @Test
         public void stripHexPrefixTest() {
-            String hex = "0x1234";
             String expected = "1234";
 
-            assertEquals(expected, caver.utils.stripHexPrefix(hex));
+            assertEquals(expected, caver.utils.stripHexPrefix("0x1234"));
+            assertEquals(expected, caver.utils.stripHexPrefix("0X1234"));
         }
 
         @Test

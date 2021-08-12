@@ -26,6 +26,7 @@ import org.web3j.crypto.Keys;
 import org.web3j.crypto.Sign;
 import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.utils.Numeric;
+import org.web3j.utils.Strings;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -80,7 +81,7 @@ public class Utils {
      * @return boolean
      */
     public static boolean isValidPrivateKey(String privateKey) {
-        String noHexPrefixKey = Numeric.cleanHexPrefix(privateKey);
+        String noHexPrefixKey = stripHexPrefix(privateKey);
         if(noHexPrefixKey.length() != LENGTH_PRIVATE_KEY_STRING && isHex(privateKey)) {
             return false;
         }
@@ -99,7 +100,7 @@ public class Utils {
         //[0] = privateKey
         //[1] = type - must be "00"
         //[2] = address
-        key = Numeric.cleanHexPrefix(key);
+        key = stripHexPrefix(key);
 
         if(key.length() != 110) {
             return false;
@@ -127,7 +128,7 @@ public class Utils {
      * @return valid or not
      */
     public static boolean isValidPublicKey(String publicKey) {
-        String noPrefixPubKey = Numeric.cleanHexPrefix(publicKey);
+        String noPrefixPubKey = stripHexPrefix(publicKey);
         boolean result;
 
         if(noPrefixPubKey.length() == 130 && noPrefixPubKey.startsWith("04")) {
@@ -182,7 +183,7 @@ public class Utils {
             return publicKey;
         }
 
-        String noPrefixKey = Numeric.cleanHexPrefix(publicKey);
+        String noPrefixKey = stripHexPrefix(publicKey);
         if(noPrefixKey.length() == 130 && noPrefixKey.startsWith("04")) {
             noPrefixKey = noPrefixKey.substring(2);
         }
@@ -228,11 +229,11 @@ public class Utils {
         //[0] = privateKey
         //[1] = type - must be "00"
         //[2] = address
-        key = Numeric.cleanHexPrefix(key);
+        key = stripHexPrefix(key);
         String[] arr = key.split("0x");
 
         for(int i=0; i< arr.length; i++) {
-            arr[i] = Numeric.prependHexPrefix(arr[i]);
+            arr[i] = addHexPrefix(arr[i]);
         }
 
         return arr;
@@ -244,7 +245,7 @@ public class Utils {
      * @return boolean
      */
     public static boolean isHex(String input) {
-        Pattern pattern = Pattern.compile("^(-0x|0x)?[0-9A-Fa-f]*$");
+        Pattern pattern = Pattern.compile("^(-0x|0x|0X)?[0-9A-Fa-f]*$");
         return pattern.matcher(input).matches();
     }
 
@@ -254,8 +255,12 @@ public class Utils {
      * @return boolean
      */
     public static boolean isHexStrict(String input) {
-        Pattern pattern = Pattern.compile("^(-)?0x[0-9A-Fa-f]*$");
+        Pattern pattern = Pattern.compile("^(-)?(0x|0X)[0-9A-Fa-f]*$");
         return pattern.matcher(input).matches();
+    }
+
+    static boolean isHexPrefixed(String str) {
+        return !Strings.isEmpty(str) && (str.startsWith("0x") || str.startsWith("0X"));
     }
 
     /**
@@ -264,7 +269,10 @@ public class Utils {
      * @return String
      */
     public static String addHexPrefix(String str) {
-        return Numeric.prependHexPrefix(str);
+        if(!isHexPrefixed(str)) {
+            return "0x" + str;
+        }
+        return "0x" + str.substring(2);
     }
 
     /**
@@ -273,7 +281,11 @@ public class Utils {
      * @return String
      */
     public static String stripHexPrefix(String str) {
-        return Numeric.cleanHexPrefix(str);
+        if(isHexPrefixed(str)) {
+            return str.substring(2);
+        }
+
+        return str;
     }
 
     /**

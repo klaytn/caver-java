@@ -244,7 +244,7 @@ public class Utils {
      * @return boolean
      */
     public static boolean isHex(String input) {
-        Pattern pattern = Pattern.compile("^(-0x|0x)?[0-9A-Fa-f]*$");
+        Pattern pattern = Pattern.compile("^(-0x|0x|0X)?[0-9A-Fa-f]*$");
         return pattern.matcher(input).matches();
     }
 
@@ -254,8 +254,12 @@ public class Utils {
      * @return boolean
      */
     public static boolean isHexStrict(String input) {
-        Pattern pattern = Pattern.compile("^(-)?0x[0-9A-Fa-f]*$");
+        Pattern pattern = Pattern.compile("^(-)?(0x|0X)[0-9A-Fa-f]*$");
         return pattern.matcher(input).matches();
+    }
+
+    static boolean isHexPrefixed(String str) {
+        return !Strings.isEmpty(str) && (str.startsWith("0x") || str.startsWith("0X"));
     }
 
     /**
@@ -264,7 +268,10 @@ public class Utils {
      * @return String
      */
     public static String addHexPrefix(String str) {
-        return Numeric.prependHexPrefix(str);
+        if(!isHexPrefixed(str)) {
+            return "0x" + str;
+        }
+        return "0x" + str.substring(2);
     }
 
     /**
@@ -273,7 +280,11 @@ public class Utils {
      * @return String
      */
     public static String stripHexPrefix(String str) {
-        return Numeric.cleanHexPrefix(str);
+        if(isHexPrefixed(str)) {
+            return str.substring(2);
+        }
+
+        return str;
     }
 
     /**

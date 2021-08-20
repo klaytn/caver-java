@@ -494,7 +494,7 @@ public class Utils {
         String noPrefixSigData = Utils.stripHexPrefix(rawSig);
 
         if(noPrefixSigData.length() != 130) {
-            throw new RuntimeException("Invalid signature data. The sig data length must 65 byte.");
+            throw new RuntimeException("Invalid signature: The length of raw signature must be 65 byte.");
         }
 
         String r = noPrefixSigData.substring(0, 64);

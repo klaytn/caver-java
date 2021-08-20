@@ -3,3 +3,5 @@ include 'codegen'
 include 'core'
 include 'console'
 include 'integration-test'
+include 'conformance-test'
+

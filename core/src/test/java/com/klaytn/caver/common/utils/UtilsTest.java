@@ -93,10 +93,11 @@ public class UtilsTest {
             String[] invalidAddress = new String[] {
                     "0xff6916ea19a50878e39c41cab1b41d0xff6916ea19a50878e39c41cab1bdd41dK",// Length is not 64
                     "0xff6916ea19a50878e39c41cab1b41d0xff6916ea19a50878e39c41cab1bdd4KK", // Not Hex String
+                    "d0xff69"
             };
 
             for(int i=0; i<invalidAddress.length; i++) {
-                assertFalse(caver.utils.isAddress(invalidAddress[i]));
+                assertFalse(caver.utils.isValidPrivateKey(invalidAddress[i]));
             }
         }
     }

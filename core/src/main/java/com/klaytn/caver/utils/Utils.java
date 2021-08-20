@@ -82,7 +82,7 @@ public class Utils {
      */
     public static boolean isValidPrivateKey(String privateKey) {
         String noHexPrefixKey = stripHexPrefix(privateKey);
-        if(noHexPrefixKey.length() != LENGTH_PRIVATE_KEY_STRING && isHex(privateKey)) {
+        if(noHexPrefixKey.length() != LENGTH_PRIVATE_KEY_STRING || !isHex(privateKey)) {
             return false;
         }
 

@@ -163,13 +163,17 @@ public class Utils {
      */
     public static String decompressPublicKey(String publicKey) {
         if(AccountKeyPublicUtils.isUncompressedPublicKey(publicKey)) {
-            return publicKey;
+            return addHexPrefix(publicKey);
         }
 
-        ECPoint ecPoint = AccountKeyPublicUtils.getECPoint(publicKey);
-        String pointXY = Numeric.toHexStringWithPrefixZeroPadded(ecPoint.getAffineXCoord().toBigInteger(), 64) +
-                Numeric.toHexStringNoPrefixZeroPadded(ecPoint.getAffineYCoord().toBigInteger(), 64);
-        return pointXY;
+        if(AccountKeyPublicUtils.isCompressedPublicKey(publicKey)) {
+            ECPoint ecPoint = AccountKeyPublicUtils.getECPoint(publicKey);
+            String pointXY = Numeric.toHexStringWithPrefixZeroPadded(ecPoint.getAffineXCoord().toBigInteger(), 64) +
+                    Numeric.toHexStringNoPrefixZeroPadded(ecPoint.getAffineYCoord().toBigInteger(), 64);
+            return pointXY;
+        }
+
+        throw new RuntimeException("Invalid public key.");
     }
 
     /**
@@ -183,17 +187,21 @@ public class Utils {
             return publicKey;
         }
 
-        String noPrefixKey = stripHexPrefix(publicKey);
-        if(noPrefixKey.length() == 130 && noPrefixKey.startsWith("04")) {
-            noPrefixKey = noPrefixKey.substring(2);
+        if(AccountKeyPublicUtils.isUncompressedPublicKey(publicKey)) {
+            String noPrefixKey = stripHexPrefix(publicKey);
+
+            if(noPrefixKey.startsWith("04")) {
+                noPrefixKey = noPrefixKey.substring(2);
+            }
+
+            BigInteger publicKeyBN = Numeric.toBigInt(noPrefixKey);
+
+            String publicKeyX = noPrefixKey.substring(0, 64);
+            String pubKeyYPrefix = publicKeyBN.testBit(0) ? "03" : "02";
+            return addHexPrefix(pubKeyYPrefix + publicKeyX);
         }
 
-        BigInteger publicKeyBN = Numeric.toBigInt(noPrefixKey);
-
-
-        String publicKeyX = noPrefixKey.substring(0, 64);
-        String pubKeyYPrefix = publicKeyBN.testBit(0) ? "03" : "02";
-        return pubKeyYPrefix + publicKeyX;
+        throw new RuntimeException("Invalid public key.");
     }
 
     /**

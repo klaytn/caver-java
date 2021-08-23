@@ -186,6 +186,9 @@ public class UtilsTest {
     public static class decompressPublicKeyTest {
         static Caver caver = new Caver(Caver.DEFAULT_URL);
 
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
         @Test
         public void decompressPublicKey() {
             String compressed = "03434dedfc2eceed1e98fddfde3ebc57512c57f017195988cd5de62b722656b943";
@@ -199,7 +202,7 @@ public class UtilsTest {
             String expectedUncompressed = caver.wallet.keyring.generate().getPublicKey(false);
             String actualUncompressed = caver.utils.decompressPublicKey(expectedUncompressed);
             assertTrue(caver.utils.isValidPublicKey(actualUncompressed));
-            assertEquals(expectedUncompressed, actualUncompressed);
+            assertEquals(caver.utils.addHexPrefix(expectedUncompressed), actualUncompressed);
         }
 
         @Test
@@ -209,11 +212,23 @@ public class UtilsTest {
 
             assertEquals(expected, key);
         }
+
+        @Test
+        public void invalidPublicKey() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("Invalid public key.");
+
+            String key = "0x1177e05dd93cdd6362f8648447f33d5676cbc5f42f4c4946ae1ad62bd4c0c4f357";
+            caver.utils.decompressPublicKey(key);
+        }
     }
 
     public static class compressedPublicKeyTest {
         static Caver caver = new Caver(Caver.DEFAULT_URL);
 
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+        
         @Test
         public void compressedPublicKey() {
             String uncompressedKey = caver.wallet.keyring.generate().getPublicKey(false);
@@ -236,6 +251,14 @@ public class UtilsTest {
             String expected = caver.utils.compressPublicKey("019b186993b620455077b6bc37bf61666725d8d87ab33eb113ac0414cd48d78ff46e5ea48c6f22e8f19a77e5dbba9d209df60cbcb841b7e3e81fe444ba829831");
 
             assertEquals(expected, caver.utils.compressPublicKey(key));
+        }
+
+        @Test
+        public void invalidPublicKey() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("Invalid public key.");
+
+            caver.utils.compressPublicKey("0x0977e05dd93cdd6362f8648447f33d5676cbc5f42f4c4946ae1ad62bd4c0c4f3570b1a104b67d1cd169bbf61dd557f15ab5ee8b661326096954caddadf34ae6ac8");
         }
     }
 

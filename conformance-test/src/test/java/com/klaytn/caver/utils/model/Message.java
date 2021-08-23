@@ -16,6 +16,8 @@
 
 package com.klaytn.caver.utils.model;
 
+import com.klaytn.caver.IMethodInputParams;
+
 public class Message implements IMethodInputParams {
     String message;
 

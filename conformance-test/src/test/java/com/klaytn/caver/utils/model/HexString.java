@@ -16,6 +16,8 @@
 
 package com.klaytn.caver.utils.model;
 
+import com.klaytn.caver.IMethodInputParams;
+
 public class HexString implements IMethodInputParams {
     String str;
 

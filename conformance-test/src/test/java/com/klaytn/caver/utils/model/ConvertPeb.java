@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.klaytn.caver.IMethodInputParams;
 import com.klaytn.caver.utils.Utils;
 import org.web3j.protocol.ObjectMapperFactory;
 

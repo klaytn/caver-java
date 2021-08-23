@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-package com.klaytn.caver.utils.model;
+package com.klaytn.caver;
 
+/**
+ * This interface represented to information required execute method through reflection.
+ */
 public interface IMethodInputParams {
     public Object[] getInputArray();
 

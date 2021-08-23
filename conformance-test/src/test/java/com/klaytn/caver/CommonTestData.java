@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.klaytn.caver.utils.model;
+package com.klaytn.caver;
 
 public class CommonTestData<T extends IMethodInputParams, R> {
     String id;

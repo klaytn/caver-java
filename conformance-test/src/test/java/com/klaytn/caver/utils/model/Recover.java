@@ -23,15 +23,14 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.klaytn.caver.IMethodInputParams;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.web3j.protocol.ObjectMapperFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @JsonDeserialize(using = Recover.RecoverDeserializer.class)
-public class Recover implements IMethodInputParams{
+public class Recover implements IMethodInputParams {
     String message;
     SignatureData signature;
     Boolean isHashed;

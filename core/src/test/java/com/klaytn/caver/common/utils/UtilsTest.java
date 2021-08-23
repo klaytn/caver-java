@@ -112,7 +112,7 @@ public class UtilsTest {
         @Test
         public void validWalletKey() {
             String walletKey = caver.wallet.keyring.generate().getKlaytnWalletKey();
-            assertTrue(Utils.isKlaytnWalletKey(walletKey));
+            assertTrue(caver.utils.isKlaytnWalletKey(walletKey));
         }
 
         @Test
@@ -228,7 +228,7 @@ public class UtilsTest {
 
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
-        
+
         @Test
         public void compressedPublicKey() {
             String uncompressedKey = caver.wallet.keyring.generate().getPublicKey(false);

@@ -90,14 +90,16 @@ public class UtilsTest {
 
         @Test
         public void invalidPrivateKey() {
-            String[] invalidAddress = new String[] {
+            String[] invalidPrivateKey = new String[] {
                     "0xff6916ea19a50878e39c41cab1b41d0xff6916ea19a50878e39c41cab1bdd41dK",// Length is not 64
                     "0xff6916ea19a50878e39c41cab1b41d0xff6916ea19a50878e39c41cab1bdd4KK", // Not Hex String
-                    "d0xff69"
+                    "d0xff69",
+                    "0x0000000000000000000000000000000000000000000000000000000000000000", // Lower bound
+                    "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141" // Upper bound
             };
 
-            for(int i=0; i<invalidAddress.length; i++) {
-                assertFalse(caver.utils.isValidPrivateKey(invalidAddress[i]));
+            for(int i=0; i<invalidPrivateKey.length; i++) {
+                assertFalse(caver.utils.isValidPrivateKey(invalidPrivateKey[i]));
             }
         }
     }
@@ -106,7 +108,7 @@ public class UtilsTest {
         @Test
         public void validWalletKey() {
             String walletKey = caver.wallet.keyring.generate().getKlaytnWalletKey();
-            assertTrue(caver.utils.isKlaytnWalletKey(walletKey));
+            assertTrue(Utils.isKlaytnWalletKey(walletKey));
         }
 
         @Test
@@ -118,10 +120,11 @@ public class UtilsTest {
                     "0x63526af77dc34846a0909e5486f972c4a07074f0c94a2b9577675a6433098481" + "0x00" +"fc26de905386050894cddbb5a824318b96dde595", // invalid address - no prefix
                     "0x63526af77dc34846a0909e5486f972c4a07074f0c94a2b9575a6433098481" + "0x00" +"0xfc26de905386050894cddbb5a824318b96dde595", // invalid privateKey - invalid length
                     "63526af77dc34846a0909e5486f972c4a07074f0c94a2b9577675a6433098481" + "0x00" +"0xfc26de905386050894cddbb5a824318b96dde595", // invalid type - no prefix
+                    "0x00000000000000000000000000000000000000000000000000000000000000000x000xa94f5374fce5edbc8e2a8697c15331677e6ebf0b"
             };
 
             for(int i=0; i<invalidWalletKey.length; i++) {
-                assertFalse(caver.utils.isAddress(invalidWalletKey[i]));
+                assertFalse(Utils.isKlaytnWalletKey(invalidWalletKey[i]));
             }
         }
     }

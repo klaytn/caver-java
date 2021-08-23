@@ -93,10 +93,11 @@ public class UtilsTest {
             String[] invalidAddress = new String[] {
                     "0xff6916ea19a50878e39c41cab1b41d0xff6916ea19a50878e39c41cab1bdd41dK",// Length is not 64
                     "0xff6916ea19a50878e39c41cab1b41d0xff6916ea19a50878e39c41cab1bdd4KK", // Not Hex String
+                    "d0xff69"
             };
 
             for(int i=0; i<invalidAddress.length; i++) {
-                assertFalse(caver.utils.isAddress(invalidAddress[i]));
+                assertFalse(caver.utils.isValidPrivateKey(invalidAddress[i]));
             }
         }
     }
@@ -1106,7 +1107,7 @@ public class UtilsTest {
         @Test
         public void throwException_invalidLength() {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("Invalid signature data. The sig data length must 65 byte.");
+            expectedException.expectMessage("Invalid signature: The length of raw signature must be 65 byte.");
 
             String rawSigData = "0xaaaaaa";
             caver.utils.decodeSignature(rawSigData);

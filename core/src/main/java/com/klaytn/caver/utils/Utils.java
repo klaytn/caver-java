@@ -87,7 +87,7 @@ public class Utils {
         }
 
         ECPoint point = Sign.publicPointFromPrivate(Numeric.toBigInt(privateKey));
-        return point.isValid();
+        return !point.isInfinity() && point.isValid();
     }
 
     /**

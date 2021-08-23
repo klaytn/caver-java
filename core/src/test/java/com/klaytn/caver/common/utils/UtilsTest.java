@@ -1107,7 +1107,7 @@ public class UtilsTest {
         @Test
         public void throwException_invalidLength() {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("Invalid signature data. The sig data length must 65 byte.");
+            expectedException.expectMessage("Invalid signature: The length of raw signature must be 65 byte.");
 
             String rawSigData = "0xaaaaaa";
             caver.utils.decodeSignature(rawSigData);

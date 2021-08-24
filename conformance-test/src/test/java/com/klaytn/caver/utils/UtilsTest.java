@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.CommonTestData;
 import com.klaytn.caver.utils.model.*;
 import com.klaytn.caver.wallet.keyring.SignatureData;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -42,6 +43,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeThat;
 
+@Ignore
 @RunWith(Parameterized.class)
 public class UtilsTest {
     public static final String CAVER_CONFORMANCE_TESTS = "caver-conformance-tests";

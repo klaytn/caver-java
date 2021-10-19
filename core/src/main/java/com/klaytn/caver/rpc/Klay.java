@@ -405,18 +405,17 @@ public class Klay {
     }
 
     /**
-     * Returns information about a block by block number.
-     * It set "isFullTransaction" param to true.
+     * Returns information about a block by block number.<p>
+     * It set "isFullTransaction" param to false.
      * @param blockNumber The block number.
      * @return Block
      */
     public Request<?, Block> getBlockByNumber(long blockNumber) {
-        return getBlockByNumber(blockNumber, true);
+        return getBlockByNumber(blockNumber, false);
     }
 
     /**
      * Returns information about a block by block number.
-     * It set "isFullTransaction" param to true.
      * @param blockNumber The block number.
      * @param isFullTransaction If true it returns the full transaction objects, if false only the hashes of the transactions.
      * @return Block
@@ -427,13 +426,13 @@ public class Klay {
     }
 
     /**
-     * Returns information about a block by block number.
-     * It set "isFullTransaction" param to true.
+     * Returns information about a block by block number.<p>
+     * It set "isFullTransaction" param to false.
      * @param blockTag The string "latest", "earliest" or "pending"
      * @return KlayBlock
      */
     public Request<?, Block> getBlockByNumber(DefaultBlockParameter blockTag) {
-        return getBlockByNumber(blockTag, true);
+        return getBlockByNumber(blockTag, false);
     }
 
     /**
@@ -451,13 +450,13 @@ public class Klay {
     }
 
     /**
-     * Returns information about a block by block number.
-     * It set "isFullTransaction" param to true.
+     * Returns information about a block by block number.<p>
+     * It set "isFullTransaction" param to false.
      * @param blockHash The hash of block.
      * @return Block
      */
     public Request<?, Block> getBlockByHash(String blockHash) {
-        return getBlockByHash(blockHash, true);
+        return getBlockByHash(blockHash, false);
     }
 
     /**

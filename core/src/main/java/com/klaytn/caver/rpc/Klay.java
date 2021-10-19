@@ -1390,7 +1390,7 @@ public class Klay {
      */
     public Disposable subscribe(String type, KlayFilter options, Consumer<LogsNotification> callback) {
         if(!type.equals("logs")) {
-            throw new IllegalArgumentException("It is only allowed a 'logs' as a type parameter.");
+            throw new IllegalArgumentException("This function only allows the 'logs' as a type parameter.");
         }
 
         final Flowable<LogsNotification> events = web3jService.subscribe(subscribe(type, options), "klay_unsubscribe", LogsNotification.class);

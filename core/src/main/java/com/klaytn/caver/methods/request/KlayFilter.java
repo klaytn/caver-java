@@ -85,11 +85,11 @@ public class KlayFilter extends Filter<KlayFilter> {
 
 
     public void setFromBlock(BigInteger blockNum) {
-        setFromBlock(setBlock(blockNum));
+        setFromBlock(toBlockParameter(blockNum));
     }
 
     public void setFromBlock(DefaultBlockParameterName blockTag) {
-        setFromBlock(setBlock(blockTag));
+        setFromBlock(toBlockParameter(blockTag));
     }
 
     public void setFromBlock(DefaultBlockParameter fromBlock) {
@@ -97,11 +97,11 @@ public class KlayFilter extends Filter<KlayFilter> {
     }
 
     public void setToBlock(BigInteger blockNum) {
-        setToBlock(setBlock(blockNum));
+        setToBlock(toBlockParameter(blockNum));
     }
 
-    public void setToBlock(DefaultBlockParameterName blockTag) {
-        setToBlock(setBlock(blockTag));
+    public void setToBlock(DefaultBlockParameterName toBlock) {
+        setToBlock(toBlockParameter(toBlock));
     }
 
     public void setToBlock(DefaultBlockParameter toBlock) {
@@ -116,7 +116,7 @@ public class KlayFilter extends Filter<KlayFilter> {
         this.address = address;
     }
 
-    private DefaultBlockParameter setBlock(Object blockNumOrTag) {
+    private DefaultBlockParameter toBlockParameter(Object blockNumOrTag) {
         if(blockNumOrTag instanceof BigInteger) {
             return DefaultBlockParameter.valueOf((BigInteger)blockNumOrTag);
         } else if(blockNumOrTag instanceof String) {

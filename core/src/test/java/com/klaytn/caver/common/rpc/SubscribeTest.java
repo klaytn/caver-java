@@ -22,6 +22,7 @@ import com.klaytn.caver.kct.kip7.KIP7;
 import com.klaytn.caver.kct.kip7.KIP7DeployParams;
 import com.klaytn.caver.methods.request.KlayFilter;
 import com.klaytn.caver.methods.response.KlayLogs;
+import com.klaytn.caver.methods.response.LogsNotification;
 import com.klaytn.caver.methods.response.Quantity;
 import io.reactivex.disposables.Disposable;
 import org.junit.Rule;
@@ -95,7 +96,7 @@ public class SubscribeTest {
 
     @Test
     public void logsTest() throws Exception {
-        final LogNotification[] log = {null};
+        final LogsNotification[] log = {null};
 
         WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
         webSocketService.connect();

@@ -30,7 +30,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.*;
-import org.web3j.protocol.websocket.events.LogNotification;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -1389,12 +1388,12 @@ public class Klay {
      * @param callback The callback method to handle notification.
      * @return Disposable
      */
-    public Disposable subscribe(String type, KlayFilter options, Consumer<LogNotification> callback) {
+    public Disposable subscribe(String type, KlayFilter options, Consumer<LogsNotification> callback) {
         if(!type.equals("logs")) {
             throw new IllegalArgumentException("It is only allowed a 'logs' as a type parameter.");
         }
 
-        final Flowable<LogNotification> events = web3jService.subscribe(subscribe(type, options), "klay_unsubscribe", LogNotification.class);
+        final Flowable<LogsNotification> events = web3jService.subscribe(subscribe(type, options), "klay_unsubscribe", LogsNotification.class);
         return events.subscribe(callback);
     }
 

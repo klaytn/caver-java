@@ -21,21 +21,19 @@ import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.kct.kip7.KIP7;
 import com.klaytn.caver.kct.kip7.KIP7DeployParams;
 import com.klaytn.caver.methods.request.KlayFilter;
-import com.klaytn.caver.methods.response.KlayLogs;
-import com.klaytn.caver.methods.response.LogsNotification;
-import com.klaytn.caver.methods.response.Quantity;
+import com.klaytn.caver.methods.response.*;
 import io.reactivex.disposables.Disposable;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.websocket.WebSocketService;
-import org.web3j.protocol.websocket.events.LogNotification;
 import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.ConnectException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.klaytn.caver.base.Accounts.BRANDON;
 import static com.klaytn.caver.base.Accounts.LUMAN;
@@ -45,8 +43,6 @@ import static org.junit.Assert.assertTrue;
 public class SubscribeTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-
-    static int blockNotificationCount = 0;
 
     public static KIP7 kip7contract;
     public static final String CONTRACT_NAME = "Kale";
@@ -61,18 +57,18 @@ public class SubscribeTest {
     }
 
     @Test
-    public void newHeadsTest() throws IOException {
+    public void newHeadsTest() throws IOException, InterruptedException {
         WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
         Caver caver = new Caver(webSocketService);
         webSocketService.connect();
 
+        final NewHeadsNotification[] blockData = {null};
+
         final Disposable disposable = caver.rpc.klay.subscribe("newHeads", (data) -> {
-            blockNotificationCount++;
+            blockData[0] = data;
         });
 
-        while(blockNotificationCount<10);
-
-        assertEquals(10, blockNotificationCount);
+        Thread.sleep(10000);
 
         disposable.dispose();
         caver.currentProvider.close();
@@ -86,9 +82,9 @@ public class SubscribeTest {
         WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
         Caver caver = new Caver(webSocketService);
         webSocketService.connect();
-
+        
         final Disposable disposable = caver.rpc.klay.subscribe("logs", (data) -> {
-            blockNotificationCount++;
+
         });
 
         webSocketService.close();

@@ -157,6 +157,11 @@ public class KlayLogs extends Response<List<KlayLogs.LogResult>> {
          */
         private List<String> topics;
 
+        /**
+         * true when the log was removed, due to a chain reorganization. false if it is a valid log.
+         */
+        private boolean removed;
+
         public Log() {
         }
 
@@ -247,6 +252,14 @@ public class KlayLogs extends Response<List<KlayLogs.LogResult>> {
 
         public void setTopics(List<String> topics) {
             this.topics = topics;
+        }
+
+        public boolean isRemoved() {
+            return removed;
+        }
+
+        public void setRemoved(boolean removed) {
+            this.removed = removed;
         }
 
         private BigInteger convert(String value) {

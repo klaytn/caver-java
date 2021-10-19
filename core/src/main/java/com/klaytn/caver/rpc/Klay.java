@@ -25,11 +25,15 @@ import com.klaytn.caver.methods.response.*;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.utils.Utils;
+import io.reactivex.Flowable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.*;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class Klay {
 
@@ -1314,5 +1318,116 @@ public class Klay {
                 Arrays.asList(data),
                 web3jService,
                 Bytes.class);
+    }
+
+    /**
+     * Creates a new subscription to specific events by using RPC Pub/Sub over Websockets.<p>
+     *
+     * The node will return a subscription id for each subscription created.
+     * For each event that matches the subscription, a notification with relevant data is sent together with the subscription id.
+     * If a connection is closed, all subscriptions created over the connection are removed. <p>
+     *
+     * It only allowed a 'newHeads' as a notificationType. <p>
+     * Also, It automatically calls a "klay_unsubscribe" API when stopping subscription.
+     *
+     * <pre>Example
+     * {@code
+     * Disposable disposable = caver.rpc.klay.subscribe("newHeads", (blockData) -> {
+     *
+     * });
+     *
+     * //Cancel subscribe notification
+     * disposable.dispose();
+     * }
+     * </pre>
+     *
+     * @param type The notification type to subscribe.
+     * @param callback The callback method to handle notification.
+     * @return Disposable
+     */
+    public Disposable subscribe(String type, Consumer<NewHeadsNotification> callback) {
+        if(!type.equals("newHeads")) {
+            throw new IllegalArgumentException("This function only allows the 'newHeads' as a type parameter.");
+        }
+
+        final Flowable<NewHeadsNotification> events = web3jService.subscribe(subscribe(type), "klay_unsubscribe", NewHeadsNotification.class);
+        return events.subscribe(callback);
+    }
+
+    /**
+     * Creates a new subscription to specific events by using RPC Pub/Sub over Websockets.<p>
+     *
+     * The node will return a subscription id for each subscription created.
+     * For each event that matches the subscription, a notification with relevant data is sent together with the subscription id.
+     * If a connection is closed, all subscriptions created over the connection are removed. <p>
+     *
+     * It only allowed a 'logs' as a notification type. <p>
+     * Also, It automatically calls a "klay_unsubscribe" API when stopping subscription.
+     *
+     * <pre>Example
+     * {@code
+     *
+     * KlayFilter options = new KlayFilter();
+     * options.setAddress(kip7contract.getContractAddress());
+     * options.setFromBlock(DefaultBlockParameterName.LATEST);
+     * options.setToBlock(DefaultBlockParameterName.LATEST);
+     * options.addSingleTopic("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef");
+     * options.addSingleTopic("0x0000000000000000000000002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a");
+     *
+     * //Cancel subscribe notification
+     * Disposable disposable = caver.rpc.klay.subscribe("logs", options, (logData) -> {
+     *
+     * });
+     *
+     * //Stop to subscribe notification
+     * disposable.dispose();
+     * }
+     * </pre>
+     * @param type The notification type to subscribe.
+     * @param options The filter options to filter notification.
+     * @param callback The callback method to handle notification.
+     * @return Disposable
+     */
+    public Disposable subscribe(String type, KlayFilter options, Consumer<LogsNotification> callback) {
+        if(!type.equals("logs")) {
+            throw new IllegalArgumentException("This function only allows the 'logs' as a type parameter.");
+        }
+
+        final Flowable<LogsNotification> events = web3jService.subscribe(subscribe(type, options), "klay_unsubscribe", LogsNotification.class);
+        return events.subscribe(callback);
+    }
+
+    /**
+     * Cancels the subscription with a specific subscription id.
+     * <pre>Example :
+     * {@code
+     * caver.rpc.klay.unsubscribe("{subscription id}").send();
+     * }</pre>
+     * @param subscriptionId The subscription id.
+     * @return Boolean
+     */
+    public Request<?, Boolean> unsubscribe(String subscriptionId) {
+        return new Request<>(
+                "klay_unsubscribe",
+                Arrays.asList(subscriptionId),
+                web3jService,
+                Boolean.class);
+    }
+
+    private Request<?, Quantity> subscribe(String type) {
+        return new Request<>(
+                "klay_subscribe",
+                Arrays.asList(type),
+                web3jService,
+                Quantity.class);
+    }
+
+
+    private Request<?, Quantity> subscribe(String type, KlayFilter options) {
+        return new Request<>(
+                "klay_subscribe",
+                Arrays.asList(type, options),
+                web3jService,
+                Quantity.class);
     }
 }

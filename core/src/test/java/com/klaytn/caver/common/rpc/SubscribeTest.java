@@ -135,7 +135,7 @@ public class SubscribeTest {
     @Test
     public void logs_InvalidType() throws ConnectException {
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("It is only allowed a 'logs' as a type parameter.");
+        expectedException.expectMessage("This function only allows the 'logs' as a type parameter.");
 
         WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
         Caver caver = new Caver(webSocketService);

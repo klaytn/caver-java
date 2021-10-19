@@ -51,7 +51,7 @@ public class Klay {
     }
 
     /**
-     * Returns true if the account associated with the address is created. It returns false otherwise.
+     * Returns true if the account associated with the address is created. It returns false otherwise.<p>
      * It sets block tag to "LATEST"
      * @param address The account address
      * @return Boolean - The existence of an input address
@@ -131,8 +131,8 @@ public class Klay {
 
 
     /**
-     * Returns the account information of a given address.
-     * There are two different account types in Klaytn: Externally Owned Account (EOA) and Smart Contract Account.
+     * Returns the account information of a given address.<p>
+     * There are two different account types in Klaytn: Externally Owned Account (EOA) and Smart Contract Account.<p>
      * It sets block tag to "LATEST"
      * @param address The account address.
      * @return AccountResponse
@@ -155,7 +155,7 @@ public class Klay {
     }
 
     /**
-     * Returns the account information of a given address.
+     * Returns the account information of a given address.<p>
      * There are two different account types in Klaytn: Externally Owned Account (EOA) and Smart Contract Account.
      * @param address The account address
      * @param blockTag The string "latest", "earliest" or "pending"
@@ -173,7 +173,7 @@ public class Klay {
     }
 
     /**
-     * Returns AccountKey of a given address.
+     * Returns AccountKey of a given address.<p>
      * If the account has AccountKeyLegacy or the account of the given address is a Smart Contract Account, it will return an empty key value.
      * It sets block tag to "LATEST".
      * @param address The account address
@@ -184,7 +184,7 @@ public class Klay {
     }
 
     /**
-     * Returns AccountKey of a given address.
+     * Returns AccountKey of a given address.<p>
      * If the account has AccountKeyLegacy or the account of the given address is a Smart Contract Account, it will return an empty key value.
      * @param address The account address
      * @param blockNumber The block number..
@@ -197,7 +197,7 @@ public class Klay {
     }
 
     /**
-     * Returns AccountKey of a given address.
+     * Returns AccountKey of a given address.<p>
      * If the account has AccountKeyLegacy or the account of the given address is a Smart Contract Account, it will return an empty key value.
      * @param address The account address
      * @param blockTag The string "latest", "earliest" or "pending"
@@ -215,7 +215,7 @@ public class Klay {
     }
 
     /**
-     * Returns the balance of the account of given address.
+     * Returns the balance of the account of given address.<p>
      * It sets block tag to "LATEST".
      * @param address The account address to check for balance.
      * @return Quantity
@@ -254,7 +254,7 @@ public class Klay {
     }
 
     /**
-     * Returns code at a given address.
+     * Returns code at a given address.<p>
      * It sets block tag to "LATEST"
      * @param address The account address
      * @return Bytes
@@ -294,7 +294,7 @@ public class Klay {
     }
 
     /**
-     * Returns the number of transactions sent from an address.
+     * Returns the number of transactions sent from an address.<p>
      * It sets block tag to "LATEST".
      * @param address The account address
      * @return Quantity
@@ -333,8 +333,8 @@ public class Klay {
     }
 
     /**
-     * Returns true if an input account has a non-empty codeHash at the time of a specific block number.
-     * It returns false if the account is an EOA or a smart contract account which doesn't have codeHash.
+     * Returns true if an input account has a non-empty codeHash at the time of a specific block number.<p>
+     * It returns false if the account is an EOA or a smart contract account which doesn't have codeHash.<p>
      * It sets block tag to "LATEST".
      * @param address The account address
      * @return Boolean
@@ -344,7 +344,7 @@ public class Klay {
     }
 
     /**
-     * Returns true if an input account has a non-empty codeHash at the time of a specific block number.
+     * Returns true if an input account has a non-empty codeHash at the time of a specific block number.<p>
      * It returns false if the account is an EOA or a smart contract account which doesn't have codeHash.
      * @param address The account address
      * @param blockNumber The block number..
@@ -357,7 +357,7 @@ public class Klay {
     }
 
     /**
-     * Returns true if an input account has a non-empty codeHash at the time of a specific block number.
+     * Returns true if an input account has a non-empty codeHash at the time of a specific block number.<p>
      * It returns false if the account is an EOA or a smart contract account which doesn't have codeHash.
      * @param address The account address
      * @param blockTag The string "latest", "earliest" or "pending"
@@ -375,7 +375,7 @@ public class Klay {
     }
 
     /**
-     * The sign method calculates a Klaytn-specific signature.
+     * The sign method calculates a Klaytn-specific signature.<p>
      * NOTE : The address to sign with must be unlocked.
      * @param address The account address
      * @param message The message to sign.
@@ -587,7 +587,7 @@ public class Klay {
     }
 
     /**
-     * Returns a list of all validators in the committee at the specified block.
+     * Returns a list of all validators in the committee at the specified block.<p>
      * If the parameter is not set, returns a list of all validators in the committee at the latest block.
      * It sets block tag to "LATEST".
      * @return Addresses
@@ -597,7 +597,7 @@ public class Klay {
     }
 
     /**
-     * Returns a list of all validators in the committee at the specified block.
+     * Returns a list of all validators in the committee at the specified block.<p>
      * If the parameter is not set, returns a list of all validators in the committee at the latest block.
      * @param blockNumber The block number.
      * @return Addresses
@@ -609,7 +609,7 @@ public class Klay {
     }
 
     /**
-     * Returns a list of all validators in the committee at the specified block.
+     * Returns a list of all validators in the committee at the specified block.<p>
      * If the parameter is not set, returns a list of all validators in the committee at the latest block.
      * @param blockTag The string "latest", "earliest"
      * @return Addresses
@@ -624,8 +624,8 @@ public class Klay {
     }
 
     /**
-     * Returns the size of the committee at the specified block.
-     * If the parameter is not set, returns the size of the committee at the latest block.
+     * Returns the size of the committee at the specified block.<p>
+     * If the parameter is not set, returns the size of the committee at the latest block.<p>
      * It sets block tag to "LATEST".
      * @return Quantity
      */
@@ -634,7 +634,7 @@ public class Klay {
     }
 
     /**
-     * Returns the size of the committee at the specified block.
+     * Returns the size of the committee at the specified block.<p>
      * If the parameter is not set, returns the size of the committee at the latest block.
      * @param blockNumber The block number.
      * @return Quantity
@@ -646,7 +646,7 @@ public class Klay {
     }
 
     /**
-     * Returns the size of the committee at the specified block.
+     * Returns the size of the committee at the specified block.<p>
      * If the parameter is not set, returns the size of the committee at the latest block.
      * @param blockTag The string "earliest" or "latest".
      * @return
@@ -661,8 +661,8 @@ public class Klay {
     }
 
     /**
-     * Returns a list of all validators of the council at the specified block.
-     * If the parameter is not set, returns a list of all validators of the council at the latest block.
+     * Returns a list of all validators of the council at the specified block.<p>
+     * If the parameter is not set, returns a list of all validators of the council at the latest block.<p>
      * It set to block tag to "LATEST".
      * @return Addresses
      */
@@ -671,8 +671,8 @@ public class Klay {
     }
 
     /**
-     * Returns a list of all validators of the council at the specified block.
-     * If the parameter is not set, returns a list of all validators of the council at the latest block.
+     * Returns a list of all validators of the council at the specified block.<p>
+     * If the parameter is not set, returns a list of all validators of the council at the latest block.<p>
      * @param blockNumber The block number.
      * @return Addresses
      */
@@ -682,7 +682,7 @@ public class Klay {
     }
 
     /**
-     * Returns a list of all validators of the council at the specified block.
+     * Returns a list of all validators of the council at the specified block.<p>
      * If the parameter is not set, returns a list of all validators of the council at the latest block.
      * @param blockTag The string "earliest" or "latest".
      * @return Addresses
@@ -697,8 +697,8 @@ public class Klay {
     }
 
     /**
-     * Returns the size of the council at the specified block.
-     * If the parameter is not set, returns the size of the council at the latest block.
+     * Returns the size of the council at the specified block.<p>
+     * If the parameter is not set, returns the size of the council at the latest block.<p>
      * It sets block tag to "LATEST".
      * @return Quantity
      */
@@ -707,7 +707,7 @@ public class Klay {
     }
 
     /**
-     * Returns the size of the council at the specified block.
+     * Returns the size of the council at the specified block.<p>
      * If the parameter is not set, returns the size of the council at the latest block.
      * @param blockNumber The block number
      * @return Quantity
@@ -719,7 +719,7 @@ public class Klay {
     }
 
     /**
-     * Returns the size of the council at the specified block.
+     * Returns the size of the council at the specified block.<p>
      * If the parameter is not set, returns the size of the council at the latest block.
      * @param blockTag The string "latest", "earliest" or "pending"
      * @return Quantity
@@ -792,8 +792,8 @@ public class Klay {
     }
 
     /**
-     * Executes a new message call immediately without creating a transaction on the block chain.
-     * It returns data or an error object of JSON RPC if error occurs.
+     * Executes a new message call immediately without creating a transaction on the block chain.<p>
+     * It returns data or an error object of JSON RPC if error occurs.<p>
      * It sets block tag to "LATEST".
      * @param callObject The transaction call object.
      * @return Bytes
@@ -803,8 +803,8 @@ public class Klay {
     }
 
     /**
-     * Executes a new message call immediately without creating a transaction on the block chain.
-     * It returns data or an error object of JSON RPC if error occurs.
+     * Executes a new message call immediately without creating a transaction on the block chain.<p>
+     * It returns data or an error object of JSON RPC if error occurs.<p>
      * @param callObject The transaction call object.
      * @param blockNumber The block number.
      * @return Bytes
@@ -818,7 +818,7 @@ public class Klay {
     }
 
     /**
-     * Executes a new message call immediately without creating a transaction on the block chain.
+     * Executes a new message call immediately without creating a transaction on the block chain.<p>
      * It returns data or an error object of JSON RPC if error occurs.
      * @param callObject The transaction call object.
      * @param blockTag the string "latest", "earliest" or "pending"
@@ -833,8 +833,8 @@ public class Klay {
     }
 
     /**
-     * Generates and returns an estimate of how much gas is necessary to allow the transaction to complete.
-     * The transaction will not be added to the blockchain. Note that the estimate may be significantly more
+     * Generates and returns an estimate of how much gas is necessary to allow the transaction to complete.<p>
+     * The transaction will not be added to the blockchain.<p> Note that the estimate may be significantly more
      * than the amount of gas actually used by the transaction, for a variety of reasons including Klaytn Virtual
      * Machine mechanics and node performance.
      * @param callObject The transaction call object.
@@ -849,9 +849,9 @@ public class Klay {
     }
 
     /**
-     * Generates and returns an estimate of how much computation cost spent to execute the transaction.
+     * Generates and returns an estimate of how much computation cost spent to execute the transaction.<p>
      * Klaytn limits the computation cost of a transaction to 100000000 currently not to take too much time
-     * by a single transaction. The transaction will not be added to the blockchain like klay_estimateGas.
+     * by a single transaction.<p> The transaction will not be added to the blockchain like klay_estimateGas.
      * @param callObject The transaction call object.
      * @return Quantity
      */
@@ -860,9 +860,9 @@ public class Klay {
     }
 
     /**
-     * Generates and returns an estimate of how much computation cost spent to execute the transaction.
+     * Generates and returns an estimate of how much computation cost spent to execute the transaction.<p>
      * Klaytn limits the computation cost of a transaction to 100000000 currently not to take too much time
-     * by a single transaction. The transaction will not be added to the blockchain like klay_estimateGas.
+     * by a single transaction.<p> The transaction will not be added to the blockchain like klay_estimateGas.
      * @param callObject The transaction call object.
      * @return Quantity
      */
@@ -871,9 +871,9 @@ public class Klay {
     }
 
     /**
-     * Generates and returns an estimate of how much computation cost spent to execute the transaction.
+     * Generates and returns an estimate of how much computation cost spent to execute the transaction.<p>
      * Klaytn limits the computation cost of a transaction to 100000000 currently not to take too much time
-     * by a single transaction. The transaction will not be added to the blockchain like klay_estimateGas.
+     * by a single transaction.<p> The transaction will not be added to the blockchain like klay_estimateGas.
      * @param callObject The transaction call object.
      * @return Quantity
      */
@@ -943,8 +943,8 @@ public class Klay {
     }
 
     /**
-     * Returns the information about a transaction requested by sender transaction hash.
-     * Please note that this API returns correct result only if indexing feature is enabled by --sendertxhashindexing.
+     * Returns the information about a transaction requested by sender transaction hash.<p>
+     * Please note that this API returns correct result only if indexing feature is enabled by --sendertxhashindexing.<p>
      * This can be checked by call klay_isSenderTxHashIndexingEnabled.
      * @param senderTxHash The hash of a transaction before signing of feePayer(senderTransactionHash)
      * @return Transaction
@@ -958,7 +958,7 @@ public class Klay {
     }
 
     /**
-     * Returns the receipt of a transaction by transaction hash.
+     * Returns the receipt of a transaction by transaction hash.<p>
      * NOTE: The receipt is not available for pending transactions.
      * @param transactionHash The hash of a transaction.
      * @return TransactionReceipt
@@ -1013,7 +1013,7 @@ public class Klay {
     }
 
     /**
-     * Constructs a transaction with given parameters, signs the transaction with a sender's private key and propagates the transaction to Klaytn network.
+     * Constructs a transaction with given parameters, signs the transaction with a sender's private key and propagates the transaction to Klaytn network.<p>
      * NOTE: The address to sign with must be unlocked.
      * @param transaction The object inherits AbstractTransaction.
      * @return Bytes32
@@ -1027,8 +1027,8 @@ public class Klay {
     }
 
     /**
-     * Constructs a transaction with given parameters, signs the transaction with a fee payer's private key and propagates the transaction to Klaytn network.
-     * This API supports only fee delegated type (including partial fee delegated type) transactions.
+     * Constructs a transaction with given parameters, signs the transaction with a fee payer's private key and propagates the transaction to Klaytn network.<p>
+     * This API supports only fee delegated type (including partial fee delegated type) transactions.<p>
      * NOTE: The fee payer address to sign with must be unlocked.
      * @param transaction The object inherits AbstractFeeDelegatedTransaction.
      * @return Bytes32
@@ -1042,8 +1042,8 @@ public class Klay {
     }
 
     /**
-     * Constructs a transaction with given parameters and signs the transaction with a sender's private key.
-     * This method can be used either to generate a sender signature or to make a final raw transaction that is ready to submit to Klaytn network.
+     * Constructs a transaction with given parameters and signs the transaction with a sender's private key.<p>
+     * This method can be used either to generate a sender signature or to make a final raw transaction that is ready to submit to Klaytn network.<p>
      * NOTE: The address to sign with must be unlocked.
      * @param transaction The object inherits AbstractTransaction.
      * @return KlaySignTransaction
@@ -1061,10 +1061,10 @@ public class Klay {
     }
 
     /**
-     * Constructs a transaction with given parameters and signs the transaction with a fee payer's private key.
-     * This method can be used either to generate a fee payer signature or to make a final raw transaction that is ready to submit to Klaytn network.
-     * In case you just want to extract the fee-payer signature, simply take the feePayerSignatures from the result.
-     * Note that the raw transaction is not final if the sender's signature is not attached (that is, signatures in tx is empty).
+     * Constructs a transaction with given parameters and signs the transaction with a fee payer's private key.<p>
+     * This method can be used either to generate a fee payer signature or to make a final raw transaction that is ready to submit to Klaytn network.<p>
+     * In case you just want to extract the fee-payer signature, simply take the feePayerSignatures from the result.<p>
+     * Note that the raw transaction is not final if the sender's signature is not attached (that is, signatures in tx is empty).<p>
      * NOTE: The fee payer address to sign with must be unlocked.
      * @param transaction The object inherits AbstractFeeDelegatedTransaction.
      * @return KlaySignTransaction
@@ -1108,7 +1108,7 @@ public class Klay {
     }
 
     /**
-     * Returns the current price per gas in peb.
+     * Returns the current price per gas in peb.<p>
      * NOTE: This API has different behavior from Ethereum's and returns a gas price of Klaytn instead of suggesting a gas price as in Ethereum.
      * @return Quantity
      */
@@ -1121,8 +1121,8 @@ public class Klay {
     }
 
     /**
-     * Returns the unit price of the given block in peb.
-     * It returns latest unit price.
+     * Returns the unit price of the given block in peb.<p>
+     * It returns latest unit price.<p>
      * NOTE: This API has different behavior from Ethereum's and returns a gas price of Klaytn instead of suggesting a gas price as in Ethereum.
      * @return Quantity
      */
@@ -1136,7 +1136,7 @@ public class Klay {
     }
 
     /**
-     * Returns the unit price of the given block in peb.
+     * Returns the unit price of the given block in peb.<p>
      * NOTE: This API has different behavior from Ethereum's and returns a gas price of Klaytn instead of suggesting a gas price as in Ethereum.
      * @param blockNumber The block number.
      * @return Quantity
@@ -1147,7 +1147,7 @@ public class Klay {
     }
 
     /**
-     * Returns the unit price of the given block in peb.
+     * Returns the unit price of the given block in peb.<p>
      * NOTE: This API has different behavior from Ethereum's and returns a gas price of Klaytn instead of suggesting a gas price as in Ethereum.
      * @param blockTag The block tag.
      * @return Quantity
@@ -1174,7 +1174,7 @@ public class Klay {
     }
 
     /**
-     * Returns true if the node is indexing sender transaction hash to transaction hash mapping information.
+     * Returns true if the node is indexing sender transaction hash to transaction hash mapping information.<p>
      * It is disabled by default and can be enabled by --sendertxhashindexing.
      * @return Boolean
      */
@@ -1187,7 +1187,7 @@ public class Klay {
     }
 
     /**
-     * Returns the Klaytn protocol version of the node.
+     * Returns the Klaytn protocol version of the node.<p>
      * @return Bytes
      */
     public Request<?, Bytes> getProtocolVersion() {
@@ -1199,7 +1199,7 @@ public class Klay {
     }
 
     /**
-     * Returns the reward base of the current node.
+     * Returns the reward base of the current node.<p>
      * Reward base is the address of the account where the block rewards goes to. It is only required for CNs.
      * @return Bytes20
      */
@@ -1225,7 +1225,7 @@ public class Klay {
     }
 
     /**
-     * Returns an array of all logs matching filter with given id, which has been obtained using klay_newFilter.
+     * Returns an array of all logs matching filter with given id, which has been obtained using klay_newFilter.<p>
      * Note that filter ids returned by other filter creation functions, such as klay_newBlockFilter or klay_newPendingTransactionFilter, cannot be used with this function.
      * @param filterId The filter id.
      * @return KlayLogs
@@ -1252,7 +1252,7 @@ public class Klay {
     }
 
     /**
-     * Creates a filter in the node, to notify when a new block arrives.
+     * Creates a filter in the node, to notify when a new block arrives.<p>
      * To check if the state has changed, call klay_getFilterChanges.
      * @return Quantity
      */
@@ -1265,8 +1265,8 @@ public class Klay {
     }
 
     /**
-     * Creates a filter object, based on filter options, to notify when the state changes (logs).
-     * To check if the state has changed, call getFilterChanges.
+     * Creates a filter object, based on filter options, to notify when the state changes (logs).<p>
+     * To check if the state has changed, call getFilterChanges.<p>
      * To obtain all logs matching the filter created by klay_newFilter, call getFilterLogs(String).
      * @param filterOption The filter option.
      * @return Quantity
@@ -1280,7 +1280,7 @@ public class Klay {
     }
 
     /**
-     * Creates a filter in the node, to notify when new pending transactions arrive.
+     * Creates a filter in the node, to notify when new pending transactions arrive.<p>
      * To check if the state has changed, call klay_getFilterChanges.
      * @return Quantity
      */
@@ -1293,7 +1293,7 @@ public class Klay {
     }
 
     /**
-     * Uninstalls a filter with given id. Should always be called when watch is no longer needed.
+     * Uninstalls a filter with given id. Should always be called when watch is no longer needed.<p>
      * Additionally, filters timeout when they are not requested with klay_getFilterChanges for a period of time.
      * @param filterId A filter id.
      * @return Boolean

@@ -1347,7 +1347,7 @@ public class Klay {
      */
     public Disposable subscribe(String type, Consumer<NewHeadsNotification> callback) {
         if(!type.equals("newHeads")) {
-            throw new IllegalArgumentException("It is only allowed a 'newHeads' as a type parameter.");
+            throw new IllegalArgumentException("This function only allows the 'newHeads' as a type parameter.");
         }
 
         final Flowable<NewHeadsNotification> events = web3jService.subscribe(subscribe(type), "klay_unsubscribe", NewHeadsNotification.class);

@@ -1337,7 +1337,7 @@ public class Klay {
      *
      * });
      *
-     * //Stop subscribe notification
+     * //Cancel subscribe notification
      * disposable.dispose();
      * }
      * </pre>
@@ -1375,6 +1375,7 @@ public class Klay {
      * options.addSingleTopic("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef");
      * options.addSingleTopic("0x0000000000000000000000002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a");
      *
+     * //Cancel subscribe notification
      * Disposable disposable = caver.rpc.klay.subscribe("logs", options, (logData) -> {
      *
      * });

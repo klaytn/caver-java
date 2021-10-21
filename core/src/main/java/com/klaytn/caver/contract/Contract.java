@@ -257,8 +257,8 @@ public class Contract {
             ContractEvent event = this.getEvent(eventName);
             if(paramsOption != null) {
                 /**
-                 * If filterOptions field of EventFilterOptions which has event type name and value is exist,
-                 * it encodes topics data according to ABI spec and set by topics field of KlayFilter directly.
+                 * If `filterOptions` field which has event type name and value is existed in the `EventFilterOptions`,
+                 * `filterOptions` will be encoded to the topics data according to ABI spec and assigned to the `topics` field of the `KlayFilter` directly.
                  */
                 if(paramsOption.getTopics() == null || paramsOption.getTopics().isEmpty()) {
                     if(paramsOption.getFilterOptions() != null && !paramsOption.getFilterOptions().isEmpty()) {

@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -53,6 +54,10 @@ public abstract class Filter<T extends Filter> {
 
     public List<Filter.FilterTopic> getTopics() {
         return topics;
+    }
+
+    public void setTopics(List<FilterTopic> topics) {
+        this.topics = topics;
     }
 
     abstract T getThis();

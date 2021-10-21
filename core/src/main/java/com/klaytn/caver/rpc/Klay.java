@@ -29,11 +29,13 @@ import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import org.web3j.protocol.Web3jService;
-import org.web3j.protocol.core.*;
+import org.web3j.protocol.core.DefaultBlockParameter;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.DefaultBlockParameterNumber;
+import org.web3j.protocol.core.Request;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 public class Klay {
 
@@ -1349,7 +1351,7 @@ public class Klay {
             throw new IllegalArgumentException("This function only allows the 'newHeads' as a type parameter.");
         }
 
-        final Flowable<NewHeadsNotification> events = web3jService.subscribe(subscribe(type), "klay_unsubscribe", NewHeadsNotification.class);
+        final Flowable<NewHeadsNotification> events = subscribeFlowable(type);
         return events.subscribe(callback);
     }
 
@@ -1392,7 +1394,7 @@ public class Klay {
             throw new IllegalArgumentException("This function only allows the 'logs' as a type parameter.");
         }
 
-        final Flowable<LogsNotification> events = web3jService.subscribe(subscribe(type, options), "klay_unsubscribe", LogsNotification.class);
+        final Flowable<LogsNotification> events = subscribeFlowable(type, options);
         return events.subscribe(callback);
     }
 
@@ -1411,6 +1413,79 @@ public class Klay {
                 Arrays.asList(subscriptionId),
                 web3jService,
                 Boolean.class);
+    }
+
+    /**
+     * Creates a new subscription to specific events by using RPC Pub/Sub over Websockets.<p>
+     *
+     * The node will return a subscription id for each subscription created.
+     * For each event that matches the subscription, a notification with relevant data is sent together with the subscription id.
+     * If a connection is closed, all subscriptions created over the connection are removed. <p>
+     *
+     * It only allowed a 'newHeads' as a notificationType. <p>
+     * Also, It automatically calls a "klay_unsubscribe" API when stopping subscription.<p>
+     *
+     * You can configure the stream directly with the returned Flowable instance, i.e. register callback methods for various cases.
+     *
+     * <pre>Example :
+     * {@code
+     * Flowable<NewHeadsNotification> events = caver.rpc.klay.subscribeFlowable("heads");
+     * Disposable disposable = events.take(1).subscribe((data) -> {});
+     * }
+     * </pre>
+     *
+     *
+     * @param type The notification type to subscribe.
+     * @return Flowable
+     */
+    public Flowable<NewHeadsNotification> subscribeFlowable(String type) {
+        Request<?, Quantity> request = new Request<>(
+                "klay_subscribe",
+                Arrays.asList(type),
+                web3jService,
+                Quantity.class);
+
+        return web3jService.subscribe(request, "klay_unsubscribe", NewHeadsNotification.class);
+    }
+
+    /**
+     * Creates a new subscription to specific events by using RPC Pub/Sub over Websockets.<p>
+     *
+     * The node will return a subscription id for each subscription created.
+     * For each event that matches the subscription, a notification with relevant data is sent together with the subscription id.
+     * If a connection is closed, all subscriptions created over the connection are removed. <p>
+     *
+     * It only allowed a 'logs' as a notification type. <p>
+     * Also, It automatically calls a "klay_unsubscribe" API when stopping subscription.
+     *
+     * You can configure the stream directly with the returned Flowable instance, i.e. register callback methods for various cases.
+     *
+     * <pre>Example
+     * {@code
+     *
+     * KlayFilter options = new KlayFilter();
+     * options.setAddress(kip7contract.getContractAddress());
+     * options.setFromBlock(DefaultBlockParameterName.LATEST);
+     * options.setToBlock(DefaultBlockParameterName.LATEST);
+     * options.addSingleTopic("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef");
+     * options.addSingleTopic("0x0000000000000000000000002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a");
+     *
+     * Flowable<NewHeadsNotification> events = caver.rpc.klay.subscribeFlowable("logs", options);
+     * Disposable disposable = events.take(1).subscribe((logData) -> {});
+     * }
+     * </pre>
+     * @param type The notification type to subscribe.
+     * @param options The filter options to filter notification.
+     * @return Flowable
+     */
+    public Flowable<LogsNotification> subscribeFlowable(String type, KlayFilter options) {
+        Request<?, Quantity> request = new Request<>(
+                "klay_subscribe",
+                Arrays.asList(type, options),
+                web3jService,
+                Quantity.class);
+
+        return web3jService.subscribe(request, "klay_unsubscribe", LogsNotification.class);
     }
 
     private Request<?, Quantity> subscribe(String type) {

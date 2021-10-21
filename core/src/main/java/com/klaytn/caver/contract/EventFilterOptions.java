@@ -27,8 +27,11 @@ import java.util.List;
 
 public class EventFilterOptions {
     /**
-     * The list of contract event filter that is a human-readable option.
-     * The IndexedParameter class consist of event name and its value.
+     * The list of contract event filter that is a human-readable option.<p>
+     * The IndexedParameter class consist of event name and its value.<p>
+     *
+     * NOTE: This field aims to provide usability so that it can be easily converted to a topic.<p>
+     * Also, this field will be deleted when it is converted to topic. See {@link #setTopicWithFilterOptions(ContractEvent)}
      */
     List<IndexedParameter> filterOptions;
 
@@ -114,17 +117,8 @@ public class EventFilterOptions {
     }
 
     /**
-     * Creates an EventFilterOptions instance.
-     * @param filterOptions The list of contract event filter that is a human-readable option.
-     * @param topics The list of event topic.
-     */
-    public EventFilterOptions(List<IndexedParameter> filterOptions, List topics) {
-        this.filterOptions = filterOptions;
-        this.topics = topics;
-    }
-
-    /**
-     * Converts list of data in filterOptions to event topic format.
+     * Set a topic field using filterOptions field.<p>
+     * After setting a topic, the filterOptions field will be removed to provide explicit usability, the filterOptions field is removed.
      * @param event The ContractEvent instance.
      * @throws ClassNotFoundException
      * @throws InvocationTargetException
@@ -132,8 +126,10 @@ public class EventFilterOptions {
      * @throws InstantiationException
      * @throws IllegalAccessException
      */
-    public void convertIndexedParamToTopic(ContractEvent event) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        setTopics(convertsTopic(event, getFilterOptions()));
+    public void setTopicWithFilterOptions(ContractEvent event) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        List topic = convertsTopic(event, getFilterOptions());
+        setFilterOptions(null);
+        setTopics(topic);
     }
 
     /**
@@ -177,6 +173,9 @@ public class EventFilterOptions {
      * @param filterOptions The list of contract event filter that is a human-readable option.
      */
     public void setFilterOptions(List<IndexedParameter> filterOptions) {
+        if(this.topics != null) {
+            throw new IllegalArgumentException("It already set a topics field. It can't define topics and filterOptions at the same time.");
+        }
         this.filterOptions = filterOptions;
     }
 
@@ -185,7 +184,11 @@ public class EventFilterOptions {
      * @param topics The contract event topic list.
      */
     public void setTopics(List topics) {
+        if(this.filterOptions != null) {
+            throw new IllegalArgumentException("It already set a filterOptions field. It can't define topics and filterOptions at the same time.");
+        }
         this.topics = topics;
+        this.filterOptions = null;
     }
 
     public static class IndexedParameter {

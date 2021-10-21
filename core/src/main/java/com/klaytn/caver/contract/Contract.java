@@ -262,7 +262,7 @@ public class Contract {
                  */
                 if(paramsOption.getTopics() == null || paramsOption.getTopics().isEmpty()) {
                     if(paramsOption.getFilterOptions() != null && !paramsOption.getFilterOptions().isEmpty()) {
-                        paramsOption.convertIndexedParamToTopic(event);
+                        paramsOption.setTopicWithFilterOptions(event);
                         filter.setTopics(paramsOption.toKlayFilterTopic());
                     }
                 }

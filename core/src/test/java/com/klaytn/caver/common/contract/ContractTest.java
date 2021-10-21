@@ -1051,7 +1051,8 @@ public class ContractTest {
         final LogsNotification[] log = {null};
 
         EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("from", Arrays.asList(LUMAN.getAddress()));
-        EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter), null);
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        eventFilterOptions.setFilterOptions(Arrays.asList(indexedParameter));
 
         Disposable disposable = contract.once("Transfer", eventFilterOptions, event -> {
             log[0] = event;
@@ -1094,7 +1095,8 @@ public class ContractTest {
         final LogsNotification[] log = {null};
 
         EventFilterOptions.IndexedParameter indexedParameter1 = new EventFilterOptions.IndexedParameter("to", Arrays.asList(BRANDON.getAddress()));
-        EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter1), null);
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        eventFilterOptions.setFilterOptions(Arrays.asList(indexedParameter1));
 
         Disposable disposable = contract.once("Transfer", eventFilterOptions, event -> {
             log[0] = event;
@@ -1138,7 +1140,8 @@ public class ContractTest {
 
         EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("from", Arrays.asList(LUMAN.getAddress()));
         EventFilterOptions.IndexedParameter indexedParameter1 = new EventFilterOptions.IndexedParameter("to", Arrays.asList(BRANDON.getAddress()));
-        EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter, indexedParameter1), null);
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        eventFilterOptions.setFilterOptions(Arrays.asList(indexedParameter, indexedParameter1));
 
         Disposable disposable = contract.once("Transfer", eventFilterOptions, event -> {
             log[0] = event;
@@ -1181,7 +1184,8 @@ public class ContractTest {
         final LogsNotification[] log = {null};
 
         EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("from", Arrays.asList(LUMAN.getAddress(), BRANDON.getAddress()));
-        EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter, indexedParameter), null);
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        eventFilterOptions.setFilterOptions(Arrays.asList(indexedParameter));
 
         Disposable disposable = contract.once("Transfer", eventFilterOptions, event -> {
             log[0] = event;
@@ -1224,7 +1228,8 @@ public class ContractTest {
         final LogsNotification[] log = {null};
 
         EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("to", Arrays.asList(WAYNE.getAddress(), BRANDON.getAddress()));
-        EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter, indexedParameter), null);
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        eventFilterOptions.setFilterOptions(Arrays.asList(indexedParameter));
 
         Disposable disposable = contract.once("Transfer", eventFilterOptions, event -> {
             log[0] = event;
@@ -1267,7 +1272,8 @@ public class ContractTest {
         final LogsNotification[] log = {null};
 
         EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("to", Arrays.asList(WAYNE.getAddress(), BRANDON.getAddress()));
-        EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter, indexedParameter), null);
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        eventFilterOptions.setFilterOptions(Arrays.asList(indexedParameter));
 
         Disposable disposable = contract.once("allEvents", eventFilterOptions, event -> {
             log[0] = event;

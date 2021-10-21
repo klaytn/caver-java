@@ -89,6 +89,10 @@ public abstract class Filter<T extends Filter> {
         private List<Filter.SingleTopic> topics;
 
         public ListTopic(String... optionalTopics) {
+            this(Arrays.asList(optionalTopics));
+        }
+
+        public ListTopic(List<String> optionalTopics) {
             topics = new ArrayList<>();
             for (String topic : optionalTopics) {
                 if (topic != null) {

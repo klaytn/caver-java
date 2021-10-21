@@ -22,8 +22,10 @@ import com.klaytn.caver.Caver;
 import com.klaytn.caver.abi.ABI;
 import com.klaytn.caver.abi.datatypes.Type;
 import com.klaytn.caver.methods.request.CallObject;
+import com.klaytn.caver.methods.request.KlayFilter;
 import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.KlayLogs;
+import com.klaytn.caver.methods.response.LogsNotification;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
 import com.klaytn.caver.transaction.AbstractTransaction;
@@ -220,7 +222,22 @@ public class Contract {
     }
 
     /**
-     * Subscribes to an event and unsubscribes immediately after the first event or error.
+     * Subscribes to an event and unsubscribes immediately after the first event or error.<p>
+     * You can filter event through setting filterOptions or topics field in EventFilterOptions.
+     *
+     * <pre>Example :
+     * {@code
+     * Contract contract = caver.contract.create(ABI, contractAddress);
+     *
+     * EventFilterOptions options = new EventFilterOptions();
+     * options.setFilterOptions(Arrays.asList(new EventFilterOptions.IndexedParameter("from", "0x{address}")));
+     * //or
+     * options.setTopics(Arrays.asList("topic0", "topic1"));
+     *
+     * Disposable disposable = contract.once("Transfer", options, (data) -> {});
+     * }
+     * </pre>
+     *
      * @param eventName The name of the event in the contract.
      * @param paramsOption The filter events by indexed parameters.
      * @param callback The callback function that handled to returned data.
@@ -231,10 +248,9 @@ public class Contract {
      * @throws InstantiationException
      * @throws IllegalAccessException
      */
-    public Disposable once(String eventName, EventFilterOptions paramsOption, Consumer<LogNotification> callback) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        Map options = new HashMap<>();
-
-        List topics = null;
+    public Disposable once(String eventName, EventFilterOptions paramsOption, Consumer<LogsNotification> callback) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        KlayFilter filter = new KlayFilter();
+        filter.setAddress(getContractAddress());
 
         if(eventName.equals("allEvents")) {
             if(paramsOption != null) {
@@ -242,24 +258,25 @@ public class Contract {
             }
         } else {
             ContractEvent event = this.getEvent(eventName);
-            if(paramsOption.getTopics() == null || paramsOption.getTopics().size() == 0) {
-                topics = EventFilterOptions.convertsTopic(event, paramsOption);
-            } else {
-                topics = paramsOption.getTopics();
+            if(paramsOption != null) {
+                /**
+                 * If filterOptions field of EventFilterOptions which has event type name and value is exist,
+                 * it encodes topics data according to ABI spec and set by topics field of KlayFilter directly.
+                 */
+                if(paramsOption.getTopics() == null || paramsOption.getTopics().isEmpty()) {
+                    if(paramsOption.getFilterOptions() != null && !paramsOption.getFilterOptions().isEmpty()) {
+                        paramsOption.convertIndexedParamToTopic(event);
+                        filter.setTopics(paramsOption.toKlayFilterTopic());
+                    }
+                }
+                // If topics field in paramOptions is existed, it is set by topics field of KlayFilter directly.
+                else {
+                    filter.setTopics(paramsOption.toKlayFilterTopic());
+                }
             }
         }
 
-        options.put("address", getContractAddress());
-        options.put("topics", topics);
-
-        final Request<?, EthSubscribe> subscribeRequest = new Request<>(
-                "klay_subscribe",
-                Arrays.asList("logs", options),
-                this.caver.rpc.getWeb3jService(),
-                EthSubscribe.class
-        );
-
-        final Flowable<LogNotification> events = this.caver.rpc.getWeb3jService().subscribe(subscribeRequest, "klay_unsubscribe", LogNotification.class);
+        final Flowable<LogsNotification> events = this.caver.rpc.klay.subscribeFlowable("logs", filter);
         return events.take(1).subscribe(callback);
     }
 

@@ -39,10 +39,7 @@ import io.reactivex.functions.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.ObjectMapperFactory;
-import org.web3j.protocol.core.Request;
-import org.web3j.protocol.core.methods.response.EthSubscribe;
 import org.web3j.protocol.exceptions.TransactionException;
-import org.web3j.protocol.websocket.events.LogNotification;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

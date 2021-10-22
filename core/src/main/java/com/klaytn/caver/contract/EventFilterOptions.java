@@ -17,21 +17,57 @@
 package com.klaytn.caver.contract;
 
 import com.klaytn.caver.abi.ABI;
+import com.klaytn.caver.methods.request.Filter;
 import com.klaytn.caver.utils.Utils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 public class EventFilterOptions {
+    /**
+     * The list of contract event filter that is a human-readable option.<p>
+     * The IndexedParameter class consist of event name and its value.<p>
+     *
+     * NOTE: This field aims to provide usability so that it can be easily converted to a topic.<p>
+     * Also, this field will be deleted when it is converted to topic. See {@link #setTopicWithFilterOptions(ContractEvent)}
+     */
     List<IndexedParameter> filterOptions;
+
+    /**
+     * The contract event topic list.
+     */
     List topics;
 
+    /**
+     * Converts a filterOptions in options parameter to topic list according to the ABI spec.
+     * @param event The contract event to filter.
+     * @param options The filterOptions to filter contract event.
+     * @return List
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
     public static List convertsTopic(ContractEvent event, EventFilterOptions options) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        List<IndexedParameter> filterOption = options.getFilterOptions();
+        List<IndexedParameter> filterOptions = options.getFilterOptions();
+        return convertsTopic(event, filterOptions);
+    }
 
+    /**
+     * Converts a filterOptions to topic list according to the ABI spec.
+     * @param event The contract event to filter.
+     * @param filterOptions The list of IndexedParameter instance that consist of parameter name of indexed event parameter and its value.
+     * @return List
+     * @throws ClassNotFoundException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public static List convertsTopic(ContractEvent event, List<IndexedParameter> filterOptions) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         int indexed = 0;
         for(ContractIOType ioType : event.getInputs()){
             if(ioType.indexed) {
@@ -39,9 +75,13 @@ public class EventFilterOptions {
             }
         }
 
+        //topic[0] == Event signature
+        //topic[1~3] == indexed parameter
         Object[] topics = new Object[indexed+1];
         topics[0] = ABI.encodeEventSignature(event);
-        for(IndexedParameter indexedParameter : filterOption) {
+
+        //Finds information corresponding to the type given by filterOptions and encodes it using this information.
+        for(IndexedParameter indexedParameter : filterOptions) {
             int index = 0;
             ContractIOType contractIOType = null;
             for(index=0; index<event.getInputs().size(); index++) {
@@ -70,31 +110,108 @@ public class EventFilterOptions {
         return Arrays.asList(topics);
     }
 
-    public EventFilterOptions(List<IndexedParameter> filterOptions, List<String> topics) {
-        this.filterOptions = filterOptions;
-        this.topics = topics;
+    /**
+     * Creates an EventFilterOptions instance.
+     */
+    public EventFilterOptions() {
     }
 
+    /**
+     * Set a topic field using filterOptions field.<p>
+     * After setting a topic, the filterOptions field will be removed to provide explicit usability, the filterOptions field is removed.
+     * @param event The ContractEvent instance.
+     * @throws ClassNotFoundException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public void setTopicWithFilterOptions(ContractEvent event) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        List topic = convertsTopic(event, getFilterOptions());
+        setFilterOptions(null);
+        setTopics(topic);
+    }
+
+    /**
+     * Converts topics field to KlayFilterTopic type.
+     * @return List
+     */
+    public List<Filter.FilterTopic> toKlayFilterTopic() {
+        List<Filter.FilterTopic> topicList = new ArrayList<>();
+        for(int i=0; i<getTopics().size(); i++) {
+            Object topic = getTopics().get(i);
+            if(topic instanceof String) {
+                topicList.add(new Filter.SingleTopic((String)topic));
+            } else if(topic instanceof List) {
+                topicList.add(new Filter.ListTopic((List)topic));
+            } else {
+                topicList.add(new Filter.SingleTopic());
+            }
+        }
+
+        return topicList;
+    }
+
+    /**
+     * Getter method for filterOptions.
+     * @return List
+     */
     public List<IndexedParameter> getFilterOptions() {
         return filterOptions;
     }
 
-    public List<String> getTopics() {
+    /**
+     * Getter method for topics.
+     * @return List
+     */
+    public List getTopics() {
         return topics;
     }
 
+    /**
+     * Setter method for filterOptions.
+     * @param filterOptions The list of contract event filter that is a human-readable option.
+     */
     public void setFilterOptions(List<IndexedParameter> filterOptions) {
+        if(this.topics != null) {
+            throw new IllegalArgumentException("It already set a topics field. It can't define topics and filterOptions at the same time.");
+        }
         this.filterOptions = filterOptions;
     }
 
-    public void setTopics(List<String> topics) {
+    /**
+     * Setter method for topics.
+     * @param topics The contract event topic list.
+     */
+    public void setTopics(List topics) {
+        if(this.filterOptions != null) {
+            throw new IllegalArgumentException("It already set a filterOptions field. It can't define topics and filterOptions at the same time.");
+        }
         this.topics = topics;
+        this.filterOptions = null;
     }
 
     public static class IndexedParameter {
+        /**
+         * The indexed parameter name of event.
+         */
         String indexedParamName;
+
+        /**
+         * The value of indexed parameter.
+         */
         List<Object> filterValue;
 
+        /**
+         * Creates an event topic through indexed parameter name and value.
+         * @param solType The type mapped by indexed parameter.
+         * @return List
+         * @throws ClassNotFoundException
+         * @throws NoSuchMethodException
+         * @throws InvocationTargetException
+         * @throws InstantiationException
+         * @throws IllegalAccessException
+         */
         public List<String> makeTopic(String solType) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
             List<String> topicValue = new ArrayList<>();
             for(Object value : this.getFilterValue()) {
@@ -114,23 +231,44 @@ public class EventFilterOptions {
             return topicValue;
         }
 
+        /**
+         * Creates an IndexedParameter instance.
+         * @param indexedParamName The indexed parameter name of event.
+         * @param filterValue The value of indexed parameter.
+         */
         public IndexedParameter(String indexedParamName, List<Object> filterValue) {
             this.indexedParamName = indexedParamName;
             this.filterValue = filterValue;
         }
 
+        /**
+         * Getter method for indexedParamName.
+         * @return String
+         */
         public String getIndexedParamName() {
             return indexedParamName;
         }
 
+        /**
+         * Getter method for filterValue
+         * @return The value of indexed parameter.
+         */
         public List<Object> getFilterValue() {
             return filterValue;
         }
 
+        /**
+         * Setter method for indexedParamName.
+         * @param indexedParamName  The indexed parameter name of event.
+         */
         public void setIndexedParamName(String indexedParamName) {
             this.indexedParamName = indexedParamName;
         }
 
+        /**
+         * Setter method for filterValue.
+         * @param filterValue The value of indexed parameter.
+         */
         public void setFilterValue(List<Object> filterValue) {
             this.filterValue = filterValue;
         }

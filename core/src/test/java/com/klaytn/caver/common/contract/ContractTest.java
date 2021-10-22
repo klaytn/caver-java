@@ -7,6 +7,7 @@ import com.klaytn.caver.contract.*;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.KlayLogs;
+import com.klaytn.caver.methods.response.LogsNotification;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.KeyringContainer;
 
@@ -1047,10 +1048,11 @@ public class ContractTest {
         List options = new ArrayList();
         options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
 
-        final LogNotification[] log = {null};
+        final LogsNotification[] log = {null};
 
         EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("from", Arrays.asList(LUMAN.getAddress()));
-        EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter), null);
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        eventFilterOptions.setFilterOptions(Arrays.asList(indexedParameter));
 
         Disposable disposable = contract.once("Transfer", eventFilterOptions, event -> {
             log[0] = event;
@@ -1090,10 +1092,11 @@ public class ContractTest {
         List options = new ArrayList();
         options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
 
-        final LogNotification[] log = {null};
+        final LogsNotification[] log = {null};
 
         EventFilterOptions.IndexedParameter indexedParameter1 = new EventFilterOptions.IndexedParameter("to", Arrays.asList(BRANDON.getAddress()));
-        EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter1), null);
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        eventFilterOptions.setFilterOptions(Arrays.asList(indexedParameter1));
 
         Disposable disposable = contract.once("Transfer", eventFilterOptions, event -> {
             log[0] = event;
@@ -1133,11 +1136,12 @@ public class ContractTest {
         List options = new ArrayList();
         options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
 
-        final LogNotification[] log = {null};
+        final LogsNotification[] log = {null};
 
         EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("from", Arrays.asList(LUMAN.getAddress()));
         EventFilterOptions.IndexedParameter indexedParameter1 = new EventFilterOptions.IndexedParameter("to", Arrays.asList(BRANDON.getAddress()));
-        EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter, indexedParameter1), null);
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        eventFilterOptions.setFilterOptions(Arrays.asList(indexedParameter, indexedParameter1));
 
         Disposable disposable = contract.once("Transfer", eventFilterOptions, event -> {
             log[0] = event;
@@ -1177,10 +1181,11 @@ public class ContractTest {
         List options = new ArrayList();
         options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
 
-        final LogNotification[] log = {null};
+        final LogsNotification[] log = {null};
 
         EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("from", Arrays.asList(LUMAN.getAddress(), BRANDON.getAddress()));
-        EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter, indexedParameter), null);
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        eventFilterOptions.setFilterOptions(Arrays.asList(indexedParameter));
 
         Disposable disposable = contract.once("Transfer", eventFilterOptions, event -> {
             log[0] = event;
@@ -1220,10 +1225,11 @@ public class ContractTest {
         List options = new ArrayList();
         options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
 
-        final LogNotification[] log = {null};
+        final LogsNotification[] log = {null};
 
         EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("to", Arrays.asList(WAYNE.getAddress(), BRANDON.getAddress()));
-        EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter, indexedParameter), null);
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        eventFilterOptions.setFilterOptions(Arrays.asList(indexedParameter));
 
         Disposable disposable = contract.once("Transfer", eventFilterOptions, event -> {
             log[0] = event;
@@ -1263,10 +1269,11 @@ public class ContractTest {
         List options = new ArrayList();
         options.add(Arrays.asList(new Address(BRANDON.getAddress()), new Address(LUMAN.getAddress())));
 
-        final LogNotification[] log = {null};
+        final LogsNotification[] log = {null};
 
         EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("to", Arrays.asList(WAYNE.getAddress(), BRANDON.getAddress()));
-        EventFilterOptions eventFilterOptions = new EventFilterOptions(Arrays.asList(indexedParameter, indexedParameter), null);
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        eventFilterOptions.setFilterOptions(Arrays.asList(indexedParameter));
 
         Disposable disposable = contract.once("allEvents", eventFilterOptions, event -> {
             log[0] = event;
@@ -1375,5 +1382,49 @@ public class ContractTest {
         decoded = contract.decodeFunctionCall(encodedString);
 
         assertEquals(0, decoded.size());
+    }
+
+    @Test
+    public void onceWithTopic() throws Exception {
+        WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
+        Caver caver = new Caver(webSocketService);
+        webSocketService.connect();
+
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3"));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey("0x734aa75ef35fd4420eea2965900e90040b8b9f9f7484219b1a06d06394330f4e"));
+
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
+
+        final LogsNotification[] log = {null};
+
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        eventFilterOptions.setTopics(Arrays.asList(
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", // Transfer
+                "0x0000000000000000000000002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a" // from : 0x2c8ad0ea2e0781db8b8c9242e07de3a5beabb71a
+                )
+        );
+
+        Disposable disposable = contract.once("Transfer", eventFilterOptions, event -> {
+            log[0] = event;
+        });
+
+        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
+        List<Object> sendParams = Arrays.asList(
+                BRANDON.getAddress(),
+                amount
+        );
+
+        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
+        TransactionReceipt.TransactionReceiptData receiptData = contract.getMethod("transfer").send(sendParams, sendOptions);
+
+        while(!disposable.isDisposed());
+
+        assertEquals(3, log[0].getParams().getResult().getTopics().size());
+        assertEquals("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", log[0].getParams().getResult().getTopics().get(0));
+        assertEquals("0x0000000000000000000000002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a", log[0].getParams().getResult().getTopics().get(1));
+        assertEquals("0x000000000000000000000000e97f27e9a5765ce36a7b919b1cb6004c7209217e", log[0].getParams().getResult().getTopics().get(2));
+
+        webSocketService.close();
+
     }
 }

@@ -190,7 +190,7 @@ public class Utils {
         if(AccountKeyPublicUtils.isUncompressedPublicKey(publicKey)) {
             String noPrefixKey = stripHexPrefix(publicKey);
 
-            if(noPrefixKey.startsWith("04")) {
+            if(noPrefixKey.startsWith("04") && noPrefixKey.length() == 130) {
                 noPrefixKey = noPrefixKey.substring(2);
             }
 

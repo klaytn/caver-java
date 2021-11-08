@@ -276,6 +276,14 @@ public class UtilsTest {
 
             caver.utils.compressPublicKey("0x0977e05dd93cdd6362f8648447f33d5676cbc5f42f4c4946ae1ad62bd4c0c4f3570b1a104b67d1cd169bbf61dd557f15ab5ee8b661326096954caddadf34ae6ac8");
         }
+
+        @Test
+        public void compressedPublicKeyStartWith04Data() {
+            String key = "0x0497da4e69be4ff078c35c81b9007222f0e6382cf3eb15bd10ee39bf37a4948edffe50a29c49e90aa9b1e7e1b11c9b220fa1ab1bf3a3da27566d1fd13646fc62";
+            String compressed = caver.utils.compressPublicKey(key);
+
+            assertEquals(key, caver.utils.decompressPublicKey(compressed));
+        }
     }
 
     public static class hashMessageTest {

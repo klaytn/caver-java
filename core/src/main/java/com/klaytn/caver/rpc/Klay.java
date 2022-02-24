@@ -407,6 +407,72 @@ public class Klay {
     }
 
     /**
+     * Returns a block header by block hash.
+     * @param blockHash The hash of block.
+     * @return BlockHeader
+     */
+    public Request<?, BlockHeader> getHeaderByHash(String blockHash) {
+        return new Request<>(
+                "klay_getHeaderByHash",
+                Arrays.asList(blockHash),
+                web3jService,
+                BlockHeader.class);
+    }
+
+    /**
+     * Returns a block header by block number.
+     * @param blockNumber The block number.
+     * @return BlockHeader
+     */
+    public Request<?, BlockHeader> getHeaderByNumber(long blockNumber) {
+        return new Request<>(
+                "klay_getHeaderByNumber",
+                Arrays.asList(blockNumber),
+                web3jService,
+                BlockHeader.class);
+    }
+
+    /**
+     * Returns a block header by block number.
+     * @param defaultBlockParameter The string "latest", "earliest", or "pending".
+     * @return BlockHeader
+     */
+    public Request<?, BlockHeader> getHeaderByNumber(DefaultBlockParameter defaultBlockParameter) {
+        return new Request<>(
+                "klay_getHeaderByNumber",
+                Arrays.asList(defaultBlockParameter),
+                web3jService,
+                BlockHeader.class);
+    }
+
+    /**
+     * Returns a block header by block hash.
+     * @param blockHash The hash of block.
+     * @return BlockHeader
+     */
+    public Request<?, BlockHeader> getHeader(String blockHash) {
+        return getHeaderByHash(blockHash);
+    }
+
+    /**
+     * Returns a block header by block number.
+     * @param blockNumber The block number.
+     * @return BlockHeader
+     */
+    public Request<?, BlockHeader> getHeader(long blockNumber) {
+        return getHeaderByNumber(blockNumber);
+    }
+
+    /**
+     * Returns a block header by block number.
+     * @param blockTag The string "latest", "earliest", or "pending".
+     * @return BlockHeader
+     */
+    public Request<?, BlockHeader> getHeader(DefaultBlockParameter blockTag) {
+        return getHeaderByNumber(blockTag);
+    }
+
+    /**
      * Returns information about a block by block number.<p>
      * It set "isFullTransaction" param to false.
      * @param blockNumber The block number.

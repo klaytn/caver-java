@@ -46,10 +46,7 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.Web3jService;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.DefaultBlockParameterNumber;
-import org.web3j.protocol.core.Request;
-import org.web3j.protocol.core.Response;
+import org.web3j.protocol.core.*;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
 
@@ -586,6 +583,58 @@ public class RpcTest extends Accounts {
                 Quantity response = caver.rpc.klay.getBlockNumber().send();
                 BigInteger result = response.getValue();
                 assertNotNull(result);
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void getHeaderTest() {
+            try {
+                BlockHeader response = caver.rpc.klay.getHeader(DefaultBlockParameterName.LATEST).send();
+                BlockHeader.BlockHeaderData blockHeader = response.getResult();
+                String hash = blockHeader.getHash();
+                assertNotNull(hash);
+
+                response = caver.rpc.klay.getHeader(0).send();
+                blockHeader = response.getResult();
+                assertNotNull(blockHeader.getHash());
+
+                response = caver.rpc.klay.getHeader(hash).send();
+                blockHeader = response.getResult();
+                assertNotNull(blockHeader.getHash());
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void getHeaderByNumberTest() {
+            try {
+                BlockHeader response = caver.rpc.klay.getHeaderByNumber(DefaultBlockParameterName.LATEST).send();
+                BlockHeader.BlockHeaderData blockHeader = response.getResult();
+                assertNotNull(blockHeader.getHash());
+
+                response = caver.rpc.klay.getHeaderByNumber(0).send();
+                blockHeader = response.getResult();
+                assertNotNull(blockHeader.getHash());
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void getHeaderByHashTest() {
+            try {
+                BlockHeader response = caver.rpc.klay.getHeaderByNumber(DefaultBlockParameterName.LATEST).send();
+                BlockHeader.BlockHeaderData blockHeader = response.getResult();
+
+                BlockHeader responseByHash = caver.rpc.klay.getHeaderByHash(blockHeader.getHash()).send();
+
+                assertEquals(blockHeader.getHash(), responseByHash.getResult().getHash());
             } catch (Exception e) {
                 e.printStackTrace();
                 fail();

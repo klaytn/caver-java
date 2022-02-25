@@ -30,54 +30,55 @@ import java.io.IOException;
 public class BlockHeader extends Response<BlockHeader.BlockHeaderData> {
 
     @Override
-    @JsonDeserialize(using = BlockHeader.ResponseDeserializer.class)
-    public void setResult(BlockHeaderData result) { super.setResult(result); }
+    public void setResult(BlockHeaderData result) {
+        super.setResult(result);
+    }
 
     public static class BlockHeaderData<T> {
         /**
          * The block number. null when its pending block
          */
-        private String number; // exist
+        private String number;
 
         /**
          * Hash of the block. null when its pending block
          */
-        private String hash; // exist
+        private String hash;
 
         /**
          * Hash of the parent block
          */
-        private String parentHash; // exist
+        private String parentHash;
 
         /**
          * The bloom filter for the logs of the block. null when its pending block
          */
-        private String logsBloom; // exist
+        private String logsBloom;
 
         /**
          * The root of the transaction trie of the block
          */
-        private String transactionsRoot; // exist
+        private String transactionsRoot;
 
         /**
          * The root of the final state trie of the block
          */
-        private String stateRoot; // exist
+        private String stateRoot;
 
         /**
          * The root of the receipts trie of the block
          */
-        private String receiptsRoot; // exist
+        private String receiptsRoot;
 
         /**
          * The address of the beneficiary to whom the block rewards were given.
          */
-        private String reward; // exist
+        private String reward;
 
         /**
          * Former difficulty. Always 1 in the BFT consensus engine
          */
-        private String blockScore; // exist
+        private String blockScore;
 
         /**
          * The "extra data" field of this block
@@ -242,24 +243,12 @@ public class BlockHeader extends Response<BlockHeader.BlockHeaderData> {
             this.blockScore = blockScore;
         }
 
-        public String getBaseFeePerGas() { return baseFeePerGas; }
+        public String getBaseFeePerGas() {
+            return baseFeePerGas;
+        }
 
-        public void setBaseFeePerGas(String baseFeePerGas) { this.baseFeePerGas = baseFeePerGas; }
-    }
-
-    public static class ResponseDeserializer extends JsonDeserializer<BlockHeader.BlockHeaderData> {
-
-        private ObjectReader objectReader = ObjectMapperFactory.getObjectReader();
-
-        @Override
-        public BlockHeader.BlockHeaderData deserialize(
-                JsonParser jsonParser,
-                DeserializationContext deserializationContext) throws IOException {
-            if (jsonParser.getCurrentToken() != JsonToken.VALUE_NULL) {
-                return objectReader.readValue(jsonParser, BlockHeader.BlockHeaderData.class);
-            } else {
-                return null;  // null is wrapped by Optional in above getter
-            }
+        public void setBaseFeePerGas(String baseFeePerGas) {
+            this.baseFeePerGas = baseFeePerGas;
         }
     }
 }

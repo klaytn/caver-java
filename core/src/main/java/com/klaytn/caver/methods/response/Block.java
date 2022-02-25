@@ -151,17 +151,16 @@ public class Block extends Response<Block.BlockData> {
             this.receiptsRoot = receiptsRoot;
             this.reward = reward;
             this.blockScore = blockScore;
+            this.totalBlockScore = totalBlockScore;
             this.extraData = extraData;
+            this.size = size;
             this.gasUsed = gasUsed;
             this.timestamp = timestamp;
             this.timestampFoS = timestampFoS;
-            this.governanceData = governanceData;
-            this.baseFeePerGas = baseFeePerGas;
-            // Below is non-existed in header
-            this.totalBlockScore = totalBlockScore;
-            this.size = size;
             this.transactions = transactions;
+            this.governanceData = governanceData;
             this.voteData = voteData;
+            this.baseFeePerGas = baseFeePerGas;
         }
 
         public String getNumber() {
@@ -310,9 +309,13 @@ public class Block extends Response<Block.BlockData> {
             this.totalBlockScore = totalBlockScore;
         }
 
-        public String getBaseFeePerGas() { return baseFeePerGas; }
+        public String getBaseFeePerGas() {
+            return baseFeePerGas;
+        }
 
-        public void setBaseFeePerGas(String baseFeePerGas) { this.baseFeePerGas = baseFeePerGas; }
+        public void setBaseFeePerGas(String baseFeePerGas) {
+            this.baseFeePerGas = baseFeePerGas;
+        }
     }
 
     public static class ResponseDeserializer extends JsonDeserializer<Block.BlockData> {

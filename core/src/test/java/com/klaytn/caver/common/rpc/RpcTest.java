@@ -29,6 +29,7 @@ import com.klaytn.caver.methods.response.*;
 import com.klaytn.caver.methods.response.Account;
 import com.klaytn.caver.methods.response.Boolean;
 import com.klaytn.caver.rpc.Klay;
+import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.transaction.type.FeeDelegatedValueTransfer;
@@ -53,9 +54,11 @@ import org.web3j.utils.Numeric;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static com.klaytn.caver.base.LocalValues.LOCAL_NETWORK_ID;
@@ -886,6 +889,78 @@ public class RpcTest extends Accounts {
             Quantity response = caver.rpc.klay.getGasPriceAt().send();
             BigInteger result = response.getValue();
             assertEquals(new BigInteger("5d21dba00", 16), result); // 25,000,000,000 peb = 25 Gpeb
+        }
+
+        // checkFeeHistoryResult checks response from getFeeHistory is ok or not.
+        private void checkFeeHistoryResult(FeeHistory feeHistory, long blockCount, List<Float> rewardPercentiles) {
+            FeeHistory.FeeHistoryData feeHistoryData = feeHistory.getResult();
+            assertEquals(blockCount + 1, feeHistoryData.getBaseFeePerGas().size());
+
+            List<List<String>> reward = feeHistoryData.getReward();
+            if (reward != null) {
+                assertEquals(blockCount, reward.size());
+                Consumer<List<String>> consumer = rewardElement -> {
+                    int expectedSize = 0 ;
+                    if (rewardPercentiles != null) {
+                        expectedSize = rewardPercentiles.size();
+                    }
+                    assertEquals(expectedSize, rewardElement.size());
+                };
+                reward.forEach(consumer);
+            }
+
+            assertEquals(blockCount, feeHistoryData.getGasUsedRatio().size());
+        }
+
+        @Test
+        public void getFeeHistoryTest() throws IOException, InterruptedException {
+            SingleKeyring sender = caver.wallet.keyring.createFromKlaytnWalletKey(LUMAN.getKlaytnWalletKey());
+            caver.wallet.add(sender);
+            Quantity transactionCount = caver.rpc.klay.getTransactionCount(sender.getAddress()).send();
+            BigInteger nonce = transactionCount.getValue();
+            String gasPrice = klay.getGasPrice().send().getResult();
+
+            String chainId = klay.getChainID().send().getResult();
+            final int txsCount = 30;
+            TransactionReceipt.TransactionReceiptData receiptData = null;
+            for (int i = 0; i < txsCount; i++) {
+                ValueTransfer tx = caver.transaction.valueTransfer.create(
+                        TxPropertyBuilder.valueTransfer()
+                                .setFrom(sender.getAddress())
+                                .setTo(caver.wallet.keyring.generate().getAddress())
+                                .setGas("0x99999")
+                                .setGasPrice(gasPrice)
+                                .setValue("0x1")
+                                .setNonce(nonce)
+                                .setChainId(chainId)
+                );
+                caver.wallet.sign(sender.getAddress(), tx);
+                nonce = nonce.add(BigInteger.valueOf(1));
+
+                if (i != txsCount - 1) {
+                   caver.rpc.klay.sendRawTransaction(tx).send();
+                   continue;
+                }
+                Bytes32 sendResult = caver.rpc.klay.sendRawTransaction(tx).send();
+                Thread.sleep(5000);
+                String txHash = sendResult.getResult();
+                TransactionReceipt receipt = caver.rpc.klay.getTransactionReceipt(txHash).send();
+                receiptData = receipt.getResult();
+            }
+            if (receiptData == null) {
+                fail();
+            }
+
+            long blockCount = 5;
+            long blockNumber = new BigInteger(caver.utils.stripHexPrefix(receiptData.getBlockNumber()), 16).longValue();
+            List<Float> rewardPercentiles = new ArrayList<Float>(Arrays.asList(0.3f, 0.5f, 0.8f));
+            FeeHistory feeHistory = caver.rpc.klay.getFeeHistory(blockCount, blockNumber, rewardPercentiles).send();
+            checkFeeHistoryResult(feeHistory, blockCount, rewardPercentiles);
+
+            blockCount = 5;
+            rewardPercentiles = null;
+            feeHistory = caver.rpc.klay.getFeeHistory(blockCount, DefaultBlockParameterName.LATEST, rewardPercentiles).send();
+            checkFeeHistoryResult(feeHistory, blockCount, rewardPercentiles);
         }
 
         @Test

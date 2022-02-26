@@ -36,6 +36,7 @@ import org.web3j.protocol.core.Request;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class Klay {
 
@@ -1385,6 +1386,52 @@ public class Klay {
                 Arrays.asList(data),
                 web3jService,
                 Bytes.class);
+    }
+
+    /**
+     * Returns fee history for the returned block range. This can be a subsection of the requested range if not all blocks are available.
+     * <pre>Example :
+     * {@code
+     *  long blockCount = 5;
+     *  // Use block number from Transaction Receipt data.
+     *  long lastBlock = new BigInteger(caver.utils.stripHexPrefix(receiptData.getBlockNumber()), 16).longValue();
+     *  List<Float> rewardPercentiles = new ArrayList<Float>(Arrays.asList(0.3f, 0.5f, 0.8f));
+     *  FeeHistory feeHistory = caver.rpc.klay.getFeeHistory(blockCount, lastBlock, rewardPercentiles).send();
+     * }
+     * </pre>
+     * @param blockCount Number of blocks in the requested range. Between 1 and 1024 blocks can be requested in a single query. Less than requested may be returned if not all blocks are available.
+     * @param lastBlock Highest number block (or block tag string) of the requested range.
+     * @param rewardPercentiles A monotonically increasing list of percentile values to sample from each block’s effective priority fees per gas in ascending order, weighted by gas used. (Example: `['0', '25', '50', '75', '100']` or `['0', '0.5', '1', '1.5', '3', '80']`)
+     * @return
+     */
+    public Request<?, FeeHistory> getFeeHistory(long blockCount, long lastBlock, List<Float> rewardPercentiles) {
+        return new Request<>(
+                "klay_feeHistory",
+                Arrays.asList(blockCount, lastBlock, rewardPercentiles),
+                web3jService,
+                FeeHistory.class);
+    }
+
+    /**
+     * Returns fee history for the returned block range. This can be a subsection of the requested range if not all blocks are available.
+     * <pre>Example :
+     * {@code
+     *  long blockCount = 5;
+     *  List<Float> rewardPercentiles = new ArrayList<Float>(Arrays.asList(0.3f, 0.5f, 0.8f));
+     *  FeeHistory feeHistory = caver.rpc.klay.getFeeHistory(blockCount, DefaultBlockParameterName.LATEST, rewardPercentiles).send();
+     * }
+     * </pre>
+     * @param blockCount Number of blocks in the requested range. Between 1 and 1024 blocks can be requested in a single query. Less than requested may be returned if not all blocks are available.
+     * @param lastBlock Highest number block (or block tag string) of the requested range.
+     * @param rewardPercentiles A monotonically increasing list of percentile values to sample from each block’s effective priority fees per gas in ascending order, weighted by gas used. (Example: `['0', '25', '50', '75', '100']` or `['0', '0.5', '1', '1.5', '3', '80']`)
+     * @return
+     */
+    public Request<?, FeeHistory> getFeeHistory(long blockCount, DefaultBlockParameter lastBlock, List<Float> rewardPercentiles) {
+        return new Request<>(
+                "klay_feeHistory",
+                Arrays.asList(blockCount, lastBlock, rewardPercentiles),
+                web3jService,
+                FeeHistory.class);
     }
 
     /**

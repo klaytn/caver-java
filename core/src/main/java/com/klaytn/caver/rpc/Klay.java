@@ -409,6 +409,13 @@ public class Klay {
 
     /**
      * Returns a block header by block hash.
+     * <pre>Example :
+     * {@code
+     *  String blockHash = "0x5f06bed1f3f11d4f2b0760cfdf95ce6b2e6431ca46e2b778f2b958d4e5b9aa43";
+     *  BlockHeader response = caver.rpc.klay.getHeaderByHash(blockHash);
+     *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
+     * }
+     * </pre>
      * @param blockHash The hash of block.
      * @return BlockHeader
      */
@@ -422,6 +429,12 @@ public class Klay {
 
     /**
      * Returns a block header by block number.
+     * <pre>Example :
+     * {@code
+     *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(5);
+     *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
+     * }
+     * </pre>
      * @param blockNumber The block number.
      * @return BlockHeader
      */
@@ -435,6 +448,12 @@ public class Klay {
 
     /**
      * Returns a block header by block number.
+     * <pre>Example :
+     * {@code
+     *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(DefaultBlockParameterName.LATEST);
+     *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
+     * }
+     * </pre>
      * @param defaultBlockParameter The string "latest", "earliest", or "pending".
      * @return BlockHeader
      */
@@ -448,6 +467,13 @@ public class Klay {
 
     /**
      * Returns a block header by block hash.
+     * <pre>Example :
+     * {@code
+     *  String blockHash = "0x5f06bed1f3f11d4f2b0760cfdf95ce6b2e6431ca46e2b778f2b958d4e5b9aa43";
+     *  BlockHeader response = caver.rpc.klay.getHeader(blockHash);
+     *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
+     * }
+     * </pre>
      * @param blockHash The hash of block.
      * @return BlockHeader
      */
@@ -457,6 +483,12 @@ public class Klay {
 
     /**
      * Returns a block header by block number.
+     * <pre>Example :
+     * {@code
+     *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(5);
+     *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
+     * }
+     * </pre>
      * @param blockNumber The block number.
      * @return BlockHeader
      */
@@ -466,6 +498,12 @@ public class Klay {
 
     /**
      * Returns a block header by block number.
+     * <pre>Example :
+     * {@code
+     *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(DefaultBlockParameterName.LATEST);
+     *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
+     * }
+     * </pre>
      * @param blockTag The string "latest", "earliest", or "pending".
      * @return BlockHeader
      */

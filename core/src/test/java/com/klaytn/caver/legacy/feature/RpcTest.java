@@ -337,7 +337,7 @@ public class RpcTest {
         );
         Quantity response = caver.klay().estimateGas(callObject).send();
         String result = response.getResult();
-        assertEquals("0x5318", result);
+        assertEquals("0x5398", result);
     }
 
     @Test

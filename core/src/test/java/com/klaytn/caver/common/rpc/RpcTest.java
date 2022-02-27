@@ -891,6 +891,13 @@ public class RpcTest extends Accounts {
             assertEquals(new BigInteger("5d21dba00", 16), result); // 25,000,000,000 peb = 25 Gpeb
         }
 
+        @Test
+        public void getMaxPriorityFeePerGasTest() throws Exception {
+            Quantity response = caver.rpc.klay.getMaxPriorityFeePerGas().send();
+            BigInteger result = response.getValue();
+            assertEquals(new BigInteger("5d21dba00", 16), result); // 25,000,000,000 peb = 25 Gpeb
+        }
+
         // checkFeeHistoryResult checks response from getFeeHistory is ok or not.
         private void checkFeeHistoryResult(FeeHistory feeHistory, long blockCount, List<Float> rewardPercentiles) {
             FeeHistory.FeeHistoryData feeHistoryData = feeHistory.getResult();

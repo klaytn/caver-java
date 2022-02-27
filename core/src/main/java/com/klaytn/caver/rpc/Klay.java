@@ -1243,6 +1243,19 @@ public class Klay {
     }
 
     /**
+     * Returns a suggestion for a gas tip cap for dynamic fee transactions in peb.<p>
+     * Note: Since Klaytn has a fixed gas price, this `caver.rpc.klay.getMaxPriorityFeePerGas` returns the gas price set by Klaytn.
+     * @return Quantity
+     */
+    public Request<?, Quantity> getMaxPriorityFeePerGas() {
+        return new Request<>(
+                "klay_maxPriorityFeePerGas",
+                Collections.<String>emptyList(),
+                web3jService,
+                Quantity.class);
+    }
+
+    /**
      * Returns the unit price of the given block in peb.<p>
      * NOTE: This API has different behavior from Ethereum's and returns a gas price of Klaytn instead of suggesting a gas price as in Ethereum.
      * @param blockNumber The block number.

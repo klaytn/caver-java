@@ -971,6 +971,37 @@ public class RpcTest extends Accounts {
         }
 
         @Test
+        public void createAccessListTest() throws IOException {
+            Block block = caver.rpc.klay.getBlockByNumber(DefaultBlockParameterName.LATEST).send();
+            Quantity gasPrice = caver.rpc.klay.getGasPrice().send();
+            long blockNumber = new BigInteger(caver.utils.stripHexPrefix(block.getResult().getNumber()), 16).longValue();
+            String blockHash = block.getResult().getHash();
+            CallObject callObject = CallObject.createCallObject(
+                    LUMAN.getAddress(),
+                    WAYNE.getAddress(),
+                    BigInteger.valueOf(100000),
+                    gasPrice.getValue(),
+                    BigInteger.valueOf(1)
+            );
+            AccessListResult accessListResult = caver.rpc.klay.createAccessList(callObject, DefaultBlockParameterName.LATEST).send();
+            checkAccessListResult(accessListResult.getResult());
+
+            accessListResult = caver.rpc.klay.createAccessList(callObject, blockNumber).send();
+            checkAccessListResult(accessListResult.getResult());
+
+            accessListResult = caver.rpc.klay.createAccessList(callObject, blockHash).send();
+            checkAccessListResult(accessListResult.getResult());
+        }
+
+        // checkAccessListResult checks whether given AcccessListResultData instance is right or not.
+        private void checkAccessListResult(AccessListResult.AccessListResultData accessListResultData) {
+
+            assertEquals(0, accessListResultData.getAccessList().size()); // For now Klaytn will return empty access list.
+            assertEquals("0x0", accessListResultData.getGasUsed()); // For now Klaytn will return zero gasUsed.
+            assertEquals(null, accessListResultData.getError());
+        }
+
+        @Test
         public void isParallelDbWriteTest() throws Exception {
             Boolean response = caver.rpc.klay.isParallelDBWrite().send();
             java.lang.Boolean result = response.getResult();

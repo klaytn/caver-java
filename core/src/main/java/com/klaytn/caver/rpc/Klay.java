@@ -1245,6 +1245,14 @@ public class Klay {
     /**
      * Returns a suggestion for a gas tip cap for dynamic fee transactions in peb.<p>
      * Note: Since Klaytn has a fixed gas price, this `caver.rpc.klay.getMaxPriorityFeePerGas` returns the gas price set by Klaytn.
+     * <pre>
+     * {@code
+     *
+     * Quantity response = caver.rpc.klay.getMaxPriorityFeePerGas().send();
+     * BigInteger result = response.getValue();
+     *
+     * }
+     * </pre>
      * @return Quantity
      */
     public Request<?, Quantity> getMaxPriorityFeePerGas() {
@@ -1440,14 +1448,87 @@ public class Klay {
     }
 
     /**
+     * Returns a list of addresses and storage keys used by the transaction, plus the gas consumed when the access list is added.
+     * <pre>
+     * {@code
+     *
+     * AccessListResult accessListResult = caver.rpc.klay.createAccessList(callObject, DefaultBlockParameterName.LATEST).send();
+     *
+     * }
+     * </pre>
+     * @param callObject The transaction call object.
+     * @param defaultBlockParameter A block number, or the block tag string `latest` or `earliest`. If omitted, `latest` will be used.
+     * @return AccessListResult
+     */
+    public Request<?,AccessListResult> createAccessList(CallObject callObject, DefaultBlockParameter defaultBlockParameter) {
+        if (defaultBlockParameter == null) {
+            defaultBlockParameter = DefaultBlockParameterName.LATEST;
+        }
+        return new Request<>(
+                "klay_createAccessList",
+                Arrays.asList(callObject, defaultBlockParameter),
+                web3jService,
+                AccessListResult.class
+        );
+    }
+
+    /**
+     * Returns a list of addresses and storage keys used by the transaction, plus the gas consumed when the access list is added.
+     * <pre>
+     * {@code
+     *
+     * String blockHash = "0x421440aef6024e2da883eadf663b9b485fe1c14f02883541fa4e6c16f7be8c74";
+     * AccessListResult accessListResult = caver.rpc.klay.createAccessList(callObject, blockHash).send();
+     *
+     * }
+     * </pre>
+     * @param callObject The transaction call object.
+     * @param blockHash The block hash.
+     * @return AccessListResult
+     */
+    public Request<?, AccessListResult> createAccessList(CallObject callObject, String blockHash) {
+        return new Request<>(
+                "klay_createAccessList",
+                Arrays.asList(callObject, blockHash),
+                web3jService,
+                AccessListResult.class
+        );
+    }
+
+    /**
+     * Returns a list of addresses and storage keys used by the transaction, plus the gas consumed when the access list is added.
+     * <pre>
+     * {@code
+     *
+     * long blockNumber = 5;
+     * AccessListResult accessListResult = caver.rpc.klay.createAccessList(callObject, blockNumber).send();
+     *
+     * }
+     * </pre>
+     * @param callObject The transaction call object.
+     * @param blockNumber The block number.
+     * @return AccessListResult
+     */
+    public Request<?, AccessListResult> createAccessList(CallObject callObject, long blockNumber) {
+        return new Request<>(
+                "klay_createAccessList",
+                Arrays.asList(callObject, blockNumber),
+                web3jService,
+                AccessListResult.class
+        );
+    }
+
+    /**
      * Returns fee history for the returned block range. This can be a subsection of the requested range if not all blocks are available.
      * <pre>Example :
      * {@code
-     *  long blockCount = 5;
-     *  // Use block number from Transaction Receipt data.
-     *  long lastBlock = new BigInteger(caver.utils.stripHexPrefix(receiptData.getBlockNumber()), 16).longValue();
-     *  List<Float> rewardPercentiles = new ArrayList<Float>(Arrays.asList(0.3f, 0.5f, 0.8f));
-     *  FeeHistory feeHistory = caver.rpc.klay.getFeeHistory(blockCount, lastBlock, rewardPercentiles).send();
+     *
+     * long blockCount = 5;
+     * // Use block number from Transaction Receipt data.
+     * long lastBlock = new BigInteger(caver.utils.stripHexPrefix(receiptData.getBlockNumber()), 16).longValue();
+     * List<Float> rewardPercentiles = new ArrayList<Float>(Arrays.asList(0.3f, 0.5f, 0.8f));
+     * FeeHistory feeHistory = caver.rpc.klay.getFeeHistory(blockCount, lastBlock, rewardPercentiles).send();
+     *
      * }
      * </pre>
      * @param blockCount Number of blocks in the requested range. Between 1 and 1024 blocks can be requested in a single query. Less than requested may be returned if not all blocks are available.
@@ -1467,9 +1548,11 @@ public class Klay {
      * Returns fee history for the returned block range. This can be a subsection of the requested range if not all blocks are available.
      * <pre>Example :
      * {@code
-     *  long blockCount = 5;
-     *  List<Float> rewardPercentiles = new ArrayList<Float>(Arrays.asList(0.3f, 0.5f, 0.8f));
-     *  FeeHistory feeHistory = caver.rpc.klay.getFeeHistory(blockCount, DefaultBlockParameterName.LATEST, rewardPercentiles).send();
+     *
+     * long blockCount = 5;
+     * List<Float> rewardPercentiles = new ArrayList<Float>(Arrays.asList(0.3f, 0.5f, 0.8f));
+     * FeeHistory feeHistory = caver.rpc.klay.getFeeHistory(blockCount, DefaultBlockParameterName.LATEST, rewardPercentiles).send();
+     *
      * }
      * </pre>
      * @param blockCount Number of blocks in the requested range. Between 1 and 1024 blocks can be requested in a single query. Less than requested may be returned if not all blocks are available.

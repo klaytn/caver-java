@@ -110,10 +110,15 @@ public class BlockHeader extends Response<BlockHeader.BlockHeaderData> {
          */
         private String baseFeePerGas;
 
+        /**
+         * RLP encoded governance vote of the proposer
+         */
+        private String voteData;
+
         public BlockHeaderData() {
         }
 
-        public BlockHeaderData(String number, String hash, String parentHash, String logsBloom, String transactionsRoot, String stateRoot, String receiptsRoot, String reward, String blockScore, String extraData, String gasUsed, String timestamp, String timestampFoS, String governanceData, String baseFeePerGas) {
+        public BlockHeaderData(String number, String hash, String parentHash, String logsBloom, String transactionsRoot, String stateRoot, String receiptsRoot, String reward, String blockScore, String extraData, String gasUsed, String timestamp, String timestampFoS, String governanceData, String baseFeePerGas, String voteData) {
             this.number = number;
             this.hash = hash;
             this.parentHash = parentHash;
@@ -129,6 +134,7 @@ public class BlockHeader extends Response<BlockHeader.BlockHeaderData> {
             this.timestampFoS = timestampFoS;
             this.governanceData = governanceData;
             this.baseFeePerGas = baseFeePerGas;
+            this.voteData = voteData;
         }
 
         public String getNumber() {
@@ -249,6 +255,14 @@ public class BlockHeader extends Response<BlockHeader.BlockHeaderData> {
 
         public void setBaseFeePerGas(String baseFeePerGas) {
             this.baseFeePerGas = baseFeePerGas;
+        }
+
+        public String getVoteData() {
+            return voteData;
+        }
+
+        public void setVoteData(String voteData) {
+            this.voteData = voteData;
         }
     }
 }

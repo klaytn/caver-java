@@ -800,7 +800,7 @@ public class RpcTest extends Accounts {
             );
             Quantity response = caver.rpc.klay.estimateGas(callObject).send();
             String result = response.getResult();
-            assertEquals("0xb2d9", result);
+            assertEquals("0xcb09", result);
         }
 
         @Test
@@ -817,7 +817,7 @@ public class RpcTest extends Accounts {
             );
             Quantity response = caver.rpc.klay.estimateComputationCost(callObject, DefaultBlockParameterName.LATEST).send();
             String result = response.getResult();
-            assertEquals("0xe036", result);
+            assertEquals("0xd949", result);
         }
 
         @Test

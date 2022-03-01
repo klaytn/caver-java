@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.account.AccountKeyRoleBased;
+import com.klaytn.caver.transaction.type.EthereumAccessList;
 import com.klaytn.caver.transaction.type.LegacyTransaction;
 import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.utils.Utils;
@@ -647,8 +648,8 @@ abstract public class AbstractTransaction {
     }
 
     public void setFrom(String from) {
-        //"From" field in LegacyTransaction allows null
-        if(this instanceof LegacyTransaction) {
+        //"From" field in LegacyTransaction or EthereumAccessList allows null
+        if(this instanceof LegacyTransaction || this instanceof EthereumAccessList) {
             if(from == null || from.isEmpty() || from.equals("0x") || from.equals(Utils.DEFAULT_ZERO_ADDRESS)) from = Utils.DEFAULT_ZERO_ADDRESS;
         } else {
             if(from == null) {

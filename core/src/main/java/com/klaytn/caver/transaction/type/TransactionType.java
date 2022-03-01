@@ -45,7 +45,9 @@ public enum TransactionType {
 
     TxTypeChainDataAnchoring(0x48),
     TxTypeFeeDelegatedChainDataAnchoring(0x49),
-    TxTypeFeeDelegatedChainDataAnchoringWithRatio(0x4a);
+    TxTypeFeeDelegatedChainDataAnchoringWithRatio(0x4a),
+
+    TxTypeEthereumAccessList(0x7801);
 
     int type;
     

@@ -20,14 +20,14 @@ import org.web3j.protocol.core.Response;
 
 import java.util.List;
 
-public class FeeHistory extends Response<FeeHistory.FeeHistoryData> {
+public class FeeHistoryResult extends Response<FeeHistoryResult.FeeHistoryResultData> {
 
     @Override
-    public void setResult(FeeHistory.FeeHistoryData result) {
+    public void setResult(FeeHistoryResultData result) {
         super.setResult(result);
     }
 
-    public static class FeeHistoryData<T> {
+    public static class FeeHistoryResultData<T> {
         /**
          * Lowest number block of returned range.
          */

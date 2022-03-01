@@ -1536,12 +1536,12 @@ public class Klay {
      * @param rewardPercentiles A monotonically increasing list of percentile values to sample from each block’s effective priority fees per gas in ascending order, weighted by gas used. (Example: `['0', '25', '50', '75', '100']` or `['0', '0.5', '1', '1.5', '3', '80']`)
      * @return
      */
-    public Request<?, FeeHistory> getFeeHistory(long blockCount, long lastBlock, List<Float> rewardPercentiles) {
+    public Request<?, FeeHistoryResult> getFeeHistory(long blockCount, long lastBlock, List<Float> rewardPercentiles) {
         return new Request<>(
                 "klay_feeHistory",
                 Arrays.asList(blockCount, lastBlock, rewardPercentiles),
                 web3jService,
-                FeeHistory.class);
+                FeeHistoryResult.class);
     }
 
     /**
@@ -1560,12 +1560,12 @@ public class Klay {
      * @param rewardPercentiles A monotonically increasing list of percentile values to sample from each block’s effective priority fees per gas in ascending order, weighted by gas used. (Example: `['0', '25', '50', '75', '100']` or `['0', '0.5', '1', '1.5', '3', '80']`)
      * @return
      */
-    public Request<?, FeeHistory> getFeeHistory(long blockCount, DefaultBlockParameter lastBlock, List<Float> rewardPercentiles) {
+    public Request<?, FeeHistoryResult> getFeeHistory(long blockCount, DefaultBlockParameter lastBlock, List<Float> rewardPercentiles) {
         return new Request<>(
                 "klay_feeHistory",
                 Arrays.asList(blockCount, lastBlock, rewardPercentiles),
                 web3jService,
-                FeeHistory.class);
+                FeeHistoryResult.class);
     }
 
     /**

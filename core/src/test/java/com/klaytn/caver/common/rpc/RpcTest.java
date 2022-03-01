@@ -899,11 +899,11 @@ public class RpcTest extends Accounts {
         }
 
         // checkFeeHistoryResult checks response from getFeeHistory is ok or not.
-        private void checkFeeHistoryResult(FeeHistory feeHistory, long blockCount, List<Float> rewardPercentiles) {
-            FeeHistory.FeeHistoryData feeHistoryData = feeHistory.getResult();
-            assertEquals(blockCount + 1, feeHistoryData.getBaseFeePerGas().size());
+        private void checkFeeHistoryResult(FeeHistoryResult feeHistoryResult, long blockCount, List<Float> rewardPercentiles) {
+            FeeHistoryResult.FeeHistoryResultData feeHistoryResultData = feeHistoryResult.getResult();
+            assertEquals(blockCount + 1, feeHistoryResultData.getBaseFeePerGas().size());
 
-            List<List<String>> reward = feeHistoryData.getReward();
+            List<List<String>> reward = feeHistoryResultData.getReward();
             if (reward != null) {
                 assertEquals(blockCount, reward.size());
                 Consumer<List<String>> consumer = rewardElement -> {
@@ -916,7 +916,7 @@ public class RpcTest extends Accounts {
                 reward.forEach(consumer);
             }
 
-            assertEquals(blockCount, feeHistoryData.getGasUsedRatio().size());
+            assertEquals(blockCount, feeHistoryResultData.getGasUsedRatio().size());
         }
 
         @Test
@@ -961,13 +961,13 @@ public class RpcTest extends Accounts {
             long blockCount = 5;
             long blockNumber = new BigInteger(caver.utils.stripHexPrefix(receiptData.getBlockNumber()), 16).longValue();
             List<Float> rewardPercentiles = new ArrayList<Float>(Arrays.asList(0.3f, 0.5f, 0.8f));
-            FeeHistory feeHistory = caver.rpc.klay.getFeeHistory(blockCount, blockNumber, rewardPercentiles).send();
-            checkFeeHistoryResult(feeHistory, blockCount, rewardPercentiles);
+            FeeHistoryResult feeHistoryResult = caver.rpc.klay.getFeeHistory(blockCount, blockNumber, rewardPercentiles).send();
+            checkFeeHistoryResult(feeHistoryResult, blockCount, rewardPercentiles);
 
             blockCount = 5;
             rewardPercentiles = null;
-            feeHistory = caver.rpc.klay.getFeeHistory(blockCount, DefaultBlockParameterName.LATEST, rewardPercentiles).send();
-            checkFeeHistoryResult(feeHistory, blockCount, rewardPercentiles);
+            feeHistoryResult = caver.rpc.klay.getFeeHistory(blockCount, DefaultBlockParameterName.LATEST, rewardPercentiles).send();
+            checkFeeHistoryResult(feeHistoryResult, blockCount, rewardPercentiles);
         }
 
         @Test

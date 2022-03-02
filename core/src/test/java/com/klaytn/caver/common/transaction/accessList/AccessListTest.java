@@ -146,7 +146,7 @@ public class AccessListTest {
         public void decodeString() throws IOException {
             AccessList decodedAccessList = caver.transaction.utils.accessList.decode(encodedAccessList);
             System.out.println(objectToString(decodedAccessList));
-            Assert.assertTrue(accessList.equals(decodedAccessList));
+            Assert.assertEquals(accessList, decodedAccessList);
         }
     }
 

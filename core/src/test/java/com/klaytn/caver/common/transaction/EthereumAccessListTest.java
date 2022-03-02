@@ -19,7 +19,7 @@ package com.klaytn.caver.common.transaction;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionDecoder;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
-import com.klaytn.caver.transaction.type.AccessTuple;
+import com.klaytn.caver.transaction.type.transactionUtils.AccessTuple;
 import com.klaytn.caver.transaction.type.EthereumAccessList;
 import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;

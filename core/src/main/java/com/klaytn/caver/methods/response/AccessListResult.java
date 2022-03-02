@@ -22,12 +22,11 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.klaytn.caver.transaction.type.AccessTuple;
+import com.klaytn.caver.transaction.utils.AccessList;
+import com.klaytn.caver.transaction.utils.AccessTuple;
 import org.web3j.protocol.core.Response;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AccessListResult extends Response<AccessListResult.AccessListResultData> {
 
@@ -38,21 +37,21 @@ public class AccessListResult extends Response<AccessListResult.AccessListResult
 
     @JsonDeserialize(using = AccessListResultData.AccessListResultDeserializer.class)
     public static class AccessListResultData {
-        List<AccessTuple> accessList;
+        AccessList accessList;
         String error;
         String gasUsed;
 
-        public AccessListResultData(List<AccessTuple> accessList, String error, String gasUsed) {
+        public AccessListResultData(AccessList accessList, String error, String gasUsed) {
             this.accessList = accessList;
             this.error = error;
             this.gasUsed = gasUsed;
         }
 
-        public List<AccessTuple> getAccessList() {
+        public AccessList getAccessList() {
             return accessList;
         }
 
-        public void setAccessList(List<AccessTuple> accessList) {
+        public void setAccessList(AccessList accessList) {
             this.accessList = accessList;
         }
 
@@ -78,7 +77,7 @@ public class AccessListResult extends Response<AccessListResult.AccessListResult
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode node = p.getCodec().readTree(p);
 
-                List<AccessTuple> accessList = new ArrayList<>();
+                AccessList accessList = new AccessList();
                 JsonNode accessListNode = node.get("accessList");
                 for (JsonNode innerNode : accessListNode) {
                     AccessTuple accessTuple = objectMapper.treeToValue(innerNode, AccessTuple.class);

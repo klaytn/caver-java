@@ -18,7 +18,7 @@ package com.klaytn.caver.transaction.type;
 
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.AbstractTransaction;
-import com.klaytn.caver.transaction.type.transactionUtils.AccessTuple;
+import com.klaytn.caver.transaction.accessList.AccessList;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.SignatureData;
@@ -52,7 +52,7 @@ public class EthereumAccessList extends AbstractTransaction {
     /**
      * Access list is an EIP-2930 access list.
      */
-    List<AccessTuple> accessList;
+    AccessList accessList;
 
     /**
      * EthereumAccessList Builder class
@@ -61,7 +61,7 @@ public class EthereumAccessList extends AbstractTransaction {
         private String to = "0x";
         private String value = "0x0";
         private String input = "0x";
-        private List<AccessTuple> accessList = new ArrayList<>();
+        private AccessList accessList = new AccessList();
 
         public Builder() {
             super(TransactionType.TxTypeEthereumAccessList.toString());
@@ -87,7 +87,7 @@ public class EthereumAccessList extends AbstractTransaction {
             return this;
         }
 
-        public EthereumAccessList.Builder setAccessList(List<AccessTuple> accessList) {
+        public EthereumAccessList.Builder setAccessList(AccessList accessList) {
             this.accessList = accessList;
             return this;
         }
@@ -124,7 +124,7 @@ public class EthereumAccessList extends AbstractTransaction {
      * @param accessList The EIP-2930 access list.
      * @return EthereumAccessList
      */
-    public static EthereumAccessList create(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String input, String value, List<AccessTuple> accessList) {
+    public static EthereumAccessList create(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String input, String value, AccessList accessList) {
         return new EthereumAccessList(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, to, input, value, accessList);
     }
 
@@ -157,7 +157,7 @@ public class EthereumAccessList extends AbstractTransaction {
      * @param input      Data attached to the transaction, used for transaction execution.
      * @param value      The amount of KLAY in peb to be transferred.
      */
-    public EthereumAccessList(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String input, String value, List<AccessTuple> accessList) {
+    public EthereumAccessList(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String input, String value, AccessList accessList) {
         super(
                 klaytnCall,
                 TransactionType.TxTypeLegacyTransaction.toString(),
@@ -187,12 +187,7 @@ public class EthereumAccessList extends AbstractTransaction {
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getTo())));
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getValue())));
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getInput())));
-
-        List<RlpType> accessListRLP = new ArrayList<>();
-        for (AccessTuple accessTuple : this.getAccessList()) {
-            accessListRLP.add(accessTuple.toRlpList());
-        }
-        rlpTypeList.add(new RlpList(accessListRLP));
+        rlpTypeList.add(this.getAccessList().toRlpList());
         SignatureData signatureData = this.getSignatures().get(0);
         rlpTypeList.addAll(signatureData.toRlpList().getValues());
 
@@ -227,12 +222,7 @@ public class EthereumAccessList extends AbstractTransaction {
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getTo())));
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getValue())));
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getInput())));
-
-        List<RlpType> accessListRLP = new ArrayList<>();
-        for (AccessTuple accessTuple : this.getAccessList()) {
-            accessListRLP.add(accessTuple.toRlpList());
-        }
-        rlpTypeList.add(new RlpList(accessListRLP));
+        rlpTypeList.add(this.getAccessList().toRlpList());
 
         byte[] encodedTransaction = RlpEncoder.encode(new RlpList(rlpTypeList));
         byte[] type = new byte[]{(byte) TransactionType.TxTypeEthereumAccessList.getType()};
@@ -297,11 +287,7 @@ public class EthereumAccessList extends AbstractTransaction {
             BigInteger value = ((RlpString) values.get(5)).asPositiveBigInteger();
             String input = ((RlpString) values.get(6)).asString();
 
-            List<AccessTuple> accessList = new ArrayList<>();
-            List<RlpType> accessListRlpType = ((RlpList) (values.get(7))).getValues();
-            for (RlpType accessTupleRlpType : accessListRlpType) {
-                accessList.add(AccessTuple.decode((RlpList) accessTupleRlpType));
-            }
+            AccessList accessList = AccessList.decode((RlpList) values.get(7));
 
             EthereumAccessList ethereumAccessList = new EthereumAccessList.Builder()
                     .setFrom(null)
@@ -419,7 +405,7 @@ public class EthereumAccessList extends AbstractTransaction {
      *
      * @return accessList Access list is an EIP-2930 access list.
      */
-    public List<AccessTuple> getAccessList() {
+    public AccessList getAccessList() {
         return accessList;
     }
 
@@ -428,9 +414,9 @@ public class EthereumAccessList extends AbstractTransaction {
      *
      * @param accessList Access list is an EIP-2930 access list.
      */
-    public void setAccessList(List<AccessTuple> accessList) {
+    public void setAccessList(AccessList accessList) {
         if (accessList == null) {
-            accessList = new ArrayList<>();
+            accessList = new AccessList();
         }
         this.accessList = accessList;
     }

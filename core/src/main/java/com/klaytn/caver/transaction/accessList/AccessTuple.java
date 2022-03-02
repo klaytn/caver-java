@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.klaytn.caver.transaction.type.transactionUtils;
+package com.klaytn.caver.transaction.accessList;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.web3j.rlp.RlpEncoder;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
 import org.web3j.rlp.RlpType;
@@ -39,39 +40,61 @@ public class AccessTuple {
     private String address;
     private List<String> storageKeys;
 
+    /**
+     * Create an AccessTuple instance.
+     * @param address An address string.
+     * @param storageKeys A list of storage keys.
+     */
     public AccessTuple(String address, List<String> storageKeys) {
         this.address = address;
         this.storageKeys = storageKeys;
     }
 
+    /**
+     * Getter function of address.
+     * @return String
+     */
     public String getAddress() {
         return address;
     }
 
+    /**
+     * Setter function of address.
+     * @param address
+     */
     public void setAddress(String address) {
         this.address = address;
     }
 
+    /**
+     * Getter function of storageKeys.
+     * @return List&lt;String&gt;
+     */
     public List<String> getStorageKeys() {
         return storageKeys;
     }
 
+    /**
+     * Setter function of storageKeys.
+     * @param storageKeys A list of storage keys.
+     */
     public void setStorageKeys(List<String> storageKeys) {
         this.storageKeys = storageKeys;
     }
 
+    /**
+     * Decodes given RlpList to AccessTuple.
+     * @param rlpEncodedAccessTuple
+     * @return
+     */
     public static AccessTuple decode(RlpList rlpEncodedAccessTuple) {
         try {
             List<RlpType> accessTupleRlp = rlpEncodedAccessTuple.getValues();
-            if (accessTupleRlp.size() <= 0) {
-                return null;
-            }
             String address = ((RlpString) accessTupleRlp.get(0)).asString();
             List<String> storageKeys = new ArrayList<>();
             List<RlpType> storageKeysRlpType = ((RlpList) (accessTupleRlp.get(1))).getValues();
             for (RlpType storageKeyRlpType : storageKeysRlpType) {
-                storageKeys.add(((RlpString) storageKeyRlpType).asString());
-            }
+                storageKeys.add(((RlpString) storageKeyRlpType).asString()); }
             return new AccessTuple(address, storageKeys);
         } catch (Exception e) {
             throw new RuntimeException("There is an error while decoding process.");
@@ -94,6 +117,17 @@ public class AccessTuple {
                 new RlpList(storageKeysRLPList)
         );
     }
+
+    /**
+     * Returns an encoded access tuple.
+     * 
+     * @return byte[]
+     */
+    public byte[] encodeToBytes() {
+        RlpList rlPList = this.toRlpList();
+        return RlpEncoder.encode(rlPList);
+    }
+
 
     /**
      * Indicates whether some other object is "equal to" this one.

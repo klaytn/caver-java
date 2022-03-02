@@ -19,7 +19,8 @@ package com.klaytn.caver.common.transaction;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionDecoder;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
-import com.klaytn.caver.transaction.type.transactionUtils.AccessTuple;
+import com.klaytn.caver.transaction.accessList.AccessList;
+import com.klaytn.caver.transaction.accessList.AccessTuple;
 import com.klaytn.caver.transaction.type.EthereumAccessList;
 import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
@@ -55,7 +56,7 @@ public class EthereumAccessListTest {
         String chainID = "0x1";
         String input = "0x31323334";
         String value = "0xa";
-        List<AccessTuple> accessList = new ArrayList<>(
+        AccessList accessList = new AccessList(
                 Arrays.asList(
                         new AccessTuple(
                                 "0x2c8ad0ea2e0781db8b8c9242e07de3a5beabb71a",
@@ -168,7 +169,7 @@ public class EthereumAccessListTest {
         static String chainID = "0x1";
         static String input = "0x31323334";
         static String value = "0xa";
-        List<AccessTuple> accessList = new ArrayList<>(
+        AccessList accessList = new AccessList(
                 Arrays.asList(
                         new AccessTuple(
                                 "0x2c8ad0ea2e0781db8b8c9242e07de3a5beabb71a",
@@ -329,14 +330,30 @@ public class EthereumAccessListTest {
             String chainID = "0x1";
             String input = "0x616263646566";
             String value = "0x0";
-            List<AccessTuple> accessList1 = new ArrayList<>(Arrays.asList(
+            AccessList accessList1 = new AccessList(Arrays.asList(
                     new AccessTuple("0x0000000000000000000000000000000000000001",
                             Arrays.asList("0x0000000000000000000000000000000000000000000000000000000000000000"))
             ));
-            List<AccessTuple> accessList2 = new ArrayList<>(Arrays.asList(
+            AccessList accessList2 = new AccessList(Arrays.asList(
                     new AccessTuple("0x284e47e6130523b2507ba38cea17dd40a20a0cd0",
                             Arrays.asList(
                                     "0x0000000000000000000000000000000000000000000000000000000000000000",
+                                    "0x6eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681",
+                                    "0x46d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc"
+                            ))
+            ));
+            AccessList accessList3 = new AccessList(Arrays.asList(
+                    new AccessTuple("0x0000000000000000000000000000000000000001",
+                            Arrays.asList(
+                                    "0x0000000000000000000000000000000000000000000000000000000000000000"
+                            )),
+                    new AccessTuple("0x0000000000000000000000000000000000000002",
+                            Arrays.asList(
+                                    "0x6eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681",
+                                    "0x46d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc"
+                            )),
+                    new AccessTuple("0x0000000000000000000000000000000000000003",
+                            Arrays.asList(
                                     "0x6eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681",
                                     "0x46d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc"
                             ))
@@ -356,6 +373,11 @@ public class EthereumAccessListTest {
                     Numeric.hexStringToByteArray("0x01"),
                     Numeric.hexStringToByteArray("0x3966e6b3297cbcfdbb3e1e3ede1b80dea99d9d01983fc32e337d785fe4445973"),
                     Numeric.hexStringToByteArray("0x49e25fcda7c8d5517181e2afcf13d2dff77dc33884b512fd1f1cd0770bcd0c59")
+            );
+            SignatureData signatureData4 = new SignatureData(
+                    Numeric.hexStringToByteArray("0x01"),
+                    Numeric.hexStringToByteArray("0x5d6d9bc7bb01b05db25f5f2e4a995a4970124387293694f0fd8bdda95bc6e7f4"),
+                    Numeric.hexStringToByteArray("0x782feaf0460341b320710ef7a4f07167d551fd897775af5ec2f1dea095e99cb")
             );
 
             // Test-1: encoding EthereumAccessList which have an address and a storage key.
@@ -377,9 +399,7 @@ public class EthereumAccessListTest {
             assertTrue(ethereumAccessList.compareTxField(decodedEthereumAccessList, true));
 
             // Test-2: encoding EthereumAccessList which have many storageKeys
-            expectedRLP = "0x7801f88701040a8301e241808080f838f7940000000000000000000000000000000000000001e1a0000000000000000000000000000000000000000000000000000000000000000001a05d2368dff6ab943d3467558de70805d5b6a4367ab94b1ee8a7ae53e4e0f68293a01d68f38dce681c32cd001ca155b2b27e26ddd788b4bdaaf355181c626805ec7f";
-            assertEquals(expectedRLP, ethereumAccessList.getRLPEncoding());
-
+            expectedRLP = "0x7801f8df01040a8301e24194095e7baea6a6c7c4c2dfeb977efac326af552d878080f87cf87a94284e47e6130523b2507ba38cea17dd40a20a0cd0f863a00000000000000000000000000000000000000000000000000000000000000000a06eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681a046d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc01a019676433856a1bd3650e22c210e20c7efdedf1d4f555f1ab6eb7845024f52d99a070feddce085399eb085b55254fbc8bb5bf912464316b20c3be39bca9015da235";
             ethereumAccessList = caver.transaction.ethereumAccessList.create(
                     TxPropertyBuilder.ethereumAccessList()
                             .setFrom(null)
@@ -391,7 +411,6 @@ public class EthereumAccessListTest {
                             .setAccessList(accessList2)
                             .setSignatures(signatureData2)
             );
-            expectedRLP = "0x7801f8df01040a8301e24194095e7baea6a6c7c4c2dfeb977efac326af552d878080f87cf87a94284e47e6130523b2507ba38cea17dd40a20a0cd0f863a00000000000000000000000000000000000000000000000000000000000000000a06eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681a046d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc01a019676433856a1bd3650e22c210e20c7efdedf1d4f555f1ab6eb7845024f52d99a070feddce085399eb085b55254fbc8bb5bf912464316b20c3be39bca9015da235";
             assertEquals(expectedRLP, ethereumAccessList.getRLPEncoding());
             // Test-2: decoding
             decodedEthereumAccessList = (EthereumAccessList) TransactionDecoder.decode(expectedRLP);
@@ -412,9 +431,27 @@ public class EthereumAccessListTest {
                             .setSignatures(signatureData3)
             );
             assertEquals(expectedRLP, ethereumAccessList.getRLPEncoding());
-            // Test-2: decoding
+            // Test-3: decoding
             decodedEthereumAccessList = (EthereumAccessList) TransactionDecoder.decode(expectedRLP);
             assertTrue(ethereumAccessList.compareTxField(decodedEthereumAccessList, true));
+
+            // Test-4: encoding EthereumAccessList which have many accessList
+            expectedRLP = "0x7801f9013d01040a8301e241808080f8eef7940000000000000000000000000000000000000001e1a00000000000000000000000000000000000000000000000000000000000000000f859940000000000000000000000000000000000000002f842a06eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681a046d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fcf859940000000000000000000000000000000000000003f842a06eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681a046d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc01a05d6d9bc7bb01b05db25f5f2e4a995a4970124387293694f0fd8bdda95bc6e7f4a00782feaf0460341b320710ef7a4f07167d551fd897775af5ec2f1dea095e99cb";
+            ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setFrom(null)
+                            .setNonce(BigInteger.valueOf(4))
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setAccessList(accessList3)
+                            .setSignatures(signatureData4)
+            );
+            assertEquals(expectedRLP, ethereumAccessList.getRLPEncoding());
+            // Test-4: decoding
+            decodedEthereumAccessList = (EthereumAccessList) TransactionDecoder.decode(expectedRLP);
+            assertTrue(ethereumAccessList.compareTxField(decodedEthereumAccessList, true));
+
         }
 
         @Test

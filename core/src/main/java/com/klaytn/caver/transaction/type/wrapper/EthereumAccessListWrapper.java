@@ -17,7 +17,7 @@
 package com.klaytn.caver.transaction.type.wrapper;
 
 import com.klaytn.caver.rpc.Klay;
-import com.klaytn.caver.transaction.type.transactionUtils.AccessTuple;
+import com.klaytn.caver.transaction.accessList.AccessList;
 import com.klaytn.caver.transaction.type.EthereumAccessList;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 
@@ -88,8 +88,8 @@ public class EthereumAccessListWrapper {
      * @param accessList The EIP-2930 access list.
      * @return EthereumAccessList
      */
-    public EthereumAccessList create(String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String input, String value, List<AccessTuple> accessList) {
-        return EthereumAccessList.create(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, to, input, value, accessList);
+    public EthereumAccessList create(String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String input, String value, AccessList accessList) {
+        return EthereumAccessList.create(this.klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, to, input, value, accessList);
     }
 
     /**

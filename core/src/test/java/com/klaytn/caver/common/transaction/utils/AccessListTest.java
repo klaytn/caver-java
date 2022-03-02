@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.klaytn.caver.common.transaction.accessList;
+package com.klaytn.caver.common.transaction.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,7 +55,7 @@ public class AccessListTest {
     ));
     static String encodedAccessList = "0xf87cf87a94284e47e6130523b2507ba38cea17dd40a20a0cd0f863a00000000000000000000000000000000000000000000000000000000000000000a06eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681a046d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc";
 
-    public static class createInstance {
+    public static class createInstanceTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 

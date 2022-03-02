@@ -47,8 +47,8 @@ public class AccessTuple {
      * @param storageKeys A list of storage keys.
      */
     public AccessTuple(String address, List<String> storageKeys) {
-        this.address = address;
-        this.storageKeys = storageKeys;
+        this.setAddress(address);
+        this.setStorageKeys(storageKeys);
     }
 
     /**
@@ -83,10 +83,14 @@ public class AccessTuple {
      * @param storageKeys A list of storage keys.
      */
     public void setStorageKeys(List<String> storageKeys) {
-        for (String storageKey : storageKeys) {
-            if (!Utils.isHex(storageKey)) {
-                throw new IllegalArgumentException("Invalid storageKey. Storage key should be a hex string " + storageKey);
+        for (int i = 0; i < storageKeys.size(); i++) {
+            // This is for handling when given storageKey has large hex prefix "0X".
+            // Hex prefix must be used as small hex prefix "0x".
+            String storageKey =  Utils.addHexPrefix(Utils.stripHexPrefix(storageKeys.get(i)));
+            if (!Utils.isHex(storageKey) || storageKey.length() != 66) {
+                throw new IllegalArgumentException("Invalid storageKey. Storage key should be a 32 bytes of hex string " + storageKey);
             }
+            storageKeys.set(i, storageKey);
         }
         this.storageKeys = storageKeys;
     }

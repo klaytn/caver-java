@@ -16,6 +16,8 @@
 
 package com.klaytn.caver.transaction.type;
 
+import java.util.Objects;
+
 public enum TransactionType {
     TxTypeLegacyTransaction(0x00),
 
@@ -50,7 +52,7 @@ public enum TransactionType {
     TxTypeEthereumAccessList(0x7801);
 
     int type;
-    
+
     TransactionType(int type) {
         this.type = type;
     }
@@ -58,4 +60,33 @@ public enum TransactionType {
     public int getType() {
         return type;
     }
+
+    /**
+     * Returns true if the tx type is EthereumTransaction.
+     *
+     * @param type Transaction type integer.
+     * @return
+     */
+    public static boolean isEthereumTransaction(int type) {
+        if (type == TxTypeLegacyTransaction.type || type == TxTypeEthereumAccessList.type) {
+            return true;
+        } else return false;
+    }
+
+    /**
+     * Returns true if the tx type is EthereumTransaction.
+     *
+     * @param type Transaction type string.
+     * @return
+     */
+    public static boolean isEthereumTransaction(String type) {
+        if (
+                Objects.equals(type, TxTypeLegacyTransaction.toString()) ||
+                        Objects.equals(type, TxTypeEthereumAccessList.toString())
+        ) {
+            return true;
+        } else return false;
+    }
+
+
 }

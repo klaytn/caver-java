@@ -21,8 +21,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.account.AccountKeyRoleBased;
-import com.klaytn.caver.transaction.type.EthereumAccessList;
-import com.klaytn.caver.transaction.type.LegacyTransaction;
 import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
@@ -269,8 +267,8 @@ abstract public class AbstractTransaction {
      * @throws IOException
      */
     public AbstractTransaction sign(AbstractKeyring keyring, Function<AbstractTransaction, String> signer) throws IOException  {
-        if(this.getType().equals(TransactionType.TxTypeLegacyTransaction.toString()) && keyring.isDecoupled()) {
-            throw new IllegalArgumentException("A legacy transaction cannot be signed with a decoupled keyring.");
+        if(TransactionType.isEthereumTransaction(this.getType()) && keyring.isDecoupled()) {
+            throw new IllegalArgumentException(this.getType() + " cannot be signed with a decoupled keyring.");
         }
 
         if(this.from.equals("0x") || this.from.equals(Utils.DEFAULT_ZERO_ADDRESS)){
@@ -313,8 +311,8 @@ abstract public class AbstractTransaction {
      * @throws IOException
      */
     public AbstractTransaction sign(AbstractKeyring keyring, int index, Function<AbstractTransaction, String> signer) throws IOException {
-        if(this.getType().equals(TransactionType.TxTypeLegacyTransaction.toString()) && keyring.isDecoupled()) {
-            throw new IllegalArgumentException("A legacy transaction cannot be signed with a decoupled keyring.");
+        if(TransactionType.isEthereumTransaction(this.getType()) && keyring.isDecoupled()) {
+            throw new IllegalArgumentException(this.getType() + " cannot be signed with a decoupled keyring.");
         }
 
         if(this.from.equals("0x") || this.from.equals(Utils.DEFAULT_ZERO_ADDRESS)){
@@ -515,12 +513,12 @@ abstract public class AbstractTransaction {
      * @return List&lt;String&gt;
      */
     public List<SignatureData> refineSignature(List<SignatureData> signatureDataList) {
-        boolean isLegacy = this.getType().equals(TransactionType.TxTypeLegacyTransaction.toString());
+        boolean isEthereumTransaction = TransactionType.isEthereumTransaction(this.getType());
 
         List<SignatureData> refinedList = SignatureData.refineSignature(signatureDataList);
 
-        if(isLegacy && refinedList.size() > 1) {
-            throw new RuntimeException("LegacyTransaction cannot have multiple signature.");
+        if(isEthereumTransaction && refinedList.size() > 1) {
+            throw new RuntimeException(this.getType() + " cannot have multiple signature.");
         }
 
         return refinedList;
@@ -648,8 +646,8 @@ abstract public class AbstractTransaction {
     }
 
     public void setFrom(String from) {
-        //"From" field in LegacyTransaction or EthereumAccessList allows null
-        if(this instanceof LegacyTransaction || this instanceof EthereumAccessList) {
+        //"From" field in EthereumTransaction allows null
+        if(TransactionType.isEthereumTransaction(this.getType())) {
             if(from == null || from.isEmpty() || from.equals("0x") || from.equals(Utils.DEFAULT_ZERO_ADDRESS)) from = Utils.DEFAULT_ZERO_ADDRESS;
         } else {
             if(from == null) {

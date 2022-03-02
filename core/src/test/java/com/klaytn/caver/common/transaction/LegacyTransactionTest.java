@@ -369,7 +369,7 @@ public class LegacyTransactionTest {
         @Test
         public void throwException_decoupledKey() throws IOException {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("A legacy transaction cannot be signed with a decoupled keyring.");
+            expectedException.expectMessage("TxTypeLegacyTransaction cannot be signed with a decoupled keyring.");
 
             LegacyTransaction legacyTransaction = createLegacyTransaction();
             legacyTransaction.sign(deCoupledKeyring);
@@ -483,7 +483,7 @@ public class LegacyTransactionTest {
         @Test
         public void throwException_decoupledKey() throws IOException {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("A legacy transaction cannot be signed with a decoupled keyring.");
+            expectedException.expectMessage("TxTypeLegacyTransaction cannot be signed with a decoupled keyring.");
 
             LegacyTransaction legacyTransaction = createLegacyTransaction();
             legacyTransaction.sign(deCoupledKeyring);
@@ -492,7 +492,7 @@ public class LegacyTransactionTest {
         @Test
         public void throwException_KlaytnWalletKeyFormat_decoupledKey() throws IOException {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("A legacy transaction cannot be signed with a decoupled keyring.");
+            expectedException.expectMessage("TxTypeLegacyTransaction cannot be signed with a decoupled keyring.");
 
             LegacyTransaction legacyTransaction = createLegacyTransaction();
 
@@ -503,7 +503,7 @@ public class LegacyTransactionTest {
         @Test
         public void throwException_multipleKeyring() throws IOException {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("A legacy transaction cannot be signed with a decoupled keyring.");
+            expectedException.expectMessage("TxTypeLegacyTransactionn cannot be signed with a decoupled keyring.");
 
             String[] privateKeyArr = {
                     caver.wallet.keyring.generateSingleKey(),
@@ -522,7 +522,7 @@ public class LegacyTransactionTest {
         @Test
         public void throwException_roleBasedKeyring() throws IOException {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("A legacy transaction cannot be signed with a decoupled keyring.");
+            expectedException.expectMessage("TxTypeLegacyTransaction cannot be signed with a decoupled keyring.");
 
             String[][] privateKeyArr = {
                     {

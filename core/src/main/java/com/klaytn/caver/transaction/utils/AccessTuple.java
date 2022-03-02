@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.klaytn.caver.utils.Utils;
 import org.web3j.rlp.RlpEncoder;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
@@ -63,7 +64,10 @@ public class AccessTuple {
      * @param address
      */
     public void setAddress(String address) {
-        this.address = address;
+        if (!Utils.isAddress(address)) {
+            throw new IllegalArgumentException("Invalid address. Address: " + address);
+        }
+        this.address = Utils.addHexPrefix(address);
     }
 
     /**
@@ -79,6 +83,11 @@ public class AccessTuple {
      * @param storageKeys A list of storage keys.
      */
     public void setStorageKeys(List<String> storageKeys) {
+        for (String storageKey : storageKeys) {
+            if (!Utils.isHex(storageKey)) {
+                throw new IllegalArgumentException("Invalid storageKey. Storage key should be a hex string " + storageKey);
+            }
+        }
         this.storageKeys = storageKeys;
     }
 

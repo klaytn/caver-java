@@ -503,7 +503,7 @@ public class LegacyTransactionTest {
         @Test
         public void throwException_multipleKeyring() throws IOException {
             expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("TxTypeLegacyTransactionn cannot be signed with a decoupled keyring.");
+            expectedException.expectMessage("TxTypeLegacyTransaction cannot be signed with a decoupled keyring.");
 
             String[] privateKeyArr = {
                     caver.wallet.keyring.generateSingleKey(),

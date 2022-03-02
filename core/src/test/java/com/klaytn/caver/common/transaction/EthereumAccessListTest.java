@@ -451,7 +451,6 @@ public class EthereumAccessListTest {
             // Test-4: decoding
             decodedEthereumAccessList = (EthereumAccessList) TransactionDecoder.decode(expectedRLP);
             assertTrue(ethereumAccessList.compareTxField(decodedEthereumAccessList, true));
-
         }
 
         @Test

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 The caver-java Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the “License”);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an “AS IS” BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.klaytn.caver.common.utils;
 
 import com.klaytn.caver.Caver;
@@ -22,8 +38,8 @@ import static org.junit.Assert.*;
 
 @RunWith(Enclosed.class)
 public class UtilsTest {
-    static Caver caver = new Caver(Caver.DEFAULT_URL);
     public static class isAddressTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
         @Test
         public void lowerCaseAddressTest() {
             String[] lowercase = new String[] {
@@ -81,6 +97,8 @@ public class UtilsTest {
     }
 
     public static class isValidPrivateKeyTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
         @Test
         public void validPrivateKey() {
             String key = caver.wallet.keyring.generateSingleKey();
@@ -90,18 +108,23 @@ public class UtilsTest {
 
         @Test
         public void invalidPrivateKey() {
-            String[] invalidAddress = new String[] {
+            String[] invalidPrivateKey = new String[] {
                     "0xff6916ea19a50878e39c41cab1b41d0xff6916ea19a50878e39c41cab1bdd41dK",// Length is not 64
                     "0xff6916ea19a50878e39c41cab1b41d0xff6916ea19a50878e39c41cab1bdd4KK", // Not Hex String
+                    "d0xff69",
+                    "0x0000000000000000000000000000000000000000000000000000000000000000", // Lower bound
+                    "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141" // Upper bound
             };
 
-            for(int i=0; i<invalidAddress.length; i++) {
-                assertFalse(caver.utils.isAddress(invalidAddress[i]));
+            for(int i=0; i<invalidPrivateKey.length; i++) {
+                assertFalse(caver.utils.isValidPrivateKey(invalidPrivateKey[i]));
             }
         }
     }
 
     public static class isKlaytnWalletKeyTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
         @Test
         public void validWalletKey() {
             String walletKey = caver.wallet.keyring.generate().getKlaytnWalletKey();
@@ -116,16 +139,18 @@ public class UtilsTest {
                     "0x63526af77dc34846a0909e5486f972c4a07074f0c94a2b9577675a6433098481" + "0x00" +"0xfc26de905386050894cddbb5a824318b96dde59", // invalid address - invalid length
                     "0x63526af77dc34846a0909e5486f972c4a07074f0c94a2b9577675a6433098481" + "0x00" +"fc26de905386050894cddbb5a824318b96dde595", // invalid address - no prefix
                     "0x63526af77dc34846a0909e5486f972c4a07074f0c94a2b9575a6433098481" + "0x00" +"0xfc26de905386050894cddbb5a824318b96dde595", // invalid privateKey - invalid length
-                    "63526af77dc34846a0909e5486f972c4a07074f0c94a2b9577675a6433098481" + "0x00" +"0xfc26de905386050894cddbb5a824318b96dde595", // invalid type - no prefix
+                    "0x00000000000000000000000000000000000000000000000000000000000000000x000xa94f5374fce5edbc8e2a8697c15331677e6ebf0b"
             };
 
             for(int i=0; i<invalidWalletKey.length; i++) {
-                assertFalse(caver.utils.isAddress(invalidWalletKey[i]));
+                assertFalse(caver.utils.isKlaytnWalletKey(invalidWalletKey[i]));
             }
         }
     }
 
     public static class isValidPublicKeyTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
         @Test
         public void uncompressedKeyTest() {
             String key = caver.wallet.keyring.generate().getPublicKey();
@@ -175,6 +200,11 @@ public class UtilsTest {
     }
 
     public static class decompressPublicKeyTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
         @Test
         public void decompressPublicKey() {
             String compressed = "03434dedfc2eceed1e98fddfde3ebc57512c57f017195988cd5de62b722656b943";
@@ -188,7 +218,7 @@ public class UtilsTest {
             String expectedUncompressed = caver.wallet.keyring.generate().getPublicKey(false);
             String actualUncompressed = caver.utils.decompressPublicKey(expectedUncompressed);
             assertTrue(caver.utils.isValidPublicKey(actualUncompressed));
-            assertEquals(expectedUncompressed, actualUncompressed);
+            assertEquals(caver.utils.addHexPrefix(expectedUncompressed), actualUncompressed);
         }
 
         @Test
@@ -198,9 +228,23 @@ public class UtilsTest {
 
             assertEquals(expected, key);
         }
+
+        @Test
+        public void invalidPublicKey() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("Invalid public key.");
+
+            String key = "0x1177e05dd93cdd6362f8648447f33d5676cbc5f42f4c4946ae1ad62bd4c0c4f357";
+            caver.utils.decompressPublicKey(key);
+        }
     }
 
     public static class compressedPublicKeyTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
         @Test
         public void compressedPublicKey() {
             String uncompressedKey = caver.wallet.keyring.generate().getPublicKey(false);
@@ -224,9 +268,27 @@ public class UtilsTest {
 
             assertEquals(expected, caver.utils.compressPublicKey(key));
         }
+
+        @Test
+        public void invalidPublicKey() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("Invalid public key.");
+
+            caver.utils.compressPublicKey("0x0977e05dd93cdd6362f8648447f33d5676cbc5f42f4c4946ae1ad62bd4c0c4f3570b1a104b67d1cd169bbf61dd557f15ab5ee8b661326096954caddadf34ae6ac8");
+        }
+
+        @Test
+        public void compressedPublicKeyStartWith04Data() {
+            String key = "0x0497da4e69be4ff078c35c81b9007222f0e6382cf3eb15bd10ee39bf37a4948edffe50a29c49e90aa9b1e7e1b11c9b220fa1ab1bf3a3da27566d1fd13646fc62";
+            String compressed = caver.utils.compressPublicKey(key);
+
+            assertEquals(key, caver.utils.decompressPublicKey(compressed));
+        }
     }
 
     public static class hashMessageTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
         @Test
         public void hashMessageTest() {
             String[] message = {"some data", "test data", "caver-java", "sign data", "0xaabbccdd", "0x11223344", "0x33445566"};
@@ -249,6 +311,8 @@ public class UtilsTest {
     }
 
     public static class parseKlaytnWalletKeyTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
@@ -292,10 +356,13 @@ public class UtilsTest {
     }
 
     public static class isHexTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
         @Test
         public void validHexTest() {
             String[] hex = new String[] {
                     "0x1234",
+                    "0X1234",
                     "ffff",
                     "0xaaaa",
                     "34567"
@@ -315,12 +382,18 @@ public class UtilsTest {
     }
 
     public static class isHexStrictTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
         @Test
         public void validHexTest() {
             String[] hex = new String[] {
                     "0x1234",
                     "0xaaaa",
-                    "0xffff"
+                    "0xffff",
+                    "0X1234",
+                    "0Xaaaa",
+                    "0Xffff"
+
             };
 
             for(int i=0; i<hex.length; i++) {
@@ -342,6 +415,8 @@ public class UtilsTest {
     }
 
     public static class addHexPrefixTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
         @Test
         public void addHexPrefixTest() {
             String hex = "1234";
@@ -352,19 +427,21 @@ public class UtilsTest {
 
         @Test
         public void alreadyPrefixed() {
-            String hex = "0x1234";
-
-            assertEquals(hex, caver.utils.addHexPrefix(hex));
+            String expected = "0x1234";
+            assertEquals(expected, caver.utils.addHexPrefix("0x1234"));
+            assertEquals(expected, caver.utils.addHexPrefix("0X1234"));
         }
     }
 
     public static class stripHexPrefixTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
         @Test
         public void stripHexPrefixTest() {
-            String hex = "0x1234";
             String expected = "1234";
 
-            assertEquals(expected, caver.utils.stripHexPrefix(hex));
+            assertEquals(expected, caver.utils.stripHexPrefix("0x1234"));
+            assertEquals(expected, caver.utils.stripHexPrefix("0X1234"));
         }
 
         @Test
@@ -376,6 +453,8 @@ public class UtilsTest {
     }
 
     public static class convertToPebTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
         @Test
         public void from_peb() {
             String expected = "1";
@@ -666,6 +745,8 @@ public class UtilsTest {
     }
 
     public static class convertFromPebTest {
+
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
         @Test
         public void to_peb() {
             String amount = "1000000000000000000000000000";
@@ -956,6 +1037,8 @@ public class UtilsTest {
     }
 
     public static class isNumberTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
         @Test
         public void validHexNumber() {
             String[] valid = new String[] {
@@ -984,6 +1067,8 @@ public class UtilsTest {
     }
 
     public static class isEmptySigTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
         @Test
         public void validEmptySig() {
             SignatureData emptySig = new SignatureData(
@@ -1034,6 +1119,8 @@ public class UtilsTest {
     }
 
     public static class generateRandomBytesTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
         @Test
         public void generateRandomBytes() {
             byte[] arr = caver.utils.generateRandomBytes(32);
@@ -1043,6 +1130,8 @@ public class UtilsTest {
     }
 
     public static class recoverTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
         public void checkAddress(String expect, String actual) {
             expect = Numeric.prependHexPrefix(expect);
             actual = Numeric.prependHexPrefix(actual);
@@ -1075,6 +1164,7 @@ public class UtilsTest {
     }
 
     public static class decodeSignatureTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
 
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
@@ -1101,7 +1191,7 @@ public class UtilsTest {
         @Test
         public void throwException_invalidLength() {
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("Invalid signature data. The sig data length must 65 byte.");
+            expectedException.expectMessage("Invalid signature: The length of raw signature must be 65 byte.");
 
             String rawSigData = "0xaaaaaa";
             caver.utils.decodeSignature(rawSigData);
@@ -1109,6 +1199,8 @@ public class UtilsTest {
     }
 
     public static class recoverPublicKeyTest {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
         @Test
         public void recoverWithMessage() throws SignatureException {
             SingleKeyring keyring = caver.wallet.keyring.generate();
@@ -1148,6 +1240,8 @@ public class UtilsTest {
     }
 
     public static class publicKeyToAddress {
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+
         @Test
         public void publicKeyToAddressWithDecompressedFormat() {
             String expected = "0x5b2840bcbc2be07fb12d9129ed3a02d8e4465944";

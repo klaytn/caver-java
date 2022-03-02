@@ -21,20 +21,24 @@
 package com.klaytn.caver.methods.request;
 
 import org.web3j.protocol.core.DefaultBlockParameter;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.DefaultBlockParameterNumber;
 
+import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class KlayFilter extends Filter<KlayFilter> {
 
     /**
-     * (optional, default: "latest") Integer block number, or "latest" for the last mined block or "pending",
+     * (optional, default: "latest") Integer block number, or "latest" for the last mined block or
      * "earliest" for not yet mined transactions.
      */
     private DefaultBlockParameter fromBlock;
 
     /**
-     * (optional, default: "latest") Integer block number, or "latest" for the last mined block or "pending",
+     * (optional, default: "latest") Integer block number, or "latest" for the last mined block or
      * "earliest" for not yet mined transactions.
      */
     private DefaultBlockParameter toBlock;
@@ -62,6 +66,11 @@ public class KlayFilter extends Filter<KlayFilter> {
         this(fromBlock, toBlock, Arrays.asList(address));
     }
 
+    @Override
+    KlayFilter getThis() {
+        return this;
+    }
+
     public DefaultBlockParameter getFromBlock() {
         return fromBlock;
     }
@@ -74,8 +83,51 @@ public class KlayFilter extends Filter<KlayFilter> {
         return address;
     }
 
-    @Override
-    KlayFilter getThis() {
-        return this;
+
+    public void setFromBlock(BigInteger blockNum) {
+        setFromBlock(toBlockParameter(blockNum));
     }
+
+    public void setFromBlock(DefaultBlockParameterName blockTag) {
+        setFromBlock(toBlockParameter(blockTag));
+    }
+
+    public void setFromBlock(DefaultBlockParameter fromBlock) {
+        this.fromBlock = fromBlock;
+    }
+
+    public void setToBlock(BigInteger blockNum) {
+        setToBlock(toBlockParameter(blockNum));
+    }
+
+    public void setToBlock(DefaultBlockParameterName toBlock) {
+        setToBlock(toBlockParameter(toBlock));
+    }
+
+    public void setToBlock(DefaultBlockParameter toBlock) {
+        this.toBlock = toBlock;
+    }
+
+    public void setAddress(String address) {
+        setAddress(Collections.singletonList(address));
+    }
+
+    public void setAddress(List<String> address) {
+        this.address = address;
+    }
+
+    private DefaultBlockParameter toBlockParameter(Object blockNumOrTag) {
+        if(blockNumOrTag instanceof BigInteger) {
+            return DefaultBlockParameter.valueOf((BigInteger)blockNumOrTag);
+        } else if(blockNumOrTag instanceof String) {
+            return DefaultBlockParameter.valueOf((String)blockNumOrTag);
+        } else if(blockNumOrTag instanceof DefaultBlockParameterNumber) {
+            return (DefaultBlockParameter)blockNumOrTag;
+        } else if(blockNumOrTag instanceof DefaultBlockParameterName) {
+            return (DefaultBlockParameter) blockNumOrTag;
+        } else {
+            throw new RuntimeException("It cannot cast a block type.");
+        }
+    }
+
 }

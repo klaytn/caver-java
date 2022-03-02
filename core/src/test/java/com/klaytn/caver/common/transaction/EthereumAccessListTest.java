@@ -680,7 +680,6 @@ public class EthereumAccessListTest {
         }
     }
 
-
     public static class combineSignatureTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
@@ -1056,6 +1055,113 @@ public class EthereumAccessListTest {
             );
 
             ethereumAccessList.appendSignatures(list);
+        }
+    }
+
+    public static class getRLPEncodingForSignatureTest {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+        static String gas = "0x1e241";
+        static String gasPrice = "0x0a";
+        static String to = "0x095e7baea6a6c7c4c2dfeb977efac326af552d87";
+        static String chainID = "0x1";
+        static String input = "0x616263646566";
+        static String value = "0x0";
+        static String nonce = "0x4";
+
+        static AccessList accessList = new AccessList(Arrays.asList(
+                new AccessTuple("0x0000000000000000000000000000000000000001",
+                        Arrays.asList(
+                                "0x0000000000000000000000000000000000000000000000000000000000000000"
+                        )),
+                new AccessTuple("0x284e47e6130523b2507ba38cea17dd40a20a0cd0",
+                        Arrays.asList(
+                                "0xd2db659067b2b322f7010149472b81f172b9e331e1831ebee11c7b73facb0761",
+                                "0xd2b691e13d4c3754fbe5dc75439f25dd11a908d89f5bbc55cd5bc4978f078b7c"
+                        )),
+                new AccessTuple("0x0000000000000000000000000000000000000003",
+                        Arrays.asList(
+                                "0x6eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681",
+                                "0x46d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc"
+                        ))
+        ));
+
+        @Test
+        public void getRLPEncodingForSignature() {
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setTo(to)
+                            .setAccessList(accessList)
+            );
+
+            String expected = "0x01f9011401040a8301e24194095e7baea6a6c7c4c2dfeb977efac326af552d878086616263646566f8eef7940000000000000000000000000000000000000001e1a00000000000000000000000000000000000000000000000000000000000000000f85994284e47e6130523b2507ba38cea17dd40a20a0cd0f842a0d2db659067b2b322f7010149472b81f172b9e331e1831ebee11c7b73facb0761a0d2b691e13d4c3754fbe5dc75439f25dd11a908d89f5bbc55cd5bc4978f078b7cf859940000000000000000000000000000000000000003f842a06eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681a046d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc";
+            String rlpEncodedSign = ethereumAccessList.getRLPEncodingForSignature();
+
+            assertEquals(expected, rlpEncodedSign);
+        }
+
+        @Test
+        public void throwException_NotDefined_Nonce() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");
+
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setTo(to)
+                            .setAccessList(accessList)
+            );
+
+            String encoded = ethereumAccessList.getRLPEncodingForSignature();
+        }
+
+        @Test
+        public void throwException_NotDefined_GasPrice() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
+
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setTo(to)
+                            .setAccessList(accessList)
+            );
+            String encoded = ethereumAccessList.getRLPEncodingForSignature();
+
+        }
+
+        @Test
+        public void throwException_NotDefined_ChainID() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
+
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setValue(value)
+                            .setInput(input)
+                            .setTo(to)
+                            .setAccessList(accessList)
+            );
+            String encoded = ethereumAccessList.getRLPEncodingForSignature();
         }
     }
 

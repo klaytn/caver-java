@@ -19,10 +19,10 @@ package com.klaytn.caver.common.transaction;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.TransactionDecoder;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
-import com.klaytn.caver.transaction.utils.AccessList;
-import com.klaytn.caver.transaction.utils.AccessTuple;
 import com.klaytn.caver.transaction.type.EthereumAccessList;
 import com.klaytn.caver.transaction.type.TransactionType;
+import com.klaytn.caver.transaction.utils.AccessList;
+import com.klaytn.caver.transaction.utils.AccessTuple;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.junit.Rule;
@@ -562,6 +562,384 @@ public class EthereumAccessListTest {
         }
 
 
+    }
+
+    public static class combineSignatureTest {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+;
+        @Test
+        public void combineSignature() {
+            String gas = "0x1e241";
+            String gasPrice = "0x0a";
+            String chainID = "0x1";
+            String nonce = "0x4";
+            AccessList accessList = new AccessList(Arrays.asList(
+                    new AccessTuple("0x0000000000000000000000000000000000000001",
+                            Arrays.asList(
+                                    "0x0000000000000000000000000000000000000000000000000000000000000000"
+                            )),
+                    new AccessTuple("0x0000000000000000000000000000000000000002",
+                            Arrays.asList(
+                                    "0x6eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681",
+                                    "0x46d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc"
+                            )),
+                    new AccessTuple("0x0000000000000000000000000000000000000003",
+                            Arrays.asList(
+                                    "0x6eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681",
+                                    "0x46d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc"
+                            ))
+            ));
+            SignatureData signatureData = new SignatureData(
+                    Numeric.hexStringToByteArray("0x01"),
+                    Numeric.hexStringToByteArray("0x5d6d9bc7bb01b05db25f5f2e4a995a4970124387293694f0fd8bdda95bc6e7f4"),
+                    Numeric.hexStringToByteArray("0x782feaf0460341b320710ef7a4f07167d551fd897775af5ec2f1dea095e99cb")
+            );
+
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setFrom(null)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setAccessList(accessList)
+            );
+
+            // rlpEncoded is a rlp encoded EthereumAccessList transaction containing signatureData defined above.
+            String rlpEncoded = "0x7801f9013d01040a8301e241808080f8eef7940000000000000000000000000000000000000001e1a00000000000000000000000000000000000000000000000000000000000000000f859940000000000000000000000000000000000000002f842a06eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681a046d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fcf859940000000000000000000000000000000000000003f842a06eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681a046d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc01a05d6d9bc7bb01b05db25f5f2e4a995a4970124387293694f0fd8bdda95bc6e7f4a00782feaf0460341b320710ef7a4f07167d551fd897775af5ec2f1dea095e99cb";
+            List<String> rlpList = new ArrayList<>();
+            rlpList.add(rlpEncoded);
+            String combined = ethereumAccessList.combineSignedRawTransactions(rlpList);
+
+            assertEquals(rlpEncoded, combined);
+        }
+
+        @Test
+        public void combineSignature_EmptySig() {
+            String gas = "0x1e241";
+            String gasPrice = "0x0a";
+            String to = "0x095e7baea6a6c7c4c2dfeb977efac326af552d87";
+            String chainID = "0x1";
+            String input = "0x616263646566";
+            String value = "0x0";
+            String nonce = "0x4";
+            AccessList accessList = new AccessList(Arrays.asList(
+                    new AccessTuple("0x284e47e6130523b2507ba38cea17dd40a20a0cd0",
+                            Arrays.asList(
+                                    "0x0000000000000000000000000000000000000000000000000000000000000000",
+                                    "0x6eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681",
+                                    "0x46d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc"
+                            ))
+            ));
+            SignatureData signatureData = new SignatureData(
+                    Numeric.hexStringToByteArray("0x01"),
+                    Numeric.hexStringToByteArray("0x19676433856a1bd3650e22c210e20c7efdedf1d4f555f1ab6eb7845024f52d99"),
+                    Numeric.hexStringToByteArray("0x70feddce085399eb085b55254fbc8bb5bf912464316b20c3be39bca9015da235")
+            );
+
+            SignatureData emptySig = SignatureData.getEmptySignature();
+
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setFrom(null)
+                            .setTo(to)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setAccessList(accessList)
+                            .setSignatures(emptySig)
+            );
+
+            // rlpEncoded is a rlp encoded EthereumAccessList transaction containing signatureData defined above.
+            String rlpEncoded = "0x7801f8df01040a8301e24194095e7baea6a6c7c4c2dfeb977efac326af552d878080f87cf87a94284e47e6130523b2507ba38cea17dd40a20a0cd0f863a00000000000000000000000000000000000000000000000000000000000000000a06eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681a046d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc01a019676433856a1bd3650e22c210e20c7efdedf1d4f555f1ab6eb7845024f52d99a070feddce085399eb085b55254fbc8bb5bf912464316b20c3be39bca9015da235";
+
+            List<String> rlpList = new ArrayList<>();
+            rlpList.add(rlpEncoded);
+            String combined = ethereumAccessList.combineSignedRawTransactions(rlpList);
+
+            assertEquals(rlpEncoded, combined);
+        }
+
+        @Test
+        public void throwException_existSignature() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("Signatures already defined." + TransactionType.TxTypeEthereumAccessList.toString() + " cannot include more than one signature.");
+
+            String gas = "0x1e241";
+            String gasPrice = "0x0a";
+            String to = "0x095e7baea6a6c7c4c2dfeb977efac326af552d87";
+            String chainID = "0x1";
+            String input = "0x616263646566";
+            String value = "0x0";
+            String nonce = "0x4";
+            AccessList accessList = new AccessList(Arrays.asList(
+                    new AccessTuple("0x284e47e6130523b2507ba38cea17dd40a20a0cd0",
+                            Arrays.asList(
+                                    "0x0000000000000000000000000000000000000000000000000000000000000000",
+                                    "0x6eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681",
+                                    "0x46d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc"
+                            ))
+            ));
+            SignatureData signatureData = new SignatureData(
+                    Numeric.hexStringToByteArray("0x01"),
+                    Numeric.hexStringToByteArray("0x19676433856a1bd3650e22c210e20c7efdedf1d4f555f1ab6eb7845024f52d99"),
+                    Numeric.hexStringToByteArray("0x70feddce085399eb085b55254fbc8bb5bf912464316b20c3be39bca9015da235")
+            );
+
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setFrom(null)
+                            .setTo(to)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setAccessList(accessList)
+                            .setSignatures(new SignatureData(
+                                    Numeric.hexStringToByteArray("0x0fea"),
+                                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                            ))
+            );
+
+            // rlpEncoded is a rlp encoded EthereumAccessList transaction containing signatureData defined above.
+            String rlpEncoded = "0x7801f8df01040a8301e24194095e7baea6a6c7c4c2dfeb977efac326af552d878080f87cf87a94284e47e6130523b2507ba38cea17dd40a20a0cd0f863a00000000000000000000000000000000000000000000000000000000000000000a06eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681a046d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc01a019676433856a1bd3650e22c210e20c7efdedf1d4f555f1ab6eb7845024f52d99a070feddce085399eb085b55254fbc8bb5bf912464316b20c3be39bca9015da235";
+
+            List<String> rlpList = new ArrayList<>();
+            rlpList.add(rlpEncoded);
+
+            ethereumAccessList.combineSignedRawTransactions(rlpList);
+        }
+
+        @Test
+        public void throwException_differentField() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("Transactions containing different information cannot be combined.");
+
+            String gas = "0x1e241";
+            String gasPrice = "0x0a";
+            String to = "0x095e7baea6a6c7c4c2dfeb977efac326af552d87";
+            String chainID = "0x1";
+            String input = "0x616263646566";
+            String value = "0x0";
+            String nonce = "0x4";
+            AccessList accessList = new AccessList(Arrays.asList(
+                    new AccessTuple("0x284e47e6130523b2507ba38cea17dd40a20a0cd0",
+                            Arrays.asList(
+                                    "0x0000000000000000000000000000000000000000000000000000000000000000",
+                                    "0x6eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681",
+                                    "0x46d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc"
+                            ))
+            ));
+            // rlpEncoded is a rlp encoded string of EthereumAccessList transaction containing above fields.
+            String rlpEncoded = "0x7801f8df01040a8301e24194095e7baea6a6c7c4c2dfeb977efac326af552d878080f87cf87a94284e47e6130523b2507ba38cea17dd40a20a0cd0f863a00000000000000000000000000000000000000000000000000000000000000000a06eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681a046d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc01a019676433856a1bd3650e22c210e20c7efdedf1d4f555f1ab6eb7845024f52d99a070feddce085399eb085b55254fbc8bb5bf912464316b20c3be39bca9015da235";
+
+            // All fields are same with above rlpEncoded EthereumAccessList transaction except accessList field.
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setAccessList(new AccessList(Arrays.asList(
+                                    new AccessTuple("0x284e47e6130523b2507ba38cea17dd40a20a0cd0",
+                                            Arrays.asList(
+                                                    "0x46d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc"
+                                            ))
+                            )))
+                            .setTo(to)
+            );
+
+
+            List<String> rlpList = new ArrayList<>();
+            rlpList.add(rlpEncoded);
+
+            ethereumAccessList.combineSignedRawTransactions(rlpList);
+        }
+    }
+
+    public static class appendSignaturesTest {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+        static String to = "0x8723590d5D60e35f7cE0Db5C09D3938b26fF80Ae";
+        static BigInteger value = BigInteger.ONE;
+        static BigInteger gas = BigInteger.valueOf(90000);
+        static String gasPrice = "0x19";
+        static String nonce = "0x3a";
+        static BigInteger chainID = BigInteger.valueOf(2019);
+        AccessList accessList = new AccessList(
+                Arrays.asList(
+                        new AccessTuple(
+                                "0x2c8ad0ea2e0781db8b8c9242e07de3a5beabb71a",
+                                Arrays.asList(
+                                        "0x4f42391603e79b2a90c3fbfc070c995eb1163e0ac00fb4e8f3da2dc81c451b98",
+                                        "0xc4a32abdf1905059fdfc304aae1e8924279a36b2a6428552237f590156ed7717"
+                                )
+                        ))
+        );
+
+        static SignatureData signatureData = new SignatureData(
+                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+        );
+
+        @Test
+        public void appendSignature() {
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
+                            .setAccessList(accessList)
+            );
+
+            ethereumAccessList.appendSignatures(signatureData);
+
+            assertEquals(signatureData, ethereumAccessList.getSignatures().get(0));
+        }
+
+        @Test
+        public void appendSignatureWithEmptySig() {
+            SignatureData emptySignature = SignatureData.getEmptySignature();
+
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
+                            .setAccessList(accessList)
+                            .setSignatures(emptySignature)
+            );
+
+            ethereumAccessList.appendSignatures(signatureData);
+
+            assertEquals(signatureData, ethereumAccessList.getSignatures().get(0));
+        }
+
+        @Test
+        public void appendSignatureList() {
+            List<SignatureData> list = new ArrayList<>();
+            list.add(signatureData);
+
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setAccessList(accessList)
+                            .setTo(to)
+            );
+
+            ethereumAccessList.appendSignatures(list);
+
+            assertEquals(signatureData, ethereumAccessList.getSignatures().get(0));
+        }
+
+        @Test
+        public void appendSignatureList_EmptySig() {
+            List<SignatureData> list = new ArrayList<>();
+            list.add(signatureData);
+
+            SignatureData emptySignature = SignatureData.getEmptySignature();
+
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setTo(to)
+                            .setAccessList(accessList)
+                            .setSignatures(emptySignature)
+            );
+
+            ethereumAccessList.appendSignatures(list);
+
+            assertEquals(signatureData, ethereumAccessList.getSignatures().get(0));
+        }
+
+        @Test
+        public void throwException_appendData_existsSignatureInTransaction() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("Signatures already defined." + TransactionType.TxTypeEthereumAccessList.toString() + " cannot include more than one signature.");
+
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setTo(to)
+                            .setAccessList(accessList)
+                            .setSignatures(signatureData)
+            );
+
+            ethereumAccessList.appendSignatures(signatureData);
+        }
+
+        @Test
+        public void throwException_appendList_existsSignatureInTransaction() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("Signatures already defined." + TransactionType.TxTypeEthereumAccessList.toString() + " cannot include more than one signature.");
+
+            List<SignatureData> list = new ArrayList<>();
+            list.add(signatureData);
+
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setTo(to)
+                            .setAccessList(accessList)
+                            .setSignatures(list)
+            );
+
+            ethereumAccessList.appendSignatures(list);
+        }
+
+        @Test
+        public void throwException_tooLongSignatures() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("Signatures are too long " + TransactionType.TxTypeEthereumAccessList.toString() + " cannot include more than one signature.");
+
+            List<SignatureData> list = new ArrayList<>();
+            list.add(signatureData);
+            list.add(signatureData);
+
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setAccessList(accessList)
+                            .setValue(value)
+            );
+
+            ethereumAccessList.appendSignatures(list);
+        }
     }
 
 }

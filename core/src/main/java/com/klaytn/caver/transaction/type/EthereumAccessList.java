@@ -160,7 +160,7 @@ public class EthereumAccessList extends AbstractTransaction {
     public EthereumAccessList(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String input, String value, AccessList accessList) {
         super(
                 klaytnCall,
-                TransactionType.TxTypeLegacyTransaction.toString(),
+                TransactionType.TxTypeEthereumAccessList.toString(),
                 from,
                 nonce,
                 gas,
@@ -312,6 +312,38 @@ public class EthereumAccessList extends AbstractTransaction {
         } catch (Exception e) {
             throw new RuntimeException("There is an error while decoding process.");
         }
+    }
+
+    /**
+     * Appends signatures array to transaction.
+     * EthereumAccessList transaction cannot have more than one signature, so an error occurs if the transaction already has a signature.
+     * @param signatureData SignatureData instance contains ECDSA signature data
+     */
+    @Override
+    public void appendSignatures(SignatureData signatureData) {
+        if(this.getSignatures().size() != 0 && !Utils.isEmptySig(this.getSignatures().get(0))) {
+            throw new RuntimeException("Signatures already defined." + TransactionType.TxTypeEthereumAccessList.toString() + " cannot include more than one signature.");
+        }
+
+        super.appendSignatures(signatureData);
+    }
+
+    /**
+     * Appends signatures array to transaction.
+     * EthereumAccessList transaction cannot have more than one signature, so an error occurs if the transaction already has a signature.
+     * @param signatureData List of SignatureData contains ECDSA signature data
+     */
+    @Override
+    public void appendSignatures(List<SignatureData> signatureData) {
+        if(this.getSignatures().size() != 0 && !Utils.isEmptySig(this.getSignatures())) {
+            throw new RuntimeException("Signatures already defined." + TransactionType.TxTypeEthereumAccessList.toString() + " cannot include more than one signature.");
+        }
+
+        if(signatureData.size() != 1) {
+            throw new RuntimeException("Signatures are too long " + TransactionType.TxTypeEthereumAccessList.toString() + " cannot include more than one signature.");
+        }
+
+        super.appendSignatures(signatureData);
     }
 
     /**

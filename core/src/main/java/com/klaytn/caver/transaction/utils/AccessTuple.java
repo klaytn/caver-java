@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.klaytn.caver.utils.Utils;
 import org.web3j.rlp.RlpEncoder;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
@@ -46,8 +47,8 @@ public class AccessTuple {
      * @param storageKeys A list of storage keys.
      */
     public AccessTuple(String address, List<String> storageKeys) {
-        this.address = address;
-        this.storageKeys = storageKeys;
+        this.setAddress(address);
+        this.setStorageKeys(storageKeys);
     }
 
     /**
@@ -63,7 +64,10 @@ public class AccessTuple {
      * @param address
      */
     public void setAddress(String address) {
-        this.address = address;
+        if (!Utils.isAddress(address)) {
+            throw new IllegalArgumentException("Invalid address. Address: " + address);
+        }
+        this.address = Utils.addHexPrefix(address);
     }
 
     /**
@@ -79,6 +83,15 @@ public class AccessTuple {
      * @param storageKeys A list of storage keys.
      */
     public void setStorageKeys(List<String> storageKeys) {
+        for (int i = 0; i < storageKeys.size(); i++) {
+            // This is for handling when given storageKey has large hex prefix "0X".
+            // Hex prefix must be used as small hex prefix "0x".
+            String storageKey =  Utils.addHexPrefix(Utils.stripHexPrefix(storageKeys.get(i)));
+            if (!Utils.isHex(storageKey) || storageKey.length() != 66) {
+                throw new IllegalArgumentException("Invalid storageKey. Storage key should be a 32 bytes of hex string " + storageKey);
+            }
+            storageKeys.set(i, storageKey);
+        }
         this.storageKeys = storageKeys;
     }
 
@@ -146,11 +159,16 @@ public class AccessTuple {
 
         AccessTuple that = (AccessTuple) o;
 
-        if (!address.equals(that.address)) {
+        if (!address.equalsIgnoreCase(that.address)) {
             return false;
         }
-        if (!storageKeys.equals(that.storageKeys)) {
+        if (storageKeys.size() != that.storageKeys.size()) {
             return false;
+        }
+        for (int i = 0; i < storageKeys.size(); i++) {
+            if (!storageKeys.get(i).equalsIgnoreCase(that.storageKeys.get(i))) {
+                return false;
+            }
         }
         return true;
     }

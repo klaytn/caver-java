@@ -22,8 +22,8 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.klaytn.caver.transaction.utils.accessList.AccessList;
-import com.klaytn.caver.transaction.utils.accessList.AccessTuple;
+import com.klaytn.caver.transaction.utils.AccessList;
+import com.klaytn.caver.transaction.utils.AccessTuple;
 import org.web3j.protocol.core.Response;
 
 import java.io.IOException;

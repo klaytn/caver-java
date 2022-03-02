@@ -21,7 +21,7 @@ import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.transaction.TransactionDecoder;
 import com.klaytn.caver.transaction.TransactionHelper;
 import com.klaytn.caver.transaction.utils.TransactionUtils;
-import com.klaytn.caver.transaction.utils.accessList.wrapper.AccessListWrapper;
+import com.klaytn.caver.transaction.utils.wrapper.AccessListWrapper;
 import com.klaytn.caver.transaction.type.wrapper.*;
 
 import java.util.List;

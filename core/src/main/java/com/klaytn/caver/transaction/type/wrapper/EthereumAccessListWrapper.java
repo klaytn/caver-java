@@ -17,7 +17,7 @@
 package com.klaytn.caver.transaction.type.wrapper;
 
 import com.klaytn.caver.rpc.Klay;
-import com.klaytn.caver.transaction.utils.accessList.AccessList;
+import com.klaytn.caver.transaction.utils.AccessList;
 import com.klaytn.caver.transaction.type.EthereumAccessList;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 

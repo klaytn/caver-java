@@ -16,7 +16,7 @@
 
 package com.klaytn.caver.transaction.utils;
 
-import com.klaytn.caver.transaction.utils.accessList.wrapper.AccessListWrapper;
+import com.klaytn.caver.transaction.utils.wrapper.AccessListWrapper;
 
 /**
  * TransactionUtils includes various helper classes for transaction packages.

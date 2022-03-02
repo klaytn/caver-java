@@ -381,7 +381,7 @@ public class EthereumAccessListTest {
             );
 
             // Test-1: encoding EthereumAccessList which have an address and a storage key.
-            String expectedRLP ="0x7801f88701040a8301e241808080f838f7940000000000000000000000000000000000000001e1a0000000000000000000000000000000000000000000000000000000000000000001a05d2368dff6ab943d3467558de70805d5b6a4367ab94b1ee8a7ae53e4e0f68293a01d68f38dce681c32cd001ca155b2b27e26ddd788b4bdaaf355181c626805ec7f";
+            String expectedRLP = "0x7801f88701040a8301e241808080f838f7940000000000000000000000000000000000000001e1a0000000000000000000000000000000000000000000000000000000000000000001a05d2368dff6ab943d3467558de70805d5b6a4367ab94b1ee8a7ae53e4e0f68293a01d68f38dce681c32cd001ca155b2b27e26ddd788b4bdaaf355181c626805ec7f";
             EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
                     TxPropertyBuilder.ethereumAccessList()
                             .setFrom(null)
@@ -563,6 +563,123 @@ public class EthereumAccessListTest {
 
 
     }
+
+    public static class getTransactionHashTest {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        static Caver caver = new Caver(Caver.DEFAULT_URL);
+        static String gas = "0x1e241";
+        static String gasPrice = "0x0a";
+        static String to = "0x095e7baea6a6c7c4c2dfeb977efac326af552d87";
+        static String chainID = "0x1";
+        static String input = "0x616263646566";
+        static String value = "0x0";
+        static String nonce = "0x4";
+
+        static AccessList accessList = new AccessList(Arrays.asList(
+                new AccessTuple("0x0000000000000000000000000000000000000001",
+                        Arrays.asList(
+                                "0x0000000000000000000000000000000000000000000000000000000000000000"
+                        )),
+                new AccessTuple("0x284e47e6130523b2507ba38cea17dd40a20a0cd0",
+                        Arrays.asList(
+                                "0xd2db659067b2b322f7010149472b81f172b9e331e1831ebee11c7b73facb0761",
+                                "0xd2b691e13d4c3754fbe5dc75439f25dd11a908d89f5bbc55cd5bc4978f078b7c"
+                        )),
+                new AccessTuple("0x0000000000000000000000000000000000000003",
+                        Arrays.asList(
+                                "0x6eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681",
+                                "0x46d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc"
+                        ))
+        ));
+
+        static SignatureData signatureData = new SignatureData(
+                Numeric.hexStringToByteArray("0x01"),
+                Numeric.hexStringToByteArray("0x26e8a6755fbf9d8d32271753c332718825881fef855e7f9e4868e2d16f908caa"),
+                Numeric.hexStringToByteArray("0x412c0e1dc1fe87fcc7b262be995701dc0606038844f8a0da1eaddef965d8fc2b")
+        );
+
+        @Test
+        public void getTransactionHash() {
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setTo(to)
+                            .setAccessList(accessList)
+                            .setSignatures(signatureData)
+            );
+
+            String expected = "0x327372b5cd4f8d8fdbd12ea236da247b87ccfd8ed2e2c3b6ad65965f872474e7";
+            String txHash = ethereumAccessList.getTransactionHash();
+
+            assertEquals(expected, txHash);
+        }
+
+        @Test
+        public void throwException_NotDefined_Nonce() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");
+
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setTo(to)
+                            .setAccessList(accessList)
+                            .setSignatures(signatureData)
+            );
+
+            ethereumAccessList.getTransactionHash();
+        }
+
+        @Test
+        public void throwException_NotDefined_GasPrice() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
+
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setGas(gas)
+                            .setNonce(nonce)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setInput(input)
+                            .setTo(to)
+                            .setAccessList(accessList)
+                            .setSignatures(signatureData)
+            );
+            ethereumAccessList.getRawTransaction();
+        }
+
+        @Test
+        public void throwException_NotDefined_ChainId() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("chainId is undefined. Define chainId in transaction or use 'transaction.fillTransaction' to fill values.");
+
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setGas(gas)
+                            .setNonce(nonce)
+                            .setGasPrice(gasPrice)
+                            .setValue(value)
+                            .setInput(input)
+                            .setTo(to)
+                            .setAccessList(accessList)
+                            .setSignatures(signatureData)
+            );
+            ethereumAccessList.getTransactionHash();
+        }
+    }
+
 
     public static class combineSignatureTest {
         @Rule

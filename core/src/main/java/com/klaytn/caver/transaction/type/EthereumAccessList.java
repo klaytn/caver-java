@@ -22,6 +22,7 @@ import com.klaytn.caver.transaction.utils.AccessList;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.SignatureData;
+import org.web3j.crypto.Hash;
 import org.web3j.rlp.*;
 import org.web3j.utils.Numeric;
 
@@ -176,7 +177,7 @@ public class EthereumAccessList extends AbstractTransaction {
 
     @Override
     public String getRLPEncoding() {
-        // TxHashRLP = 0x7801 + encode([chainId, nonce, gasPrice, gas, to, value, data, accessList, signatureYParity, signatureR, signatureS])
+        // TransactionPayload = 0x7801 + encode([chainId, nonce, gasPrice, gas, to, value, data, accessList, signatureYParity, signatureR, signatureS])
         this.validateOptionalValues(true);
 
         List<RlpType> rlpTypeList = new ArrayList<>();
@@ -344,6 +345,15 @@ public class EthereumAccessList extends AbstractTransaction {
         }
 
         super.appendSignatures(signatureData);
+    }
+
+    @Override
+    public String getTransactionHash() {
+        // TxHashRLP = 0x01 + encode([chainId, nonce, gasPrice, gas, to, value, data, accessList, signatureYParity, signatureR, signatureS])
+        String rlpEncoded = this.getRLPEncoding();
+        byte[] rlpEncodedBytes = Numeric.hexStringToByteArray(rlpEncoded);
+        byte[] detachedType = Arrays.copyOfRange(rlpEncodedBytes, 1, rlpEncodedBytes.length);
+        return Hash.sha3(Numeric.toHexString(detachedType));
     }
 
     /**

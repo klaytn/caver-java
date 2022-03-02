@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.klaytn.caver.transaction.accessList;
+package com.klaytn.caver.transaction.utils.accessList;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;

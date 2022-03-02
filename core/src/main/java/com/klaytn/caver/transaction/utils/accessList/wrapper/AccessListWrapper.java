@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.klaytn.caver.transaction.accessList.wrapper;
+package com.klaytn.caver.transaction.utils.accessList.wrapper;
 
-import com.klaytn.caver.transaction.accessList.AccessList;
-import com.klaytn.caver.transaction.accessList.AccessTuple;
+import com.klaytn.caver.transaction.utils.accessList.AccessList;
+import com.klaytn.caver.transaction.utils.accessList.AccessTuple;
 import org.web3j.rlp.RlpList;
 
 import java.util.List;

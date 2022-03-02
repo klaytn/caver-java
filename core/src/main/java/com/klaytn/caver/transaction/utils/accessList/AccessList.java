@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.klaytn.caver.transaction.accessList;
+package com.klaytn.caver.transaction.utils.accessList;
 
 import org.web3j.rlp.*;
 import org.web3j.utils.Numeric;

@@ -20,8 +20,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.transaction.accessList.AccessList;
-import com.klaytn.caver.transaction.accessList.AccessTuple;
+import com.klaytn.caver.transaction.utils.accessList.AccessList;
+import com.klaytn.caver.transaction.utils.accessList.AccessTuple;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,7 +61,7 @@ public class AccessListTest {
 
         @Test
         public void create() throws IOException {
-            AccessList accessList = caver.transaction.accessList.create(
+            AccessList accessList = caver.transaction.utils.accessList.create(
                     Arrays.asList(
                             new AccessTuple(
                                     "0x2c8ad0ea2e0781db8b8c9242e07de3a5beabb71a",
@@ -144,7 +144,7 @@ public class AccessListTest {
     public static class decodeTest {
         @Test
         public void decodeString() throws IOException {
-            AccessList decodedAccessList = caver.transaction.accessList.decode(encodedAccessList);
+            AccessList decodedAccessList = caver.transaction.utils.accessList.decode(encodedAccessList);
             System.out.println(objectToString(decodedAccessList));
             Assert.assertTrue(accessList.equals(decodedAccessList));
         }

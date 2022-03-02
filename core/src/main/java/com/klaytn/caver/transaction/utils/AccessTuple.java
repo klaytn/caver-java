@@ -146,11 +146,16 @@ public class AccessTuple {
 
         AccessTuple that = (AccessTuple) o;
 
-        if (!address.equals(that.address)) {
+        if (!address.equalsIgnoreCase(that.address)) {
             return false;
         }
-        if (!storageKeys.equals(that.storageKeys)) {
+        if (storageKeys.size() != that.storageKeys.size()) {
             return false;
+        }
+        for (int i = 0; i < storageKeys.size(); i++) {
+            if (!storageKeys.get(i).equalsIgnoreCase(that.storageKeys.get(i))) {
+                return false;
+            }
         }
         return true;
     }

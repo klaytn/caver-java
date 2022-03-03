@@ -101,7 +101,7 @@ public class PrivateKey {
      * <pre>Example :
      * {@code
      * String hash = "0x{hash}";
-     * PrivateKey prvKey = new PrivateKey("{privateKeyString});
+     * PrivateKey prvKey = new PrivateKey("{privateKeyString}");
      *
      * SignatureData sign = prvKey.ecsign(hash);
      * }

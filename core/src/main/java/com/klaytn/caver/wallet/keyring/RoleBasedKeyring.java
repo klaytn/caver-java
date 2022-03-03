@@ -114,7 +114,7 @@ public class RoleBasedKeyring extends AbstractKeyring {
      * <pre>Example :
      * {@code
      * RoleBasedKeyring keyring = new RoleBasedKeyring(.....);
-     * SignatureData signatureList = keyring.ecsign("0xe9a11d9ef95fb437f75d07ce768d43e74f158dd54b106e7d3746ce29d545b550", AccountKeyRoleBased.RoleGroup.TRANSACTION, 0);
+     * SignatureData signature = keyring.ecsign("0xe9a11d9ef95fb437f75d07ce768d43e74f158dd54b106e7d3746ce29d545b550", AccountKeyRoleBased.RoleGroup.TRANSACTION, 0);
      * }
      * </pre>
      *

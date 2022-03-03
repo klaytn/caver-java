@@ -83,7 +83,7 @@ public class MultipleKeyring extends AbstractKeyring{
     }
 
     /**
-     * Signs a transaction hash with all private keys in specific role group and return signature list which V is 0 or 1(parity of the y-value of a secp256k1 signature). <p>
+     * Signs a transaction hash with all private keys in specific role group and returns a signature list which V is 0 or 1(parity of the y-value of a secp256k1 signature). <p>
      * MultipleKeyring doesn't define the role group, so it signs a transaction using all keys existed in MultipleKeyring.
      * The role used in caver-java can be checked through {@link com.klaytn.caver.account.AccountKeyRoleBased.RoleGroup}.
      * <pre>Example :
@@ -108,7 +108,7 @@ public class MultipleKeyring extends AbstractKeyring{
     }
 
     /**
-     * Signs a transaction hash with key in specific role group and return signature.
+     * Signs a transaction hash with key in specific role group and returns a signature.
      * MultipleKeyring doesn't define the role group, so it signs a transaction using specific key existed in MultipleKeyring.
      * The role used in caver-java can be checked through {@link com.klaytn.caver.account.AccountKeyRoleBased.RoleGroup}.
      * <pre>Example :

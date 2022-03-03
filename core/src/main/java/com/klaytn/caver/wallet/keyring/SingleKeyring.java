@@ -79,7 +79,7 @@ public class SingleKeyring extends AbstractKeyring{
     }
 
     /**
-     * Signs a transaction hash with private key in specific role group and return signature list which V is 0 or 1(parity of the y-value of a secp256k1 signature). <p>
+     * Signs a transaction hash with private key in specific role group and returns a signature list which V is 0 or 1(parity of the y-value of a secp256k1 signature). <p>
      * SingleKeyring doesn't define the role group, so it signs a transaction using key existed in SingleKeyring.
      * The role used in caver-java can be checked through {@link com.klaytn.caver.account.AccountKeyRoleBased.RoleGroup}.
      * <pre>Example :
@@ -102,7 +102,7 @@ public class SingleKeyring extends AbstractKeyring{
     }
 
     /**
-     * Signs a transaction hash with private key in specific role group and return signature list which V is 0 or 1(parity of the y-value of a secp256k1 signature). <p>
+     * Signs a transaction hash with private key in specific role group and returns a signature list which V is 0 or 1(parity of the y-value of a secp256k1 signature). <p>
      * SingleKeyring doesn't define the role group and only have one private key, so it signs a transaction using key existed in SingleKeyring.<p>
      * The role used in caver-java can be checked through {@link com.klaytn.caver.account.AccountKeyRoleBased.RoleGroup}.<p>
      * The index value must 0.

@@ -445,7 +445,22 @@ public class Klay {
     }
 
     /**
-     * Returns a block header by block number.
+     * Returns a block header by block tag.
+     * <pre>Example :
+     * {@code
+     *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(DefaultBlockParameterName.LATEST);
+     *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
+     * }
+     * </pre>
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return BlockHeader
+     */
+    public Request<?, BlockHeader> getHeaderByNumber(DefaultBlockParameterName blockTag) {
+        return getHeaderByNumber(DefaultBlockParameter.valueOf(blockTag.getValue()));
+    }
+
+    /**
+     * Returns a block header by block number or block tag.
      * <pre>Example :
      * {@code
      *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(DefaultBlockParameterName.LATEST);
@@ -498,7 +513,22 @@ public class Klay {
     }
 
     /**
-     * Returns a block header by block number.
+     * Returns a block header by block tag.
+     * <pre>Example :
+     * {@code
+     *  BlockHeader response = caver.rpc.klay.getHeader(DefaultBlockParameterName.LATEST);
+     *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
+     * }
+     * </pre>
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return BlockHeader
+     */
+    public Request<?, BlockHeader> getHeader(DefaultBlockParameterName blockTag) {
+        return getHeaderByNumber(DefaultBlockParameter.valueOf(blockTag.getValue()));
+    }
+
+    /**
+     * Returns a block header by block number or block tag.
      * <pre>Example :
      * {@code
      *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(DefaultBlockParameterName.LATEST);
@@ -1449,6 +1479,24 @@ public class Klay {
                 Arrays.asList(data),
                 web3jService,
                 Bytes.class);
+    }
+
+
+    /**
+     * Returns a list of addresses and storage keys used by the transaction, plus the gas consumed when the access list is added.
+     * <pre>
+     * {@code
+     *
+     * AccessListResult accessListResult = caver.rpc.klay.createAccessList(callObject, DefaultBlockParameterName.LATEST).send();
+     *
+     * }
+     * </pre>
+     * @param callObject The transaction call object.
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return AccessListResult
+     */
+    public Request<?,AccessListResult> createAccessList(CallObject callObject, DefaultBlockParameterName blockTag) {
+        return createAccessList(callObject, DefaultBlockParameter.valueOf(blockTag.getValue()));
     }
 
     /**

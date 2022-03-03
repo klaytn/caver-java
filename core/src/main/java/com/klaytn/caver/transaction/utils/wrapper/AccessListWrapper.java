@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Represents a AccessListWrapper
  * 1. This class wraps all of static methods of AccessList
- * 2. This class should be accessed via `caver.transaction.ethereumAccessList`
+ * 2. This class should be accessed via `caver.transaction.utils.accessList`
  */
 public class AccessListWrapper {
     /**

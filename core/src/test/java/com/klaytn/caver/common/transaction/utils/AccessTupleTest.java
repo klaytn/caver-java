@@ -60,7 +60,8 @@ public class AccessTupleTest {
                     )
             );
 
-            // Checksum address and upper case letter should be accepted.
+            // Checksum address should be accepted.
+            // Uppercase storage keys will be converted as small case letter when creating AccessTuple.
             Assert.assertEquals(expectedAccessTuple, accessTuple);
             Assert.assertTrue(Arrays.equals(expectedAccessTuple.encodeToBytes(), accessTuple.encodeToBytes()));
         }
@@ -86,7 +87,7 @@ public class AccessTupleTest {
             // 1 byte-short
             String invalidStorageKey = "0x4F42391603E79B2A90C3FBFC070C995EB1163E0AC00FB4E8F3DA2DC81C451B";
             expectedException.expect(RuntimeException.class);
-            expectedException.expectMessage("Invalid storageKey. Storage key should be a 32 bytes of hex string " + invalidStorageKey);
+            expectedException.expectMessage("Invalid storageKey. Storage key should be a 32 bytes of hex string " + invalidStorageKey.toLowerCase());
 
             new AccessTuple(
                     "0x4173C51bd0e64A4c58656A5401373A476E8534Ec",
@@ -96,5 +97,28 @@ public class AccessTupleTest {
                     )
             );
         }
+
+        @Test
+        public void create_orderedKeys() {
+            AccessTuple accessTuple = new AccessTuple(
+                    "0x4173C51bd0e64A4c58656A5401373A476E8534Ec",
+                    Arrays.asList(
+                            "0XC4A32ABDF1905059FDFC304AAE1E8924279A36B2A6428552237F590156ED7717",
+                            "0XaF42391603E79B2A90C3FBFC070C995EB1163E0AC00FB4E8F3DA2DC81C451B98",
+                            "0XbF42391603E79B2A90C3FBFC070C995EB1163E0AC00FB4E8F3DA2DC81C451B98",
+                            "0XcF42391603E79B2A90C3FBFC070C995EB1163E0AC00FB4E8F3DA2DC81C451B98"
+                    )
+            );
+            Assert.assertEquals(
+                    Arrays.asList(
+                        "0xaf42391603e79b2a90c3fbfc070c995eb1163e0ac00fb4e8f3da2dc81c451b98",
+                        "0xbf42391603e79b2a90c3fbfc070c995eb1163e0ac00fb4e8f3da2dc81c451b98",
+                        "0xc4a32abdf1905059fdfc304aae1e8924279a36b2a6428552237f590156ed7717",
+                        "0xcf42391603e79b2a90c3fbfc070c995eb1163e0ac00fb4e8f3da2dc81c451b98"
+                    ),
+                    accessTuple.getStorageKeys()
+            );
+        }
+
     }
 }

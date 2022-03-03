@@ -17,6 +17,7 @@
 package com.klaytn.caver.transaction.utils;
 
 import com.klaytn.caver.transaction.utils.wrapper.AccessListWrapper;
+import com.klaytn.caver.transaction.utils.wrapper.AccessTupleWrapper;
 
 /**
  * TransactionUtils includes various helper classes for transaction packages.
@@ -28,10 +29,16 @@ public class TransactionUtils {
     public AccessListWrapper accessList;
 
     /**
+     * AccessTupleWrapper instance.
+     */
+    public AccessTupleWrapper accessTuple;
+
+    /**
      * Creates a TransactionUtils instance.
      * @param accessList An instance of AccessListWrapper class.
      */
-    public TransactionUtils(AccessListWrapper accessList) {
+    public TransactionUtils(AccessListWrapper accessList, AccessTupleWrapper accessTuple) {
         this.accessList = accessList;
+        this.accessTuple = accessTuple;
     }
 }

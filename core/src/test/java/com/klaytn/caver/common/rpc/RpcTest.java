@@ -464,8 +464,8 @@ public class RpcTest extends Accounts {
         static TransactionReceipt.TransactionReceiptData sampleReceiptData;
 
         private static TransactionReceipt.TransactionReceiptData sendKlay() throws IOException, TransactionException {
-           Caver caver = new Caver(Caver.DEFAULT_URL);
-           AbstractKeyring keyring = caver.wallet.add(KeyringFactory.createFromPrivateKey("0x871ccee7755bb4247e783110cafa6437f9f593a1eaeebe0efcc1b0852282c3e5"));
+            Caver caver = new Caver(Caver.DEFAULT_URL);
+            AbstractKeyring keyring = caver.wallet.add(KeyringFactory.createFromPrivateKey("0x871ccee7755bb4247e783110cafa6437f9f593a1eaeebe0efcc1b0852282c3e5"));
 
             BigInteger value = new BigInteger(Utils.convertToPeb(BigDecimal.ONE, "KLAY"));
 
@@ -945,8 +945,8 @@ public class RpcTest extends Accounts {
                 nonce = nonce.add(BigInteger.valueOf(1));
 
                 if (i != txsCount - 1) {
-                   caver.rpc.klay.sendRawTransaction(tx).send();
-                   continue;
+                    caver.rpc.klay.sendRawTransaction(tx).send();
+                    continue;
                 }
                 Bytes32 sendResult = caver.rpc.klay.sendRawTransaction(tx).send();
                 Thread.sleep(5000);

@@ -52,6 +52,15 @@ public class AccessTuple {
     }
 
     /**
+     * Create an AccessTuple instance.
+     * @param address
+     * @param storageKeys
+     */
+    public static AccessTuple create(String address, List<String> storageKeys) {
+        return new AccessTuple(address, storageKeys);
+    }
+
+    /**
      * Getter function of address.
      * @return String
      */
@@ -96,7 +105,7 @@ public class AccessTuple {
 
     /**
      * Decodes given RlpList to AccessTuple.
-     * @param rlpEncodedAccessTuple
+     * @param rlpEncodedAccessTuple RlpList representing rlp encoded access tuple.
      * @return
      */
     public static AccessTuple decode(RlpList rlpEncodedAccessTuple) {

@@ -84,6 +84,13 @@ public class TransactionHelperTest {
         }
 
         @Test
+        public void ethereumAccessList() {
+            Transaction.TransactionData txObject = sampleTxData.get("ethereumAccessList");
+            EthereumAccessList ethereumAccessList = (EthereumAccessList)txObject.convertToCaverTransaction(caver.rpc.klay);
+            checkTxObject(txObject, ethereumAccessList);
+        }
+
+        @Test
         public void valueTransfer() {
             Transaction.TransactionData txObject = sampleTxData.get("valueTransfer");
             ValueTransfer valueTransfer = (ValueTransfer)txObject.convertToCaverTransaction(caver.rpc.klay);

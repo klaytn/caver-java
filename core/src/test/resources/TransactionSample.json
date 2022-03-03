@@ -616,5 +616,37 @@
     "transactionIndex":"0x0",
     "type":"TxTypeFeeDelegatedChainDataAnchoringWithRatio",
     "typeInt":74
+  },
+  "ethereumAccessList":{
+    "accessList": [
+      {
+        "address": "0xca7a99380131e6c76cfa622396347107aeedca2d",
+        "storageKeys": [
+          "0x0709c257577296fac29c739dad24e55b70a260497283cf9885ab67b4daa9b67f"
+        ]
+      }
+    ],
+    "blockHash": "0x43459f308ba7e54976491922c062cad07c70798a24de403ee830f2c36f0eb59e",
+    "blockNumber": "0x5b",
+    "chainID": "0x7e3",
+    "from": "0xca7a99380131e6c76cfa622396347107aeedca2d",
+    "gas": "0xf423f",
+    "gasPrice": "0x5d21dba00",
+    "hash": "0x658b0aa2b625a1a0c3c9fe54e7f5f51ba962aeb7e62ae2ed338597058a603d71",
+    "input": "0x",
+    "nonce": "0x0",
+    "senderTxHash": "0x658b0aa2b625a1a0c3c9fe54e7f5f51ba962aeb7e62ae2ed338597058a603d71",
+    "signatures": [
+      {
+        "R": "0x1c064e8434def2a74b129dfaa5bd98e8fb8402fc5db284ecdd6807351681ba75",
+        "S": "0x3515882ee8d0d3a59c3075eca9748695f0a3e9a7f52b7e4987950eef52bbb42",
+        "V": "0x1"
+      }
+    ],
+    "to": "0x8c9f4468ae04fb3d79c80f6eacf0e4e1dd21deee",
+    "transactionIndex": "0x0",
+    "type": "TxTypeEthereumAccessList",
+    "typeInt": 30721,
+    "value": "0x1"
   }
 }

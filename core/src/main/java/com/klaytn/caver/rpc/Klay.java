@@ -34,6 +34,7 @@ import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.DefaultBlockParameterNumber;
 import org.web3j.protocol.core.Request;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -431,36 +432,51 @@ public class Klay {
      * Returns a block header by block number.
      * <pre>Example :
      * {@code
-     *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(5);
+     *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(BigInteger.valueOf(5));
      *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
      * }
      * </pre>
      * @param blockNumber The block number.
      * @return BlockHeader
      */
-    public Request<?, BlockHeader> getHeaderByNumber(long blockNumber) {
-        return new Request<>(
-                "klay_getHeaderByNumber",
-                Arrays.asList(blockNumber),
-                web3jService,
-                BlockHeader.class);
+    public Request<?, BlockHeader> getHeaderByNumber(BigInteger blockNumber) {
+        DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
+        return getHeaderByNumber(blockParameterNumber);
     }
 
     /**
-     * Returns a block header by block number.
+     * Returns a block header by block tag.
      * <pre>Example :
      * {@code
      *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(DefaultBlockParameterName.LATEST);
      *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
      * }
      * </pre>
-     * @param defaultBlockParameter The string "latest", "earliest", or "pending".
+     * @param blockTag The string "latest", "earliest" or "pending"
      * @return BlockHeader
      */
-    public Request<?, BlockHeader> getHeaderByNumber(DefaultBlockParameter defaultBlockParameter) {
+    public Request<?, BlockHeader> getHeaderByNumber(DefaultBlockParameterName blockTag) {
+        return getHeaderByNumber(DefaultBlockParameter.valueOf(blockTag.getValue()));
+    }
+
+    /**
+     * Returns a block header by block number or block tag.
+     * <pre>Example :
+     * {@code
+     *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(DefaultBlockParameterName.LATEST);
+     *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
+     *
+     *  response = caver.rpc.klay.getHeaderByNumber(new DefaultBlockParameterNumber(0));
+     *  blockHeaderData = response.getResult();
+     * }
+     * </pre>
+     * @param blockNumberOrTag The block number or block tag which is one of "latest", "earliest", or "pending".
+     * @return BlockHeader
+     */
+    public Request<?, BlockHeader> getHeaderByNumber(DefaultBlockParameter blockNumberOrTag) {
         return new Request<>(
                 "klay_getHeaderByNumber",
-                Arrays.asList(defaultBlockParameter),
+                Arrays.asList(blockNumberOrTag),
                 web3jService,
                 BlockHeader.class);
     }
@@ -485,30 +501,48 @@ public class Klay {
      * Returns a block header by block number.
      * <pre>Example :
      * {@code
-     *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(5);
+     *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(BigInteger.valueOf(5));
      *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
      * }
      * </pre>
      * @param blockNumber The block number.
      * @return BlockHeader
      */
-    public Request<?, BlockHeader> getHeader(long blockNumber) {
+    public Request<?, BlockHeader> getHeader(BigInteger blockNumber) {
         return getHeaderByNumber(blockNumber);
     }
 
     /**
-     * Returns a block header by block number.
+     * Returns a block header by block tag.
+     * <pre>Example :
+     * {@code
+     *  BlockHeader response = caver.rpc.klay.getHeader(DefaultBlockParameterName.LATEST);
+     *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
+     * }
+     * </pre>
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return BlockHeader
+     */
+    public Request<?, BlockHeader> getHeader(DefaultBlockParameterName blockTag) {
+        return getHeaderByNumber(DefaultBlockParameter.valueOf(blockTag.getValue()));
+    }
+
+    /**
+     * Returns a block header by block number or block tag.
      * <pre>Example :
      * {@code
      *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(DefaultBlockParameterName.LATEST);
      *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
+     *
+     *  response = caver.rpc.klay.getHeaderByNumber(new DefaultBlockParameterNumber(0));
+     *  blockHeaderData = response.getResult();
      * }
      * </pre>
-     * @param blockTag The string "latest", "earliest", or "pending".
+     * @param blockNumberOrTag The block number or block tag which is one of "latest", "earliest", or "pending".
      * @return BlockHeader
      */
-    public Request<?, BlockHeader> getHeader(DefaultBlockParameter blockTag) {
-        return getHeaderByNumber(blockTag);
+    public Request<?, BlockHeader> getHeader(DefaultBlockParameter blockNumberOrTag) {
+        return getHeaderByNumber(blockNumberOrTag);
     }
 
     /**
@@ -1447,6 +1481,7 @@ public class Klay {
                 Bytes.class);
     }
 
+
     /**
      * Returns a list of addresses and storage keys used by the transaction, plus the gas consumed when the access list is added.
      * <pre>
@@ -1457,16 +1492,35 @@ public class Klay {
      * }
      * </pre>
      * @param callObject The transaction call object.
-     * @param defaultBlockParameter A block number, or the block tag string `latest` or `earliest`. If omitted, `latest` will be used.
+     * @param blockTag The string "latest", "earliest" or "pending"
      * @return AccessListResult
      */
-    public Request<?,AccessListResult> createAccessList(CallObject callObject, DefaultBlockParameter defaultBlockParameter) {
-        if (defaultBlockParameter == null) {
-            defaultBlockParameter = DefaultBlockParameterName.LATEST;
+    public Request<?,AccessListResult> createAccessList(CallObject callObject, DefaultBlockParameterName blockTag) {
+        return createAccessList(callObject, DefaultBlockParameter.valueOf(blockTag.getValue()));
+    }
+
+    /**
+     * Returns a list of addresses and storage keys used by the transaction, plus the gas consumed when the access list is added.
+     * <pre>
+     * {@code
+     *
+     * AccessListResult accessListResult = caver.rpc.klay.createAccessList(callObject, DefaultBlockParameterName.LATEST).send();
+     *
+     * accessListResult = caver.rpc.klay.createAccessList(callObject, new DefaultBlockParameterNumber(1)).send();
+     *
+     * }
+     * </pre>
+     * @param callObject The transaction call object.
+     * @param blockNumberOrTag The block number or block tag which is one of "latest", "earliest", or "pending".
+     * @return AccessListResult
+     */
+    public Request<?,AccessListResult> createAccessList(CallObject callObject, DefaultBlockParameter blockNumberOrTag) {
+        if (blockNumberOrTag == null) {
+            blockNumberOrTag = DefaultBlockParameterName.LATEST;
         }
         return new Request<>(
                 "klay_createAccessList",
-                Arrays.asList(callObject, defaultBlockParameter),
+                Arrays.asList(callObject, blockNumberOrTag),
                 web3jService,
                 AccessListResult.class
         );
@@ -1500,7 +1554,7 @@ public class Klay {
      * <pre>
      * {@code
      *
-     * long blockNumber = 5;
+     * BigInteger blockNumber = BigInteger.valueOf(5);
      * AccessListResult accessListResult = caver.rpc.klay.createAccessList(callObject, blockNumber).send();
      *
      * }
@@ -1509,10 +1563,10 @@ public class Klay {
      * @param blockNumber The block number.
      * @return AccessListResult
      */
-    public Request<?, AccessListResult> createAccessList(CallObject callObject, long blockNumber) {
+    public Request<?, AccessListResult> createAccessList(CallObject callObject, BigInteger blockNumber) {
         return new Request<>(
                 "klay_createAccessList",
-                Arrays.asList(callObject, blockNumber),
+                Arrays.asList(callObject, new DefaultBlockParameterNumber(blockNumber)),
                 web3jService,
                 AccessListResult.class
         );

@@ -1279,7 +1279,7 @@ public class Klay {
     /**
      * Returns a suggestion for a gas tip cap for dynamic fee transactions in peb.<p>
      * Note: Since Klaytn has a fixed gas price, this `caver.rpc.klay.getMaxPriorityFeePerGas` returns the gas price set by Klaytn.
-     * <pre>
+     * <pre> Example : 
      * {@code
      *
      * Quantity response = caver.rpc.klay.getMaxPriorityFeePerGas().send();
@@ -1484,7 +1484,7 @@ public class Klay {
 
     /**
      * Returns a list of addresses and storage keys used by the transaction, plus the gas consumed when the access list is added.
-     * <pre>
+     * <pre> Example : 
      * {@code
      *
      * BigInteger blockNumber = BigInteger.valueOf(5);
@@ -1519,7 +1519,7 @@ public class Klay {
 
     /**
      * Returns a list of addresses and storage keys used by the transaction, plus the gas consumed when the access list is added.
-     * <pre>
+     * <pre> Example : 
      * {@code
      *
      * AccessListResult accessListResult = caver.rpc.klay.createAccessList(callObject, DefaultBlockParameterName.LATEST).send();

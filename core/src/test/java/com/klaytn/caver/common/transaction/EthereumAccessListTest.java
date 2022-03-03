@@ -17,7 +17,9 @@
 package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.transaction.TransactionDecoder;
+import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.type.EthereumAccessList;
 import com.klaytn.caver.transaction.type.TransactionType;
@@ -25,8 +27,7 @@ import com.klaytn.caver.transaction.utils.AccessList;
 import com.klaytn.caver.transaction.utils.AccessTuple;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.SignatureData;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
@@ -1276,6 +1277,284 @@ public class EthereumAccessListTest {
                             .setAccessList(accessList)
             );
             String encoded = ethereumAccessList.getRLPEncodingForSignature();
+        }
+    }
+
+    public static class signWithKeyTest {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        static Caver caver = new Caver();
+
+        static AbstractKeyring coupledKeyring;
+        static AbstractKeyring deCoupledKeyring;
+        static String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
+
+        static String gas = "0x1e241";
+        static String gasPrice = "0x0a";
+        static String to = "0x095e7baea6a6c7c4c2dfeb977efac326af552d87";
+        static String chainID = "0x1";
+        static String input = "0x616263646566";
+        static String value = "0x1";
+        static String nonce = "0x4";
+
+        static AccessList accessList = new AccessList(Arrays.asList(
+                new AccessTuple("0x0000000000000000000000000000000000000001",
+                        Arrays.asList(
+                                "0x0000000000000000000000000000000000000000000000000000000000000000"
+                        )),
+                new AccessTuple("0x284e47e6130523b2507ba38cea17dd40a20a0cd0",
+                        Arrays.asList(
+                                "0xd2b691e13d4c3754fbe5dc75439f25dd11a908d89f5bbc55cd5bc4978f078b7c",
+                                "0xd2db659067b2b322f7010149472b81f172b9e331e1831ebee11c7b73facb0761"
+                        )),
+                new AccessTuple("0x0000000000000000000000000000000000000003",
+                        Arrays.asList(
+                                "0x46d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc",
+                                "0x6eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681"
+                        ))
+        ));
+
+        public static EthereumAccessList createEthereumAccessList() {
+            return caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setTo(to)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setInput(input)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setAccessList(accessList)
+            );
+        }
+
+        static SignatureData expectedSignature = new SignatureData(
+                "0x01",
+                "0xbf84d5909e08e2e2bb1d5fa975fc2886fa0306c3279f1ad44ade0b8c5c094e7f",
+                "64bb96aea6a5b42fc0ef65365b7eb2b347de4e9a58167975307173b7bd52a4a8"
+        );
+        static String expectedRlpEncoded = "0x7801f9015701040a8301e24194095e7baea6a6c7c4c2dfeb977efac326af552d870186616263646566f8eef7940000000000000000000000000000000000000001e1a00000000000000000000000000000000000000000000000000000000000000000f85994284e47e6130523b2507ba38cea17dd40a20a0cd0f842a0d2b691e13d4c3754fbe5dc75439f25dd11a908d89f5bbc55cd5bc4978f078b7ca0d2db659067b2b322f7010149472b81f172b9e331e1831ebee11c7b73facb0761f859940000000000000000000000000000000000000003f842a046d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fca06eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f098368101a0bf84d5909e08e2e2bb1d5fa975fc2886fa0306c3279f1ad44ade0b8c5c094e7fa064bb96aea6a5b42fc0ef65365b7eb2b347de4e9a58167975307173b7bd52a4a8";
+
+
+        @BeforeClass
+        public static void preSetup() {
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(
+                    caver.wallet.keyring.generate().getAddress(),
+                    privateKey
+            );
+        }
+
+        @Test
+        public void signWithKey_Keyring() throws IOException {
+            EthereumAccessList ethereumAccessList = createEthereumAccessList();
+            AbstractTransaction tx = ethereumAccessList.sign(coupledKeyring, 0, TransactionHasher::getHashForSignature);
+            Assert.assertEquals(expectedSignature, tx.getSignatures().get(0));
+            Assert.assertEquals(expectedRlpEncoded, tx.getRawTransaction());
+        }
+
+        @Test
+        public void signWithKey_Keyring_NoIndex() throws IOException {
+            EthereumAccessList ethereumAccessList = createEthereumAccessList();
+            AbstractTransaction tx = ethereumAccessList.sign(coupledKeyring, TransactionHasher::getHashForSignature);
+            Assert.assertEquals(expectedSignature, tx.getSignatures().get(0));
+            Assert.assertEquals(expectedRlpEncoded, tx.getRawTransaction());
+        }
+
+        @Test
+        public void signWithKey_Keyring_NoSigner() throws IOException {
+            EthereumAccessList ethereumAccessList = createEthereumAccessList();
+            AbstractTransaction tx = ethereumAccessList.sign(coupledKeyring, 0);
+            Assert.assertEquals(expectedSignature, tx.getSignatures().get(0));
+            Assert.assertEquals(expectedRlpEncoded, tx.getRawTransaction());
+        }
+
+        @Test
+        public void signWithKey_Keyring_Only() throws IOException {
+            EthereumAccessList ethereumAccessList = createEthereumAccessList();
+            AbstractTransaction tx = ethereumAccessList.sign(coupledKeyring);
+            Assert.assertEquals(expectedSignature, tx.getSignatures().get(0));
+            Assert.assertEquals(expectedRlpEncoded, tx.getRawTransaction());
+        }
+
+        @Test
+        public void signWithKey_KeyString_NoIndex() throws IOException {
+            EthereumAccessList ethereumAccessList = createEthereumAccessList();
+            AbstractTransaction tx = ethereumAccessList.sign(privateKey, TransactionHasher::getHashForSignature);
+            Assert.assertEquals(expectedSignature, tx.getSignatures().get(0));
+            Assert.assertEquals(expectedRlpEncoded, tx.getRawTransaction());
+        }
+
+        @Test
+        public void throwException_decoupledKey() throws IOException {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("TxTypeEthereumAccessList cannot be signed with a decoupled keyring.");
+
+            EthereumAccessList ethereumAccessList = createEthereumAccessList();
+            ethereumAccessList.sign(deCoupledKeyring);
+        }
+
+        @Test
+        public void throwException_notEqualAddress() throws IOException {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("The from address of the transaction is different with the address of the keyring to use");
+
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setNonce(nonce)
+                            .setGas(Numeric.toBigInt(gas))
+                            .setGasPrice(Numeric.toBigInt(gasPrice))
+                            .setChainId(Numeric.toBigInt(chainID))
+                            .setInput(input)
+                            .setValue(Numeric.toBigInt(value))
+                            .setFrom("0x7b65b75d204abed71587c9e519a89277766aaaa1")
+                            .setTo(to)
+                            .setAccessList(accessList)
+            );
+
+            ethereumAccessList.sign(coupledKeyring);
+        }
+    }
+
+    public static class signWithKeysTest {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        static Caver caver = new Caver();
+
+        static AbstractKeyring coupledKeyring;
+        static AbstractKeyring deCoupledKeyring;
+        static String privateKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8";
+
+        static String gas = "0x1e241";
+        static String gasPrice = "0x0a";
+        static String to = "0x095e7baea6a6c7c4c2dfeb977efac326af552d87";
+        static String chainID = "0x1";
+        static String input = "0x616263646566";
+        static String value = "0x1";
+        static String nonce = "0x4";
+
+        static AccessList accessList = new AccessList(Arrays.asList(
+                new AccessTuple("0x0000000000000000000000000000000000000001",
+                        Arrays.asList(
+                                "0x0000000000000000000000000000000000000000000000000000000000000000"
+                        )),
+                new AccessTuple("0x284e47e6130523b2507ba38cea17dd40a20a0cd0",
+                        Arrays.asList(
+                                "0xd2b691e13d4c3754fbe5dc75439f25dd11a908d89f5bbc55cd5bc4978f078b7c",
+                                "0xd2db659067b2b322f7010149472b81f172b9e331e1831ebee11c7b73facb0761"
+                        )),
+                new AccessTuple("0x0000000000000000000000000000000000000003",
+                        Arrays.asList(
+                                "0x46d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fc",
+                                "0x6eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f0983681"
+                        ))
+        ));
+
+        public static EthereumAccessList createEthereumAccessList() {
+            return caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setTo(to)
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setInput(input)
+                            .setChainId(chainID)
+                            .setValue(value)
+                            .setAccessList(accessList)
+            );
+        }
+
+        static SignatureData expectedSignature = new SignatureData(
+                "0x01",
+                "0xbf84d5909e08e2e2bb1d5fa975fc2886fa0306c3279f1ad44ade0b8c5c094e7f",
+                "64bb96aea6a5b42fc0ef65365b7eb2b347de4e9a58167975307173b7bd52a4a8"
+        );
+        static String expectedRlpEncoded = "0x7801f9015701040a8301e24194095e7baea6a6c7c4c2dfeb977efac326af552d870186616263646566f8eef7940000000000000000000000000000000000000001e1a00000000000000000000000000000000000000000000000000000000000000000f85994284e47e6130523b2507ba38cea17dd40a20a0cd0f842a0d2b691e13d4c3754fbe5dc75439f25dd11a908d89f5bbc55cd5bc4978f078b7ca0d2db659067b2b322f7010149472b81f172b9e331e1831ebee11c7b73facb0761f859940000000000000000000000000000000000000003f842a046d62a62fb985e2e7691a9044b8fae9149311c7f3dcf669265fe5c96072ba4fca06eab5ba2ea17e1ef4eac404d25f1fe9224421e3b639aec73d3b99c39f098368101a0bf84d5909e08e2e2bb1d5fa975fc2886fa0306c3279f1ad44ade0b8c5c094e7fa064bb96aea6a5b42fc0ef65365b7eb2b347de4e9a58167975307173b7bd52a4a8";
+
+
+        @BeforeClass
+        public static void preSetup() {
+            coupledKeyring = caver.wallet.keyring.createFromPrivateKey(privateKey);
+            deCoupledKeyring = caver.wallet.keyring.createWithSingleKey(
+                    caver.wallet.keyring.generate().getAddress(),
+                    privateKey
+            );
+        }
+
+        @Test
+        public void signWithKeys_KeyString() throws IOException {
+            EthereumAccessList ethereumAccessList = createEthereumAccessList();
+            AbstractTransaction tx = ethereumAccessList.sign(privateKey, TransactionHasher::getHashForSignature);
+            Assert.assertEquals(expectedSignature, tx.getSignatures().get(0));
+            Assert.assertEquals(expectedRlpEncoded, tx.getRawTransaction());
+        }
+
+        @Test
+        public void signWithKeys_KeyString_KlaytnWalletKeyFormat() throws IOException {
+            EthereumAccessList ethereumAccessList = createEthereumAccessList();
+            String klaytnKey = privateKey + "0x00" + caver.wallet.keyring.createFromPrivateKey(privateKey).getAddress();
+            AbstractTransaction tx = ethereumAccessList.sign(klaytnKey, TransactionHasher::getHashForSignature);
+            Assert.assertEquals(expectedSignature, tx.getSignatures().get(0));
+            Assert.assertEquals(expectedRlpEncoded, tx.getRawTransaction());
+        }
+
+        @Test
+        public void throwException_KlaytnWalletKeyFormat_decoupledKey() throws IOException {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage(TransactionType.TxTypeEthereumAccessList + " cannot be signed with a decoupled keyring.");
+
+            EthereumAccessList ethereumAccessList = createEthereumAccessList();
+            String klaytnKey = privateKey + "0x00" + caver.wallet.keyring.generate().getAddress();
+            ethereumAccessList.sign(klaytnKey);
+        }
+
+        @Test
+        public void throwException_multipleKeyring() throws IOException {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage(TransactionType.TxTypeEthereumAccessList + " cannot be signed with a decoupled keyring.");
+
+            String[] privateKeyArr = {
+                    caver.wallet.keyring.generateSingleKey(),
+                    caver.wallet.keyring.generateSingleKey()
+            };
+
+            AbstractKeyring keyring = caver.wallet.keyring.createWithMultipleKey(
+                    caver.wallet.keyring.generate().getAddress(),
+                    privateKeyArr
+            );
+            EthereumAccessList ethereumAccessList = createEthereumAccessList();
+            ethereumAccessList.sign(keyring);
+        }
+
+        @Test
+        public void throwException_roleBasedKeyring() throws IOException {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage(TransactionType.TxTypeEthereumAccessList + " cannot be signed with a decoupled keyring.");
+
+            String[][] privateKeyArr = {
+                    {
+                            caver.wallet.keyring.generateSingleKey(),
+                            caver.wallet.keyring.generateSingleKey()
+                    },
+                    {
+                            caver.wallet.keyring.generateSingleKey(),
+                            caver.wallet.keyring.generateSingleKey()
+                    },
+                    {
+                            caver.wallet.keyring.generateSingleKey(),
+                            caver.wallet.keyring.generateSingleKey()
+                    }
+            };
+
+            EthereumAccessList ethereumAccessList = createEthereumAccessList();
+
+            AbstractKeyring keyring = caver.wallet.keyring.createWithRoleBasedKey(
+                    caver.wallet.keyring.generate().getAddress(),
+                    Arrays.asList(privateKeyArr)
+            );
+            ethereumAccessList.sign(keyring);
         }
     }
 

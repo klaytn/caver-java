@@ -16,20 +16,26 @@
 
 package com.klaytn.caver.transaction.type;
 
+import com.klaytn.caver.account.AccountKeyRoleBased;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.AbstractTransaction;
+import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.utils.AccessList;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
+import com.klaytn.caver.wallet.keyring.AbstractKeyring;
+import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.web3j.crypto.Hash;
 import org.web3j.rlp.*;
 import org.web3j.utils.Numeric;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Represents an ethereum access list transaction.
@@ -354,6 +360,78 @@ public class EthereumAccessList extends AbstractTransaction {
         byte[] rlpEncodedBytes = Numeric.hexStringToByteArray(rlpEncoded);
         byte[] detachedType = Arrays.copyOfRange(rlpEncodedBytes, 1, rlpEncodedBytes.length);
         return Hash.sha3(Numeric.toHexString(detachedType));
+    }
+
+    @Override
+    public AbstractTransaction sign(String keyString) throws IOException {
+        AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(keyString);
+        return this.sign(keyring, TransactionHasher::getHashForSignature);
+    }
+
+    @Override
+    public AbstractTransaction sign(AbstractKeyring keyring, Function<AbstractTransaction, String> signer) throws IOException {
+        if(TransactionType.isEthereumTransaction(this.getType()) && keyring.isDecoupled()) {
+            throw new IllegalArgumentException(this.getType() + " cannot be signed with a decoupled keyring.");
+        }
+
+        String from = getFrom();
+        if(from.equals("0x") || from.equals(Utils.DEFAULT_ZERO_ADDRESS) || from == null){
+            this.setFrom(keyring.getAddress());
+        }
+
+        if(!from.toLowerCase().equals(keyring.getAddress().toLowerCase())) {
+            throw new IllegalArgumentException("The from address of the transaction is different with the address of the keyring to use");
+        }
+
+        this.fillTransaction();
+
+        String hash = signer.apply(this);
+        List<SignatureData> sigList = keyring.ecsign(hash, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+
+        this.appendSignatures(sigList);
+
+        return this;
+    }
+
+    @Override
+    public AbstractTransaction sign(AbstractKeyring keyring) throws IOException {
+        return this.sign(keyring, TransactionHasher::getHashForSignature);
+    }
+
+    @Override
+    public AbstractTransaction sign(String keyString, Function<AbstractTransaction, String> signer) throws IOException {
+        AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(keyString);
+        return this.sign(keyring, signer);
+    }
+
+    @Override
+    public AbstractTransaction sign(AbstractKeyring keyring, int index) throws IOException {
+        return this.sign(keyring, index, TransactionHasher::getHashForSignature);
+    }
+
+    @Override
+    public AbstractTransaction sign(AbstractKeyring keyring, int index, Function<AbstractTransaction, String> signer) throws IOException {
+        if(TransactionType.isEthereumTransaction(this.getType()) && keyring.isDecoupled()) {
+            throw new IllegalArgumentException(this.getType() + " cannot be signed with a decoupled keyring.");
+        }
+
+        String from = getFrom();
+        if(from.equals("0x") || from.equals(Utils.DEFAULT_ZERO_ADDRESS) || from == null){
+            this.setFrom(keyring.getAddress());
+        }
+
+        if(!from.toLowerCase().equals(keyring.getAddress().toLowerCase())) {
+            throw new IllegalArgumentException("The from address of the transaction is different with the address of the keyring to use");
+        }
+
+        this.fillTransaction();
+
+        String hash = signer.apply(this);
+        SignatureData signatureData = keyring.ecsign(hash, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), index);
+
+        this.appendSignatures(signatureData);
+
+        return this;
     }
 
     /**

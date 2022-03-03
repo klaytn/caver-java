@@ -74,27 +74,27 @@ public class EthereumAccessList extends AbstractTransaction {
             super(TransactionType.TxTypeEthereumAccessList.toString());
         }
 
-        public EthereumAccessList.Builder setValue(String value) {
+        public Builder setValue(String value) {
             this.value = value;
             return this;
         }
 
-        public EthereumAccessList.Builder setValue(BigInteger value) {
+        public Builder setValue(BigInteger value) {
             setValue(Numeric.toHexStringWithPrefix(value));
             return this;
         }
 
-        public EthereumAccessList.Builder setInput(String input) {
+        public Builder setInput(String input) {
             this.input = input;
             return this;
         }
 
-        public EthereumAccessList.Builder setTo(String to) {
+        public Builder setTo(String to) {
             this.to = to;
             return this;
         }
 
-        public EthereumAccessList.Builder setAccessList(AccessList accessList) {
+        public Builder setAccessList(AccessList accessList) {
             this.accessList = accessList;
             return this;
         }

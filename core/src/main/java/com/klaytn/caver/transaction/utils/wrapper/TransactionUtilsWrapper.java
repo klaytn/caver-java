@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package com.klaytn.caver.transaction.utils;
-
-import com.klaytn.caver.transaction.utils.wrapper.AccessListWrapper;
-import com.klaytn.caver.transaction.utils.wrapper.AccessTupleWrapper;
+package com.klaytn.caver.transaction.utils.wrapper;
 
 /**
- * TransactionUtils includes various helper classes for transaction packages.
+ * TransactionUtilsWrapper provide usability so that the static method of the access list and the static method of the access tuple<p>
+ * can be accessed and used through `caver.transaction.utils`.
  */
-public class TransactionUtils {
+public class TransactionUtilsWrapper {
     /**
      * AccessListWrapper instance.
      */
@@ -35,10 +33,9 @@ public class TransactionUtils {
 
     /**
      * Creates a TransactionUtils instance.
-     * @param accessList An instance of AccessListWrapper class.
      */
-    public TransactionUtils(AccessListWrapper accessList, AccessTupleWrapper accessTuple) {
-        this.accessList = accessList;
-        this.accessTuple = accessTuple;
+    public TransactionUtilsWrapper() {
+        this.accessList = new AccessListWrapper();
+        this.accessTuple = new AccessTupleWrapper();
     }
 }

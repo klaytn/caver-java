@@ -47,7 +47,7 @@ public class FeeHistoryResult extends Response<FeeHistoryResult.FeeHistoryResult
         /**
          * An array of gasUsed/gasLimit in the block.
          */
-        private List<java.lang.Number> gasUsedRatio;
+        private List<Float> gasUsedRatio;
 
         public String getOldestBlock() {
             return oldestBlock;
@@ -73,11 +73,11 @@ public class FeeHistoryResult extends Response<FeeHistoryResult.FeeHistoryResult
             this.reward = reward;
         }
 
-        public List<java.lang.Number> getGasUsedRatio() {
+        public List<Float> getGasUsedRatio() {
             return gasUsedRatio;
         }
 
-        public void setGasUsedRatio(List<java.lang.Number> gasUsedRatio) {
+        public void setGasUsedRatio(List<Float> gasUsedRatio) {
             this.gasUsedRatio = gasUsedRatio;
         }
     }

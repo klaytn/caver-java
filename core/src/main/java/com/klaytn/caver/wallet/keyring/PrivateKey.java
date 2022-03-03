@@ -96,6 +96,31 @@ public class PrivateKey {
     }
 
     /**
+     * Signs with hashed data and returns signature data.<p>
+     * It returns a signature which has v as a parity of the y value(0 for even, 1 for odd) of secp256k1 signature.
+     * <pre>Example :
+     * {@code
+     * String hash = "0x{hash}";
+     * PrivateKey prvKey = new PrivateKey("{privateKeyString}");
+     *
+     * SignatureData sign = prvKey.ecsign(hash);
+     * }
+     * </pre>
+     * @param sigHash The hash to sign
+     * @return SignatureData
+     */
+    public SignatureData ecsign(String sigHash) {
+        ECKeyPair keyPair = ECKeyPair.create(Numeric.toBigInt(privateKey));
+        Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(sigHash), keyPair, false);
+
+        // Sign.signMessage() always add to 27 at V value. so it need to substract 27 from V value.
+        byte[] v = new byte[] {(byte)(signatureData.getV()[0] - 27)};
+
+        SignatureData signData = new SignatureData(v, signatureData.getR(), signatureData.getS());
+        return signData;
+    }
+
+    /**
      * Signs with hashed data and returns signature
      * @param messageHash The hash of data to sign
      * @return SignatureData

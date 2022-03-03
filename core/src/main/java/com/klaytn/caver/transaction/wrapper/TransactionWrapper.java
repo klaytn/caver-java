@@ -147,6 +147,11 @@ public class TransactionWrapper {
     public FeeDelegatedChainDataAnchoringWithRatioWrapper feeDelegatedChainDataAnchoringWithRatio;
 
     /**
+     * EthereumAccessListWrapper instance
+     */
+    public EthereumAccessListWrapper ethereumAccessList;
+
+    /**
      * TransactionUtils instance
      */
     public TransactionUtils utils;
@@ -188,6 +193,7 @@ public class TransactionWrapper {
         this.feeDelegatedChainDataAnchoring = new FeeDelegatedChainDataAnchoringWrapper(klaytnCall);
         this.feeDelegatedChainDataAnchoringWithRatio = new FeeDelegatedChainDataAnchoringWithRatioWrapper(klaytnCall);
 
+        this.ethereumAccessList = new EthereumAccessListWrapper(klaytnCall);
         this.utils = new TransactionUtils(new AccessListWrapper(), new AccessTupleWrapper());
     }
 

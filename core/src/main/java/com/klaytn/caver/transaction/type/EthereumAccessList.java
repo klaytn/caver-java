@@ -374,12 +374,11 @@ public class EthereumAccessList extends AbstractTransaction {
             throw new IllegalArgumentException(this.getType() + " cannot be signed with a decoupled keyring.");
         }
 
-        String from = getFrom();
-        if(from.equals("0x") || from.equals(Utils.DEFAULT_ZERO_ADDRESS) || from == null){
+        if(this.getFrom().equals("0x") || this.getFrom().equals(Utils.DEFAULT_ZERO_ADDRESS) || this.getFrom().isEmpty()){
             this.setFrom(keyring.getAddress());
         }
 
-        if(!from.toLowerCase().equals(keyring.getAddress().toLowerCase())) {
+        if(!this.getFrom().toLowerCase().equals(keyring.getAddress().toLowerCase())) {
             throw new IllegalArgumentException("The from address of the transaction is different with the address of the keyring to use");
         }
 
@@ -415,12 +414,11 @@ public class EthereumAccessList extends AbstractTransaction {
             throw new IllegalArgumentException(this.getType() + " cannot be signed with a decoupled keyring.");
         }
 
-        String from = getFrom();
-        if(from.equals("0x") || from.equals(Utils.DEFAULT_ZERO_ADDRESS) || from == null){
+        if(this.getFrom().equals("0x") || this.getFrom().equals(Utils.DEFAULT_ZERO_ADDRESS) || this.getFrom().isEmpty()){
             this.setFrom(keyring.getAddress());
         }
 
-        if(!from.toLowerCase().equals(keyring.getAddress().toLowerCase())) {
+        if(!this.getFrom().toLowerCase().equals(keyring.getAddress().toLowerCase())) {
             throw new IllegalArgumentException("The from address of the transaction is different with the address of the keyring to use");
         }
 

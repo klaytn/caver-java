@@ -410,7 +410,7 @@ public class Klay {
 
     /**
      * Returns a block header by block hash.
-     * <pre>Example :
+     * <pre>Example:
      * {@code
      *  String blockHash = "0x5f06bed1f3f11d4f2b0760cfdf95ce6b2e6431ca46e2b778f2b958d4e5b9aa43";
      *  BlockHeader response = caver.rpc.klay.getHeaderByHash(blockHash);
@@ -430,7 +430,7 @@ public class Klay {
 
     /**
      * Returns a block header by block number.
-     * <pre>Example :
+     * <pre>Example:
      * {@code
      *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(BigInteger.valueOf(5));
      *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
@@ -446,7 +446,7 @@ public class Klay {
 
     /**
      * Returns a block header by block tag.
-     * <pre>Example :
+     * <pre>Example:
      * {@code
      *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(DefaultBlockParameterName.LATEST);
      *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
@@ -461,7 +461,7 @@ public class Klay {
 
     /**
      * Returns a block header by block number or block tag.
-     * <pre>Example :
+     * <pre>Example:
      * {@code
      *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(DefaultBlockParameterName.LATEST);
      *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
@@ -483,7 +483,7 @@ public class Klay {
 
     /**
      * Returns a block header by block hash.
-     * <pre>Example :
+     * <pre>Example:
      * {@code
      *  String blockHash = "0x5f06bed1f3f11d4f2b0760cfdf95ce6b2e6431ca46e2b778f2b958d4e5b9aa43";
      *  BlockHeader response = caver.rpc.klay.getHeader(blockHash);
@@ -499,7 +499,7 @@ public class Klay {
 
     /**
      * Returns a block header by block number.
-     * <pre>Example :
+     * <pre>Example:
      * {@code
      *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(BigInteger.valueOf(5));
      *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
@@ -514,7 +514,7 @@ public class Klay {
 
     /**
      * Returns a block header by block tag.
-     * <pre>Example :
+     * <pre>Example:
      * {@code
      *  BlockHeader response = caver.rpc.klay.getHeader(DefaultBlockParameterName.LATEST);
      *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
@@ -529,7 +529,7 @@ public class Klay {
 
     /**
      * Returns a block header by block number or block tag.
-     * <pre>Example :
+     * <pre>Example:
      * {@code
      *  BlockHeader response = caver.rpc.klay.getHeaderByNumber(DefaultBlockParameterName.LATEST);
      *  BlockHeader.BlockHeaderData blockHeaderData = response.getResult();
@@ -1484,7 +1484,7 @@ public class Klay {
 
     /**
      * Returns a list of addresses and storage keys used by the transaction, plus the gas consumed when the access list is added.
-     * <pre> Example : 
+     * <pre>Example :
      * {@code
      *
      * BigInteger blockNumber = BigInteger.valueOf(5);
@@ -1502,7 +1502,7 @@ public class Klay {
 
     /**
      * Returns a list of addresses and storage keys used by the transaction, plus the gas consumed when the access list is added.
-     * <pre>
+     * <pre>Example:
      * {@code
      *
      * AccessListResult accessListResult = caver.rpc.klay.createAccessList(callObject, DefaultBlockParameterName.LATEST).send();
@@ -1519,7 +1519,7 @@ public class Klay {
 
     /**
      * Returns a list of addresses and storage keys used by the transaction, plus the gas consumed when the access list is added.
-     * <pre> Example : 
+     * <pre>Example:
      * {@code
      *
      * AccessListResult accessListResult = caver.rpc.klay.createAccessList(callObject, DefaultBlockParameterName.LATEST).send();
@@ -1546,7 +1546,7 @@ public class Klay {
 
     /**
      * Returns a list of addresses and storage keys used by the transaction, plus the gas consumed when the access list is added.
-     * <pre>
+     * <pre>Example:
      * {@code
      *
      * String blockHash = "0x421440aef6024e2da883eadf663b9b485fe1c14f02883541fa4e6c16f7be8c74";
@@ -1570,7 +1570,7 @@ public class Klay {
 
     /**
      * Returns fee history for the returned block range. This can be a subsection of the requested range if not all blocks are available.
-     * <pre>Example :
+     * <pre>Example:
      * {@code
      *
      * long blockCount = 5;
@@ -1596,7 +1596,7 @@ public class Klay {
 
     /**
      * Returns fee history for the returned block range. This can be a subsection of the requested range if not all blocks are available.
-     * <pre>Example :
+     * <pre>Example:
      * {@code
      *
      * long blockCount = 5;

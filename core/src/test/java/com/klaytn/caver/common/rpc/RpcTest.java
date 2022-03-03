@@ -600,7 +600,7 @@ public class RpcTest extends Accounts {
                 String hash = blockHeader.getHash();
                 assertNotNull(hash);
 
-                response = caver.rpc.klay.getHeader(0).send();
+                response = caver.rpc.klay.getHeader(BigInteger.valueOf(0)).send();
                 blockHeader = response.getResult();
                 assertNotNull(blockHeader.getHash());
 
@@ -620,7 +620,11 @@ public class RpcTest extends Accounts {
                 BlockHeader.BlockHeaderData blockHeader = response.getResult();
                 assertNotNull(blockHeader.getHash());
 
-                response = caver.rpc.klay.getHeaderByNumber(0).send();
+                response = caver.rpc.klay.getHeaderByNumber(new DefaultBlockParameterNumber(0)).send();
+                blockHeader = response.getResult();
+                assertNotNull(blockHeader.getHash());
+
+                response = caver.rpc.klay.getHeaderByNumber(BigInteger.valueOf(0)).send();
                 blockHeader = response.getResult();
                 assertNotNull(blockHeader.getHash());
             } catch (Exception e) {
@@ -974,7 +978,7 @@ public class RpcTest extends Accounts {
         public void createAccessListTest() throws IOException {
             Block block = caver.rpc.klay.getBlockByNumber(DefaultBlockParameterName.LATEST).send();
             Quantity gasPrice = caver.rpc.klay.getGasPrice().send();
-            long blockNumber = new BigInteger(caver.utils.stripHexPrefix(block.getResult().getNumber()), 16).longValue();
+            BigInteger blockNumber = new BigInteger(caver.utils.stripHexPrefix(block.getResult().getNumber()), 16);
             String blockHash = block.getResult().getHash();
             CallObject callObject = CallObject.createCallObject(
                     LUMAN.getAddress(),
@@ -984,6 +988,9 @@ public class RpcTest extends Accounts {
                     BigInteger.valueOf(1)
             );
             AccessListResult accessListResult = caver.rpc.klay.createAccessList(callObject, DefaultBlockParameterName.LATEST).send();
+            checkAccessListResult(accessListResult.getResult());
+
+            accessListResult = caver.rpc.klay.createAccessList(callObject, new DefaultBlockParameterNumber(blockNumber)).send();
             checkAccessListResult(accessListResult.getResult());
 
             accessListResult = caver.rpc.klay.createAccessList(callObject, blockNumber).send();

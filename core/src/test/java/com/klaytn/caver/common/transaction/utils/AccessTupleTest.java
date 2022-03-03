@@ -19,6 +19,7 @@ package com.klaytn.caver.common.transaction.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.utils.AccessTuple;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -38,13 +39,15 @@ public class AccessTupleTest {
         return ow.writeValueAsString(value);
     }
 
+    static Caver caver = new Caver();
+
     public static class createInstanceTest {
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
 
         @Test
         public void create() throws IOException {
-            AccessTuple expectedAccessTuple = new AccessTuple(
+            AccessTuple expectedAccessTuple = caver.transaction.utils.accessTuple.create(
                     "0x4173c51bd0e64a4c58656a5401373a476e8534ec",
                     Arrays.asList(
                             "0x4f42391603e79b2a90c3fbfc070c995eb1163e0ac00fb4e8f3da2dc81c451b98",
@@ -52,7 +55,7 @@ public class AccessTupleTest {
                     )
             );
 
-            AccessTuple accessTuple = new AccessTuple(
+            AccessTuple accessTuple = caver.transaction.utils.accessTuple.create(
                     "0x4173C51bd0e64A4c58656A5401373A476E8534Ec",
                     Arrays.asList(
                             "0X4F42391603E79B2A90C3FBFC070C995EB1163E0AC00FB4E8F3DA2DC81C451B98",
@@ -73,7 +76,7 @@ public class AccessTupleTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("Invalid address. Address: " + invalidAddress);
 
-            new AccessTuple(
+            caver.transaction.utils.accessTuple.create(
                     invalidAddress,
                     Arrays.asList(
                             "0X4F42391603E79B2A90C3FBFC070C995EB1163E0AC00FB4E8F3DA2DC81C451B98",
@@ -89,7 +92,7 @@ public class AccessTupleTest {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("Invalid storageKey. Storage key should be a 32 bytes of hex string " + invalidStorageKey.toLowerCase());
 
-            new AccessTuple(
+            caver.transaction.utils.accessTuple.create(
                     "0x4173C51bd0e64A4c58656A5401373A476E8534Ec",
                     Arrays.asList(
                             invalidStorageKey,
@@ -100,7 +103,7 @@ public class AccessTupleTest {
 
         @Test
         public void create_orderedKeys() {
-            AccessTuple accessTuple = new AccessTuple(
+            AccessTuple accessTuple = caver.transaction.utils.accessTuple.create(
                     "0x4173C51bd0e64A4c58656A5401373A476E8534Ec",
                     Arrays.asList(
                             "0XC4A32ABDF1905059FDFC304AAE1E8924279A36B2A6428552237F590156ED7717",

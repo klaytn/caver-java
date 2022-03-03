@@ -1487,6 +1487,24 @@ public class Klay {
      * <pre>
      * {@code
      *
+     * BigInteger blockNumber = BigInteger.valueOf(5);
+     * AccessListResult accessListResult = caver.rpc.klay.createAccessList(callObject, blockNumber).send();
+     *
+     * }
+     * </pre>
+     * @param callObject The transaction call object.
+     * @param blockNumber The block number.
+     * @return AccessListResult
+     */
+    public Request<?, AccessListResult> createAccessList(CallObject callObject, BigInteger blockNumber) {
+        return createAccessList(callObject, new DefaultBlockParameterNumber(blockNumber));
+    }
+
+    /**
+     * Returns a list of addresses and storage keys used by the transaction, plus the gas consumed when the access list is added.
+     * <pre>
+     * {@code
+     *
      * AccessListResult accessListResult = caver.rpc.klay.createAccessList(callObject, DefaultBlockParameterName.LATEST).send();
      *
      * }
@@ -1549,28 +1567,6 @@ public class Klay {
         );
     }
 
-    /**
-     * Returns a list of addresses and storage keys used by the transaction, plus the gas consumed when the access list is added.
-     * <pre>
-     * {@code
-     *
-     * BigInteger blockNumber = BigInteger.valueOf(5);
-     * AccessListResult accessListResult = caver.rpc.klay.createAccessList(callObject, blockNumber).send();
-     *
-     * }
-     * </pre>
-     * @param callObject The transaction call object.
-     * @param blockNumber The block number.
-     * @return AccessListResult
-     */
-    public Request<?, AccessListResult> createAccessList(CallObject callObject, BigInteger blockNumber) {
-        return new Request<>(
-                "klay_createAccessList",
-                Arrays.asList(callObject, new DefaultBlockParameterNumber(blockNumber)),
-                web3jService,
-                AccessListResult.class
-        );
-    }
 
     /**
      * Returns fee history for the returned block range. This can be a subsection of the requested range if not all blocks are available.

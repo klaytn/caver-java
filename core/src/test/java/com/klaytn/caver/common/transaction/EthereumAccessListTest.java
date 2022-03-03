@@ -18,7 +18,6 @@ package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.AbstractTransaction;
-import com.klaytn.caver.transaction.TransactionDecoder;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.type.EthereumAccessList;
@@ -396,7 +395,7 @@ public class EthereumAccessListTest {
             );
             assertEquals(expectedRLP, ethereumAccessList.getRLPEncoding());
             // Test-1: decoding
-            EthereumAccessList decodedEthereumAccessList = (EthereumAccessList) TransactionDecoder.decode(expectedRLP);
+            EthereumAccessList decodedEthereumAccessList = (EthereumAccessList) caver.transaction.decode(expectedRLP);
             assertTrue(ethereumAccessList.compareTxField(decodedEthereumAccessList, true));
 
             // Test-2: encoding EthereumAccessList which have many storageKeys
@@ -414,7 +413,7 @@ public class EthereumAccessListTest {
             );
             assertEquals(expectedRLP, ethereumAccessList.getRLPEncoding());
             // Test-2: decoding
-            decodedEthereumAccessList = (EthereumAccessList) TransactionDecoder.decode(expectedRLP);
+            decodedEthereumAccessList = (EthereumAccessList) caver.transaction.decode(expectedRLP);
             assertTrue(ethereumAccessList.compareTxField(decodedEthereumAccessList, true));
 
             // Test-3: encoding EthereumAccessList which have empty accessList
@@ -433,7 +432,7 @@ public class EthereumAccessListTest {
             );
             assertEquals(expectedRLP, ethereumAccessList.getRLPEncoding());
             // Test-3: decoding
-            decodedEthereumAccessList = (EthereumAccessList) TransactionDecoder.decode(expectedRLP);
+            decodedEthereumAccessList = (EthereumAccessList) caver.transaction.decode(expectedRLP);
             assertTrue(ethereumAccessList.compareTxField(decodedEthereumAccessList, true));
 
             // Test-4: encoding EthereumAccessList which have many accessList
@@ -450,7 +449,7 @@ public class EthereumAccessListTest {
             );
             assertEquals(expectedRLP, ethereumAccessList.getRLPEncoding());
             // Test-4: decoding
-            decodedEthereumAccessList = (EthereumAccessList) TransactionDecoder.decode(expectedRLP);
+            decodedEthereumAccessList = (EthereumAccessList) caver.transaction.decode(expectedRLP);
             assertTrue(ethereumAccessList.compareTxField(decodedEthereumAccessList, true));
         }
 

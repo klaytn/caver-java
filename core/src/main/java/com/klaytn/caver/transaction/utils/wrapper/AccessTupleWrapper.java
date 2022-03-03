@@ -42,14 +42,4 @@ public class AccessTupleWrapper {
     public AccessTuple create(String address, List<String> storageKeys) {
         return AccessTuple.create(address, storageKeys);
     }
-
-    /**
-     * Decodes given RlpList to AccessTuple.
-     *
-     * @param rlpEncodedAccessTuple RlpList representing rlp encoded access tuple.
-     * @return AccessTuple
-     */
-    public AccessTuple decode(RlpList rlpEncodedAccessTuple) {
-        return AccessTuple.decode(rlpEncodedAccessTuple);
-    }
 }

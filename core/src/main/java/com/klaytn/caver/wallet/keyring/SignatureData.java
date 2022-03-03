@@ -18,6 +18,8 @@ package com.klaytn.caver.wallet.keyring;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.klaytn.caver.transaction.type.TransactionType;
+import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
@@ -68,6 +70,10 @@ public class SignatureData {
      * @param s The ECDSA Signature data S
      */
     public SignatureData(byte[] v, byte[] r, byte[] s) {
+        if (v.length == 0) {
+            // It handles when given v value was 0(represented "0x80" in rlp encoded).
+            v = BytesUtils.concat(new byte[]{0x0}, v);
+        }
         this.v = Numeric.toHexString(v);
         this.r = Numeric.toHexString(r);
         this.s = Numeric.toHexString(s);

@@ -454,6 +454,65 @@ public class EthereumAccessListTest {
         }
 
         @Test
+        public void getRLPEncodingYParity() {
+            // 0 y-parity
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setTo("0xc6779d72a88bec1a03bbb83cf028d95ff5f32f5b")
+                            .setValue("0x1")
+                            .setGas("0x9c40")
+                            .setNonce("0x1a")
+                            .setGasPrice("0x5d21dba00")
+                            .setChainId("0x2710")
+                            .setInput("0xa9059cbb0000000000000000000000008a4c9c443bb0645df646a2d5bb55def0ed1e885a0000000000000000000000000000000000000000000000000000000000003039")
+                            .setAccessList(caver.transaction.utils.accessList.create(Arrays.asList(
+                                caver.transaction.utils.accessTuple.create(
+                                        "0xac9ba2a7fb8572e971bcac01a5b58934b385a172",
+                                        Arrays.asList(
+                                            "0x0000000000000000000000000000000000000000000000000000000000000003",
+                                            "0x0000000000000000000000000000000000000000000000000000000000000007"
+                                        )
+                                )
+                            )))
+                            .setSignatures(new SignatureData(
+                                    "0x00",
+                                    "0x43ff73938e019e13dcc48c9ff1a46d9f1f081512351cf7b0eca49dbf74047848",
+                                    "0x17a9816ca1446f51e0d6eb8c406a52758feb83b234128e4cfcaeaa8419f706af"
+                            ))
+            );
+
+            Assert.assertEquals("0x7801f901098227101a8505d21dba00829c4094c6779d72a88bec1a03bbb83cf028d95ff5f32f5b01b844a9059cbb0000000000000000000000008a4c9c443bb0645df646a2d5bb55def0ed1e885a0000000000000000000000000000000000000000000000000000000000003039f85bf85994ac9ba2a7fb8572e971bcac01a5b58934b385a172f842a00000000000000000000000000000000000000000000000000000000000000003a0000000000000000000000000000000000000000000000000000000000000000780a043ff73938e019e13dcc48c9ff1a46d9f1f081512351cf7b0eca49dbf74047848a017a9816ca1446f51e0d6eb8c406a52758feb83b234128e4cfcaeaa8419f706af", ethereumAccessList.getRLPEncoding());
+
+            // 1 y-parity
+            ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setTo("0xc5fb1386b60160614a8151dcd4b0ae41325d1cb8")
+                            .setValue("0x1")
+                            .setGas("0x9c40")
+                            .setNonce("0x23")
+                            .setGasPrice("0x5d21dba00")
+                            .setChainId("0x2710")
+                            .setInput("0xa9059cbb0000000000000000000000008a4c9c443bb0645df646a2d5bb55def0ed1e885a0000000000000000000000000000000000000000000000000000000000003039")
+                            .setAccessList(caver.transaction.utils.accessList.create(Arrays.asList(
+                                    caver.transaction.utils.accessTuple.create(
+                                            "0x5430192ae264b3feff967fc08982b9c6f5694023",
+                                            Arrays.asList(
+                                                    "0x0000000000000000000000000000000000000000000000000000000000000003",
+                                                    "0x0000000000000000000000000000000000000000000000000000000000000007"
+                                            )
+                                    )
+                            )))
+                            .setSignatures(new SignatureData(
+                                    "0x01",
+                                    "0x5ac25e47591243af2d6b8e7f54d608e9e0e0aeb5194d34c17852bd7e376f4857",
+                                    "0x095a40394f33e95cce9695d5badf4270f4cc8aff0b5395cefc3a0fe213be1f30"
+                            ))
+            );
+
+            Assert.assertEquals("0x7801f90109822710238505d21dba00829c4094c5fb1386b60160614a8151dcd4b0ae41325d1cb801b844a9059cbb0000000000000000000000008a4c9c443bb0645df646a2d5bb55def0ed1e885a0000000000000000000000000000000000000000000000000000000000003039f85bf859945430192ae264b3feff967fc08982b9c6f5694023f842a00000000000000000000000000000000000000000000000000000000000000003a0000000000000000000000000000000000000000000000000000000000000000701a05ac25e47591243af2d6b8e7f54d608e9e0e0aeb5194d34c17852bd7e376f4857a0095a40394f33e95cce9695d5badf4270f4cc8aff0b5395cefc3a0fe213be1f30", ethereumAccessList.getRLPEncoding());
+        }
+
+        @Test
         public void throwException_NoNonce() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("nonce is undefined. Define nonce in transaction or use 'transaction.fillTransaction' to fill values.");

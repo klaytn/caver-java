@@ -160,8 +160,17 @@ public class SignatureData {
         byte[] r = Numeric.hexStringToByteArray(getR());
         byte[] s = Numeric.hexStringToByteArray(getS());
 
+        RlpString rlpV;
+        byte[] trimmedV = Bytes.trimLeadingZeroes(v);
+        if (trimmedV[0] == 0) {
+            // When given v value is "0x0", it must be treated as integer 0 by encoding rule.
+            rlpV = RlpString.create(BigInteger.valueOf(0));
+        } else {
+            rlpV = RlpString.create(trimmedV);
+        }
+
         return new RlpList(
-                RlpString.create(Bytes.trimLeadingZeroes(v)),
+                rlpV,
                 RlpString.create(Bytes.trimLeadingZeroes(r)),
                 RlpString.create(Bytes.trimLeadingZeroes(s))
         );

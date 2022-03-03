@@ -454,7 +454,7 @@ public class EthereumAccessListTest {
         }
 
         @Test
-        public void getRLPEncodingYParity() {
+        public void getRLPEncodingAndDecodingYParity() {
             // 0 y-parity
             EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
                     TxPropertyBuilder.ethereumAccessList()

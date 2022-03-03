@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The caver-java Authors
+ * Copyright 2022 The caver-java Authors
  *
  * Licensed under the Apache License, Version 2.0 (the “License”);
  * you may not use this file except in compliance with the License.
@@ -16,33 +16,25 @@
 
 package com.klaytn.caver.methods.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.core.Response;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
-public class Block extends Response<Block.BlockData> {
+public class BlockHeader extends Response<BlockHeader.BlockHeaderData> {
 
     @Override
-    @JsonDeserialize(using = Block.ResponseDeserializer.class)
-    public void setResult(BlockData result) {
+    public void setResult(BlockHeaderData result) {
         super.setResult(result);
     }
 
-    public static class BlockData<T> {
+    public static class BlockHeaderData<T> {
         /**
          * The block number. null when its pending block
          */
@@ -89,19 +81,9 @@ public class Block extends Response<Block.BlockData> {
         private String blockScore;
 
         /**
-         * Integer of the total blockScore of the chain until this block.
-         */
-        private String totalBlockScore;
-
-        /**
          * The "extra data" field of this block
          */
         private String extraData;
-
-        /**
-         * Integer the size of this block in bytes
-         */
-        private String size;
 
         /**
          * The total used gas by all transactions in this block
@@ -119,29 +101,24 @@ public class Block extends Response<Block.BlockData> {
         private String timestampFoS;
 
         /**
-         * Array of transaction objects, or 32-byte transaction hashes depending on the last given parameter
-         */
-        private List transactions;
-
-        /**
          * RLP encoded governance configuration
          */
         private String governanceData;
-
-        /**
-         * RLP encoded governance vote of the proposer
-         */
-        private String voteData;
 
         /**
          * Base fee per gas
          */
         private String baseFeePerGas;
 
-        public BlockData() {
+        /**
+         * RLP encoded governance vote of the proposer
+         */
+        private String voteData;
+
+        public BlockHeaderData() {
         }
 
-        public BlockData(String number, String hash, String parentHash, String logsBloom, String transactionsRoot, String stateRoot, String receiptsRoot, String reward, String blockScore, String totalBlockScore, String extraData, String size, String gasUsed, String timestamp, String timestampFoS, List transactions, String governanceData, String voteData, String baseFeePerGas) {
+        public BlockHeaderData(String number, String hash, String parentHash, String logsBloom, String transactionsRoot, String stateRoot, String receiptsRoot, String reward, String blockScore, String extraData, String gasUsed, String timestamp, String timestampFoS, String governanceData, String baseFeePerGas, String voteData) {
             this.number = number;
             this.hash = hash;
             this.parentHash = parentHash;
@@ -151,16 +128,13 @@ public class Block extends Response<Block.BlockData> {
             this.receiptsRoot = receiptsRoot;
             this.reward = reward;
             this.blockScore = blockScore;
-            this.totalBlockScore = totalBlockScore;
             this.extraData = extraData;
-            this.size = size;
             this.gasUsed = gasUsed;
             this.timestamp = timestamp;
             this.timestampFoS = timestampFoS;
-            this.transactions = transactions;
             this.governanceData = governanceData;
-            this.voteData = voteData;
             this.baseFeePerGas = baseFeePerGas;
+            this.voteData = voteData;
         }
 
         public String getNumber() {
@@ -227,14 +201,6 @@ public class Block extends Response<Block.BlockData> {
             this.extraData = extraData;
         }
 
-        public String getSize() {
-            return size;
-        }
-
-        public void setSize(String size) {
-            this.size = size;
-        }
-
         public String getGasUsed() {
             return gasUsed;
         }
@@ -259,30 +225,12 @@ public class Block extends Response<Block.BlockData> {
             this.timestampFoS = timestampFoS;
         }
 
-        public List getTransactions() {
-            return transactions;
-        }
-
-        @JsonSetter("transactions")
-        @JsonDeserialize(using = Block.TransactionsDeserializer.class)
-        public void setTransactions(List transactions) {
-            this.transactions = transactions;
-        }
-
         public String getGovernanceData() {
             return governanceData;
         }
 
         public void setGovernanceData(String governanceData) {
             this.governanceData = governanceData;
-        }
-
-        public String getVoteData() {
-            return voteData;
-        }
-
-        public void setVoteData(String voteData) {
-            this.voteData = voteData;
         }
 
         public String getReward() {
@@ -301,14 +249,6 @@ public class Block extends Response<Block.BlockData> {
             this.blockScore = blockScore;
         }
 
-        public String getTotalBlockScore() {
-            return totalBlockScore;
-        }
-
-        public void setTotalBlockScore(String totalBlockScore) {
-            this.totalBlockScore = totalBlockScore;
-        }
-
         public String getBaseFeePerGas() {
             return baseFeePerGas;
         }
@@ -316,43 +256,13 @@ public class Block extends Response<Block.BlockData> {
         public void setBaseFeePerGas(String baseFeePerGas) {
             this.baseFeePerGas = baseFeePerGas;
         }
-    }
 
-    public static class ResponseDeserializer extends JsonDeserializer<Block.BlockData> {
-
-        private ObjectReader objectReader = ObjectMapperFactory.getObjectReader();
-
-        @Override
-        public Block.BlockData deserialize(
-                JsonParser jsonParser,
-                DeserializationContext deserializationContext) throws IOException {
-            if (jsonParser.getCurrentToken() != JsonToken.VALUE_NULL) {
-                return objectReader.readValue(jsonParser, Block.BlockData.class);
-            } else {
-                return null;  // null is wrapped by Optional in above getter
-            }
+        public String getVoteData() {
+            return voteData;
         }
-    }
 
-    static class TransactionsDeserializer extends JsonDeserializer<List> {
-
-        @Override
-        public List deserialize(
-                JsonParser jsonParser, DeserializationContext deserializationContext)
-                throws IOException {
-
-            ObjectMapper objectMapper = (ObjectMapper) jsonParser.getCodec();
-            ArrayNode root = objectMapper.readTree(jsonParser);
-
-            if (root.size() == 0) {
-                return Collections.emptyList();
-            } else if (root.get(0).isTextual()) {
-                return objectMapper.convertValue(root, new TypeReference<List<String>>() {
-                });
-            } else {
-                return objectMapper.convertValue(root, new TypeReference<List<Transaction.TransactionData>>() {
-                });
-            }
+        public void setVoteData(String voteData) {
+            this.voteData = voteData;
         }
     }
 }

@@ -29,6 +29,7 @@ import com.klaytn.caver.methods.response.*;
 import com.klaytn.caver.methods.response.Account;
 import com.klaytn.caver.methods.response.Boolean;
 import com.klaytn.caver.rpc.Klay;
+import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.transaction.type.FeeDelegatedValueTransfer;
@@ -46,19 +47,18 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.Web3jService;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.DefaultBlockParameterNumber;
-import org.web3j.protocol.core.Request;
-import org.web3j.protocol.core.Response;
+import org.web3j.protocol.core.*;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static com.klaytn.caver.base.LocalValues.LOCAL_NETWORK_ID;
@@ -464,8 +464,8 @@ public class RpcTest extends Accounts {
         static TransactionReceipt.TransactionReceiptData sampleReceiptData;
 
         private static TransactionReceipt.TransactionReceiptData sendKlay() throws IOException, TransactionException {
-           Caver caver = new Caver(Caver.DEFAULT_URL);
-           AbstractKeyring keyring = caver.wallet.add(KeyringFactory.createFromPrivateKey("0x871ccee7755bb4247e783110cafa6437f9f593a1eaeebe0efcc1b0852282c3e5"));
+            Caver caver = new Caver(Caver.DEFAULT_URL);
+            AbstractKeyring keyring = caver.wallet.add(KeyringFactory.createFromPrivateKey("0x871ccee7755bb4247e783110cafa6437f9f593a1eaeebe0efcc1b0852282c3e5"));
 
             BigInteger value = new BigInteger(Utils.convertToPeb(BigDecimal.ONE, "KLAY"));
 
@@ -586,6 +586,62 @@ public class RpcTest extends Accounts {
                 Quantity response = caver.rpc.klay.getBlockNumber().send();
                 BigInteger result = response.getValue();
                 assertNotNull(result);
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void getHeaderTest() {
+            try {
+                BlockHeader response = caver.rpc.klay.getHeader(DefaultBlockParameterName.LATEST).send();
+                BlockHeader.BlockHeaderData blockHeader = response.getResult();
+                String hash = blockHeader.getHash();
+                assertNotNull(hash);
+
+                response = caver.rpc.klay.getHeader(BigInteger.valueOf(0)).send();
+                blockHeader = response.getResult();
+                assertNotNull(blockHeader.getHash());
+
+                response = caver.rpc.klay.getHeader(hash).send();
+                blockHeader = response.getResult();
+                assertNotNull(blockHeader.getHash());
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void getHeaderByNumberTest() {
+            try {
+                BlockHeader response = caver.rpc.klay.getHeaderByNumber(DefaultBlockParameterName.LATEST).send();
+                BlockHeader.BlockHeaderData blockHeader = response.getResult();
+                assertNotNull(blockHeader.getHash());
+
+                response = caver.rpc.klay.getHeaderByNumber(new DefaultBlockParameterNumber(0)).send();
+                blockHeader = response.getResult();
+                assertNotNull(blockHeader.getHash());
+
+                response = caver.rpc.klay.getHeaderByNumber(BigInteger.valueOf(0)).send();
+                blockHeader = response.getResult();
+                assertNotNull(blockHeader.getHash());
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+
+        @Test
+        public void getHeaderByHashTest() {
+            try {
+                BlockHeader response = caver.rpc.klay.getHeaderByNumber(DefaultBlockParameterName.LATEST).send();
+                BlockHeader.BlockHeaderData blockHeader = response.getResult();
+
+                BlockHeader responseByHash = caver.rpc.klay.getHeaderByHash(blockHeader.getHash()).send();
+
+                assertEquals(blockHeader.getHash(), responseByHash.getResult().getHash());
             } catch (Exception e) {
                 e.printStackTrace();
                 fail();
@@ -748,7 +804,7 @@ public class RpcTest extends Accounts {
             );
             Quantity response = caver.rpc.klay.estimateGas(callObject).send();
             String result = response.getResult();
-            assertEquals("0xb2d9", result);
+            assertEquals("0xcb09", result);
         }
 
         @Test
@@ -765,7 +821,7 @@ public class RpcTest extends Accounts {
             );
             Quantity response = caver.rpc.klay.estimateComputationCost(callObject, DefaultBlockParameterName.LATEST).send();
             String result = response.getResult();
-            assertEquals("0xe036", result);
+            assertEquals("0xd949", result);
         }
 
         @Test
@@ -837,6 +893,119 @@ public class RpcTest extends Accounts {
             Quantity response = caver.rpc.klay.getGasPriceAt().send();
             BigInteger result = response.getValue();
             assertEquals(new BigInteger("5d21dba00", 16), result); // 25,000,000,000 peb = 25 Gpeb
+        }
+
+        @Test
+        public void getMaxPriorityFeePerGasTest() throws Exception {
+            Quantity response = caver.rpc.klay.getMaxPriorityFeePerGas().send();
+            BigInteger result = response.getValue();
+            assertEquals(new BigInteger("5d21dba00", 16), result); // 25,000,000,000 peb = 25 Gpeb
+        }
+
+        // checkFeeHistoryResult checks response from getFeeHistory is ok or not.
+        private void checkFeeHistoryResult(FeeHistoryResult feeHistoryResult, long blockCount, List<Float> rewardPercentiles) {
+            FeeHistoryResult.FeeHistoryResultData feeHistoryResultData = feeHistoryResult.getResult();
+            assertEquals(blockCount + 1, feeHistoryResultData.getBaseFeePerGas().size());
+
+            List<List<String>> reward = feeHistoryResultData.getReward();
+            if (reward != null) {
+                assertEquals(blockCount, reward.size());
+                Consumer<List<String>> consumer = rewardElement -> {
+                    int expectedSize = 0 ;
+                    if (rewardPercentiles != null) {
+                        expectedSize = rewardPercentiles.size();
+                    }
+                    assertEquals(expectedSize, rewardElement.size());
+                };
+                reward.forEach(consumer);
+            }
+
+            assertEquals(blockCount, feeHistoryResultData.getGasUsedRatio().size());
+        }
+
+        @Test
+        public void getFeeHistoryTest() throws IOException, InterruptedException {
+            SingleKeyring sender = caver.wallet.keyring.createFromKlaytnWalletKey(LUMAN.getKlaytnWalletKey());
+            caver.wallet.add(sender);
+            Quantity transactionCount = caver.rpc.klay.getTransactionCount(sender.getAddress()).send();
+            BigInteger nonce = transactionCount.getValue();
+            String gasPrice = klay.getGasPrice().send().getResult();
+
+            String chainId = klay.getChainID().send().getResult();
+            final int txsCount = 30;
+            TransactionReceipt.TransactionReceiptData receiptData = null;
+            for (int i = 0; i < txsCount; i++) {
+                ValueTransfer tx = caver.transaction.valueTransfer.create(
+                        TxPropertyBuilder.valueTransfer()
+                                .setFrom(sender.getAddress())
+                                .setTo(caver.wallet.keyring.generate().getAddress())
+                                .setGas("0x99999")
+                                .setGasPrice(gasPrice)
+                                .setValue("0x1")
+                                .setNonce(nonce)
+                                .setChainId(chainId)
+                );
+                caver.wallet.sign(sender.getAddress(), tx);
+                nonce = nonce.add(BigInteger.valueOf(1));
+
+                if (i != txsCount - 1) {
+                    caver.rpc.klay.sendRawTransaction(tx).send();
+                    continue;
+                }
+                Bytes32 sendResult = caver.rpc.klay.sendRawTransaction(tx).send();
+                Thread.sleep(5000);
+                String txHash = sendResult.getResult();
+                TransactionReceipt receipt = caver.rpc.klay.getTransactionReceipt(txHash).send();
+                receiptData = receipt.getResult();
+            }
+            if (receiptData == null) {
+                fail();
+            }
+
+            long blockCount = 5;
+            long blockNumber = new BigInteger(caver.utils.stripHexPrefix(receiptData.getBlockNumber()), 16).longValue();
+            List<Float> rewardPercentiles = new ArrayList<Float>(Arrays.asList(0.3f, 0.5f, 0.8f));
+            FeeHistoryResult feeHistoryResult = caver.rpc.klay.getFeeHistory(blockCount, blockNumber, rewardPercentiles).send();
+            checkFeeHistoryResult(feeHistoryResult, blockCount, rewardPercentiles);
+
+            blockCount = 5;
+            rewardPercentiles = null;
+            feeHistoryResult = caver.rpc.klay.getFeeHistory(blockCount, DefaultBlockParameterName.LATEST, rewardPercentiles).send();
+            checkFeeHistoryResult(feeHistoryResult, blockCount, rewardPercentiles);
+        }
+
+        @Test
+        public void createAccessListTest() throws IOException {
+            Block block = caver.rpc.klay.getBlockByNumber(DefaultBlockParameterName.LATEST).send();
+            Quantity gasPrice = caver.rpc.klay.getGasPrice().send();
+            BigInteger blockNumber = new BigInteger(caver.utils.stripHexPrefix(block.getResult().getNumber()), 16);
+            String blockHash = block.getResult().getHash();
+            CallObject callObject = CallObject.createCallObject(
+                    LUMAN.getAddress(),
+                    WAYNE.getAddress(),
+                    BigInteger.valueOf(100000),
+                    gasPrice.getValue(),
+                    BigInteger.valueOf(1)
+            );
+            AccessListResult accessListResult = caver.rpc.klay.createAccessList(callObject, DefaultBlockParameterName.LATEST).send();
+            checkAccessListResult(accessListResult.getResult());
+
+            accessListResult = caver.rpc.klay.createAccessList(callObject, new DefaultBlockParameterNumber(blockNumber)).send();
+            checkAccessListResult(accessListResult.getResult());
+
+            accessListResult = caver.rpc.klay.createAccessList(callObject, blockNumber).send();
+            checkAccessListResult(accessListResult.getResult());
+
+            accessListResult = caver.rpc.klay.createAccessList(callObject, blockHash).send();
+            checkAccessListResult(accessListResult.getResult());
+        }
+
+        // checkAccessListResult checks whether given AcccessListResultData instance is right or not.
+        private void checkAccessListResult(AccessListResult.AccessListResultData accessListResultData) {
+
+            assertEquals(0, accessListResultData.getAccessList().size()); // For now Klaytn will return empty access list.
+            assertEquals("0x0", accessListResultData.getGasUsed()); // For now Klaytn will return zero gasUsed.
+            assertEquals(null, accessListResultData.getError());
         }
 
         @Test

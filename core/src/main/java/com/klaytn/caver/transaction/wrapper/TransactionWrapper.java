@@ -21,6 +21,7 @@ import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.transaction.TransactionDecoder;
 import com.klaytn.caver.transaction.TransactionHelper;
 import com.klaytn.caver.transaction.type.wrapper.*;
+import com.klaytn.caver.transaction.utils.wrapper.TransactionUtilsWrapper;
 
 import java.util.List;
 
@@ -144,6 +145,11 @@ public class TransactionWrapper {
     public FeeDelegatedChainDataAnchoringWithRatioWrapper feeDelegatedChainDataAnchoringWithRatio;
 
     /**
+     * TransactionUtils instance
+     */
+    public TransactionUtilsWrapper utils;
+
+    /**
      * Creates a Transaction instance
      * @param klaytnCall Klay RPC instance
      */
@@ -179,6 +185,8 @@ public class TransactionWrapper {
         this.chainDataAnchoring = new ChainDataAnchoringWrapper(klaytnCall);
         this.feeDelegatedChainDataAnchoring = new FeeDelegatedChainDataAnchoringWrapper(klaytnCall);
         this.feeDelegatedChainDataAnchoringWithRatio = new FeeDelegatedChainDataAnchoringWithRatioWrapper(klaytnCall);
+
+        this.utils = new TransactionUtilsWrapper();
     }
 
     /**

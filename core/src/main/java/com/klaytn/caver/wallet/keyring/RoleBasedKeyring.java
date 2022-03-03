@@ -85,6 +85,56 @@ public class RoleBasedKeyring extends AbstractKeyring {
     }
 
     /**
+     * Signs a transaction hash with all private keys in specific role group and return signature list which V is 0 or 1(parity of the y-value of a secp256k1 signature). <p>
+     * The role used in caver-java can be checked through {@link com.klaytn.caver.account.AccountKeyRoleBased.RoleGroup}.
+     * <pre>Example :
+     * {@code
+     * RoleBasedKeyring keyring = new RoleBasedKeyring(.....);
+     * List<SignatureData> signatureList = keyring.ecsign("0xe9a11d9ef95fb437f75d07ce768d43e74f158dd54b106e7d3746ce29d545b550", AccountKeyRoleBased.RoleGroup.TRANSACTION);
+     * }
+     * </pre>
+     *
+     * @param txHash The hash of transaction.
+     * @param role A number indicating the role of the key.
+     * @return
+     */
+    @Override
+    public List<SignatureData> ecsign(String txHash, int role) {
+        PrivateKey[] keyArr = getKeyByRole(role);
+
+        return Arrays.stream(keyArr)
+                .map(key-> {
+                    return key.ecsign(txHash);
+                }).collect(Collectors.toList());
+    }
+
+    /**
+     * Signs a transaction hash with key in specific role group and return signature.<p>
+     * The role used in caver-java can be checked through {@link com.klaytn.caver.account.AccountKeyRoleBased.RoleGroup}.
+     * <pre>Example :
+     * {@code
+     * RoleBasedKeyring keyring = new RoleBasedKeyring(.....);
+     * SignatureData signatureList = keyring.ecsign("0xe9a11d9ef95fb437f75d07ce768d43e74f158dd54b106e7d3746ce29d545b550", AccountKeyRoleBased.RoleGroup.TRANSACTION, 0);
+     * }
+     * </pre>
+     *
+     * @param txHash The hash transaction
+     * @param role A number indicating the role of the key.
+     * @param index The index of the key to be used in the specific role group.
+     * @return
+     */
+    @Override
+    public SignatureData ecsign(String txHash, int role, int index) {
+        PrivateKey[] keyArr = getKeyByRole(role);
+        validatedIndexWithKeys(index, keyArr.length);
+
+        PrivateKey key = keyArr[index];
+        SignatureData signatureData = key.ecsign(txHash);
+
+        return signatureData;
+    }
+
+    /**
      * Signs a hashed data with all key in specific role group and return MessageSigned instance.
      * @param message The data string to sign
      * @param role A number indicating the role of the key

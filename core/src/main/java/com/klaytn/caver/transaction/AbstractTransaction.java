@@ -267,7 +267,7 @@ abstract public class AbstractTransaction {
      * @throws IOException
      */
     public AbstractTransaction sign(AbstractKeyring keyring, Function<AbstractTransaction, String> signer) throws IOException  {
-        if(TransactionType.isEthereumTransaction(this.getType()) && keyring.isDecoupled()) {
+        if(TransactionHelper.isEthereumTransaction(this.getType()) && keyring.isDecoupled()) {
             throw new IllegalArgumentException(this.getType() + " cannot be signed with a decoupled keyring.");
         }
 
@@ -311,7 +311,7 @@ abstract public class AbstractTransaction {
      * @throws IOException
      */
     public AbstractTransaction sign(AbstractKeyring keyring, int index, Function<AbstractTransaction, String> signer) throws IOException {
-        if(TransactionType.isEthereumTransaction(this.getType()) && keyring.isDecoupled()) {
+        if(TransactionHelper.isEthereumTransaction(this.getType()) && keyring.isDecoupled()) {
             throw new IllegalArgumentException(this.getType() + " cannot be signed with a decoupled keyring.");
         }
 
@@ -513,7 +513,7 @@ abstract public class AbstractTransaction {
      * @return List&lt;String&gt;
      */
     public List<SignatureData> refineSignature(List<SignatureData> signatureDataList) {
-        boolean isEthereumTransaction = TransactionType.isEthereumTransaction(this.getType());
+        boolean isEthereumTransaction = TransactionHelper.isEthereumTransaction(this.getType());
 
         List<SignatureData> refinedList = SignatureData.refineSignature(signatureDataList);
 
@@ -647,7 +647,7 @@ abstract public class AbstractTransaction {
 
     public void setFrom(String from) {
         //"From" field in EthereumTransaction allows null
-        if(TransactionType.isEthereumTransaction(this.getType())) {
+        if(TransactionHelper.isEthereumTransaction(this.getType())) {
             if(from == null || from.isEmpty() || from.equals("0x") || from.equals(Utils.DEFAULT_ZERO_ADDRESS)) from = Utils.DEFAULT_ZERO_ADDRESS;
         } else {
             if(from == null) {

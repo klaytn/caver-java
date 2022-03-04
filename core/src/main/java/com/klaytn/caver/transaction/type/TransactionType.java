@@ -61,34 +61,4 @@ public enum TransactionType {
         return type;
     }
 
-    /**
-     * Returns true if the tx type is EthereumTransaction.
-     *
-     * @param type Transaction type integer.
-     * @return
-     */
-    public static boolean isEthereumTransaction(int type) {
-        if (type == TxTypeLegacyTransaction.type || type == TxTypeEthereumAccessList.type) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Returns true if the tx type is EthereumTransaction.
-     *
-     * @param type Transaction type string.
-     * @return
-     */
-    public static boolean isEthereumTransaction(String type) {
-        if (
-                Objects.equals(type, TxTypeLegacyTransaction.toString()) ||
-                        Objects.equals(type, TxTypeEthereumAccessList.toString())
-        ) {
-            return true;
-        }
-        return false;
-    }
-
-
 }

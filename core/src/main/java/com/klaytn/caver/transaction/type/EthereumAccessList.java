@@ -20,6 +20,7 @@ import com.klaytn.caver.account.AccountKeyRoleBased;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.transaction.TransactionHasher;
+import com.klaytn.caver.transaction.TransactionHelper;
 import com.klaytn.caver.transaction.utils.AccessList;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
@@ -390,7 +391,7 @@ public class EthereumAccessList extends AbstractTransaction {
      */
     @Override
     public AbstractTransaction sign(AbstractKeyring keyring, Function<AbstractTransaction, String> signer) throws IOException {
-        if(TransactionType.isEthereumTransaction(this.getType()) && keyring.isDecoupled()) {
+        if(TransactionHelper.isEthereumTransaction(this.getType()) && keyring.isDecoupled()) {
             throw new IllegalArgumentException(this.getType() + " cannot be signed with a decoupled keyring.");
         }
 
@@ -462,7 +463,7 @@ public class EthereumAccessList extends AbstractTransaction {
      */
     @Override
     public AbstractTransaction sign(AbstractKeyring keyring, int index, Function<AbstractTransaction, String> signer) throws IOException {
-        if(TransactionType.isEthereumTransaction(this.getType()) && keyring.isDecoupled()) {
+        if(TransactionHelper.isEthereumTransaction(this.getType()) && keyring.isDecoupled()) {
             throw new IllegalArgumentException(this.getType() + " cannot be signed with a decoupled keyring.");
         }
 

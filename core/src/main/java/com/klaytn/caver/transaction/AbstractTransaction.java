@@ -482,6 +482,11 @@ abstract public class AbstractTransaction {
      */
     public List<String> recoverPublicKeys() {
         try {
+            // If it is EthereumTyped transaction(EthereumAccessList, EthereumDynamicFee), call recoverPublicKeysWithEthereumTypedTransaction.
+            if(TransactionHelper.isEthereumTypedTransaction(this.getType())) {
+                return recoverPublicKeysWithEthereumTypedTransaction();
+            }
+
             if(Utils.isEmptySig(this.getSignatures())) {
                 throw new RuntimeException("Failed to recover public keys from signatures: signatures is empty.");
             }
@@ -508,6 +513,23 @@ abstract public class AbstractTransaction {
         } catch(SignatureException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private List<String> recoverPublicKeysWithEthereumTypedTransaction() throws SignatureException{
+            if(Utils.isEmptySig(this.getSignatures())) {
+                throw new RuntimeException("Failed to recover public keys from signatures: signatures is empty.");
+            }
+
+            String sigHash = TransactionHasher.getHashForSignature(this);
+
+            List<String> publicKeyList = new ArrayList<>();
+            for(SignatureData signatureData : this.getSignatures()) {
+                if(Numeric.toBigInt(signatureData.getV()).compareTo(BigInteger.ZERO) != 0 && Numeric.toBigInt(signatureData.getV()).compareTo(BigInteger.ONE) != 0) {
+                    throw new RuntimeException("Invalid Signature data : the v value must have 0 or 1.");
+                }
+                publicKeyList.add(Utils.recoverPublicKey(sigHash, signatureData, true));
+            }
+            return publicKeyList;
     }
 
     /**

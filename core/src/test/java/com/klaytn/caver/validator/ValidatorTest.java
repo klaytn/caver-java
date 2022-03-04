@@ -22,10 +22,10 @@ import com.klaytn.caver.account.Account;
 import com.klaytn.caver.account.AccountKeyLegacy;
 import com.klaytn.caver.methods.response.AccountKey;
 import com.klaytn.caver.rpc.Klay;
-import com.klaytn.caver.transaction.type.AccountUpdate;
-import com.klaytn.caver.transaction.type.FeeDelegatedValueTransfer;
-import com.klaytn.caver.transaction.type.LegacyTransaction;
-import com.klaytn.caver.transaction.type.ValueTransfer;
+import com.klaytn.caver.transaction.AbstractTransaction;
+import com.klaytn.caver.transaction.type.*;
+import com.klaytn.caver.transaction.utils.AccessList;
+import com.klaytn.caver.transaction.utils.AccessTuple;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
@@ -1570,6 +1570,7 @@ public class ValidatorTest {
     public static class validateTransaction {
         static ValueTransfer.Builder txBuilder;
         static FeeDelegatedValueTransfer.Builder fdTxBuilder;
+        static EthereumAccessList.Builder accessTxBuilder;
         static AccountKey accountKey;
 
         @BeforeClass
@@ -1634,6 +1635,33 @@ public class ValidatorTest {
                                     "0x4fe2a845d92ff48abca3e1d59637fab5f4a4e3172d91772d9bfce60760edc506"
                             )
                     ));
+
+            AccessList accessList = new AccessList(
+                    Arrays.asList(
+                            new AccessTuple(
+                                    "0x0000000000000000000000000000000000000001",
+                                    Arrays.asList(
+                                            "0x0000000000000000000000000000000000000000000000000000000000000000"
+                                    )
+                            ))
+            );
+
+            accessTxBuilder = new EthereumAccessList.Builder()
+                    .setFrom("0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b")
+                    .setTo("0x7b65b75d204abed71587c9e519a89277766ee1d0")
+                    .setValue("0xa")
+                    .setChainId("0x2")
+                    .setGasPrice("0x19")
+                    .setNonce("0x4d2")
+                    .setGas("0xf4240")
+                    .setInput("0x31323334")
+                    .setAccessList(accessList)
+                    .setSignatures(new SignatureData(
+                            "0x1",
+                            "0xbfc80a874c43b71b67c68fa5927d1443407f31aef4ec6369bbecdb76fc39b0c0",
+                            "0x193e62c1dd63905aee7073958675dcb45d78c716a9a286b54a496e82cb762f26"
+                    ));
+
         }
 
         @Test
@@ -1645,8 +1673,11 @@ public class ValidatorTest {
 
             Validator spyValidator = Mockito.spy(validator);
             spyValidator.validateTransaction(txBuilder.build());
-
             Mockito.verify(spyValidator).validateSender(any());
+
+            Validator spyValidator1 = Mockito.spy(validator);
+            spyValidator1.validateTransaction(accessTxBuilder.build());
+            Mockito.verify(spyValidator1).validateSender(any());
         }
 
         @Test
@@ -1671,6 +1702,7 @@ public class ValidatorTest {
             Validator validator = new Validator(klay);
             assertTrue(validator.validateTransaction(txBuilder.build()));
             assertTrue(validator.validateTransaction(fdTxBuilder.build()));
+            assertTrue(validator.validateTransaction(accessTxBuilder.build()));
         }
     }
 }

@@ -1161,6 +1161,30 @@ public class UtilsTest {
 
             checkAddress(keyring.getAddress(), actualAddress);
         }
+
+        @Test
+        public void withMessageAndSignatureIfVis0() throws SignatureException {
+            String expectedSignedMessage = "0xc69018da9396c4b87947e0784625af7475caf46e2af9cf57a44673ff0f625258642d8993751ae67271bcc131aa065adccf9f16fc4953f9c48f4a80d675c09ae800";
+            String expectedAddress = "0xb6a1f97502431e6f8d701f9e192c3cc43c07351a";
+            String message = "Klaytn Test";
+
+            SignatureData signatureData = caver.utils.decodeSignature(expectedSignedMessage);
+            String actualAddress = caver.utils.recover(message, signatureData);
+
+            checkAddress(expectedAddress, actualAddress);
+        }
+
+        @Test
+        public void withMessageAndSignatureIfVis1() throws SignatureException {
+            String expectedSignedMessage = "0x90dda6bb189ccb6cbda754c3696b91d28ca2486d7f2905ac90e1a831a2bb65cd4c55a54d6365ea5cb0f33330ed82b687d7b808137a0a7cdc5b620bb81d69d62701";
+            String expectedAddress = "0xa05b2b058dbc5926969cb7f33cff6d8747472022";
+            String message = "Some data";
+
+            SignatureData signatureData = caver.utils.decodeSignature(expectedSignedMessage);
+            String actualAddress = caver.utils.recover(message, signatureData);
+
+            checkAddress(expectedAddress, actualAddress);
+        }
     }
 
     public static class decodeSignatureTest {
@@ -1232,6 +1256,37 @@ public class UtilsTest {
                     "0x1b",
                     "0x8213e560e7bbe1f2e28fd69cbbb41c9108b84c98cd7c2c88d3c8e3549fd6ab10",
                     "0x3ca40c9e20c1525348d734a6724db152b9244bff6e0ff0c2b811d61d8f874f00"
+            );
+
+            String actual = caver.utils.recoverPublicKey(message, signatureData);
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        public void recoverWithSampleDataIfVis0() throws SignatureException {
+            String expected = "0xb5df4d5e6b4ee7a136460b911a69030fdd42c18ed067bcc2e25eda1b851314fad994c5fe946aad01ca2e348d4ff3094960661a8bc095f358538af54aeea48ff3";
+
+            String message = "Some Message";
+            SignatureData signatureData = new SignatureData(
+                    "0x00",
+                    "0x8213e560e7bbe1f2e28fd69cbbb41c9108b84c98cd7c2c88d3c8e3549fd6ab10",
+                    "0x3ca40c9e20c1525348d734a6724db152b9244bff6e0ff0c2b811d61d8f874f00"
+            );
+
+            String actual = caver.utils.recoverPublicKey(message, signatureData);
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        public void recoverWithSampleDataIfVis1() throws SignatureException {
+            String expected = "0xd907f61c1270ed9601b20a53d55244fea002afca955e1a47a309c507ced26e8721d32f419f789d6216ca35bd47aa7adb2432cfc6d52dd74b552a1b749181c0ac";
+            String address = caver.utils.publicKeyToAddress(expected);
+
+            String message = "Some data";
+            SignatureData signatureData = new SignatureData(
+                    "0x01",
+                    "0x90dda6bb189ccb6cbda754c3696b91d28ca2486d7f2905ac90e1a831a2bb65cd",
+                    "0x4c55a54d6365ea5cb0f33330ed82b687d7b808137a0a7cdc5b620bb81d69d627"
             );
 
             String actual = caver.utils.recoverPublicKey(message, signatureData);

@@ -18,12 +18,14 @@ package com.klaytn.caver.transaction.type;
 
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.AbstractTransaction;
+import com.klaytn.caver.transaction.TransactionDecoder;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.web3j.rlp.*;
 import org.web3j.utils.Numeric;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,11 +47,17 @@ public class ValueTransfer extends AbstractTransaction {
     String value;
 
     /**
+     * A unit price of gas in peb the sender will pay for a transaction fee.
+     */
+    String gasPrice = "0x";
+
+    /**
      * ValueTransfer Builder class
      */
     public static class Builder extends AbstractTransaction.Builder<ValueTransfer.Builder> {
         private String to;
         private String value;
+        String gasPrice = "0x";
 
         public Builder() {
             super(TransactionType.TxTypeValueTransfer.toString());
@@ -68,6 +76,16 @@ public class ValueTransfer extends AbstractTransaction {
 
         public Builder setValue(BigInteger value) {
             setValue(Numeric.toHexStringWithPrefix(value));
+            return this;
+        }
+
+        public Builder setGasPrice(String gasPrice) {
+            this.gasPrice = gasPrice;
+            return this;
+        }
+
+        public Builder setGasPrice(BigInteger gasPrice) {
+            setGasPrice(Numeric.toHexStringWithPrefix(gasPrice));
             return this;
         }
 
@@ -110,6 +128,7 @@ public class ValueTransfer extends AbstractTransaction {
         super(builder);
         setTo(builder.to);
         setValue(builder.value);
+        setGasPrice(builder.gasPrice);
     }
 
     /**
@@ -131,12 +150,44 @@ public class ValueTransfer extends AbstractTransaction {
                 from,
                 nonce,
                 gas,
-                gasPrice,
                 chainId,
                 signatures
         );
         setTo(to);
         setValue(value);
+        setGasPrice(gasPrice);
+    }
+
+    /**
+     * Getter function for gas price
+     * @return String
+     */
+    public String getGasPrice() {
+        return gasPrice;
+    }
+
+    /**
+     * Setter function for gas price.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     */
+    public void setGasPrice(String gasPrice) {
+        if(gasPrice == null || gasPrice.isEmpty() || gasPrice.equals("0x")) {
+            gasPrice = "0x";
+        }
+
+        if(!gasPrice.equals("0x") && !Utils.isNumber(gasPrice)) {
+            throw new IllegalArgumentException("Invalid gasPrice. : " + gasPrice);
+        }
+
+        this.gasPrice = gasPrice;
+    }
+
+    /**
+     * Setter function for gas price.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     */
+    public void setGasPrice(BigInteger gasPrice) {
+        setGasPrice(Numeric.toHexStringWithPrefix(gasPrice));
     }
 
     /**
@@ -260,9 +311,71 @@ public class ValueTransfer extends AbstractTransaction {
 
         if(!this.getTo().toLowerCase().equals(txObj.getTo().toLowerCase())) return false;
         if(!Numeric.toBigInt(this.getValue()).equals(Numeric.toBigInt(txObj.getValue()))) return false;
+        if (!this.getGasPrice().equals(txObj.getGasPrice())) return false;
 
         return true;
     }
+
+    @Override
+    public String combineSignedRawTransactions(List<String> rlpEncoded) {
+        boolean fillVariable = false;
+
+        // If the signatures are empty, there may be an undefined member variable.
+        // In this case, the empty information is filled with the decoded result.
+        if(Utils.isEmptySig(this.getSignatures())) fillVariable = true;
+
+        for(String encodedStr : rlpEncoded) {
+            AbstractTransaction decode = TransactionDecoder.decode(encodedStr);
+            if (!decode.getType().equals(this.getType())) {
+                continue;
+            }
+            ValueTransfer txObj = (ValueTransfer) decode;
+
+            if(fillVariable) {
+                if(this.getNonce().equals("0x")) this.setNonce(txObj.getNonce());
+                if(this.getGasPrice().equals("0x")) this.setGasPrice(txObj.getGasPrice());
+                fillVariable = false;
+            }
+
+            // Signatures can only be combined for the same transaction.
+            // Therefore, compare whether the decoded transaction is the same as this.
+            if(!this.compareTxField(txObj, false)) {
+                throw new RuntimeException("Transactions containing different information cannot be combined.");
+            }
+
+            this.appendSignatures(txObj.getSignatures());
+        }
+
+        return this.getRLPEncoding();
+    }
+
+    /**
+     * Fills empty optional transaction field.(gasPrice)
+     * @throws IOException
+     */
+    @Override
+    public void fillTransaction() throws IOException {
+        super.fillTransaction();
+        if(this.gasPrice.equals("0x")) {
+            this.setGasPrice(this.getKlaytnCall().getGasPrice().send().getResult());
+        }
+        if(this.getGasPrice().equals("0x")) {
+            throw new RuntimeException("Cannot fill transaction data. (gasPrice). `klaytnCall` must be set in Transaction instance to automatically fill the nonce, chainId or gasPrice. Please call the `setKlaytnCall` to set `klaytnCall` in the Transaction instance.");
+        }
+    }
+
+    /**
+     * Checks that member variables that can be defined by the user are defined.
+     * If there is an undefined variable, an error occurs.
+     */
+    @Override
+    public void validateOptionalValues(boolean checkChainID) {
+        super.validateOptionalValues(checkChainID);
+        if(this.getGasPrice() == null || this.getGasPrice().isEmpty() || this.getGasPrice().equals("0x")) {
+            throw new RuntimeException("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
+        }
+    }
+
 
     /**
      * Getter function for to

@@ -1675,8 +1675,9 @@ public class ValidatorTest {
             spyValidator.validateTransaction(txBuilder.build());
             Mockito.verify(spyValidator).validateSender(any());
 
-            spyValidator.validateTransaction(accessTxBuilder.build());
-            Mockito.verify(spyValidator).validateSender(any());
+            Validator spyValidator1 = Mockito.spy(validator);
+            spyValidator1.validateTransaction(accessTxBuilder.build());
+            Mockito.verify(spyValidator1).validateSender(any());
         }
 
         @Test

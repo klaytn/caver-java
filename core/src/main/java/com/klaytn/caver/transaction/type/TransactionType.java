@@ -70,7 +70,8 @@ public enum TransactionType {
     public static boolean isEthereumTransaction(int type) {
         if (type == TxTypeLegacyTransaction.type || type == TxTypeEthereumAccessList.type) {
             return true;
-        } else return false;
+        }
+        return false;
     }
 
     /**
@@ -85,7 +86,8 @@ public enum TransactionType {
                         Objects.equals(type, TxTypeEthereumAccessList.toString())
         ) {
             return true;
-        } else return false;
+        }
+        return false;
     }
 
 

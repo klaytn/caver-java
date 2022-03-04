@@ -433,7 +433,7 @@ public class FeeDelegatedSmartContractDeploy extends AbstractFeeDelegatedTransac
         if(!this.getInput().equals(feeDelegatedSmartContractDeploy.getInput())) return false;
         if(this.getHumanReadable() != feeDelegatedSmartContractDeploy.getHumanReadable()) return false;
         if(!this.getCodeFormat().equals(feeDelegatedSmartContractDeploy.getCodeFormat())) return false;
-        if(!this.getGasPrice().equals(feeDelegatedSmartContractDeploy.getGasPrice())) return false;
+        if(Numeric.toBigInt(this.getGasPrice()).compareTo(Numeric.toBigInt(feeDelegatedSmartContractDeploy.getGasPrice())) != 0) return false;
 
         return true;
     }

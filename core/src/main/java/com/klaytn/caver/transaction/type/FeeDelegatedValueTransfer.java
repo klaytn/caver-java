@@ -366,7 +366,7 @@ public class FeeDelegatedValueTransfer extends AbstractFeeDelegatedTransaction {
 
         if(!this.getTo().toLowerCase().equals(feeDelegatedValueTransfer.getTo().toLowerCase())) return false;
         if(!Numeric.toBigInt(this.getValue()).equals(Numeric.toBigInt(feeDelegatedValueTransfer.getValue()))) return false;
-        if(!this.getGasPrice().equals(feeDelegatedValueTransfer.getGasPrice())) return false;
+        if(Numeric.toBigInt(this.getGasPrice()).compareTo(Numeric.toBigInt(feeDelegatedValueTransfer.getGasPrice())) != 0) return false;
 
         return true;
     }

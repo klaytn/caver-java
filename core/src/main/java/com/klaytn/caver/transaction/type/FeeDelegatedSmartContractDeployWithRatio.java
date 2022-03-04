@@ -444,7 +444,7 @@ public class FeeDelegatedSmartContractDeployWithRatio extends AbstractFeeDelegat
         if(!this.getInput().equals(feeDelegatedSmartContractDeployWithRatio.getInput())) return false;
         if(this.getHumanReadable() != feeDelegatedSmartContractDeployWithRatio.getHumanReadable()) return false;
         if(!this.getCodeFormat().equals(feeDelegatedSmartContractDeployWithRatio.getCodeFormat())) return false;
-        if(!this.getGasPrice().equals(feeDelegatedSmartContractDeployWithRatio.getGasPrice())) return false;
+        if(Numeric.toBigInt(this.getGasPrice()).compareTo(Numeric.toBigInt(feeDelegatedSmartContractDeployWithRatio.getGasPrice())) != 0) return false;
 
         return true;
     }

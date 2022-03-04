@@ -373,7 +373,7 @@ public class FeeDelegatedValueTransferWithRatio extends AbstractFeeDelegatedWith
 
         if(!this.getTo().toLowerCase().equals(feeDelegatedValueTransferWithRatio.getTo().toLowerCase())) return false;
         if(!Numeric.toBigInt(this.getValue()).equals(Numeric.toBigInt(feeDelegatedValueTransferWithRatio.getValue()))) return false;
-        if(!this.getGasPrice().equals(feeDelegatedValueTransferWithRatio.getGasPrice())) return false;
+        if(Numeric.toBigInt(this.getGasPrice()).compareTo(Numeric.toBigInt(feeDelegatedValueTransferWithRatio.getGasPrice())) != 0) return false;
 
         return true;
     }

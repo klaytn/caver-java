@@ -342,7 +342,7 @@ public class FeeDelegatedChainDataAnchoringWithRatio extends AbstractFeeDelegate
         FeeDelegatedChainDataAnchoringWithRatio feeDelegatedChainDataAnchoringWithRatio = (FeeDelegatedChainDataAnchoringWithRatio)txObj;
 
         if(!this.getInput().equals(feeDelegatedChainDataAnchoringWithRatio.getInput())) return false;
-        if(!this.getGasPrice().equals(feeDelegatedChainDataAnchoringWithRatio.getGasPrice())) return false;
+        if(Numeric.toBigInt(this.getGasPrice()).compareTo(Numeric.toBigInt(feeDelegatedChainDataAnchoringWithRatio.getGasPrice())) != 0) return false;
 
         return true;
     }

@@ -388,7 +388,7 @@ public class FeeDelegatedSmartContractExecutionWithRatio extends AbstractFeeDele
         if(!this.getTo().toLowerCase().equals(feeDelegatedSmartContractExecutionWithRatio.getTo().toLowerCase())) return false;
         if(!Numeric.toBigInt(this.getValue()).equals(Numeric.toBigInt(feeDelegatedSmartContractExecutionWithRatio.getValue()))) return false;
         if(!this.getInput().equals(feeDelegatedSmartContractExecutionWithRatio.getInput())) return false;
-        if(!this.getGasPrice().equals(feeDelegatedSmartContractExecutionWithRatio.getGasPrice())) return false;
+        if(Numeric.toBigInt(this.getGasPrice()).compareTo(Numeric.toBigInt(feeDelegatedSmartContractExecutionWithRatio.getGasPrice())) != 0) return false;
 
         return true;
     }

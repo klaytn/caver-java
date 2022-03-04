@@ -337,7 +337,7 @@ public class FeeDelegatedChainDataAnchoring extends AbstractFeeDelegatedTransact
         FeeDelegatedChainDataAnchoring feeDelegatedChainDataAnchoring = (FeeDelegatedChainDataAnchoring)txObj;
 
         if(!this.getInput().equals(feeDelegatedChainDataAnchoring.getInput())) return false;
-        if(!this.getGasPrice().equals(feeDelegatedChainDataAnchoring.getGasPrice())) return false;
+        if(Numeric.toBigInt(this.getGasPrice()).compareTo(Numeric.toBigInt(feeDelegatedChainDataAnchoring.getGasPrice())) != 0) return false;
 
         return true;
     }

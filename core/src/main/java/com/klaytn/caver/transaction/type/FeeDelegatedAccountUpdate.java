@@ -346,7 +346,7 @@ public class FeeDelegatedAccountUpdate extends AbstractFeeDelegatedTransaction {
         if(!this.getAccount().getRLPEncodingAccountKey().equals(feeDelegatedAccountUpdate.getAccount().getRLPEncodingAccountKey())) {
             return false;
         }
-        if (!this.getGasPrice().equals(feeDelegatedAccountUpdate.getGasPrice())) return false;
+        if(Numeric.toBigInt(this.getGasPrice()).compareTo(Numeric.toBigInt(feeDelegatedAccountUpdate.getGasPrice())) != 0) return false;
 
         return true;
     }

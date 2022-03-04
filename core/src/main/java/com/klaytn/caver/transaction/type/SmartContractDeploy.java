@@ -380,7 +380,7 @@ public class SmartContractDeploy extends AbstractTransaction {
         if(!this.getInput().equals(txObj.getInput())) return false;
         if(this.getHumanReadable() != txObj.getHumanReadable()) return false;
         if(!this.getCodeFormat().equals(txObj.getCodeFormat())) return false;
-        if(!this.getGasPrice().equals(txObj.getGasPrice())) return false;
+        if(Numeric.toBigInt(this.getGasPrice()).compareTo(Numeric.toBigInt(txObj.getGasPrice())) != 0) return false;
 
         return true;
     }

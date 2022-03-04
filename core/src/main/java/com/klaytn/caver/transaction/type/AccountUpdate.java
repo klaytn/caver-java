@@ -293,7 +293,7 @@ public class AccountUpdate extends AbstractTransaction {
         if(!this.getAccount().getRLPEncodingAccountKey().equals(txObj.getAccount().getRLPEncodingAccountKey())) {
             return false;
         }
-        if (!this.getGasPrice().equals(txObj.getGasPrice())) return false;
+        if(Numeric.toBigInt(this.getGasPrice()).compareTo(Numeric.toBigInt(txObj.getGasPrice())) != 0) return false;
 
         return true;
     }

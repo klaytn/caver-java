@@ -323,7 +323,7 @@ public class FeeDelegatedCancelWithRatio extends AbstractFeeDelegatedWithRatioTr
         if(!super.compareTxField(txObj, checkSig)) return false;
         if(!(txObj instanceof FeeDelegatedCancelWithRatio)) return false;
         FeeDelegatedCancelWithRatio feeDelegatedCancelWithRatio = (FeeDelegatedCancelWithRatio) txObj;
-        if (!this.getGasPrice().equals(feeDelegatedCancelWithRatio.getGasPrice())) return false;
+        if(Numeric.toBigInt(this.getGasPrice()).compareTo(Numeric.toBigInt(feeDelegatedCancelWithRatio.getGasPrice())) != 0) return false;
 
         return true;
     }

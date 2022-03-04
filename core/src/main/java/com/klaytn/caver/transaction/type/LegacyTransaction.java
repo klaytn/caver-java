@@ -351,7 +351,7 @@ public class LegacyTransaction extends AbstractTransaction {
         if(!this.getTo().toLowerCase().equals(txObj.getTo().toLowerCase())) return false;
         if(!Numeric.toBigInt(this.getValue()).equals(Numeric.toBigInt(txObj.getValue()))) return false;
         if(!this.getInput().equals(txObj.getInput())) return false;
-        if(!this.getGasPrice().equals(txObj.getGasPrice())) return false;
+        if(Numeric.toBigInt(this.getGasPrice()).compareTo(Numeric.toBigInt(txObj.getGasPrice())) != 0) return false;
 
         return true;
     }

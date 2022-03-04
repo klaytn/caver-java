@@ -314,7 +314,7 @@ public class FeeDelegatedCancel extends AbstractFeeDelegatedTransaction {
         if(!super.compareTxField(txObj, checkSig)) return false;
         if(!(txObj instanceof FeeDelegatedCancel)) return false;
         FeeDelegatedCancel feeDelegatedCancel = (FeeDelegatedCancel) txObj;
-        if (!this.getGasPrice().equals(feeDelegatedCancel.getGasPrice())) return false;
+        if(Numeric.toBigInt(this.getGasPrice()).compareTo(Numeric.toBigInt(feeDelegatedCancel.getGasPrice())) != 0) return false;
 
         return true;
     }

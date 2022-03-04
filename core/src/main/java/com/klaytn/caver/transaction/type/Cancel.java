@@ -265,7 +265,7 @@ public class Cancel extends AbstractTransaction {
         if(!super.compareTxField(obj, checkSig)) return false;
         if(!(obj instanceof Cancel)) return false;
         Cancel txObj = (Cancel) obj;
-        if (!this.getGasPrice().equals(txObj.getGasPrice())) return false;
+        if(Numeric.toBigInt(this.getGasPrice()).compareTo(Numeric.toBigInt(txObj.getGasPrice())) != 0) return false;
 
         return true;
     }

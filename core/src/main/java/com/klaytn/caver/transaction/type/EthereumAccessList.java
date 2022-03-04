@@ -353,6 +353,10 @@ public class EthereumAccessList extends AbstractTransaction {
         super.appendSignatures(signatureData);
     }
 
+    /**
+     * Returns a hash string of transaction
+     * @return String
+     */
     @Override
     public String getTransactionHash() {
         // TxHashRLP = 0x01 + encode([chainId, nonce, gasPrice, gas, to, value, data, accessList, signatureYParity, signatureR, signatureS])
@@ -362,12 +366,28 @@ public class EthereumAccessList extends AbstractTransaction {
         return Hash.sha3(Numeric.toHexString(detachedType));
     }
 
+    /**
+     * Signs to the transaction with a single private key.
+     * It sets Hasher default value.
+     *   - signer : TransactionHasher.getHashForSignature()
+     * @param keyString The private key string.
+     * @return AbstractTransaction
+     * @throws IOException
+     */
     @Override
     public AbstractTransaction sign(String keyString) throws IOException {
         AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(keyString);
         return this.sign(keyring, TransactionHasher::getHashForSignature);
     }
 
+    /**
+     * Signs using all private keys used in the role defined in the Keyring instance.
+     * It sets index and Hasher default value.
+     * @param keyring The Keyring instance.
+     * @param signer The function to get hash of transaction.
+     * @return AbstractTransaction
+     * @throws IOException
+     */
     @Override
     public AbstractTransaction sign(AbstractKeyring keyring, Function<AbstractTransaction, String> signer) throws IOException {
         if(TransactionType.isEthereumTransaction(this.getType()) && keyring.isDecoupled()) {
@@ -392,22 +412,54 @@ public class EthereumAccessList extends AbstractTransaction {
         return this;
     }
 
+    /**
+     * Signs using all private keys used in the role defined in the Keyring instance.
+     * It sets index and Hasher default value.
+     *   - signer : TransactionHasher.getHashForSignature()
+     * @param keyring The Keyring instance.
+     * @return AbstractTransaction
+     * @throws IOException
+     */
     @Override
     public AbstractTransaction sign(AbstractKeyring keyring) throws IOException {
         return this.sign(keyring, TransactionHasher::getHashForSignature);
     }
 
+    /**
+     * Signs to the transaction with a single private key.
+     * @param keyString The private key string
+     * @param signer The function to get hash of transaction.
+     * @return AbstractTransaction
+     * @throws IOException
+     */
     @Override
     public AbstractTransaction sign(String keyString, Function<AbstractTransaction, String> signer) throws IOException {
+
         AbstractKeyring keyring = KeyringFactory.createFromPrivateKey(keyString);
         return this.sign(keyring, signer);
     }
 
+    /**
+     * Signs to the transaction with a private key in the Keyring instance.
+     * It sets signer to TransactionHasher.getHashForSignature()
+     * @param keyring The Keyring instance.
+     * @param index The index of private key to use in Keyring instance.
+     * @return AbstractTransaction
+     * @throws IOException
+     */
     @Override
     public AbstractTransaction sign(AbstractKeyring keyring, int index) throws IOException {
         return this.sign(keyring, index, TransactionHasher::getHashForSignature);
     }
 
+    /**
+     * Signs to the transaction with a private key in the Keyring instance.
+     * @param keyring The Keyring instance.
+     * @param index The index of private key to use in Keyring instance.
+     * @param signer The function to get hash of transaction.
+     * @return AbstractTransaction
+     * @throws IOException
+     */
     @Override
     public AbstractTransaction sign(AbstractKeyring keyring, int index, Function<AbstractTransaction, String> signer) throws IOException {
         if(TransactionType.isEthereumTransaction(this.getType()) && keyring.isDecoupled()) {

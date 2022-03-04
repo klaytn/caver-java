@@ -21,6 +21,7 @@ import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.type.EthereumAccessList;
+import com.klaytn.caver.transaction.type.LegacyTransaction;
 import com.klaytn.caver.transaction.type.TransactionType;
 import com.klaytn.caver.transaction.utils.AccessList;
 import com.klaytn.caver.transaction.utils.AccessTuple;
@@ -1665,6 +1666,47 @@ public class EthereumAccessListTest {
                     Arrays.asList(privateKeyArr)
             );
             ethereumAccessList.sign(keyring);
+        }
+    }
+
+    public static class recoverPublicKeyTest {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        @Test
+        public void recoverPublicKey() {
+            String expectedPublicKey = "0x3a514176466fa815ed481ffad09110a2d344f6c9b78c1d14afc351c3a51be33d8072e77939dc03ba44790779b7a1025baf3003f6732430e20cd9b76d953391b3";
+            SignatureData signatureData = new SignatureData(
+                    "0x1",
+                    "0xbfc80a874c43b71b67c68fa5927d1443407f31aef4ec6369bbecdb76fc39b0c0",
+                    "0x193e62c1dd63905aee7073958675dcb45d78c716a9a286b54a496e82cb762f26"
+            );
+
+            AccessList accessList = new AccessList(
+                    Arrays.asList(
+                            new AccessTuple(
+                                    "0x0000000000000000000000000000000000000001",
+                                    Arrays.asList(
+                                            "0x0000000000000000000000000000000000000000000000000000000000000000"
+                                    )
+                            ))
+            );
+
+            EthereumAccessList tx = new EthereumAccessList.Builder()
+                    .setFrom("0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b")
+                    .setTo("0x7b65b75d204abed71587c9e519a89277766ee1d0")
+                    .setValue("0xa")
+                    .setChainId("0x2")
+                    .setGasPrice("0x19")
+                    .setNonce("0x4d2")
+                    .setGas("0xf4240")
+                    .setInput("0x31323334")
+                    .setAccessList(accessList)
+                    .setSignatures(signatureData)
+                    .build();
+
+            List<String> publicKeys = tx.recoverPublicKeys();
+            assertEquals(expectedPublicKey, publicKeys.get(0));
         }
     }
 

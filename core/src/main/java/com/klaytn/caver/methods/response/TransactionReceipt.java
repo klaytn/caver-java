@@ -16,6 +16,7 @@
 
 package com.klaytn.caver.methods.response;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -134,6 +135,16 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         private String gasPrice;
 
         /**
+         * Max priority fee per gas in peb.
+         */
+        private String maxPriorityFeePerGas;
+
+        /**
+         * Max fee per gas in peb.
+         */
+        private String maxFeePerGas;
+
+        /**
          * The amount of gas used by this specific transaction alone.
          */
         private String gasUsed;
@@ -223,6 +234,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         /**
          * Chain ID.
          */
+        @JsonAlias({"chainId", "chainID"})
         private String chainID;
 
         /**
@@ -233,7 +245,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         public TransactionReceiptData() {
         }
 
-        public TransactionReceiptData(String blockHash, String blockNumber, String codeFormat, String contractAddress, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, String from, String gas, String gasPrice, String gasUsed, boolean humanReadable, String key, String input, List<KlayLogs.Log> logs, String logsBloom, String nonce, String senderTxHash, List<SignatureData> signatures, String status, String to, String transactionIndex, String transactionHash, String txError, String type, String typeInt, String value, String chainID, AccessList accessList) {
+        public TransactionReceiptData(String blockHash, String blockNumber, String codeFormat, String contractAddress, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, String from, String gas, String gasPrice, String maxPriorityFeePerGas, String maxFeePerGas, String gasUsed, boolean humanReadable, String key, String input, List<KlayLogs.Log> logs, String logsBloom, String nonce, String senderTxHash, List<SignatureData> signatures, String status, String to, String transactionIndex, String transactionHash, String txError, String type, String typeInt, String value, String chainID, AccessList accessList) {
             this.blockHash = blockHash;
             this.blockNumber = blockNumber;
             this.codeFormat = codeFormat;
@@ -244,6 +256,8 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
             this.from = from;
             this.gas = gas;
             this.gasPrice = gasPrice;
+            this.maxPriorityFeePerGas = maxPriorityFeePerGas;
+            this.maxFeePerGas = maxFeePerGas;
             this.gasUsed = gasUsed;
             this.humanReadable = humanReadable;
             this.key = key;
@@ -344,6 +358,22 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
 
         public void setGasPrice(String gasPrice) {
             this.gasPrice = gasPrice;
+        }
+
+        public String getMaxPriorityFeePerGas() {
+            return maxPriorityFeePerGas;
+        }
+
+        public void setMaxPriorityFeePerGas(String maxPriorityFeePerGas) {
+            this.maxPriorityFeePerGas = maxPriorityFeePerGas;
+        }
+
+        public String getMaxFeePerGas() {
+            return maxFeePerGas;
+        }
+
+        public void setMaxFeePerGas(String maxFeePerGas) {
+            this.maxFeePerGas = maxFeePerGas;
         }
 
         public String getGasUsed() {

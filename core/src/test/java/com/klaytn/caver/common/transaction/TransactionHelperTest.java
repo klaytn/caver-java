@@ -62,7 +62,6 @@ public class TransactionHelperTest {
             assertEquals(expected.getFrom(), actual.getFrom());
             assertEquals(expected.getGas(), actual.getGas());
             assertEquals(expected.getNonce(), actual.getNonce());
-            assertEquals(expected.getGasPrice(), actual.getGasPrice());
             assertEquals(expected.getHash(), actual.getTransactionHash());
         }
 

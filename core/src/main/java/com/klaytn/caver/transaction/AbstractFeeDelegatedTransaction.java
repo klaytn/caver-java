@@ -102,14 +102,13 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
      * @param from The address of the sender.
      * @param nonce A value used to uniquely identify a sender’s transaction.
      * @param gas The maximum amount of gas the transaction is allowed to use.
-     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
      * @param chainId Network ID
      * @param signatures A Signature list
      * @param feePayer The address of the fee payer.
      * @param feePayerSignatures The fee payers's signatures.
      */
-    public AbstractFeeDelegatedTransaction(Klay klaytnCall, String type, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures) {
-        super(klaytnCall, type, from, nonce, gas, gasPrice, chainId, signatures);
+    public AbstractFeeDelegatedTransaction(Klay klaytnCall, String type, String from, String nonce, String gas, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures) {
+        super(klaytnCall, type, from, nonce, gas, chainId, signatures);
         setFeePayer(feePayer);
         setFeePayerSignatures(feePayerSignatures);
     }
@@ -236,48 +235,6 @@ abstract public class AbstractFeeDelegatedTransaction extends AbstractTransactio
      */
     public void appendFeePayerSignatures(List<SignatureData> signatureData) {
         setFeePayerSignatures(signatureData);
-    }
-
-    /**
-     * Combines signatures and feePayerSignatures to the transaction from RLP-encoded transaction strings and returns a single transaction with all signatures combined.
-     * When combining the signatures into a transaction instance,
-     * an error is thrown if the decoded transaction contains different value except signatures.
-     * @param rlpEncoded A List of RLP-encoded transaction strings.
-     * @return String
-     */
-    public String combineSignedRawTransactions(List<String> rlpEncoded) {
-        boolean fillVariable = false;
-
-        // If the signatures are empty, there may be an undefined member variable.
-        // In this case, the empty information is filled with the decoded result.
-        // At initial state of AbstractFeeDelegateTx Object, feePayerSignature field has one empty signature.
-        if((Utils.isEmptySig(this.getFeePayerSignatures())) || Utils.isEmptySig(this.getSignatures())) fillVariable = true;
-
-        for(String encodedStr : rlpEncoded) {
-            AbstractFeeDelegatedTransaction txObj = (AbstractFeeDelegatedTransaction) TransactionDecoder.decode(encodedStr);
-
-            if(fillVariable) {
-                if(this.getNonce().equals("0x")) this.setNonce(txObj.getNonce());
-                if(this.getGasPrice().equals("0x")) this.setGasPrice(txObj.getGasPrice());
-                if(this.getFeePayer().equals("0x") || this.getFeePayer().equals(Utils.DEFAULT_ZERO_ADDRESS)) {
-                    if(!txObj.getFeePayer().equals("0x") && !txObj.getFeePayer().equals(Utils.DEFAULT_ZERO_ADDRESS)) {
-                        this.setFeePayer(txObj.getFeePayer());
-                        fillVariable = false;
-                    }
-                }
-            }
-
-            // Signatures can only be combined for the same transaction.
-            // Therefore, compare whether the decoded transaction is the same as this.
-            if(!this.compareTxField(txObj, false)) {
-                throw new RuntimeException("Transactions containing different information cannot be combined.");
-            }
-
-            this.appendSignatures(txObj.getSignatures());
-            this.appendFeePayerSignatures(txObj.getFeePayerSignatures());
-        }
-
-        return this.getRLPEncoding();
     }
 
     /**

@@ -530,7 +530,7 @@ public class EthereumAccessListTest {
             String value = "0xa";
 
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x25"),
+                    Numeric.hexStringToByteArray("0x1"),
                     Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
                     Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
             );
@@ -566,7 +566,7 @@ public class EthereumAccessListTest {
             String value = "0xa";
 
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x25"),
+                    Numeric.hexStringToByteArray("0x0"),
                     Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
                     Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
             );
@@ -602,7 +602,7 @@ public class EthereumAccessListTest {
             String value = "0xa";
 
             SignatureData signatureData = new SignatureData(
-                    Numeric.hexStringToByteArray("0x25"),
+                    Numeric.hexStringToByteArray("0x0"),
                     Numeric.hexStringToByteArray("0xb2a5a15550ec298dc7dddde3774429ed75f864c82caeb5ee24399649ad731be9"),
                     Numeric.hexStringToByteArray("0x29da1014d16f2011b3307f7bbe1035b6e699a4204fc416c763def6cefd976567")
             );
@@ -994,7 +994,7 @@ public class EthereumAccessListTest {
                             .setChainId(chainID)
                             .setAccessList(accessList)
                             .setSignatures(new SignatureData(
-                                    Numeric.hexStringToByteArray("0x0fea"),
+                                    Numeric.hexStringToByteArray("0x1"),
                                     Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                                     Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
                             ))
@@ -1080,7 +1080,7 @@ public class EthereumAccessListTest {
         );
 
         static SignatureData signatureData = new SignatureData(
-                Numeric.hexStringToByteArray("0x0fea"),
+                Numeric.hexStringToByteArray("0x1"),
                 Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
                 Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
         );
@@ -1102,6 +1102,53 @@ public class EthereumAccessListTest {
 
             assertEquals(signatureData, ethereumAccessList.getSignatures().get(0));
         }
+
+        @Test
+        public void throwException_invalidParity() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("Invalid signature: The y-parity of the transaction should either be 0 or 1.");
+
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
+                            .setAccessList(accessList)
+            );
+
+            ethereumAccessList.appendSignatures(new SignatureData(
+                    Numeric.hexStringToByteArray("0x25"),
+                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+            ));
+        }
+
+
+        @Test
+        public void throwException_setSignature_invalidParity() {
+            expectedException.expect(RuntimeException.class);
+            expectedException.expectMessage("Invalid signature: The y-parity of the transaction should either be 0 or 1.");
+
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
+                            .setNonce(nonce)
+                            .setGas(gas)
+                            .setGasPrice(gasPrice)
+                            .setChainId(chainID)
+                            .setTo(to)
+                            .setValue(value)
+                            .setAccessList(accessList)
+                            .setSignatures(new SignatureData(
+                                    Numeric.hexStringToByteArray("0x25"),
+                                    Numeric.hexStringToByteArray("0xade9480f584fe481bf070ab758ecc010afa15debc33e1bd75af637d834073a6e"),
+                                    Numeric.hexStringToByteArray("0x38160105d78cef4529d765941ad6637d8dcf6bd99310e165fee1c39fff2aa27e")
+                            ))
+            );
+        }
+
 
         @Test
         public void appendSignatureWithEmptySig() {

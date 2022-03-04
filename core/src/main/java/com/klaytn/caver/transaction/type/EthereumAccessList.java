@@ -333,6 +333,12 @@ public class EthereumAccessList extends AbstractTransaction {
             throw new RuntimeException("Signatures already defined." + TransactionType.TxTypeEthereumAccessList.toString() + " cannot include more than one signature.");
         }
 
+        if (!Utils.isEmptySig(signatureData)) {
+            int v = Integer.decode(signatureData.getV());
+            if (v != 0 && v != 1) {
+                throw new RuntimeException("Invalid signature: The y-parity of the transaction should either be 0 or 1.");
+            }
+        };
         super.appendSignatures(signatureData);
     }
 
@@ -350,6 +356,14 @@ public class EthereumAccessList extends AbstractTransaction {
         if(signatureData.size() != 1) {
             throw new RuntimeException("Signatures are too long " + TransactionType.TxTypeEthereumAccessList.toString() + " cannot include more than one signature.");
         }
+
+        SignatureData signature = signatureData.get(0);
+        if (!Utils.isEmptySig(signature)) {
+            int v = Integer.decode(signature.getV());
+            if (v != 0 && v != 1) {
+                throw new RuntimeException("Invalid signature: The y-parity of the transaction should either be 0 or 1.");
+            }
+        };
 
         super.appendSignatures(signatureData);
     }

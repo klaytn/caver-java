@@ -18,9 +18,13 @@ package com.klaytn.caver.transaction;
 
 import com.klaytn.caver.methods.response.Transaction;
 import com.klaytn.caver.rpc.Klay;
+import com.klaytn.caver.transaction.type.TransactionType;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+
+import static com.klaytn.caver.transaction.type.TransactionType.TxTypeEthereumAccessList;
 
 /**
  * This class is a helper class provides methods that handles Transaction object comfortably.
@@ -84,4 +88,33 @@ public class TransactionHelper {
         AbstractFeeDelegatedTransaction tx = (AbstractFeeDelegatedTransaction)TransactionDecoder.decode(rawTx);
         return tx.recoverFeePayerPublicKeys();
     }
+
+    /**
+     * Returns true if the tx type is EthereumTransaction.
+     *
+     * @param type Transaction type integer.
+     * @return
+     */
+    public static boolean isEthereumTransaction(int type) {
+        if (type == TransactionType.TxTypeLegacyTransaction.getType() || type == TxTypeEthereumAccessList.getType()) {
+            return true;
+        }
+        return false;
+    }
+    /**
+     * Returns true if the tx type is EthereumTransaction.
+     *
+     * @param type Transaction type string.
+     * @return
+     */
+    public static boolean isEthereumTransaction(String type) {
+        if (
+                Objects.equals(type, TransactionType.TxTypeLegacyTransaction.toString()) ||
+                        Objects.equals(type, TransactionType.TxTypeEthereumAccessList.toString())
+        ) {
+            return true;
+        }
+        return false;
+    }
+
 }

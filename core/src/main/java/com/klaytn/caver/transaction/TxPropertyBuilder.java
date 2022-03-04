@@ -31,6 +31,14 @@ public class TxPropertyBuilder {
     }
 
     /**
+     * Creates a Builder of EthereumAccessList
+     * @return EthereumAccessList.Builder
+     */
+    public static EthereumAccessList.Builder ethereumAccessList() {
+        return new EthereumAccessList.Builder();
+    }
+
+    /**
      * Creates a Builder of ValueTransfer
      * @return ValueTransfer.Builder
      */

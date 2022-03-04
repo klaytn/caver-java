@@ -40,6 +40,11 @@ public class TransactionWrapper {
     public LegacyTransactionWrapper legacyTransaction;
 
     /**
+     * EthereumAccessListWrapper instance
+     */
+    public EthereumAccessListWrapper ethereumAccessList;
+
+    /**
      * ValueTransferWrapper instance
      */
     public ValueTransferWrapper valueTransfer;
@@ -157,6 +162,7 @@ public class TransactionWrapper {
         this.klay = klaytnCall;
 
         this.legacyTransaction = new LegacyTransactionWrapper(klaytnCall);
+        this.ethereumAccessList = new EthereumAccessListWrapper(klaytnCall);
 
         this.valueTransfer = new ValueTransferWrapper(klaytnCall);
         this.feeDelegatedValueTransfer = new FeeDelegatedValueTransferWrapper(klaytnCall);

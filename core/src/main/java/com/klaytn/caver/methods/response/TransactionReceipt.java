@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.klaytn.caver.crypto.KlaySignatureData;
+import com.klaytn.caver.transaction.utils.AccessList;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.web3j.protocol.core.Response;
 import org.web3j.utils.Numeric;
@@ -219,10 +220,20 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
          */
         private String value;
 
+        /**
+         * Chain ID.
+         */
+        private String chainID;
+
+        /**
+         * An access list.
+         */
+        private AccessList accessList;
+
         public TransactionReceiptData() {
         }
 
-        public TransactionReceiptData(String blockHash, String blockNumber, String codeFormat, String contractAddress, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, String from, String gas, String gasPrice, String gasUsed, boolean humanReadable, String key, String input, List<KlayLogs.Log> logs, String logsBloom, String nonce, String senderTxHash, List<SignatureData> signatures, String status, String to, String transactionIndex, String transactionHash, String txError, String type, String typeInt, String value) {
+        public TransactionReceiptData(String blockHash, String blockNumber, String codeFormat, String contractAddress, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, String from, String gas, String gasPrice, String gasUsed, boolean humanReadable, String key, String input, List<KlayLogs.Log> logs, String logsBloom, String nonce, String senderTxHash, List<SignatureData> signatures, String status, String to, String transactionIndex, String transactionHash, String txError, String type, String typeInt, String value, String chainID, AccessList accessList) {
             this.blockHash = blockHash;
             this.blockNumber = blockNumber;
             this.codeFormat = codeFormat;
@@ -250,6 +261,8 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
             this.type = type;
             this.typeInt = typeInt;
             this.value = value;
+            this.chainID = chainID;
+            this.accessList = accessList;
         }
 
         public String getBlockHash() {
@@ -468,6 +481,22 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
 
         public void setValue(String value) {
             this.value = value;
+        }
+
+        public String getChainID() {
+            return chainID;
+        }
+
+        public void setChainID(String chainID) {
+            this.chainID = chainID;
+        }
+
+        public AccessList getAccessList() {
+            return accessList;
+        }
+
+        public void setAccessList(AccessList accessList) {
+            this.accessList = accessList;
         }
     }
 

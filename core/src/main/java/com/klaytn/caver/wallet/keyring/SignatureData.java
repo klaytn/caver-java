@@ -169,7 +169,9 @@ public class SignatureData {
         RlpString rlpV;
         byte[] trimmedV = Bytes.trimLeadingZeroes(v);
         if (trimmedV[0] == 0) {
-            // When given v value is "0x0", it must be treated as integer 0 by encoding rule.
+            // If v value is "0x0", the shape of trimmedV is [0x0] (have 1 element).
+            // If we create rlpV by using RlpString.create(byte[]{0x0}), it is encoded as `0x00` but
+            // v value is integer by its spec and integer 0 must be encoded as 0x80.
             rlpV = RlpString.create(BigInteger.valueOf(0));
         } else {
             rlpV = RlpString.create(trimmedV);

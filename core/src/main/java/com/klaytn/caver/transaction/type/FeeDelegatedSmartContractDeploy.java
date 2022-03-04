@@ -457,7 +457,7 @@ public class FeeDelegatedSmartContractDeploy extends AbstractFeeDelegatedTransac
         for(String encodedStr : rlpEncoded) {
             AbstractFeeDelegatedTransaction decode = (AbstractFeeDelegatedTransaction) TransactionDecoder.decode(encodedStr);
             if (!decode.getType().equals(this.getType())) {
-                continue;
+                throw new RuntimeException("Transactions containing different information cannot be combined.");
             }
             FeeDelegatedSmartContractDeploy txObj = (FeeDelegatedSmartContractDeploy) decode;
 

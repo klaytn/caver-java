@@ -378,7 +378,7 @@ public class FeeDelegatedAccountUpdateWithRatio extends AbstractFeeDelegatedWith
         for(String encodedStr : rlpEncoded) {
             AbstractFeeDelegatedTransaction decode = (AbstractFeeDelegatedTransaction) TransactionDecoder.decode(encodedStr);
             if (!decode.getType().equals(this.getType())) {
-                continue;
+                throw new RuntimeException("Transactions containing different information cannot be combined.");
             }
             FeeDelegatedAccountUpdateWithRatio txObj = (FeeDelegatedAccountUpdateWithRatio) decode;
 

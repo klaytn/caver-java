@@ -288,7 +288,7 @@ public class Cancel extends AbstractTransaction {
         for(String encodedStr : rlpEncoded) {
             AbstractTransaction decode = TransactionDecoder.decode(encodedStr);
             if (!decode.getType().equals(this.getType())) {
-                continue;
+                throw new RuntimeException("Transactions containing different information cannot be combined.");
             }
             Cancel txObj = (Cancel) decode;
 

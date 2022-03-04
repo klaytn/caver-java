@@ -327,7 +327,7 @@ public class ValueTransfer extends AbstractTransaction {
         for(String encodedStr : rlpEncoded) {
             AbstractTransaction decode = TransactionDecoder.decode(encodedStr);
             if (!decode.getType().equals(this.getType())) {
-                continue;
+                throw new RuntimeException("Transactions containing different information cannot be combined.");
             }
             ValueTransfer txObj = (ValueTransfer) decode;
 

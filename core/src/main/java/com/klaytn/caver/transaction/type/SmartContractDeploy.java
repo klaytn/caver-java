@@ -396,7 +396,7 @@ public class SmartContractDeploy extends AbstractTransaction {
         for(String encodedStr : rlpEncoded) {
             AbstractTransaction decode = TransactionDecoder.decode(encodedStr);
             if (!decode.getType().equals(this.getType())) {
-                continue;
+                throw new RuntimeException("Transactions containing different information cannot be combined.");
             }
             SmartContractDeploy txObj = (SmartContractDeploy) decode;
 

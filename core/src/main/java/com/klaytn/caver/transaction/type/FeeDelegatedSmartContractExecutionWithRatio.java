@@ -412,7 +412,7 @@ public class FeeDelegatedSmartContractExecutionWithRatio extends AbstractFeeDele
         for(String encodedStr : rlpEncoded) {
             AbstractFeeDelegatedTransaction decode = (AbstractFeeDelegatedTransaction) TransactionDecoder.decode(encodedStr);
             if (!decode.getType().equals(this.getType())) {
-                continue;
+                throw new RuntimeException("Transactions containing different information cannot be combined.");
             }
             FeeDelegatedSmartContractExecutionWithRatio txObj = (FeeDelegatedSmartContractExecutionWithRatio) decode;
 

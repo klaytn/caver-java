@@ -175,6 +175,12 @@ public class SignatureData {
     public int getRecoverId() {
         int v = Numeric.toBigInt(this.getV()).intValue() & 0xFFFF;
 
+        // The v value of EthereumAccessList or EthereumDynamicFee transaction has 0 or 1(parity value of y value in Signature).
+        // It should be accepted 0 or 1 value
+        if (v == 0 || v == 1) {
+            return v;
+        }
+
         if (v < 27) {
             throw new RuntimeException("v byte out of range: " + v);
         }

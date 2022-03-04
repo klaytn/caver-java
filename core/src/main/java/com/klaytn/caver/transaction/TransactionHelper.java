@@ -22,9 +22,10 @@ import com.klaytn.caver.transaction.type.TransactionType;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 
+import static com.klaytn.caver.transaction.type.TransactionType.TxTypeLegacyTransaction;
 import static com.klaytn.caver.transaction.type.TransactionType.TxTypeEthereumAccessList;
+import static com.klaytn.caver.transaction.type.TransactionType.TxTypeEthereumDynamicFee;
 
 /**
  * This class is a helper class provides methods that handles Transaction object comfortably.
@@ -96,7 +97,7 @@ public class TransactionHelper {
      * @return
      */
     public static boolean isEthereumTransaction(int type) {
-        if (type == TransactionType.TxTypeLegacyTransaction.getType() || type == TxTypeEthereumAccessList.getType()) {
+        if (type == TxTypeLegacyTransaction.getType() || type == TxTypeEthereumAccessList.getType() || type == TxTypeEthereumDynamicFee.getType()) {
             return true;
         }
         return false;
@@ -108,10 +109,21 @@ public class TransactionHelper {
      * @return
      */
     public static boolean isEthereumTransaction(String type) {
-        if (
-                Objects.equals(type, TransactionType.TxTypeLegacyTransaction.toString()) ||
-                        Objects.equals(type, TransactionType.TxTypeEthereumAccessList.toString())
-        ) {
+        if(type.equals(TransactionType.TxTypeLegacyTransaction.toString()) || type.equals(TxTypeEthereumAccessList.toString()) || type.equals(TxTypeEthereumDynamicFee.toString())) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isEthereumTypedTransaction(int type) {
+        if(type == TxTypeEthereumAccessList.getType() || type == TxTypeEthereumDynamicFee.getType()) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isEthereumTypedTransaction(String type) {
+        if(type.equals(TxTypeEthereumAccessList.toString()) || type.equals(TxTypeEthereumDynamicFee.toString())) {
             return true;
         }
         return false;

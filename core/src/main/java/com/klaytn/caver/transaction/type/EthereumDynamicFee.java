@@ -83,8 +83,8 @@ public class EthereumDynamicFee extends AbstractTransaction {
         private String value = "0x0";
         private String input = "0x";
         private AccessList accessList = new AccessList();
-        String maxPriorityFeePerGas = "0x";
-        String maxFeePerGas = "0x";
+        private String maxPriorityFeePerGas = "0x";
+        private String maxFeePerGas = "0x";
 
         public Builder() {
             super(TransactionType.TxTypeEthereumDynamicFee.toString());
@@ -154,18 +154,18 @@ public class EthereumDynamicFee extends AbstractTransaction {
     /**
      * Create a EthereumDynamicFee instance.
      *
-     * @param klaytnCall Klay RPC instance
-     * @param from       The address of the sender.
-     * @param nonce      A value used to uniquely identify a sender’s transaction.
-     * @param gas        The maximum amount of gas the transaction is allowed to use.
+     * @param klaytnCall           Klay RPC instance
+     * @param from                 The address of the sender.
+     * @param nonce                A value used to uniquely identify a sender’s transaction.
+     * @param gas                  The maximum amount of gas the transaction is allowed to use.
      * @param maxPriorityFeePerGas Max priority fee per gas.
-     * @param maxFeePerGas Max fee per gas.
-     * @param chainId    Network ID
-     * @param signatures A Signature list
-     * @param to         The account address that will receive the transferred value.
-     * @param input      Data attached to the transaction, used for transaction execution.
-     * @param value      The amount of KLAY in peb to be transferred.
-     * @param accessList The EIP-2930 access list.
+     * @param maxFeePerGas         Max fee per gas.
+     * @param chainId              Network ID
+     * @param signatures           A Signature list
+     * @param to                   The account address that will receive the transferred value.
+     * @param input                Data attached to the transaction, used for transaction execution.
+     * @param value                The amount of KLAY in peb to be transferred.
+     * @param accessList           The EIP-2930 access list.
      * @return EthereumDynamicFee
      */
     public static EthereumDynamicFee create(Klay klaytnCall, String from, String nonce, String gas, String maxPriorityFeePerGas, String maxFeePerGas, String chainId, List<SignatureData> signatures, String to, String input, String value, AccessList accessList) {
@@ -192,17 +192,17 @@ public class EthereumDynamicFee extends AbstractTransaction {
     /**
      * Create a EthereumDynamicFee instance.
      *
-     * @param klaytnCall Klay RPC instance
-     * @param from       The address of the sender.
-     * @param nonce      A value used to uniquely identify a sender’s transaction.
-     * @param gas        The maximum amount of gas the transaction is allowed to use.
+     * @param klaytnCall           Klay RPC instance
+     * @param from                 The address of the sender.
+     * @param nonce                A value used to uniquely identify a sender’s transaction.
+     * @param gas                  The maximum amount of gas the transaction is allowed to use.
      * @param maxPriorityFeePerGas Max priority fee per gas.
-     * @param maxFeePerGas Max fee per gas.
-     * @param chainId    Network ID
-     * @param signatures A Signature list
-     * @param to         The account address that will receive the transferred value.
-     * @param input      Data attached to the transaction, used for transaction execution.
-     * @param value      The amount of KLAY in peb to be transferred.
+     * @param maxFeePerGas         Max fee per gas.
+     * @param chainId              Network ID
+     * @param signatures           A Signature list
+     * @param to                   The account address that will receive the transferred value.
+     * @param input                Data attached to the transaction, used for transaction execution.
+     * @param value                The amount of KLAY in peb to be transferred.
      */
     public EthereumDynamicFee(Klay klaytnCall, String from, String nonce, String gas, String maxPriorityFeePerGas, String maxFeePerGas, String chainId, List<SignatureData> signatures, String to, String input, String value, AccessList accessList) {
         super(
@@ -524,7 +524,7 @@ public class EthereumDynamicFee extends AbstractTransaction {
             if (v != 0 && v != 1) {
                 throw new RuntimeException("Invalid signature: The y-parity of the transaction should either be 0 or 1.");
             }
-        };
+        }
         super.appendSignatures(signatureData);
     }
 

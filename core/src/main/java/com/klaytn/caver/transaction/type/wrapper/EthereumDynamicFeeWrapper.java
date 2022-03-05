@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Represents a EthereumDynamicFeeWrapper
  * 1. This class wraps all of static methods of EthereumDynamicFee
- * 2. This class should be accessed via `caver.transaction.ethereumAccessList`
+ * 2. This class should be accessed via `caver.transaction.ethereumDynamicFee`
  */
 public class EthereumDynamicFeeWrapper {
     /**
@@ -79,7 +79,7 @@ public class EthereumDynamicFeeWrapper {
      * @param from The address of the sender.
      * @param nonce A value used to uniquely identify a sender’s transaction.
      * @param gas The maximum amount of gas the transaction is allowed to use.
-     * @param maxPriorityFeePerGas Max prirotiy fee per gas.
+     * @param maxPriorityFeePerGas Max priority fee per gas.
      * @param maxFeePerGas Max fee per gas.
      * @param chainId Network ID
      * @param signatures A Signature list

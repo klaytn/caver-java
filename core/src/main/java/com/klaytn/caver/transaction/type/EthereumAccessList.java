@@ -456,7 +456,7 @@ public class EthereumAccessList extends AbstractTransaction {
             if (v != 0 && v != 1) {
                 throw new RuntimeException("Invalid signature: The y-parity of the transaction should either be 0 or 1.");
             }
-        };
+        }
         super.appendSignatures(signatureData);
     }
 
@@ -481,7 +481,7 @@ public class EthereumAccessList extends AbstractTransaction {
             if (v != 0 && v != 1) {
                 throw new RuntimeException("Invalid signature: The y-parity of the transaction should either be 0 or 1.");
             }
-        };
+        }
 
         super.appendSignatures(signatureData);
     }

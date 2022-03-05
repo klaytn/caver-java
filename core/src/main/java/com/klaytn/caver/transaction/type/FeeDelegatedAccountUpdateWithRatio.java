@@ -16,6 +16,7 @@
 
 package com.klaytn.caver.transaction.type;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.account.Account;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
@@ -38,6 +39,7 @@ import java.util.List;
  * Represents a fee delegated account update with ratio transaction.
  * Please refer to https://docs.klaytn.com/klaytn/design/transactions/partial-fee-delegation#txtypefeedelegatedaccountupdatewithratio to see more detail.
  */
+@JsonIgnoreProperties(value = { "chainId" })
 public class FeeDelegatedAccountUpdateWithRatio extends AbstractFeeDelegatedWithRatioTransaction {
 
     /**

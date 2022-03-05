@@ -16,6 +16,7 @@
 
 package com.klaytn.caver.transaction.type;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.transaction.TransactionDecoder;
@@ -36,6 +37,7 @@ import java.util.List;
  * Represents a smart contract deploy transaction.
  * Please refer to https://docs.klaytn.com/klaytn/design/transactions/basic#txtypesmartcontractdeploy to see more detail.
  */
+@JsonIgnoreProperties(value = { "chainId" })
 public class SmartContractDeploy extends AbstractTransaction {
 
     /**

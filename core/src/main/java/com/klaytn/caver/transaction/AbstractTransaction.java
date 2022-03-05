@@ -584,7 +584,6 @@ abstract public class AbstractTransaction {
      * Getter function for chain id
      * @return String
      */
-    @JsonIgnore
     public String getChainId() {
         return chainId;
     }

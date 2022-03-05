@@ -289,7 +289,7 @@ public class EthereumDynamicFee extends AbstractTransaction {
 
     @Override
     public String getRLPEncoding() {
-        // TransactionPayload = 0x7801 + encode([chainId, nonce, maxPriorityFeePerGas, maxFeePerGas, gas, to, value, data, accessList, signatureYParity, signatureR, signatureS])
+        // TransactionPayload = 0x7802 + encode([chainId, nonce, maxPriorityFeePerGas, maxFeePerGas, gas, to, value, data, accessList, signatureYParity, signatureR, signatureS])
         this.validateOptionalValues(true);
 
         List<RlpType> rlpTypeList = new ArrayList<>();
@@ -462,7 +462,7 @@ public class EthereumDynamicFee extends AbstractTransaction {
      * @return EthereumDynamicFee
      */
     public static EthereumDynamicFee decode(byte[] rlpEncoded) {
-        // TxHashRLP = 0x7801 + encode([chainId, nonce, gasPrice, gas, to, value, data, accessList, signatureYParity, signatureR, signatureS])
+        // TxHashRLP = 0x7802 + encode([chainId, nonce, gasPrice, gas, to, value, data, accessList, signatureYParity, signatureR, signatureS])
         try {
             if ((rlpEncoded[0] << 8 | rlpEncoded[1]) != TransactionType.TxTypeEthereumDynamicFee.getType()) {
                 throw new IllegalArgumentException("Invalid RLP-encoded tag - " + TransactionType.TxTypeEthereumDynamicFee.toString());

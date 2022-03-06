@@ -233,6 +233,10 @@ public class EthereumAccessList extends AbstractTransaction {
     }
 
 
+    /**
+     * Returns the RLP-encoded string of this transaction (i.e., rawTransaction).
+     * @return String
+     */
     @Override
     public String getRLPEncoding() {
         // TransactionPayload = 0x7801 + encode([chainId, nonce, gasPrice, gas, to, value, data, accessList, signatureYParity, signatureR, signatureS])
@@ -257,6 +261,10 @@ public class EthereumAccessList extends AbstractTransaction {
         return Numeric.toHexString(rawTx);
     }
 
+    /**
+     * Returns the RLP-encoded string to make the signature of this transaction.
+     * @return String
+     */
     @Override
     public String getCommonRLPEncodingForSignature() {
         return getRLPEncodingForSignature();

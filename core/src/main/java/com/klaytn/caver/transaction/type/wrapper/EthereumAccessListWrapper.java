@@ -48,9 +48,9 @@ public class EthereumAccessListWrapper {
      * @return EthereumAccessList
      */
     public EthereumAccessList create(String rlpEncoded) {
-        EthereumAccessList legacyTransaction = EthereumAccessList.decode(rlpEncoded);
-        legacyTransaction.setKlaytnCall(this.klaytnCall);
-        return legacyTransaction;
+        EthereumAccessList ethereumAccessList = EthereumAccessList.decode(rlpEncoded);
+        ethereumAccessList.setKlaytnCall(this.klaytnCall);
+        return ethereumAccessList;
     }
 
     /**
@@ -59,9 +59,9 @@ public class EthereumAccessListWrapper {
      * @return EthereumAccessList
      */
     public EthereumAccessList create(byte[] rlpEncoded) {
-        EthereumAccessList legacyTransaction = EthereumAccessList.decode(rlpEncoded);
-        legacyTransaction.setKlaytnCall(this.klaytnCall);
-        return legacyTransaction;
+        EthereumAccessList ethereumAccessList = EthereumAccessList.decode(rlpEncoded);
+        ethereumAccessList.setKlaytnCall(this.klaytnCall);
+        return ethereumAccessList;
     }
 
     /**

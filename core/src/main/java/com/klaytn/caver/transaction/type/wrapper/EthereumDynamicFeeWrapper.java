@@ -48,9 +48,9 @@ public class EthereumDynamicFeeWrapper {
      * @return EthereumDynamicFee
      */
     public EthereumDynamicFee create(String rlpEncoded) {
-        EthereumDynamicFee legacyTransaction = EthereumDynamicFee.decode(rlpEncoded);
-        legacyTransaction.setKlaytnCall(this.klaytnCall);
-        return legacyTransaction;
+        EthereumDynamicFee ethereumDynamicFee = EthereumDynamicFee.decode(rlpEncoded);
+        ethereumDynamicFee.setKlaytnCall(this.klaytnCall);
+        return ethereumDynamicFee;
     }
 
     /**
@@ -59,9 +59,9 @@ public class EthereumDynamicFeeWrapper {
      * @return EthereumDynamicFee
      */
     public EthereumDynamicFee create(byte[] rlpEncoded) {
-        EthereumDynamicFee legacyTransaction = EthereumDynamicFee.decode(rlpEncoded);
-        legacyTransaction.setKlaytnCall(this.klaytnCall);
-        return legacyTransaction;
+        EthereumDynamicFee ethereumDynamicFee = EthereumDynamicFee.decode(rlpEncoded);
+        ethereumDynamicFee.setKlaytnCall(this.klaytnCall);
+        return ethereumDynamicFee;
     }
 
     /**

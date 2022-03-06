@@ -188,7 +188,6 @@ public class EthereumDynamicFee extends AbstractTransaction {
         setMaxFeePerGas(builder.maxFeePerGas);
     }
 
-
     /**
      * Create a EthereumDynamicFee instance.
      *
@@ -221,71 +220,6 @@ public class EthereumDynamicFee extends AbstractTransaction {
         setMaxPriorityFeePerGas(maxPriorityFeePerGas);
         setMaxFeePerGas(maxFeePerGas);
     }
-
-    /**
-     * Getter function for maxPriorityFeePerGas
-     * @return String
-     */
-    public String getMaxPriorityFeePerGas() {
-        return maxPriorityFeePerGas;
-    }
-
-    /**
-     * Setter function for maxPriorityFeePerGas.
-     * @param maxPriorityFeePerGas Max priority fee per gas.
-     */
-    public void setMaxPriorityFeePerGas(String maxPriorityFeePerGas) {
-        if(maxPriorityFeePerGas == null || maxPriorityFeePerGas.isEmpty() || maxPriorityFeePerGas.equals("0x")) {
-            maxPriorityFeePerGas = "0x";
-        }
-
-        if(!maxPriorityFeePerGas.equals("0x") && !Utils.isNumber(maxPriorityFeePerGas)) {
-            throw new IllegalArgumentException("Invalid maxPriorityFeePerGas. : " + maxPriorityFeePerGas);
-        }
-
-        this.maxPriorityFeePerGas = maxPriorityFeePerGas;
-    }
-
-    /**
-     * Setter function for maxPriorityFeePerGas.
-     * @param maxPriorityFeePerGas Max priority fee per gas.
-     */
-    public void setMaxPriorityFeePerGas(BigInteger maxPriorityFeePerGas) {
-        setMaxPriorityFeePerGas(Numeric.toHexStringWithPrefix(maxPriorityFeePerGas));
-    }
-
-    /**
-     * Getter function for maxFeePerGas.
-     * @return String
-     */
-    public String getMaxFeePerGas() {
-        return maxFeePerGas;
-    }
-
-    /**
-     * Setter function for maxFeePerGas.
-     * @param maxFeePerGas Max fee per gas.
-     */
-    public void setMaxFeePerGas(String maxFeePerGas) {
-        if(maxFeePerGas == null || maxFeePerGas.isEmpty() || maxFeePerGas.equals("0x")) {
-            maxFeePerGas = "0x";
-        }
-
-        if(!maxFeePerGas.equals("0x") && !Utils.isNumber(maxFeePerGas)) {
-            throw new IllegalArgumentException("Invalid maxFeePerGas. : " + maxFeePerGas);
-        }
-
-        this.maxFeePerGas = maxFeePerGas;
-    }
-
-    /**
-     * Setter function for gas price.
-     * @param maxFeePerGas Max fee per gas.
-     */
-    public void setMaxFeePerGas(BigInteger maxFeePerGas) {
-        setMaxFeePerGas(Numeric.toHexStringWithPrefix(maxFeePerGas));
-    }
-
 
     /**
      * Returns the RLP-encoded string of this transaction (i.e., rawTransaction).
@@ -799,4 +733,69 @@ public class EthereumDynamicFee extends AbstractTransaction {
         }
         this.accessList = accessList;
     }
+
+    /**
+     * Getter function for maxPriorityFeePerGas
+     * @return String
+     */
+    public String getMaxPriorityFeePerGas() {
+        return maxPriorityFeePerGas;
+    }
+
+    /**
+     * Setter function for maxPriorityFeePerGas.
+     * @param maxPriorityFeePerGas Max priority fee per gas.
+     */
+    public void setMaxPriorityFeePerGas(String maxPriorityFeePerGas) {
+        if(maxPriorityFeePerGas == null || maxPriorityFeePerGas.isEmpty() || maxPriorityFeePerGas.equals("0x")) {
+            maxPriorityFeePerGas = "0x";
+        }
+
+        if(!maxPriorityFeePerGas.equals("0x") && !Utils.isNumber(maxPriorityFeePerGas)) {
+            throw new IllegalArgumentException("Invalid maxPriorityFeePerGas. : " + maxPriorityFeePerGas);
+        }
+
+        this.maxPriorityFeePerGas = maxPriorityFeePerGas;
+    }
+
+    /**
+     * Setter function for maxPriorityFeePerGas.
+     * @param maxPriorityFeePerGas Max priority fee per gas.
+     */
+    public void setMaxPriorityFeePerGas(BigInteger maxPriorityFeePerGas) {
+        setMaxPriorityFeePerGas(Numeric.toHexStringWithPrefix(maxPriorityFeePerGas));
+    }
+
+    /**
+     * Getter function for maxFeePerGas.
+     * @return String
+     */
+    public String getMaxFeePerGas() {
+        return maxFeePerGas;
+    }
+
+    /**
+     * Setter function for maxFeePerGas.
+     * @param maxFeePerGas Max fee per gas.
+     */
+    public void setMaxFeePerGas(String maxFeePerGas) {
+        if(maxFeePerGas == null || maxFeePerGas.isEmpty() || maxFeePerGas.equals("0x")) {
+            maxFeePerGas = "0x";
+        }
+
+        if(!maxFeePerGas.equals("0x") && !Utils.isNumber(maxFeePerGas)) {
+            throw new IllegalArgumentException("Invalid maxFeePerGas. : " + maxFeePerGas);
+        }
+
+        this.maxFeePerGas = maxFeePerGas;
+    }
+
+    /**
+     * Setter function for gas price.
+     * @param maxFeePerGas Max fee per gas.
+     */
+    public void setMaxFeePerGas(BigInteger maxFeePerGas) {
+        setMaxFeePerGas(Numeric.toHexStringWithPrefix(maxFeePerGas));
+    }
+
 }

@@ -132,7 +132,6 @@ public class EthereumAccessList extends AbstractTransaction {
         return new EthereumAccessList(builder);
     }
 
-
     /**
      * Create a EthereumAccessList instance.
      *
@@ -199,39 +198,6 @@ public class EthereumAccessList extends AbstractTransaction {
         setAccessList(accessList);
         setGasPrice(gasPrice);
     }
-
-    /**
-     * Getter function for gas price
-     * @return String
-     */
-    public String getGasPrice() {
-        return gasPrice;
-    }
-
-    /**
-     * Setter function for gas price.
-     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
-     */
-    public void setGasPrice(String gasPrice) {
-        if(gasPrice == null || gasPrice.isEmpty() || gasPrice.equals("0x")) {
-            gasPrice = "0x";
-        }
-
-        if(!gasPrice.equals("0x") && !Utils.isNumber(gasPrice)) {
-            throw new IllegalArgumentException("Invalid gasPrice. : " + gasPrice);
-        }
-
-        this.gasPrice = gasPrice;
-    }
-
-    /**
-     * Setter function for gas price.
-     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
-     */
-    public void setGasPrice(BigInteger gasPrice) {
-        setGasPrice(Numeric.toHexStringWithPrefix(gasPrice));
-    }
-
 
     /**
      * Returns the RLP-encoded string of this transaction (i.e., rawTransaction).
@@ -731,4 +697,37 @@ public class EthereumAccessList extends AbstractTransaction {
         }
         this.accessList = accessList;
     }
+
+    /**
+     * Getter function for gas price
+     * @return String
+     */
+    public String getGasPrice() {
+        return gasPrice;
+    }
+
+    /**
+     * Setter function for gas price.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     */
+    public void setGasPrice(String gasPrice) {
+        if(gasPrice == null || gasPrice.isEmpty() || gasPrice.equals("0x")) {
+            gasPrice = "0x";
+        }
+
+        if(!gasPrice.equals("0x") && !Utils.isNumber(gasPrice)) {
+            throw new IllegalArgumentException("Invalid gasPrice. : " + gasPrice);
+        }
+
+        this.gasPrice = gasPrice;
+    }
+
+    /**
+     * Setter function for gas price.
+     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     */
+    public void setGasPrice(BigInteger gasPrice) {
+        setGasPrice(Numeric.toHexStringWithPrefix(gasPrice));
+    }
+
 }

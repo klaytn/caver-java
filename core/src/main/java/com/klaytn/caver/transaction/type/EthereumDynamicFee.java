@@ -323,7 +323,7 @@ public class EthereumDynamicFee extends AbstractTransaction {
      * @return String
      */
     @Override
-    public String getRLPEncodingForSignature() { // SigRLP = 0x01 || rlp([chainId, nonce, maxPriorityFeePerGas, maxFeePerGas, gasLimit, to, value, data, accessList])
+    public String getRLPEncodingForSignature() { // SigRLP = 0x02 || rlp([chainId, nonce, maxPriorityFeePerGas, maxFeePerGas, gasLimit, to, value, data, accessList])
 
         this.validateOptionalValues(true);
 
@@ -410,7 +410,7 @@ public class EthereumDynamicFee extends AbstractTransaction {
     }
 
     /**
-     * Fills empty optional transaction field.(gasPrice)
+     * Fills empty optional transaction fields.(maxPriorityFeePerGas and maxFeePerGas)
      * @throws IOException
      */
     @Override
@@ -560,7 +560,7 @@ public class EthereumDynamicFee extends AbstractTransaction {
      */
     @Override
     public String getTransactionHash() {
-        // TxHashRLP = 0x01 + encode([chainId, nonce, maxPriorityFeePerGas, maxFeePerGas, gas, to, value, data, accessList, signatureYParity, signatureR, signatureS])
+        // TxHashRLP = 0x02 + encode([chainId, nonce, maxPriorityFeePerGas, maxFeePerGas, gas, to, value, data, accessList, signatureYParity, signatureR, signatureS])
         String rlpEncoded = this.getRLPEncoding();
         byte[] rlpEncodedBytes = Numeric.hexStringToByteArray(rlpEncoded);
         byte[] detachedType = Arrays.copyOfRange(rlpEncodedBytes, 1, rlpEncodedBytes.length);

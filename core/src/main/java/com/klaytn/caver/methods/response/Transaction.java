@@ -16,6 +16,7 @@
 
 package com.klaytn.caver.methods.response;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -88,6 +89,16 @@ public class Transaction extends Response<Transaction.TransactionData> {
         private String gasPrice;
 
         /**
+         * Max priority fee per gas in peb.
+         */
+        private String maxPriorityFeePerGas;
+
+        /**
+         * Max fee per gas in peb.
+         */
+        private String maxFeePerGas;
+
+        /**
          * Hash of the transaction.
          */
         private String hash;
@@ -152,6 +163,7 @@ public class Transaction extends Response<Transaction.TransactionData> {
         /**
          * Chain ID.
          */
+        @JsonAlias({"chainId", "chainID"})
         private String chainID;
 
         /**
@@ -161,7 +173,7 @@ public class Transaction extends Response<Transaction.TransactionData> {
 
         public TransactionData() {}
 
-        public TransactionData(String blockHash, String blockNumber, String codeFormat, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, String from, String gas, String gasPrice, String hash, boolean humanReadable, String key, String input, String nonce, String senderTxHash, List<SignatureData> signatures, String to, String transactionIndex, String type, String typeInt, String value, String chainID, AccessList accesslist) {
+        public TransactionData(String blockHash, String blockNumber, String codeFormat, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, String from, String gas, String gasPrice, String maxPriorityFeePerGas, String maxFeePerGas, String hash, boolean humanReadable, String key, String input, String nonce, String senderTxHash, List<SignatureData> signatures, String to, String transactionIndex, String type, String typeInt, String value, String chainID, AccessList accesslist) {
             this.blockHash = blockHash;
             this.blockNumber = blockNumber;
             this.codeFormat = codeFormat;
@@ -171,6 +183,8 @@ public class Transaction extends Response<Transaction.TransactionData> {
             this.from = from;
             this.gas = gas;
             this.gasPrice = gasPrice;
+            this.maxPriorityFeePerGas = maxPriorityFeePerGas;
+            this.maxFeePerGas = maxFeePerGas;
             this.hash = hash;
             this.humanReadable = humanReadable;
             this.key = key;
@@ -258,6 +272,22 @@ public class Transaction extends Response<Transaction.TransactionData> {
 
         public void setGasPrice(String gasPrice) {
             this.gasPrice = gasPrice;
+        }
+
+        public String getMaxPriorityFeePerGas() {
+            return maxPriorityFeePerGas;
+        }
+
+        public void setMaxPriorityFeePerGas(String maxPriorityFeePerGas) {
+            this.maxPriorityFeePerGas = maxPriorityFeePerGas;
+        }
+
+        public String getMaxFeePerGas() {
+            return maxFeePerGas;
+        }
+
+        public void setMaxFeePerGas(String maxFeePerGas) {
+            this.maxFeePerGas = maxFeePerGas;
         }
 
         public String getHash() {
@@ -429,6 +459,8 @@ public class Transaction extends Response<Transaction.TransactionData> {
                     return FeeDelegatedChainDataAnchoringWithRatio.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), this.getChainID(), this.getSignatures(), this.getFeePayer(), this.getFeePayerSignatures(), this.getFeeRatio(), this.getInput());
                 case TxTypeEthereumAccessList:
                     return EthereumAccessList.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getGasPrice(), this.getChainID(), this.getSignatures(), this.getTo(), this.getInput(), this.getValue(), this.getAccessList());
+                case TxTypeEthereumDynamicFee:
+                    return EthereumDynamicFee.create(klay, this.getFrom(), this.getNonce(), this.getGas(), this.getMaxPriorityFeePerGas(), this.getMaxFeePerGas(), this.getChainID(), this.getSignatures(), this.getTo(), this.getInput(), this.getValue(), this.getAccessList());
                 default:
                     throw new RuntimeException("Invalid transaction type : Cannot create a transaction instance that has Tx type :" + this.getType());
             }

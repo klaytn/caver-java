@@ -16,6 +16,7 @@
 
 package com.klaytn.caver.transaction.type;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.account.Account;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
@@ -37,6 +38,7 @@ import java.util.List;
  * Represents a fee delegated cancel transaction.
  * Please refer to https://docs.klaytn.com/klaytn/design/transactions/fee-delegation#txtypefeedelegatedcancel to see more detail.
  */
+@JsonIgnoreProperties(value = { "chainId" })
 public class FeeDelegatedCancel extends AbstractFeeDelegatedTransaction {
     /**
      * A unit price of gas in peb the sender will pay for a transaction fee.

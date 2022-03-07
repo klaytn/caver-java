@@ -45,6 +45,11 @@ public class TransactionWrapper {
     public EthereumAccessListWrapper ethereumAccessList;
 
     /**
+     * EthereumDynamicFeeWrapper instance
+     */
+    public EthereumDynamicFeeWrapper ethereumDynamicFee;
+
+    /**
      * ValueTransferWrapper instance
      */
     public ValueTransferWrapper valueTransfer;
@@ -163,6 +168,7 @@ public class TransactionWrapper {
 
         this.legacyTransaction = new LegacyTransactionWrapper(klaytnCall);
         this.ethereumAccessList = new EthereumAccessListWrapper(klaytnCall);
+        this.ethereumDynamicFee = new EthereumDynamicFeeWrapper(klaytnCall);
 
         this.valueTransfer = new ValueTransferWrapper(klaytnCall);
         this.feeDelegatedValueTransfer = new FeeDelegatedValueTransferWrapper(klaytnCall);

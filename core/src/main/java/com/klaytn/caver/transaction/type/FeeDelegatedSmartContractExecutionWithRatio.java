@@ -16,6 +16,7 @@
 
 package com.klaytn.caver.transaction.type;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedWithRatioTransaction;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@JsonIgnoreProperties(value = { "chainId" })
 public class FeeDelegatedSmartContractExecutionWithRatio extends AbstractFeeDelegatedWithRatioTransaction {
     /**
      * The account address that will receive the transferred value.

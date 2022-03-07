@@ -16,6 +16,7 @@
 
 package com.klaytn.caver.transaction.type;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
 import com.klaytn.caver.transaction.TransactionDecoder;
@@ -37,6 +38,7 @@ import java.util.List;
  * Represents a fee delegated smart contract deploy transaction.
  * Please refer to https://docs.klaytn.com/klaytn/design/transactions/fee-delegation#txtypefeedelegatedsmartcontractdeploy to see more detail.
  */
+@JsonIgnoreProperties(value = { "chainId" })
 public class FeeDelegatedSmartContractDeploy extends AbstractFeeDelegatedTransaction {
     /**
      * The account address that will receive the transferred value.

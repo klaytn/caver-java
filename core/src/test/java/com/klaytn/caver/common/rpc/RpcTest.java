@@ -32,14 +32,15 @@ import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
-import com.klaytn.caver.transaction.type.FeeDelegatedValueTransfer;
-import com.klaytn.caver.transaction.type.FeeDelegatedValueTransferWithRatio;
-import com.klaytn.caver.transaction.type.ValueTransfer;
+import com.klaytn.caver.transaction.type.*;
+import com.klaytn.caver.transaction.utils.AccessList;
+import com.klaytn.caver.transaction.utils.AccessTuple;
 import com.klaytn.caver.utils.Convert;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -260,6 +261,182 @@ public class RpcTest extends Accounts {
 
             SignTransaction signTransaction = klay.signTransaction(valueTransfer).send();
             assertEquals(signTransaction.getResult().getRaw(), valueTransfer.getRLPEncoding());
+        }
+    }
+
+    public static class signEthereumTransactionTest {
+        static String klayProvider = "871ccee7755bb4247e783110cafa6437f9f593a1eaeebe0efcc1b0852282c3e5";
+        static SingleKeyring klayProviderKeyring = KeyringFactory.createFromPrivateKey(klayProvider);
+
+        @BeforeClass
+        public static void unlockAccount() throws IOException {
+            RpcTest.importKey(klayProvider, "mypassword");
+            RpcTest.unlockAccount(klayProviderKeyring.getAddress(), "mypassword");
+        }
+
+        String to = "0x7b65B75d204aBed71587c9E519a89277766EE1d0";
+        String gas = "0xf4240";
+        String gasPrice = "0x5d21dba00";
+        String nonce;
+        String value = "0xa";
+        AccessList accessList = new AccessList(
+                Arrays.asList(
+                        new AccessTuple(
+                                "0x67116062f1626f7b3019631f03d301b8f701f709",
+                                Arrays.asList(
+                                        "0x0000000000000000000000000000000000000000000000000000000000000003",
+                                        "0x0000000000000000000000000000000000000000000000000000000000000007"
+                                )
+                        ))
+        );
+
+        @Test
+        public void ethereumAccessListTest() throws IOException {
+            nonce = klay.getTransactionCount(klayProviderKeyring.getAddress(), DefaultBlockParameterName.PENDING).send().getResult();
+            String chainId = klay.getChainID().send().getResult();
+
+            EthereumAccessList ethereumAccessList = new EthereumAccessList.Builder()
+                    .setTo(to)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainId)
+                    .setNonce(nonce)
+                    .setValue(value)
+                    .setAccessList(accessList)
+                    .build();
+
+            ethereumAccessList.sign(klayProviderKeyring);
+
+            SignTransaction signTransaction = klay.signTransaction(ethereumAccessList).send();
+            assertEquals(signTransaction.getResult().getRaw(), ethereumAccessList.getRLPEncoding());
+        }
+
+        @Test
+        public void ethereumDynamicFeeTest() throws IOException {
+            nonce = klay.getTransactionCount(klayProviderKeyring.getAddress(), DefaultBlockParameterName.PENDING).send().getResult();
+            String chainId = klay.getChainID().send().getResult();
+
+            EthereumDynamicFee ethereumDynamicFee = new EthereumDynamicFee.Builder()
+                    .setTo(to)
+                    .setGas(gas)
+                    .setMaxPriorityFeePerGas(gasPrice)
+                    .setMaxFeePerGas(gasPrice)
+                    .setChainId(chainId)
+                    .setNonce(nonce)
+                    .setValue(value)
+                    .setAccessList(accessList)
+                    .build();
+
+            ethereumDynamicFee.sign(klayProviderKeyring);
+
+            SignTransaction signTransaction = klay.signTransaction(ethereumDynamicFee).send();
+            assertEquals(signTransaction.getResult().getRaw(), ethereumDynamicFee.getRLPEncoding());
+        }
+    }
+
+    public static class sendAndGetEthereumTransactionTest {
+        static String klayProvider = "871ccee7755bb4247e783110cafa6437f9f593a1eaeebe0efcc1b0852282c3e5";
+        static SingleKeyring klayProviderKeyring = KeyringFactory.createFromPrivateKey(klayProvider);
+
+        @BeforeClass
+        public static void unlockAccount() throws IOException {
+            RpcTest.importKey(klayProvider, "mypassword");
+            RpcTest.unlockAccount(klayProviderKeyring.getAddress(), "mypassword");
+        }
+
+        String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
+        String gas = "0xf4240";
+        String gasPrice = "0x5d21dba00";
+        String value = "0xa";
+        AccessList accessList = new AccessList(
+                Arrays.asList(
+                        new AccessTuple(
+                                "0x67116062f1626f7b3019631f03d301b8f701f709",
+                                Arrays.asList(
+                                        "0x0000000000000000000000000000000000000000000000000000000000000003",
+                                        "0x0000000000000000000000000000000000000000000000000000000000000007"
+                                )
+                        ))
+        );
+
+        private void checkTransactionFields(Transaction.TransactionData transactionData, boolean isDynamicFee) {
+            Assert.assertEquals(to, transactionData.getTo());
+            Assert.assertEquals(gas, transactionData.getGas());
+            if (isDynamicFee) {
+                Assert.assertEquals(gasPrice, transactionData.getMaxPriorityFeePerGas());
+                Assert.assertEquals(gasPrice, transactionData.getMaxFeePerGas());
+            } else {
+                Assert.assertEquals(gasPrice, transactionData.getGasPrice());
+            }
+            Assert.assertEquals(accessList, transactionData.getAccessList());
+        }
+
+        private void checkTransactionReceiptFields(TransactionReceipt.TransactionReceiptData transactionReceiptData, boolean isDynamicFee) {
+            Assert.assertEquals(to, transactionReceiptData.getTo());
+            Assert.assertEquals(gas, transactionReceiptData.getGas());
+            if (isDynamicFee) {
+                Assert.assertEquals(gasPrice, transactionReceiptData.getMaxPriorityFeePerGas());
+                Assert.assertEquals(gasPrice, transactionReceiptData.getMaxFeePerGas());
+            } else {
+                Assert.assertEquals(gasPrice, transactionReceiptData.getGasPrice());
+            }
+            Assert.assertEquals(accessList, transactionReceiptData.getAccessList());
+        }
+
+       @Test
+        public void ethereumAccessListTest() throws IOException, InterruptedException {
+            String nonce = klay.getTransactionCount(klayProviderKeyring.getAddress(), DefaultBlockParameterName.PENDING).send().getResult();
+            String chainId = klay.getChainID().send().getResult();
+
+            EthereumAccessList ethereumAccessList = new EthereumAccessList.Builder()
+                    .setTo(to)
+                    .setGas(gas)
+                    .setGasPrice(gasPrice)
+                    .setChainId(chainId)
+                    .setNonce(nonce)
+                    .setValue(value)
+                    .setAccessList(accessList)
+                    .build();
+
+            ethereumAccessList.sign(klayProviderKeyring);
+
+            Bytes32 result = klay.sendTransaction(ethereumAccessList).send();
+            String transactionHash = result.getResult();
+            Thread.sleep(2000);
+            Transaction transaction = klay.getTransactionByHash(transactionHash).send();
+            checkTransactionFields(transaction.getResult(), false);
+            TransactionReceipt transactionReceipt = klay.getTransactionReceipt(transactionHash).send();
+            checkTransactionReceiptFields(transactionReceipt.getResult(), false);
+            Assert.assertEquals(transactionHash, transactionReceipt.getResult().getTransactionHash());
+        }
+
+
+        @Test
+        public void ethereumDynamicFeeTest() throws IOException, InterruptedException {
+            String nonce = klay.getTransactionCount(klayProviderKeyring.getAddress(), DefaultBlockParameterName.PENDING).send().getResult();
+            String chainId = klay.getChainID().send().getResult();
+
+            EthereumDynamicFee ethereumDynamicFee = new EthereumDynamicFee.Builder()
+                    .setTo(to)
+                    .setGas(gas)
+                    .setMaxPriorityFeePerGas(gasPrice)
+                    .setMaxFeePerGas(gasPrice)
+                    .setChainId(chainId)
+                    .setNonce(nonce)
+                    .setValue(value)
+                    .setAccessList(accessList)
+                    .build();
+
+            ethereumDynamicFee.sign(klayProviderKeyring);
+
+            Bytes32 result = klay.sendTransaction(ethereumDynamicFee).send();
+            String transactionHash = result.getResult();
+            Thread.sleep(2000);
+            Transaction transaction = klay.getTransactionByHash(transactionHash).send();
+            checkTransactionFields(transaction.getResult(), true);
+            TransactionReceipt transactionReceipt = klay.getTransactionReceipt(transactionHash).send();
+            checkTransactionReceiptFields(transactionReceipt.getResult(), true);
+            Assert.assertEquals(transactionHash, transactionReceipt.getResult().getTransactionHash());
         }
     }
 

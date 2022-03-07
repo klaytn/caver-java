@@ -17,6 +17,7 @@
 package com.klaytn.caver.transaction.type;
 
 import com.klaytn.caver.account.AccountKeyRoleBased;
+import com.klaytn.caver.methods.response.BlockHeader;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.transaction.TransactionDecoder;
@@ -29,6 +30,7 @@ import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.web3j.crypto.Hash;
+import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.rlp.*;
 import org.web3j.utils.Numeric;
 
@@ -42,7 +44,7 @@ import java.util.function.Function;
 /**
  * Represents an ethereum access list transaction.
  */
-public class EthereumAccessList extends AbstractTransaction {
+public class EthereumDynamicFee extends AbstractTransaction {
     /**
      * The account address that will receive the transferred value.
      */
@@ -64,22 +66,28 @@ public class EthereumAccessList extends AbstractTransaction {
     AccessList accessList;
 
     /**
-     * A unit price of gas in peb the sender will pay for a transaction fee.
+     * A max priority fee per gas.
      */
-    String gasPrice = "0x";
+    String maxPriorityFeePerGas = "0x";
 
     /**
-     * EthereumAccessList Builder class
+     * A max fee per gas.
      */
-    public static class Builder extends AbstractTransaction.Builder<EthereumAccessList.Builder> {
+    String maxFeePerGas = "0x";
+
+    /**
+     * EthereumDynamicFee Builder class
+     */
+    public static class Builder extends AbstractTransaction.Builder<EthereumDynamicFee.Builder> {
         private String to = "0x";
         private String value = "0x0";
         private String input = "0x";
         private AccessList accessList = new AccessList();
-        String gasPrice = "0x";
+        private String maxPriorityFeePerGas = "0x";
+        private String maxFeePerGas = "0x";
 
         public Builder() {
-            super(TransactionType.TxTypeEthereumAccessList.toString());
+            super(TransactionType.TxTypeEthereumDynamicFee.toString());
         }
 
         public Builder setValue(String value) {
@@ -107,85 +115,98 @@ public class EthereumAccessList extends AbstractTransaction {
             return this;
         }
 
-        public Builder setGasPrice(String gasPrice) {
-            this.gasPrice = gasPrice;
+        public Builder setMaxPriorityFeePerGas(String maxPriorityFeePerGas) {
+            this.maxPriorityFeePerGas = maxPriorityFeePerGas;
             return this;
         }
 
-        public Builder setGasPrice(BigInteger gasPrice) {
-            setGasPrice(Numeric.toHexStringWithPrefix(gasPrice));
+        public Builder setMaxPriorityFeePerGas(BigInteger maxPriorityFeePerGas) {
+            setMaxPriorityFeePerGas(Numeric.toHexStringWithPrefix(maxPriorityFeePerGas));
             return this;
         }
 
-        public EthereumAccessList build() {
-            return new EthereumAccessList(this);
+        public Builder setMaxFeePerGas(String maxFeePerGas) {
+            this.maxFeePerGas = maxFeePerGas;
+            return this;
+        }
+
+        public Builder setMaxFeePerGas(BigInteger maxFeePerGas) {
+            setMaxFeePerGas(Numeric.toHexStringWithPrefix(maxFeePerGas));
+            return this;
+        }
+
+        public EthereumDynamicFee build() {
+            return new EthereumDynamicFee(this);
         }
     }
 
     /**
-     * Creates a EthereumAccessList instance.
+     * Creates a EthereumDynamicFee instance.
      *
-     * @param builder EthereumAccessList.Builder instance.
-     * @return EthereumAccessList
+     * @param builder EthereumDynamicFee.Builder instance.
+     * @return EthereumDynamicFee
      */
-    public static EthereumAccessList create(EthereumAccessList.Builder builder) {
-        return new EthereumAccessList(builder);
+    public static EthereumDynamicFee create(EthereumDynamicFee.Builder builder) {
+        return new EthereumDynamicFee(builder);
+    }
+
+
+    /**
+     * Create a EthereumDynamicFee instance.
+     *
+     * @param klaytnCall           Klay RPC instance
+     * @param from                 The address of the sender.
+     * @param nonce                A value used to uniquely identify a sender’s transaction.
+     * @param gas                  The maximum amount of gas the transaction is allowed to use.
+     * @param maxPriorityFeePerGas Max priority fee per gas.
+     * @param maxFeePerGas         Max fee per gas.
+     * @param chainId              Network ID
+     * @param signatures           A Signature list
+     * @param to                   The account address that will receive the transferred value.
+     * @param input                Data attached to the transaction, used for transaction execution.
+     * @param value                The amount of KLAY in peb to be transferred.
+     * @param accessList           The EIP-2930 access list.
+     * @return EthereumDynamicFee
+     */
+    public static EthereumDynamicFee create(Klay klaytnCall, String from, String nonce, String gas, String maxPriorityFeePerGas, String maxFeePerGas, String chainId, List<SignatureData> signatures, String to, String input, String value, AccessList accessList) {
+        return new EthereumDynamicFee(klaytnCall, from, nonce, gas, maxPriorityFeePerGas, maxFeePerGas, chainId, signatures, to, input, value, accessList);
     }
 
     /**
-     * Create a EthereumAccessList instance.
+     * Creates a EthereumDynamicFee instance.
      *
-     * @param klaytnCall Klay RPC instance
-     * @param from       The address of the sender.
-     * @param nonce      A value used to uniquely identify a sender’s transaction.
-     * @param gas        The maximum amount of gas the transaction is allowed to use.
-     * @param gasPrice   A unit price of gas in peb the sender will pay for a transaction fee.
-     * @param chainId    Network ID
-     * @param signatures A Signature list
-     * @param to         The account address that will receive the transferred value.
-     * @param input      Data attached to the transaction, used for transaction execution.
-     * @param value      The amount of KLAY in peb to be transferred.
-     * @param accessList The EIP-2930 access list.
-     * @return EthereumAccessList
+     * @param builder EthereumDynamicFee.Builder instance.
      */
-    public static EthereumAccessList create(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String input, String value, AccessList accessList) {
-        return new EthereumAccessList(klaytnCall, from, nonce, gas, gasPrice, chainId, signatures, to, input, value, accessList);
-    }
-
-    /**
-     * Creates a EthereumAccessList instance.
-     *
-     * @param builder EthereumAccessList.Builder instance.
-     */
-    public EthereumAccessList(EthereumAccessList.Builder builder) {
+    public EthereumDynamicFee(EthereumDynamicFee.Builder builder) {
         super(builder);
 
         setTo(builder.to);
         setValue(builder.value);
         setInput(builder.input);
         setAccessList(builder.accessList);
-        setGasPrice(builder.gasPrice);
+        setMaxPriorityFeePerGas(builder.maxPriorityFeePerGas);
+        setMaxFeePerGas(builder.maxFeePerGas);
     }
 
-
     /**
-     * Create a EthereumAccessList instance.
+     * Create a EthereumDynamicFee instance.
      *
-     * @param klaytnCall Klay RPC instance
-     * @param from       The address of the sender.
-     * @param nonce      A value used to uniquely identify a sender’s transaction.
-     * @param gas        The maximum amount of gas the transaction is allowed to use.
-     * @param gasPrice   A unit price of gas in peb the sender will pay for a transaction fee.
-     * @param chainId    Network ID
-     * @param signatures A Signature list
-     * @param to         The account address that will receive the transferred value.
-     * @param input      Data attached to the transaction, used for transaction execution.
-     * @param value      The amount of KLAY in peb to be transferred.
+     * @param klaytnCall           Klay RPC instance
+     * @param from                 The address of the sender.
+     * @param nonce                A value used to uniquely identify a sender’s transaction.
+     * @param gas                  The maximum amount of gas the transaction is allowed to use.
+     * @param maxPriorityFeePerGas Max priority fee per gas.
+     * @param maxFeePerGas         Max fee per gas.
+     * @param chainId              Network ID
+     * @param signatures           A Signature list
+     * @param to                   The account address that will receive the transferred value.
+     * @param input                Data attached to the transaction, used for transaction execution.
+     * @param value                The amount of KLAY in peb to be transferred.
      */
-    public EthereumAccessList(Klay klaytnCall, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String to, String input, String value, AccessList accessList) {
+    public EthereumDynamicFee(Klay klaytnCall, String from, String nonce, String gas, String maxPriorityFeePerGas, String maxFeePerGas, String chainId, List<SignatureData> signatures, String to, String input, String value, AccessList accessList) {
         super(
                 klaytnCall,
-                TransactionType.TxTypeEthereumAccessList.toString(),
+                TransactionType.TxTypeEthereumDynamicFee.toString(),
                 from,
                 nonce,
                 gas,
@@ -196,7 +217,8 @@ public class EthereumAccessList extends AbstractTransaction {
         setValue(value);
         setInput(input);
         setAccessList(accessList);
-        setGasPrice(gasPrice);
+        setMaxPriorityFeePerGas(maxPriorityFeePerGas);
+        setMaxFeePerGas(maxFeePerGas);
     }
 
     /**
@@ -205,13 +227,14 @@ public class EthereumAccessList extends AbstractTransaction {
      */
     @Override
     public String getRLPEncoding() {
-        // TransactionPayload = 0x7801 + encode([chainId, nonce, gasPrice, gas, to, value, data, accessList, signatureYParity, signatureR, signatureS])
+        // TransactionPayload = 0x7802 + encode([chainId, nonce, maxPriorityFeePerGas, maxFeePerGas, gas, to, value, data, accessList, signatureYParity, signatureR, signatureS])
         this.validateOptionalValues(true);
 
         List<RlpType> rlpTypeList = new ArrayList<>();
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getChainId())));
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getNonce())));
-        rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getGasPrice())));
+        rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getMaxPriorityFeePerGas())));
+        rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getMaxFeePerGas())));
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getGas())));
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getTo())));
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getValue())));
@@ -221,7 +244,7 @@ public class EthereumAccessList extends AbstractTransaction {
         rlpTypeList.addAll(signatureData.toRlpList().getValues());
 
         byte[] encodedTransaction = RlpEncoder.encode(new RlpList(rlpTypeList));
-        byte[] type = Numeric.toBytesPadded(BigInteger.valueOf(TransactionType.TxTypeEthereumAccessList.getType()), 2);
+        byte[] type = Numeric.toBytesPadded(BigInteger.valueOf(TransactionType.TxTypeEthereumDynamicFee.getType()), 2);
         byte[] rawTx = BytesUtils.concat(type, encodedTransaction);
 
         return Numeric.toHexString(rawTx);
@@ -242,15 +265,15 @@ public class EthereumAccessList extends AbstractTransaction {
      * @return String
      */
     @Override
-    public String getRLPEncodingForSignature() {
-        // SigRLP = 0x01 || rlp([chainId, nonce, gasPrice, gasLimit, to, value, data, accessList])
+    public String getRLPEncodingForSignature() { // SigRLP = 0x02 || rlp([chainId, nonce, maxPriorityFeePerGas, maxFeePerGas, gasLimit, to, value, data, accessList])
 
         this.validateOptionalValues(true);
 
         List<RlpType> rlpTypeList = new ArrayList<>();
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getChainId())));
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getNonce())));
-        rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getGasPrice())));
+        rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getMaxPriorityFeePerGas())));
+        rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getMaxFeePerGas())));
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getGas())));
         rlpTypeList.add(RlpString.create(Numeric.hexStringToByteArray(this.getTo())));
         rlpTypeList.add(RlpString.create(Numeric.toBigInt(this.getValue())));
@@ -258,7 +281,7 @@ public class EthereumAccessList extends AbstractTransaction {
         rlpTypeList.add(this.getAccessList().toRlpList());
 
         byte[] encodedTransaction = RlpEncoder.encode(new RlpList(rlpTypeList));
-        byte[] type = new byte[]{(byte) TransactionType.TxTypeEthereumAccessList.getType()};
+        byte[] type = new byte[]{(byte) TransactionType.TxTypeEthereumDynamicFee.getType()};
         byte[] rawTx = BytesUtils.concat(type, encodedTransaction);
 
         return Numeric.toHexString(rawTx);
@@ -274,14 +297,15 @@ public class EthereumAccessList extends AbstractTransaction {
     @Override
     public boolean compareTxField(AbstractTransaction obj, boolean checkSig) {
         if (!super.compareTxField(obj, checkSig)) return false;
-        if (!(obj instanceof EthereumAccessList)) return false;
-        EthereumAccessList txObj = (EthereumAccessList) obj;
+        if (!(obj instanceof EthereumDynamicFee)) return false;
+        EthereumDynamicFee txObj = (EthereumDynamicFee) obj;
 
         if (!this.getTo().toLowerCase().equals(txObj.getTo().toLowerCase())) return false;
         if (!Numeric.toBigInt(this.getValue()).equals(Numeric.toBigInt(txObj.getValue()))) return false;
         if (!this.getInput().equals(txObj.getInput())) return false;
         if (!this.getAccessList().equals(txObj.getAccessList())) return false;
-        if(Numeric.toBigInt(this.getGasPrice()).compareTo(Numeric.toBigInt(txObj.getGasPrice())) != 0) return false;
+        if(Numeric.toBigInt(this.getMaxPriorityFeePerGas()).compareTo(Numeric.toBigInt(txObj.getMaxPriorityFeePerGas())) != 0) return false;
+        if(Numeric.toBigInt(this.getMaxFeePerGas()).compareTo(Numeric.toBigInt(txObj.getMaxFeePerGas())) != 0) return false;
 
         return true;
     }
@@ -306,11 +330,12 @@ public class EthereumAccessList extends AbstractTransaction {
             if (!decode.getType().equals(this.getType())) {
                 throw new RuntimeException("Transactions containing different information cannot be combined.");
             }
-            EthereumAccessList txObj = (EthereumAccessList) decode;
+            EthereumDynamicFee txObj = (EthereumDynamicFee) decode;
 
             if(fillVariable) {
                 if(this.getNonce().equals("0x")) this.setNonce(txObj.getNonce());
-                if(this.getGasPrice().equals("0x")) this.setGasPrice(txObj.getGasPrice());
+                if(this.getMaxPriorityFeePerGas().equals("0x")) this.setMaxPriorityFeePerGas(txObj.getMaxPriorityFeePerGas());
+                if(this.getMaxFeePerGas().equals("0x")) this.setMaxFeePerGas(txObj.getMaxFeePerGas());
                 fillVariable = false;
             }
 
@@ -327,17 +352,23 @@ public class EthereumAccessList extends AbstractTransaction {
     }
 
     /**
-     * Fills empty optional transaction field.(gasPrice)
+     * Fills empty optional transaction fields.(maxPriorityFeePerGas and maxFeePerGas)
      * @throws IOException
      */
     @Override
     public void fillTransaction() throws IOException {
         super.fillTransaction();
-        if(this.gasPrice.equals("0x")) {
-            this.setGasPrice(this.getKlaytnCall().getGasPrice().send().getResult());
+        if(this.getMaxPriorityFeePerGas().equals("0x")) {
+            this.setMaxPriorityFeePerGas(this.getKlaytnCall().getMaxPriorityFeePerGas().send().getResult());
         }
-        if(this.getGasPrice().equals("0x")) {
-            throw new RuntimeException("Cannot fill transaction data. (gasPrice). `klaytnCall` must be set in Transaction instance to automatically fill the nonce, chainId or gasPrice. Please call the `setKlaytnCall` to set `klaytnCall` in the Transaction instance.");
+        if(this.getMaxFeePerGas().equals("0x")) {
+            BlockHeader blockHeader = this.getKlaytnCall().getHeader(DefaultBlockParameterName.LATEST).send();
+            BigInteger baseFee = Numeric.toBigInt(blockHeader.getResult().getBaseFeePerGas());
+            BigInteger maxPriorityFeePerGas = Numeric.toBigInt(this.getMaxPriorityFeePerGas());
+            this.setMaxFeePerGas(baseFee.multiply(BigInteger.valueOf(2)).add(maxPriorityFeePerGas));
+        }
+        if(this.getMaxPriorityFeePerGas().equals("0x") || this.getMaxFeePerGas().equals("0x")) {
+            throw new RuntimeException("Cannot fill transaction data. (maxPriorityFeePerGas, maxFeePerGas). `klaytnCall` must be set in Transaction instance to automatically fill the nonce, chainId or gasPrice. Please call the `setKlaytnCall` to set `klaytnCall` in the Transaction instance.");
         }
     }
 
@@ -348,32 +379,35 @@ public class EthereumAccessList extends AbstractTransaction {
     @Override
     public void validateOptionalValues(boolean checkChainID) {
         super.validateOptionalValues(checkChainID);
-        if(this.getGasPrice() == null || this.getGasPrice().isEmpty() || this.getGasPrice().equals("0x")) {
-            throw new RuntimeException("gasPrice is undefined. Define gasPrice in transaction or use 'transaction.fillTransaction' to fill values.");
+        if(this.getMaxPriorityFeePerGas() == null || this.getMaxPriorityFeePerGas().isEmpty() || this.getMaxPriorityFeePerGas().equals("0x")) {
+            throw new RuntimeException("maxPriorityFeePerGas is undefined. Define maxPriorityFeePerGas in transaction or use 'transaction.fillTransaction' to fill values.");
+        }
+        if(this.getMaxFeePerGas() == null || this.getMaxFeePerGas().isEmpty() || this.getMaxFeePerGas().equals("0x")) {
+            throw new RuntimeException("maxFeePerGas is undefined. Define maxFeePerGas in transaction or use 'transaction.fillTransaction' to fill values.");
         }
     }
 
     /**
-     * Decodes a RLP-encoded EthereumAccessList string.
+     * Decodes a RLP-encoded EthereumDynamicFee string.
      *
-     * @param rlpEncoded RLP-encoded EthereumAccessList string
-     * @return EthereumAccessList
+     * @param rlpEncoded RLP-encoded EthereumDynamicFee string
+     * @return EthereumDynamicFee
      */
-    public static EthereumAccessList decode(String rlpEncoded) {
+    public static EthereumDynamicFee decode(String rlpEncoded) {
         return decode(Numeric.hexStringToByteArray(rlpEncoded));
     }
 
     /**
-     * Decodes a RLP-encoded EthereumAccessList byte array.
+     * Decodes a RLP-encoded EthereumDynamicFee byte array.
      *
-     * @param rlpEncoded RLP-encoded EthereumAccessList byte array.
-     * @return EthereumAccessList
+     * @param rlpEncoded RLP-encoded EthereumDynamicFee byte array.
+     * @return EthereumDynamicFee
      */
-    public static EthereumAccessList decode(byte[] rlpEncoded) {
-        // TxHashRLP = 0x7801 + encode([chainId, nonce, gasPrice, gas, to, value, data, accessList, signatureYParity, signatureR, signatureS])
+    public static EthereumDynamicFee decode(byte[] rlpEncoded) {
+        // TxHashRLP = 0x7802 + encode([chainId, nonce, gasPrice, gas, to, value, data, accessList, signatureYParity, signatureR, signatureS])
         try {
-            if ((rlpEncoded[0] << 8 | rlpEncoded[1]) != TransactionType.TxTypeEthereumAccessList.getType()) {
-                throw new IllegalArgumentException("Invalid RLP-encoded tag - " + TransactionType.TxTypeEthereumAccessList.toString());
+            if ((rlpEncoded[0] << 8 | rlpEncoded[1]) != TransactionType.TxTypeEthereumDynamicFee.getType()) {
+                throw new IllegalArgumentException("Invalid RLP-encoded tag - " + TransactionType.TxTypeEthereumDynamicFee.toString());
             }
             byte[] detachedType = Arrays.copyOfRange(rlpEncoded, 2, rlpEncoded.length);
             RlpList rlpList = RlpDecoder.decode(detachedType);
@@ -381,30 +415,32 @@ public class EthereumAccessList extends AbstractTransaction {
 
             BigInteger chainId = ((RlpString) values.get(0)).asPositiveBigInteger();
             BigInteger nonce = ((RlpString) values.get(1)).asPositiveBigInteger();
-            BigInteger gasPrice = ((RlpString) values.get(2)).asPositiveBigInteger();
-            BigInteger gas = ((RlpString) values.get(3)).asPositiveBigInteger();
-            String to = ((RlpString) values.get(4)).asString();
-            BigInteger value = ((RlpString) values.get(5)).asPositiveBigInteger();
-            String input = ((RlpString) values.get(6)).asString();
+            BigInteger maxPriorityFeePerGas = ((RlpString) values.get(2)).asPositiveBigInteger();
+            BigInteger maxFeePerGas = ((RlpString) values.get(3)).asPositiveBigInteger();
+            BigInteger gas = ((RlpString) values.get(4)).asPositiveBigInteger();
+            String to = ((RlpString) values.get(5)).asString();
+            BigInteger value = ((RlpString) values.get(6)).asPositiveBigInteger();
+            String input = ((RlpString) values.get(7)).asString();
 
-            AccessList accessList = AccessList.decode((RlpList) values.get(7));
+            AccessList accessList = AccessList.decode((RlpList) values.get(8));
 
-            EthereumAccessList ethereumAccessList = new EthereumAccessList.Builder()
+            EthereumDynamicFee ethereumAccessList = new EthereumDynamicFee.Builder()
                     .setFrom(null)
                     .setInput(input)
                     .setValue(value)
                     .setChainId(chainId)
                     .setNonce(nonce)
                     .setGas(gas)
-                    .setGasPrice(gasPrice)
+                    .setMaxPriorityFeePerGas(maxPriorityFeePerGas)
+                    .setMaxFeePerGas(maxFeePerGas)
                     .setNonce(nonce)
                     .setTo(to)
                     .setAccessList(accessList)
                     .build();
 
-            byte[] v = ((RlpString) values.get(8)).getBytes();
-            byte[] r = ((RlpString) values.get(9)).getBytes();
-            byte[] s = ((RlpString) values.get(10)).getBytes();
+            byte[] v = ((RlpString) values.get(9)).getBytes();
+            byte[] r = ((RlpString) values.get(10)).getBytes();
+            byte[] s = ((RlpString) values.get(11)).getBytes();
             SignatureData signatureData = new SignatureData(v, r, s);
 
             ethereumAccessList.appendSignatures(signatureData);
@@ -416,13 +452,13 @@ public class EthereumAccessList extends AbstractTransaction {
 
     /**
      * Appends signatures array to transaction.
-     * EthereumAccessList transaction cannot have more than one signature, so an error occurs if the transaction already has a signature.
+     * EthereumDynamicFee transaction cannot have more than one signature, so an error occurs if the transaction already has a signature.
      * @param signatureData SignatureData instance contains ECDSA signature data
      */
     @Override
     public void appendSignatures(SignatureData signatureData) {
         if(this.getSignatures().size() != 0 && !Utils.isEmptySig(this.getSignatures().get(0))) {
-            throw new RuntimeException("Signatures already defined." + TransactionType.TxTypeEthereumAccessList.toString() + " cannot include more than one signature.");
+            throw new RuntimeException("Signatures already defined." + TransactionType.TxTypeEthereumDynamicFee.toString() + " cannot include more than one signature.");
         }
 
         if (!Utils.isEmptySig(signatureData)) {
@@ -436,17 +472,17 @@ public class EthereumAccessList extends AbstractTransaction {
 
     /**
      * Appends signatures array to transaction.
-     * EthereumAccessList transaction cannot have more than one signature, so an error occurs if the transaction already has a signature.
+     * EthereumDynamicFee transaction cannot have more than one signature, so an error occurs if the transaction already has a signature.
      * @param signatureData List of SignatureData contains ECDSA signature data
      */
     @Override
     public void appendSignatures(List<SignatureData> signatureData) {
         if(this.getSignatures().size() != 0 && !Utils.isEmptySig(this.getSignatures())) {
-            throw new RuntimeException("Signatures already defined." + TransactionType.TxTypeEthereumAccessList.toString() + " cannot include more than one signature.");
+            throw new RuntimeException("Signatures already defined." + TransactionType.TxTypeEthereumDynamicFee.toString() + " cannot include more than one signature.");
         }
 
         if(signatureData.size() != 1) {
-            throw new RuntimeException("Signatures are too long " + TransactionType.TxTypeEthereumAccessList.toString() + " cannot include more than one signature.");
+            throw new RuntimeException("Signatures are too long " + TransactionType.TxTypeEthereumDynamicFee.toString() + " cannot include more than one signature.");
         }
 
         SignatureData signature = signatureData.get(0);
@@ -455,7 +491,7 @@ public class EthereumAccessList extends AbstractTransaction {
             if (v != 0 && v != 1) {
                 throw new RuntimeException("Invalid signature: The y-parity of the transaction should either be 0 or 1.");
             }
-        }
+        };
 
         super.appendSignatures(signatureData);
     }
@@ -466,7 +502,7 @@ public class EthereumAccessList extends AbstractTransaction {
      */
     @Override
     public String getTransactionHash() {
-        // TxHashRLP = 0x01 + encode([chainId, nonce, gasPrice, gas, to, value, data, accessList, signatureYParity, signatureR, signatureS])
+        // TxHashRLP = 0x02 + encode([chainId, nonce, maxPriorityFeePerGas, maxFeePerGas, gas, to, value, data, accessList, signatureYParity, signatureR, signatureS])
         String rlpEncoded = this.getRLPEncoding();
         byte[] rlpEncodedBytes = Numeric.hexStringToByteArray(rlpEncoded);
         byte[] detachedType = Arrays.copyOfRange(rlpEncodedBytes, 1, rlpEncodedBytes.length);
@@ -606,7 +642,7 @@ public class EthereumAccessList extends AbstractTransaction {
      * @param to The account address that will receive the transferred value.
      */
     public void setTo(String to) {
-        // "to" field in EthereumAccessList allows null
+        // "to" field in EthereumDynamicFee allows null
         if (to == null || to.isEmpty()) {
             to = "0x";
         }
@@ -699,35 +735,67 @@ public class EthereumAccessList extends AbstractTransaction {
     }
 
     /**
-     * Getter function for gas price
+     * Getter function for maxPriorityFeePerGas
      * @return String
      */
-    public String getGasPrice() {
-        return gasPrice;
+    public String getMaxPriorityFeePerGas() {
+        return maxPriorityFeePerGas;
+    }
+
+    /**
+     * Setter function for maxPriorityFeePerGas.
+     * @param maxPriorityFeePerGas Max priority fee per gas.
+     */
+    public void setMaxPriorityFeePerGas(String maxPriorityFeePerGas) {
+        if(maxPriorityFeePerGas == null || maxPriorityFeePerGas.isEmpty() || maxPriorityFeePerGas.equals("0x")) {
+            maxPriorityFeePerGas = "0x";
+        }
+
+        if(!maxPriorityFeePerGas.equals("0x") && !Utils.isNumber(maxPriorityFeePerGas)) {
+            throw new IllegalArgumentException("Invalid maxPriorityFeePerGas. : " + maxPriorityFeePerGas);
+        }
+
+        this.maxPriorityFeePerGas = maxPriorityFeePerGas;
+    }
+
+    /**
+     * Setter function for maxPriorityFeePerGas.
+     * @param maxPriorityFeePerGas Max priority fee per gas.
+     */
+    public void setMaxPriorityFeePerGas(BigInteger maxPriorityFeePerGas) {
+        setMaxPriorityFeePerGas(Numeric.toHexStringWithPrefix(maxPriorityFeePerGas));
+    }
+
+    /**
+     * Getter function for maxFeePerGas.
+     * @return String
+     */
+    public String getMaxFeePerGas() {
+        return maxFeePerGas;
+    }
+
+    /**
+     * Setter function for maxFeePerGas.
+     * @param maxFeePerGas Max fee per gas.
+     */
+    public void setMaxFeePerGas(String maxFeePerGas) {
+        if(maxFeePerGas == null || maxFeePerGas.isEmpty() || maxFeePerGas.equals("0x")) {
+            maxFeePerGas = "0x";
+        }
+
+        if(!maxFeePerGas.equals("0x") && !Utils.isNumber(maxFeePerGas)) {
+            throw new IllegalArgumentException("Invalid maxFeePerGas. : " + maxFeePerGas);
+        }
+
+        this.maxFeePerGas = maxFeePerGas;
     }
 
     /**
      * Setter function for gas price.
-     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
+     * @param maxFeePerGas Max fee per gas.
      */
-    public void setGasPrice(String gasPrice) {
-        if(gasPrice == null || gasPrice.isEmpty() || gasPrice.equals("0x")) {
-            gasPrice = "0x";
-        }
-
-        if(!gasPrice.equals("0x") && !Utils.isNumber(gasPrice)) {
-            throw new IllegalArgumentException("Invalid gasPrice. : " + gasPrice);
-        }
-
-        this.gasPrice = gasPrice;
-    }
-
-    /**
-     * Setter function for gas price.
-     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
-     */
-    public void setGasPrice(BigInteger gasPrice) {
-        setGasPrice(Numeric.toHexStringWithPrefix(gasPrice));
+    public void setMaxFeePerGas(BigInteger maxFeePerGas) {
+        setMaxFeePerGas(Numeric.toHexStringWithPrefix(maxFeePerGas));
     }
 
 }

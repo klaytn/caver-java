@@ -74,15 +74,14 @@ abstract public class AbstractFeeDelegatedWithRatioTransaction extends AbstractF
      * @param from The address of the sender.
      * @param nonce A value used to uniquely identify a sender’s transaction.
      * @param gas The maximum amount of gas the transaction is allowed to use.
-     * @param gasPrice A unit price of gas in peb the sender will pay for a transaction fee.
      * @param chainId Network ID
      * @param signatures A signature list
      * @param feePayer The address of the fee payer.
      * @param feePayerSignatures The fee payers's signatures.
      * @param feeRatio A fee ratio of the fee payer.
      */
-    public AbstractFeeDelegatedWithRatioTransaction(Klay klaytnCall, String type, String from, String nonce, String gas, String gasPrice, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio) {
-        super(klaytnCall, type, from, nonce, gas, gasPrice, chainId, signatures, feePayer, feePayerSignatures);
+    public AbstractFeeDelegatedWithRatioTransaction(Klay klaytnCall, String type, String from, String nonce, String gas, String chainId, List<SignatureData> signatures, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio) {
+        super(klaytnCall, type, from, nonce, gas, chainId, signatures, feePayer, feePayerSignatures);
         setFeeRatio(feeRatio);
     }
 

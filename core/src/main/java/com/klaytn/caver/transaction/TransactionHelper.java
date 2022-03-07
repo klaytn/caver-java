@@ -18,9 +18,14 @@ package com.klaytn.caver.transaction;
 
 import com.klaytn.caver.methods.response.Transaction;
 import com.klaytn.caver.rpc.Klay;
+import com.klaytn.caver.transaction.type.TransactionType;
 
 import java.io.IOException;
 import java.util.List;
+
+import static com.klaytn.caver.transaction.type.TransactionType.TxTypeLegacyTransaction;
+import static com.klaytn.caver.transaction.type.TransactionType.TxTypeEthereumAccessList;
+import static com.klaytn.caver.transaction.type.TransactionType.TxTypeEthereumDynamicFee;
 
 /**
  * This class is a helper class provides methods that handles Transaction object comfortably.
@@ -84,4 +89,44 @@ public class TransactionHelper {
         AbstractFeeDelegatedTransaction tx = (AbstractFeeDelegatedTransaction)TransactionDecoder.decode(rawTx);
         return tx.recoverFeePayerPublicKeys();
     }
+
+    /**
+     * Returns true if the tx type is EthereumTransaction.
+     *
+     * @param type Transaction type integer.
+     * @return
+     */
+    public static boolean isEthereumTransaction(int type) {
+        if (type == TxTypeLegacyTransaction.getType() || type == TxTypeEthereumAccessList.getType() || type == TxTypeEthereumDynamicFee.getType()) {
+            return true;
+        }
+        return false;
+    }
+    /**
+     * Returns true if the tx type is EthereumTransaction.
+     *
+     * @param type Transaction type string.
+     * @return
+     */
+    public static boolean isEthereumTransaction(String type) {
+        if(type.equals(TransactionType.TxTypeLegacyTransaction.toString()) || type.equals(TxTypeEthereumAccessList.toString()) || type.equals(TxTypeEthereumDynamicFee.toString())) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isEthereumTypedTransaction(int type) {
+        if(type == TxTypeEthereumAccessList.getType() || type == TxTypeEthereumDynamicFee.getType()) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isEthereumTypedTransaction(String type) {
+        if(type.equals(TxTypeEthereumAccessList.toString()) || type.equals(TxTypeEthereumDynamicFee.toString())) {
+            return true;
+        }
+        return false;
+    }
+
 }

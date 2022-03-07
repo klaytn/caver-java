@@ -70,6 +70,10 @@ public class TransactionDecoder {
             return FeeDelegatedValueTransferMemoWithRatio.decode(rlpBytes);
         } else if(rlpBytes[0] == TransactionType.TxTypeFeeDelegatedSmartContractDeployWithRatio.getType()) {
             return FeeDelegatedSmartContractDeployWithRatio.decode(rlpBytes);
+        } else if ((rlpBytes[0] << 8 | rlpBytes[1]) == TransactionType.TxTypeEthereumAccessList.getType()) {
+            return EthereumAccessList.decode(rlpBytes);
+        } else if ((rlpBytes[0] << 8 | rlpBytes[1]) == TransactionType.TxTypeEthereumDynamicFee.getType()) {
+            return EthereumDynamicFee.decode(rlpBytes);
         }
         else {
             return LegacyTransaction.decode(rlpBytes);

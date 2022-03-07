@@ -8,7 +8,7 @@ defaults: &defaults
 machine_ubuntu: &machine_ubuntu
   working_directory: ~/circleci-caver-java-major
   machine:
-    image: ubuntu-1604:201903-01
+    image: ubuntu-2004:202010-01
 
 android_machine_ubuntu: &android_machine_ubuntu
   working_directory: ~/circleci-caver-java-android
@@ -195,9 +195,6 @@ jobs:
           command: ./gradlew connectedDebugAndroidTest --debug --stacktrace
       - store_test_results:
           path: android_instrumented_test/build/outputs/androidTest-results/connected
-      - store_artifacts:
-          path: ~/circleci-caver-java-android/
-          destination: adb.log
 
   build_test_android:
     <<: *android_machine_ubuntu

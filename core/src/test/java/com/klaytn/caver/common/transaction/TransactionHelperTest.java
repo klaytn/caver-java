@@ -62,7 +62,6 @@ public class TransactionHelperTest {
             assertEquals(expected.getFrom(), actual.getFrom());
             assertEquals(expected.getGas(), actual.getGas());
             assertEquals(expected.getNonce(), actual.getNonce());
-            assertEquals(expected.getGasPrice(), actual.getGasPrice());
             assertEquals(expected.getHash(), actual.getTransactionHash());
         }
 
@@ -81,6 +80,13 @@ public class TransactionHelperTest {
             Transaction.TransactionData txObject = sampleTxData.get("legacyTransaction");
             LegacyTransaction legacyTransaction = (LegacyTransaction)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, legacyTransaction);
+        }
+
+        @Test
+        public void ethereumAccessList() {
+            Transaction.TransactionData txObject = sampleTxData.get("ethereumAccessList");
+            EthereumAccessList ethereumAccessList = (EthereumAccessList)txObject.convertToCaverTransaction(caver.rpc.klay);
+            checkTxObject(txObject, ethereumAccessList);
         }
 
         @Test

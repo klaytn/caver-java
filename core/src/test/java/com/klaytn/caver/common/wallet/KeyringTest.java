@@ -885,9 +885,9 @@ public class KeyringTest {
             assertEquals(3, actualList.size());
 
             for(int i=0; i<actualList.size(); i++) {
-                assertNotNull(actualList.get(0).getV());
-                assertNotNull(actualList.get(0).getR());
-                assertNotNull(actualList.get(0).getS());
+                assertNotNull(actualList.get(i).getV());
+                assertNotNull(actualList.get(i).getR());
+                assertNotNull(actualList.get(i).getS());
             }
         }
 
@@ -912,9 +912,9 @@ public class KeyringTest {
             assertEquals(3, actualList.size());
 
             for(int i=0; i<actualList.size(); i++) {
-                assertNotNull(actualList.get(0).getV());
-                assertNotNull(actualList.get(0).getR());
-                assertNotNull(actualList.get(0).getS());
+                assertNotNull(actualList.get(i).getV());
+                assertNotNull(actualList.get(i).getR());
+                assertNotNull(actualList.get(i).getS());
             }
         }
 
@@ -2505,6 +2505,325 @@ public class KeyringTest {
             IAccountKey feePayerRoleKey = key.getRoleFeePayerKey();
             assertTrue(feePayerRoleKey instanceof AccountKeyPublic);
             assertEquals(expectedPublicKeys.get(2)[0], ((AccountKeyPublic) feePayerRoleKey).getPublicKey());
+        }
+    }
+
+    public static class ecsignWithKeyTest {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        static final String HASH = "0xe9a11d9ef95fb437f75d07ce768d43e74f158dd54b106e7d3746ce29d545b550";
+        static final int CHAIN_ID = 1;
+
+        @Test
+        public void coupleKey(){
+            AbstractKeyring keyring = KeyringFactory.generate();
+            SignatureData signatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 0);
+
+            assertNotNull(signatureData.getR());
+            assertNotNull(signatureData.getS());
+            assertNotNull(signatureData.getV());
+            assertTrue(Numeric.toBigInt(signatureData.getV()).compareTo(BigInteger.ONE) <=0);
+        }
+
+        @Test
+        public void coupledKey_with_NotExistedRole(){
+            AbstractKeyring keyring = KeyringFactory.generate();
+
+            SignatureData expectedSignatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 0);
+            SignatureData signatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex(), 0);
+
+            assertNotNull(signatureData.getR());
+            assertNotNull(signatureData.getS());
+            assertNotNull(signatureData.getV());
+            assertTrue(Numeric.toBigInt(signatureData.getV()).compareTo(BigInteger.ONE) <= 0);
+
+            assertEquals(expectedSignatureData.getR(), signatureData.getR());
+            assertEquals(expectedSignatureData.getS(), signatureData.getS());
+            assertEquals(expectedSignatureData.getV(), signatureData.getV());
+        }
+
+        @Test
+        public void coupleKey_throwException_negativeKeyIndex() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid index : index cannot be negative");
+            AbstractKeyring keyring = KeyringFactory.generate();
+            SignatureData signatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), -1);
+        }
+
+        @Test
+        public void coupleKey_throwException_outOfBoundKeyIndex() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
+            AbstractKeyring keyring = KeyringFactory.generate();
+            SignatureData signatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 1);
+        }
+
+        @Test
+        public void deCoupleKey() {
+            String address = PrivateKey.generate().getDerivedAddress();
+            String privateKey = PrivateKey.generate().getPrivateKey();
+            AbstractKeyring keyring = KeyringFactory.create(address, privateKey);
+
+            SignatureData signatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 0);
+            assertNotNull(signatureData.getR());
+            assertNotNull(signatureData.getS());
+            assertNotNull(signatureData.getV());
+            assertTrue(Numeric.toBigInt(signatureData.getV()).compareTo(BigInteger.ONE) <= 0);
+        }
+
+        @Test
+        public void deCoupleKey_With_NotExistedRole() {
+            String address = PrivateKey.generate().getDerivedAddress();
+            String privateKey = PrivateKey.generate().getPrivateKey();
+            AbstractKeyring keyring = KeyringFactory.create(address, privateKey);
+
+            SignatureData expectedSignatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 0);
+            SignatureData signatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex(), 0);
+
+            assertNotNull(signatureData.getR());
+            assertNotNull(signatureData.getS());
+            assertNotNull(signatureData.getV());
+            assertTrue(Numeric.toBigInt(signatureData.getV()).compareTo(BigInteger.ONE) <= 0);
+
+            assertEquals(expectedSignatureData.getR(), signatureData.getR());
+            assertEquals(expectedSignatureData.getS(), signatureData.getS());
+            assertEquals(expectedSignatureData.getV(), signatureData.getV());
+        }
+
+        @Test
+        public void deCoupleKey_throwException_negativeKeyIndex() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid index : index cannot be negative");
+            String address = PrivateKey.generate().getDerivedAddress();
+            String privateKey = PrivateKey.generate().getPrivateKey();
+            AbstractKeyring keyring = KeyringFactory.create(address, privateKey);
+
+            SignatureData signatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), -1);
+        }
+
+        @Test
+        public void deCoupleKey_throwException_outOfBoundKeyIndex() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
+            String address = PrivateKey.generate().getDerivedAddress();
+            String privateKey = PrivateKey.generate().getPrivateKey();
+            AbstractKeyring keyring = KeyringFactory.create(address, privateKey);
+
+            SignatureData signatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 1);
+        }
+
+        @Test
+        public void multipleKey() {
+            AbstractKeyring keyring = generateMultipleKeyring(3);
+            SignatureData signatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 1);
+
+            assertNotNull(signatureData.getR());
+            assertNotNull(signatureData.getS());
+            assertNotNull(signatureData.getV());
+            assertTrue(Numeric.toBigInt(signatureData.getV()).compareTo(BigInteger.ONE) <= 0);
+
+        }
+
+        @Test
+        public void multipleKey_With_NotExistedRole() {
+            AbstractKeyring keyring = generateMultipleKeyring(3);
+            SignatureData expectedSignatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 0);
+            SignatureData signatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex(), 0);
+
+            assertNotNull(signatureData.getR());
+            assertNotNull(signatureData.getS());
+            assertNotNull(signatureData.getV());
+            assertTrue(Numeric.toBigInt(signatureData.getV()).compareTo(BigInteger.ONE) <= 0);
+
+            assertEquals(expectedSignatureData.getR(), signatureData.getR());
+            assertEquals(expectedSignatureData.getS(), signatureData.getS());
+            assertEquals(expectedSignatureData.getV(), signatureData.getV());
+        }
+
+        @Test
+        public void multipleKey_throwException_negativeKeyIndex() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid index : index cannot be negative");
+
+            AbstractKeyring keyring = generateMultipleKeyring(3);
+            SignatureData signatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex(), -1);
+        }
+
+        @Test
+        public void multipleKey_throwException_outOfBoundKeyIndex() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
+            AbstractKeyring keyring = generateMultipleKeyring(3);
+            SignatureData signatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 10);
+        }
+
+        @Test
+        public void roleBasedKey() {
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[]{2,3,4});
+
+            SignatureData signatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 1);
+
+            assertNotNull(signatureData.getR());
+            assertNotNull(signatureData.getS());
+            assertNotNull(signatureData.getV());
+            assertTrue(Numeric.toBigInt(signatureData.getV()).compareTo(BigInteger.ONE) <= 0);
+        }
+
+        @Test
+        public void roleBasedKey_With_NotExistedRole() {
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[] {2,0,4});
+
+            SignatureData expectedSignatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 0);
+            SignatureData signatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex(), 0);
+
+            assertNotNull(signatureData.getR());
+            assertNotNull(signatureData.getS());
+            assertNotNull(signatureData.getV());
+            assertTrue(Numeric.toBigInt(signatureData.getV()).compareTo(BigInteger.ONE) <= 0);
+
+            assertEquals(expectedSignatureData.getR(), signatureData.getR());
+            assertEquals(expectedSignatureData.getS(), signatureData.getS());
+            assertEquals(expectedSignatureData.getV(), signatureData.getV());
+        }
+
+        @Test
+        public void roleBasedKey_throwException_negativeKeyIndex() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid index : index cannot be negative");
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[] {2,0,4});
+            SignatureData signatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), -1);
+        }
+
+        @Test
+        public void roleBasedKey_throwException_outOfBoundKeyIndex() {
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("Invalid index : index must be less than the length of the key.");
+
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[] {2,0,4});
+            SignatureData signatureData = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex(), 10);
+        }
+    }
+
+    public static class ecsignWithKeysTest {
+        static final String HASH = "0xe9a11d9ef95fb437f75d07ce768d43e74f158dd54b106e7d3746ce29d545b550";
+        static final int CHAIN_ID = 1;
+
+        public void checkSignature(List<SignatureData> expected, List<SignatureData> actual) {
+            assertEquals(expected.size(), actual.size());
+
+            for(int i=0; i<expected.size(); i++) {
+                assertEquals(expected.get(i).getR(), actual.get(i).getR());
+                assertEquals(expected.get(i).getS(), actual.get(i).getS());
+                assertEquals(expected.get(i).getV(), actual.get(i).getV());
+                assertTrue(Numeric.toBigInt(actual.get(i).getV()).compareTo(BigInteger.ONE) <= 0);
+            }
+        }
+
+        @Test
+        public void coupleKey() {
+            AbstractKeyring keyring = KeyringFactory.generate();
+            List<SignatureData> signatureDataList = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+
+            assertEquals(1, signatureDataList.size());
+            assertNotNull(signatureDataList.get(0).getR());
+            assertNotNull(signatureDataList.get(0).getS());
+            assertNotNull(signatureDataList.get(0).getV());
+            assertTrue(Numeric.toBigInt(signatureDataList.get(0).getV()).compareTo(BigInteger.ONE) <= 0);
+        }
+
+        @Test
+        public void coupleKey_With_NotExistedRole() {
+            AbstractKeyring keyring = KeyringFactory.generate();
+            List<SignatureData> expectedList = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+            List<SignatureData> actualList = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex());
+
+            assertEquals(1, actualList.size());
+            assertNotNull(actualList.get(0).getR());
+            assertNotNull(actualList.get(0).getS());
+            assertNotNull(actualList.get(0).getV());
+
+            checkSignature(expectedList, actualList);
+        }
+
+        @Test
+        public void deCoupleKey() {
+            String address = PrivateKey.generate().getDerivedAddress();
+            String privateKey = PrivateKey.generate().getPrivateKey();
+            AbstractKeyring keyring = KeyringFactory.create(address, privateKey);
+
+            List<SignatureData> actualList = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+            assertEquals(1, actualList.size());
+            assertNotNull(actualList.get(0).getR());
+            assertNotNull(actualList.get(0).getS());
+            assertNotNull(actualList.get(0).getV());
+            assertTrue(Numeric.toBigInt(actualList.get(0).getV()).compareTo(BigInteger.ONE) <= 0);
+        }
+
+        @Test
+        public void deCoupleKey_With_NotExistedRole() {
+            String address = PrivateKey.generate().getDerivedAddress();
+            String privateKey = PrivateKey.generate().getPrivateKey();
+            AbstractKeyring keyring = KeyringFactory.create(address, privateKey);
+
+            List<SignatureData> expectedList = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+            List<SignatureData> actualList = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex());
+
+            assertEquals(1, actualList.size());
+            checkSignature(expectedList, actualList);
+        }
+
+        @Test
+        public void multipleKey() {
+            AbstractKeyring keyring = generateMultipleKeyring(3);
+
+            List<SignatureData> actualList = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+            assertEquals(3, actualList.size());
+
+            for(int i=0; i<actualList.size(); i++) {
+                assertNotNull(actualList.get(i).getV());
+                assertNotNull(actualList.get(i).getR());
+                assertNotNull(actualList.get(i).getS());
+                assertTrue(Numeric.toBigInt(actualList.get(i).getV()).compareTo(BigInteger.ONE) <= 0);
+            }
+        }
+
+        @Test
+        public void multipleKey_With_NotExistedRole() {
+            AbstractKeyring keyring = generateMultipleKeyring(3);
+
+            List<SignatureData> expectedList = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+            List<SignatureData> actualList = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex());
+
+            assertEquals(3, actualList.size());
+            checkSignature(expectedList, actualList);
+        }
+
+        @Test
+        public void roleBasedKey() {
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[]{3,3,4});
+
+            List<SignatureData> actualList = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+            assertEquals(3, actualList.size());
+
+            for(int i=0; i<actualList.size(); i++) {
+                assertNotNull(actualList.get(i).getV());
+                assertNotNull(actualList.get(i).getR());
+                assertNotNull(actualList.get(i).getS());
+
+                assertTrue(Numeric.toBigInt(actualList.get(i).getV()).compareTo(BigInteger.ONE) <= 0);
+            }
+        }
+
+        @Test
+        public void roleBasedKey_With_NotExistedRole() {
+            AbstractKeyring keyring = generateRoleBaseKeyring(new int[]{3,0,4});
+
+            List<SignatureData> expectedList = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+            List<SignatureData> actualList = keyring.ecsign(HASH, AccountKeyRoleBased.RoleGroup.ACCOUNT_UPDATE.getIndex());
+
+            assertEquals(3, actualList.size());
+            checkSignature(expectedList, actualList);
         }
     }
 }

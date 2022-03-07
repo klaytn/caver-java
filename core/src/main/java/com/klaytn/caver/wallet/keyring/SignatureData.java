@@ -18,6 +18,8 @@ package com.klaytn.caver.wallet.keyring;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.klaytn.caver.transaction.type.TransactionType;
+import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
@@ -68,6 +70,10 @@ public class SignatureData {
      * @param s The ECDSA Signature data S
      */
     public SignatureData(byte[] v, byte[] r, byte[] s) {
+        if (v.length == 0) {
+            // It handles when given v value was 0(represented "0x80" in rlp encoded).
+            v = BytesUtils.concat(new byte[]{0x0}, v);
+        }
         this.v = Numeric.toHexString(v);
         this.r = Numeric.toHexString(r);
         this.s = Numeric.toHexString(s);
@@ -160,8 +166,19 @@ public class SignatureData {
         byte[] r = Numeric.hexStringToByteArray(getR());
         byte[] s = Numeric.hexStringToByteArray(getS());
 
+        RlpString rlpV;
+        byte[] trimmedV = Bytes.trimLeadingZeroes(v);
+        if (trimmedV[0] == 0) {
+            // If v value is "0x0", the shape of trimmedV is [0x0] (have 1 element).
+            // If we create rlpV by using RlpString.create(byte[]{0x0}), it is encoded as `0x00` but
+            // v value is integer by its spec and integer 0 must be encoded as 0x80.
+            rlpV = RlpString.create(BigInteger.valueOf(0));
+        } else {
+            rlpV = RlpString.create(trimmedV);
+        }
+
         return new RlpList(
-                RlpString.create(Bytes.trimLeadingZeroes(v)),
+                rlpV,
                 RlpString.create(Bytes.trimLeadingZeroes(r)),
                 RlpString.create(Bytes.trimLeadingZeroes(s))
         );
@@ -174,6 +191,12 @@ public class SignatureData {
     @JsonIgnore
     public int getRecoverId() {
         int v = Numeric.toBigInt(this.getV()).intValue() & 0xFFFF;
+
+        // The v value of EthereumAccessList or EthereumDynamicFee transaction has 0 or 1(parity value of y value in Signature).
+        // It should be accepted 0 or 1 value
+        if (v == 0 || v == 1) {
+            return v;
+        }
 
         if (v < 27) {
             throw new RuntimeException("v byte out of range: " + v);

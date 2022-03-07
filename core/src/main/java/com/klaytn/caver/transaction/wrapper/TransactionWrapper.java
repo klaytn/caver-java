@@ -21,6 +21,7 @@ import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.transaction.TransactionDecoder;
 import com.klaytn.caver.transaction.TransactionHelper;
 import com.klaytn.caver.transaction.type.wrapper.*;
+import com.klaytn.caver.transaction.utils.wrapper.TransactionUtilsWrapper;
 
 import java.util.List;
 
@@ -37,6 +38,16 @@ public class TransactionWrapper {
      * LegacyTransactionWrapper instance
      */
     public LegacyTransactionWrapper legacyTransaction;
+
+    /**
+     * EthereumAccessListWrapper instance
+     */
+    public EthereumAccessListWrapper ethereumAccessList;
+
+    /**
+     * EthereumDynamicFeeWrapper instance
+     */
+    public EthereumDynamicFeeWrapper ethereumDynamicFee;
 
     /**
      * ValueTransferWrapper instance
@@ -144,6 +155,11 @@ public class TransactionWrapper {
     public FeeDelegatedChainDataAnchoringWithRatioWrapper feeDelegatedChainDataAnchoringWithRatio;
 
     /**
+     * TransactionUtils instance
+     */
+    public TransactionUtilsWrapper utils;
+
+    /**
      * Creates a Transaction instance
      * @param klaytnCall Klay RPC instance
      */
@@ -151,6 +167,8 @@ public class TransactionWrapper {
         this.klay = klaytnCall;
 
         this.legacyTransaction = new LegacyTransactionWrapper(klaytnCall);
+        this.ethereumAccessList = new EthereumAccessListWrapper(klaytnCall);
+        this.ethereumDynamicFee = new EthereumDynamicFeeWrapper(klaytnCall);
 
         this.valueTransfer = new ValueTransferWrapper(klaytnCall);
         this.feeDelegatedValueTransfer = new FeeDelegatedValueTransferWrapper(klaytnCall);
@@ -179,6 +197,8 @@ public class TransactionWrapper {
         this.chainDataAnchoring = new ChainDataAnchoringWrapper(klaytnCall);
         this.feeDelegatedChainDataAnchoring = new FeeDelegatedChainDataAnchoringWrapper(klaytnCall);
         this.feeDelegatedChainDataAnchoringWithRatio = new FeeDelegatedChainDataAnchoringWithRatioWrapper(klaytnCall);
+
+        this.utils = new TransactionUtilsWrapper();
     }
 
     /**

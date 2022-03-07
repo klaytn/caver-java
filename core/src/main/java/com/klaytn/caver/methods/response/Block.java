@@ -133,10 +133,15 @@ public class Block extends Response<Block.BlockData> {
          */
         private String voteData;
 
+        /**
+         * Base fee per gas
+         */
+        private String baseFeePerGas;
+
         public BlockData() {
         }
 
-        public BlockData(String number, String hash, String parentHash, String logsBloom, String transactionsRoot, String stateRoot, String receiptsRoot, String reward, String blockScore, String totalBlockScore, String extraData, String size, String gasUsed, String timestamp, String timestampFoS, List transactions, String governanceData, String voteData) {
+        public BlockData(String number, String hash, String parentHash, String logsBloom, String transactionsRoot, String stateRoot, String receiptsRoot, String reward, String blockScore, String totalBlockScore, String extraData, String size, String gasUsed, String timestamp, String timestampFoS, List transactions, String governanceData, String voteData, String baseFeePerGas) {
             this.number = number;
             this.hash = hash;
             this.parentHash = parentHash;
@@ -155,6 +160,7 @@ public class Block extends Response<Block.BlockData> {
             this.transactions = transactions;
             this.governanceData = governanceData;
             this.voteData = voteData;
+            this.baseFeePerGas = baseFeePerGas;
         }
 
         public String getNumber() {
@@ -301,6 +307,14 @@ public class Block extends Response<Block.BlockData> {
 
         public void setTotalBlockScore(String totalBlockScore) {
             this.totalBlockScore = totalBlockScore;
+        }
+
+        public String getBaseFeePerGas() {
+            return baseFeePerGas;
+        }
+
+        public void setBaseFeePerGas(String baseFeePerGas) {
+            this.baseFeePerGas = baseFeePerGas;
         }
     }
 

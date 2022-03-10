@@ -105,7 +105,7 @@ public class TransactionHelperTest {
                             )
                     )
             );
-            Assert.assertEquals(expectedAccessList, txObject.getAccessList());
+            Assert.assertEquals(expectedAccessList, ethereumAccessList.getAccessList());
         }
 
         @Test
@@ -125,9 +125,9 @@ public class TransactionHelperTest {
                     )
             );
             String expectedGasPrice = "0x5d21dba00";
-            Assert.assertEquals(expectedAccessList, txObject.getAccessList());
-            Assert.assertEquals(expectedGasPrice, txObject.getMaxPriorityFeePerGas());
-            Assert.assertEquals(expectedGasPrice, txObject.getMaxFeePerGas());
+            Assert.assertEquals(expectedAccessList, ethereumDynamicFee.getAccessList());
+            Assert.assertEquals(expectedGasPrice, ethereumDynamicFee.getMaxPriorityFeePerGas());
+            Assert.assertEquals(expectedGasPrice, ethereumDynamicFee.getMaxFeePerGas());
         }
 
         @Test

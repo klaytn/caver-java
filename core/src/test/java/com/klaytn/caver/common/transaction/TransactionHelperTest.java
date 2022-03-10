@@ -23,14 +23,14 @@ import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.Transaction;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.transaction.AbstractTransaction;
-import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.transaction.type.*;
+import com.klaytn.caver.transaction.utils.AccessList;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
-import com.klaytn.caver.wallet.keyring.SignatureData;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -87,6 +87,47 @@ public class TransactionHelperTest {
             Transaction.TransactionData txObject = sampleTxData.get("ethereumAccessList");
             EthereumAccessList ethereumAccessList = (EthereumAccessList)txObject.convertToCaverTransaction(caver.rpc.klay);
             checkTxObject(txObject, ethereumAccessList);
+            AccessList expectedAccessList = caver.transaction.utils.accessList.create(
+                    Arrays.asList(
+                            caver.transaction.utils.accessTuple.create(
+                                    "0xca7a99380131e6c76cfa622396347107aeedca2d",
+                                    Arrays.asList(
+                                            "0x0709c257577296fac29c739dad24e55b70a260497283cf9885ab67b4daa9b67f",
+                                            "0x3d228ec053cf862382d404e79c80391ade4af5aca19ace983a4c6bd698a4e9f1"
+                                    )
+                            ),
+                            caver.transaction.utils.accessTuple.create(
+                                    "0xca7a99380131e6c76cfa622396347107aeedca2d",
+                                    Arrays.asList(
+                                            "0x0709c257577296fac29c739dad24e55b70a260497283cf9885ab67b4daa9b67f",
+                                            "0x3d228ec053cf862382d404e79c80391ade4af5aca19ace983a4c6bd698a4e9f1"
+                                    )
+                            )
+                    )
+            );
+            Assert.assertEquals(expectedAccessList, ethereumAccessList.getAccessList());
+        }
+
+        @Test
+        public void ethereumDynamicFee() {
+            Transaction.TransactionData txObject = sampleTxData.get("ethereumDynamicFee");
+            EthereumDynamicFee ethereumDynamicFee = (EthereumDynamicFee)txObject.convertToCaverTransaction(caver.rpc.klay);
+            checkTxObject(txObject, ethereumDynamicFee);
+            AccessList expectedAccessList = caver.transaction.utils.accessList.create(
+                    Arrays.asList(
+                            caver.transaction.utils.accessTuple.create(
+                                    "0xca7a99380131e6c76cfa622396347107aeedca2d",
+                                    Arrays.asList(
+                                            "0x0709c257577296fac29c739dad24e55b70a260497283cf9885ab67b4daa9b67f",
+                                            "0x3d228ec053cf862382d404e79c80391ade4af5aca19ace983a4c6bd698a4e9f1"
+                                    )
+                            )
+                    )
+            );
+            String expectedGasPrice = "0x5d21dba00";
+            Assert.assertEquals(expectedAccessList, ethereumDynamicFee.getAccessList());
+            Assert.assertEquals(expectedGasPrice, ethereumDynamicFee.getMaxPriorityFeePerGas());
+            Assert.assertEquals(expectedGasPrice, ethereumDynamicFee.getMaxFeePerGas());
         }
 
         @Test

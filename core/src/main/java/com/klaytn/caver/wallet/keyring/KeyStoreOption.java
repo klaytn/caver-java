@@ -17,11 +17,19 @@
 package com.klaytn.caver.wallet.keyring;
 
 /**
- * Represent a Crypto Option class using when creating KeyStore instance.
+ * Represent a Crypto Option class using when creating KeyStore instance.<p>
+ * Caver supports the following algorithms.<p>
+ *     - Cipher algorithm : AES-128-CTR(Counter mode)<p>
+ *     - Key derivation algorithm : PBKDF-2 or Scrypt
+ * @see KeyStore
+ * @see KeyStore.CipherParams
+ * @see KeyStore.IKdfParams
+ * @see KeyStore.Pbkdf2KdfParams
+ * @see KeyStore.ScryptKdfParams
  */
 public class KeyStoreOption {
     /**
-     * Key Encryption / Decryption option.
+     * Key Encryption / Decryption option.(AES-128-CTR)
      */
     KeyStore.CipherParams cipherParams;
 
@@ -48,9 +56,15 @@ public class KeyStoreOption {
     }
 
     /**
-     * Creates an KeyStoreOption of each option instance has default value.
-     * Address is automatically set to null
-     * @param kdfName Key derivation algorithm name.
+     * Creates an KeyStoreOption of each option instance has default value.<p>
+     * Address is automatically set to null<p>
+     * <pre>Example :
+     * {@code
+     * KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF("pbkdf2");
+     * }
+     * </pre>
+     *
+     * @param kdfName Key derivation algorithm name. you can use "pbkdf2" or "scrypt".
      * @return KeyStoreOption
      */
     public static KeyStoreOption getDefaultOptionWithKDF(String kdfName) {
@@ -58,8 +72,15 @@ public class KeyStoreOption {
     }
 
     /**
-     * Creates an KeyStoreOption of each option instance has default value.
-     * @param kdfName Key derivation algorithm name.
+     * Creates an KeyStoreOption of each option instance has default value.<p>
+     * <pre>Example :
+     * {@code
+     * String address = "0x{address}";
+     * KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF("pbkdf2", address);
+     * }
+     * </pre>
+     *
+     * @param kdfName Key derivation algorithm name. you can use "pbkdf2" or "scrypt".
      * @param address An address.
      * @return KeyStoreOption
      */

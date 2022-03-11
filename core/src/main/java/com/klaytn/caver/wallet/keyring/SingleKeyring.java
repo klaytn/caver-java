@@ -27,6 +27,9 @@ import java.util.UUID;
 
 /**
  * Representing a Keyring which includes 'address' and a 'private key'
+ * @see AbstractKeyring
+ * @see MultipleKeyring
+ * @see RoleBasedKeyring
  */
 public class SingleKeyring extends AbstractKeyring{
 
@@ -46,11 +49,20 @@ public class SingleKeyring extends AbstractKeyring{
     }
 
     /**
-     * Signs a transaction hash with all keys in specific role group and return signature list.
+     * Signs a transaction hash with all keys in specific role group and return signature list.<p>
+     * <pre>Example :
+     * {@code
+     * String txHash = "0x{txHash}";
+     * int chainId = 0;
+     * int role = RoleGroup.TRANSACTION;
+     *
+     * List<SignatureData> signature = keyring.sign(txHash, chainId, role);
+     * }
+     * </pre>
      * @param txHash The hash of transaction.
      * @param chainId The chainId specific to the network.
-     * @param role A number indicating the role of the key.
-     * @return List
+     * @param role A number indicating the role of the key. see {@link com.klaytn.caver.account.AccountKeyRoleBased.RoleGroup}.
+     * @return {@code List<SignatureData>}
      */
     @Override
     public List<SignatureData> sign(String txHash, int chainId, int role) {
@@ -61,7 +73,17 @@ public class SingleKeyring extends AbstractKeyring{
     }
 
     /**
-     * Signs a transaction hash with key in specific role group and return signature.
+     * Signs a transaction hash with key in specific role group and return signature.<p>
+     * <pre>Example :
+     * {@code
+     * String txHash = "0x{txHash}";
+     * int chainId = 0;
+     * int role = RoleGroup.TRANSACTION;
+     * int index = 0;
+     *
+     * SignatureData signature = keyring.sign(txHash, chainId, role, index);
+     * }
+     * </pre>
      * @param txHash The hash of transaction.
      * @param chainId The chainId specific to the network.
      * @param role A number indicating the role of the key.
@@ -91,7 +113,7 @@ public class SingleKeyring extends AbstractKeyring{
      *
      * @param txHash The hash of transaction.
      * @param role A number indicating the role of the key.
-     * @return
+     * @return {@code List<SignatureData>}
      */
     @Override
     public List<SignatureData> ecsign(String txHash, int role) {
@@ -116,7 +138,7 @@ public class SingleKeyring extends AbstractKeyring{
      * @param txHash The hash of transaction.
      * @param role A number indicating the role of the key.
      * @param index The index of the key to be used in the specific role group.
-     * @return
+     * @return SignatureData
      */
     @Override
     public SignatureData ecsign(String txHash, int role, int index) {
@@ -129,9 +151,17 @@ public class SingleKeyring extends AbstractKeyring{
     }
 
     /**
-     * Signs a hashed data with all key in specific role group and return MessageSigned instance.
-     * @param message The data string to sign
-     * @param role A number indicating the role of the key
+     * Signs a hashed data with all key in specific role group and return MessageSigned instance.<p>
+     * <pre>Example :
+     * {@code
+     * Sting message = "message";
+     * int role = RoleGroup.TRANSACTION;
+     *
+     * MessageSigned signedInfo = keyring.signMessage(message, role);
+     * }
+     * </pre>
+     * @param message The data string to sign.
+     * @param role A number indicating the role of the key. see {@link com.klaytn.caver.account.AccountKeyRoleBased.RoleGroup}.
      * @return MessageSigned
      */
     @Override
@@ -145,10 +175,19 @@ public class SingleKeyring extends AbstractKeyring{
     }
 
     /**
-     * Signs a hashed data with key in specific role group and return MessageSigned instance.
-     * @param message The data string to sign
-     * @param role A number indicating the role of the key
-     * @param index The index of the key to be used in the specific role group
+     * Signs a hashed data with key in specific role group and return MessageSigned instance.<p>
+     * <pre>Example :
+     * {@code
+     * Sting message = "message";
+     * int role = RoleGroup.TRANSACTION;
+     * int index = 0;
+     *
+     * MessageSigned signedInfo = keyring.signMessage(message, role, index);
+     * }
+     * </pre>
+     * @param message The data string to sign.
+     * @param role A number indicating the role of the key. see {@link com.klaytn.caver.account.AccountKeyRoleBased.RoleGroup}.
+     * @param index The index of the key to be used in the specific role group.
      * @return MessageSigned
      */
     @Override
@@ -162,7 +201,12 @@ public class SingleKeyring extends AbstractKeyring{
     }
 
     /**
-     * Returns a KlaytnWalletKey format
+     * Returns a KlaytnWalletKey format. <p>
+     * <pre>Example :
+     * {@code
+     * String klaytnWalletKey = keyring.getKlaytnWalletKey();
+     * }
+     * </pre>
      * @return String
      */
     @Override
@@ -171,7 +215,15 @@ public class SingleKeyring extends AbstractKeyring{
     }
 
     /**
-     * Encrypts a keyring and returns a KeyStore.(according to KeyStore V4)
+     * Encrypts a keyring and returns a KeyStore.(according to KeyStore V4) <p>
+     * For more information, please refer to <a href="https://kips.klaytn.com/KIPs/kip-3">KIP3</a>.<p>
+     * <pre>Example :
+     * {@code
+     * KeyStoreOption options = KeyStoreOption.getDefaultOptionWithKDF("pbkdf2");
+     * KeyStore encrypted = keyring.encrypt("password", options);
+     * }
+     * </pre>
+     *
      * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
      * @param options  The options to use when encrypt a keyring.
      * @return KeyStore
@@ -190,8 +242,14 @@ public class SingleKeyring extends AbstractKeyring{
     }
 
     /**
-     * Encrypts a keyring and returns a KeyStore.(according to KeyStore V3)
-     * This function automatically operates SCRYPT KDF Function
+     * Encrypts a keyring and returns a KeyStore.(according to KeyStore V3)<p>
+     * This function automatically operates SCRYPT KDF Function.<p>
+     * <pre>Example :
+     * {@code
+     * KeyStore encrypted = keyring.encryptV3("password");
+     * }
+     * </pre>
+     *
      * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
      * @return KeyStore
      */
@@ -202,7 +260,14 @@ public class SingleKeyring extends AbstractKeyring{
     }
 
     /**
-     * Encrypts a keyring and returns a KeyStore.(according to KeyStore V3)
+     * Encrypts a keyring and returns a KeyStore.(according to KeyStore V3)<p>
+     * <pre>Example :
+     * {@code
+     * KeyStoreOption options = KeyStoreOption.getDefaultOptionWithKDF("pbkdf2");
+     * KeyStore encrypted = keyring.encryptV3("password", options);
+     * }
+     * </pre>
+     *
      * @param password The password to be used for encryption. The encrypted in KeyStore can be decrypted with this password.
      * @param options The options to use when encrypt a keyring.
      * @return KeyStore
@@ -222,6 +287,12 @@ public class SingleKeyring extends AbstractKeyring{
 
     /**
      * Returns true if keyring has decoupled key.
+     * <pre>Example :
+     * {@code
+     * boolean decoupled = keyring.isDecoupled();
+     * }
+     * </pre>
+     *
      * @return boolean
      */
     @Override
@@ -231,6 +302,12 @@ public class SingleKeyring extends AbstractKeyring{
 
     /**
      * Returns a copied SingleKeyring instance.
+     * <pre>Example :
+     * {@code
+     * AbstractKeyring copied = keyring.copy();
+     * }
+     * </pre>
+     *
      * @return Keyring
      */
     @Override
@@ -239,7 +316,12 @@ public class SingleKeyring extends AbstractKeyring{
     }
 
     /**
-     * Returns an instance of Account
+     * Returns an instance of Account.
+     * <pre>Example:
+     * {@code
+     * Account account = keyring.toAccount();
+     * }
+     * </pre>
      * @return Account
      */
     public Account toAccount() {
@@ -248,7 +330,13 @@ public class SingleKeyring extends AbstractKeyring{
 
     /**
      * Return a public key strings.<p>
-     * It returns a public key as a uncompressed format.
+     * It returns a public key as a uncompressed format.<p>
+     * <pre>Example :
+     * {@code
+     * String publicKey = keyring.getPublicKey();
+     * }
+     * </pre>
+     *
      * @return String
      */
     public String getPublicKey() {
@@ -257,6 +345,12 @@ public class SingleKeyring extends AbstractKeyring{
 
     /**
      * Return a public key strings.<p>
+     * <pre>Example :
+     * {@code
+     * String publicKey = keyring.getPublicKey(false);
+     * }
+     * </pre>
+     *
      * @param compressed Whether in compressed format or not.
      * @return String
      */
@@ -266,7 +360,12 @@ public class SingleKeyring extends AbstractKeyring{
 
     /**
      * returns keys by role. If the key of the role passed as parameter is empty, the default key is returned.
-     * @param role A number indicating the role of the key. You can use `AccountRoleBased.RoleGroup`.
+     * <pre>Example :
+     * {@code
+     * PrivateKey privateKey = keyring.getKeyByRole(RoleGroup.TRANSACTION);
+     * }
+     * </pre>
+     * @param role A number indicating the role of the key. see {@link com.klaytn.caver.account.AccountKeyRoleBased.RoleGroup}.
      * @return PrivateKey Array
      */
     public PrivateKey getKeyByRole(int role) {

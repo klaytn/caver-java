@@ -49,7 +49,11 @@ public class PrivateKey {
     }
 
     /**
-     * Create a random PrivateKey instance.
+     * Create a random PrivateKey instance.<p>
+     * <pre>{@code
+     * PrivateKey privateKey = PrivateKey.generate();
+     * }</pre>
+     *
      * @return PrivateKey
      */
     public static PrivateKey generate() {
@@ -57,7 +61,12 @@ public class PrivateKey {
     }
 
     /**
-     * Create a PrivateKey instance with entropy
+     * Create a PrivateKey instance with entropy.<p>
+     * <pre>{@code
+     * String entropy = "entropy";
+     * PrivateKey privateKey = PrivateKey.generate(entropy);
+     * }</pre>
+     *
      * @param entropy The entropy string
      * @return PrivateKey
      */
@@ -80,7 +89,16 @@ public class PrivateKey {
     }
 
     /**
-     * Signs with transactionHash with key and returns signature
+     * Signs with transactionHash with key and returns signature.<p>
+     * <pre>Example :
+     * {@code
+     * int chainId = 1;
+     * String hash = "0x{hash}";
+     * PrivateKey prvKey = new PrivateKey("{privateKeyString}");
+     *
+     * SignatureData sign = prvKey.sign(hash, chainId);
+     * }
+     * </pre>
      * @param sigHash The has of transactionHash
      * @param chainId The chainId or network
      * @return SignatureData
@@ -121,7 +139,15 @@ public class PrivateKey {
     }
 
     /**
-     * Signs with hashed data and returns signature
+     * Signs with hashed data and returns signature.<p>
+     * <pre>Example :
+     * {@code
+     * String msgHash = "0x{hash}";
+     * PrivateKey prvKey = new PrivateKey("{privateKeyString}");
+     *
+     * SignatureData sign = prvKey.signMessage(msgHash);
+     * }
+     * </pre>
      * @param messageHash The hash of data to sign
      * @return SignatureData
      */
@@ -134,7 +160,14 @@ public class PrivateKey {
     }
 
     /**
-     * Returns public key string
+     * Returns public key string.<p>
+     * <pre>Example :
+     * {@code
+     * PrivateKey prvKey = new PrivateKey("{privateKeyString}");
+     *
+     * String publicKey = prvKey.getPublicKey(true);
+     * }
+     * </pre>
      * @param compressed If true, it returns compressed format
      * @return String
      */
@@ -149,7 +182,13 @@ public class PrivateKey {
     }
 
     /**
-     * Returns derived address from private key string
+     * Returns derived address from private key string.
+     * <pre>Example :
+     * {@code
+     * PrivateKey prvKey = new PrivateKey("{privateKeyString}");
+     * String address = prvKey.getDerivedAddress();
+     * }
+     * </pre>
      * @return String
      */
     public String getDerivedAddress() {

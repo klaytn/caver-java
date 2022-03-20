@@ -17,7 +17,7 @@
 package com.klaytn.caver.wallet.keyring;
 
 /**
- * Represent a Crypto Option class using when creating KeyStore instance.<p>
+ * Represent a Crypto Option class used when creating KeyStore instance.<p>
  * Caver supports the following algorithms.<p>
  *     - Cipher algorithm : AES-128-CTR(Counter mode)<p>
  *     - Key derivation algorithm : PBKDF-2 or Scrypt
@@ -57,7 +57,7 @@ public class KeyStoreOption {
 
     /**
      * Creates an KeyStoreOption of each option instance has default value.<p>
-     * Address is automatically set to null<p>
+     * Address is automatically set to null.<p>
      * <pre>Example :
      * {@code
      * KeyStoreOption option = KeyStoreOption.getDefaultOptionWithKDF("pbkdf2");
@@ -72,7 +72,7 @@ public class KeyStoreOption {
     }
 
     /**
-     * Creates an KeyStoreOption of each option instance has default value.<p>
+     * Create a KeyStoreOption where each option has a default value.<p>
      * <pre>Example :
      * {@code
      * String address = "0x{address}";

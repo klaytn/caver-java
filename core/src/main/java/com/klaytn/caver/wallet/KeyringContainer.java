@@ -301,7 +301,7 @@ public class KeyringContainer implements IWallet{
 
     /**
      * Signs with data and returns MessageSigned instance that includes 'signature', 'message', and 'messageHash'.<p>
-     * It automatically set 'roleIndex' and 'keyIndex' to 0.<p>
+     * It automatically set both 'roleIndex' and 'keyIndex' to 0.<p>
      * <pre>Example :
      * {@code
      * String address = "0x{address in KeyringContainer}";

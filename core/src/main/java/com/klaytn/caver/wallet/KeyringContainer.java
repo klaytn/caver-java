@@ -34,7 +34,7 @@ import java.util.function.Function;
 
 /**
  * Represents a Keyring container which manages keyring.<p>
- * To access it from Caver instance, it can be accessed `caver.wallet`.
+ * To access it from Caver instance, it can be accessed through `caver.wallet`.
  * @see KeyringFactory
  * @see AbstractKeyring
  * @see com.klaytn.caver.wallet.keyring.SingleKeyring
@@ -111,10 +111,10 @@ public class KeyringContainer implements IWallet{
     }
 
     /**
-     * Returns a Keyring instance count in KeyringContainer.<p>
+     * Returns the number of keyrings in the KeyringContainer.<p>
      * <pre>Example :
      * {@code
-     * int size = caver.wallet.size();
+     * int size = caver.wallet.length();
      * }
      * </pre>
      *
@@ -205,15 +205,15 @@ public class KeyringContainer implements IWallet{
 
     /**
      * Updates the keyring inside the keyringContainer.<p>
-     * Query the keyring to be updated from keyringContainer with the keyring's address,
+     * Query the keyring to be updated from keyringContainer with the keyring's address, <p>
      * and an error occurs when the keyring is not found in the keyringContainer.<p>
      * <pre>Example :
      * {@code
      * String updatedAddress = "0x{address}";
      * String newPrivateKey = caver.wallet.keyring.generateSingleKey();
+     * SingleKeyring newKeyring = (SingleKeyring)caver.wallet.newKeyring(updatedAddress, newPrivateKey);
      *
-     * Single updateKeyring = caver.wallet.newKeyring(updatedAddress, newPrivateKey);
-     * caver.wallet.update(updateKeyring);
+     * caver.wallet.updateKeyring(newKeyring);
      * }
      * </pre>
      *
@@ -231,7 +231,7 @@ public class KeyringContainer implements IWallet{
     }
 
     /**
-     * Get the keyring in container corresponding to the address.<p>
+     * Returns the keyring in container corresponding to the address.<p>
      * <pre>Example :
      * String address = "0x{address}";
      * AbstractKeyring keyring = caver.wallet.getKeyring(address);
@@ -300,7 +300,7 @@ public class KeyringContainer implements IWallet{
     }
 
     /**
-     * Signs with data and returns MessageSigned instance that includes 'signature', 'message', 'messageHash'.<p>
+     * Signs with data and returns MessageSigned instance that includes 'signature', 'message', and 'messageHash'.<p>
      * It automatically set 'roleIndex' and 'keyIndex' to 0.<p>
      * <pre>Example :
      * {@code
@@ -319,7 +319,7 @@ public class KeyringContainer implements IWallet{
     }
 
     /**
-     * Signs with data and returns MessageSigned instance that includes 'signature', 'message', 'messageHash'.<p>
+     * Signs with data and returns MessageSigned instance that includes 'signature', 'message', and 'messageHash'.<p>
      * <pre>Example :
      * {@code
      * String address = "0x{address in KeyringContainer}";
@@ -345,7 +345,7 @@ public class KeyringContainer implements IWallet{
     }
 
     /**
-     * Signs the transaction using all keys in the Keyring instance corresponding to the address.<p>
+     * Signs the transaction as a sender of the transaction and appends signatures in the transaction instance using all keys in the Keyring instance corresponding to the address.<p>
      * <pre>Example :
      * {@code
      * AbstractTransaction signedTx = caver.wallet.sign("0x{address}", transaction);
@@ -363,7 +363,7 @@ public class KeyringContainer implements IWallet{
     }
 
     /**
-     * Signs the transaction using all keys in the Keyring instance corresponding to the address.<p>
+     * Signs the transaction as a sender of the transaction and appends signatures in the transaction instance using all keys in the Keyring instance corresponding to the address.<p>
      * <pre>Example :
      * {@code
      * AbstractTransaction signedTx = caver.wallet.sign("0x{address}", transaction, TransactionHasher::getHashForSignature);
@@ -385,7 +385,7 @@ public class KeyringContainer implements IWallet{
     }
 
     /**
-     * Signs the transaction using one key in the keyring instance corresponding to the address.<p>
+     * Signs the transaction as a sender of the transaction and appends signatures in the transaction instance using one key in the keyring instance corresponding to the address.<p>
      * <pre>Example :
      * {@code
      * AbstractTransaction signedTx = caver.wallet.sign("0x{address}", transaction, 0);
@@ -403,7 +403,7 @@ public class KeyringContainer implements IWallet{
     }
 
     /**
-     * Signs the transaction using one key in the keyring instance corresponding to the address.<p>
+     * Signs the transaction as a sender of the transaction and appends signatures in the transaction instance using one key in the keyring instance corresponding to the address.<p>
      * <pre>Example :
      * {@code
      * AbstractTransaction signedTx = caver.wallet.sign("0x{address}", transaction, 0, TransactionHasher::getHashForSignature);
@@ -426,7 +426,7 @@ public class KeyringContainer implements IWallet{
     }
 
     /**
-     * Signs the FeeDelegatedTransaction using all keys in the keyring instance corresponding to the address.<p>
+     * Signs the FeeDelegatedTransaction as a fee payer of the transaction and appends feePayerSignatures in the transaction instance using all keys in the keyring instance corresponding to the address.<p>
      * <pre>Example :
      * {@code
      * AbstractFeeDelegatedTransaction signedTx = caver.wallet.signAsFeePayer("0x{address}", transaction);
@@ -443,7 +443,7 @@ public class KeyringContainer implements IWallet{
     }
 
     /**
-     * Signs the FeeDelegatedTransaction using all keys in the keyring instance corresponding to the address.<p>
+     * Signs the FeeDelegatedTransaction as a fee payer of the transaction and appends feePayerSignatures in the transaction instance using all keys in the keyring instance corresponding to the address.<p>
      * <pre>Example :
      * {@code
      * AbstractFeeDelegatedTransaction signedTx = caver.wallet.signAsFeePayer("0x{address}", transaction, TransactionHasher::getHashForSignature);
@@ -464,7 +464,7 @@ public class KeyringContainer implements IWallet{
     }
 
     /**
-     * Signs the FeeDelegatedTransaction using one key in the keyring corresponding to the address.<p>
+     * Signs the FeeDelegatedTransaction as a fee payer of the transaction and appends feePayerSignatures in the transaction instance  using one key in the keyring corresponding to the address.<p>
      * <pre>Example :
      * {@code
      * AbstractFeeDelegatedTransaction signedTx = caver.wallet.signAsFeePayer("0x{address}", transaction, 0);
@@ -482,7 +482,7 @@ public class KeyringContainer implements IWallet{
     }
 
     /**
-     * Signs the FeeDelegatedTransaction using one key in the keyring corresponding to the address.<p>
+     * Signs the FeeDelegatedTransaction as a fee payer of the transaction and appends feePayerSignatures in the transaction instance using one key in the keyring corresponding to the address.<p>
      * <pre>Example :
      * {@code
      * AbstractFeeDelegatedTransaction signedTx = caver.wallet.signAsFeePayer("0x{address}", transaction, 0, TransactionHasher::getHashForSignature);
@@ -505,7 +505,7 @@ public class KeyringContainer implements IWallet{
     }
 
     /**
-     * Check whether there is a keyring corresponding to the address passed as a parameter in the wallet.<p>
+     * Returns true if there is a keyring matching the given address in the wallet.<p>
      * <pre>Exampe :
      * {@code
      * boolean isExist = caver.wallet.isExisted("0x{address}");

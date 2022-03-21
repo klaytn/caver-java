@@ -308,7 +308,7 @@ public class SingleKeyring extends AbstractKeyring{
      * }
      * </pre>
      *
-     * @return Keyring
+     * @return AbstractKeyring
      */
     @Override
     public AbstractKeyring copy() {

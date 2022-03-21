@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
 
 
 /**
- * Representing a KeyringFactory which supports create function for Keyring(Single/Multiple/RoleBased) instance.
- * To access it from Caver instance, it can be accessed `caver.wallet.keyring` using {@link com.klaytn.caver.wallet.keyring.wrapper.KeyringFactoryWrapper}.
+ * Representing a KeyringFactory which supports create function for Keyring(Single/Multiple/RoleBased) instance. <p>
+ * To access it from Caver instance, it can be accessed through `caver.wallet.keyring` using {@link com.klaytn.caver.wallet.keyring.wrapper.KeyringFactoryWrapper}. <p>
  * @see com.klaytn.caver.wallet.keyring.wrapper.KeyringFactoryWrapper
  * @see AbstractKeyring
  * @see com.klaytn.caver.wallet.keyring.SingleKeyring
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 public class KeyringFactory {
 
     /**
-     * Generates a single type of keyring instance.<p>
+     * Returns a randomly generated single keyring instance.<p>
      * <pre>Example :
      * {@code
      * SingleKeyring keyring = caver.wallet.keyring.generate();
@@ -55,7 +55,7 @@ public class KeyringFactory {
     }
 
     /**
-     * Generates a single type of keyring instance with entropy.<p>
+     * Returns a randomly generated single keyring instance with entropy.<p>
      * <pre>Example :
      * {@code
      * String entropy = "entropy";
@@ -142,7 +142,7 @@ public class KeyringFactory {
     }
 
     /**
-     * Generates an list of private key strings.<p>
+     * Generates a list of private key strings array.<p>
      * <pre>Example :
      * {@code
      * List<String[]> privateKeys = caver.wallet.keyring.generateRoleBasedKeys(new int[] {3,3,3});
@@ -161,7 +161,7 @@ public class KeyringFactory {
      * <pre>Example :
      * {@code
      * String entropy = "entropy";
-     * List<String[]> privateKeys = caver.wallet.keyring.generateRoleBasedKeys(new int[] {3,3,3});
+     * List<String[]> privateKeys = caver.wallet.keyring.generateRoleBasedKeys(new int[] {3,3,3}, entropy);
      * }
      * </pre>
      *
@@ -349,7 +349,7 @@ public class KeyringFactory {
     }
 
     /**
-     * Create a roleBased type of keyring instance from address and private key strings.
+     * Create a roleBased type of keyring instance from address and a list of private key strings array.
      * <pre>Example :
      * {@code
      * String address = caver.wallet.keyring.generate().getAddress();
@@ -468,7 +468,7 @@ public class KeyringFactory {
      * ObjectMapper mapper = new ObjectMapper();
      * KeyStore file = mapper.readValue(keyStoreStr, KeyStore.class);
      *
-     * AbstractKeyring keyring = caver.wallet.keyring(file, "password");
+     * AbstractKeyring keyring = caver.wallet.keyring.decrypt(file, "password");
      * }
      * </pre>
      *

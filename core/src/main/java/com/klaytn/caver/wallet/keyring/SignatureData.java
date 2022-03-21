@@ -80,7 +80,7 @@ public class SignatureData {
     }
 
     /**
-     * Get empty signature.
+     * Returns an empty signature.
      * <pre>Example :
      * {@code
      * SignatureData signature = SignatureData.getEmptySignature();

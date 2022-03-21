@@ -152,7 +152,7 @@ public class KeyringContainer implements IWallet{
      * <pre>Example :
      * {@code
      * String address = "0x{address}";
-     * String[] keyArray = new String[] {caver.wallet.keyring.generateSingleKey(), caver.wallet.keyring.generateSingleKey(), ....};
+     * String[] keyArray = caver.wallet.keyring.generateMultipleKeys(3);
      * MultipleKeyring keyring = (MultipleKeyring)caver.wallet.newKeyring(address, keyArray);
      * }
      * </pre>
@@ -173,23 +173,9 @@ public class KeyringContainer implements IWallet{
      * <pre>Example :
      * {@code
      * String address = caver.wallet.keyring.generate().getAddress();
-     * String[][] privateKeyArr = {
-     *     {
-     *        caver.wallet.keyring.generateSingleKey(),
-     *        caver.wallet.keyring.generateSingleKey(),
-     *        caver.wallet.keyring.generateSingleKey(),
-     *     },
-     *     {
-     *        caver.wallet.keyring.generateSingleKey(),
-     *        caver.wallet.keyring.generateSingleKey(),
-     *     },
-     *     {
-     *        caver.wallet.keyring.generateSingleKey(),
-     *        caver.wallet.keyring.generateSingleKey(),
-     *     }
-     * };
+     * List<String> privateKeys = caver.wallet.keyring.generateRoleBasedKeys(new int[]{3,4,5});
      *
-     * RoleBasedKeyring added = (RoleBasedKeyring)caver.wallet.newKeyring(address, Arrays.asList(expectPrivateKeyArr));
+     * RoleBasedKeyring added = (RoleBasedKeyring)caver.wallet.newKeyring(address, privateKeys);
      * }
      * </pre>
      *
@@ -199,7 +185,6 @@ public class KeyringContainer implements IWallet{
      */
     public AbstractKeyring newKeyring(String address, List<String[]> keys) {
         AbstractKeyring keyring = KeyringFactory.createWithRoleBasedKey(address, keys);
-
         return this.add(keyring);
     }
 

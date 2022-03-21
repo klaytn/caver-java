@@ -19,7 +19,7 @@ package com.klaytn.caver.wallet.keyring;
 import java.util.List;
 
 /**
- * Represents a signature information with message, message hash and signature.
+ * Represents a signed message information with message, message hash and signature.
  */
 public class MessageSigned {
     /**

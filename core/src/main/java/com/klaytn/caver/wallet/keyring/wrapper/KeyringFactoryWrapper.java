@@ -187,7 +187,7 @@ public class KeyringFactoryWrapper {
      * <pre>Example :
      * {@code
      * String address = "0x{address}";
-     * String[] keyArray = new String[] {caver.wallet.keyring.generateSingleKey(), caver.wallet.keyring.generateSingleKey(), ....};
+     * String[] keyArray = caver.wallet.keyring.generateMultipleKeys(3);
      * MultipleKeyring keyring = (MultipleKeyring)caver.wallet.keyring.create(address, keyArray);
      * }
      * </pre>
@@ -205,23 +205,9 @@ public class KeyringFactoryWrapper {
      * <pre>Example :
      * {@code
      * String address = caver.wallet.keyring.generate().getAddress();
-     * String[][] privateKeyArr = {
-     *     {
-     *        caver.wallet.keyring.generateSingleKey(),
-     *        caver.wallet.keyring.generateSingleKey(),
-     *        caver.wallet.keyring.generateSingleKey(),
-     *     },
-     *     {
-     *        caver.wallet.keyring.generateSingleKey(),
-     *        caver.wallet.keyring.generateSingleKey(),
-     *     },
-     *     {
-     *        caver.wallet.keyring.generateSingleKey(),
-     *        caver.wallet.keyring.generateSingleKey(),
-     *     }
-     * };
+     * List<String[]> privateKeys = caver.wallet.keyring.generateRoleBasedKeys(new int[] {3,3,3});
      *
-     * RoleBasedKeyring added = (RoleBasedKeyring)caver.wallet.keyring.create(address, Arrays.asList(privateKeyArr));
+     * RoleBasedKeyring added = (RoleBasedKeyring)caver.wallet.keyring.create(address, privateKeys);
      * }
      * </pre>
      *
@@ -288,7 +274,7 @@ public class KeyringFactoryWrapper {
      * <pre>Example :
      * {@code
      * String address = "0x{address}";
-     * String[] keyArray = new String[] {caver.wallet.keyring.generateSingleKey(), caver.wallet.keyring.generateSingleKey(), ....};
+     * String[] keyArray = caver.wallet.keyring.generateMultipleKeys(3);
      * MultipleKeyring keyring = (MultipleKeyring)caver.wallet.keyring.createWithMultipleKey(address, keyArray);
      * }
      * </pre>
@@ -306,23 +292,9 @@ public class KeyringFactoryWrapper {
      * <pre>Example :
      * {@code
      * String address = caver.wallet.keyring.generate().getAddress();
-     * String[][] privateKeyArr = {
-     *     {
-     *        caver.wallet.keyring.generateSingleKey(),
-     *        caver.wallet.keyring.generateSingleKey(),
-     *        caver.wallet.keyring.generateSingleKey(),
-     *     },
-     *     {
-     *        caver.wallet.keyring.generateSingleKey(),
-     *        caver.wallet.keyring.generateSingleKey(),
-     *     },
-     *     {
-     *        caver.wallet.keyring.generateSingleKey(),
-     *        caver.wallet.keyring.generateSingleKey(),
-     *     }
-     * };
+     * List<String[]> privateKeys = caver.wallet.keyring.generateRoleBasedKeys(new int[] {3,3,3});
      *
-     * RoleBasedKeyring added = (RoleBasedKeyring)caver.wallet.keyring.createWithRoleBasedKey(address, Arrays.asList(privateKeyArr));
+     * RoleBasedKeyring added = (RoleBasedKeyring)caver.wallet.keyring.createWithRoleBasedKey(address, privateKeys);
      * }
      * </pre>
      *
@@ -339,23 +311,87 @@ public class KeyringFactoryWrapper {
      * <pre>Example :
      * {@code
      * String keyStoreStr = "{\n" +
-     *                 "  \"version\":3,\n" +
-     *                 "  \"id\":\"7a0a8557-22a5-4c90-b554-d6f3b13783ea\",\n" +
+     *                 "  \"version\":4,\n" +
+     *                 "  \"id\":\"55da3f9c-6444-4fc1-abfa-f2eabfc57501\",\n" +
      *                 "  \"address\":\"0x86bce8c859f5f304aa30adb89f2f7b6ee5a0d6e2\",\n" +
-     *                 "  \"crypto\":{\n" +
-     *                 "    \"ciphertext\":\"696d0e8e8bd21ff1f82f7c87b6964f0f17f8bfbd52141069b59f084555f277b7\",\n" +
-     *                 "    \"cipherparams\":{\"iv\":\"1fd13e0524fa1095c5f80627f1d24cbd\"},\n" +
-     *                 "    \"cipher\":\"aes-128-ctr\",\n" +
-     *                 "    \"kdf\":\"scrypt\",\n" +
-     *                 "    \"kdfparams\":{\n" +
-     *                 "      \"dklen\":32,\n" +
-     *                 "      \"salt\":\"7ee980925cef6a60553cda3e91cb8e3c62733f64579f633d0f86ce050c151e26\",\n" +
-     *                 "      \"n\":4096,\n" +
-     *                 "      \"r\":8,\n" +
-     *                 "      \"p\":1\n" +
-     *                 "    },\n" +
-     *                 "    \"mac\":\"8684d8dc4bf17318cd46c85dbd9a9ec5d9b290e04d78d4f6b5be9c413ff30ea4\"\n" +
-     *                 "  }\n" +
+     *                 "  \"keyring\":[\n" +
+     *                 "    [\n" +
+     *                 "      {\n" +
+     *                 "        \"ciphertext\":\"93dd2c777abd9b80a0be8e1eb9739cbf27c127621a5d3f81e7779e47d3bb22f6\",\n" +
+     *                 "        \"cipherparams\":{\"iv\":\"84f90907f3f54f53d19cbd6ae1496b86\"},\n" +
+     *                 "        \"cipher\":\"aes-128-ctr\",\n" +
+     *                 "        \"kdf\":\"scrypt\",\n" +
+     *                 "        \"kdfparams\":{\n" +
+     *                 "          \"dklen\":32,\n" +
+     *                 "          \"salt\":\"69bf176a136c67a39d131912fb1e0ada4be0ed9f882448e1557b5c4233006e10\",\n" +
+     *                 "          \"n\":4096,\n" +
+     *                 "          \"r\":8,\n" +
+     *                 "          \"p\":1\n" +
+     *                 "        },\n" +
+     *                 "        \"mac\":\"8f6d1d234f4a87162cf3de0c7fb1d4a8421cd8f5a97b86b1a8e576ffc1eb52d2\"\n" +
+     *                 "      },\n" +
+     *                 "      {\n" +
+     *                 "        \"ciphertext\":\"53d50b4e86b550b26919d9b8cea762cd3c637dfe4f2a0f18995d3401ead839a6\",\n" +
+     *                 "        \"cipherparams\":{\"iv\":\"d7a6f63558996a9f99e7daabd289aa2c\"},\n" +
+     *                 "        \"cipher\":\"aes-128-ctr\",\n" +
+     *                 "        \"kdf\":\"scrypt\",\n" +
+     *                 "        \"kdfparams\":{\n" +
+     *                 "          \"dklen\":32,\n" +
+     *                 "          \"salt\":\"966116898d90c3e53ea09e4850a71e16df9533c1f9e1b2e1a9edec781e1ad44f\",\n" +
+     *                 "          \"n\":4096,\n" +
+     *                 "          \"r\":8,\n" +
+     *                 "          \"p\":1\n" +
+     *                 "        },\n" +
+     *                 "        \"mac\":\"bca7125e17565c672a110ace9a25755847d42b81aa7df4bb8f5ce01ef7213295\"\n" +
+     *                 "      }\n" +
+     *                 "    ],\n" +
+     *                 "    [\n" +
+     *                 "      {\n" +
+     *                 "        \"ciphertext\":\"f16def98a70bb2dae053f791882f3254c66d63416633b8d91c2848893e7876ce\",\n" +
+     *                 "        \"cipherparams\":{\"iv\":\"f5006128a4c53bc02cada64d095c15cf\"},\n" +
+     *                 "        \"cipher\":\"aes-128-ctr\",\n" +
+     *                 "        \"kdf\":\"scrypt\",\n" +
+     *                 "        \"kdfparams\":{\n" +
+     *                 "          \"dklen\":32,\n" +
+     *                 "          \"salt\":\"0d8a2f71f79c4880e43ff0795f6841a24cb18838b3ca8ecaeb0cda72da9a72ce\",\n" +
+     *                 "          \"n\":4096,\n" +
+     *                 "          \"r\":8,\n" +
+     *                 "          \"p\":1\n" +
+     *                 "        },\n" +
+     *                 "        \"mac\":\"38b79276c3805b9d2ff5fbabf1b9d4ead295151b95401c1e54aed782502fc90a\"\n" +
+     *                 "      }\n" +
+     *                 "    ],\n" +
+     *                 "    [\n" +
+     *                 "      {\n" +
+     *                 "        \"ciphertext\":\"544dbcc327942a6a52ad6a7d537e4459506afc700a6da4e8edebd62fb3dd55ee\",\n" +
+     *                 "        \"cipherparams\":{\"iv\":\"05dd5d25ad6426e026818b6fa9b25818\"},\n" +
+     *                 "        \"cipher\":\"aes-128-ctr\",\n" +
+     *                 "        \"kdf\":\"scrypt\",\n" +
+     *                 "        \"kdfparams\":{\n" +
+     *                 "          \"dklen\":32,\n" +
+     *                 "          \"salt\":\"3a9003c1527f65c772c54c6056a38b0048c2e2d58dc0e584a1d867f2039a25aa\",\n" +
+     *                 "          \"n\":4096,\n" +
+     *                 "          \"r\":8,\n" +
+     *                 "          \"p\":1\n" +
+     *                 "        },\n" +
+     *                 "        \"mac\":\"19a698b51409cc9ac22d63d329b1201af3c89a04a1faea3111eec4ca97f2e00f\"\n" +
+     *                 "      },\n" +
+     *                 "      {\n" +
+     *                 "        \"ciphertext\":\"dd6b920f02cbcf5998ed205f8867ddbd9b6b088add8dfe1774a9fda29ff3920b\",\n" +
+     *                 "        \"cipherparams\":{\"iv\":\"ac04c0f4559dad80dc86c975d1ef7067\"},\n" +
+     *                 "        \"cipher\":\"aes-128-ctr\",\n" +
+     *                 "        \"kdf\":\"scrypt\",\n" +
+     *                 "        \"kdfparams\":{\n" +
+     *                 "          \"dklen\":32,\n" +
+     *                 "          \"salt\":\"22279c6dbcc706d7daa120022a236cfe149496dca8232b0f8159d1df999569d6\",\n" +
+     *                 "          \"n\":4096,\n" +
+     *                 "          \"r\":8,\n" +
+     *                 "          \"p\":1\n" +
+     *                 "        },\n" +
+     *                 "        \"mac\":\"1c54f7378fa279a49a2f790a0adb683defad8535a21bdf2f3dadc48a7bddf517\"\n" +
+     *                 "      }\n" +
+     *                 "    ]\n" +
+     *                 "  ]\n" +
      *                 "}";
      *
      * AbstractKeyring keyring = caver.wallet.keyring.decrypt(keyStoreStr, "password");
@@ -377,23 +413,87 @@ public class KeyringFactoryWrapper {
      * <pre>Example :
      * {@code
      * String keyStoreStr = "{\n" +
-     *                 "  \"version\":3,\n" +
-     *                 "  \"id\":\"7a0a8557-22a5-4c90-b554-d6f3b13783ea\",\n" +
+     *                 "  \"version\":4,\n" +
+     *                 "  \"id\":\"55da3f9c-6444-4fc1-abfa-f2eabfc57501\",\n" +
      *                 "  \"address\":\"0x86bce8c859f5f304aa30adb89f2f7b6ee5a0d6e2\",\n" +
-     *                 "  \"crypto\":{\n" +
-     *                 "    \"ciphertext\":\"696d0e8e8bd21ff1f82f7c87b6964f0f17f8bfbd52141069b59f084555f277b7\",\n" +
-     *                 "    \"cipherparams\":{\"iv\":\"1fd13e0524fa1095c5f80627f1d24cbd\"},\n" +
-     *                 "    \"cipher\":\"aes-128-ctr\",\n" +
-     *                 "    \"kdf\":\"scrypt\",\n" +
-     *                 "    \"kdfparams\":{\n" +
-     *                 "      \"dklen\":32,\n" +
-     *                 "      \"salt\":\"7ee980925cef6a60553cda3e91cb8e3c62733f64579f633d0f86ce050c151e26\",\n" +
-     *                 "      \"n\":4096,\n" +
-     *                 "      \"r\":8,\n" +
-     *                 "      \"p\":1\n" +
-     *                 "    },\n" +
-     *                 "    \"mac\":\"8684d8dc4bf17318cd46c85dbd9a9ec5d9b290e04d78d4f6b5be9c413ff30ea4\"\n" +
-     *                 "  }\n" +
+     *                 "  \"keyring\":[\n" +
+     *                 "    [\n" +
+     *                 "      {\n" +
+     *                 "        \"ciphertext\":\"93dd2c777abd9b80a0be8e1eb9739cbf27c127621a5d3f81e7779e47d3bb22f6\",\n" +
+     *                 "        \"cipherparams\":{\"iv\":\"84f90907f3f54f53d19cbd6ae1496b86\"},\n" +
+     *                 "        \"cipher\":\"aes-128-ctr\",\n" +
+     *                 "        \"kdf\":\"scrypt\",\n" +
+     *                 "        \"kdfparams\":{\n" +
+     *                 "          \"dklen\":32,\n" +
+     *                 "          \"salt\":\"69bf176a136c67a39d131912fb1e0ada4be0ed9f882448e1557b5c4233006e10\",\n" +
+     *                 "          \"n\":4096,\n" +
+     *                 "          \"r\":8,\n" +
+     *                 "          \"p\":1\n" +
+     *                 "        },\n" +
+     *                 "        \"mac\":\"8f6d1d234f4a87162cf3de0c7fb1d4a8421cd8f5a97b86b1a8e576ffc1eb52d2\"\n" +
+     *                 "      },\n" +
+     *                 "      {\n" +
+     *                 "        \"ciphertext\":\"53d50b4e86b550b26919d9b8cea762cd3c637dfe4f2a0f18995d3401ead839a6\",\n" +
+     *                 "        \"cipherparams\":{\"iv\":\"d7a6f63558996a9f99e7daabd289aa2c\"},\n" +
+     *                 "        \"cipher\":\"aes-128-ctr\",\n" +
+     *                 "        \"kdf\":\"scrypt\",\n" +
+     *                 "        \"kdfparams\":{\n" +
+     *                 "          \"dklen\":32,\n" +
+     *                 "          \"salt\":\"966116898d90c3e53ea09e4850a71e16df9533c1f9e1b2e1a9edec781e1ad44f\",\n" +
+     *                 "          \"n\":4096,\n" +
+     *                 "          \"r\":8,\n" +
+     *                 "          \"p\":1\n" +
+     *                 "        },\n" +
+     *                 "        \"mac\":\"bca7125e17565c672a110ace9a25755847d42b81aa7df4bb8f5ce01ef7213295\"\n" +
+     *                 "      }\n" +
+     *                 "    ],\n" +
+     *                 "    [\n" +
+     *                 "      {\n" +
+     *                 "        \"ciphertext\":\"f16def98a70bb2dae053f791882f3254c66d63416633b8d91c2848893e7876ce\",\n" +
+     *                 "        \"cipherparams\":{\"iv\":\"f5006128a4c53bc02cada64d095c15cf\"},\n" +
+     *                 "        \"cipher\":\"aes-128-ctr\",\n" +
+     *                 "        \"kdf\":\"scrypt\",\n" +
+     *                 "        \"kdfparams\":{\n" +
+     *                 "          \"dklen\":32,\n" +
+     *                 "          \"salt\":\"0d8a2f71f79c4880e43ff0795f6841a24cb18838b3ca8ecaeb0cda72da9a72ce\",\n" +
+     *                 "          \"n\":4096,\n" +
+     *                 "          \"r\":8,\n" +
+     *                 "          \"p\":1\n" +
+     *                 "        },\n" +
+     *                 "        \"mac\":\"38b79276c3805b9d2ff5fbabf1b9d4ead295151b95401c1e54aed782502fc90a\"\n" +
+     *                 "      }\n" +
+     *                 "    ],\n" +
+     *                 "    [\n" +
+     *                 "      {\n" +
+     *                 "        \"ciphertext\":\"544dbcc327942a6a52ad6a7d537e4459506afc700a6da4e8edebd62fb3dd55ee\",\n" +
+     *                 "        \"cipherparams\":{\"iv\":\"05dd5d25ad6426e026818b6fa9b25818\"},\n" +
+     *                 "        \"cipher\":\"aes-128-ctr\",\n" +
+     *                 "        \"kdf\":\"scrypt\",\n" +
+     *                 "        \"kdfparams\":{\n" +
+     *                 "          \"dklen\":32,\n" +
+     *                 "          \"salt\":\"3a9003c1527f65c772c54c6056a38b0048c2e2d58dc0e584a1d867f2039a25aa\",\n" +
+     *                 "          \"n\":4096,\n" +
+     *                 "          \"r\":8,\n" +
+     *                 "          \"p\":1\n" +
+     *                 "        },\n" +
+     *                 "        \"mac\":\"19a698b51409cc9ac22d63d329b1201af3c89a04a1faea3111eec4ca97f2e00f\"\n" +
+     *                 "      },\n" +
+     *                 "      {\n" +
+     *                 "        \"ciphertext\":\"dd6b920f02cbcf5998ed205f8867ddbd9b6b088add8dfe1774a9fda29ff3920b\",\n" +
+     *                 "        \"cipherparams\":{\"iv\":\"ac04c0f4559dad80dc86c975d1ef7067\"},\n" +
+     *                 "        \"cipher\":\"aes-128-ctr\",\n" +
+     *                 "        \"kdf\":\"scrypt\",\n" +
+     *                 "        \"kdfparams\":{\n" +
+     *                 "          \"dklen\":32,\n" +
+     *                 "          \"salt\":\"22279c6dbcc706d7daa120022a236cfe149496dca8232b0f8159d1df999569d6\",\n" +
+     *                 "          \"n\":4096,\n" +
+     *                 "          \"r\":8,\n" +
+     *                 "          \"p\":1\n" +
+     *                 "        },\n" +
+     *                 "        \"mac\":\"1c54f7378fa279a49a2f790a0adb683defad8535a21bdf2f3dadc48a7bddf517\"\n" +
+     *                 "      }\n" +
+     *                 "    ]\n" +
+     *                 "  ]\n" +
      *                 "}";
      *
      * ObjectMapper mapper = new ObjectMapper();

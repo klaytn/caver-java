@@ -243,7 +243,7 @@ public class SingleKeyring extends AbstractKeyring{
 
     /**
      * Encrypts a keyring and returns a KeyStore.(according to KeyStore V3)<p>
-     * This function automatically operates SCRYPT KDF Function.<p>
+     * This function automatically execute SCRYPT KDF Function.<p>
      * <pre>Example :
      * {@code
      * KeyStore encrypted = keyring.encryptV3("password");
@@ -362,7 +362,7 @@ public class SingleKeyring extends AbstractKeyring{
      * returns keys by role. If the key of the role passed as parameter is empty, the default key is returned.
      * <pre>Example :
      * {@code
-     * PrivateKey privateKey = keyring.getKeyByRole(RoleGroup.TRANSACTION);
+     * PrivateKey[] privateKey = keyring.getKeyByRole(RoleGroup.TRANSACTION);
      * }
      * </pre>
      * @param role A number indicating the role of the key. see {@link com.klaytn.caver.account.AccountKeyRoleBased.RoleGroup}.

@@ -252,7 +252,7 @@ public class MultipleKeyring extends AbstractKeyring{
      * }
      * </pre>
      *
-     * @return Keyring
+     * @return AbstractKeyring
      */
     @Override
     public AbstractKeyring copy() {

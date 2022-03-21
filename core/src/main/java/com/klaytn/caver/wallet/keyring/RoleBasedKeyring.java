@@ -261,7 +261,7 @@ public class RoleBasedKeyring extends AbstractKeyring {
      * }
      * </pre>
      *
-     * @return Keyring
+     * @return RoleBasedKeyring
      */
     @Override
     public AbstractKeyring copy() {

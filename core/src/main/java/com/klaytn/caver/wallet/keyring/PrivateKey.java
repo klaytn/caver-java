@@ -89,7 +89,7 @@ public class PrivateKey {
     }
 
     /**
-     * Signs with transactionHash with key and returns signature.<p>
+     * Signs transactionHash with key and returns signature.<p>
      * <pre>Example :
      * {@code
      * int chainId = 1;
@@ -139,7 +139,7 @@ public class PrivateKey {
     }
 
     /**
-     * Signs with hashed data and returns signature.<p>
+     * Signs hashed data with key and returns signature.<p>
      * <pre>Example :
      * {@code
      * String msgHash = "0x{hash}";

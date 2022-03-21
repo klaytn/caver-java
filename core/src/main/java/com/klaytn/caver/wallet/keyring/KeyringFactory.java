@@ -157,7 +157,7 @@ public class KeyringFactory {
     }
 
     /**
-     * Generates an list of private key strings.
+     * Generates a list of private key strings array.
      * <pre>Example :
      * {@code
      * String entropy = "entropy";

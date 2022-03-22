@@ -22,6 +22,12 @@ import org.web3j.utils.Numeric;
 
 import java.util.List;
 
+/**
+ * Represents an abstract class defines the field and method of Keyring.
+ * @see SingleKeyring
+ * @see MultipleKeyring
+ * @see RoleBasedKeyring
+ */
 abstract public class AbstractKeyring {
     /**
      * The keyring address.

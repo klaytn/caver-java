@@ -16,17 +16,35 @@
 
 package com.klaytn.caver.kct.kip37;
 
+/**
+ * Representing a class that has constructor data to deploy KIP-37.
+ */
 public class KIP37DeployParams {
+    /**
+     * The URI for token type.
+     */
     String uri;
 
+    /**
+     * Creates a KIP37DeployParams instance.
+     * @param uri The URI for token type.
+     */
     public KIP37DeployParams(String uri) {
         this.uri = uri;
     }
 
+    /**
+     * Getter for uri.
+     * @return String
+     */
     public String getUri() {
         return uri;
     }
 
+    /**
+     * Setter for uri.
+     * @param uri The URI for token type.
+     */
     public void setUri(String uri) {
         this.uri = uri;
     }

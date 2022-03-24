@@ -15,6 +15,10 @@
  */
 package com.klaytn.caver.kct.kip13;
 
+/**
+ * Representing a data class that has KIP13 constant data to deploy.<p>
+ * This KIP-13 contract source code based on <a href="https://github.com/klaytn/klaytn-contracts">Klaytn-contracts</a>.
+ */
 public class KIP13ConstantData {
     public static final String ABI = "[{\"constant\":true,\"inputs\":[{\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}]";
 }

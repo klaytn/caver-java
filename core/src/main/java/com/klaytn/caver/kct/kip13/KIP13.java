@@ -24,6 +24,10 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+/**
+ * The KIP13 class allows you to easily check whether a Smart contract implements the KIP-13 standard.
+ * It provides the ability to query whether an interface id is implemented.
+ */
 public class KIP13 extends Contract{
 
     /**
@@ -39,6 +43,13 @@ public class KIP13 extends Contract{
     /**
      * Sends query to check whether interface is supported or not.<p>
      * If you want to execute this method alone, it recommended to execute {@link #isImplementedKIP13Interface()} before.
+     * <pre>Example :
+     * {@code
+     * String interfaceId = "0x{interface id}";
+     * boolean isImplemented = kip13.sendQuery(interfaceId);
+     * }
+     * </pre>
+     *
      * @param interfaceId The interface id to check.
      * @return boolean
      */
@@ -52,7 +63,13 @@ public class KIP13 extends Contract{
     }
 
     /**
-     * Checks if the contract implements KIP-13.
+     * Checks if the contract implements KIP-13.<p>
+     * <pre>Example :
+     * {@code
+     * boolean isImplemented = kip13.isImplementedKIP13Interface();
+     * }
+     * </pre>
+     *
      * @return boolean
      */
     public boolean isImplementedKIP13Interface() {

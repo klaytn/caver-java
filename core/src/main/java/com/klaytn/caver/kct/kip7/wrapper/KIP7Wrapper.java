@@ -58,7 +58,13 @@ public class KIP7Wrapper {
     }
 
     /**
-     * Creates a KIP7 instance
+     * Creates a KIP7 instance.
+     * <pre>Example :
+     * {@code
+     * KIP7 kip7 = caver.kct.kip7.create();
+     * }
+     * </pre>
+     *
      * @param contractAddress A contract address
      * @return KIP7
      * @throws IOException
@@ -70,6 +76,18 @@ public class KIP7Wrapper {
     /**
      * Deploy KIP-7 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.
+     * <pre>Example :
+     * {@code
+     * String deployAddress = "0x{deployAddress}";
+     * String name = "KIP7";
+     * String symbol = "KIP7Symbol";
+     * int decimals = 18;
+     * BigInteger initialSupply = BigInteger.valueOf(100_000).multiply(BigInteger.TEN.pow(CONTRACT_DECIMALS)); // 100000 * 10^18
+     *
+     * KIP7 kip7 = caver.kct.kip7.deploy(deployerAddress, name, symbol, decimals, initialSupply);
+     * }
+     * </pre>
+     *
      * @param deployer A deployer's address.
      * @param name A KIP-7 contract name.
      * @param symbol A KIP-7 contract symbol.
@@ -92,18 +110,23 @@ public class KIP7Wrapper {
      * Deploy KIP-7 contract.<p>
      * The deployer's keyring should be added in `caver.wallet`. <p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
-     * <pre>
-     * <code>
-     *     SendOptions sendOptions = new SendOptions();
-     *     sendOptions.setFrom("deployer address");
-     *     sendOptions.setGas(BigInteger.valueOf(gas value));
-     *     sendOptions.setFeeDelegation(true);
-     *     sendOptions.setFeePayer("fee payer address");
+     * <pre> Example :
+     * {@code
+     * String name = "KIP7";
+     * String symbol = "KIP7Symbol";
+     * int decimals = 18;
+     * BigInteger initialSupply = BigInteger.valueOf(100_000).multiply(BigInteger.TEN.pow(CONTRACT_DECIMALS)); // 100000 * 10^18
      *
-     *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
-     *     caver.kct.kip7.deploy(sendOptions, name, symbol, decimals, initialSupply);
-     * </code>
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom("deployer address");
+     * sendOptions.setGas(BigInteger.valueOf(gas value));
+     * sendOptions.setFeeDelegation(true);
+     * sendOptions.setFeePayer("fee payer address");
+     *
+     * KIP7 kip7 = caver.kct.kip7.deploy(sendOptions, name, symbol, decimals, initialSupply);
+     * }
      * </pre>
+     *
      * @param sendOptions The send options to deploy a contract.
      * @param name A KIP-7 contract name.
      * @param symbol A KIP-7 contract symbol.
@@ -125,6 +148,18 @@ public class KIP7Wrapper {
     /**
      * Deploy KIP-7 contract.<p>
      * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * <pre>Example :
+     * {@code
+     * String deployAddress = "0x{deployAddress}";
+     * String name = "KIP7";
+     * String symbol = "KIP7Symbol";
+     * int decimals = 18;
+     * BigInteger initialSupply = BigInteger.valueOf(100_000).multiply(BigInteger.TEN.pow(CONTRACT_DECIMALS)); // 100000 * 10^18
+     *
+     * KIP7 kip7 = caver.kct.kip7.deploy(deployerAddress, name, symbol, decimals, initialSupply, caver.getWallet());
+     * }
+     * </pre>
+     *
      * @param deployer A deployer's address.
      * @param name A KIP-7 contract name.
      * @param symbol A KIP-7 contract symbol.
@@ -148,18 +183,24 @@ public class KIP7Wrapper {
      * Deploy KIP-7 contract. <p>
      * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
-     * <pre>
-     * <code>
-     *     SendOptions sendOptions = new SendOptions();
-     *     sendOptions.setFrom("deployer address");
-     *     sendOptions.setGas(BigInteger.valueOf(gas value));
-     *     sendOptions.setFeeDelegation(true);
-     *     sendOptions.setFeePayer("fee payer address");
+     * <pre>Example :
+     * {@code
+     * String deployAddress = "0x{deployAddress}";
+     * String name = "KIP7";
+     * String symbol = "KIP7Symbol";
+     * int decimals = 18;
+     * BigInteger initialSupply = BigInteger.valueOf(100_000).multiply(BigInteger.TEN.pow(CONTRACT_DECIMALS)); // 100000 * 10^18
      *
-     *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
-     *     KIP7 kip7 = caver.kct.kip7.deploy(sendOptions, name, symbol, decimals, initialSupply, caver.getWallet());
-     * </code>
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom("deployer address");
+     * sendOptions.setGas(BigInteger.valueOf(gas value));
+     * sendOptions.setFeeDelegation(true);
+     * sendOptions.setFeePayer("fee payer address");
+     *
+     * KIP7 kip7 = caver.kct.kip7.deploy(sendOptions, name, symbol, decimals, initialSupply, caver.getWallet());
+     * }
      * </pre>
+     *
      * @param sendOptions The send options to deploy a contract.
      * @param name A KIP-7 contract name.
      * @param symbol A KIP-7 contract symbol.
@@ -182,6 +223,20 @@ public class KIP7Wrapper {
     /**
      * Deploy KIP-7 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.
+     * <pre>Example :
+     * {@code
+     * String deployAddress = "0x{deployAddress}";
+     * String name = "KIP7";
+     * String symbol = "KIP7Symbol";
+     * int decimals = 18;
+     * BigInteger initialSupply = BigInteger.valueOf(100_000).multiply(BigInteger.TEN.pow(CONTRACT_DECIMALS)); // 100000 * 10^18
+     *
+     * KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
+     *
+     * KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, deployAddress);
+     * }
+     * </pre>
+     *
      * @param tokenInfo The KIP-7 contract's deploy parameter values
      * @param deployer A deployer's address
      * @return KIP7
@@ -202,17 +257,23 @@ public class KIP7Wrapper {
      * The deployer's keyring should be added in `caver.wallet`. <p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
      * <pre>
-     * <code>
-     *     SendOptions sendOptions = new SendOptions();
-     *     sendOptions.setFrom("deployer address");
-     *     sendOptions.setGas(BigInteger.valueOf(gas value));
-     *     sendOptions.setFeeDelegation(true);
-     *     sendOptions.setFeePayer("fee payer address");
+     * {@code
+     * String name = "KIP7";
+     * String symbol = "KIP7Symbol";
+     * int decimals = 18;
+     * BigInteger initialSupply = BigInteger.valueOf(100_000).multiply(BigInteger.TEN.pow(CONTRACT_DECIMALS)); // 100000 * 10^18
      *
-     *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
-     *     KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, sendOptions);
-     * </code>
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom("deployer address");
+     * sendOptions.setGas(BigInteger.valueOf(gas value));
+     * sendOptions.setFeeDelegation(true);
+     * sendOptions.setFeePayer("fee payer address");
+     *
+     * KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
+     * KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, sendOptions);
+     * }
      * </pre>
+     *
      * @param tokenInfo The KIP-7 contract's deploy parameter values
      * @param sendOptions The send options to deploy a contract.
      * @return KIP7
@@ -231,6 +292,20 @@ public class KIP7Wrapper {
     /**
      * Deploy KIP-7 contract.<p>
      * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * <pre>Example :
+     * {@code
+     * String deployAddress = "0x{deployAddress}";
+     * String name = "KIP7";
+     * String symbol = "KIP7Symbol";
+     * int decimals = 18;
+     * BigInteger initialSupply = BigInteger.valueOf(100_000).multiply(BigInteger.TEN.pow(CONTRACT_DECIMALS)); // 100000 * 10^18
+     *
+     * KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
+     *
+     * KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, deployAddress, caver.getWallet());
+     * }
+     * </pre>
+     *
      * @param tokenInfo The KIP-7 contract's deploy parameter values
      * @param deployer A deployer's address
      * @param wallet The class instance implemented IWallet to sign transaction.
@@ -251,18 +326,24 @@ public class KIP7Wrapper {
      * Deploy KIP-7 contract.<p>
      * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
-     * <pre>
-     * <code>
-     *     SendOptions sendOptions = new SendOptions();
-     *     sendOptions.setFrom("deployer address");
-     *     sendOptions.setGas(BigInteger.valueOf(gas value));
-     *     sendOptions.setFeeDelegation(true);
-     *     sendOptions.setFeePayer("fee payer address");
+     * <pre>Example :
+     * {@code
+     * String name = "KIP7";
+     * String symbol = "KIP7Symbol";
+     * int decimals = 18;
+     * BigInteger initialSupply = BigInteger.valueOf(100_000).multiply(BigInteger.TEN.pow(CONTRACT_DECIMALS)); // 100000 * 10^18
      *
-     *     KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
-     *     KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, sendOptions, caver.getWallet());
-     * </code>
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom("deployer address");
+     * sendOptions.setGas(BigInteger.valueOf(gas value));
+     * sendOptions.setFeeDelegation(true);
+     * sendOptions.setFeePayer("fee payer address");
+     *
+     * KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
+     * KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, sendOptions, caver.getWallet());
+     * }
      * </pre>
+     *
      * @param tokenInfo The KIP-7 contract's deploy parameter values
      * @param sendOptions The send options to deploy a contract.
      * @param wallet The class instance implemented IWallet to sign transaction.

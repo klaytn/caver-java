@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The caver-java Authors
+ * Copyright 2022 The caver-java Authors
  *
  * Licensed under the Apache License, Version 2.0 (the “License”);
  * you may not use this file except in compliance with the License.
@@ -1712,6 +1712,53 @@ public class RpcTest extends Accounts {
 
             System.out.println(vote);
             System.out.println(myVote1);
+        }
+    }
+
+    public static class AdminAPITest {
+        static Caver caver;
+
+        @BeforeClass
+        public static void init() throws InterruptedException, IOException {
+            caver = new Caver(Caver.DEFAULT_URL);
+        }
+
+        @Test
+        public void getNodeInfo() throws IOException {
+            NodeInfo response = caver.rpc.admin.getNodeInfo().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void getDataDir() throws IOException {
+            Bytes response = caver.rpc.admin.getDataDir().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+            assertNotNull(response.getResult());
+        }
+
+        @Test
+        public void getPeers() throws IOException {
+            Peers response = caver.rpc.admin.getPeers().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void addPeer() throws IOException {
+            String kni = "kni://a979fb575495b8d6db44f750317d0f4622bf4c2aa3365d6af7c284339968eef29b69ad0dce72a4d8db5ebb4968de0e3bec910127f134779fbcb0cb6d3331163c@10.0.0.1:32323";
+            Boolean response = caver.rpc.admin.addPeer(kni).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void removePeer() throws IOException {
+            String kni = "kni://a979fb575495b8d6db44f750317d0f4622bf4c2aa3365d6af7c284339968eef29b69ad0dce72a4d8db5ebb4968de0e3bec910127f134779fbcb0cb6d3331163c@10.0.0.1:32323";
+            Boolean response = caver.rpc.admin.removePeer(kni).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
         }
     }
 }

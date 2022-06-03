@@ -83,4 +83,18 @@ public class Net {
                 web3jService,
                 KlayPeerCount.class);
     }
+
+    /**
+     * Returns the current klaytn protocol version.
+     *
+     * @return Quantity - Integer of the current klaytn protocol version.
+     */
+    public Request<?, Quantity> getVersion() {
+        return new Request<>(
+                "net_version",
+                Collections.<String>emptyList(),
+                web3jService,
+                Quantity.class
+        );
+    }
 }

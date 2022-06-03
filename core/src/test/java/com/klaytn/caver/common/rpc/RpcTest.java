@@ -1309,6 +1309,12 @@ public class RpcTest extends Accounts {
             KlayPeerCount.PeerCount peerCount = klayPeerCount.getResult();
             assertTrue(peerCount.getTotal().intValue() >= 0);
         }
+
+        @Test
+        public void getVersion() throws Exception {
+            Quantity version = caver.rpc.net.getVersion().send();
+            assertTrue(version.getValue().intValue() >= 0);
+        }
     }
 
     public static class GovernanceAPITest {

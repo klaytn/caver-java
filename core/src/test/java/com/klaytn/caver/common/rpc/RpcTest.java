@@ -1346,14 +1346,14 @@ public class RpcTest extends Accounts {
             Bytes response = caver.rpc.governance.vote(modeKey, modeValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String unitPriceKey = "governance.unitprice";
             BigInteger unitPriceValue = new BigInteger("25000000000");
 
             response = caver.rpc.governance.vote(unitPriceKey, unitPriceValue).send();
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String epochKey = "istanbul.epoch";
             BigInteger epochValue = BigInteger.valueOf(86400);
@@ -1361,7 +1361,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(epochKey, epochValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String sizeKey = "istanbul.committeesize";
             BigInteger sizeValue = BigInteger.valueOf(7);
@@ -1369,7 +1369,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(epochKey, epochValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String mintKey = "reward.mintingamount";
             String mintValue = "9600000000000000000";
@@ -1377,7 +1377,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(mintKey, mintValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String ratioKey = "reward.ratio";
             String ratioValue = "34/54/12";
@@ -1385,7 +1385,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(ratioKey, ratioValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String coeffKey = "reward.useginicoeff";
             boolean coeffValue = true;
@@ -1393,7 +1393,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(coeffKey, coeffValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String txFeeKey = "reward.deferredtxfee";
             boolean txFeeValue = true;
@@ -1401,7 +1401,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(txFeeKey, txFeeValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String stakingKey = "reward.minimumstake";
             String stakingValue = "5000000";
@@ -1409,7 +1409,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(stakingKey, stakingValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
         }
 
         @Test
@@ -1712,6 +1712,10 @@ public class RpcTest extends Accounts {
 
             System.out.println(vote);
             System.out.println(myVote1);
+        }
+
+        private boolean isSuccessfulVoteResponse(String message) {
+            return message != null && message.contains("Your vote is prepared");
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The caver-java Authors
+ * Copyright 2022 The caver-java Authors
  *
  * Licensed under the Apache License, Version 2.0 (the “License”);
  * you may not use this file except in compliance with the License.
@@ -1309,6 +1309,12 @@ public class RpcTest extends Accounts {
             KlayPeerCount.PeerCount peerCount = klayPeerCount.getResult();
             assertTrue(peerCount.getTotal().intValue() >= 0);
         }
+
+        @Test
+        public void getVersion() throws Exception {
+            Quantity version = caver.rpc.net.getVersion().send();
+            assertTrue(version.getValue().intValue() >= 0);
+        }
     }
 
     public static class GovernanceAPITest {
@@ -1340,14 +1346,14 @@ public class RpcTest extends Accounts {
             Bytes response = caver.rpc.governance.vote(modeKey, modeValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String unitPriceKey = "governance.unitprice";
             BigInteger unitPriceValue = new BigInteger("25000000000");
 
             response = caver.rpc.governance.vote(unitPriceKey, unitPriceValue).send();
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String epochKey = "istanbul.epoch";
             BigInteger epochValue = BigInteger.valueOf(86400);
@@ -1355,7 +1361,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(epochKey, epochValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String sizeKey = "istanbul.committeesize";
             BigInteger sizeValue = BigInteger.valueOf(7);
@@ -1363,7 +1369,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(epochKey, epochValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String mintKey = "reward.mintingamount";
             String mintValue = "9600000000000000000";
@@ -1371,7 +1377,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(mintKey, mintValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String ratioKey = "reward.ratio";
             String ratioValue = "34/54/12";
@@ -1379,7 +1385,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(ratioKey, ratioValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String coeffKey = "reward.useginicoeff";
             boolean coeffValue = true;
@@ -1387,7 +1393,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(coeffKey, coeffValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String txFeeKey = "reward.deferredtxfee";
             boolean txFeeValue = true;
@@ -1395,7 +1401,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(txFeeKey, txFeeValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String stakingKey = "reward.minimumstake";
             String stakingValue = "5000000";
@@ -1403,7 +1409,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(stakingKey, stakingValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
         }
 
         @Test
@@ -1706,6 +1712,57 @@ public class RpcTest extends Accounts {
 
             System.out.println(vote);
             System.out.println(myVote1);
+        }
+
+        private boolean isSuccessfulVoteResponse(String message) {
+            return message != null && message.contains("Your vote is prepared");
+        }
+    }
+
+    public static class AdminAPITest {
+        static Caver caver;
+
+        @BeforeClass
+        public static void init() throws InterruptedException, IOException {
+            caver = new Caver(Caver.DEFAULT_URL);
+        }
+
+        @Test
+        public void getNodeInfo() throws IOException {
+            NodeInfo response = caver.rpc.admin.getNodeInfo().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void getDataDir() throws IOException {
+            Bytes response = caver.rpc.admin.getDataDir().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+            assertNotNull(response.getResult());
+        }
+
+        @Test
+        public void getPeers() throws IOException {
+            Peers response = caver.rpc.admin.getPeers().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void addPeer() throws IOException {
+            String kni = "kni://a979fb575495b8d6db44f750317d0f4622bf4c2aa3365d6af7c284339968eef29b69ad0dce72a4d8db5ebb4968de0e3bec910127f134779fbcb0cb6d3331163c@10.0.0.1:32323";
+            Boolean response = caver.rpc.admin.addPeer(kni).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void removePeer() throws IOException {
+            String kni = "kni://a979fb575495b8d6db44f750317d0f4622bf4c2aa3365d6af7c284339968eef29b69ad0dce72a4d8db5ebb4968de0e3bec910127f134779fbcb0cb6d3331163c@10.0.0.1:32323";
+            Boolean response = caver.rpc.admin.removePeer(kni).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The caver-java Authors
+ * Copyright 2022 The caver-java Authors
  *
  * Licensed under the Apache License, Version 2.0 (the “License”);
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,11 @@ public class RPC implements Batcher {
     public Net net;
 
     /**
+     * The API class related admin.
+     */
+    public Admin admin;
+
+    /**
      * The API class related governance.
      */
     public Governance governance;
@@ -53,6 +58,7 @@ public class RPC implements Batcher {
         this.web3jService = web3jService;
         this.klay = new Klay(web3jService);
         this.net = new Net(web3jService);
+        this.admin = new Admin(web3jService);
         this.governance = new Governance(web3jService);
     }
 
@@ -72,6 +78,7 @@ public class RPC implements Batcher {
         this.web3jService = web3jService;
         this.klay = new Klay(web3jService);
         this.net = new Net(web3jService);
+        this.admin = new Admin(web3jService);
         this.governance = new Governance(web3jService);
     }
 
@@ -90,6 +97,13 @@ public class RPC implements Batcher {
     public Net getNet() {
         return net;
     }
+
+    /**
+     * Getter for Admin API instance
+     *
+     * @return Admin
+     */
+    public Admin getAdmin() {return admin;}
 
     /**
      * Returns a new {@link BatchRequest}

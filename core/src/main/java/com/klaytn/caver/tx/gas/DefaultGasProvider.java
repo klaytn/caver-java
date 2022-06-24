@@ -21,25 +21,72 @@
 package com.klaytn.caver.tx.gas;
 
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.methods.response.BlockHeader;
+import com.klaytn.caver.methods.response.Quantity;
 import com.klaytn.caver.tx.ManagedTransaction;
 import com.klaytn.caver.tx.SmartContract;
-import org.web3j.tx.gas.StaticGasProvider;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.tx.gas.ContractGasProvider;
 
+import java.io.IOException;
 import java.math.BigInteger;
 
 /**
  * @deprecated This class is deprecated since caver-java:1.5.0
  */
 @Deprecated
-public class DefaultGasProvider extends StaticGasProvider {
+public class DefaultGasProvider implements ContractGasProvider {
     public static final BigInteger GAS_LIMIT = SmartContract.GAS_LIMIT;
     public static final BigInteger GAS_PRICE = ManagedTransaction.GAS_PRICE;
+    private final Caver caver;
 
+    @Deprecated
     public DefaultGasProvider() {
-        super(GAS_PRICE, GAS_LIMIT);
+        this.caver = null;
     }
 
-    public DefaultGasProvider(Caver caver) throws Exception{
-        super(caver.klay().getGasPrice().send().getValue(), GAS_LIMIT);
+    public DefaultGasProvider(Caver caver) {
+        this.caver = caver;
+    }
+
+    @Override
+    public BigInteger getGasPrice(String contractFunc) {
+        return this.getGasPrice();
+    }
+
+    @Override
+    public BigInteger getGasPrice() {
+        try {
+            if (this.caver == null) {
+                return GAS_PRICE;
+            }
+            // Klaytn decided to apply dynamic gas price policy, so we need to fetch base fee per gas
+            // which can be dynamic based on network status.
+            BlockHeader response = caver.rpc.klay.getHeader(DefaultBlockParameterName.LATEST).send();
+            BlockHeader.BlockHeaderData blockHeader = response.getResult();
+            BigInteger baseFeePerGas = new BigInteger(
+                    caver.utils.stripHexPrefix(blockHeader.getBaseFeePerGas()),
+                    16
+            );
+            if (baseFeePerGas.compareTo(BigInteger.valueOf(0)) > 0) {
+                // If base fee per gas is set on the network, the recommended gas price for a transaction
+                // to be included in a block with a high probability is twice the base fee per gas.
+                return baseFeePerGas.multiply(BigInteger.valueOf(2));
+            }
+            Quantity gasPrice = caver.rpc.klay.getGasPrice().send();
+            return gasPrice.getValue();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public BigInteger getGasLimit(String contractFunc) {
+        return getGasLimit();
+    }
+
+    @Override
+    public BigInteger getGasLimit() {
+        return GAS_LIMIT;
     }
 }

@@ -157,7 +157,7 @@ public class KIP17Test {
     //KCT-033
     @Test
     public void name() {
-        KIP17 tokenHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 tokenHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
         try {
             String name = tokenHandler.name().send();
             assertEquals(name, sContractName);
@@ -171,7 +171,7 @@ public class KIP17Test {
     @Test
     public void symbol() {
         try {
-            KIP17 tokenHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+            KIP17 tokenHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
 
             String symbol = tokenHandler.symbol().send();
             assertEquals(symbol, sContractSymbol);
@@ -184,7 +184,7 @@ public class KIP17Test {
     //KCT-035
     @Test
     public void totalSupply() {
-        KIP17 tokenHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 tokenHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
         try {
             BigInteger preTotalCount = tokenHandler.totalSupply().send();
@@ -208,7 +208,7 @@ public class KIP17Test {
     //KCT-036
     @Test
     public void balanceOf() {
-        KIP17 tokenHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 tokenHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
 
         try {
@@ -231,7 +231,7 @@ public class KIP17Test {
     //KCT-037
     @Test
     public void ownerOf() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
         String userAddress = mTesterTxManger.getDefaultAddress();
 
         try {
@@ -253,7 +253,7 @@ public class KIP17Test {
     //KCT-038
     @Test
     public void pausedFeature() {
-        KIP17 tokenHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 tokenHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
         try {
             boolean isPaused = tokenHandler.paused().send();
@@ -292,8 +292,8 @@ public class KIP17Test {
     //KCt-039
     @Test
     public void addPauser() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP17 pauserHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
+        KIP17 pauserHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider(mCaver));
 
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
         String userAddress = mTesterTxManger.getDefaultAddress();
@@ -336,8 +336,8 @@ public class KIP17Test {
     //KCT-040
     @Test
     public void renouncePauser() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP17 pauserHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
+        KIP17 pauserHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider(mCaver));
 
         String pauserAddress = mTesterTxManger.getDefaultAddress();
 
@@ -369,8 +369,8 @@ public class KIP17Test {
     //KCT-041
     @Test
     public void addMinter() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP17 minterHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
+        KIP17 minterHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider(mCaver));
 
         String minterAddress = mTesterTxManger.getDefaultAddress();
 
@@ -410,8 +410,8 @@ public class KIP17Test {
     //KCT-042
     @Test
     public void renounceMinter() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP17 minterHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
+        KIP17 minterHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider(mCaver));
 
         String minterAddress = mTesterTxManger.getDefaultAddress();
 
@@ -438,7 +438,7 @@ public class KIP17Test {
     //KCT-043
     @Test
     public void mint() {
-        KIP17 minterHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 minterHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
         try {
             BigInteger tokenId = sTotalSupply;
@@ -466,7 +466,7 @@ public class KIP17Test {
     //KCT-044
     @Test
     public void mintWithTokenURI() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
         String ownerAddr = mDeployerTxManager.getDefaultAddress();
         try {
             BigInteger tokenId = sTotalSupply;
@@ -498,8 +498,8 @@ public class KIP17Test {
     //KCT-045
     @Test
     public void tokenOfOwnerByIndex() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP17 tester2Handler = KIP17.load(mContractAddress, mCaver, mTesterTxManger2, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
+        KIP17 tester2Handler = KIP17.load(mContractAddress, mCaver, mTesterTxManger2, new DefaultGasProvider(mCaver));
 
         String userAddress = "0x25925f77ea2c3b82a1ab45858558076fdc44fcc4";
         BigInteger[] tokenIDArr = new BigInteger[] {BigInteger.valueOf(1000), BigInteger.valueOf(1001), BigInteger.valueOf(1002)};
@@ -538,7 +538,7 @@ public class KIP17Test {
     //KCT-046
     @Test
     public void tokenByIndex() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
 
         try {
@@ -584,7 +584,7 @@ public class KIP17Test {
     //KCT-047
     @Test
     public void transferFrom() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
         String userAddress = mTesterTxManger.getDefaultAddress();
 
@@ -613,7 +613,7 @@ public class KIP17Test {
     //KCT-048
     @Test
     public void safeTransferFrom() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
         String userAddress = mTesterTxManger.getDefaultAddress();
 
@@ -641,7 +641,7 @@ public class KIP17Test {
     //KCT-049
     @Test
     public void safeTransferFromWithData() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
         String userAddress = mTesterTxManger.getDefaultAddress();
 
@@ -671,7 +671,7 @@ public class KIP17Test {
     //KCT-050
     @Test
     public void getApproved() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
         String userAddress = mTesterTxManger.getDefaultAddress();
 
@@ -699,7 +699,7 @@ public class KIP17Test {
     //KCT-051
     @Test
     public void isApprovedForAll() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
         String userAddress = mTesterTxManger.getDefaultAddress();
 
@@ -727,8 +727,8 @@ public class KIP17Test {
     //KCT-052
     @Test
     public void approve() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP17 operatorHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
+        KIP17 operatorHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider(mCaver));
 
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
         String operatorAddress = mTesterTxManger.getDefaultAddress();
@@ -759,8 +759,8 @@ public class KIP17Test {
     //KCT-053
     @Test
     public void setApprovalForAll() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP17 operatorHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
+        KIP17 operatorHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider(mCaver));
 
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
         String operatorAddress = mTesterTxManger.getDefaultAddress();
@@ -804,7 +804,7 @@ public class KIP17Test {
     //KCT-054
     @Test
     public void burn() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
 
         try {
@@ -847,7 +847,7 @@ public class KIP17Test {
         final String INTERFACE_ID_FALSE = "0xFFFFFFFF";
 
         try {
-            KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+            KIP7 tokenHandler_owner = KIP7.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
 
             boolean isSupported_KIP13 = tokenHandler_owner.supportsInterface(Numeric.hexStringToByteArray(INTERFACE_ID_KIP13)).send();
             assertTrue(isSupported_KIP13);
@@ -884,7 +884,7 @@ public class KIP17Test {
     //KCT-056
     @Test
     public void getTransferEventTest() {
-        KIP17 tokenHandler_owner = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 tokenHandler_owner = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
         String toAddr = mTesterTxManger.getDefaultAddress();
 
         try {
@@ -915,7 +915,7 @@ public class KIP17Test {
     //KCT-057
     @Test
     public void getApprovalEventTest() {
-        KIP17 tokenHandler_owner = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 tokenHandler_owner = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
         String userAddress = mTesterTxManger.getDefaultAddress();
 
@@ -951,7 +951,7 @@ public class KIP17Test {
     //KCT-058
     @Test
     public void getPausedEventTest() {
-        KIP17 tokenHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
+        KIP17 tokenHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
 
         try {
             //Check Paused Event
@@ -991,8 +991,8 @@ public class KIP17Test {
 
     //KCT-059
     @Test public void getPauserRoleEvents() {
-        KIP17 tokenHandler_owner = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP17 tokenHandler_pauser = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP17 tokenHandler_owner = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
+        KIP17 tokenHandler_pauser = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider(mCaver));
         String userAddr = mTestCredential.getAddress();
         try {
 
@@ -1034,8 +1034,8 @@ public class KIP17Test {
     //KCT-060
     @Test
     public void getMinterRoleEvents() {
-        KIP17 tokenHandler_owner = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP17 tokenHandler_minter = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP17 tokenHandler_owner = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
+        KIP17 tokenHandler_minter = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider(mCaver));
         String minter = mTesterTxManger.getDefaultAddress();
 
         try {
@@ -1077,8 +1077,8 @@ public class KIP17Test {
     //KCT-061
     @Test
     public void transferFrom_Approve() {
-        KIP17 owner_handler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP17 spender_handler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP17 owner_handler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
+        KIP17 spender_handler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider(mCaver));
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
         String spenderAddress = mTesterTxManger.getDefaultAddress();
         String userAddress = mTesterTxManger2.getDefaultAddress();
@@ -1117,8 +1117,8 @@ public class KIP17Test {
     //KCT-062
     @Test
     public void safeTransferFrom_Approve() {
-        KIP17 owner_handler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP17 spender_handler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP17 owner_handler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
+        KIP17 spender_handler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider(mCaver));
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
         String spenderAddress = mTesterTxManger.getDefaultAddress();
         String userAddress = mTesterTxManger2.getDefaultAddress();
@@ -1157,8 +1157,8 @@ public class KIP17Test {
     //KCT-063
     @Test
     public void safeTransferFromWithData_Approve() {
-        KIP17 owner_handler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP17 spender_handler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP17 owner_handler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
+        KIP17 spender_handler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider(mCaver));
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
         String spenderAddress = mTesterTxManger.getDefaultAddress();
         String userAddress = mTesterTxManger2.getDefaultAddress();
@@ -1198,8 +1198,8 @@ public class KIP17Test {
     //KCT-064
     @Test
     public void transferFrom_SetApprovedForAll() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP17 operatorHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
+        KIP17 operatorHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider(mCaver));
 
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
         String operatorAddress = mTesterTxManger.getDefaultAddress();
@@ -1260,8 +1260,8 @@ public class KIP17Test {
     //KCT-065
     @Test
     public void safeTransferFrom_SetApprovedForAll() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP17 operatorHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
+        KIP17 operatorHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider(mCaver));
 
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
         String operatorAddress = mTesterTxManger.getDefaultAddress();
@@ -1322,8 +1322,8 @@ public class KIP17Test {
     //KCT-066
     @Test
     public void safeTransferFromWithData_SetApprovedForAll() {
-        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider());
-        KIP17 operatorHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider());
+        KIP17 ownerHandler = KIP17.load(mContractAddress, mCaver, mDeployerTxManager, new DefaultGasProvider(mCaver));
+        KIP17 operatorHandler = KIP17.load(mContractAddress, mCaver, mTesterTxManger, new DefaultGasProvider(mCaver));
 
         String ownerAddress = mDeployerTxManager.getDefaultAddress();
         String operatorAddress = mTesterTxManger.getDefaultAddress();

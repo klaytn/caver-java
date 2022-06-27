@@ -37,10 +37,9 @@ import java.math.BigInteger;
 @Deprecated
 public class DefaultGasProvider implements ContractGasProvider {
     public static final BigInteger GAS_LIMIT = SmartContract.GAS_LIMIT;
-    public static final BigInteger GAS_PRICE = ManagedTransaction.GAS_PRICE;
+    public static final BigInteger GAS_PRICE_25_STON = ManagedTransaction.GAS_PRICE;
     private final Caver caver;
 
-    @Deprecated
     public DefaultGasProvider() {
         this.caver = null;
     }
@@ -58,7 +57,7 @@ public class DefaultGasProvider implements ContractGasProvider {
     public BigInteger getGasPrice() {
         try {
             if (this.caver == null) {
-                return GAS_PRICE;
+                return GAS_PRICE_25_STON;
             }
             // Klaytn decided to apply dynamic gas price policy, so we need to fetch base fee per gas
             // which can be dynamic based on network status.

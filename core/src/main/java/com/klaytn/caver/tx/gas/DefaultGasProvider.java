@@ -64,7 +64,7 @@ public class DefaultGasProvider implements ContractGasProvider {
             BlockHeader response = caver.rpc.klay.getHeader(DefaultBlockParameterName.LATEST).send();
             BlockHeader.BlockHeaderData blockHeader = response.getResult();
             if (blockHeader.getBaseFeePerGas() == null) {
-                return GAS_PRICE_25_STON;
+                return caver.rpc.klay.getGasPrice().send().getValue();
             }
             BigInteger baseFeePerGas = new BigInteger(
                     caver.utils.stripHexPrefix(blockHeader.getBaseFeePerGas()),

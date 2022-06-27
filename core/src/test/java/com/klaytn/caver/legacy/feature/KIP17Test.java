@@ -72,7 +72,7 @@ public class KIP17Test {
             KIP17 token = KIP17.deploy(
                     mCaver,
                     mDeployerTxManager,
-                    new StaticGasProvider(DefaultGasProvider.GAS_PRICE, BigInteger.valueOf(6_000_000)),
+                    new StaticGasProvider(DefaultGasProvider.GAS_PRICE_25_STON, BigInteger.valueOf(6_000_000)),
                     sContractName,
                     sContractSymbol
             ).send();
@@ -139,7 +139,7 @@ public class KIP17Test {
             KIP17 token = KIP17.deploy(
                     mCaver,
                     mDeployerTxManager,
-                    new StaticGasProvider(DefaultGasProvider.GAS_PRICE, BigInteger.valueOf(6_000_000)),
+                    new StaticGasProvider(DefaultGasProvider.GAS_PRICE_25_STON, BigInteger.valueOf(6_000_000)),
                     sContractName,
                     sContractSymbol
             ).send();

@@ -1202,7 +1202,7 @@ public class RpcTest extends Accounts {
         @Test
         public void getProtocolVersionTest() throws Exception {
             String result = caver.rpc.klay.getProtocolVersion().send().getResult();
-            assertEquals("0x40", result);
+            assertEquals("0x41", result);
         }
 
         @Ignore

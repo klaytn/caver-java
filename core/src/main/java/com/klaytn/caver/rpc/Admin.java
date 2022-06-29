@@ -87,11 +87,6 @@ public class Admin {
     }
 
     /**
-     * Adds the new remote node from given kni.
-     *
-     * @return Boolean - true if the peer was accepted, otherwise false.
-     */
-    /**
      * Removes the remote node from given kni.
      *
      * @param kni The remote node kni value.
@@ -99,7 +94,7 @@ public class Admin {
      */
     public Request<?, Boolean> removePeer(String kni) {
         return new Request<>(
-                "admin_addPeer",
+                "admin_removePeer",
                 Collections.singletonList(kni),
                 web3jService,
                 Boolean.class);

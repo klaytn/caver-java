@@ -490,7 +490,6 @@ public class EthereumDynamicFeeTest {
             ethereumDynamicFee.getRLPEncoding();
         }
 
-        @Test
         public void throwException_NoMaxFeePerGas() {
             expectedException.expect(RuntimeException.class);
             expectedException.expectMessage("maxFeePerGas is undefined. Define maxFeePerGas in transaction or use 'transaction.fillTransaction' to fill values.");

@@ -416,15 +416,15 @@ abstract public class AbstractTransaction {
      * @return BigInteger
      * @throws IOException
      */
-    public BigInteger suggestedGasPrice() throws IOException {
-        if(this.klaytnCall == null) {
+    public BigInteger getSuggestedGasPrice() throws IOException {
+        if(klaytnCall == null) {
             throw new RuntimeException("Cannot suggest gas price. To get suggested gas price, `klaytnCall` must be set in Transaction instance. Please call the `setKlaytnCall` to set `klaytnCall` in the Transaction instance.");
         }
-        BlockHeader blockHeader = this.klaytnCall.getHeader(DefaultBlockParameterName.LATEST).send();
+        BlockHeader blockHeader = klaytnCall.getHeader(DefaultBlockParameterName.LATEST).send();
         String baseFeePerGas = blockHeader.getResult().getBaseFeePerGas();
         // Before hard KIP-71 fork set gasPrice (or maxFeePerGas) with gas unit price
         if(baseFeePerGas == null || Numeric.toBigInt(baseFeePerGas).compareTo(BigInteger.valueOf(0)) <= 0) {
-            return this.klaytnCall.getGasPrice().send().getValue();
+            return klaytnCall.getGasPrice().send().getValue();
         }
         BigInteger baseFee = Numeric.toBigInt(baseFeePerGas);
         // After hard KIP-71 fork, set gasPrice (or maxFeePerGas) with baseFee * 2

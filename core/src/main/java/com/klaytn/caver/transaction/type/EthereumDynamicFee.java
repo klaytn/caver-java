@@ -360,7 +360,7 @@ public class EthereumDynamicFee extends AbstractTransaction {
             this.setMaxPriorityFeePerGas(this.getKlaytnCall().getMaxPriorityFeePerGas().send().getResult());
         }
         if(this.getMaxFeePerGas().equals("0x")) {
-            this.setMaxFeePerGas(this.getSuggestedGasPrice());
+            this.setMaxFeePerGas(this.suggestedGasPrice());
         }
         if(this.getMaxPriorityFeePerGas().equals("0x") || this.getMaxFeePerGas().equals("0x")) {
             throw new RuntimeException("Cannot fill transaction data. (maxPriorityFeePerGas, maxFeePerGas). `klaytnCall` must be set in Transaction instance to automatically fill the nonce, chainId or gasPrice. Please call the `setKlaytnCall` to set `klaytnCall` in the Transaction instance.");

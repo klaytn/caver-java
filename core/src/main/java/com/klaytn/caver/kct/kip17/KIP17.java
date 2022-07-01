@@ -159,7 +159,7 @@ public class KIP17 extends Contract {
      * The deployer's keyring should be added in `caver.wallet`. See {@link com.klaytn.caver.wallet.KeyringContainer} and {@link IWallet}. <p>
      * <pre>Example :
      * {@code
-     * String deployAddress = "0x{deployAddress}";
+     * String deployerAddress = "0x{deployerAddress}";
      * String name = "KIP17";
      * String symbol = "KIP17Symbol";
      *
@@ -195,10 +195,10 @@ public class KIP17 extends Contract {
      * String symbol = "KIP17Symbol";
      *
      * SendOptions sendOptions = new SendOptions();
-     * sendOptions.setFrom("deployer address");
+     * sendOptions.setFrom("0x{deployerAddress}");
      * sendOptions.setGas(BigInteger.valueOf(gas value));
      * sendOptions.setFeeDelegation(true);
-     * sendOptions.setFeePayer("fee payer address");
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
      *
      * KIP17 kip17 = caver.kct.kip17.deploy(sendOptions, name, symbol);
      * }
@@ -224,10 +224,10 @@ public class KIP17 extends Contract {
 
     /**
      * Deploy a KIP-17 contract.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.<p>
      * <pre>Example :
      * {@code
-     * String deployAddress = "0x{deployAddress}";
+     * String deployerAddress = "0x{deployerAddress}";
      * String name = "KIP17";
      * String symbol = "KIP17Symbol";
      *
@@ -256,7 +256,7 @@ public class KIP17 extends Contract {
 
     /**
      * Deploy KIP-17 contract. <p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.<p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
      * <pre>Example :
      * {@code
@@ -264,10 +264,10 @@ public class KIP17 extends Contract {
      * String symbol = "KIP17Symbol";
      *
      * SendOptions sendOptions = new SendOptions();
-     * sendOptions.setFrom("deployer address");
+     * sendOptions.setFrom("0x{deployerAddress}");
      * sendOptions.setGas(BigInteger.valueOf(gas value));
      * sendOptions.setFeeDelegation(true);
-     * sendOptions.setFeePayer("fee payer address");
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
      *
      * KIP17 kip17 = caver.kct.kip17.deploy(sendOptions, name, symbol, caver.getWallet());
      * }
@@ -297,7 +297,7 @@ public class KIP17 extends Contract {
      * The deployer's keyring should be added in `caver.wallet`. See {@link com.klaytn.caver.wallet.KeyringContainer} and {@link IWallet}. <p>
      * <pre>Example :
      * {@code
-     * String deployAddress = "0x{deployAddress}";
+     * String deployerAddress = "0x{deployerAddress}";
      * String name = "KIP17";
      * String symbol = "KIP17Symbol";
      * KIP17DeployParams tokenInfo = new KIP17DeployParams(name, symbol);
@@ -332,10 +332,10 @@ public class KIP17 extends Contract {
      * String symbol = "KIP17Symbol";
      *
      * SendOptions sendOptions = new SendOptions();
-     * sendOptions.setFrom("deployer address");
+     * sendOptions.setFrom("0x{deployerAddress}");
      * sendOptions.setGas(BigInteger.valueOf(gas value));
      * sendOptions.setFeeDelegation(true);
-     * sendOptions.setFeePayer("fee payer address");
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
      *
      * KIP17DeployParams tokenInfo = new KIP17DeployParams(name, symbol);
      * KIP17 kip17 = caver.kct.kip17.deploy(tokenInfo, sendOptions);
@@ -359,10 +359,10 @@ public class KIP17 extends Contract {
 
     /**
      * Deploy KIP17 contract.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.<p>
      * <pre>Example :
      * {@code
-     * String deployAddress = "0x{deployAddress}";
+     * String deployerAddress = "0x{deployerAddress}";
      * String name = "KIP17";
      * String symbol = "KIP17Symbol";
      * KIP17DeployParams tokenInfo = new KIP17DeployParams(name, symbol);
@@ -393,7 +393,7 @@ public class KIP17 extends Contract {
 
     /**
      * Deploy KIP-17 contract.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.<p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
      * <pre>Example :
      * {@code
@@ -401,10 +401,10 @@ public class KIP17 extends Contract {
      * String symbol = "KIP17Symbol";
      *
      * SendOptions sendOptions = new SendOptions();
-     * sendOptions.setFrom("deployer address");
+     * sendOptions.setFrom("0x{deployerAddress}");
      * sendOptions.setGas(BigInteger.valueOf(gas value));
      * sendOptions.setFeeDelegation(true);
-     * sendOptions.setFeePayer("fee payer address");
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
      *
      * KIP17DeployParams tokenInfo = new KIP17DeployParams(name, symbol);
      * KIP17 kip17 = caver.kct.kip17.deploy(tokenInfo, sendOptions, caver.getWallet());

@@ -157,7 +157,7 @@ public class KIP37 extends Contract {
      * The deployer's keyring should be existed in `caver.wallet`. See {@link com.klaytn.caver.wallet.KeyringContainer} and {@link IWallet}.
      * <pre>Example :
      * {@code
-     * String deployAddress = "0x{deployAddress}";
+     * String deployerAddress = "0x{deployerAddress}";
      * String uri = "uri";
      *
      * KIP37 kip37 = caver.kct.kip37.deploy(uri, deployerAddress);
@@ -189,10 +189,10 @@ public class KIP37 extends Contract {
      * String uri = "uri";
      *
      * SendOptions sendOptions = new SendOptions();
-     * sendOptions.setFrom("deployer address");
+     * sendOptions.setFrom("0x{deployerAddress}");
      * sendOptions.setGas(BigInteger.valueOf(gas value));
      * sendOptions.setFeeDelegation(true);
-     * sendOptions.setFeePayer("fee payer address");
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
      *
      * KIP37 kip37 = caver.kct.kip37.deploy(uri, sendOptions);
      * }
@@ -217,10 +217,10 @@ public class KIP37 extends Contract {
     /**
      * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.
      * <pre>Example :
      * {@code
-     * String deployAddress = "0x{deployAddress}";
+     * String deployerAddress = "0x{deployerAddress}";
      * String uri = "uri";
      *
      * KIP37 kip37 = caver.kct.kip37.deploy(uri, deployerAddress, caver.getWallet());
@@ -251,17 +251,17 @@ public class KIP37 extends Contract {
     /**
      * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.<p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in SendOptions.
      * <pre> Example :
      * {@code
      * String uri = "uri";
      *
      * SendOptions sendOptions = new SendOptions();
-     * sendOptions.setFrom("deployer address");
+     * sendOptions.setFrom("0x{deployerAddress}");
      * sendOptions.setGas(BigInteger.valueOf(gas value));
      * sendOptions.setFeeDelegation(true);
-     * sendOptions.setFeePayer("fee payer address");
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
      *
      * KIP37 kip37 = caver.kct.kip37.deploy(uri, sendOptions, caver.getWallet());
      * }
@@ -289,11 +289,11 @@ public class KIP37 extends Contract {
      * The deployer's keyring should be existed in `caver.wallet`.<p>
      * <pre>Example :
      * {@code
-     * String deployAddress = "0x{deployAddress}";
+     * String deployerAddress = "0x{deployerAddress}";
      * String uri = "uri";
      * KIP37DeployParams deployInfo = new KIP37DeployParams(uri);
      *
-     * KIP37 kip37 = caver.kct.kip37.deploy(deployInfo, deployAddress);
+     * KIP37 kip37 = caver.kct.kip37.deploy(deployInfo, deployerAddress);
      * }
      * </pre>
      *
@@ -323,10 +323,10 @@ public class KIP37 extends Contract {
      * KIP37DeployParams deployInfo = new KIP37DeployParams(uri);
      *
      * SendOptions sendOptions = new SendOptions();
-     * sendOptions.setFrom("deployer address");
+     * sendOptions.setFrom("0x{deployerAddress}");
      * sendOptions.setGas(BigInteger.valueOf(gas value));
      * sendOptions.setFeeDelegation(true);
-     * sendOptions.setFeePayer("fee payer address");
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
      *
      * KIP37 kip37 = caver.kct.kip37.deploy(deployInfo, sendOptions);
      * }
@@ -351,10 +351,10 @@ public class KIP37 extends Contract {
     /**
      * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.
      * <pre>Example :
      * {@code
-     * String deployAddress = "0x{deployAddress}";
+     * String deployerAddress = "0x{deployerAddress}";
      * String uri = "uri";
      * KIP37DeployParams deployInfo = new KIP37DeployParams(uri);
      *
@@ -387,17 +387,17 @@ public class KIP37 extends Contract {
     /**
      * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.
      * <pre>Example :
      * {@code
      * String uri = "uri";
      * KIP37DeployParams deployInfo = new KIP37DeployParams(uri);
      *
      * SendOptions sendOptions = new SendOptions();
-     * sendOptions.setFrom("deployer address");
+     * sendOptions.setFrom("0x{deployerAddress}");
      * sendOptions.setGas(BigInteger.valueOf(gas value));
      * sendOptions.setFeeDelegation(true);
-     * sendOptions.setFeePayer("fee payer address");
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
      *
      * KIP37 kip37 = caver.kct.kip37.deploy(deployInfo, sendOptions, caver.getWallet());
      * }

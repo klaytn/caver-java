@@ -78,7 +78,7 @@ public class KIP7Wrapper {
      * The deployer's keyring should be existed in `caver.wallet`.
      * <pre>Example :
      * {@code
-     * String deployAddress = "0x{deployAddress}";
+     * String deployerAddress = "0x{deployerAddress}";
      * String name = "KIP7";
      * String symbol = "KIP7Symbol";
      * int decimals = 18;
@@ -118,10 +118,10 @@ public class KIP7Wrapper {
      * BigInteger initialSupply = BigInteger.valueOf(100_000).multiply(BigInteger.TEN.pow(CONTRACT_DECIMALS)); // 100000 * 10^18
      *
      * SendOptions sendOptions = new SendOptions();
-     * sendOptions.setFrom("deployer address");
+     * sendOptions.setFrom("0x{deployerAddress}");
      * sendOptions.setGas(BigInteger.valueOf(gas value));
      * sendOptions.setFeeDelegation(true);
-     * sendOptions.setFeePayer("fee payer address");
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
      *
      * KIP7 kip7 = caver.kct.kip7.deploy(sendOptions, name, symbol, decimals, initialSupply);
      * }
@@ -147,10 +147,10 @@ public class KIP7Wrapper {
 
     /**
      * Deploy KIP-7 contract.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.
      * <pre>Example :
      * {@code
-     * String deployAddress = "0x{deployAddress}";
+     * String deployerAddress = "0x{deployerAddress}";
      * String name = "KIP7";
      * String symbol = "KIP7Symbol";
      * int decimals = 18;
@@ -181,21 +181,20 @@ public class KIP7Wrapper {
 
     /**
      * Deploy KIP-7 contract. <p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.<p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
      * <pre>Example :
      * {@code
-     * String deployAddress = "0x{deployAddress}";
      * String name = "KIP7";
      * String symbol = "KIP7Symbol";
      * int decimals = 18;
      * BigInteger initialSupply = BigInteger.valueOf(100_000).multiply(BigInteger.TEN.pow(CONTRACT_DECIMALS)); // 100000 * 10^18
      *
      * SendOptions sendOptions = new SendOptions();
-     * sendOptions.setFrom("deployer address");
+     * sendOptions.setFrom("0x{deployerAddress}");
      * sendOptions.setGas(BigInteger.valueOf(gas value));
      * sendOptions.setFeeDelegation(true);
-     * sendOptions.setFeePayer("fee payer address");
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
      *
      * KIP7 kip7 = caver.kct.kip7.deploy(sendOptions, name, symbol, decimals, initialSupply, caver.getWallet());
      * }
@@ -225,7 +224,7 @@ public class KIP7Wrapper {
      * The deployer's keyring should be existed in `caver.wallet`.
      * <pre>Example :
      * {@code
-     * String deployAddress = "0x{deployAddress}";
+     * String deployerAddress = "0x{deployerAddress}";
      * String name = "KIP7";
      * String symbol = "KIP7Symbol";
      * int decimals = 18;
@@ -233,7 +232,7 @@ public class KIP7Wrapper {
      *
      * KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
      *
-     * KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, deployAddress);
+     * KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, deployerAddress);
      * }
      * </pre>
      *
@@ -264,10 +263,10 @@ public class KIP7Wrapper {
      * BigInteger initialSupply = BigInteger.valueOf(100_000).multiply(BigInteger.TEN.pow(CONTRACT_DECIMALS)); // 100000 * 10^18
      *
      * SendOptions sendOptions = new SendOptions();
-     * sendOptions.setFrom("deployer address");
+     * sendOptions.setFrom("0x{deployerAddress}");
      * sendOptions.setGas(BigInteger.valueOf(gas value));
      * sendOptions.setFeeDelegation(true);
-     * sendOptions.setFeePayer("fee payer address");
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
      *
      * KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
      * KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, sendOptions);
@@ -291,10 +290,10 @@ public class KIP7Wrapper {
 
     /**
      * Deploy KIP-7 contract.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.
      * <pre>Example :
      * {@code
-     * String deployAddress = "0x{deployAddress}";
+     * String deployerAddress = "0x{deployerAddress}";
      * String name = "KIP7";
      * String symbol = "KIP7Symbol";
      * int decimals = 18;
@@ -302,7 +301,7 @@ public class KIP7Wrapper {
      *
      * KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
      *
-     * KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, deployAddress, caver.getWallet());
+     * KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, deployerAddress, caver.getWallet());
      * }
      * </pre>
      *
@@ -324,7 +323,7 @@ public class KIP7Wrapper {
 
     /**
      * Deploy KIP-7 contract.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.<p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
      * <pre>Example :
      * {@code
@@ -334,10 +333,10 @@ public class KIP7Wrapper {
      * BigInteger initialSupply = BigInteger.valueOf(100_000).multiply(BigInteger.TEN.pow(CONTRACT_DECIMALS)); // 100000 * 10^18
      *
      * SendOptions sendOptions = new SendOptions();
-     * sendOptions.setFrom("deployer address");
+     * sendOptions.setFrom("0x{deployerAddress}");
      * sendOptions.setGas(BigInteger.valueOf(gas value));
      * sendOptions.setFeeDelegation(true);
-     * sendOptions.setFeePayer("fee payer address");
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
      *
      * KIP7DeployParams tokenInfo = new KIP7DeployParams(name, symbol, decimals, initialSupply);
      * KIP7 kip7 = caver.kct.kip7.deploy(tokenInfo, sendOptions, caver.getWallet());

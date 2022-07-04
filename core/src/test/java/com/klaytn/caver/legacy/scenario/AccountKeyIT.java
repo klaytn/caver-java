@@ -56,7 +56,7 @@ public class AccountKeyIT extends Scenario {
         AccountUpdateTransaction accountUpdateTransaction = AccountUpdateTransaction.create(
                 credentials.getAddress(),
                 createRolebased(),
-                gasProvider.getGasPrice(),
+                gasPrice,
                 GAS_LIMIT);
         KlayTransactionReceipt.TransactionReceipt receipt = Account.create(caver, credentials, LOCAL_CHAIN_ID)
                 .sendUpdateTransaction(accountUpdateTransaction)

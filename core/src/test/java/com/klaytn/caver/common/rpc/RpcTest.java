@@ -1715,7 +1715,7 @@ public class RpcTest extends Accounts {
         }
 
         private boolean isSuccessfulVoteResponse(String message) {
-            return message != null && message.contains("Your vote is prepared");
+            return message != null && !message.contains("don't hvae the right") && !message.contains("couldn't be placed");
         }
     }
 

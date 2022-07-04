@@ -67,6 +67,7 @@ public class RoleBasedAccountUpdateAccountIT extends RoleBasedAccountScenario {
         return AccountUpdateTransaction.create(
                 from,
                 roleBasedAccountGenerator.getNewAccountKey(),
+                gasProvider.getGasPrice(),
                 GAS_LIMIT
         );
     }

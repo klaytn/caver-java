@@ -67,6 +67,7 @@ public class TransactionManagerIT extends Scenario {
                 BRANDON.getAddress(),
                 WAYNE.getAddress(),
                 BigInteger.ONE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT
         ).memo(MEMO_VALUE);
 

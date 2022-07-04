@@ -38,7 +38,7 @@ import static org.junit.Assert.assertEquals;
 public class FeePayerManagerTest {
 
     static final BigInteger GAS_PRICE = Convert.toPeb("25", Convert.Unit.STON).toBigInteger();
-    static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
+    static final BigInteger GAS_LIMIT = BigInteger.valueOf(7_300_000);
     static final BigInteger FEE_RATIO = BigInteger.valueOf(30);
 
     private Caver caver;

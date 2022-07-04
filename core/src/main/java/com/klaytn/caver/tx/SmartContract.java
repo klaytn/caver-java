@@ -59,7 +59,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("WeakerAccess")
 public class SmartContract extends ManagedTransaction {
 
-    public static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
+    public static final BigInteger GAS_LIMIT = BigInteger.valueOf(7_300_000);
 
     public static final String BIN_NOT_PROVIDED = "Bin file was not provided";
     public static final String FUNC_DEPLOY = "deploy";

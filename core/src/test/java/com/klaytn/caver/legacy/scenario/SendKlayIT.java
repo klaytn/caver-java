@@ -50,7 +50,7 @@ public class SendKlayIT extends Scenario {
         assertTrue(isUnlock);
 
         KlayTransaction transaction = KlayTransaction.createKlayTransaction(
-                LUMAN.getAddress(), nonce, GAS_PRICE, GAS_LIMIT, WAYNE.getAddress(), value);
+                LUMAN.getAddress(), nonce, gasProvider.getGasPrice(), GAS_LIMIT, WAYNE.getAddress(), value);
 
         Bytes32 response = caver.klay().sendTransaction(transaction).send();
         String txHash = response.getResult();
@@ -71,7 +71,7 @@ public class SendKlayIT extends Scenario {
         assertTrue(isUnlock);
 
         KlayTransaction tx = KlayTransaction.createKlayTransaction(
-                LUMAN.getAddress(), nonce, GAS_PRICE, GAS_LIMIT, WAYNE.getAddress(), value);
+                LUMAN.getAddress(), nonce, gasProvider.getGasPrice(), GAS_LIMIT, WAYNE.getAddress(), value);
         KlaySignTransaction.SignTransaction response = caver.klay().signTransaction(tx).send().getResult();
 
         Bytes32 klaySendTransaction = caver.klay().sendSignedTransaction(response.getRaw()).sendAsync().get();
@@ -105,7 +105,7 @@ public class SendKlayIT extends Scenario {
     private static TxTypeLegacyTransaction createKlayTransaction(BigInteger nonce, String toAddress) {
         BigInteger value = Convert.toPeb("0.01", Convert.Unit.KLAY).toBigInteger();
         return TxTypeLegacyTransaction.createTransaction(
-                nonce, GAS_PRICE, GAS_LIMIT, toAddress, value, "");
+                nonce, gasProvider.getGasPrice(), GAS_LIMIT, toAddress, value, "");
     }
 
 }

@@ -368,6 +368,7 @@ public class RoleBasedAccountScenario extends Scenario {
             AccountUpdateTransaction accountUpdateTx = AccountUpdateTransaction.create(
                     oldAccount.getAddress(),
                     newAccountKey,
+                    gasProvider.getGasPrice(),
                     GAS_LIMIT
             );
 

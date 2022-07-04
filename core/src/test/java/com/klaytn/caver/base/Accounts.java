@@ -18,9 +18,11 @@ package com.klaytn.caver.base;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.crypto.KlayCredentials;
+import com.klaytn.caver.tx.gas.DefaultGasProvider;
 import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.ValueTransferTransaction;
 import com.klaytn.caver.utils.Convert;
+import org.web3j.tx.gas.ContractGasProvider;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -31,7 +33,8 @@ import static com.klaytn.caver.base.LocalValues.KLAY_PROVIDER;
 import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 
 public class Accounts {
-
+    private static Caver caver;
+    private static ContractGasProvider gasProvider;
     public static final KlayCredentials LUMAN = KlayCredentials.create(
             "0x2359d1ae7317c01532a58b01452476b796a3ac713336e97d8d3c9651cc0aecc3",
             "0x2c8ad0ea2e0781db8b8c9242e07de3a5beabb71a"
@@ -58,7 +61,8 @@ public class Accounts {
     }
 
     private static void fillUpKlay(List<KlayCredentials> testCredentials) {
-        Caver caver = Caver.build(Caver.DEFAULT_URL);
+        caver = Caver.build(Caver.DEFAULT_URL);
+        gasProvider = new DefaultGasProvider(caver);
         TransactionManager transactionManager
                 = new TransactionManager.Builder(caver, KLAY_PROVIDER).setChaindId(LOCAL_CHAIN_ID).build();
         for (KlayCredentials testCredential : testCredentials) {
@@ -71,6 +75,7 @@ public class Accounts {
                 KLAY_PROVIDER.getAddress(),
                 testCredential.getAddress(),
                 Convert.toPeb("100", Convert.Unit.KLAY).toBigInteger(),
+                gasProvider.getGasPrice(),
                 BigInteger.valueOf(4_300_000)
         );
         transactionManager.executeTransaction(valueTransferTransaction);

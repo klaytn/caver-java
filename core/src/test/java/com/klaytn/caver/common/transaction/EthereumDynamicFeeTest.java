@@ -18,6 +18,7 @@ package com.klaytn.caver.common.transaction;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.abi.datatypes.Array;
+import com.klaytn.caver.methods.response.BlockHeader;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.transaction.TransactionHasher;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
@@ -33,6 +34,7 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.web3j.crypto.Hash;
+import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -864,6 +866,7 @@ public class EthereumDynamicFeeTest {
                 Numeric.hexStringToByteArray("0x4fc52da183020a27dc4b684a45404445630e946b0c1a37edeb538d4bdae63040"),
                 Numeric.hexStringToByteArray("0x7d56dbcc61f42ffcbced105f838d20b8fe71e85a4d0344c7f60815fddfeae4cc")
         );
+
         @Test
         public void combineSignature() {
             EthereumDynamicFee ethereumDynamicFee = caver.transaction.ethereumDynamicFee.create(
@@ -1659,6 +1662,49 @@ public class EthereumDynamicFeeTest {
 
             List<String> publicKeys = tx.recoverPublicKeys();
             assertEquals(expectedPublicKey, publicKeys.get(0));
+        }
+    }
+
+    public static class fillTransactionTest {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        String gas = "0x9c40";
+        String to = "0x1fc92c23f71a7de4cdb4394a37fc636986a0f484";
+        String input = "0x31323334";
+        String value = "0x1";
+
+        Caver caver = new Caver(Caver.DEFAULT_URL);
+
+        @Test
+        public void fillMaxFeePerGas_when_empty() throws IOException {
+            EthereumDynamicFee ethereumDynamicFee = caver.transaction.ethereumDynamicFee.create(
+                    TxPropertyBuilder.ethereumDynamicFee()
+                            .setNonce("0x")
+                            .setGas(gas)
+                            .setChainId("0x")
+                            .setTo(to)
+                            .setInput(input)
+                            .setValue(value)
+            );
+
+            BigInteger expectedMaxFeePerGas;
+            BlockHeader response = caver.rpc.klay.getHeader(DefaultBlockParameterName.LATEST).send();
+            BlockHeader.BlockHeaderData blockHeader = response.getResult();
+            String baseFeePerGas = blockHeader.getBaseFeePerGas();
+            if (baseFeePerGas != null && Numeric.toBigInt(baseFeePerGas).compareTo(BigInteger.valueOf(0)) > 0) {
+                expectedMaxFeePerGas = Numeric.toBigInt(baseFeePerGas).multiply(BigInteger.valueOf(2));
+            } else {
+                expectedMaxFeePerGas = caver.rpc.klay.getGasPrice().send().getValue();
+            }
+
+            assertNotNull(ethereumDynamicFee);
+
+            ethereumDynamicFee.fillTransaction();
+            assertEquals(
+                    Numeric.toHexStringWithPrefix(expectedMaxFeePerGas),
+                    ethereumDynamicFee.getMaxFeePerGas()
+            );
         }
     }
 }

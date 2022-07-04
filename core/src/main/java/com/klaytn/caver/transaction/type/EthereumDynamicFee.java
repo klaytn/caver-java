@@ -17,7 +17,6 @@
 package com.klaytn.caver.transaction.type;
 
 import com.klaytn.caver.account.AccountKeyRoleBased;
-import com.klaytn.caver.methods.response.BlockHeader;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.transaction.TransactionDecoder;
@@ -30,7 +29,6 @@ import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.web3j.crypto.Hash;
-import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.rlp.*;
 import org.web3j.utils.Numeric;
 
@@ -362,10 +360,7 @@ public class EthereumDynamicFee extends AbstractTransaction {
             this.setMaxPriorityFeePerGas(this.getKlaytnCall().getMaxPriorityFeePerGas().send().getResult());
         }
         if(this.getMaxFeePerGas().equals("0x")) {
-            BlockHeader blockHeader = this.getKlaytnCall().getHeader(DefaultBlockParameterName.LATEST).send();
-            BigInteger baseFee = Numeric.toBigInt(blockHeader.getResult().getBaseFeePerGas());
-            BigInteger maxPriorityFeePerGas = Numeric.toBigInt(this.getMaxPriorityFeePerGas());
-            this.setMaxFeePerGas(baseFee.multiply(BigInteger.valueOf(2)).add(maxPriorityFeePerGas));
+            this.setMaxFeePerGas(this.suggestedGasPrice());
         }
         if(this.getMaxPriorityFeePerGas().equals("0x") || this.getMaxFeePerGas().equals("0x")) {
             throw new RuntimeException("Cannot fill transaction data. (maxPriorityFeePerGas, maxFeePerGas). `klaytnCall` must be set in Transaction instance to automatically fill the nonce, chainId or gasPrice. Please call the `setKlaytnCall` to set `klaytnCall` in the Transaction instance.");

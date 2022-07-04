@@ -18,7 +18,6 @@ package com.klaytn.caver.transaction.type;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.klaytn.caver.rpc.Klay;
-import com.klaytn.caver.account.Account;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
 import com.klaytn.caver.transaction.TransactionDecoder;
 import com.klaytn.caver.utils.BytesUtils;
@@ -376,7 +375,7 @@ public class FeeDelegatedCancel extends AbstractFeeDelegatedTransaction {
     public void fillTransaction() throws IOException {
         super.fillTransaction();
         if(this.gasPrice.equals("0x")) {
-            this.setGasPrice(this.getKlaytnCall().getGasPrice().send().getResult());
+            this.setGasPrice(this.suggestedGasPrice());
         }
         if(this.getGasPrice().equals("0x")) {
             throw new RuntimeException("Cannot fill transaction data. (gasPrice). `klaytnCall` must be set in Transaction instance to automatically fill the nonce, chainId or gasPrice. Please call the `setKlaytnCall` to set `klaytnCall` in the Transaction instance.");

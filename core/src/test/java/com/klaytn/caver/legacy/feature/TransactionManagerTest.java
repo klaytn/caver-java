@@ -45,7 +45,7 @@ import static org.junit.Assert.assertEquals;
 
 public class TransactionManagerTest {
 
-    private final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
+    private final BigInteger GAS_LIMIT = BigInteger.valueOf(7_300_000);
     private Caver caver;
     private DefaultGasProvider gasProvider;
     private TransactionManager transactionManager;

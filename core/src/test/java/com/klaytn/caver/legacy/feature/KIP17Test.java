@@ -27,7 +27,6 @@ import com.klaytn.caver.tx.manager.TransactionManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.tx.gas.StaticGasProvider;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
@@ -46,6 +45,7 @@ public class KIP17Test {
     private String sZeroAddr = "0x0000000000000000000000000000000000000000";
 
     static Caver mCaver;
+    static DefaultGasProvider gasProvider;
     static KlayCredentials mDeployerCredential, mTestCredential, mTestCredential2;
     static TransactionManager mDeployerTxManager, mTesterTxManger, mTesterTxManger2;
     static String mContractAddress;
@@ -54,6 +54,7 @@ public class KIP17Test {
     @BeforeClass
     public static void preSetup() throws Exception {
         mCaver = Caver.build(Caver.DEFAULT_URL);
+        gasProvider = new DefaultGasProvider(mCaver);
 
         mDeployerCredential = LUMAN;
         mDeployerTxManager = new TransactionManager.Builder(mCaver, LUMAN).setChaindId(LOCAL_CHAIN_ID).build();
@@ -72,7 +73,7 @@ public class KIP17Test {
             KIP17 token = KIP17.deploy(
                     mCaver,
                     mDeployerTxManager,
-                    new StaticGasProvider(DefaultGasProvider.GAS_PRICE_25_STON, BigInteger.valueOf(6_000_000)),
+                    gasProvider,
                     sContractName,
                     sContractSymbol
             ).send();
@@ -139,7 +140,7 @@ public class KIP17Test {
             KIP17 token = KIP17.deploy(
                     mCaver,
                     mDeployerTxManager,
-                    new StaticGasProvider(DefaultGasProvider.GAS_PRICE_25_STON, BigInteger.valueOf(6_000_000)),
+                    gasProvider,
                     sContractName,
                     sContractSymbol
             ).send();

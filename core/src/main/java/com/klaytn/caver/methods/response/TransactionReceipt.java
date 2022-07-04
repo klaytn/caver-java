@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.utils.AccessList;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import org.web3j.protocol.core.Response;
@@ -135,6 +134,11 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         private String gasPrice;
 
         /**
+         * Gas price used when the transaction was processed.
+         */
+        private String effectiveGasPrice;
+
+        /**
          * Max priority fee per gas in peb.
          */
         private String maxPriorityFeePerGas;
@@ -245,7 +249,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         public TransactionReceiptData() {
         }
 
-        public TransactionReceiptData(String blockHash, String blockNumber, String codeFormat, String contractAddress, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, String from, String gas, String gasPrice, String maxPriorityFeePerGas, String maxFeePerGas, String gasUsed, boolean humanReadable, String key, String input, List<KlayLogs.Log> logs, String logsBloom, String nonce, String senderTxHash, List<SignatureData> signatures, String status, String to, String transactionIndex, String transactionHash, String txError, String type, String typeInt, String value, String chainID, AccessList accessList) {
+        public TransactionReceiptData(String blockHash, String blockNumber, String codeFormat, String contractAddress, String feePayer, List<SignatureData> feePayerSignatures, String feeRatio, String from, String gas, String gasPrice, String effectiveGasPrice, String maxPriorityFeePerGas, String maxFeePerGas, String gasUsed, boolean humanReadable, String key, String input, List<KlayLogs.Log> logs, String logsBloom, String nonce, String senderTxHash, List<SignatureData> signatures, String status, String to, String transactionIndex, String transactionHash, String txError, String type, String typeInt, String value, String chainID, AccessList accessList) {
             this.blockHash = blockHash;
             this.blockNumber = blockNumber;
             this.codeFormat = codeFormat;
@@ -256,6 +260,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
             this.from = from;
             this.gas = gas;
             this.gasPrice = gasPrice;
+            this.effectiveGasPrice = effectiveGasPrice;
             this.maxPriorityFeePerGas = maxPriorityFeePerGas;
             this.maxFeePerGas = maxFeePerGas;
             this.gasUsed = gasUsed;
@@ -329,7 +334,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getFeeRatio() {
-            return feeRatio;
+            return this.feeRatio;
         }
 
         public void setFeeRatio(String feeRatio) {
@@ -337,7 +342,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getFrom() {
-            return from;
+            return this.from;
         }
 
         public void setFrom(String from) {
@@ -345,7 +350,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getGas() {
-            return gas;
+            return this.gas;
         }
 
         public void setGas(String gas) {
@@ -353,15 +358,23 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getGasPrice() {
-            return gasPrice;
+            return this.gasPrice;
         }
 
         public void setGasPrice(String gasPrice) {
             this.gasPrice = gasPrice;
         }
 
+        public String getEffectiveGasPrice() {
+            return this.effectiveGasPrice;
+        }
+
+        public void setEffectiveGasPrice(String effectiveGasPrice) {
+            this.effectiveGasPrice = effectiveGasPrice;
+        }
+
         public String getMaxPriorityFeePerGas() {
-            return maxPriorityFeePerGas;
+            return this.maxPriorityFeePerGas;
         }
 
         public void setMaxPriorityFeePerGas(String maxPriorityFeePerGas) {
@@ -369,7 +382,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getMaxFeePerGas() {
-            return maxFeePerGas;
+            return this.maxFeePerGas;
         }
 
         public void setMaxFeePerGas(String maxFeePerGas) {
@@ -377,7 +390,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getGasUsed() {
-            return gasUsed;
+            return this.gasUsed;
         }
 
         public void setGasUsed(String gasUsed) {
@@ -385,7 +398,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public boolean isHumanReadable() {
-            return humanReadable;
+            return this.humanReadable;
         }
 
         public void setHumanReadable(boolean humanReadable) {
@@ -393,7 +406,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getKey() {
-            return key;
+            return this.key;
         }
 
         public void setKey(String key) {
@@ -401,7 +414,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getInput() {
-            return input;
+            return this.input;
         }
 
         public void setInput(String input) {
@@ -409,7 +422,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public List<KlayLogs.Log> getLogs() {
-            return logs;
+            return this.logs;
         }
 
         public void setLogs(List<KlayLogs.Log> logs) {
@@ -417,7 +430,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getLogsBloom() {
-            return logsBloom;
+            return this.logsBloom;
         }
 
         public void setLogsBloom(String logsBloom) {
@@ -425,7 +438,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getNonce() {
-            return nonce;
+            return this.nonce;
         }
 
         public void setNonce(String nonce) {
@@ -433,7 +446,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getSenderTxHash() {
-            return senderTxHash;
+            return this.senderTxHash;
         }
 
         public void setSenderTxHash(String senderTxHash) {
@@ -441,7 +454,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public List<SignatureData> getSignatures() {
-            return signatures;
+            return this.signatures;
         }
 
         @JsonDeserialize(using = SignatureDataListDeserializer.class)
@@ -450,7 +463,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getStatus() {
-            return status;
+            return this.status;
         }
 
         public void setStatus(String status) {
@@ -458,7 +471,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getTo() {
-            return to;
+            return this.to;
         }
 
         public void setTo(String to) {
@@ -466,7 +479,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getTransactionIndex() {
-            return transactionIndex;
+            return this.transactionIndex;
         }
 
         public void setTransactionIndex(String transactionIndex) {
@@ -474,7 +487,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getTransactionHash() {
-            return transactionHash;
+            return this.transactionHash;
         }
 
         public void setTransactionHash(String transactionHash) {
@@ -482,7 +495,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getTxError() {
-            return txError;
+            return this.txError;
         }
 
         public void setTxError(String txError) {
@@ -490,7 +503,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getType() {
-            return type;
+            return this.type;
         }
 
         public void setType(String type) {
@@ -498,7 +511,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getTypeInt() {
-            return typeInt;
+            return this.typeInt;
         }
 
         public void setTypeInt(String typeInt) {
@@ -506,7 +519,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getValue() {
-            return value;
+            return this.value;
         }
 
         public void setValue(String value) {
@@ -514,7 +527,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public String getChainID() {
-            return chainID;
+            return this.chainID;
         }
 
         public void setChainID(String chainID) {
@@ -522,7 +535,7 @@ public class TransactionReceipt extends Response<TransactionReceipt.TransactionR
         }
 
         public AccessList getAccessList() {
-            return accessList;
+            return this.accessList;
         }
 
         public void setAccessList(AccessList accessList) {

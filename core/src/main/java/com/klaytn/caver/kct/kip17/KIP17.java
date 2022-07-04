@@ -25,6 +25,7 @@ import com.klaytn.caver.kct.kip13.KIP13;
 import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.IWallet;
+import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
 
@@ -37,6 +38,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The KIP17 class that helps you easily handle a smart contract that implements KIP-17 as a Java instance on the Klaytn blockchain platform.<p>
+ * This KIP-17 contract source code based on <a href="https://github.com/klaytn/klaytn-contracts">Klaytn-contracts</a>.
+ * Static methods and constructor is accessed via `caver.kct.kip17`.
+ * @see com.klaytn.caver.kct.kip17.wrapper.KIP17Wrapper
+ * @see com.klaytn.caver.kct.wrapper.KCTWrapper
+ * @see Contract
+ */
 public class KIP17 extends Contract {
 
     public static final String FUNCTION_ADD_MINTER = "addMinter";
@@ -94,7 +103,13 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Creates a KIP17 instance.
+     * Creates a KIP17 instance.<p>
+     * <pre>Example :
+     * {@code
+     * KIP17 kip17 = caver.kct.kip17.create();
+     * }
+     * </pre>
+     *
      * @param caver A Caver instance.
      * @return KIP17
      * @throws IOException
@@ -104,7 +119,13 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Creates a KIP17 instance.
+     * Creates a KIP17 instance.<p>
+     * <pre>Example :
+     * {@code
+     * String contractAddress = "0x{contractAddress}";
+     * KIP17 kip17 = caver.kct.kip17.create(contractAddress);
+     * }
+     * </pre>
      * @param caver A Caver instance.
      * @param contractAddress A contract address
      * @return KIP17
@@ -135,7 +156,17 @@ public class KIP17 extends Contract {
 
     /**
      * Deploy a KIP-17 contract.<p>
-     * The deployer's keyring should be added in `caver.wallet`.
+     * The deployer's keyring should be added in `caver.wallet`. See {@link com.klaytn.caver.wallet.KeyringContainer} and {@link IWallet}. <p>
+     * <pre>Example :
+     * {@code
+     * String deployerAddress = "0x{deployerAddress}";
+     * String name = "KIP17";
+     * String symbol = "KIP17Symbol";
+     *
+     * KIP17 kip17 = caver.kct.kip17.deploy(deployerAddress, name, symbol);
+     * }
+     * </pre>
+     *
      * @param caver A Caver instance.
      * @param deployer A deployer's address.
      * @param name A KIP-17 contract name.
@@ -156,19 +187,23 @@ public class KIP17 extends Contract {
 
     /**
      * Deploy a KIP-17 contract.<p>
-     * The deployer's keyring should be added in `caver.wallet`. <p>
+     * The deployer's keyring should be added in `caver.wallet`. See {@link com.klaytn.caver.wallet.KeyringContainer} and {@link IWallet}. <p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
-     * <pre>
-     * <code>
-     *     SendOptions sendOptions = new SendOptions();
-     *     sendOptions.setFrom("deployer address");
-     *     sendOptions.setGas(BigInteger.valueOf(gas value));
-     *     sendOptions.setFeeDelegation(true);
-     *     sendOptions.setFeePayer("fee payer address");
+     * <pre>Example :
+     * {@code
+     * String name = "KIP17";
+     * String symbol = "KIP17Symbol";
      *
-     *     KIP17 kip17 = caver.kct.kip17.deploy(sendOptions, name, symbol);
-     * </code>
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom("0x{deployerAddress}");
+     * sendOptions.setGas(BigInteger.valueOf(gas value));
+     * sendOptions.setFeeDelegation(true);
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
+     *
+     * KIP17 kip17 = caver.kct.kip17.deploy(sendOptions, name, symbol);
+     * }
      * </pre>
+     *
      * @param caver A Caver instance.
      * @param sendOptions The send options to deploy a contract.
      * @param name A KIP-17 contract name.
@@ -189,7 +224,17 @@ public class KIP17 extends Contract {
 
     /**
      * Deploy a KIP-17 contract.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.<p>
+     * <pre>Example :
+     * {@code
+     * String deployerAddress = "0x{deployerAddress}";
+     * String name = "KIP17";
+     * String symbol = "KIP17Symbol";
+     *
+     * KIP17 kip17 = caver.kct.kip17.deploy(deployer, name, symbol, caver.getWallet());
+     * }
+     * </pre>
+     *
      * @param caver A Caver instance.
      * @param deployer A deployer's address.
      * @param name A KIP-17 contract name.
@@ -211,19 +256,23 @@ public class KIP17 extends Contract {
 
     /**
      * Deploy KIP-17 contract. <p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.<p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
-     * <pre>
-     * <code>
-     *     SendOptions sendOptions = new SendOptions();
-     *     sendOptions.setFrom("deployer address");
-     *     sendOptions.setGas(BigInteger.valueOf(gas value));
-     *     sendOptions.setFeeDelegation(true);
-     *     sendOptions.setFeePayer("fee payer address");
+     * <pre>Example :
+     * {@code
+     * String name = "KIP17";
+     * String symbol = "KIP17Symbol";
      *
-     *     KIP17 kip17 = caver.kct.kip17.deploy(sendOptions, name, symbol, caver.getWallet());
-     * </code>
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom("0x{deployerAddress}");
+     * sendOptions.setGas(BigInteger.valueOf(gas value));
+     * sendOptions.setFeeDelegation(true);
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
+     *
+     * KIP17 kip17 = caver.kct.kip17.deploy(sendOptions, name, symbol, caver.getWallet());
+     * }
      * </pre>
+     *
      * @param caver A Caver instance.
      * @param sendOptions The send options to deploy a contract.
      * @param name A KIP-17 contract name.
@@ -245,7 +294,18 @@ public class KIP17 extends Contract {
 
     /**
      * Deploy KIP17 contract.<p>
-     * The deployer's keyring should be added in `caver.wallet`.
+     * The deployer's keyring should be added in `caver.wallet`. See {@link com.klaytn.caver.wallet.KeyringContainer} and {@link IWallet}. <p>
+     * <pre>Example :
+     * {@code
+     * String deployerAddress = "0x{deployerAddress}";
+     * String name = "KIP17";
+     * String symbol = "KIP17Symbol";
+     * KIP17DeployParams tokenInfo = new KIP17DeployParams(name, symbol);
+     *
+     * KIP17 kip17 = caver.kct.kip17.deploy(tokenInfo, deployerAddress);
+     * }
+     * </pre>
+     *
      * @param caver A Caver instance.
      * @param tokenInfo The KIP-17 contract's deploy parameter values.
      * @param deployer A deployer's address.
@@ -264,19 +324,22 @@ public class KIP17 extends Contract {
 
     /**
      * Deploy KIP-17 contract.<p>
-     * The deployer's keyring should be added in `caver.wallet`. <p>
+     * The deployer's keyring should be added in `caver.wallet`. See {@link com.klaytn.caver.wallet.KeyringContainer} and {@link IWallet}. <p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
      * <pre>
-     * <code>
-     *     SendOptions sendOptions = new SendOptions();
-     *     sendOptions.setFrom("deployer address");
-     *     sendOptions.setGas(BigInteger.valueOf(gas value));
-     *     sendOptions.setFeeDelegation(true);
-     *     sendOptions.setFeePayer("fee payer address");
+     * {@code
+     * String name = "KIP17";
+     * String symbol = "KIP17Symbol";
      *
-     *     KIP17DeployParams tokenInfo = new KIP17DeployParams(name, symbol);
-     *     KIP17 kip17 = caver.kct.kip17.deploy(tokenInfo, sendOptions);
-     * </code>
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom("0x{deployerAddress}");
+     * sendOptions.setGas(BigInteger.valueOf(gas value));
+     * sendOptions.setFeeDelegation(true);
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
+     *
+     * KIP17DeployParams tokenInfo = new KIP17DeployParams(name, symbol);
+     * KIP17 kip17 = caver.kct.kip17.deploy(tokenInfo, sendOptions);
+     * }
      * </pre>
      * @param caver A Caver instance.
      * @param tokenInfo The KIP-17 contract's deploy parameter values.
@@ -296,7 +359,17 @@ public class KIP17 extends Contract {
 
     /**
      * Deploy KIP17 contract.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.<p>
+     * <pre>Example :
+     * {@code
+     * String deployerAddress = "0x{deployerAddress}";
+     * String name = "KIP17";
+     * String symbol = "KIP17Symbol";
+     * KIP17DeployParams tokenInfo = new KIP17DeployParams(name, symbol);
+     *
+     * KIP17 kip17 = caver.kct.kip17.deploy(tokenInfo, deployerAddress, caver.getWallet());
+     * }
+     * </pre>
      * @param caver A Caver instance.
      * @param tokenInfo The KIP-17 contract's deploy parameter values.
      * @param deployer A deployer's address.
@@ -320,19 +393,22 @@ public class KIP17 extends Contract {
 
     /**
      * Deploy KIP-17 contract.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.<p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
-     * <pre>
-     * <code>
-     *     SendOptions sendOptions = new SendOptions();
-     *     sendOptions.setFrom("deployer address");
-     *     sendOptions.setGas(BigInteger.valueOf(gas value));
-     *     sendOptions.setFeeDelegation(true);
-     *     sendOptions.setFeePayer("fee payer address");
+     * <pre>Example :
+     * {@code
+     * String name = "KIP17";
+     * String symbol = "KIP17Symbol";
      *
-     *     KIP17DeployParams tokenInfo = new KIP17DeployParams(name, symbol);
-     *     KIP17 kip17 = caver.kct.kip17.deploy(tokenInfo, sendOptions, caver.getWallet());
-     * </code>
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom("0x{deployerAddress}");
+     * sendOptions.setGas(BigInteger.valueOf(gas value));
+     * sendOptions.setFeeDelegation(true);
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
+     *
+     * KIP17DeployParams tokenInfo = new KIP17DeployParams(name, symbol);
+     * KIP17 kip17 = caver.kct.kip17.deploy(tokenInfo, sendOptions, caver.getWallet());
+     * }
      * </pre>
      * @param caver A Caver instance.
      * @param tokenInfo The KIP-17 contract's deploy parameter values.
@@ -395,7 +471,13 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Copy instance
+     * Copy instance.
+     * <pre>Example :
+     * {@code
+     * KIP7 cloned = kip7.clone();
+     * }
+     * </pre>
+     *
      * @return KIP17
      */
     public KIP17 clone() {
@@ -412,7 +494,14 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Copy instance with token address
+     * Copy instance with token address.
+     * <pre>Example :
+     * {@code
+     * String contractAddress = "0x{contractAddress}";
+     * KIP17 cloned = kip17.clone(contractAddress);
+     * }
+     * </pre>
+     *
      * @param tokenAddress A KIP-17 token address
      * @return KIP17
      */
@@ -450,7 +539,13 @@ public class KIP17 extends Contract {
 
     /**
      * Call method "supportsInterface" in KIP-13 standard contract.
-     * @param interfaceId interface identifier
+     * <pre>Example :
+     * {@code
+     * boolean isSupported = kip17.supportInterface(KIP17.INTERFACE.IKIP17.getId());
+     * }
+     * </pre>
+     *
+     * @param interfaceId interface identifier. see {@link KIP17.INTERFACE}
      * @return boolean
      * @throws NoSuchMethodException
      * @throws IOException
@@ -468,6 +563,12 @@ public class KIP17 extends Contract {
 
     /**
      * Call method "name" in KIP-17 standard contract.
+     * <pre>Example :
+     * {@code
+     * String name = kip17.name();
+     * }
+     * </pre>
+     *
      * @return String
      * @throws NoSuchMethodException
      * @throws IOException
@@ -485,6 +586,12 @@ public class KIP17 extends Contract {
 
     /**
      * Call method "symbol" in KIP-17 standard contract.
+     * <pre>Example :
+     * {@code
+     * String symbol = kip17.symbol();
+     * }
+     * </pre>
+     *
      * @return String
      * @throws NoSuchMethodException
      * @throws IOException
@@ -502,6 +609,13 @@ public class KIP17 extends Contract {
 
     /**
      * Call method "tokenURI" in KIP-17 standard contract.
+     * <pre>Example :
+     * {@code
+     * BigInteger tokenId = BigInteger.ONE;
+     * String uri = kip17.tokenURI(tokenId);
+     * }
+     * </pre>
+     *
      * @param tokenId
      * @return
      */
@@ -514,6 +628,12 @@ public class KIP17 extends Contract {
 
     /**
      * Call method "totalSupply" in KIP-17 standard contract.
+     * <pre>Example :
+     * {@code
+     * BigInteger totalSupply = kip17.totalSupply();
+     * }
+     * </pre>
+     *
      * @return String
      * @throws NoSuchMethodException
      * @throws IOException
@@ -531,6 +651,15 @@ public class KIP17 extends Contract {
 
     /**
      * Call method "tokenOwnerByIndex" in KIP-17 standard contract.
+     * <pre>Example :
+     * {@code
+     * String owner = "0x{ownerAddress}";
+     * BigInteger index = BigInteger.ZERO;
+     *
+     * BigInteger token = kip17.tokenOwnerByIndex(owner, index);
+     * }
+     * </pre>
+     *
      * @param owner An account where we are interested in NFTs owned by them
      * @param index A counter less than "balanceOf(owner)"
      * @return BigInteger
@@ -550,6 +679,13 @@ public class KIP17 extends Contract {
 
     /**
      * Call method "tokenByIndex" in KIP-17 standard contract.
+     * <pre>Example :
+     * {@code
+     * BigInteger tokenIndex = BigInteger.ONE;
+     * BigInteger token = kip17.tokenByIndex(tokenIndex);
+     * }
+     * </pre>
+     *
      * @param index A counter less than "totalSupply"
      * @return BigInteger
      * @throws NoSuchMethodException
@@ -568,6 +704,12 @@ public class KIP17 extends Contract {
 
     /**
      * Call method "balanceOf" in KIP-17 standard contract.
+     * <pre>Example :
+     * {@code
+     * String account = "0x{accountAddress}";
+     * BigInteger balance = kip17.balanceOf(account);
+     * }
+     * </pre>
      * @param account An account for whom to query the balance
      * @return BigInteger
      * @throws NoSuchMethodException
@@ -586,6 +728,12 @@ public class KIP17 extends Contract {
 
     /**
      * Call method "ownerOf" in KIP-17 standard contract.
+     * <pre>Example :
+     * {@code
+     * BigInteger tokenId = BigInteger.ONE;
+     * String owner = kip17.ownerOf(tokenId);
+     * }
+     * </pre>
      * @param tokenId The identifier of NFT
      * @return String
      * @throws NoSuchMethodException
@@ -604,6 +752,12 @@ public class KIP17 extends Contract {
 
     /**
      * Call method "getApproved" in KIP-17 standard contract.
+     * <pre>Example :
+     * {@code
+     * BigInteger tokenId = BigInteger.ONE;
+     * String operator = kip17.getApproved(tokenId);
+     * }
+     * </pre>
      * @param tokenId The identifier of NFT
      * @return String
      * @throws NoSuchMethodException
@@ -622,6 +776,15 @@ public class KIP17 extends Contract {
 
     /**
      * Call method "isApprovedForAll" in KIP-17 standard contract.
+     * <pre>Example :
+     * {@code
+     * String owner = "0x{ownerAddress}";
+     * String operator = "0x{operatorAddress}";
+     *
+     * boolean approved = kip17.isApprovedForAll(owner, operator);
+     * }
+     * </pre>
+     *
      * @param owner The account that owns the NFTs
      * @param operator The account that act on behalf of the owner
      * @return boolean
@@ -641,6 +804,13 @@ public class KIP17 extends Contract {
 
     /**
      * Call method "isMinter" in KIP-17 standard contract.
+     * <pre>Example :
+     * {@code
+     * String account = "0x{accountAddress}";
+     *
+     * boolean hasMinter = kip17.isMinter(account);
+     * }
+     * </pre>
      * @param account The account to check the minting permission
      * @return boolean
      * @throws NoSuchMethodException
@@ -659,6 +829,12 @@ public class KIP17 extends Contract {
 
     /**
      * Call method "paused" in KIP-17 standard contract.
+     * <pre>Example :
+     * {@code
+     * boolean isPausedContract = kip17.paused();
+     * }
+     * </pre>
+     *
      * @return boolean
      * @throws NoSuchMethodException
      * @throws IOException
@@ -675,7 +851,13 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Call method "isPauser" in KIP-17 standard contract
+     * Call method "isPauser" in KIP-17 standard contract.
+     * <pre>Example :
+     * {@code
+     * String account = "0x{accountAddress}";
+     * boolean isPauser = kip17.isPauser(account);
+     * }
+     * </pre>
      * @param account The account to check the pausing permission
      * @return boolean
      * @throws NoSuchMethodException
@@ -693,9 +875,24 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "approve" in KIP-17 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute method "approve" in KIP-17 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip17.setDefaultSendOptions(sendOptions);
+     *
+     * String to = "0x{toAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.approve(to, tokenId);
+     * }
+     * </pre>
+     *
+     *
      * @param to The new account approved NFT controller
      * @param tokenId The NFT ID to approve
      * @return TransactionReceipt.TransactionReceiptData
@@ -712,8 +909,21 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "approve" in KIP-17 standard contract.
+     * Execute method "approve" in KIP-17 standard contract.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String to = "0x{toAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.approve(to, tokenId, sendOptions);
+     * }
+     * </pre>
+     *
      * @param to The new account approved NFT controller
      * @param tokenId The NFT ID to approve
      * @param sendParam A SendOptions need to execute contract's method.
@@ -734,9 +944,23 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "setApprovedForAll" in KIP-17 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute method "setApprovedForAll" in KIP-17 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip17.setDefaultSendOptions(sendOptions);
+     *
+     * String to = "0x{operatorAddress}";
+     * boolean approved = true;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.setApproveForAll(to, approved);
+     * }
+     * </pre>
+     *
      * @param to Account to add the set of authorized operators.
      * @param approved True if the operator is approved, false to revoke approval
      * @return TransactionReceipt.TransactionReceiptData
@@ -753,8 +977,20 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "setApprovedForAll" in KIP-17 standard contract.
+     * Execute method "setApprovedForAll" in KIP-17 standard contract.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String to = "0x{operatorAddress}";
+     * boolean approved = true;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.setApproveForAll(to, approved, sendOptions);
+     * }
+     * </pre>
      * @param to Account to add the set of authorized operators.
      * @param approved True if the operator is approved, false to revoke approval
      * @param sendParam A SendOptions need to execute contract's method.
@@ -775,9 +1011,23 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "transferFrom" in KIP-17 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute method "transferFrom" in KIP-17 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip17.setDefaultSendOptions(sendOptions);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.transferFrom(from, to, tokenId);
+     * }
+     * </pre>
      * @param from The current owner of the NFT
      * @param to The new owner
      * @param tokenId The NFT identifier to transfer
@@ -795,8 +1045,22 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "transferFrom" in KIP-17 standard contract.
+     * Execute method "transferFrom" in KIP-17 standard contract.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.transferFrom(from, to, tokenId, sendOptions);
+     * }
+     * </pre>
+     *
      * @param from The current owner of the NFT
      * @param to The new owner
      * @param tokenId The NFT identifier to transfer
@@ -818,9 +1082,23 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "safeTransferFrom" in KIP-17 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute method "safeTransferFrom" in KIP-17 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip17.setDefaultSendOptions(sendOptions);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.safeTransferFrom(from, to, tokenId);
+     * }
+     * </pre>
      * @param from The current owner of the NFT
      * @param to The new owner
      * @param tokenId The NFT identifier to transfer
@@ -838,8 +1116,21 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "safeTransferFrom" in KIP-17 standard contract.
+     * Execute method "safeTransferFrom" in KIP-17 standard contract.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.safeTransferFrom(from, to, tokenId, sendOptions);
+     * }
+     * </pre>
      * @param from The current owner of the NFT
      * @param to The new owner
      * @param tokenId The NFT identifier to transfer
@@ -861,9 +1152,24 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "safeTransferFrom" in KIP-17 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute method "safeTransferFrom" in KIP-17 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip17.setDefaultSendOptions(sendOptions);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     * String data = "data";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.safeTransferFrom(from, to, tokenId, data);
+     * }
+     * </pre>
      * @param from The current owner of the NFT
      * @param to The new owner
      * @param tokenId The NFT identifier to transfer
@@ -882,8 +1188,22 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "safeTransferFrom" in KIP-17 standard contract.
+     * Execute method "safeTransferFrom" in KIP-17 standard contract.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     * String data = "data";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.safeTransferFrom(from, to, tokenId, data, sendOptions);
+     * }
+     * </pre>
      * @param from The current owner of the NFT
      * @param to The new owner
      * @param tokenId The NFT identifier to transfer
@@ -906,10 +1226,21 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "addMinter" in KIP-17 standard contract.
-     * Caller must have "Minter" permission
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute method "addMinter" in KIP-17 standard contract.<p>
+     * Caller must have "Minter" permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip17.setDefaultSendOptions(sendOptions);
+     *
+     * String account = "0x{accountAddress}";
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.addMinter(account);
+     * }
+     * </pre>
      * @param account The account to be given the minting permission
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -925,9 +1256,21 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "addMinter" in KIP-17 standard contract.
-     * Caller must have "Minter" permission
+     * Execute method "addMinter" in KIP-17 standard contract.<p>
+     * Caller must have "Minter" permission.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String account = "0x{address}";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.addMinter(account, sendOptions);
+     * }
+     * </pre>
+     *
      * @param account The account to be given the minting permission
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
@@ -947,10 +1290,21 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "renounceMinter" in KIP-17 standard contract.
-     * Caller must have "Minter" permission
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute method "renounceMinter" in KIP-17 standard contract.<p>
+     * Caller must have "Minter" permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip17.setDefaultSendOptions(sendOptions);
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.renounceMinter();
+     * }
+     * </pre>
+     *
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
      * @throws IOException
@@ -965,9 +1319,20 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "renounceMinter" in KIP-17 standard contract.
-     * Caller must have "Minter" permission
+     * Execute method "renounceMinter" in KIP-17 standard contract.<p>
+     * Caller must have "Minter" permission.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip17.setDefaultSendOptions(sendOptions);
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.renounceMinter(amount);
+     * }
+     * </pre>
+     *
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -986,10 +1351,24 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "mint" in KIP-17 standard contract.
-     * Caller must have "Minter" permission
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute method "mint" in KIP-17 standard contract.<p>
+     * Caller must have "Minter" permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip17.setDefaultSendOptions(sendOptions);
+     *
+     * String to = "0x{address}";
+     * BigInteger tokenId = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.mint(to, tokenId);
+     * }
+     * </pre>
+     *
      * @param to The account that will receive the minted token
      * @param tokenId The NFT identifier to be minted
      * @return TransactionReceipt.TransactionReceiptData
@@ -1006,9 +1385,22 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "mint" in KIP-17 standard contract.
-     * Caller must have "Minter" permission
+     * Execute method "mint" in KIP-17 standard contract.<p>
+     * Caller must have "Minter" permission.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String to = "0x{address}";
+     * BigInteger tokenId = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.mint(to, tokenId, sendOptions);
+     * }
+     * </pre>
+     *
      * @param to The account that will receive the minted token
      * @param tokenId The NFT identifier to be minted
      * @param sendParam A SendOptions need to execute contract's method.
@@ -1029,10 +1421,25 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "mintWithTokenURI" in KIP-17 standard contract.
-     * Caller must have Minter permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute method "mintWithTokenURI" in KIP-17 standard contract.<p>
+     * Caller must have Minter permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip17.setDefaultSendOptions(sendOptions);
+     *
+     * String to = "0x{address}";
+     * BigInteger tokenId = BigInteger.ONE;
+     * String tokenURI = "tokenURI";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.mintWithTokenURI(to, tokenId, tokenURI);
+     * }
+     * </pre>
+     *
      * @param to The account that will receive the minted token
      * @param tokenId The NFT identifier to be minted
      * @param tokenURI The NFT URI(Uniform Resource Identifier) to be minted
@@ -1050,9 +1457,23 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "mintWithTokenURI" in KIP-17 standard contract.
-     * Caller must have Minter permission.
+     * Execute method "mintWithTokenURI" in KIP-17 standard contract.<p>
+     * Caller must have Minter permission.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String to = "0x{address}";
+     * BigInteger tokenId = BigInteger.ONE;
+     * String tokenURI = "tokenURI";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.mintWithTokenURI(to, tokenId, tokenURI, sendOptions);
+     * }
+     * </pre>
+     *
      * @param to The account that will receive the minted token
      * @param tokenId The NFT identifier to be minted
      * @param tokenURI The NFT URI(Uniform Resource Identifier) to be minted
@@ -1074,9 +1495,22 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "burn" in KIP-17 standard contract.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute method "burn" in KIP-17 standard contract.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip17.setDefaultSendOptions(sendOptions);
+     *
+     * BigInteger tokenId = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.burn(tokenId);
+     * }
+     * </pre>
+     *
      * @param tokenId The NFT identifier to be minted
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1092,8 +1526,20 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "burn" in KIP-17 standard contract.
+     * Execute method "burn" in KIP-17 standard contract.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * BigInteger tokenId = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.burn(tokenId);
+     * }
+     * </pre>
+     *
      * @param tokenId The NFT identifier to be minted
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
@@ -1113,10 +1559,21 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "pause" in KIP-17 standard contract.
-     * Caller must have Pauser permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute method "pause" in KIP-17 standard contract.<p>
+     * Caller must have Pauser permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip17.setDefaultSendOptions(sendOptions);
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.pause();
+     * }
+     * </pre>
+     *
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
      * @throws IOException
@@ -1131,9 +1588,19 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "pause" in KIP-17 standard contract.
-     * Caller must have Pauser permission.
+     * Execute method "pause" in KIP-17 standard contract.<p>
+     * Caller must have Pauser permission.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.pause(sendOptions);
+     * }
+     * </pre>
+     *
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1152,10 +1619,21 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "unpause" in KIP-17 standard contract.
-     * Caller must have Pauser permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute method "unpause" in KIP-17 standard contract.<p>
+     * Caller must have Pauser permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip17.setDefaultSendOptions(sendOptions);
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.unpause();
+     * }
+     * </pre>
+     *
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
      * @throws IOException
@@ -1170,9 +1648,18 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "unpause" in KIP-17 standard contract.
-     * Caller must have Pauser permission.
+     * Execute method "unpause" in KIP-17 standard contract.<p>
+     * Caller must have Pauser permission.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.unpause(sendOptions);
+     * }
+     * </pre>
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1191,10 +1678,22 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "addPauser" in KIP-17 standard contract.
-     * Caller must have Pauser permission.
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute method "addPauser" in KIP-17 standard contract.<p>
+     * Caller must have Pauser permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip17.setDefaultSendOptions(sendOptions);
+     *
+     * String account = "0x{accountAddress}";
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.addPauser(account);
+     * }
+     * </pre>
+     *
      * @param account The account to be given the pausing permission
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1210,9 +1709,20 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "addPauser" in KIP-17 standard contract.
-     * Caller must have Pauser permission.
+     * Execute method "addPauser" in KIP-17 standard contract.<p>
+     * Caller must have Pauser permission.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String account = "0x{accountAddress}";
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.addPauser(account, sendOptions);
+     * }
+     * </pre>
+     *
      * @param account The account to be given the pausing permission
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
@@ -1232,10 +1742,21 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "renouncePauser" in KIP-17 standard contract.
-     * Caller must have Pauser permission
-     * It will use default sendOptions in contract instance to passed sendOptions
+     * Execute method "renouncePauser" in KIP-17 standard contract.<p>
+     * Caller must have Pauser permission.<p>
+     * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip17.setDefaultSendOptions(sendOptions);
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.renouncePauser();
+     * }
+     * </pre>
+     *
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
      * @throws IOException
@@ -1250,9 +1771,19 @@ public class KIP17 extends Contract {
     }
 
     /**
-     * Execute method "renouncePauser" in KIP-17 standard contract.
-     * Caller must have Pauser permission
+     * Execute method "renouncePauser" in KIP-17 standard contract.<p>
+     * Caller must have Pauser permission.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip17.renouncePauser(sendOptions);
+     * }
+     * </pre>
+     *
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException

@@ -48,7 +48,13 @@ public class KIP37Wrapper {
     }
 
     /**
-     * Creates a KIP37 instance
+     * Creates a KIP37 instance.
+     * <pre>Example
+     * {@code
+     * KIP37 kip37 = caver.kct.kip37.create();
+     * }
+     * </pre>
+     *
      * @return KIP37
      * @throws IOException
      */
@@ -57,7 +63,14 @@ public class KIP37Wrapper {
     }
 
     /**
-     * Creates a KIP37 instance
+     * Creates a KIP37 instance.
+     * <pre>Example
+     * {@code
+     * String contractAddress = "0x{contractAddress}";
+     * KIP37 kip37 = caver.kct.kip37.create(contractAddress);
+     * }
+     * </pre>
+     *
      * @param contractAddress A contract address
      * @return KIP37
      * @throws IOException
@@ -68,7 +81,16 @@ public class KIP37Wrapper {
 
     /**
      * Deploy a KIP-37 contract.<p>
-     * The deployer's keyring should be existed in `caver.wallet`.
+     * The deployer's keyring should be existed in `caver.wallet`. See {@link com.klaytn.caver.wallet.KeyringContainer} and {@link IWallet}.
+     * <pre>Example :
+     * {@code
+     * String deployerAddress = "0x{deployerAddress}";
+     * String uri = "uri";
+     *
+     * KIP37 kip37 = caver.kct.kip37.deploy(uri, deployerAddress);
+     * }
+     * </pre>
+     *
      * @param uri The URI for token type.
      * @param deployer A deployer's address.
      * @return KIP37
@@ -86,19 +108,22 @@ public class KIP37Wrapper {
 
     /**
      * Deploy a KIP-37 contract.<p>
-     * The deployer's keyring should be existed in `caver.wallet`.<p>
-     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
-     * <pre>
-     * <code>
-     *     SendOptions sendOptions = new SendOptions();
-     *     sendOptions.setFrom("deployer address");
-     *     sendOptions.setGas(BigInteger.valueOf(gas value));
-     *     sendOptions.setFeeDelegation(true);
-     *     sendOptions.setFeePayer("fee payer address");
+     * The deployer's keyring should be existed in `caver.wallet`. See {@link com.klaytn.caver.wallet.KeyringContainer} and {@link IWallet}. <p>
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in SendOptions.
+     * <pre> Example :
+     * {@code
+     * String uri = "uri";
      *
-     *     KIP37 kip37 = caver.kct.kip37.deploy(uri, sendOptions);
-     * </code>
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom("0x{deployerAddress}");
+     * sendOptions.setGas(BigInteger.valueOf(gas value));
+     * sendOptions.setFeeDelegation(true);
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
+     *
+     * KIP37 kip37 = caver.kct.kip37.deploy(uri, sendOptions);
+     * }
      * </pre>
+     *
      * @param uri The URI for token type.
      * @param sendOptions The send options to deploy a contract.
      * @return KIP37
@@ -117,7 +142,16 @@ public class KIP37Wrapper {
     /**
      * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.
+     * <pre>Example :
+     * {@code
+     * String deployerAddress = "0x{deployerAddress}";
+     * String uri = "uri";
+     *
+     * KIP37 kip37 = caver.kct.kip37.deploy(uri, deployerAddress, caver.getWallet());
+     * }
+     * </pre>
+     *
      * @param uri The URI for token type.
      * @param deployer A deployer's address.
      * @param wallet The class instance implemented IWallet to sign transaction.
@@ -137,19 +171,22 @@ public class KIP37Wrapper {
     /**
      * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
-     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in `SendOptions` like below code example.
-     * <pre>
-     * <code>
-     *     SendOptions sendOptions = new SendOptions();
-     *     sendOptions.setFrom("deployer address");
-     *     sendOptions.setGas(BigInteger.valueOf(gas value));
-     *     sendOptions.setFeeDelegation(true);
-     *     sendOptions.setFeePayer("fee payer address");
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.<p>
+     * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in SendOptions.
+     * <pre> Example :
+     * {@code
+     * String uri = "uri";
      *
-     *     KIP37 kip37 = caver.kct.kip37.deploy(uri, sendOptions, caver.getWallet());
-     * </code>
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom("0x{deployerAddress}");
+     * sendOptions.setGas(BigInteger.valueOf(gas value));
+     * sendOptions.setFeeDelegation(true);
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
+     *
+     * KIP37 kip37 = caver.kct.kip37.deploy(uri, sendOptions, caver.getWallet());
+     * }
      * </pre>
+     *
      * @param uri The URI for token type.
      * @param sendOptions The send options to deploy a contract.
      * @param wallet The class instance implemented IWallet to sign transaction.
@@ -169,6 +206,16 @@ public class KIP37Wrapper {
     /**
      * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.<p>
+     * <pre>Example :
+     * {@code
+     * String deployerAddress = "0x{deployerAddress}";
+     * String uri = "uri";
+     * KIP37DeployParams deployInfo = new KIP37DeployParams(uri);
+     *
+     * KIP37 kip37 = caver.kct.kip37.deploy(deployInfo, deployerAddress);
+     * }
+     * </pre>
+     *
      * @param tokenInfo The KIP-37 contract's deploy parameter values.
      * @param deployer A deployer's address
      * @return KIP37
@@ -188,17 +235,21 @@ public class KIP37Wrapper {
      * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.<p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in SendOptions.
-     * <pre>
-     * <code>
-     *     SendOptions sendOptions = new SendOptions();
-     *     sendOptions.setFrom("deployer address");
-     *     sendOptions.setGas(BigInteger.valueOf(gas value));
-     *     sendOptions.setFeeDelegation(true);
-     *     sendOptions.setFeePayer("fee payer address");
+     * <pre>Example :
+     * {@code
+     * String uri = "uri";
+     * KIP37DeployParams deployInfo = new KIP37DeployParams(uri);
      *
-     *     KIP37 kip37 = caver.kct.kip37.deploy(new KIP37DeployParams(uri), sendOptions);
-     * </code>
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom("0x{deployerAddress}");
+     * sendOptions.setGas(BigInteger.valueOf(gas value));
+     * sendOptions.setFeeDelegation(true);
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
+     *
+     * KIP37 kip37 = caver.kct.kip37.deploy(deployInfo, sendOptions);
+     * }
      * </pre>
+     *
      * @param tokenInfo The KIP-37 contract's deploy parameter values.
      * @param sendOptions The send options to deploy a contract.
      * @return KIP37
@@ -217,7 +268,16 @@ public class KIP37Wrapper {
     /**
      * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.
+     * <pre>Example :
+     * {@code
+     * String uri = "uri";
+     * KIP37DeployParams deployInfo = new KIP37DeployParams(uri);
+     *
+     * KIP37 kip37 = caver.kct.kip37.deploy(deployInfo, sendOptions, caver.getWallet());
+     * }
+     * </pre>
+     *
      * @param tokenInfo The KIP-37 contract's deploy parameter values.
      * @param deployer A deployer's address
      * @param wallet The class instance implemented IWallet to sign transaction.
@@ -237,18 +297,22 @@ public class KIP37Wrapper {
     /**
      * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
-     * <pre>
-     * <code>
-     *     SendOptions sendOptions = new SendOptions();
-     *     sendOptions.setFrom("deployer address");
-     *     sendOptions.setGas(BigInteger.valueOf(gas value));
-     *     sendOptions.setFeeDelegation(true);
-     *     sendOptions.setFeePayer("fee payer address");
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.
+     * <pre>Example :
+     * {@code
+     * String uri = "uri";
+     * KIP37DeployParams deployInfo = new KIP37DeployParams(uri);
      *
-     *     KIP37 kip37 = caver.kct.kip37.deploy(new KIP37DeployParams(uri), sendOptions, caver.getWallet());
-     * </code>
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom("0x{deployerAddress}");
+     * sendOptions.setGas(BigInteger.valueOf(gas value));
+     * sendOptions.setFeeDelegation(true);
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
+     *
+     * KIP37 kip37 = caver.kct.kip37.deploy(deployInfo, sendOptions, caver.getWallet());
+     * }
      * </pre>
+     *
      * @param tokenInfo The KIP-37 contract's deploy parameter values.
      * @param sendOptions The send options to deploy a contract.
      * @param wallet The class instance implemented IWallet to sign transaction.

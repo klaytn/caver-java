@@ -18,8 +18,8 @@ package com.klaytn.caver.transaction.type;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.klaytn.caver.rpc.Klay;
-import com.klaytn.caver.crypto.KlaySignatureData;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
+import com.klaytn.caver.transaction.ITransactionWithGasPriceField;
 import com.klaytn.caver.transaction.TransactionDecoder;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
@@ -39,7 +39,7 @@ import java.util.List;
  * Please refer to https://docs.klaytn.com/klaytn/design/transactions/fee-delegation#txtypefeedelegatedvaluetransfer to see more detail.
  */
 @JsonIgnoreProperties(value = { "chainId" })
-public class FeeDelegatedValueTransfer extends AbstractFeeDelegatedTransaction {
+public class FeeDelegatedValueTransfer extends AbstractFeeDelegatedTransaction implements ITransactionWithGasPriceField {
 
     /**
      * The account address that will receive the transferred value.

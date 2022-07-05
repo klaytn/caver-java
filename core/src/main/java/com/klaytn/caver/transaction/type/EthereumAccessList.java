@@ -18,10 +18,7 @@ package com.klaytn.caver.transaction.type;
 
 import com.klaytn.caver.account.AccountKeyRoleBased;
 import com.klaytn.caver.rpc.Klay;
-import com.klaytn.caver.transaction.AbstractTransaction;
-import com.klaytn.caver.transaction.TransactionDecoder;
-import com.klaytn.caver.transaction.TransactionHasher;
-import com.klaytn.caver.transaction.TransactionHelper;
+import com.klaytn.caver.transaction.*;
 import com.klaytn.caver.transaction.utils.AccessList;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
@@ -42,7 +39,7 @@ import java.util.function.Function;
 /**
  * Represents an ethereum access list transaction.
  */
-public class EthereumAccessList extends AbstractTransaction {
+public class EthereumAccessList extends AbstractTransaction implements ITransactionWithGasPriceField {
     /**
      * The account address that will receive the transferred value.
      */

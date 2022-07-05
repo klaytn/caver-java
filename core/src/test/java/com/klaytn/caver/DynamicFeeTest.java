@@ -59,10 +59,10 @@ public class DynamicFeeTest {
                             .setInput(input)
                             .setNonce(senderNonce)
             );
-            senderNonce = senderNonce.add(BigInteger.valueOf(1));
             caver.wallet.sign(sender.getAddress(), smartContractDeploy);
             String rawTx = smartContractDeploy.getRLPEncoding();
             batchRequest.add(caver.rpc.klay.sendRawTransaction(rawTx));
+            senderNonce = senderNonce.add(BigInteger.valueOf(1));
         }
         batchRequest.send();
     }

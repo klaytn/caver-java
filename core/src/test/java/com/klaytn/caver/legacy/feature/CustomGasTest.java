@@ -36,7 +36,6 @@ import static junit.framework.TestCase.assertEquals;
 import java.math.BigInteger;
 
 public class CustomGasTest {
-    private static BigInteger gasPrice;
     private static final BigInteger GAS_LIMIT = BigInteger.valueOf(3000000L);
 
     private static Caver caver;
@@ -46,7 +45,6 @@ public class CustomGasTest {
     private static KlayCredentials feePayer;
     private static KlayCredentials to;
 
-    private static BigInteger nonce;
     private static BigInteger value;
 
     @BeforeClass
@@ -58,7 +56,6 @@ public class CustomGasTest {
         feePayer = KlayCredentials.create(Keys.createEcKeyPair());
         to = KlayCredentials.create(Keys.createEcKeyPair());
 
-        nonce = BigInteger.ZERO;
         value = BigInteger.ZERO;
     }
 

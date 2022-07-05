@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.account.Account;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
+import com.klaytn.caver.transaction.ITransactionWithGasPriceField;
 import com.klaytn.caver.transaction.TransactionDecoder;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
@@ -39,7 +40,7 @@ import java.util.List;
  * Please refer to https://docs.klaytn.com/klaytn/design/transactions/fee-delegation#txtypefeedelegatedaccountupdate to see more detail.
  */
 @JsonIgnoreProperties(value = { "chainId" })
-public class FeeDelegatedAccountUpdate extends AbstractFeeDelegatedTransaction {
+public class FeeDelegatedAccountUpdate extends AbstractFeeDelegatedTransaction implements ITransactionWithGasPriceField {
 
     /**
      * An account instance includes account key to be updated to the account in the network.

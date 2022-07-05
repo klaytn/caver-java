@@ -37,6 +37,7 @@ public class RoleBasedAccountSmartContractDeployIT extends RoleBasedAccountScena
                 from,
                 BigInteger.ZERO,
                 Numeric.hexStringToByteArray(CONTRACT_INPUT),
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 CodeFormat.EVM
         );

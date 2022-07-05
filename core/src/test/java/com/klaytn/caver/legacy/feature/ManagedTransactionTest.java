@@ -23,6 +23,7 @@ import com.klaytn.caver.tx.Account;
 import com.klaytn.caver.tx.SmartContract;
 import com.klaytn.caver.tx.ValueTransfer;
 import com.klaytn.caver.tx.account.AccountKeyPublic;
+import com.klaytn.caver.tx.gas.DefaultGasProvider;
 import com.klaytn.caver.tx.manager.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.AccountUpdateTransaction;
@@ -45,19 +46,22 @@ import static com.klaytn.caver.base.LocalValues.LOCAL_CHAIN_ID;
 import static org.junit.Assert.assertEquals;
 
 public class ManagedTransactionTest {
-    private static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
+    private static final BigInteger GAS_LIMIT = BigInteger.valueOf(7_300_000);
     private static final byte[] PAYLOAD = Numeric.hexStringToByteArray("0x60806040526000805534801561001457600080fd5b50610116806100246000396000f3006080604052600436106053576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd14605857806342cbb15c146080578063d14e62b81460a8575b600080fd5b348015606357600080fd5b50606a60d2565b6040518082815260200191505060405180910390f35b348015608b57600080fd5b50609260d8565b6040518082815260200191505060405180910390f35b34801560b357600080fd5b5060d06004803603810190808035906020019092919050505060e0565b005b60005481565b600043905090565b80600081905550505600a165627a7a7230582064856de85a2706463526593b08dd790054536042ef66d3204018e6790a2208d10029");
 
     private Caver caver;
+    private DefaultGasProvider gasProvider;
     private TransactionManager transactionManager;
 
-    private SmartContractDeployTransaction smartContractDeployTransaction = SmartContractDeployTransaction
-            .create(LUMAN.getAddress(), BigInteger.ZERO, PAYLOAD, GAS_LIMIT, CodeFormat.EVM);
+    private SmartContractDeployTransaction smartContractDeployTransaction;
 
     @Before
     public void setUp() {
         caver = Caver.build(Caver.DEFAULT_URL);
         transactionManager = getTransactionManager(LUMAN);
+        gasProvider = new DefaultGasProvider(caver);
+        this.smartContractDeployTransaction = SmartContractDeployTransaction
+                .create(LUMAN.getAddress(), BigInteger.ZERO, PAYLOAD, gasProvider.getGasPrice(), GAS_LIMIT, CodeFormat.EVM);
     }
 
     private TransactionManager getTransactionManager(KlayCredentials credentials) {
@@ -69,13 +73,14 @@ public class ManagedTransactionTest {
 
     private SmartContractExecutionTransaction getContractExecutionTransaction(String deployedContract) {
         return SmartContractExecutionTransaction
-                .create(LUMAN.getAddress(), deployedContract, BigInteger.ZERO, getChangePayload(), GAS_LIMIT);
+                .create(LUMAN.getAddress(), deployedContract, BigInteger.ZERO, getChangePayload(), gasProvider.getGasPrice(), GAS_LIMIT);
     }
 
     private AccountUpdateTransaction getAccountUpdateTransaction(KlayCredentials from, KlayCredentials to) {
         return AccountUpdateTransaction.create(
                 from.getAddress(),
                 AccountKeyPublic.create(to.getEcKeyPair().getPublicKey()),
+                gasProvider.getGasPrice(),
                 GAS_LIMIT
         );
     }

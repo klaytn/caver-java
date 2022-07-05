@@ -27,6 +27,7 @@ import com.klaytn.caver.tx.Account;
 import com.klaytn.caver.tx.SmartContract;
 import com.klaytn.caver.tx.ValueTransfer;
 import com.klaytn.caver.tx.account.AccountKeyPublic;
+import com.klaytn.caver.tx.gas.DefaultGasProvider;
 import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.tx.model.AccountUpdateTransaction;
 import com.klaytn.caver.tx.model.SmartContractDeployTransaction;
@@ -43,6 +44,7 @@ import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.DefaultBlockParameterNumber;
 import org.web3j.protocol.core.Response;
+import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -58,13 +60,15 @@ import static com.klaytn.caver.base.LocalValues.LOCAL_NETWORK_ID;
 import static junit.framework.TestCase.*;
 
 public class RpcTest {
-    private static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
+    private static final BigInteger GAS_LIMIT = BigInteger.valueOf(7_300_000);
 
     private static Caver caver;
     private static TestBlock testBlock;
     private static String testTransactionHash;
     private static KlayCredentials testCredentials;
     private static String deployedContract;
+
+    private static DefaultGasProvider gasProvider;
 
     public static class TestBlock {
         int blockNumber;
@@ -81,6 +85,7 @@ public class RpcTest {
     @BeforeClass
     public static void setUp() throws Exception {
         caver = Caver.build(Caver.DEFAULT_URL);
+        gasProvider = new DefaultGasProvider(caver);
         KlayTransactionReceipt.TransactionReceipt receipt = getTransactionReceipt();
         testBlock = getTestBlock(receipt);
         testTransactionHash = receipt.getTransactionHash();
@@ -92,7 +97,7 @@ public class RpcTest {
         byte[] payload = Numeric.hexStringToByteArray("0x60806040526000805534801561001457600080fd5b50610116806100246000396000f3006080604052600436106053576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd14605857806342cbb15c146080578063d14e62b81460a8575b600080fd5b348015606357600080fd5b50606a60d2565b6040518082815260200191505060405180910390f35b348015608b57600080fd5b50609260d8565b6040518082815260200191505060405180910390f35b34801560b357600080fd5b5060d06004803603810190808035906020019092919050505060e0565b005b60005481565b600043905090565b80600081905550505600a165627a7a7230582064856de85a2706463526593b08dd790054536042ef66d3204018e6790a2208d10029");
         SmartContract smartContract = SmartContract.create(caver, new TransactionManager.Builder(caver, BRANDON).setChaindId(LOCAL_CHAIN_ID).build());
         KlayTransactionReceipt.TransactionReceipt receipt = smartContract.sendDeployTransaction(SmartContractDeployTransaction.create(
-                BRANDON.getAddress(), BigInteger.ZERO, payload, GAS_LIMIT, CodeFormat.EVM
+                BRANDON.getAddress(), BigInteger.ZERO, payload, gasProvider.getGasPrice(), GAS_LIMIT, CodeFormat.EVM
         )).send();
         return receipt.getContractAddress();
     }
@@ -100,7 +105,7 @@ public class RpcTest {
     private static void updateTestCredentials() throws Exception {
         ECKeyPair keyPair = Keys.createEcKeyPair();
         Account.create(caver, testCredentials, LOCAL_CHAIN_ID).sendUpdateTransaction(AccountUpdateTransaction.create(
-                testCredentials.getAddress(), AccountKeyPublic.create(keyPair.getPublicKey()), GAS_LIMIT
+                testCredentials.getAddress(), AccountKeyPublic.create(keyPair.getPublicKey()), gasProvider.getGasPrice(), GAS_LIMIT
         )).send();
     }
 
@@ -440,14 +445,14 @@ public class RpcTest {
     public void testGetGasPrice() throws Exception {
         Quantity response = caver.klay().getGasPrice().send();
         BigInteger result = response.getValue();
-        assertEquals(new BigInteger("5d21dba00", 16), result); // 25,000,000,000 peb = 25 Gpeb
+        assertNotNull(result);
     }
 
     @Test
     public void testGetGasPriceAt() throws IOException {
         Quantity response = caver.klay().getGasPriceAt(null).send();
         BigInteger result = response.getValue();
-        assertEquals(new BigInteger("5d21dba00", 16), result); // 25,000,000,000 peb = 25 Gpeb
+        assertNotNull(result);
     }
 
     @Test

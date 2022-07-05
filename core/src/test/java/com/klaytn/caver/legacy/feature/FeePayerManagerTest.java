@@ -19,6 +19,7 @@ package com.klaytn.caver.legacy.feature;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.fee.FeePayerManager;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
+import com.klaytn.caver.tx.gas.DefaultGasProvider;
 import com.klaytn.caver.tx.manager.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.tx.model.ValueTransferTransaction;
 import com.klaytn.caver.tx.type.TxType;
@@ -37,14 +38,16 @@ import static org.junit.Assert.assertEquals;
 public class FeePayerManagerTest {
 
     static final BigInteger GAS_PRICE = Convert.toPeb("25", Convert.Unit.STON).toBigInteger();
-    static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
+    static final BigInteger GAS_LIMIT = BigInteger.valueOf(7_300_000);
     static final BigInteger FEE_RATIO = BigInteger.valueOf(30);
 
     private Caver caver;
+    private DefaultGasProvider gasProvider;
 
     @Before
     public void setUp() {
         caver = Caver.build(Caver.DEFAULT_URL);
+        gasProvider = new DefaultGasProvider(caver);
     }
 
     @Test
@@ -65,7 +68,7 @@ public class FeePayerManagerTest {
 
     private String getSenderRawTx() throws Exception {
         TxType tx = ValueTransferTransaction.create(LUMAN.getAddress(), BRANDON.getAddress(), BigInteger.ONE, GAS_LIMIT)
-                .gasPrice(GAS_PRICE)
+                .gasPrice(gasProvider.getGasPrice())
                 .nonce(getNonce(LUMAN.getAddress()))
                 .feeRatio(FEE_RATIO)
                 .buildFeeDelegated();

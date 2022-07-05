@@ -42,7 +42,7 @@ public class TransactionIT extends Scenario {
     public void testTxTypeLegacyTransaction() throws Exception {
         TxTypeLegacyTransaction tx = TxTypeLegacyTransaction.createTransaction(
                 getNonce(LUMAN.getAddress()),
-                GAS_PRICE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 BRANDON.getAddress(),
                 new BigInteger("174876e800", 16),
@@ -59,7 +59,7 @@ public class TransactionIT extends Scenario {
     public void testTxTypeValueTransfer() throws Exception {
         TxTypeValueTransfer tx = TxTypeValueTransfer.createTransaction(
                 getNonce(BRANDON.getAddress()),
-                GAS_PRICE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 LUMAN.getAddress(),
                 BigInteger.valueOf(0x989680),
@@ -79,7 +79,7 @@ public class TransactionIT extends Scenario {
          */
         TxTypeFeeDelegatedValueTransfer tx = TxTypeFeeDelegatedValueTransfer.createTransaction(
                 getNonce(BRANDON.getAddress()),
-                GAS_PRICE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 LUMAN.getAddress(),
                 BigInteger.valueOf(0x989680),
@@ -104,7 +104,7 @@ public class TransactionIT extends Scenario {
          */
         TxTypeFeeDelegatedValueTransferWithRatio tx = TxTypeFeeDelegatedValueTransferWithRatio.createTransaction(
                 getNonce(BRANDON.getAddress()),
-                GAS_PRICE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 LUMAN.getAddress(),
                 BigInteger.valueOf(0x989680),
@@ -127,7 +127,7 @@ public class TransactionIT extends Scenario {
     public void testTxTypeValueTransferMemo() throws Exception {
         TxTypeValueTransferMemo tx = TxTypeValueTransferMemo.createTransaction(
                 getNonce(BRANDON.getAddress()),
-                GAS_PRICE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 LUMAN.getAddress(),
                 BigInteger.valueOf(0x989680),
@@ -148,7 +148,7 @@ public class TransactionIT extends Scenario {
          */
         TxTypeFeeDelegatedValueTransferMemo tx = TxTypeFeeDelegatedValueTransferMemo.createTransaction(
                 getNonce(BRANDON.getAddress()),
-                GAS_PRICE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 LUMAN.getAddress(),
                 BigInteger.valueOf(0x989680),
@@ -175,7 +175,7 @@ public class TransactionIT extends Scenario {
          */
         TxTypeFeeDelegatedValueTransferMemoWithRatio tx = TxTypeFeeDelegatedValueTransferMemoWithRatio.createTransaction(
                 getNonce(BRANDON.getAddress()),
-                GAS_PRICE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 LUMAN.getAddress(),
                 BigInteger.valueOf(0x989680),
@@ -200,7 +200,7 @@ public class TransactionIT extends Scenario {
     public void testTxTypeSmartContractDeploy() throws Exception {
         TxTypeSmartContractDeploy tx = TxTypeSmartContractDeploy.createTransaction(
                 getNonce(BRANDON.getAddress()),
-                GAS_PRICE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 BigInteger.valueOf(0x0),
                 BRANDON.getAddress(),
@@ -223,7 +223,7 @@ public class TransactionIT extends Scenario {
          */
         TxTypeFeeDelegatedSmartContractDeploy tx = TxTypeFeeDelegatedSmartContractDeploy.createTransaction(
                 getNonce(BRANDON.getAddress()),
-                GAS_PRICE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 BigInteger.ZERO,
                 BRANDON.getAddress(),
@@ -251,7 +251,7 @@ public class TransactionIT extends Scenario {
          */
         TxTypeFeeDelegatedSmartContractDeployWithRatio tx = TxTypeFeeDelegatedSmartContractDeployWithRatio.createTransaction(
                 getNonce(BRANDON.getAddress()),
-                GAS_PRICE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 BigInteger.ZERO,
                 BRANDON.getAddress(),
@@ -278,7 +278,7 @@ public class TransactionIT extends Scenario {
 
         TxTypeSmartContractExecution tx = TxTypeSmartContractExecution.createTransaction(
                 getNonce(BRANDON.getAddress()),
-                GAS_PRICE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 deployedContract,
                 BigInteger.ZERO,
@@ -301,7 +301,7 @@ public class TransactionIT extends Scenario {
          */
         TxTypeFeeDelegatedSmartContractExecution tx = TxTypeFeeDelegatedSmartContractExecution.createTransaction(
                 getNonce(BRANDON.getAddress()),
-                GAS_PRICE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 deployedContract,
                 BigInteger.ZERO,
@@ -341,7 +341,7 @@ public class TransactionIT extends Scenario {
          */
         TxTypeFeeDelegatedSmartContractExecutionWithRatio tx = TxTypeFeeDelegatedSmartContractExecutionWithRatio.createTransaction(
                 getNonce(LUMAN.getAddress()),
-                GAS_PRICE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 deployedContract,
                 BigInteger.ZERO,
@@ -367,7 +367,7 @@ public class TransactionIT extends Scenario {
 
         TxTypeCancel tx = TxTypeCancel.createTransaction(
                 nonce,
-                GAS_PRICE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 WAYNE.getAddress());
 
@@ -387,7 +387,7 @@ public class TransactionIT extends Scenario {
          */
         TxTypeFeeDelegatedCancel tx = TxTypeFeeDelegatedCancel.createTransaction(
                 nonce,
-                GAS_PRICE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 WAYNE.getAddress()
         );
@@ -413,7 +413,7 @@ public class TransactionIT extends Scenario {
          */
         TxTypeFeeDelegatedCancelWithRatio tx = TxTypeFeeDelegatedCancelWithRatio.createTransaction(
                 nonce,
-                GAS_PRICE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 WAYNE.getAddress(),
                 BigInteger.valueOf(88));
@@ -433,7 +433,7 @@ public class TransactionIT extends Scenario {
     private void sendBasicTransaction(BigInteger nonce, KlayCredentials from, KlayCredentials to) throws Exception {
         TxTypeLegacyTransaction tx = TxTypeLegacyTransaction.createTransaction(
                 nonce,
-                GAS_PRICE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 to.getAddress(),
                 new BigInteger("174876e800", 16),
@@ -449,7 +449,7 @@ public class TransactionIT extends Scenario {
     public void testTxTypeChainDataAnchoringTransaction() throws Exception {
         TxTypeChainDataAnchoringTransaction tx = TxTypeChainDataAnchoringTransaction.createTransaction(
                 getNonce(BRANDON.getAddress()),
-                GAS_PRICE,
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 BRANDON.getAddress(),
                 Numeric.hexStringToByteArray("0xf8a6a00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000003a0000000000000000000000000000000000000000000000000000000000000000405"));
@@ -468,6 +468,7 @@ public class TransactionIT extends Scenario {
                 BRANDON.getAddress(),
                 BigInteger.ZERO,
                 Numeric.hexStringToByteArray("0x60806040526000805560405160208061014b83398101806040528101908080519060200190929190505050806000819055505061010a806100416000396000f3006080604052600436106053576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd14605857806342cbb15c146080578063d14e62b81460a8575b600080fd5b348015606357600080fd5b50606a60c6565b6040518082815260200191505060405180910390f35b348015608b57600080fd5b50609260cc565b6040518082815260200191505060405180910390f35b60c46004803603810190808035906020019092919050505060d4565b005b60005481565b600043905090565b80600081905550505600a165627a7a72305820d9f890da4e30bac256db19aacc47a7025c902da590bd8ebab1fe5425f3670df000290000000000000000000000000000000000000000000000000000000000000001"),
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 CodeFormat.EVM
         )).send();

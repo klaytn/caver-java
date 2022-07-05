@@ -276,7 +276,6 @@ public class RpcTest extends Accounts {
 
         String to = "0x7b65B75d204aBed71587c9E519a89277766EE1d0";
         String gas = "0xf4240";
-        String gasPrice = "0x5d21dba00";
         String nonce;
         String value = "0xa";
         AccessList accessList = new AccessList(
@@ -295,15 +294,15 @@ public class RpcTest extends Accounts {
             nonce = klay.getTransactionCount(klayProviderKeyring.getAddress(), DefaultBlockParameterName.PENDING).send().getResult();
             String chainId = klay.getChainID().send().getResult();
 
-            EthereumAccessList ethereumAccessList = new EthereumAccessList.Builder()
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
                     .setTo(to)
                     .setGas(gas)
-                    .setGasPrice(gasPrice)
                     .setChainId(chainId)
                     .setNonce(nonce)
                     .setValue(value)
                     .setAccessList(accessList)
-                    .build();
+            );
 
             ethereumAccessList.sign(klayProviderKeyring);
 
@@ -316,16 +315,15 @@ public class RpcTest extends Accounts {
             nonce = klay.getTransactionCount(klayProviderKeyring.getAddress(), DefaultBlockParameterName.PENDING).send().getResult();
             String chainId = klay.getChainID().send().getResult();
 
-            EthereumDynamicFee ethereumDynamicFee = new EthereumDynamicFee.Builder()
+            EthereumDynamicFee ethereumDynamicFee = caver.transaction.ethereumDynamicFee.create(
+                    TxPropertyBuilder.ethereumDynamicFee()
                     .setTo(to)
                     .setGas(gas)
-                    .setMaxPriorityFeePerGas(gasPrice)
-                    .setMaxFeePerGas(gasPrice)
                     .setChainId(chainId)
                     .setNonce(nonce)
                     .setValue(value)
                     .setAccessList(accessList)
-                    .build();
+            );
 
             ethereumDynamicFee.sign(klayProviderKeyring);
 
@@ -346,7 +344,6 @@ public class RpcTest extends Accounts {
 
         String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
         String gas = "0xf4240";
-        String gasPrice = "0x5d21dba00";
         String value = "0xa";
         AccessList accessList = new AccessList(
                 Arrays.asList(
@@ -362,24 +359,12 @@ public class RpcTest extends Accounts {
         private void checkTransactionFields(Transaction.TransactionData transactionData, boolean isDynamicFee) {
             Assert.assertEquals(to, transactionData.getTo());
             Assert.assertEquals(gas, transactionData.getGas());
-            if (isDynamicFee) {
-                Assert.assertEquals(gasPrice, transactionData.getMaxPriorityFeePerGas());
-                Assert.assertEquals(gasPrice, transactionData.getMaxFeePerGas());
-            } else {
-                Assert.assertEquals(gasPrice, transactionData.getGasPrice());
-            }
             Assert.assertEquals(accessList, transactionData.getAccessList());
         }
 
         private void checkTransactionReceiptFields(TransactionReceipt.TransactionReceiptData transactionReceiptData, boolean isDynamicFee) {
             Assert.assertEquals(to, transactionReceiptData.getTo());
             Assert.assertEquals(gas, transactionReceiptData.getGas());
-            if (isDynamicFee) {
-                Assert.assertEquals(gasPrice, transactionReceiptData.getMaxPriorityFeePerGas());
-                Assert.assertEquals(gasPrice, transactionReceiptData.getMaxFeePerGas());
-            } else {
-                Assert.assertEquals(gasPrice, transactionReceiptData.getGasPrice());
-            }
             Assert.assertEquals(accessList, transactionReceiptData.getAccessList());
         }
 
@@ -388,15 +373,15 @@ public class RpcTest extends Accounts {
             String nonce = klay.getTransactionCount(klayProviderKeyring.getAddress(), DefaultBlockParameterName.PENDING).send().getResult();
             String chainId = klay.getChainID().send().getResult();
 
-            EthereumAccessList ethereumAccessList = new EthereumAccessList.Builder()
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
                     .setTo(to)
                     .setGas(gas)
-                    .setGasPrice(gasPrice)
                     .setChainId(chainId)
                     .setNonce(nonce)
                     .setValue(value)
                     .setAccessList(accessList)
-                    .build();
+            );
 
             ethereumAccessList.sign(klayProviderKeyring);
 
@@ -416,16 +401,15 @@ public class RpcTest extends Accounts {
             String nonce = klay.getTransactionCount(klayProviderKeyring.getAddress(), DefaultBlockParameterName.PENDING).send().getResult();
             String chainId = klay.getChainID().send().getResult();
 
-            EthereumDynamicFee ethereumDynamicFee = new EthereumDynamicFee.Builder()
+            EthereumDynamicFee ethereumDynamicFee = caver.transaction.ethereumDynamicFee.create(
+                    TxPropertyBuilder.ethereumDynamicFee()
                     .setTo(to)
                     .setGas(gas)
-                    .setMaxPriorityFeePerGas(gasPrice)
-                    .setMaxFeePerGas(gasPrice)
                     .setChainId(chainId)
                     .setNonce(nonce)
                     .setValue(value)
                     .setAccessList(accessList)
-                    .build();
+            );
 
             ethereumDynamicFee.sign(klayProviderKeyring);
 
@@ -1062,21 +1046,21 @@ public class RpcTest extends Accounts {
         public void getGasPriceTest() throws Exception {
             Quantity response = caver.rpc.klay.getGasPrice().send();
             BigInteger result = response.getValue();
-            assertEquals(new BigInteger("5d21dba00", 16), result); // 25,000,000,000 peb = 25 Gpeb
+            assertNotNull(result);
         }
 
         @Test
         public void getGasPriceAtTest() throws IOException {
             Quantity response = caver.rpc.klay.getGasPriceAt().send();
             BigInteger result = response.getValue();
-            assertEquals(new BigInteger("5d21dba00", 16), result); // 25,000,000,000 peb = 25 Gpeb
+            assertNotNull(result);
         }
 
         @Test
         public void getMaxPriorityFeePerGasTest() throws Exception {
             Quantity response = caver.rpc.klay.getMaxPriorityFeePerGas().send();
             BigInteger result = response.getValue();
-            assertEquals(new BigInteger("5d21dba00", 16), result); // 25,000,000,000 peb = 25 Gpeb
+            assertNotNull(result);
         }
 
         // checkFeeHistoryResult checks response from getFeeHistory is ok or not.

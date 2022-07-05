@@ -23,6 +23,7 @@ package com.klaytn.caver.tx;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
+import com.klaytn.caver.tx.gas.DefaultGasProvider;
 import com.klaytn.caver.tx.manager.ErrorHandler;
 import com.klaytn.caver.tx.manager.TransactionManager;
 import com.klaytn.caver.utils.Convert;
@@ -40,9 +41,11 @@ import java.math.BigInteger;
 public class ValueTransfer extends ManagedTransaction {
 
     public static final BigInteger GAS_LIMIT = BigInteger.valueOf(21000);
+    private DefaultGasProvider gasProvider;
 
     private ValueTransfer(Caver caver, TransactionManager transactionManager) {
         super(caver, transactionManager);
+        this.gasProvider = new DefaultGasProvider(caver);
     }
 
     private KlayTransactionReceipt.TransactionReceipt send(
@@ -57,7 +60,7 @@ public class ValueTransfer extends ManagedTransaction {
         }
 
         ValueTransferTransaction transaction = ValueTransferTransaction.create(
-                fromAddress, toAddress, klayValue.toBigIntegerExact(), gasLimit);
+                fromAddress, toAddress, klayValue.toBigIntegerExact(), gasProvider.getGasPrice(), gasLimit);
 
         return send(transaction);
     }

@@ -66,14 +66,15 @@ public class CustomGasTest {
 
     @Test
     public void testCustomGasPriceWithValueTransfer() throws Exception {
+        BigInteger suggestedGasPrice = gasProvider.getGasPrice();
         ValueTransferTransaction tx = ValueTransferTransaction.create(
                 sender.getAddress(),
                 to.getAddress(),
                 value,
-                gasProvider.getGasPrice(),
+                suggestedGasPrice,
                 GAS_LIMIT
         );
-        assertEquals(tx.getGasPrice(), gasProvider.getGasPrice());
+        assertEquals(tx.getGasPrice(), suggestedGasPrice);
 
         TransactionManager tm = new TransactionManager.Builder(caver, sender).build();
         KlayRawTransaction rawTransaction = tm.sign(tx);

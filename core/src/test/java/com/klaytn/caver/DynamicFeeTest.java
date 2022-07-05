@@ -174,7 +174,7 @@ public class DynamicFeeTest {
         return true;
     }
 
-    @Test
+//    @Test
     public void contractDeployTest() throws Exception {
         // Generate many txs to increase baseFee
         generateTxsBomb();
@@ -200,7 +200,7 @@ public class DynamicFeeTest {
         assertNotNull(contract.getContractAddress());
     }
 
-    @Test
+//    @Test
     public void contractSendTest() throws Exception {
         // Generate many txs to increase baseFee
         generateTxsBomb();
@@ -214,7 +214,7 @@ public class DynamicFeeTest {
         assertEquals(isValid, true);
     }
 
-    @Test
+//    @Test
     public void contractSignTest() throws Exception {
         // Generate many txs to increase baseFee
         generateTxsBomb();
@@ -228,7 +228,7 @@ public class DynamicFeeTest {
         assertEquals(isValid, true);
     }
 
-    @Test
+//    @Test
     public void contractSignAsFeePayerTest() throws Exception {
         // Generate many txs to increase baseFee
         generateTxsBomb();

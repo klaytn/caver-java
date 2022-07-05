@@ -1,18 +1,28 @@
 package com.klaytn.caver;
 
+import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
+import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
+import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
+import com.klaytn.caver.transaction.type.EthereumDynamicFee;
+import com.klaytn.caver.transaction.type.FeeDelegatedValueTransfer;
 import com.klaytn.caver.transaction.type.SmartContractDeploy;
 import com.klaytn.caver.transaction.type.ValueTransfer;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import org.junit.Before;
+import org.junit.Test;
 import org.web3j.protocol.core.BatchRequest;
+import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.math.BigInteger;
+
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 
 public class DynamicFeeTest {
     static Caver caver;
@@ -110,5 +120,153 @@ public class DynamicFeeTest {
             return false;
         }
         return true;
+    }
+
+    @Test
+    public void sign() throws IOException, TransactionException {
+        generateTxsBomb();
+
+        ValueTransfer tx = caver.transaction.valueTransfer.create(
+                TxPropertyBuilder.valueTransfer()
+                        .setFrom(sender.getAddress())
+                        .setTo(caver.wallet.keyring.generate().getAddress())
+                        .setValue(BigInteger.ONE)
+                        .setGas(BigInteger.valueOf(2500000))
+        );
+        tx.sign(sender);
+        BigInteger gasPriceAtCurrentBlock = caver.rpc.klay.getGasPrice().send().getValue();
+        assertTrue(
+                "gasPrice will be set with `baseFee * 2`, so gasPrice cannot be smaller than current base fee",
+                Numeric.toBigInt(tx.getGasPrice()).compareTo(gasPriceAtCurrentBlock) < 0
+        );
+
+        Bytes32 txHash = caver.rpc.klay.sendRawTransaction(tx).send();
+        TransactionReceiptProcessor receiptProcessor = new PollingTransactionReceiptProcessor(caver, 1000, 15);
+
+        TransactionReceipt.TransactionReceiptData receiptData = receiptProcessor.waitForTransactionReceipt(txHash.getResult());
+        assertFalse(validateGasFeeWithReceipt(receiptData));
+    }
+
+    @Test
+    public void ethereumDynamicFeeSign() throws IOException {
+        generateTxsBomb();
+
+        EthereumDynamicFee tx = caver.transaction.ethereumDynamicFee.create(
+                TxPropertyBuilder.ethereumDynamicFee()
+                        .setFrom(sender.getAddress())
+                        .setTo(caver.wallet.keyring.generate().getAddress())
+                        .setValue(BigInteger.ONE)
+                        .setGas(BigInteger.valueOf(2500000))
+        );
+        tx.sign(sender);
+        BigInteger gasPriceAtCurrentBlock = caver.rpc.klay.getGasPrice().send().getValue();
+        BigInteger maxPriorityFeePerGas = caver.rpc.klay.getMaxPriorityFeePerGas().send().getValue();
+        assertTrue(
+                Numeric.toBigInt(tx.getMaxPriorityFeePerGas()).compareTo(maxPriorityFeePerGas) != 0
+        );
+        assertTrue(
+                "maxFeePerGas will be set with `baseFee * 2`, so maxFeePerGas cannot be smaller than current base fee",
+                Numeric.toBigInt(tx.getMaxFeePerGas()).compareTo(gasPriceAtCurrentBlock) < 0
+        );
+    }
+    @Test
+    public void signAsFeePayer() throws IOException, TransactionException {
+        generateTxsBomb();
+
+        FeeDelegatedValueTransfer tx = caver.transaction.feeDelegatedValueTransfer.create(
+                TxPropertyBuilder.feeDelegatedValueTransfer()
+                        .setFrom(sender.getAddress())
+                        .setTo(caver.wallet.keyring.generate().getAddress())
+                        .setValue(BigInteger.ONE)
+                        .setGas(BigInteger.valueOf(2500000))
+                        .setFeePayer(feePayer.getAddress())
+        );
+        tx.signAsFeePayer(feePayer);
+        tx.sign(sender);
+        BigInteger gasPriceAtCurrentBlock = caver.rpc.klay.getGasPrice().send().getValue();
+        assertTrue(
+                "gasPrice will be set with `baseFee * 2`, so gasPrice cannot be smaller than current base fee",
+                Numeric.toBigInt(tx.getGasPrice()).compareTo(gasPriceAtCurrentBlock) < 0
+        );
+
+        Bytes32 txHash = caver.rpc.klay.sendRawTransaction(tx).send();
+        TransactionReceiptProcessor receiptProcessor = new PollingTransactionReceiptProcessor(caver, 1000, 15);
+
+        TransactionReceipt.TransactionReceiptData receiptData = receiptProcessor.waitForTransactionReceipt(txHash.getResult());
+        assertFalse(validateGasFeeWithReceipt(receiptData));
+    }
+
+    @Test
+    public void walletSign() throws IOException, TransactionException {
+        generateTxsBomb();
+
+        ValueTransfer tx = caver.transaction.valueTransfer.create(
+                TxPropertyBuilder.valueTransfer()
+                        .setFrom(sender.getAddress())
+                        .setTo(caver.wallet.keyring.generate().getAddress())
+                        .setValue(BigInteger.ONE)
+                        .setGas(BigInteger.valueOf(2500000))
+        );
+        caver.wallet.sign(sender.getAddress(), tx);
+        BigInteger gasPriceAtCurrentBlock = caver.rpc.klay.getGasPrice().send().getValue();
+        assertTrue(
+                "gasPrice will be set with `baseFee * 2`, so gasPrice cannot be smaller than current base fee",
+                Numeric.toBigInt(tx.getGasPrice()).compareTo(gasPriceAtCurrentBlock) < 0
+        );
+
+        Bytes32 txHash = caver.rpc.klay.sendRawTransaction(tx).send();
+        TransactionReceiptProcessor receiptProcessor = new PollingTransactionReceiptProcessor(caver, 1000, 15);
+
+        TransactionReceipt.TransactionReceiptData receiptData = receiptProcessor.waitForTransactionReceipt(txHash.getResult());
+        assertFalse(validateGasFeeWithReceipt(receiptData));
+    }
+
+    @Test
+    public void ethereumDynamicFeeWalletSign() throws IOException {
+        generateTxsBomb();
+
+        EthereumDynamicFee tx = caver.transaction.ethereumDynamicFee.create(
+                TxPropertyBuilder.ethereumDynamicFee()
+                        .setFrom(sender.getAddress())
+                        .setTo(caver.wallet.keyring.generate().getAddress())
+                        .setValue(BigInteger.ONE)
+                        .setGas(BigInteger.valueOf(2500000))
+        );
+        caver.wallet.sign(sender.getAddress(), tx);
+        BigInteger gasPriceAtCurrentBlock = caver.rpc.klay.getGasPrice().send().getValue();
+        BigInteger maxPriorityFeePerGas = caver.rpc.klay.getMaxPriorityFeePerGas().send().getValue();
+        assertTrue(
+                Numeric.toBigInt(tx.getMaxPriorityFeePerGas()).compareTo(maxPriorityFeePerGas) != 0
+        );
+        assertTrue(
+                "maxFeePerGas will be set with `baseFee * 2`, so maxFeePerGas cannot be smaller than current base fee",
+                Numeric.toBigInt(tx.getMaxFeePerGas()).compareTo(gasPriceAtCurrentBlock) < 0
+        );
+    }
+    @Test
+    public void walletSignAsFeePayer() throws IOException, TransactionException {
+        generateTxsBomb();
+
+        FeeDelegatedValueTransfer tx = caver.transaction.feeDelegatedValueTransfer.create(
+                TxPropertyBuilder.feeDelegatedValueTransfer()
+                        .setFrom(sender.getAddress())
+                        .setTo(caver.wallet.keyring.generate().getAddress())
+                        .setValue(BigInteger.ONE)
+                        .setGas(BigInteger.valueOf(2500000))
+                        .setFeePayer(feePayer.getAddress())
+        );
+        caver.wallet.signAsFeePayer(feePayer.getAddress(), tx);
+        caver.wallet.sign(sender.getAddress(), tx);
+        BigInteger gasPriceAtCurrentBlock = caver.rpc.klay.getGasPrice().send().getValue();
+        assertTrue(
+                "gasPrice will be set with `baseFee * 2`, so gasPrice cannot be smaller than current base fee",
+                Numeric.toBigInt(tx.getGasPrice()).compareTo(gasPriceAtCurrentBlock) < 0
+        );
+
+        Bytes32 txHash = caver.rpc.klay.sendRawTransaction(tx).send();
+        TransactionReceiptProcessor receiptProcessor = new PollingTransactionReceiptProcessor(caver, 1000, 15);
+
+        TransactionReceipt.TransactionReceiptData receiptData = receiptProcessor.waitForTransactionReceipt(txHash.getResult());
+        assertFalse(validateGasFeeWithReceipt(receiptData));
     }
 }

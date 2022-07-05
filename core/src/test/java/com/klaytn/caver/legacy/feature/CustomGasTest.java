@@ -39,7 +39,6 @@ public class CustomGasTest {
     private static BigInteger gasPrice;
     private static final BigInteger GAS_LIMIT = BigInteger.valueOf(3000000L);
 
-    private static BigInteger chainId;
     private static Caver caver;
     private static DefaultGasProvider gasProvider;
 
@@ -53,7 +52,6 @@ public class CustomGasTest {
     @BeforeClass
     public static void setup() throws Exception {
         caver = Caver.build("http://localhost:8551");
-        chainId = caver.rpc.klay.getChainID().send().getValue();
         gasProvider= new DefaultGasProvider(caver);
 
         sender = KlayCredentials.create(Keys.createEcKeyPair());

@@ -17,6 +17,7 @@ import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -174,7 +175,8 @@ public class DynamicFeeTest {
         return true;
     }
 
-//    @Test
+    @Test
+    @Ignore
     public void contractDeployTest() throws Exception {
         // Generate many txs to increase baseFee
         generateTxsBomb();
@@ -200,7 +202,8 @@ public class DynamicFeeTest {
         assertNotNull(contract.getContractAddress());
     }
 
-//    @Test
+    @Test
+    @Ignore
     public void contractSendTest() throws Exception {
         // Generate many txs to increase baseFee
         generateTxsBomb();
@@ -214,7 +217,8 @@ public class DynamicFeeTest {
         assertEquals(isValid, true);
     }
 
-//    @Test
+    @Test
+    @Ignore
     public void contractSignTest() throws Exception {
         // Generate many txs to increase baseFee
         generateTxsBomb();
@@ -228,7 +232,8 @@ public class DynamicFeeTest {
         assertEquals(isValid, true);
     }
 
-//    @Test
+    @Test
+    @Ignore
     public void contractSignAsFeePayerTest() throws Exception {
         // Generate many txs to increase baseFee
         generateTxsBomb();

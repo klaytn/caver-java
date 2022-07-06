@@ -266,13 +266,13 @@ public class DynamicFeeTest {
                         .setGas(BigInteger.valueOf(2500000))
         );
         tx.sign(sender);
-        assertFalse(validateGasPriceInTx(tx));
+        assertTrue(validateGasPriceInTx(tx));
 
         Bytes32 txHash = caver.rpc.klay.sendRawTransaction(tx).send();
         TransactionReceiptProcessor receiptProcessor = new PollingTransactionReceiptProcessor(caver, 1000, 15);
 
         TransactionReceipt.TransactionReceiptData receiptData = receiptProcessor.waitForTransactionReceipt(txHash.getResult());
-        assertFalse(validateGasFeeWithReceipt(receiptData));
+        assertTrue(validateGasFeeWithReceipt(receiptData));
     }
 
     @Test
@@ -288,7 +288,7 @@ public class DynamicFeeTest {
                         .setGas(BigInteger.valueOf(2500000))
         );
         tx.sign(sender);
-        assertFalse(validateGasPriceInTx(tx));
+        assertTrue(validateGasPriceInTx(tx));
     }
 
     @Test
@@ -306,13 +306,13 @@ public class DynamicFeeTest {
         );
         tx.signAsFeePayer(feePayer);
         tx.sign(sender);
-        assertFalse(validateGasPriceInTx(tx));
+        assertTrue(validateGasPriceInTx(tx));
 
         Bytes32 txHash = caver.rpc.klay.sendRawTransaction(tx).send();
         TransactionReceiptProcessor receiptProcessor = new PollingTransactionReceiptProcessor(caver, 1000, 15);
 
         TransactionReceipt.TransactionReceiptData receiptData = receiptProcessor.waitForTransactionReceipt(txHash.getResult());
-        assertFalse(validateGasFeeWithReceipt(receiptData));
+        assertTrue(validateGasFeeWithReceipt(receiptData));
     }
 
     @Test
@@ -328,13 +328,13 @@ public class DynamicFeeTest {
                         .setGas(BigInteger.valueOf(2500000))
         );
         caver.wallet.sign(sender.getAddress(), tx);
-        assertFalse(validateGasPriceInTx(tx));
+        assertTrue(validateGasPriceInTx(tx));
 
         Bytes32 txHash = caver.rpc.klay.sendRawTransaction(tx).send();
         TransactionReceiptProcessor receiptProcessor = new PollingTransactionReceiptProcessor(caver, 1000, 15);
 
         TransactionReceipt.TransactionReceiptData receiptData = receiptProcessor.waitForTransactionReceipt(txHash.getResult());
-        assertFalse(validateGasFeeWithReceipt(receiptData));
+        assertTrue(validateGasFeeWithReceipt(receiptData));
     }
 
     @Test
@@ -350,7 +350,7 @@ public class DynamicFeeTest {
                         .setGas(BigInteger.valueOf(2500000))
         );
         caver.wallet.sign(sender.getAddress(), tx);
-        assertFalse(validateGasPriceInTx(tx));
+        assertTrue(validateGasPriceInTx(tx));
     }
 
     @Test
@@ -368,12 +368,12 @@ public class DynamicFeeTest {
         );
         caver.wallet.signAsFeePayer(feePayer.getAddress(), tx);
         caver.wallet.sign(sender.getAddress(), tx);
-        assertFalse(validateGasPriceInTx(tx));
+        assertTrue(validateGasPriceInTx(tx));
 
         Bytes32 txHash = caver.rpc.klay.sendRawTransaction(tx).send();
         TransactionReceiptProcessor receiptProcessor = new PollingTransactionReceiptProcessor(caver, 1000, 15);
 
         TransactionReceipt.TransactionReceiptData receiptData = receiptProcessor.waitForTransactionReceipt(txHash.getResult());
-        assertFalse(validateGasFeeWithReceipt(receiptData));
+        assertTrue(validateGasFeeWithReceipt(receiptData));
     }
 }

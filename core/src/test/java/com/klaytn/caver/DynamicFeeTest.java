@@ -1,22 +1,44 @@
 package com.klaytn.caver;
 
+import com.klaytn.caver.common.contract.ContractTest;
+import com.klaytn.caver.contract.Contract;
+import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.methods.response.TransactionReceipt;
+import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
+import com.klaytn.caver.transaction.AbstractTransaction;
+import com.klaytn.caver.transaction.ITransactionWithGasPriceField;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
+import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
+import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
+import com.klaytn.caver.transaction.type.EthereumDynamicFee;
 import com.klaytn.caver.transaction.type.SmartContractDeploy;
 import com.klaytn.caver.transaction.type.ValueTransfer;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.AbstractKeyring;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.web3j.protocol.core.BatchRequest;
+import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+
+@RunWith(MockitoJUnitRunner.class)
 public class DynamicFeeTest {
     static Caver caver;
     static SingleKeyring rich, sender, feePayer;
+
+    static String kip7Address;
 
     @Before
     public void setUp() throws Exception {
@@ -28,10 +50,26 @@ public class DynamicFeeTest {
         fillKlay(sender, "200");
         feePayer = caver.wallet.keyring.generate();
         fillKlay(feePayer, "200");
+
+        deployKIP7();
+    }
+
+    // deploy a KIP-7 token contract for testing
+    private void deployKIP7() throws TransactionException, IOException, NoSuchMethodException, InstantiationException, ClassNotFoundException, IllegalAccessException, InvocationTargetException {
+        String name = "Jamie";
+        String symbol = "JME";
+        BigInteger decimals = BigInteger.valueOf(18);
+        BigInteger initialSupply = BigInteger.valueOf(100_000).multiply(BigInteger.TEN.pow(decimals.intValue())); // 100000 * 10^18
+
+        Contract contract = caver.contract.create(ContractTest.jsonObj);
+        SendOptions sendOptions = new SendOptions(sender.getAddress(), BigInteger.valueOf(6500000));
+        contract.deploy(sendOptions, ContractTest.BINARY, name, symbol, decimals, initialSupply);
+
+        kip7Address = contract.getContractAddress();
     }
 
     // rich sends enough KLAY to an account.
-    private void fillKlay(AbstractKeyring keyring, String amount) throws IOException {
+    private void fillKlay(AbstractKeyring keyring, String amount) throws IOException, TransactionException {
         caver.wallet.add(keyring);
         ValueTransfer valueTransfer = caver.transaction.valueTransfer.create(
                 TxPropertyBuilder.valueTransfer()
@@ -41,7 +79,11 @@ public class DynamicFeeTest {
                         .setGas(BigInteger.valueOf(6000000))
         );
         caver.wallet.sign(rich.getAddress(), valueTransfer);
-        caver.rpc.klay.sendRawTransaction(valueTransfer).send();
+        String txHash = caver.rpc.klay.sendRawTransaction(valueTransfer).send().getResult();
+
+        // Check receipt to make sure tx is processed.
+        TransactionReceiptProcessor receiptProcessor = new PollingTransactionReceiptProcessor(caver, 1000, 15);
+        receiptProcessor.waitForTransactionReceipt(txHash);
     }
 
    public void generateTxsBomb() throws IOException {
@@ -110,5 +152,102 @@ public class DynamicFeeTest {
             return false;
         }
         return true;
+    }
+
+    private boolean validateGasPriceInTx(AbstractTransaction tx) throws IOException {
+        // Klaytn will return baseFee
+        BigInteger gasPrice = caver.rpc.klay.getGasPrice().send().getValue();
+
+        // If transaction type is TxTypeEthereumDynamicFee,
+        // validate `maxPriorityFeePerGas` and `maxFeePerGas`.
+        if (tx.getType().contains("DynamicFee")) {
+            BigInteger mpfg = caver.rpc.klay.getMaxPriorityFeePerGas().send().getValue();
+            BigInteger maxPriorityFeePerGas = new BigInteger(((EthereumDynamicFee) tx).getMaxPriorityFeePerGas());
+            BigInteger maxFeePerGas = new BigInteger(((EthereumDynamicFee) tx).getMaxFeePerGas());
+            if (mpfg.compareTo(maxPriorityFeePerGas) != 0) return false;
+            // maxFeePerGas will be set with `baseFee * 2`, so maxFeePerGas can't be smaller than current base fee
+            if (maxFeePerGas.compareTo(gasPrice) < 0) return false;
+            return true;
+        }
+
+        BigInteger gasPriceInTx = new BigInteger(((ITransactionWithGasPriceField) tx).getGasPrice());
+        if (gasPriceInTx.compareTo(gasPrice) < 0) return false;
+        return true;
+    }
+
+    @Test
+    @Ignore
+    public void contractDeployTest() throws Exception {
+        // Generate many txs to increase baseFee
+        generateTxsBomb();
+
+        String name = "Jamie";
+        String symbol = "JME";
+        BigInteger decimals = BigInteger.valueOf(18);
+        BigInteger initialSupply = BigInteger.valueOf(100_000).multiply(BigInteger.TEN.pow(decimals.intValue())); // 100000 * 10^18
+
+        Contract contract = caver.contract.create(ContractTest.jsonObj);
+        SendOptions sendOptions = new SendOptions(sender.getAddress(), BigInteger.valueOf(6500000));
+
+        // Mock constructor method to validate receipt
+        Contract contractSpy = Mockito.spy(contract);
+        Mockito.when(contractSpy.getMethod("constructor").send(any())).thenAnswer(i -> {
+            TransactionReceipt.TransactionReceiptData receipt = (TransactionReceipt.TransactionReceiptData)i.getArguments()[0];
+            boolean isValid = validateGasFeeWithReceipt(receipt);
+            assertEquals(isValid, true);
+            return receipt;
+        });
+
+        contract.deploy(sendOptions, ContractTest.BINARY, name, symbol, decimals, initialSupply);
+        assertNotNull(contract.getContractAddress());
+    }
+
+    @Test
+    @Ignore
+    public void contractSendTest() throws Exception {
+        // Generate many txs to increase baseFee
+        generateTxsBomb();
+
+        SendOptions sendOptions = new SendOptions(sender.getAddress(), BigInteger.valueOf(6500000));
+
+        Contract contract = caver.contract.create(ContractTest.jsonObj, kip7Address);
+        TransactionReceipt.TransactionReceiptData receipt = contract.send(sendOptions, "transfer", feePayer.getAddress(), BigInteger.ONE);
+
+        boolean isValid = validateGasFeeWithReceipt(receipt);
+        assertEquals(isValid, true);
+    }
+
+    @Test
+    @Ignore
+    public void contractSignTest() throws Exception {
+        // Generate many txs to increase baseFee
+        generateTxsBomb();
+
+        SendOptions sendOptions = new SendOptions(sender.getAddress(), BigInteger.valueOf(6500000));
+
+        Contract contract = caver.contract.create(ContractTest.jsonObj, kip7Address);
+        AbstractTransaction signedTx = contract.sign(sendOptions, "transfer", feePayer.getAddress(), BigInteger.ONE);
+
+        boolean isValid = validateGasPriceInTx(signedTx);
+        assertEquals(isValid, true);
+    }
+
+    @Test
+    @Ignore
+    public void contractSignAsFeePayerTest() throws Exception {
+        // Generate many txs to increase baseFee
+        generateTxsBomb();
+
+        SendOptions sendOptions = new SendOptions();
+        sendOptions.setFrom(sender.getAddress());
+        sendOptions.setGas(BigInteger.valueOf(6500000));
+        sendOptions.setFeeDelegation(true);
+        sendOptions.setFeePayer(feePayer.getAddress());
+
+        Contract contract = caver.contract.create(ContractTest.jsonObj, kip7Address);
+        AbstractFeeDelegatedTransaction signedTx = contract.signAsFeePayer(sendOptions, "transfer", feePayer.getAddress(), BigInteger.ONE);
+
+        boolean isValid = validateGasPriceInTx(signedTx);
+        assertEquals(isValid, true);
     }
 }

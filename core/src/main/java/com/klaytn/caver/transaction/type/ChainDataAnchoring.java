@@ -19,6 +19,7 @@ package com.klaytn.caver.transaction.type;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.AbstractTransaction;
+import com.klaytn.caver.transaction.ITransactionWithGasPriceField;
 import com.klaytn.caver.transaction.TransactionDecoder;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
@@ -37,7 +38,7 @@ import java.util.List;
  * Please refer to https://docs.klaytn.com/klaytn/design/transactions/basic#txtypechaindataanchoring to see more detail.
  */
 @JsonIgnoreProperties(value = { "chainId" })
-public class ChainDataAnchoring extends AbstractTransaction {
+public class ChainDataAnchoring extends AbstractTransaction implements ITransactionWithGasPriceField {
     /**
      * Data of the service chain.
      */

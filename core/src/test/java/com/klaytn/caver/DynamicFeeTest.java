@@ -181,7 +181,7 @@ public class DynamicFeeTest {
     @Test
     public void contractDeployTest() throws Exception {
         // Generate many txs to increase baseFee
-        generateTxsBomb(3000);
+        generateTxsBomb(2000);
 
         String name = "Jamie";
         String symbol = "JME";
@@ -200,7 +200,7 @@ public class DynamicFeeTest {
     @Test
     public void contractSendTest() throws Exception {
         // Generate many txs to increase baseFee
-        generateTxsBomb(3000);
+        generateTxsBomb(2000);
 
         SendOptions sendOptions = new SendOptions(sender.getAddress(), BigInteger.valueOf(6500000));
 
@@ -228,7 +228,7 @@ public class DynamicFeeTest {
     @Test
     public void contractSignAsFeePayerTest() throws Exception {
         // Generate many txs to increase baseFee
-        generateTxsBomb(3000);
+        generateTxsBomb(2000);
 
         SendOptions sendOptions = new SendOptions();
         sendOptions.setFrom(sender.getAddress());
@@ -245,11 +245,7 @@ public class DynamicFeeTest {
 
     @Test
     public void sign() throws IOException, TransactionException {
-        try {
-            generateTxsBomb(3000);
-        } catch (Exception e) {
-            assertTrue("Failed to execute tx bomb", false);
-        }
+        generateTxsBomb(2000);
 
         ValueTransfer tx = caver.transaction.valueTransfer.create(
                 TxPropertyBuilder.valueTransfer()
@@ -270,7 +266,7 @@ public class DynamicFeeTest {
 
     @Test
     public void ethereumDynamicFeeSign() throws IOException, TransactionException {
-        generateTxsBomb(3000);
+        generateTxsBomb(2000);
 
         EthereumDynamicFee tx = caver.transaction.ethereumDynamicFee.create(
                 TxPropertyBuilder.ethereumDynamicFee()
@@ -285,7 +281,7 @@ public class DynamicFeeTest {
 
     @Test
     public void signAsFeePayer() throws IOException, TransactionException {
-        generateTxsBomb(3000);
+        generateTxsBomb(2000);
 
         FeeDelegatedValueTransfer tx = caver.transaction.feeDelegatedValueTransfer.create(
                 TxPropertyBuilder.feeDelegatedValueTransfer()
@@ -308,7 +304,7 @@ public class DynamicFeeTest {
 
     @Test
     public void walletSign() throws IOException, TransactionException {
-        generateTxsBomb(3000);
+        generateTxsBomb(2000);
 
         ValueTransfer tx = caver.transaction.valueTransfer.create(
                 TxPropertyBuilder.valueTransfer()
@@ -329,7 +325,7 @@ public class DynamicFeeTest {
 
     @Test
     public void ethereumDynamicFeeWalletSign() throws IOException, TransactionException {
-        generateTxsBomb(3000);
+        generateTxsBomb(2000);
 
         EthereumDynamicFee tx = caver.transaction.ethereumDynamicFee.create(
                 TxPropertyBuilder.ethereumDynamicFee()
@@ -344,7 +340,7 @@ public class DynamicFeeTest {
 
     @Test
     public void walletSignAsFeePayer() throws IOException, TransactionException {
-        generateTxsBomb(3000);
+        generateTxsBomb(2000);
 
         FeeDelegatedValueTransfer tx = caver.transaction.feeDelegatedValueTransfer.create(
                 TxPropertyBuilder.feeDelegatedValueTransfer()

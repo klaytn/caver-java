@@ -50,7 +50,7 @@ services:
         --rpcreadtimeout 9999 \
         --rpcwritetimeout 9999 \
         --rpcidletimeout 9999 \
-        --rpcexecutiontimeout 9999 \
+        --rpcexecutiontimeout 9999
 
     networks:
       app_net:

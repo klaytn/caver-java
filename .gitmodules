@@ -3,4 +3,4 @@
 	url = https://github.com/klaytn/klaytn-integration-tests.git
 [submodule "conformance-test/src/test/resources/caver-conformance-tests"]
 	path = conformance-test/src/test/resources/caver-conformance-tests
-	url = https://github.com/ground-x/caver-conformance-tests.git
+	url = https://github.com/Krustuniverse-Klaytn-Group/caver-conformance-tests.git

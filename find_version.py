@@ -7,4 +7,4 @@ with open("build.gradle", "r") as f:
 	versionString = m.group(1)
 	versionString = versionString[1:]
 	versionString = versionString[:-1]
-	print versionString
+	print(versionString)

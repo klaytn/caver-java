@@ -73,6 +73,7 @@ public class RoleBasedAccountScenario extends Scenario {
         roleBasedAccountGenerator.generateTestAccount(transactionAccountSize, updateAccountSize, 1);
         List<KlayCredentials> senderCredentialsList = roleBasedAccountGenerator.getSenderCredentialForTest(isUpdateTest);
         List<KlayCredentials> feePayerCredentialsList = roleBasedAccountGenerator.getFeePayerAccountCredential();
+        fillUpKlay(feePayerCredentialsList);
 
         KlayRawTransaction klayRawTransaction = null;
         KlayTransactionReceipt.TransactionReceipt transactionReceipt;
@@ -112,6 +113,7 @@ public class RoleBasedAccountScenario extends Scenario {
         roleBasedAccountGenerator.generateTestAccount(1, 1, feePayerAccountSize);
         List<KlayCredentials> senderCredentialsList = roleBasedAccountGenerator.getSenderCredentialForTest(isUpdateTest);
         List<KlayCredentials> feePayerCredentialsList = roleBasedAccountGenerator.getFeePayerAccountCredential();
+        fillUpKlay(feePayerCredentialsList);
 
         KlayRawTransaction klayRawTransaction = null;
         KlayTransactionReceipt.TransactionReceipt transactionReceipt = null;
@@ -156,6 +158,7 @@ public class RoleBasedAccountScenario extends Scenario {
         roleBasedAccountGenerator.generateTestAccount(transactionAccountSize, updateAccountSize, feePayerAccountSize);
         List<KlayCredentials> senderCredentialsList = roleBasedAccountGenerator.getSenderCredentialForTest(isUpdateTest);
         List<KlayCredentials> feePayerCredentialsList = roleBasedAccountGenerator.getFeePayerAccountCredential();
+        fillUpKlay(feePayerCredentialsList);
 
         KlayRawTransaction klayRawTransaction = null;
         KlayTransactionReceipt.TransactionReceipt transactionReceipt = null;
@@ -200,6 +203,7 @@ public class RoleBasedAccountScenario extends Scenario {
         roleBasedAccountGenerator.generateTestAccount(1, 1, 1);
         List<KlayCredentials> senderCredentialsList = roleBasedAccountGenerator.getSenderCredentialForTest(isUpdateTest);
         List<KlayCredentials> feePayerCredentialsList = roleBasedAccountGenerator.getFeePayerAccountCredential();
+        fillUpKlay(feePayerCredentialsList);
 
         // 1. The transaction constructor creates and signs a transaction.
         TransactionManager transactionManager = new TransactionManager.Builder(caver, senderCredentialsList.get(0))

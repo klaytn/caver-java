@@ -140,6 +140,13 @@ public class TransactionExecutor extends Executor {
                 .send().getValue();
     }
 
+    public void fillGasPrice(Transaction.InnerTransaction tx) throws IOException {
+        if (tx.getGasPrice() == null) {
+            String baseFee = caver.rpc.klay.getHeader(DefaultBlockParameterName.LATEST).send().getResult().getBaseFeePerGas();
+            tx.setGasPrice(Numeric.toBigInt(baseFee).multiply(Numeric.toBigInt("2")).toString(16));
+        }
+    }
+
     public Object getTo() throws Exception {
         String to = transaction.getTx().getTo();
         if (!to.isEmpty() && !VariableStorage.isHexValue(to)) {

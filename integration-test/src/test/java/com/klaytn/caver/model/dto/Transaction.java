@@ -93,8 +93,12 @@ public class Transaction implements TestComponent {
         }
 
         public BigInteger getGasPrice() {
-            if (gasPrice == null) return DEFAULT_GAS_PRICE;
+            if (gasPrice == null) return null;
             return Numeric.toBigInt(gasPrice);
+        }
+
+        public void setGasPrice(String gp) {
+            gasPrice = gp;
         }
 
         public String getType() {

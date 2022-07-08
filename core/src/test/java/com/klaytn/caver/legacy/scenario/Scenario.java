@@ -21,6 +21,7 @@
 package com.klaytn.caver.legacy.scenario;
 
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.base.Accounts;
 import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.fee.FeePayerManager;
 import com.klaytn.caver.methods.response.Bytes32;
@@ -41,7 +42,7 @@ import static junit.framework.TestCase.fail;
 /**
  * Common methods and settings used across scenarios
  */
-public class Scenario {
+public class Scenario extends Accounts {
 
     static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
     static DefaultGasProvider gasProvider;
@@ -56,6 +57,7 @@ public class Scenario {
     Caver caver;
 
     public Scenario() {
+        Accounts.fillUpKlay();
     }
 
     @Before

@@ -129,7 +129,7 @@ public class ManagedTransactionTest {
         ValueTransfer.create(caver, BRANDON, LOCAL_CHAIN_ID).sendFunds(
                 BRANDON.getAddress(),
                 credentials.getAddress(),
-                BigDecimal.valueOf(0.2),
+                BigDecimal.valueOf(20),
                 Convert.Unit.KLAY, GAS_LIMIT
         ).send();
 
@@ -146,7 +146,7 @@ public class ManagedTransactionTest {
         ValueTransfer.create(caver, BRANDON, LOCAL_CHAIN_ID).sendFunds(
                 BRANDON.getAddress(),
                 credentials.getAddress(),
-                BigDecimal.valueOf(0.2),
+                BigDecimal.valueOf(20),
                 Convert.Unit.KLAY, GAS_LIMIT
         ).send();
 
@@ -165,7 +165,7 @@ public class ManagedTransactionTest {
         ValueTransfer.create(caver, BRANDON, LOCAL_CHAIN_ID).sendFunds(
                 BRANDON.getAddress(),
                 credentials.getAddress(),
-                BigDecimal.valueOf(0.2),
+                BigDecimal.valueOf(20),
                 Convert.Unit.KLAY, GAS_LIMIT
         ).send();
 

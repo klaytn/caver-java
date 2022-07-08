@@ -56,11 +56,14 @@ public class Accounts {
     );
 
     static {
-        List<KlayCredentials> testCredentials = new ArrayList<>(Arrays.asList(LUMAN, WAYNE, BRANDON, FEE_PAYER));
-        fillUpKlay(testCredentials);
+        fillUpKlay(new ArrayList<>(Arrays.asList(LUMAN, WAYNE, BRANDON, FEE_PAYER)));
     }
 
-    private static void fillUpKlay(List<KlayCredentials> testCredentials) {
+    public static void fillUpKlay() {
+        fillUpKlay(Arrays.asList(LUMAN, WAYNE, BRANDON, FEE_PAYER));
+    }
+
+    public static void fillUpKlay(List<KlayCredentials> testCredentials) {
         caver = Caver.build(Caver.DEFAULT_URL);
         gasProvider = new DefaultGasProvider(caver);
         TransactionManager transactionManager

@@ -2,6 +2,7 @@ package com.klaytn.caver;
 
 import com.klaytn.caver.common.contract.ContractTest;
 import com.klaytn.caver.contract.Contract;
+import com.klaytn.caver.contract.ContractDeployParams;
 import com.klaytn.caver.contract.SendOptions;
 import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.TransactionReceipt;
@@ -21,9 +22,7 @@ import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.web3j.protocol.core.BatchRequest;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.utils.Numeric;
@@ -31,11 +30,11 @@ import org.web3j.utils.Numeric;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 
-@RunWith(MockitoJUnitRunner.class)
 public class DynamicFeeTest {
     static Caver caver;
     static SingleKeyring rich, sender, feePayer;
@@ -49,9 +48,9 @@ public class DynamicFeeTest {
         caver.wallet.add(rich);
 
         sender = caver.wallet.keyring.generate();
-        fillKlay(sender, "200");
+        fillKlay(sender, "20000");
         feePayer = caver.wallet.keyring.generate();
-        fillKlay(feePayer, "200");
+        fillKlay(feePayer, "20000");
 
         deployKIP7();
     }
@@ -76,7 +75,7 @@ public class DynamicFeeTest {
         ValueTransfer valueTransfer = caver.transaction.valueTransfer.create(
                 TxPropertyBuilder.valueTransfer()
                         .setFrom(rich.getAddress())
-                        .setTo(sender.getAddress())
+                        .setTo(keyring.getAddress())
                         .setValue(caver.utils.convertToPeb(amount, Utils.KlayUnit.KLAY))
                         .setGas(BigInteger.valueOf(6000000))
         );
@@ -88,23 +87,25 @@ public class DynamicFeeTest {
         receiptProcessor.waitForTransactionReceipt(txHash);
     }
 
-    public void generateTxsBomb() throws IOException {
+    public void generateTxsBomb() throws IOException, TransactionException {
         generateTxsBomb(100);
     }
 
-    private void generateTxsBomb(int num) throws IOException {
+    private void generateTxsBomb(int num) throws IOException, TransactionException {
         BatchRequest batchRequest = caver.getRpc().newBatch();
-        BigInteger senderNonce = caver.rpc.klay.getTransactionCount(sender.getAddress()).send().getValue();
+        SingleKeyring bombSender = caver.wallet.keyring.generate();
+        fillKlay(bombSender, "2000");
+        BigInteger senderNonce = caver.rpc.klay.getTransactionCount(bombSender.getAddress()).send().getValue();
         String input = "0x608060405234801561001057600080fd5b506101de806100206000396000f3006080604052600436106100615763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416631a39d8ef81146100805780636353586b146100a757806370a08231146100ca578063fd6b7ef8146100f8575b3360009081526001602052604081208054349081019091558154019055005b34801561008c57600080fd5b5061009561010d565b60408051918252519081900360200190f35b6100c873ffffffffffffffffffffffffffffffffffffffff60043516610113565b005b3480156100d657600080fd5b5061009573ffffffffffffffffffffffffffffffffffffffff60043516610147565b34801561010457600080fd5b506100c8610159565b60005481565b73ffffffffffffffffffffffffffffffffffffffff1660009081526001602052604081208054349081019091558154019055565b60016020526000908152604090205481565b336000908152600160205260408120805490829055908111156101af57604051339082156108fc029083906000818181858888f193505050501561019c576101af565b3360009081526001602052604090208190555b505600a165627a7a72305820627ca46bb09478a015762806cc00c431230501118c7c26c30ac58c4e09e51c4f0029";
         for (int i = 0; i < num; i++) {
             SmartContractDeploy smartContractDeploy = caver.transaction.smartContractDeploy.create(
                     TxPropertyBuilder.smartContractDeploy()
-                            .setFrom(sender.getAddress())
+                            .setFrom(bombSender.getAddress())
                             .setGas(BigInteger.valueOf(5000000))
                             .setInput(input)
                             .setNonce(senderNonce)
             );
-            caver.wallet.sign(sender.getAddress(), smartContractDeploy);
+            caver.wallet.sign(bombSender.getAddress(), smartContractDeploy);
             String rawTx = smartContractDeploy.getRLPEncoding();
             batchRequest.add(caver.rpc.klay.sendRawTransaction(rawTx));
             senderNonce = senderNonce.add(BigInteger.valueOf(1));
@@ -132,7 +133,7 @@ public class DynamicFeeTest {
         }
 
         // set gasPrice with `baseFee * 2`
-        if (gasPriceAtParentBlock.multiply(BigInteger.valueOf(2)).compareTo(gasPriceInReceipt) != 0) {
+        if (gasPriceAtParentBlock.compareTo(gasPriceInReceipt) >= 0) {
             return false;
         }
         return true;
@@ -164,24 +165,23 @@ public class DynamicFeeTest {
         // validate `maxPriorityFeePerGas` and `maxFeePerGas`.
         if (tx.getType().contains("DynamicFee")) {
             BigInteger mpfg = caver.rpc.klay.getMaxPriorityFeePerGas().send().getValue();
-            BigInteger maxPriorityFeePerGas = new BigInteger(((EthereumDynamicFee) tx).getMaxPriorityFeePerGas());
-            BigInteger maxFeePerGas = new BigInteger(((EthereumDynamicFee) tx).getMaxFeePerGas());
+            BigInteger maxPriorityFeePerGas = Numeric.toBigInt(((EthereumDynamicFee) tx).getMaxPriorityFeePerGas());
+            BigInteger maxFeePerGas = Numeric.toBigInt(((EthereumDynamicFee) tx).getMaxFeePerGas());
             if (mpfg.compareTo(maxPriorityFeePerGas) != 0) return false;
             // maxFeePerGas will be set with `baseFee * 2`, so maxFeePerGas can't be smaller than current base fee
             if (maxFeePerGas.compareTo(gasPrice) < 0) return false;
             return true;
         }
 
-        BigInteger gasPriceInTx = new BigInteger(((ITransactionWithGasPriceField) tx).getGasPrice());
+        BigInteger gasPriceInTx = Numeric.toBigInt(((ITransactionWithGasPriceField) tx).getGasPrice());
         if (gasPriceInTx.compareTo(gasPrice) < 0) return false;
         return true;
     }
 
     @Test
-    @Ignore
     public void contractDeployTest() throws Exception {
         // Generate many txs to increase baseFee
-        generateTxsBomb();
+        generateTxsBomb(2000);
 
         String name = "Jamie";
         String symbol = "JME";
@@ -189,26 +189,18 @@ public class DynamicFeeTest {
         BigInteger initialSupply = BigInteger.valueOf(100_000).multiply(BigInteger.TEN.pow(decimals.intValue())); // 100000 * 10^18
 
         Contract contract = caver.contract.create(ContractTest.jsonObj);
+        ContractDeployParams deployParams = new ContractDeployParams(ContractTest.BINARY, Arrays.asList(name, symbol, decimals, initialSupply));
+        deployParams.getDeployParams().add(0, deployParams.getBytecode());
         SendOptions sendOptions = new SendOptions(sender.getAddress(), BigInteger.valueOf(6500000));
-
-        // Mock constructor method to validate receipt
-        Contract contractSpy = Mockito.spy(contract);
-        Mockito.when(contractSpy.getMethod("constructor").send(any())).thenAnswer(i -> {
-            TransactionReceipt.TransactionReceiptData receipt = (TransactionReceipt.TransactionReceiptData) i.getArguments()[0];
-            boolean isValid = validateGasFeeWithReceipt(receipt);
-            assertEquals(isValid, true);
-            return receipt;
-        });
-
-        contract.deploy(sendOptions, ContractTest.BINARY, name, symbol, decimals, initialSupply);
-        assertNotNull(contract.getContractAddress());
+        PollingTransactionReceiptProcessor processor = new PollingTransactionReceiptProcessor(caver, 1000, 15);
+        TransactionReceipt.TransactionReceiptData receiptData = contract.getMethod("constructor").send(deployParams.getDeployParams(), sendOptions, processor);
+        assertTrue(validateGasFeeWithReceipt(receiptData));
     }
 
     @Test
-    @Ignore
     public void contractSendTest() throws Exception {
         // Generate many txs to increase baseFee
-        generateTxsBomb();
+        generateTxsBomb(2000);
 
         SendOptions sendOptions = new SendOptions(sender.getAddress(), BigInteger.valueOf(6500000));
 
@@ -220,7 +212,6 @@ public class DynamicFeeTest {
     }
 
     @Test
-    @Ignore
     public void contractSignTest() throws Exception {
         // Generate many txs to increase baseFee
         generateTxsBomb();
@@ -235,10 +226,9 @@ public class DynamicFeeTest {
     }
 
     @Test
-    @Ignore
     public void contractSignAsFeePayerTest() throws Exception {
         // Generate many txs to increase baseFee
-        generateTxsBomb();
+        generateTxsBomb(2000);
 
         SendOptions sendOptions = new SendOptions();
         sendOptions.setFrom(sender.getAddress());
@@ -254,9 +244,8 @@ public class DynamicFeeTest {
     }
 
     @Test
-    @Ignore
     public void sign() throws IOException, TransactionException {
-        generateTxsBomb();
+        generateTxsBomb(2000);
 
         ValueTransfer tx = caver.transaction.valueTransfer.create(
                 TxPropertyBuilder.valueTransfer()
@@ -276,9 +265,8 @@ public class DynamicFeeTest {
     }
 
     @Test
-    @Ignore
-    public void ethereumDynamicFeeSign() throws IOException {
-        generateTxsBomb();
+    public void ethereumDynamicFeeSign() throws IOException, TransactionException {
+        generateTxsBomb(2000);
 
         EthereumDynamicFee tx = caver.transaction.ethereumDynamicFee.create(
                 TxPropertyBuilder.ethereumDynamicFee()
@@ -292,9 +280,8 @@ public class DynamicFeeTest {
     }
 
     @Test
-    @Ignore
     public void signAsFeePayer() throws IOException, TransactionException {
-        generateTxsBomb();
+        generateTxsBomb(2000);
 
         FeeDelegatedValueTransfer tx = caver.transaction.feeDelegatedValueTransfer.create(
                 TxPropertyBuilder.feeDelegatedValueTransfer()
@@ -316,9 +303,8 @@ public class DynamicFeeTest {
     }
 
     @Test
-    @Ignore
     public void walletSign() throws IOException, TransactionException {
-        generateTxsBomb();
+        generateTxsBomb(2000);
 
         ValueTransfer tx = caver.transaction.valueTransfer.create(
                 TxPropertyBuilder.valueTransfer()
@@ -338,9 +324,8 @@ public class DynamicFeeTest {
     }
 
     @Test
-    @Ignore
-    public void ethereumDynamicFeeWalletSign() throws IOException {
-        generateTxsBomb();
+    public void ethereumDynamicFeeWalletSign() throws IOException, TransactionException {
+        generateTxsBomb(2000);
 
         EthereumDynamicFee tx = caver.transaction.ethereumDynamicFee.create(
                 TxPropertyBuilder.ethereumDynamicFee()
@@ -354,9 +339,8 @@ public class DynamicFeeTest {
     }
 
     @Test
-    @Ignore
     public void walletSignAsFeePayer() throws IOException, TransactionException {
-        generateTxsBomb();
+        generateTxsBomb(2000);
 
         FeeDelegatedValueTransfer tx = caver.transaction.feeDelegatedValueTransfer.create(
                 TxPropertyBuilder.feeDelegatedValueTransfer()

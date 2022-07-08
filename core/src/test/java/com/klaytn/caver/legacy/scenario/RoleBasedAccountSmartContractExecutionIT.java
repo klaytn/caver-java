@@ -161,8 +161,8 @@ public class RoleBasedAccountSmartContractExecutionIT extends RoleBasedAccountSc
         CallObject callObject = new CallObject(
                 BRANDON.getAddress(),
                 deployedContract,
-                gasProvider.getGasPrice(),
                 GAS_LIMIT,
+                gasProvider.getGasPrice(),
                 BigInteger.ZERO,
                 Numeric.prependHexPrefix(Hash.sha3String(COUNT_COMMAND).substring(2, 10)));
         return caver.klay().call(callObject, DefaultBlockParameterName.LATEST).send();

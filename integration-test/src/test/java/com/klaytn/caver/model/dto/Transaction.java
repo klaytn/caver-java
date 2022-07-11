@@ -28,7 +28,6 @@ import java.math.BigInteger;
 
 public class Transaction implements TestComponent {
     public static int DEFAULT_CHAIN_ID = 2019;
-    public static BigInteger DEFAULT_GAS_PRICE = Convert.toPeb("25", Convert.Unit.STON).toBigInteger();
 
     private InnerTransaction tx;
     private String deployedAddress;

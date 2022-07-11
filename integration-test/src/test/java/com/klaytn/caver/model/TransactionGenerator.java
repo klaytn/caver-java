@@ -127,6 +127,8 @@ public class TransactionGenerator {
         TransactionGenerator transactionGenerator = TransactionGenerator.mapper.get(type);
         Constructor<?>[] constructors = Class.forName(transactionGenerator.getClassPath()).getDeclaredConstructors();
 
+        // Fill the gasPrice before creating a tx object
+        transactionExecutor.fillGasPrice(transactionExecutor.getTx());
         List objects = new ArrayList<>(Arrays.asList(
                 transactionExecutor.getNonce(),
                 transactionExecutor.getTx().getGasPrice(),

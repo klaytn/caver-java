@@ -16,7 +16,7 @@ services:
       - |
         git clone https://github.com/klaytn/klaytn.git
         cd klaytn
-        git checkout dynamicGasPrice
+        git checkout dev
         make kcn
         export PATH=$PATH:`pwd`/build/bin
         mkdir -p /klaytn

@@ -48,6 +48,30 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
         private int deriveShaImpl;
 
         /**
+         * The value of istanbulCompatibleBlock field.
+         */
+        @JsonProperty("istanbulCompatibleBlock")
+        private BigInteger istanbulCompatibleBlock;
+
+        /**
+         * The value of londonCompatibleBlock field.
+         */
+        @JsonProperty("londonCompatibleBlock")
+        private BigInteger londonCompatibleBlock;
+
+        /**
+         * The value of ethTxTypeCompatibleBlock field.
+         */
+        @JsonProperty("ethTxTypeCompatibleBlock")
+        private BigInteger ethTxTypeCompatibleBlock;
+
+        /**
+         * The value of kip71CompatibleBlock field.
+         */
+        @JsonProperty("kip71CompatibleBlock")
+        private BigInteger kip71CompatibleBlock;
+
+        /**
          * The value of chainId field.
          */
         @JsonProperty("chainId")
@@ -534,6 +558,39 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
         public int getChainid() {
             return chainId;
         }
+
+        /**
+         * Getter function for istanbulCompatibleBlock.
+         * @return BigInteger
+         */
+        public BigInteger getIstanbulCompatibleBlock() {
+            return istanbulCompatibleBlock;
+        }
+
+        /**
+         * Getter function for londonCompatibleBlock.
+         * @return BigInteger
+         */
+        public BigInteger getLondonCompatibleBlock() {
+            return londonCompatibleBlock;
+        }
+
+        /**
+         * Getter function for ethTxTypeCompatibleBlock.
+         * @return BigInteger
+         */
+        public BigInteger getEthTxTypeCompatibleBlock() {
+            return ethTxTypeCompatibleBlock;
+        }
+
+        /**
+         * Getter function for kip71CompatibleBlock.
+         * @return BigInteger
+         */
+        public BigInteger getKIP71CompatibleBlock() {
+            return kip71CompatibleBlock;
+        }
+
 
         @Override
         public String toString() {

@@ -48,6 +48,30 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
         private int deriveShaImpl;
 
         /**
+         * The value of istanbulCompatibleBlock field.
+         */
+        @JsonProperty("istanbulCompatibleBlock")
+        private BigInteger istanbulCompatibleBlock;
+
+        /**
+         * The value of londonCompatibleBlock field.
+         */
+        @JsonProperty("londonCompatibleBlock")
+        private BigInteger londonCompatibleBlock;
+
+        /**
+         * The value of ethTxTypeCompatibleBlock field.
+         */
+        @JsonProperty("ethTxTypeCompatibleBlock")
+        private BigInteger ethTxTypeCompatibleBlock;
+
+        /**
+         * The value of kip71CompatibleBlock field.
+         */
+        @JsonProperty("kip71CompatibleBlock")
+        private BigInteger kip71CompatibleBlock;
+
+        /**
          * The value of chainId field.
          */
         @JsonProperty("chainId")
@@ -136,6 +160,12 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
             private Reward reward;
 
             /**
+             * The value of kip71 field.
+             */
+            @JsonProperty("kip71")
+            private KIP71 kip71;
+
+            /**
              * The value of governingNode field.
              */
             @JsonProperty("governingNode")
@@ -161,6 +191,22 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
              */
             public void setReward(Reward reward) {
                 this.reward = reward;
+            }
+
+            /**
+             * Getter function for kip71 field.
+             * @return KIP71
+             */
+            public KIP71 getKip71() {
+                return kip71;
+            }
+
+            /**
+             * Setter function for kip71 field.
+             * @param kip71 The value of kip71 field.
+             */
+            public void setKip71(KIP71 kip71) {
+                this.kip71 = kip71;
             }
 
             /**
@@ -363,6 +409,124 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
             }
         }
 
+        public static class KIP71 {
+
+            /**
+             * The value of basefeedenominator field.
+             */
+            @JsonProperty("basefeedenominator")
+            private Integer baseFeeDenominator;
+
+            /**
+             * The value of gastarget field.
+             */
+            @JsonProperty("gastarget")
+            private BigInteger gasTarget;
+
+            /**
+             * The value of lowerboundbasefee field.
+             */
+            @JsonProperty("lowerboundbasefee")
+            private BigInteger lowerBoundBaseFee;
+
+            /**
+             * The value of upperboundbasefee field.
+             */
+            @JsonProperty("upperboundbasefee")
+            private BigInteger upperBoundBaseFee;
+
+            /**
+             * The value of maxblockgasusedforbasefee field.
+             */
+            @JsonProperty("maxblockgasusedforbasefee")
+            private BigInteger maxBlockGasUsedForBaseFee;
+
+            /**
+             * Getter function for baseFeeDenominator.
+             * @return Integer
+             */
+            public Integer getBaseFeeDenominator() {
+                return baseFeeDenominator;
+            }
+
+            /**
+             * Setter function for baseFeeDenominator.
+             * @param baseFeeDenominator The value of baseFeeDenominator
+             */
+            public void setBaseFeeDenominator(Integer baseFeeDenominator) {
+                this.baseFeeDenominator = baseFeeDenominator;
+            }
+
+            /**
+             * Getter function for gasTarget.
+             * @return BigInteger
+             */
+            public BigInteger getGasTarget() {
+                return gasTarget;
+            }
+
+            /**
+             * Setter function for gasTarget.
+             * @param gasTarget The value of gasTarget
+             */
+            public void setGasTarget(BigInteger gasTarget) {
+                this.gasTarget = gasTarget;
+            }
+
+            /**
+             * Getter function for lowerBoundBaseFee.
+             * @return BigInteger
+             */
+            public BigInteger getLowerBoundBaseFee() {
+                return lowerBoundBaseFee;
+            }
+
+            /**
+             * Setter function for lowerBoundBaseFee.
+             * @param lowerBoundBaseFee The value of lowerBoundBaseFee
+             */
+            public void setLowerBoundBaseFee(BigInteger lowerBoundBaseFee) {
+                this.lowerBoundBaseFee = lowerBoundBaseFee;
+            }
+
+            /**
+             * Getter function for upperBoundBaseFee.
+             * @return BigInteger
+             */
+            public BigInteger getUpperBoundBaseFee() {
+                return upperBoundBaseFee;
+            }
+
+            /**
+             * Setter function for upperBoundBaseFee.
+             * @param upperBoundBaseFee The value of upperBoundBaseFee
+             */
+            public void setUpperBoundBaseFee(BigInteger upperBoundBaseFee) {
+                this.upperBoundBaseFee = upperBoundBaseFee;
+            }
+
+            /**
+             * Getter function for maxBlockGasUsedForBaseFee.
+             * @return BigInteger
+             */
+            public BigInteger getMaxBlockGasUsedForBaseFee() {
+                return maxBlockGasUsedForBaseFee;
+            }
+
+            /**
+             * Setter function for maxBlockGasUsedForBaseFee.
+             * @param maxBlockGasUsedForBaseFee The value of maxBlockGasUsedForBaseFee
+             */
+            public void setMaxBlockGasUsedForBaseFee(BigInteger maxBlockGasUsedForBaseFee) {
+                this.maxBlockGasUsedForBaseFee = maxBlockGasUsedForBaseFee;
+            }
+
+            @Override
+            public String toString() {
+                return Utils.printString(this);
+            }
+        }
+
         /**
          * Getter function for istanbul.
          * @return Istanbul
@@ -394,6 +558,39 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
         public int getChainid() {
             return chainId;
         }
+
+        /**
+         * Getter function for istanbulCompatibleBlock.
+         * @return BigInteger
+         */
+        public BigInteger getIstanbulCompatibleBlock() {
+            return istanbulCompatibleBlock;
+        }
+
+        /**
+         * Getter function for londonCompatibleBlock.
+         * @return BigInteger
+         */
+        public BigInteger getLondonCompatibleBlock() {
+            return londonCompatibleBlock;
+        }
+
+        /**
+         * Getter function for ethTxTypeCompatibleBlock.
+         * @return BigInteger
+         */
+        public BigInteger getEthTxTypeCompatibleBlock() {
+            return ethTxTypeCompatibleBlock;
+        }
+
+        /**
+         * Getter function for kip71CompatibleBlock.
+         * @return BigInteger
+         */
+        public BigInteger getKIP71CompatibleBlock() {
+            return kip71CompatibleBlock;
+        }
+
 
         @Override
         public String toString() {

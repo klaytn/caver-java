@@ -1394,6 +1394,46 @@ public class RpcTest extends Accounts {
 
             assertFalse(response.hasError());
             assertTrue(isSuccessfulVoteResponse(response.getResult()));
+
+            String lowerBoundKey = "kip71.lowerboundbasefee";
+            BigInteger lowerBoundValue = new BigInteger("25000000000");
+
+            response = caver.rpc.governance.vote(lowerBoundKey, lowerBoundValue).send();
+
+            assertFalse(response.hasError());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
+
+            String upperBoundKey = "kip71.upperboundbasefee";
+            BigInteger upperBoundValue = new BigInteger("750000000000");
+
+            response = caver.rpc.governance.vote(upperBoundKey, upperBoundValue).send();
+
+            assertFalse(response.hasError());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
+
+            String gasTargetKey = "kip71.gastarget";
+            BigInteger gasTargetValue = new BigInteger("30000000");
+
+            response = caver.rpc.governance.vote(gasTargetKey, gasTargetValue).send();
+
+            assertFalse(response.hasError());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
+
+            String maxBlockGasUsedForBaseFeeKey = "kip71.maxblockgasusedforbasefee";
+            BigInteger maxBlockGasUsedForBaseFeeValue = new BigInteger("60000000");
+
+            response = caver.rpc.governance.vote(maxBlockGasUsedForBaseFeeKey, maxBlockGasUsedForBaseFeeValue).send();
+
+            assertFalse(response.hasError());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
+
+            String baseFeeDenominatorKey = "kip71.basefeedenominator";
+            BigInteger baseFeeDenominatorValue = new BigInteger("20");
+
+            response = caver.rpc.governance.vote(baseFeeDenominatorKey, baseFeeDenominatorValue).send();
+
+            assertFalse(response.hasError());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
         }
 
         @Test

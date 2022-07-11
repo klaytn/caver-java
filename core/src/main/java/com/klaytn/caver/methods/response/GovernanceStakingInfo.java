@@ -38,6 +38,7 @@ public class GovernanceStakingInfo extends Response<GovernanceStakingInfo.Stakin
 
         /**
          * The contract address of PoC.
+         * PoC is the previous name of KGF.
          */
         @JsonProperty("PoCAddr")
         private String pocAddr;
@@ -114,6 +115,7 @@ public class GovernanceStakingInfo extends Response<GovernanceStakingInfo.Stakin
 
         /**
          * Getter function for PocAddr.
+         * PoC is the previous name of KGF.
          * @return String
          */
         public String getPocAddr() {
@@ -121,7 +123,16 @@ public class GovernanceStakingInfo extends Response<GovernanceStakingInfo.Stakin
         }
 
         /**
+         * Getter function for KGFAddr.
+         * @return String
+         */
+        public String getKGFAddr() {
+            return pocAddr;
+        }
+
+        /**
          * Setter function for PocAddr.
+         * PoC is the previous name of KGF.
          * @param pocAddr The contract address of PoC.
          */
         public void setPocAddr(String pocAddr) {

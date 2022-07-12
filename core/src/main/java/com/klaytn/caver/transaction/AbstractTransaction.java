@@ -422,12 +422,12 @@ abstract public class AbstractTransaction {
         }
         BlockHeader blockHeader = this.klaytnCall.getHeader(DefaultBlockParameterName.LATEST).send();
         String baseFeePerGas = blockHeader.getResult().getBaseFeePerGas();
-        // Before hard KIP-71 fork set gasPrice (or maxFeePerGas) with gas unit price
+        // Before hard Magma fork set gasPrice (or maxFeePerGas) with gas unit price
         if(baseFeePerGas == null || Numeric.toBigInt(baseFeePerGas).compareTo(BigInteger.valueOf(0)) <= 0) {
             return this.klaytnCall.getGasPrice().send().getValue();
         }
         BigInteger baseFee = Numeric.toBigInt(baseFeePerGas);
-        // After hard KIP-71 fork, set gasPrice (or maxFeePerGas) with baseFee * 2
+        // After hard Magma fork, set gasPrice (or maxFeePerGas) with baseFee * 2
         return baseFee.multiply(BigInteger.valueOf(2));
     }
 

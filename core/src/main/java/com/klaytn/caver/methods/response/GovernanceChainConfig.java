@@ -160,10 +160,10 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
             private Reward reward;
 
             /**
-             * The value of magma field.
+             * The value of kip71 field.
              */
-            @JsonProperty("magma")
-            private Magma magma;
+            @JsonProperty("kip71")
+            private KIP71 kip71;
 
             /**
              * The value of governingNode field.
@@ -194,19 +194,19 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
             }
 
             /**
-             * Getter function for magma field.
-             * @return Magma
+             * Getter function for kip71 field.
+             * @return KIP71
              */
-            public Magma getMagma() {
-                return magma;
+            public KIP71 getKIP71() {
+                return kip71;
             }
 
             /**
-             * Setter function for magma field.
-             * @param magma The value of magma field.
+             * Setter function for kip71 field.
+             * @param kip71 The value of kip71 field.
              */
-            public void setMagma(Magma magma) {
-                this.magma = magma;
+            public void setKIP71(KIP71 kip71) {
+                this.kip71 = kip71;
             }
 
             /**
@@ -409,7 +409,7 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
             }
         }
 
-        public static class Magma {
+        public static class KIP71 {
 
             /**
              * The value of basefeedenominator field.

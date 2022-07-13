@@ -1395,7 +1395,7 @@ public class RpcTest extends Accounts {
             assertFalse(response.hasError());
             assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
-            String lowerBoundKey = "magma.lowerboundbasefee";
+            String lowerBoundKey = "kip71.lowerboundbasefee";
             BigInteger lowerBoundValue = new BigInteger("25000000000");
 
             response = caver.rpc.governance.vote(lowerBoundKey, lowerBoundValue).send();
@@ -1403,7 +1403,7 @@ public class RpcTest extends Accounts {
             assertFalse(response.hasError());
             assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
-            String upperBoundKey = "magma.upperboundbasefee";
+            String upperBoundKey = "kip71.upperboundbasefee";
             BigInteger upperBoundValue = new BigInteger("750000000000");
 
             response = caver.rpc.governance.vote(upperBoundKey, upperBoundValue).send();
@@ -1411,7 +1411,7 @@ public class RpcTest extends Accounts {
             assertFalse(response.hasError());
             assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
-            String gasTargetKey = "magma.gastarget";
+            String gasTargetKey = "kip71.gastarget";
             BigInteger gasTargetValue = new BigInteger("30000000");
 
             response = caver.rpc.governance.vote(gasTargetKey, gasTargetValue).send();
@@ -1419,7 +1419,7 @@ public class RpcTest extends Accounts {
             assertFalse(response.hasError());
             assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
-            String maxBlockGasUsedForBaseFeeKey = "magma.maxblockgasusedforbasefee";
+            String maxBlockGasUsedForBaseFeeKey = "kip71.maxblockgasusedforbasefee";
             BigInteger maxBlockGasUsedForBaseFeeValue = new BigInteger("60000000");
 
             response = caver.rpc.governance.vote(maxBlockGasUsedForBaseFeeKey, maxBlockGasUsedForBaseFeeValue).send();
@@ -1427,7 +1427,7 @@ public class RpcTest extends Accounts {
             assertFalse(response.hasError());
             assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
-            String baseFeeDenominatorKey = "magma.basefeedenominator";
+            String baseFeeDenominatorKey = "kip71.basefeedenominator";
             BigInteger baseFeeDenominatorValue = new BigInteger("20");
 
             response = caver.rpc.governance.vote(baseFeeDenominatorKey, baseFeeDenominatorValue).send();

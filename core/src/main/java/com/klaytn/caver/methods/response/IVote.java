@@ -44,11 +44,11 @@ public interface IVote {
         REWARD_MINIMUM_STAKE("reward.minimumstake", "String"),
         REWARD_PROPOSER_UPDATE_INTERVAL("reward.proposerupdateinterval", "BigInteger"),
         REWARD_STAKING_UPDATE_INTERVAL("reward.stakingupdateinterval", "BigInteger"),
-        MAGMA_LOWER_BOUND_BASE_FEE("magma.lowerboundbasefee", "BigInteger"),
-        MAGMA_UPPER_BOUND_BASE_FEE("magma.upperboundbasefee", "BigInteger"),
-        MAGMA_GAS_TARGET("magma.gastarget", "BigInteger"),
-        MAGMA_MAX_BLOCK_GAS_USED_FOR_BASE_FEE("magma.maxblockgasusedforbasefee", "BigInteger"),
-        MAGMA_BASE_FEE_DENOMINATOR("magma.basefeedenominator", "Integer");
+        KIP71_LOWER_BOUND_BASE_FEE("kip71.lowerboundbasefee", "BigInteger"),
+        KIP71_UPPER_BOUND_BASE_FEE("kip71.upperboundbasefee", "BigInteger"),
+        KIP71_GAS_TARGET("kip71.gastarget", "BigInteger"),
+        KIP71_MAX_BLOCK_GAS_USED_FOR_BASE_FEE("kip71.maxblockgasusedforbasefee", "BigInteger"),
+        KIP71_BASE_FEE_DENOMINATOR("kip71.basefeedenominator", "Integer");
 
         String key;
         String type;
@@ -899,36 +899,36 @@ public interface IVote {
         }
 
         /**
-         * Get the value of MAGMA_LOWER_BOUND_BASE_FEE.
+         * Get the value of KIP71_LOWER_BOUND_BASE_FEE.
          * <pre>Example :
          * {@code
          * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
          * Map<String, Object> governanceItem = response.getResult();
          *
-         * BigInteger value = IVote.VoteItem.getMagmaLowerBoundBaseFee(governanceItem);
+         * BigInteger value = IVote.VoteItem.getKIP71LowerBoundBaseFee(governanceItem);
          * }</pre>
          * @param map The map instance to find value.
          * @return BigInteger
          */
-        public static BigInteger getMagmaLowerBoundBaseFee(Map<String, Object> map) {
-            return toBigIntegerValue(map.get(MAGMA_LOWER_BOUND_BASE_FEE.getKey()));
+        public static BigInteger getKIP71LowerBoundBaseFee(Map<String, Object> map) {
+            return toBigIntegerValue(map.get(KIP71_LOWER_BOUND_BASE_FEE.getKey()));
         }
 
         /**
-         * Get the value of MAGMA_LOWER_BOUND_BASE_FEE.
+         * Get the value of KIP71_LOWER_BOUND_BASE_FEE.
          * <pre>Example :
          * {@code
          * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
          * List voteList = response.getResult();
          *
-         * BigInteger value = IVote.VoteItem.getMagmaLowerBoundBaseFee(voteList);
+         * BigInteger value = IVote.VoteItem.getKIP71LowerBoundBaseFee(voteList);
          * }</pre>
          * @param list The list instance to find value.
          * @return BigInteger
          */
-        public static BigInteger getMagmaLowerBoundBaseFee(List<IVote> list) {
+        public static BigInteger getKIP71LowerBoundBaseFee(List<IVote> list) {
             for(IVote vote: list) {
-                if(vote.getKey().equals(MAGMA_LOWER_BOUND_BASE_FEE.getKey())) {
+                if(vote.getKey().equals(KIP71_LOWER_BOUND_BASE_FEE.getKey())) {
                     return toBigIntegerValue(vote.getValue());
                 }
             }
@@ -936,53 +936,53 @@ public interface IVote {
         }
 
         /**
-         * Get the value of MAGMA_LOWER_BOUND_BASE_FEE.
+         * Get the value of KIP71_LOWER_BOUND_BASE_FEE.
          * <pre>Example :
          * {@code
          * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
          * List voteList = response.getResult();
          * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
          *
-         * BigInteger value = IVote.VoteItem.getMagmaLowerBoundBaseFee(myVote);
+         * BigInteger value = IVote.VoteItem.getKIP71LowerBoundBaseFee(myVote);
          * }</pre>
          * @param vote The instance that implemented IVote to find value.
          * @return BigInteger
          */
-        public static BigInteger getMagmaLowerBoundBaseFee(IVote vote) {
+        public static BigInteger getKIP71LowerBoundBaseFee(IVote vote) {
             return toBigIntegerValue(vote.getKey(), vote.getValue());
         }
 
         /**
-         * Get the value of MAGMA_UPPER_BOUND_BASE_FEE.
+         * Get the value of KIP71_UPPER_BOUND_BASE_FEE.
          * <pre>Example :
          * {@code
          * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
          * Map<String, Object> governanceItem = response.getResult();
          *
-         * BigInteger value = IVote.VoteItem.getMagmaUpperBoundBaseFee(governanceItem);
+         * BigInteger value = IVote.VoteItem.getKIP71UpperBoundBaseFee(governanceItem);
          * }</pre>
          * @param map The map instance to find value.
          * @return BigInteger
          */
-        public static BigInteger getMagmaUpperBoundBaseFee(Map<String, Object> map) {
-            return toBigIntegerValue(map.get(MAGMA_UPPER_BOUND_BASE_FEE.getKey()));
+        public static BigInteger getKIP71UpperBoundBaseFee(Map<String, Object> map) {
+            return toBigIntegerValue(map.get(KIP71_UPPER_BOUND_BASE_FEE.getKey()));
         }
 
         /**
-         * Get the value of MAGMA_UPPER_BOUND_BASE_FEE.
+         * Get the value of KIP71_UPPER_BOUND_BASE_FEE.
          * <pre>Example :
          * {@code
          * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
          * List voteList = response.getResult();
          *
-         * BigInteger value = IVote.VoteItem.getMagmaUpperBoundBaseFee(voteList);
+         * BigInteger value = IVote.VoteItem.getKIP71UpperBoundBaseFee(voteList);
          * }</pre>
          * @param list The list instance to find value.
          * @return BigInteger
          */
-        public static BigInteger getMagmaUpperBoundBaseFee(List<IVote> list) {
+        public static BigInteger getKIP71UpperBoundBaseFee(List<IVote> list) {
             for(IVote vote: list) {
-                if(vote.getKey().equals(MAGMA_UPPER_BOUND_BASE_FEE.getKey())) {
+                if(vote.getKey().equals(KIP71_UPPER_BOUND_BASE_FEE.getKey())) {
                     return toBigIntegerValue(vote.getValue());
                 }
             }
@@ -990,53 +990,53 @@ public interface IVote {
         }
 
         /**
-         * Get the value of MAGMA_UPPER_BOUND_BASE_FEE.
+         * Get the value of KIP71_UPPER_BOUND_BASE_FEE.
          * <pre>Example :
          * {@code
          * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
          * List voteList = response.getResult();
          * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
          *
-         * BigInteger value = IVote.VoteItem.getMagmaUpperBoundBaseFee(myVote);
+         * BigInteger value = IVote.VoteItem.getKIP71UpperBoundBaseFee(myVote);
          * }</pre>
          * @param vote The instance that implemented IVote to find value.
          * @return BigInteger
          */
-        public static BigInteger getMagmaUpperBoundBaseFee(IVote vote) {
+        public static BigInteger getKIP71UpperBoundBaseFee(IVote vote) {
             return toBigIntegerValue(vote.getKey(), vote.getValue());
         }
 
         /**
-         * Get the value of MAGMA_GAS_TARGET.
+         * Get the value of KIP71_GAS_TARGET.
          * <pre>Example :
          * {@code
          * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
          * Map<String, Object> governanceItem = response.getResult();
          *
-         * BigInteger value = IVote.VoteItem.getMagmaGasTarget(governanceItem);
+         * BigInteger value = IVote.VoteItem.getKIP71GasTarget(governanceItem);
          * }</pre>
          * @param map The map instance to find value.
          * @return BigInteger
          */
-        public static BigInteger getMagmaGasTarget(Map<String, Object> map) {
-            return toBigIntegerValue(map.get(MAGMA_GAS_TARGET.getKey()));
+        public static BigInteger getKIP71GasTarget(Map<String, Object> map) {
+            return toBigIntegerValue(map.get(KIP71_GAS_TARGET.getKey()));
         }
 
         /**
-         * Get the value of MAGMA_GAS_TARGET.
+         * Get the value of KIP71_GAS_TARGET.
          * <pre>Example :
          * {@code
          * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
          * List voteList = response.getResult();
          *
-         * BigInteger value = IVote.VoteItem.getMagmaGasTarget(voteList);
+         * BigInteger value = IVote.VoteItem.getKIP71GasTarget(voteList);
          * }</pre>
          * @param list The list instance to find value.
          * @return BigInteger
          */
-        public static BigInteger getMagmaGasTarget(List<IVote> list) {
+        public static BigInteger getKIP71GasTarget(List<IVote> list) {
             for(IVote vote: list) {
-                if(vote.getKey().equals(MAGMA_GAS_TARGET.getKey())) {
+                if(vote.getKey().equals(KIP71_GAS_TARGET.getKey())) {
                     return toBigIntegerValue(vote.getValue());
                 }
             }
@@ -1044,53 +1044,53 @@ public interface IVote {
         }
 
         /**
-         * Get the value of MAGMA_GAS_TARGET.
+         * Get the value of KIP71_GAS_TARGET.
          * <pre>Example :
          * {@code
          * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
          * List voteList = response.getResult();
          * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
          *
-         * BigInteger value = IVote.VoteItem.getMagmaGasTarget(myVote);
+         * BigInteger value = IVote.VoteItem.getKIP71GasTarget(myVote);
          * }</pre>
          * @param vote The instance that implemented IVote to find value.
          * @return BigInteger
          */
-        public static BigInteger getMagmaGasTarget(IVote vote) {
+        public static BigInteger getKIP71GasTarget(IVote vote) {
             return toBigIntegerValue(vote.getKey(), vote.getValue());
         }
 
         /**
-         * Get the value of MAGMA_MAX_BLOCK_GAS_USED_FOR_BASE_FEE.
+         * Get the value of KIP71_MAX_BLOCK_GAS_USED_FOR_BASE_FEE.
          * <pre>Example :
          * {@code
          * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
          * Map<String, Object> governanceItem = response.getResult();
          *
-         * BigInteger value = IVote.VoteItem.getMagmaMaxBlockGasUsedForBaseFee(governanceItem);
+         * BigInteger value = IVote.VoteItem.getKIP71MaxBlockGasUsedForBaseFee(governanceItem);
          * }</pre>
          * @param map The map instance to find value.
          * @return BigInteger
          */
-        public static BigInteger getMagmaMaxBlockGasUsedForBaseFee(Map<String, Object> map) {
-            return toBigIntegerValue(map.get(MAGMA_MAX_BLOCK_GAS_USED_FOR_BASE_FEE.getKey()));
+        public static BigInteger getKIP71MaxBlockGasUsedForBaseFee(Map<String, Object> map) {
+            return toBigIntegerValue(map.get(KIP71_MAX_BLOCK_GAS_USED_FOR_BASE_FEE.getKey()));
         }
 
         /**
-         * Get the value of MAGMA_MAX_BLOCK_GAS_USED_FOR_BASE_FEE.
+         * Get the value of KIP71_MAX_BLOCK_GAS_USED_FOR_BASE_FEE.
          * <pre>Example :
          * {@code
          * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
          * List voteList = response.getResult();
          *
-         * BigInteger value = IVote.VoteItem.getMagmaMaxBlockGasUsedForBaseFee(voteList);
+         * BigInteger value = IVote.VoteItem.getKIP71MaxBlockGasUsedForBaseFee(voteList);
          * }</pre>
          * @param list The list instance to find value.
          * @return BigInteger
          */
-        public static BigInteger getMagmaMaxBlockGasUsedForBaseFee(List<IVote> list) {
+        public static BigInteger getKIP71MaxBlockGasUsedForBaseFee(List<IVote> list) {
             for(IVote vote: list) {
-                if(vote.getKey().equals(MAGMA_MAX_BLOCK_GAS_USED_FOR_BASE_FEE.getKey())) {
+                if(vote.getKey().equals(KIP71_MAX_BLOCK_GAS_USED_FOR_BASE_FEE.getKey())) {
                     return toBigIntegerValue(vote.getValue());
                 }
             }
@@ -1098,73 +1098,73 @@ public interface IVote {
         }
 
         /**
-         * Get the value of MAGMA_MAX_BLOCK_GAS_USED_FOR_BASE_FEE.
+         * Get the value of KIP71_MAX_BLOCK_GAS_USED_FOR_BASE_FEE.
          * <pre>Example :
          * {@code
          * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
          * List voteList = response.getResult();
          * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
          *
-         * BigInteger value = IVote.VoteItem.getMagmaMaxBlockGasUsedForBaseFee(myVote);
+         * BigInteger value = IVote.VoteItem.getKIP71MaxBlockGasUsedForBaseFee(myVote);
          * }</pre>
          * @param vote The instance that implemented IVote to find value.
          * @return BigInteger
          */
-        public static BigInteger getMagmaMaxBlockGasUsedForBaseFee(IVote vote) {
+        public static BigInteger getKIP71MaxBlockGasUsedForBaseFee(IVote vote) {
             return toBigIntegerValue(vote.getKey(), vote.getValue());
         }
 
         /**
-         * Get the value of MAGMA_BASE_FEE_DENOMINATOR.
+         * Get the value of KIP71_BASE_FEE_DENOMINATOR.
          * <pre>Example :
          * {@code
          * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
          * Map<String, Object> governanceItem = response.getResult();
          *
-         * BigInteger value = IVote.VoteItem.getMagmaBaseFeeDenominator(governanceItem);
+         * BigInteger value = IVote.VoteItem.getKIP71BaseFeeDenominator(governanceItem);
          * }</pre>
          * @param map The map instance to find value.
          * @return Integer
          */
-        public static Integer getMagmaBaseFeeDenominator(Map<String, Object> map) {
-            return toIntegerValue(MAGMA_BASE_FEE_DENOMINATOR.getKey(), map.get(MAGMA_BASE_FEE_DENOMINATOR.getKey()));
+        public static Integer getKIP71BaseFeeDenominator(Map<String, Object> map) {
+            return toIntegerValue(KIP71_BASE_FEE_DENOMINATOR.getKey(), map.get(KIP71_BASE_FEE_DENOMINATOR.getKey()));
         }
 
         /**
-         * Get the value of MAGMA_BASE_FEE_DENOMINATOR.
+         * Get the value of KIP71_BASE_FEE_DENOMINATOR.
          * <pre>Example :
          * {@code
          * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
          * List voteList = response.getResult();
          *
-         * BigInteger value = IVote.VoteItem.getMagmaBaseFeeDenominator(voteList);
+         * BigInteger value = IVote.VoteItem.getKIP71BaseFeeDenominator(voteList);
          * }</pre>
          * @param list The list instance to find value.
          * @return Integer
          */
-        public static Integer getMagmaBaseFeeDenominator(List<IVote> list) {
+        public static Integer getKIP71BaseFeeDenominator(List<IVote> list) {
             for(IVote vote: list) {
-                if(vote.getKey().equals(MAGMA_BASE_FEE_DENOMINATOR.getKey())) {
-                    return toIntegerValue(MAGMA_BASE_FEE_DENOMINATOR.getKey(), vote.getValue());
+                if(vote.getKey().equals(KIP71_BASE_FEE_DENOMINATOR.getKey())) {
+                    return toIntegerValue(KIP71_BASE_FEE_DENOMINATOR.getKey(), vote.getValue());
                 }
             }
             return null;
         }
 
         /**
-         * Get the value of MAGMA_BASE_FEE_DENOMINATOR.
+         * Get the value of KIP71_BASE_FEE_DENOMINATOR.
          * <pre>Example :
          * {@code
          * GovernanceMyVotes response = caver.rpc.governance.getMyVotes().send();
          * List voteList = response.getResult();
          * GovernanceMyVotes.MyVote myVote = (GovernanceMyVotes.MyVote)voteList.get(0);
          *
-         * BigInteger value = IVote.VoteItem.getMagmaBaseFeeDenominator(myVote);
+         * BigInteger value = IVote.VoteItem.getKIP71BaseFeeDenominator(myVote);
          * }</pre>
          * @param vote The instance that implemented IVote to find value.
          * @return Integer
          */
-        public static Integer getMagmaBaseFeeDenominator(IVote vote) {
+        public static Integer getKIP71BaseFeeDenominator(IVote vote) {
             return toIntegerValue(vote.getKey(), vote.getValue());
         }
 

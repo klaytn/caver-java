@@ -60,6 +60,8 @@ public class ManagedTransactionTest {
         caver = Caver.build(Caver.DEFAULT_URL);
         transactionManager = getTransactionManager(LUMAN);
         gasProvider = new DefaultGasProvider(caver);
+        this.smartContractDeployTransaction = SmartContractDeployTransaction
+                .create(LUMAN.getAddress(), BigInteger.ZERO, PAYLOAD, gasProvider.getGasPrice(), GAS_LIMIT, CodeFormat.EVM);
     }
 
     private TransactionManager getTransactionManager(KlayCredentials credentials) {

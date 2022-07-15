@@ -77,9 +77,9 @@ public class Accounts {
         ValueTransferTransaction valueTransferTransaction = ValueTransferTransaction.create(
                 KLAY_PROVIDER.getAddress(),
                 testCredential.getAddress(),
-                Convert.toPeb("100", Convert.Unit.KLAY).toBigInteger(),
+                Convert.toPeb("500", Convert.Unit.KLAY).toBigInteger(),
                 gasProvider.getGasPrice(),
-                BigInteger.valueOf(4_300_000)
+                BigInteger.valueOf(7_300_000)
         );
         transactionManager.executeTransaction(valueTransferTransaction);
     }

@@ -1324,6 +1324,30 @@ public class Klay {
     }
 
     /**
+     * Returns the upper bound gas price in peb.<p>
+     * @return Quantity
+     */
+    public Request<?, Quantity> getUpperBoundGasPrice() {
+        return new Request<>(
+                "klay_upperBoundGasPrice",
+                Collections.<String>emptyList(),
+                web3jService,
+                Quantity.class);
+    }
+
+    /**
+     * Returns the lower bound gas price in peb.<p>
+     * @return Quantity
+     */
+    public Request<?, Quantity> getLowerBoundGasPrice() {
+        return new Request<>(
+                "klay_lowerBoundGasPrice",
+                Collections.<String>emptyList(),
+                web3jService,
+                Quantity.class);
+    }
+
+    /**
      * Returns true if the node is writing blockchain data in parallel manner. It is enabled by default.
      * @return Boolean
      */

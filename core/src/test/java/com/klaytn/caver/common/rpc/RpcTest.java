@@ -1063,6 +1063,20 @@ public class RpcTest extends Accounts {
             assertNotNull(result);
         }
 
+        @Test
+        public void getUpperBoundGasPriceTest() throws Exception {
+            Quantity response = caver.rpc.klay.getUpperBoundGasPrice().send();
+            BigInteger result = response.getValue();
+            assertNotNull(result);
+        }
+
+        @Test
+        public void getLowerBoundGasPriceTest() throws Exception {
+            Quantity response = caver.rpc.klay.getLowerBoundGasPrice().send();
+            BigInteger result = response.getValue();
+            assertNotNull(result);
+        }
+
         // checkFeeHistoryResult checks response from getFeeHistory is ok or not.
         private void checkFeeHistoryResult(FeeHistoryResult feeHistoryResult, long blockCount, List<Float> rewardPercentiles) {
             FeeHistoryResult.FeeHistoryResultData feeHistoryResultData = feeHistoryResult.getResult();

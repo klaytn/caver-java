@@ -66,10 +66,10 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
         private BigInteger ethTxTypeCompatibleBlock;
 
         /**
-         * The value of kip71CompatibleBlock field.
+         * The value of magmaCompatibleBlock field.
          */
-        @JsonProperty("kip71CompatibleBlock")
-        private BigInteger kip71CompatibleBlock;
+        @JsonProperty("magmaCompatibleBlock")
+        private BigInteger magmaCompatibleBlock;
 
         /**
          * The value of chainId field.
@@ -197,7 +197,7 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
              * Getter function for kip71 field.
              * @return KIP71
              */
-            public KIP71 getKip71() {
+            public KIP71 getKIP71() {
                 return kip71;
             }
 
@@ -205,7 +205,7 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
              * Setter function for kip71 field.
              * @param kip71 The value of kip71 field.
              */
-            public void setKip71(KIP71 kip71) {
+            public void setKIP71(KIP71 kip71) {
                 this.kip71 = kip71;
             }
 
@@ -584,11 +584,11 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
         }
 
         /**
-         * Getter function for kip71CompatibleBlock.
+         * Getter function for magmaCompatibleBlock.
          * @return BigInteger
          */
-        public BigInteger getKIP71CompatibleBlock() {
-            return kip71CompatibleBlock;
+        public BigInteger getMagmaCompatibleBlock() {
+            return magmaCompatibleBlock;
         }
 
 

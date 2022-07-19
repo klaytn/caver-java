@@ -410,13 +410,13 @@ abstract public class AbstractTransaction {
     }
 
     /**
-     * Returns a suggested gas price to use in the transaction. <p>
+     * Suggests a gas price to use in the transaction. <p>
      * If `baseFee` is bigger than `0` in the header, then returns `baseFee * 2`. <p>
      * If not, calls `klay_gasPrice` to return unit price of the gas. <p>
      * @return BigInteger
      * @throws IOException
      */
-    public BigInteger suggestedGasPrice() throws IOException {
+    public BigInteger suggestGasPrice() throws IOException {
         if(this.klaytnCall == null) {
             throw new RuntimeException("Cannot suggest gas price. To get suggested gas price, `klaytnCall` must be set in Transaction instance. Please call the `setKlaytnCall` to set `klaytnCall` in the Transaction instance.");
         }

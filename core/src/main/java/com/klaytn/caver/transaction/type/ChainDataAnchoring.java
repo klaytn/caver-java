@@ -343,7 +343,7 @@ public class ChainDataAnchoring extends AbstractTransaction implements ITransact
     public void fillTransaction() throws IOException {
         super.fillTransaction();
         if(this.gasPrice.equals("0x")) {
-            this.setGasPrice(this.suggestedGasPrice());
+            this.setGasPrice(this.suggestGasPrice());
         }
         if(this.getGasPrice().equals("0x")) {
             throw new RuntimeException("Cannot fill transaction data. (gasPrice). `klaytnCall` must be set in Transaction instance to automatically fill the nonce, chainId or gasPrice. Please call the `setKlaytnCall` to set `klaytnCall` in the Transaction instance.");

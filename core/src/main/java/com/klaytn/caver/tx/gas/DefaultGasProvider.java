@@ -57,20 +57,8 @@ public class DefaultGasProvider implements ContractGasProvider {
             }
             // Klaytn decided to apply dynamic gas price policy, so we need to fetch base fee per gas
             // which can be dynamic based on network status.
-            BlockHeader response = caver.rpc.klay.getHeader(DefaultBlockParameterName.LATEST).send();
-            BlockHeader.BlockHeaderData blockHeader = response.getResult();
-            if (blockHeader.getBaseFeePerGas() == null) {
-                return caver.rpc.klay.getGasPrice().send().getValue();
-            }
-            BigInteger baseFeePerGas = new BigInteger(
-                    caver.utils.stripHexPrefix(blockHeader.getBaseFeePerGas()),
-                    16
-            );
-            if (baseFeePerGas.compareTo(BigInteger.valueOf(0)) > 0) {
-                // If base fee per gas is set on the network, the recommended gas price for a transaction
-                // to be included in a block with a high probability is twice the base fee per gas.
-                return baseFeePerGas.multiply(BigInteger.valueOf(2));
-            }
+            // klay_gasPrice will return baseFee * 2 after the Magma hard fork,
+            // otherwise return unit price.
             Quantity gasPrice = caver.rpc.klay.getGasPrice().send();
             return gasPrice.getValue();
         } catch (IOException e) {

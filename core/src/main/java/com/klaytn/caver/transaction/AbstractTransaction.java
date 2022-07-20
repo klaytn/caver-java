@@ -411,8 +411,7 @@ abstract public class AbstractTransaction {
 
     /**
      * Suggests a gas price to use in the transaction. <p>
-     * If `baseFee` is bigger than `0` in the header, then returns `baseFee * 2`. <p>
-     * If not, calls `klay_gasPrice` to return unit price of the gas. <p>
+     * Calls `klay_gasPrice` to return unit price of the gas. <p>
      * @return BigInteger
      * @throws IOException
      */
@@ -420,15 +419,11 @@ abstract public class AbstractTransaction {
         if(this.klaytnCall == null) {
             throw new RuntimeException("Cannot suggest gas price. To get suggested gas price, `klaytnCall` must be set in Transaction instance. Please call the `setKlaytnCall` to set `klaytnCall` in the Transaction instance.");
         }
-        BlockHeader blockHeader = this.klaytnCall.getHeader(DefaultBlockParameterName.LATEST).send();
-        String baseFeePerGas = blockHeader.getResult().getBaseFeePerGas();
+
         // Before Magma hard fork set gasPrice (or maxFeePerGas) with gas unit price
-        if(baseFeePerGas == null || Numeric.toBigInt(baseFeePerGas).compareTo(BigInteger.valueOf(0)) <= 0) {
-            return this.klaytnCall.getGasPrice().send().getValue();
-        }
-        BigInteger baseFee = Numeric.toBigInt(baseFeePerGas);
         // After Magma hard fork, set gasPrice (or maxFeePerGas) with baseFee * 2
-        return baseFee.multiply(BigInteger.valueOf(2));
+        // klay_gasPrice will return a suggestion gas price, so use klay_gasPrice API
+        return this.klaytnCall.getGasPrice().send().getValue();
     }
 
     /**

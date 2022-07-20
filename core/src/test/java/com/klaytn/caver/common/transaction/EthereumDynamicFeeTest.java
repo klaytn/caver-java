@@ -1688,23 +1688,27 @@ public class EthereumDynamicFeeTest {
                             .setValue(value)
             );
 
-            BigInteger expectedMaxFeePerGas;
             BlockHeader response = caver.rpc.klay.getHeader(DefaultBlockParameterName.LATEST).send();
             BlockHeader.BlockHeaderData blockHeader = response.getResult();
             String baseFeePerGas = blockHeader.getBaseFeePerGas();
-            if (baseFeePerGas != null && Numeric.toBigInt(baseFeePerGas).compareTo(BigInteger.valueOf(0)) > 0) {
-                expectedMaxFeePerGas = Numeric.toBigInt(baseFeePerGas).multiply(BigInteger.valueOf(2));
-            } else {
-                expectedMaxFeePerGas = caver.rpc.klay.getGasPrice().send().getValue();
-            }
 
             assertNotNull(ethereumDynamicFee);
-
             ethereumDynamicFee.fillTransaction();
-            assertEquals(
-                    Numeric.toHexStringWithPrefix(expectedMaxFeePerGas),
-                    ethereumDynamicFee.getMaxFeePerGas()
-            );
+
+            if (baseFeePerGas != null && Numeric.toBigInt(baseFeePerGas).compareTo(BigInteger.valueOf(0)) > 0) {
+                // After the Magma hard fork, should be higher than base fee
+                BigInteger minimumMaxFeePerGas = Numeric.toBigInt(baseFeePerGas);
+                assertTrue(Numeric.toBigInt(ethereumDynamicFee.getMaxFeePerGas()).compareTo(minimumMaxFeePerGas) > 0);
+            } else {
+                // Before the Magma hard fork, should use unit price
+                BigInteger expectedMaxFeePerGas = caver.rpc.klay.getGasPrice().send().getValue();
+                assertEquals(
+                        Numeric.toHexStringWithPrefix(expectedMaxFeePerGas),
+                        ethereumDynamicFee.getMaxFeePerGas()
+                );
+            }
+
+
         }
     }
 }

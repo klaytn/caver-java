@@ -19,7 +19,7 @@ package com.klaytn.caver.transaction.type;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
-import com.klaytn.caver.transaction.AbstractTransaction;
+import com.klaytn.caver.transaction.ITransactionWithGasPriceField;
 import com.klaytn.caver.transaction.TransactionDecoder;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
@@ -40,7 +40,7 @@ import java.util.List;
  * Please refer to https://docs.klaytn.com/klaytn/design/transactions/fee-delegation#txtypefeedelegatedchaindataanchoring to see more detail.
  */
 @JsonIgnoreProperties(value = { "chainId" })
-public class FeeDelegatedChainDataAnchoring extends AbstractFeeDelegatedTransaction {
+public class FeeDelegatedChainDataAnchoring extends AbstractFeeDelegatedTransaction implements ITransactionWithGasPriceField {
     /**
      * Data of the service chain.
      */
@@ -399,7 +399,7 @@ public class FeeDelegatedChainDataAnchoring extends AbstractFeeDelegatedTransact
     public void fillTransaction() throws IOException {
         super.fillTransaction();
         if(this.gasPrice.equals("0x")) {
-            this.setGasPrice(this.getKlaytnCall().getGasPrice().send().getResult());
+            this.setGasPrice(this.suggestGasPrice());
         }
         if(this.getGasPrice().equals("0x")) {
             throw new RuntimeException("Cannot fill transaction data. (gasPrice). `klaytnCall` must be set in Transaction instance to automatically fill the nonce, chainId or gasPrice. Please call the `setKlaytnCall` to set `klaytnCall` in the Transaction instance.");

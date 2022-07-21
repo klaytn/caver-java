@@ -150,3 +150,9 @@ lint/tmp/
 # Android Profiling
 *.hprof
 ##
+
+.DS_Store
+ipfs.txt
+
+integration-test/gradle
+integration-test/gradlew

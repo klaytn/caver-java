@@ -42,6 +42,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * The KIP37 class that helps you easily handle a smart contract that implements KIP-37 as a Java instance on the Klaytn blockchain platform.<p>
+ * This KIP-37 contract source code based on <a href="https://github.com/klaytn/klaytn-contracts">Klaytn-contracts</a>.
+ * Static methods and constructor is accessed via `caver.kct.kip37`.
+ * @see com.klaytn.caver.kct.kip7.wrapper.KIP7Wrapper
+ * @see com.klaytn.caver.kct.wrapper.KCTWrapper
+ * @see Contract
+ */
 public class KIP37 extends Contract {
     public static final String FUNCTION_URI = "uri";
     public static final String FUNCTION_BALANCE_OF = "balanceOf";
@@ -93,6 +101,12 @@ public class KIP37 extends Contract {
 
     /**
      * Creates a KIP37 instance.
+     * <pre>Example
+     * {@code
+     * KIP37 kip37 = caver.kct.kip37.create();
+     * }
+     * </pre>
+     *
      * @param caver A Caver instance.
      * @return KIP37
      * @throws IOException
@@ -103,6 +117,13 @@ public class KIP37 extends Contract {
 
     /**
      * Creates a KIP37 instance.
+     * <pre>Example
+     * {@code
+     * String contractAddress = "0x{contractAddress}";
+     * KIP37 kip37 = caver.kct.kip37.create(contractAddress);
+     * }
+     * </pre>
+     *
      * @param caver A Caver instance.
      * @param contractAddress A contract address
      * @return KIP37
@@ -133,7 +154,16 @@ public class KIP37 extends Contract {
 
     /**
      * Deploy a KIP-37 contract.<p>
-     * The deployer's keyring should be existed in `caver.wallet`.
+     * The deployer's keyring should be existed in `caver.wallet`. See {@link com.klaytn.caver.wallet.KeyringContainer} and {@link IWallet}.
+     * <pre>Example :
+     * {@code
+     * String deployerAddress = "0x{deployerAddress}";
+     * String uri = "uri";
+     *
+     * KIP37 kip37 = caver.kct.kip37.deploy(uri, deployerAddress);
+     * }
+     * </pre>
+     *
      * @param caver A Caver instance.
      * @param uri The URI for token type.
      * @param deployer A deployer's address.
@@ -152,19 +182,22 @@ public class KIP37 extends Contract {
 
     /**
      * Deploy a KIP-37 contract.<p>
-     * The deployer's keyring should be existed in `caver.wallet`.<p>
+     * The deployer's keyring should be existed in `caver.wallet`. See {@link com.klaytn.caver.wallet.KeyringContainer} and {@link IWallet}. <p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in SendOptions.
-     * <pre>
-     * <code>
-     *     SendOptions sendOptions = new SendOptions();
-     *     sendOptions.setFrom("deployer address");
-     *     sendOptions.setGas(BigInteger.valueOf(gas value));
-     *     sendOptions.setFeeDelegation(true);
-     *     sendOptions.setFeePayer("fee payer address");
+     * <pre> Example :
+     * {@code
+     * String uri = "uri";
      *
-     *     KIP37 kip37 = caver.kct.kip37.deploy(uri, sendOptions);
-     * </code>
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom("0x{deployerAddress}");
+     * sendOptions.setGas(BigInteger.valueOf(gas value));
+     * sendOptions.setFeeDelegation(true);
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
+     *
+     * KIP37 kip37 = caver.kct.kip37.deploy(uri, sendOptions);
+     * }
      * </pre>
+     *
      * @param caver A Caver instance.
      * @param uri The URI for token type.
      * @param sendOptions The send options to deploy a contract.
@@ -184,7 +217,16 @@ public class KIP37 extends Contract {
     /**
      * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.
+     * <pre>Example :
+     * {@code
+     * String deployerAddress = "0x{deployerAddress}";
+     * String uri = "uri";
+     *
+     * KIP37 kip37 = caver.kct.kip37.deploy(uri, deployerAddress, caver.getWallet());
+     * }
+     * </pre>
+     *
      * @param caver A Caver instance.
      * @param uri The URI for token type.
      * @param deployer A deployer's address.
@@ -209,19 +251,22 @@ public class KIP37 extends Contract {
     /**
      * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.<p>
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.<p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in SendOptions.
-     * <pre>
-     * <code>
-     *     SendOptions sendOptions = new SendOptions();
-     *     sendOptions.setFrom("deployer address");
-     *     sendOptions.setGas(BigInteger.valueOf(gas value));
-     *     sendOptions.setFeeDelegation(true);
-     *     sendOptions.setFeePayer("fee payer address");
+     * <pre> Example :
+     * {@code
+     * String uri = "uri";
      *
-     *     KIP37 kip37 = caver.kct.kip37.deploy(uri, sendOptions, caver.getWallet());
-     * </code>
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom("0x{deployerAddress}");
+     * sendOptions.setGas(BigInteger.valueOf(gas value));
+     * sendOptions.setFeeDelegation(true);
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
+     *
+     * KIP37 kip37 = caver.kct.kip37.deploy(uri, sendOptions, caver.getWallet());
+     * }
      * </pre>
+     *
      * @param caver A Caver instance.
      * @param uri The URI for token type.
      * @param sendOptions The send options to deploy a contract.
@@ -242,6 +287,16 @@ public class KIP37 extends Contract {
     /**
      * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.<p>
+     * <pre>Example :
+     * {@code
+     * String deployerAddress = "0x{deployerAddress}";
+     * String uri = "uri";
+     * KIP37DeployParams deployInfo = new KIP37DeployParams(uri);
+     *
+     * KIP37 kip37 = caver.kct.kip37.deploy(deployInfo, deployerAddress);
+     * }
+     * </pre>
+     *
      * @param caver A Caver instance.
      * @param tokenInfo The KIP-37 contract's deploy parameter values.
      * @param deployer A deployer's address
@@ -262,17 +317,21 @@ public class KIP37 extends Contract {
      * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.<p>
      * If you want to deploy a contract using fee delegation transaction, you can create and send a fee delegated transaction through setting a fee delegation field in SendOptions.
-     * <pre>
-     * <code>
-     *     SendOptions sendOptions = new SendOptions();
-     *     sendOptions.setFrom("deployer address");
-     *     sendOptions.setGas(BigInteger.valueOf(gas value));
-     *     sendOptions.setFeeDelegation(true);
-     *     sendOptions.setFeePayer("fee payer address");
+     * <pre>Example :
+     * {@code
+     * String uri = "uri";
+     * KIP37DeployParams deployInfo = new KIP37DeployParams(uri);
      *
-     *     KIP37 kip37 = caver.kct.kip37.deploy(new KIP37DeployParams(uri), sendOptions);
-     * </code>
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom("0x{deployerAddress}");
+     * sendOptions.setGas(BigInteger.valueOf(gas value));
+     * sendOptions.setFeeDelegation(true);
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
+     *
+     * KIP37 kip37 = caver.kct.kip37.deploy(deployInfo, sendOptions);
+     * }
      * </pre>
+     *
      * @param caver A Caver instance.
      * @param tokenInfo The KIP-37 contract's deploy parameter values.
      * @param sendOptions The send options to deploy a contract.
@@ -292,7 +351,18 @@ public class KIP37 extends Contract {
     /**
      * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.
+     * <pre>Example :
+     * {@code
+     * String deployerAddress = "0x{deployerAddress}";
+     * String uri = "uri";
+     * KIP37DeployParams deployInfo = new KIP37DeployParams(uri);
+     *
+     *
+     * KIP37 kip37 = caver.kct.kip37.deploy(deployInfo, sendOptions, caver.getWallet);
+     * }
+     * </pre>
+     *
      * @param caver A Caver instance.
      * @param tokenInfo The KIP-37 contract's deploy parameter values.
      * @param deployer A deployer's address
@@ -317,18 +387,22 @@ public class KIP37 extends Contract {
     /**
      * Deploy a KIP-37 contract.<p>
      * The deployer's keyring should be existed in `caver.wallet`.<p>
-     * The wallet used in the contract is set to the wallet type passed as a parameter of the method.
-     * <pre>
-     * <code>
-     *     SendOptions sendOptions = new SendOptions();
-     *     sendOptions.setFrom("deployer address");
-     *     sendOptions.setGas(BigInteger.valueOf(gas value));
-     *     sendOptions.setFeeDelegation(true);
-     *     sendOptions.setFeePayer("fee payer address");
+     * The wallet used in the contract is set with the wallet that implements the IWallet interface passed as a parameter of the method.
+     * <pre>Example :
+     * {@code
+     * String uri = "uri";
+     * KIP37DeployParams deployInfo = new KIP37DeployParams(uri);
      *
-     *     KIP37 kip37 = caver.kct.kip37.deploy(new KIP37DeployParams(uri), sendOptions, caver.getWallet());
-     * </code>
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom("0x{deployerAddress}");
+     * sendOptions.setGas(BigInteger.valueOf(gas value));
+     * sendOptions.setFeeDelegation(true);
+     * sendOptions.setFeePayer("0x{feePayerAddress}");
+     *
+     * KIP37 kip37 = caver.kct.kip37.deploy(deployInfo, sendOptions, caver.getWallet());
+     * }
      * </pre>
+     *
      * @param caver A Caver instance
      * @param tokenInfo The KIP-37 contract's deploy parameter values.
      * @param sendOptions The send options to deploy a contract.
@@ -353,7 +427,13 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Copy instance
+     * Copy instance.
+     * <pre>Example :
+     * {@code
+     * KIP37 cloned = kip37.clone();
+     * }
+     * </pre>
+     *
      * @return KIP37
      */
     public KIP37 clone() {
@@ -370,7 +450,14 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Copy instance with token address
+     * Copy instance with token address.
+     * <pre>Example :
+     * {@code
+     * String contractAddress = "0x{contractAddress}";
+     * KIP37 cloned = kip37.clone(contractAddress);
+     * }
+     * </pre>
+     *
      * @param tokenAddress A KIP-37 token address
      * @return KIP37
      */
@@ -442,6 +529,13 @@ public class KIP37 extends Contract {
 
     /**
      * Get a URI(Uniform Resource Identifier) for a given token ID.
+     * <pre>Example :
+     * {@code
+     * String tokenId = "0x1";
+     * String uri = kip37.uri(tokenId);
+     * }
+     * </pre>
+     *
      * @param tokenId The token id(hex string)
      * @return String
      * @throws NoSuchMethodException
@@ -457,6 +551,13 @@ public class KIP37 extends Contract {
 
     /**
      * Get a URI(Uniform Resource Identifier) for a given token ID.
+     * <pre>Example :
+     * {@code
+     * BigInteger tokenId = BigInteger.ONE;
+     * String uri = kip37.uri(tokenId);
+     * }
+     * </pre>
+     *
      * @param tokenId The token id(integer)
      * @return String
      * @throws NoSuchMethodException
@@ -480,6 +581,15 @@ public class KIP37 extends Contract {
 
     /**
      * Get the balance of an account's tokens.
+     * <pre>Example :
+     * {@code
+     * String account = "0x{accountAddress}";
+     * String tokenId = "0x1";
+     *
+     * BigInteger balance = kip37.balanceOf(account, tokenId);
+     * }
+     * </pre>
+     *
      * @param account The address of the token holder.
      * @param tokenId The ID of the token(hex string).
      * @return BigInteger
@@ -495,7 +605,16 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Get the balance of an account's tokens
+     * Get the balance of an account's tokens.
+     * <pre>Example :
+     * {@code
+     * String account = "0x{accountAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     *
+     * BigInteger balance = kip37.balanceOf(account, tokenId);
+     * }
+     * </pre>
+     *
      * @param account The address of the token holder.
      * @param tokenId The ID of the token(integer).
      * @return BigInteger
@@ -513,6 +632,15 @@ public class KIP37 extends Contract {
 
     /**
      * Get the balance of multiple account / token pairs.
+     * <pre>Example :
+     * {@code
+     * String[] accounts = new String[] {....};
+     * String[] tokenIds = new String[] {....};
+     *
+     * List<BigInteger> balances = kip37.balanceOf(accounts, tokenIds);
+     * }
+     * </pre>
+     *
      * @param accounts The addresses of the token holders.
      * @param tokenIds IDs of the tokens(hex string)
      * @return List
@@ -530,6 +658,15 @@ public class KIP37 extends Contract {
 
     /**
      * Get the balance of multiple account / token pairs.
+     * <pre>Example :
+     * {@code
+     * String[] accounts = new String[] {....};
+     * BigInteger[] tokenIds = new BigInteger[] {....};
+     *
+     * List<BigInteger> balances = kip37.balanceOf(accounts, tokenIds);
+     * }
+     * </pre>
+     *
      * @param accounts The addresses of the token holders.
      * @param tokenIds IDs of the tokens(integer)
      * @return List
@@ -554,6 +691,22 @@ public class KIP37 extends Contract {
      * Caller must be approved to manage the tokens being transferred out of the 'from' account.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * String tokenId = "0x1";
+     * BigInteger value = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.safeTransferFrom(from, to, tokenId, value);
+     * }
+     * </pre>
+     *
      * @param from Source address.
      * @param to Target address.
      * @param tokenId ID of the token type(hex string).
@@ -576,6 +729,22 @@ public class KIP37 extends Contract {
      * Caller must be approved to manage the tokens being transferred out of the 'from' account.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     * BigInteger value = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.safeTransferFrom(from, to, tokenId, value);
+     * }
+     * </pre>
+     *
      * @param from Source address.
      * @param to Target address.
      * @param tokenId ID of the token type(integer)
@@ -598,6 +767,23 @@ public class KIP37 extends Contract {
      * Caller must be approved to manage the tokens being transferred out of the 'from' account.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * String tokenId = "0x1";
+     * BigInteger value = BigInteger.ONE;
+     * String data = "data";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.safeTransferFrom(from, to, tokenId, value, data);
+     * }
+     * </pre>
+     *
      * @param from Source address.
      * @param to Target address.
      * @param tokenId ID of the token type(hex string).
@@ -621,6 +807,23 @@ public class KIP37 extends Contract {
      * Caller must be approved to manage the tokens being transferred out of the 'from' account.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     * BigInteger value = BigInteger.ONE;
+     * String data = "data";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.safeTransferFrom(from, to, tokenId, value, data);
+     * }
+     * </pre>
+     *
      * @param from Source address.
      * @param to Target address.
      * @param tokenId ID of the token type(integer)
@@ -643,6 +846,21 @@ public class KIP37 extends Contract {
      * Transfers value amount of an 'id' from the 'from' address to the 'to' address specified.<p>
      * Caller must be approved to manage the tokens being transferred out of the 'from' account.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * String tokenId = "0x1";
+     * BigInteger value = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.safeTransferFrom(from, to, tokenId, value, snedOptions);
+     * }
+     * </pre>
+     *
      * @param from Source address.
      * @param to Target address.
      * @param tokenId ID of the token type(hex string)
@@ -665,6 +883,21 @@ public class KIP37 extends Contract {
      * Transfers value amount of an 'id' from the 'from' address to the 'to' address specified.<p>
      * Caller must be approved to manage the tokens being transferred out of the 'from' account.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     * BigInteger value = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.safeTransferFrom(from, to, tokenId, value, sendOptions);
+     * }
+     * </pre>
+     *
      * @param from Source address.
      * @param to Target address.
      * @param tokenId ID of the token type(integer)
@@ -687,6 +920,22 @@ public class KIP37 extends Contract {
      * Transfers value amount of an 'id' from the 'from' address to the 'to' address specified.<p>
      * Caller must be approved to manage the tokens being transferred out of the 'from' account.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * String tokenId = "0x1";
+     * BigInteger value = BigInteger.ONE;
+     * String data = "data";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.safeTransferFrom(from, to, tokenId, value, data, sendOptions);
+     * }
+     * </pre>
+     *
      * @param from Source address.
      * @param to Target address.
      * @param tokenId ID of the token type(hex string)
@@ -710,6 +959,22 @@ public class KIP37 extends Contract {
      * Transfers value amount of an 'id' from the 'from' address to the 'to' address specified.<p>
      * Caller must be approved to manage the tokens being transferred out of the 'from' account.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     * BigInteger value = BigInteger.ONE;
+     * String data = "data";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.safeTransferFrom(from, to, tokenId, value, data, sendOptions);
+     * }
+     * </pre>
+     *
      * @param from Source address.
      * @param to Target address.
      * @param tokenId ID of the token type(integer)
@@ -734,6 +999,23 @@ public class KIP37 extends Contract {
      * Batch-operation version of {@link #safeTransferFrom(String, String, String, BigInteger, String)}. <p>
      * It will use default sendOptions in contract instance to passed sendOptions. <p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * String[] tokenIds = new String[]{....};
+     * BigInteger[] amounts = new BigInteger[]{....};
+     * String data = "data";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.safeTransferFrom(from, to, tokenIds, amounts, data);
+     * }
+     * </pre>
+     *
      * @param from Source address.
      * @param to Target address.
      * @param tokenIds IDs of token type(hex string)
@@ -756,6 +1038,22 @@ public class KIP37 extends Contract {
      * Batch-operation version of {@link #safeTransferFrom(String, String, BigInteger, BigInteger, String)}<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * BigInteger[] tokenIds = new String[]{....};
+     * BigInteger[] amounts = new BigInteger[]{....};
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.safeTransferFrom(from, to, tokenIds, amounts);
+     * }
+     * </pre>
+     *
      * @param from Source address.
      * @param to Target address.
      * @param tokenIds IDs of token type(integer)
@@ -778,6 +1076,23 @@ public class KIP37 extends Contract {
      * Batch-operation version of {@link #safeTransferFrom(String, String, String, BigInteger, String)}. <p>
      * It will use default sendOptions in contract instance to passed sendOptions. <p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * String[] tokenIds = new String[]{....};
+     * BigInteger[] amounts = new BigInteger[]{....};
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.safeTransferFrom(from, to, tokenId, amounts);
+     * }
+     * </pre>
+     *
+     *
      * @param from Source address.
      * @param to Target address.
      * @param tokenIds IDs of token type(hex string)
@@ -799,6 +1114,23 @@ public class KIP37 extends Contract {
      * Batch-operation version of {@link #safeTransferFrom(String, String, BigInteger, BigInteger, String)}<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * BigInteger[] tokenIds = new BigInteger[]{....};
+     * BigInteger[] amounts = new BigInteger[]{....};
+     * String data = "data";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.safeTransferFrom(from, to, tokenId, value, data);
+     * }
+     * </pre>
+     *
      * @param from Source address.
      * @param to Target address.
      * @param tokenIds IDs of token type(integer)
@@ -820,6 +1152,22 @@ public class KIP37 extends Contract {
     /**
      * Batch-operation version of {@link #safeTransferFrom(String, String, String, BigInteger, String, SendOptions)}.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * String[] tokenIds = new String[]{....};
+     * BigInteger[] amounts = new BigInteger[]{....};
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.safeTransferFrom(from, to, tokenId, amounts, sendOptions);
+     * }
+     * </pre>
+     *
+     *
      * @param from Source address.
      * @param to Target address.
      * @param tokenIds IDs of token type(hex string)
@@ -841,6 +1189,22 @@ public class KIP37 extends Contract {
     /**
      * Batch-operation version of {@link #safeTransferFrom(String, String, BigInteger, BigInteger, String, SendOptions)}.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * BigInteger[] tokenIds = new BigInteger[]{....};
+     * BigInteger[] amounts = new BigInteger[]{....};
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.safeTransferFrom(from, to, tokenId, amounts, sendOptions);
+     * }
+     * </pre>
+     *
+     *
      * @param from Source address.
      * @param to Target address.
      * @param tokenIds IDs of token type(integer)
@@ -862,6 +1226,23 @@ public class KIP37 extends Contract {
     /**
      * Batch-operation version of {@link #safeTransferFrom(String, String, String, BigInteger, String, SendOptions)}.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * String[] tokenIds = new String[]{....};
+     * BigInteger[] amounts = new BigInteger[]{....};
+     * String data = "data";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.safeTransferFrom(from, to, tokenId, amounts, data, sendOptions);
+     * }
+     * </pre>
+     *
+     *
      * @param from Source address.
      * @param to Target address.
      * @param tokenIds IDs of token type(hex string)
@@ -885,6 +1266,23 @@ public class KIP37 extends Contract {
     /**
      * Batch-operation version of {@link #safeTransferFrom(String, String, BigInteger, BigInteger, String, SendOptions)}.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String from = "0x{fromAddress}";
+     * String to = "0x{toAddress}";
+     * BigInteger[] tokenIds = new BigInteger[]{....};
+     * BigInteger[] amounts = new BigInteger[]{....};
+     * String data = "data";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.safeTransferFrom(from, to, tokenId, amounts, data, sendOptions);
+     * }
+     * </pre>
+     *
+     *
      * @param from Source address.
      * @param to Target address.
      * @param tokenIds IDs of token type(integer)
@@ -909,6 +1307,20 @@ public class KIP37 extends Contract {
      * Enable or disable approval for a third party ("operator") to manage all of the caller's tokens.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String operator = "0x{operatorAddress}";
+     * boolean approved = true;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.setApprovalForAll(operator, approved);
+     * }
+     * </pre>
+     *
      * @param operator The address to add to the set of authorized operators.
      * @param approved True if the operator is approved, false to revoke approval
      * @return TransactionReceipt.TransactionReceiptData
@@ -927,6 +1339,19 @@ public class KIP37 extends Contract {
     /**
      * Enable or disable approval for a third party ("operator") to manage all of the caller's tokens.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String operator = "0x{operatorAddress}";
+     * boolean approved = true;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.setApprovalForAll(operator, approved, sendOptions);
+     * }
+     * </pre>
+     *
      * @param operator The address to add to the set of authorized operators.
      * @param approved True if the operator is approved, false to revoke approval
      * @param sendParam A SendOptions need to execute contract's method.
@@ -946,6 +1371,14 @@ public class KIP37 extends Contract {
 
     /**
      * Get the approval status of an operator for a given owner.
+     * <pre>Example :
+     * {@code
+     * String owner = "0x{ownerAddress}";
+     * String operator = "0x{operatorAddress}";
+     *
+     * boolean isApproved = kip37.isApprovedForALl(owner, operator);
+     * }
+     * </pre>
      * @param owner The address of the token owner.
      * @param operator The address of the authorized operator.
      * @return boolean
@@ -963,6 +1396,13 @@ public class KIP37 extends Contract {
 
     /**
      * Get the total supply of the token type requested.
+     * <pre>Example :
+     * {@code
+     * String tokenId = "0x1";
+     * BigInteger supply = kip37.totalSupply(tokenId);
+     * }
+     * </pre>
+     *
      * @param tokenId The ID of the token.(hex string)
      * @return BigInteger
      * @throws NoSuchMethodException
@@ -978,6 +1418,13 @@ public class KIP37 extends Contract {
 
     /**
      * Get the total supply of the token type requested.
+     * <pre>Example :
+     * {@code
+     * BigInteger tokenId = BigInteger.ONE;
+     * BigInteger supply = kip37.totalSupply(tokenId);
+     * }
+     * </pre>
+     *
      * @param tokenId The ID of the token.(integer)
      * @return BigInteger
      * @throws NoSuchMethodException
@@ -996,6 +1443,19 @@ public class KIP37 extends Contract {
      * Creates a new token type and assigns initialSupply to the minter.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String tokenId = "0x1";
+     * BigInteger initialSupply = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.create(tokenId, initialSupply);
+     * }
+     * </pre>
      * @param tokenId The token id to create.(hex string)
      * @param initialSupply The amount of tokens being minted.
      * @return TransactionReceipt.TransactionReceiptData
@@ -1015,6 +1475,20 @@ public class KIP37 extends Contract {
      * Creates a new token type and assigns initialSupply to the minter.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * BigInteger tokenId = BigInteger.ONE;
+     * BigInteger initialSupply = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.create(tokenId, initialSupply);
+     * }
+     * </pre>
+     *
      * @param tokenId The token id to create.(integer)
      * @param initialSupply The amount of tokens being minted.
      * @return TransactionReceipt.TransactionReceiptData
@@ -1034,6 +1508,21 @@ public class KIP37 extends Contract {
      * Creates a new token type and assigns initialSupply to the minter.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String tokenId = "0x1";
+     * BigInteger initialSupply = BigInteger.ONE;
+     * String uri = "uri";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.create(tokenId, initialSupply, uri);
+     * }
+     * </pre>
+     *
      * @param tokenId The token id to create.(hex string)
      * @param initialSupply The amount of tokens being minted.
      * @param uri The token URI of the created token.
@@ -1054,6 +1543,22 @@ public class KIP37 extends Contract {
      * Creates a new token type and assigns initialSupply to the minter.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * BigInteger tokenId = BigInteger.ONE;
+     * BigInteger initialSupply = BigInteger.ONE;
+     * String uri = "uri";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.create(tokenId, initialSupply, uri);
+     * }
+     * </pre>
+     *
+     *
      * @param tokenId The token id to create.(integer)
      * @param initialSupply The amount of tokens being minted.
      * @param uri The token URI of the created token.
@@ -1073,6 +1578,20 @@ public class KIP37 extends Contract {
     /**
      * Creates a new token type and assigns initialSupply to the minter.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String tokenId = "0x1";
+     * BigInteger initialSupply = BigInteger.ONE;
+     * String uri = "uri";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.create(tokenId, initialSupply, uri, sendOptions);
+     * }
+     * </pre>
+     *
      * @param tokenId The token id to create.(hex string)
      * @param initialSupply The amount of tokens being minted.
      * @param sendParam A SendOptions need to execute contract's method.
@@ -1091,6 +1610,19 @@ public class KIP37 extends Contract {
 
     /**
      * Creates a new token type and assigns initialSupply to the minter.<p>
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * BigInteger tokenId = BigInteger.ONE;
+     * BigInteger initialSupply = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.create(tokenId, initialSupply, uri, sendOptions);
+     * }
+     * </pre>
+     *
      * @param tokenId The token id to create.(integer)
      * @param initialSupply The amount of tokens being minted.
      * @param sendParam A SendOptions need to execute contract's method.
@@ -1111,6 +1643,20 @@ public class KIP37 extends Contract {
     /**
      * Creates a new token type and assigns initialSupply to the minter.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String tokenId = "0x1";
+     * BigInteger initialSupply = BigInteger.ONE;
+     * String uri = "uri";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.create(tokenId, initialSupply, uri, sendOptions);
+     * }
+     * </pre>
+     *
      * @param tokenId The token id to create.(hex string)
      * @param initialSupply The amount of tokens being minted.
      * @param uri The token URI of the created token.
@@ -1129,7 +1675,21 @@ public class KIP37 extends Contract {
     }
 
     /**
-     * Creates a new token type and assigns initialSupply to the minter.<p>
+     * Creates a new token type and assigns initialSupply to the minter.
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * BigInteger tokenId = BigInteger.ONE;
+     * BigInteger initialSupply = BigInteger.ONE;
+     * String uri = "uri";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.create(tokenId, initialSupply, uri, sendOptions);
+     * }
+     * </pre>
+     *
      * @param tokenId The token id to create.(integer)
      * @param initialSupply The amount of tokens being minted.
      * @param uri The token URI of the created token.
@@ -1152,6 +1712,21 @@ public class KIP37 extends Contract {
      * Mints token of the specific token type.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String to = "0x{toAddress}";
+     * String tokenId = "0x1";
+     * BigInteger value = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.mint(to, tokenId, value);
+     * }
+     * </pre>
+     *
      * @param to The address that will receive the minted tokens.
      * @param tokenId The token id to mint.(hex string)
      * @param value The quantity of tokens being minted.
@@ -1172,6 +1747,21 @@ public class KIP37 extends Contract {
      * Mints token of the specific token type.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String to = "0x{toAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     * BigInteger value = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.mint(to, tokenId, value);
+     * }
+     * </pre>
+     *
      * @param to The address that will receive the minted tokens.
      * @param tokenId The token id to mint.(integer)
      * @param value The quantity of tokens being minted.
@@ -1192,6 +1782,20 @@ public class KIP37 extends Contract {
      * Mints token of the specific token type.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String to = "0x{toAddress}";
+     * String tokenId = "0x1";
+     * BigInteger value = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.mint(to, tokenId, value, sendOptions);
+     * }
+     * </pre>
+     *
      * @param to The address that will receive the minted tokens.
      * @param tokenId The token id to mint.(hex string)
      * @param value The quantity of tokens being minted.
@@ -1213,6 +1817,20 @@ public class KIP37 extends Contract {
      * Mints token of the specific token type.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String to = "0x{toAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     * BigInteger value = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.mint(to, tokenId, value, sendOptions);
+     * }
+     * </pre>
+     *
      * @param to The address that will receive the minted tokens.
      * @param tokenId The token id to mint.(integer)
      * @param value The quantity of tokens being minted.
@@ -1235,6 +1853,22 @@ public class KIP37 extends Contract {
      * Mints tokens of the specific token type.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String[] toList = new String[]{...};
+     * String tokenId = "0x1";
+     * BigInteger value = new BigInteger[]{...}
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.mint(to, tokenId, value);
+     * }
+     * </pre>
+     *
+     *
      * @param toList The list of addresses that will receive the minted tokens.
      * @param tokenId The token id to mint.(hex string)
      * @param values The list of quantities of tokens being minted.
@@ -1255,6 +1889,22 @@ public class KIP37 extends Contract {
      * Mints tokens of the specific token type.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String[] toList = new String[]{...};
+     * BigInteger tokenId = BigInteger.ONE;
+     * BigInteger value = new BigInteger[]{...}
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.mint(to, tokenId, value);
+     * }
+     * </pre>
+     *
+     *
      * @param toList The list of addresses that will receive the minted tokens.
      * @param tokenId The token id to mint.(integer)
      * @param values The list of quantities of tokens being minted.
@@ -1274,6 +1924,22 @@ public class KIP37 extends Contract {
     /**
      * Mints tokens of the specific token type.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String to = "0x{toAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     * BigInteger value = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.mint(to, tokenId, value);
+     * }
+     * </pre>
+     *
+     *
      * @param toList The list of addresses that will receive the minted tokens.
      * @param tokenId The token id to mint.(hex string)
      * @param values The list of quantities of tokens being minted.
@@ -1294,6 +1960,20 @@ public class KIP37 extends Contract {
     /**
      * Mints tokens of the specific token type.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String to = "0x{toAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     * BigInteger value = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.mint(to, tokenId, value, sendOptions);
+     * }
+     * </pre>
+     *
      * @param toList The list of addresses that will receive the minted tokens.
      * @param tokenId The token id to mint.(integer)
      * @param values The list of quantities of tokens being minted.
@@ -1323,6 +2003,21 @@ public class KIP37 extends Contract {
      * Mints multiple KIP-37 tokens of the specific token types.
      * It will use default sendOptions in contract instance to passed sendOptions
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String to = "0x{toAddress}";
+     * String[] tokenIds = new String[]{...}
+     * BigInteger[] values = new BigInteger[]{...}
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.mint(to, tokenIds, values);
+     * }
+     * </pre>
+     *
      * @param to The address that will receive the minted tokens.
      * @param tokenIds The list of the token ids to mint.(hex string)
      * @param values The list of quantities of token being minted.
@@ -1344,6 +2039,22 @@ public class KIP37 extends Contract {
      * Mints multiple KIP-37 tokens of the specific token types.
      * It will use default sendOptions in contract instance to passed sendOptions
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String to = "0x{toAddress}";
+     * BigInteger[] tokenIds = new BigInteger[]{...}
+     * BigInteger[] values = new BigInteger[]{...}
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.mint(to, tokenIds, values);
+     * }
+     * </pre>
+     *
+     *
      * @param to The address that will receive the minted tokens.
      * @param tokenIds The list of the token ids to mint.(integer)
      * @param values The list of quantities of token being minted.
@@ -1363,6 +2074,20 @@ public class KIP37 extends Contract {
     /**
      * Mints multiple KIP-37 tokens of the specific token types.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String to = "0x{toAddress}";
+     * String[] tokenIds = new String[]{...}
+     * BigInteger[] values = new BigInteger[]{...}
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.mint(to, tokenIds, values, sendOptions);
+     * }
+     * </pre>
+     *
      * @param to The address that will receive the minted tokens.
      * @param tokenIds The list of the token ids to mint.(hex string)
      * @param values The list of quantities of token being minted.
@@ -1384,6 +2109,20 @@ public class KIP37 extends Contract {
     /**
      * Mints multiple KIP-37 tokens of the specific token types.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String to = "0x{toAddress}";
+     * BigInteger[] tokenIds = new BigInteger[]{...}
+     * BigInteger[] values = new BigInteger[]{...}
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.mint(to, tokenIds, values, sendOptions);
+     * }
+     * </pre>
+     *
      * @param to The address that will receive the minted tokens.
      * @param tokenIds The list of the token ids to mint.(integer)
      * @param values The list of quantities of token being minted.
@@ -1411,6 +2150,13 @@ public class KIP37 extends Contract {
 
     /**
      * Checks if specific account has the Minter role.
+     * <pre>Example :
+     * {@code
+     * String account = "0x{accountAddress}";
+     *
+     * boolean hasMinter = kip37.isMinter(account);
+     * }
+     * </pre>
      * @param account The address to check that has Minter role
      * @return boolean
      * @throws NoSuchMethodException
@@ -1431,6 +2177,18 @@ public class KIP37 extends Contract {
      * Adds an account as a minter that has the permission of MinterRole and can mint.<p>
      * It will use default sendOptions in contract instance to passed sendOptions<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String account = "0x{accountAddress}";
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.addMinter(account);
+     * }
+     * </pre>
+     *
      * @param account The account address to add minter role.
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1448,6 +2206,18 @@ public class KIP37 extends Contract {
     /**
      * Adds an account as a minter that has the permission of MinterRole and can mint.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String account = "0x{address}";
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.addMinter(account, sendOptions);
+     * }
+     * </pre>
+     *
      * @param account The account address to add minter role.
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
@@ -1470,6 +2240,17 @@ public class KIP37 extends Contract {
      * Renounces privilege of MinterRole from an account.<p>
      * It will use default sendOptions in contract instance to passed sendOptions<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.renounceMinter();
+     * }
+     * </pre>
+     *
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
      * @throws IOException
@@ -1486,6 +2267,16 @@ public class KIP37 extends Contract {
     /**
      * Renounces privilege of MinterRole from an account.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.renounceMinter(sendOptions);
+     * }
+     * </pre>
+     *
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1507,6 +2298,21 @@ public class KIP37 extends Contract {
      * Burns a token.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String owner = "0x{ownerAddress}";
+     * String tokenId = "0x1";
+     * BigInteger value = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.burn(owner, tokenId, value);
+     * }
+     * </pre>
+     *
      * @param address The account that owns tokens.
      * @param tokenId The token id to burn.(hex string)
      * @param value The token amount to burn.
@@ -1527,6 +2333,21 @@ public class KIP37 extends Contract {
      * Burns a token.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String owner = "0x{toAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     * BigInteger value = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.burn(owner, tokenId, value);
+     * }
+     * </pre>
+     *
      * @param address The account that owns tokens.
      * @param tokenId The token id to burn.(integer)
      * @param value The token amount to burn.
@@ -1546,6 +2367,20 @@ public class KIP37 extends Contract {
     /**
      * Burns a token.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String owner = "0x{toAddress}";
+     * String tokenId = "0x1";
+     * BigInteger value = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.burn(owner, tokenId, value, sendOptions);
+     * }
+     * </pre>
+     *
      * @param address The account that owns tokens.
      * @param tokenId The token id to burn.(hex string)
      * @param value The token amount to burn.
@@ -1566,6 +2401,19 @@ public class KIP37 extends Contract {
     /**
      * Burns a token.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String owner = "0x{toAddress}";
+     * BigInteger tokenId = BigInteger.ONE;
+     * BigInteger value = BigInteger.ONE;
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.burn(owner, tokenId, value, sendOptions);
+     * }
+     * </pre>
      * @param address The account that owns tokens.
      * @param tokenId The token id to burn.(integer)
      * @param value The token amount to burn.
@@ -1588,6 +2436,21 @@ public class KIP37 extends Contract {
      * Burns multiple KIP37 tokens.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String owner = "0x{ownerAddress}";
+     * String[] tokenIds = new String[]{...}
+     * BigInteger[] values = new BigInteger[]{...};
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.burnBatch(owner, tokenIds, values);
+     * }
+     * </pre>
+     *
      * @param address The account that owns tokens.
      * @param tokenIds The list of the token ids to burn.(hex string)
      * @param values The list of the token amounts to burn.
@@ -1608,6 +2471,21 @@ public class KIP37 extends Contract {
      * Burns multiple KIP37 tokens.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String owner = "0x{ownerAddress}";
+     * BigInteger[] tokenIds = new BigInteger[]{...}
+     * BigInteger[] values = new BigInteger[]{...};
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.burnBatch(owner, tokenIds, values);
+     * }
+     * </pre>
+     *
      * @param address The account that owns tokens.
      * @param tokenIds The list of the token ids to burn.(integer)
      * @param values The list of the token amounts to burn.
@@ -1627,6 +2505,20 @@ public class KIP37 extends Contract {
     /**
      * Burns multiple KIP37 tokens.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String owner = "0x{ownerAddress}";
+     * String[] tokenIds = new String[]{...}
+     * BigInteger[] values = new BigInteger[]{...};
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.burnBatch(owner, tokenIds, values, sendOptions);
+     * }
+     * </pre>
+     *
      * @param address The account that owns tokens.
      * @param tokenIds The list of the token ids to burn.(hex string)
      * @param values The list of the token amounts to burn.
@@ -1648,6 +2540,20 @@ public class KIP37 extends Contract {
     /**
      * Burns multiple KIP37 tokens.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String owner = "0x{ownerAddress}";
+     * BigInteger[] tokenIds = new BigInteger[]{...}
+     * BigInteger[] values = new BigInteger[]{...};
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.burnBatch(owner, tokenIds, values, sendOptions);
+     * }
+     * </pre>
+     *
      * @param address The account that owns tokens.
      * @param tokenIds The list of the token ids to burn.(integer)
      * @param values The list of the token amounts to burn.
@@ -1668,6 +2574,12 @@ public class KIP37 extends Contract {
 
     /**
      * Check if contract has been paused state.
+     * <pre>Example :
+     * {@code
+     * boolean isPausedContract = kip37.paused();
+     * }
+     * </pre>
+     *
      * @return boolean
      * @throws NoSuchMethodException
      * @throws IOException
@@ -1685,6 +2597,13 @@ public class KIP37 extends Contract {
 
     /**
      * Check if token has been paused state.
+     * <pre>Example :
+     * {@code
+     * String tokenId = "0x1";
+     * boolean isPausedContract = kip37.paused(tokenId);
+     * }
+     * </pre>
+     *
      * @param tokenId The token ID.(hex string)
      * @return boolean
      * @throws NoSuchMethodException
@@ -1700,6 +2619,13 @@ public class KIP37 extends Contract {
 
     /**
      * Check if token has been paused state.
+     * <pre>Example :
+     * {@code
+     * BigInteger tokenId = BigInteger.ONE;
+     * boolean isPausedContract = kip37.paused(tokenId);
+     * }
+     * </pre>
+     *
      * @param tokenId The token ID.(integer)
      * @return boolean
      * @throws NoSuchMethodException
@@ -1720,6 +2646,16 @@ public class KIP37 extends Contract {
      * Pause a contract.<p>
      * It will use default sendOptions in contract instance to passed sendOptions. <p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.pause();
+     * }
+     * </pre>
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
      * @throws TransactionException
@@ -1736,6 +2672,15 @@ public class KIP37 extends Contract {
     /**
      * Pause a contract.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.pause(sendOptions);
+     * }
+     * </pre>
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1755,6 +2700,17 @@ public class KIP37 extends Contract {
      * Unpauses a contract. <p>
      * It will use default sendOptions in contract instance to passed sendOptions. <p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.unpause();
+     * }
+     * </pre>
+     *
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
      * @throws IOException
@@ -1771,6 +2727,16 @@ public class KIP37 extends Contract {
     /**
      * Unpauses a contract. <p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.unpause(sendOptions);
+     * }
+     * </pre>
+     *
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1790,6 +2756,17 @@ public class KIP37 extends Contract {
      * Pauses a specific token.<p>
      * It will use default sendOptions in contract instance to passed sendOptions <p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String tokenId = "0x1";
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.pause(tokenId);
+     * }
+     * </pre>
      * @param tokenId The token id to pause(hex string)
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1808,6 +2785,17 @@ public class KIP37 extends Contract {
      * Pauses a specific token.<p>
      * It will use default sendOptions in contract instance to passed sendOptions <p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * BigInteger tokenId = BigInteger.ONE;
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.pause(tokenId);
+     * }
+     * </pre>
      * @param tokenId The token id to pause(integer)
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1825,6 +2813,16 @@ public class KIP37 extends Contract {
     /**
      * Pauses a specific token.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String tokenId = "0x1";
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.pause(tokenId, sendOptions);
+     * }
+     * </pre>
      * @param tokenId The token id to pause(hex string)
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
@@ -1843,6 +2841,16 @@ public class KIP37 extends Contract {
     /**
      * Pauses a specific token.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * BigInteger tokenId = BigInteger.ONE;
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.pause(tokenId, sendOptions);
+     * }
+     * </pre>
      * @param tokenId The token id to pause(integer)
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
@@ -1863,6 +2871,17 @@ public class KIP37 extends Contract {
      * Unpauses a specific token.<p>
      * It will use default sendOptions in contract instance to passed sendOptions. <p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String tokenId = "0x1";
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.unpause(tokenId);
+     * }
+     * </pre>
      * @param tokenId he token id to unpause(hex string)
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1881,6 +2900,17 @@ public class KIP37 extends Contract {
      * Unpauses a specific token.<p>
      * It will use default sendOptions in contract instance to passed sendOptions. <p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * BigInteger tokenId = BigInteger.ONE;
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.unpause(tokenId);
+     * }
+     * </pre>
      * @param tokenId he token id to unpause(integer)
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1898,6 +2928,17 @@ public class KIP37 extends Contract {
     /**
      * Unpauses a specific token.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String tokenId = "0x1";
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.unpause(tokenId, sendOptions);
+     * }
+     * </pre>
+     *
      * @param tokenId he token id to unpause(hex string)
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
@@ -1916,6 +2957,16 @@ public class KIP37 extends Contract {
     /**
      * Unpauses a specific token.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * BigInteger tokenId = BigInteger.ONE;
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.unpause(tokenId, sendOptions);
+     * }
+     * </pre>
      * @param tokenId he token id to unpause(integer)
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
@@ -1935,6 +2986,12 @@ public class KIP37 extends Contract {
     /**
      * Checks if specific account has Pauser role.
      * @param account The account address to check that has Pauser role.
+     * <pre>Example :
+     * {@code
+     * String account = "0x{accountAddress}";
+     * boolean isPauser = kip37.isPauser(account);
+     * }
+     * </pre>
      * @return boolean
      * @throws NoSuchMethodException
      * @throws IOException
@@ -1954,6 +3011,18 @@ public class KIP37 extends Contract {
      * Adds an account as a pauser that has the permission of PauserRole and can pause.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * String account = "0x{accountAddress}";
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.addPauser(account);
+     * }
+     * </pre>
+     *
      * @param account The account address to add Pauser role.
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
@@ -1971,6 +3040,17 @@ public class KIP37 extends Contract {
     /**
      * Adds an account as a pauser that has the permission of PauserRole and can pause.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * String account = "0x{accountAddress}";
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.addPauser(account, sendOptions);
+     * }
+     * </pre>
+     *
      * @param account The account address to add Pauser role.
      * @param sendParam A SendOptions need to execute contract's method.
      * @return TransactionReceipt.TransactionReceiptData
@@ -1993,6 +3073,17 @@ public class KIP37 extends Contract {
      * Renounces privilege of PauserRole from an account.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     * kip37.setDefaultSendOptions(sendOptions);
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.renouncePauser();
+     * }
+     * </pre>
+     *
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
      * @throws IOException
@@ -2010,6 +3101,16 @@ public class KIP37 extends Contract {
      * Renounces privilege of PauserRole from an account.<p>
      * It will use default sendOptions in contract instance to passed sendOptions.<p>
      * If a gas value in sendOptions has null, it will automatically set gas value through estimateGas().
+     * <pre>Example :
+     * {@code
+     * String sender = "0x{senderAddress}";
+     * SendOptions sendOptions = new SendOptions();
+     * sendOptions.setFrom(sender);
+     *
+     * TransactionReceipt.TransactionReceiptData receipt = kip37.renouncePauser(sendOptions);
+     * }
+     * </pre>
+     *
      * @return TransactionReceipt.TransactionReceiptData
      * @throws NoSuchMethodException
      * @throws IOException
@@ -2028,7 +3129,12 @@ public class KIP37 extends Contract {
 
     /**
      * Call method "supportsInterface" in KIP-13 standard contract.
-     * @param interfaceId interface identifier
+     * <pre>Example :
+     * {@code
+     * boolean isSupported = kip37.supportInterface(KIP37.INTERFACE.IKIP37.getId());
+     * }
+     * </pre>
+     * @param interfaceId interface identifier. see {@link KIP37.INTERFACE}
      * @return boolean
      * @throws NoSuchMethodException
      * @throws IOException

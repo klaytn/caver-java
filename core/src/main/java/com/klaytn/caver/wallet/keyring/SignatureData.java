@@ -52,7 +52,7 @@ public class SignatureData {
     private String s;
 
     /**
-     * Creates a SignatureData instance
+     * Creates a SignatureData instance.
      * @param v The version byte.
      * @param r The ECDSA Signature data R
      * @param s The ECDSA Signature data S
@@ -64,7 +64,7 @@ public class SignatureData {
     }
 
     /**
-     * Creates a SignatureData instance
+     * Creates a SignatureData instance.
      * @param v The version byte.
      * @param r The ECDSA Signature data R
      * @param s The ECDSA Signature data S
@@ -80,7 +80,13 @@ public class SignatureData {
     }
 
     /**
-     * Get empty signature.
+     * Returns an empty signature.
+     * <pre>Example :
+     * {@code
+     * SignatureData signature = SignatureData.getEmptySignature();
+     * }
+     * </pre>
+     *
      * @return SignatureData
      */
     public static SignatureData getEmptySignature() {
@@ -95,8 +101,14 @@ public class SignatureData {
 
     /**
      * Decodes a RLP encoded string contains signature list.
+     * <pre>Example :
+     * {@code
+     * List<SignatureData> senderSignList = SignatureData.decodeSignatures(senderSignaturesRLP);
+     * }
+     * </pre>
+     *
      * @param signatureRlpTypeList a RLP encoded string contains signature list.
-     * @return List
+     * @return {@code List<SignatureData>}
      */
     public static List<SignatureData> decodeSignatures(List<RlpType> signatureRlpTypeList) {
         List<SignatureData> signatureDataList = new ArrayList<>();
@@ -114,7 +126,14 @@ public class SignatureData {
     }
 
     /**
-     * Set "V" field according to EIP-155
+     * Set "V" field according to EIP-155.
+     * <pre>Example :
+     * {@code
+     * int chainId = 1;
+     * signatureData.makeEIP155Signature(chainId);
+     * }
+     * </pre>
+     *
      * @param chainId The chain id specific to the network.
      */
     public void makeEIP155Signature(int chainId) {
@@ -129,12 +148,18 @@ public class SignatureData {
     }
 
     /**
-     * Refines the array containing signatures
-     *   - Removes duplicate signatures
-     *   - Removes the default empty signature("0x01", "0x", "0x")
-     *   - For an empty signature array, return an array containing the default empty signature("0x01", "0x", "0x")
+     * Refines the array containing signatures.<p>
+     *   - Removes duplicate signatures.<p>
+     *   - Removes the default empty signature.("0x01", "0x", "0x") <p>
+     *   - For an empty signature array, return an array containing the default empty signature.("0x01", "0x", "0x")<p>
+     * <pre>Example :
+     * {@code
+     * List<SignatureData> refinedList = SignatureData.refineSignature(signatureDataList);
+     * }
+     * </pre>
+     *
      * @param signatureDataList The list of SignatureData
-     * @return List&lt;String&gt;
+     * @return {@code List<SignatureData>}
      */
     public static List<SignatureData> refineSignature(List<SignatureData> signatureDataList) {
         SignatureData emptySig = SignatureData.getEmptySignature();
@@ -159,6 +184,11 @@ public class SignatureData {
 
     /**
      * Returns the RLP-encoded string of this signature.
+     * <pre>Example :
+     * {@code
+     * RlpList rlpList = signature.toRlpList();
+     * }
+     * </pre>
      * @return RlpList
      */
     public RlpList toRlpList() {
@@ -185,7 +215,13 @@ public class SignatureData {
     }
 
     /**
-     * Get a recover id from signatureData
+     * Get a recover id from signatureData.
+     * <pre>Example :
+     * {@code
+     * int recId = signature.getRecoverId();
+     * }
+     * </pre>
+     *
      * @return int
      */
     @JsonIgnore
@@ -215,7 +251,14 @@ public class SignatureData {
     }
 
     /**
-     * Get chain id from signatureData
+     * Get chain id from signatureData.
+     * <pre>Example :
+     * {@code
+     * int recId = signature.getChainId();
+     * }
+     * </pre>
+     *
+     *
      * @return BigInteger
      */
     @JsonIgnore

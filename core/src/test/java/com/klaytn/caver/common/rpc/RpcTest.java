@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The caver-java Authors
+ * Copyright 2022 The caver-java Authors
  *
  * Licensed under the Apache License, Version 2.0 (the “License”);
  * you may not use this file except in compliance with the License.
@@ -276,7 +276,6 @@ public class RpcTest extends Accounts {
 
         String to = "0x7b65B75d204aBed71587c9E519a89277766EE1d0";
         String gas = "0xf4240";
-        String gasPrice = "0x5d21dba00";
         String nonce;
         String value = "0xa";
         AccessList accessList = new AccessList(
@@ -295,15 +294,15 @@ public class RpcTest extends Accounts {
             nonce = klay.getTransactionCount(klayProviderKeyring.getAddress(), DefaultBlockParameterName.PENDING).send().getResult();
             String chainId = klay.getChainID().send().getResult();
 
-            EthereumAccessList ethereumAccessList = new EthereumAccessList.Builder()
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
                     .setTo(to)
                     .setGas(gas)
-                    .setGasPrice(gasPrice)
                     .setChainId(chainId)
                     .setNonce(nonce)
                     .setValue(value)
                     .setAccessList(accessList)
-                    .build();
+            );
 
             ethereumAccessList.sign(klayProviderKeyring);
 
@@ -316,16 +315,15 @@ public class RpcTest extends Accounts {
             nonce = klay.getTransactionCount(klayProviderKeyring.getAddress(), DefaultBlockParameterName.PENDING).send().getResult();
             String chainId = klay.getChainID().send().getResult();
 
-            EthereumDynamicFee ethereumDynamicFee = new EthereumDynamicFee.Builder()
+            EthereumDynamicFee ethereumDynamicFee = caver.transaction.ethereumDynamicFee.create(
+                    TxPropertyBuilder.ethereumDynamicFee()
                     .setTo(to)
                     .setGas(gas)
-                    .setMaxPriorityFeePerGas(gasPrice)
-                    .setMaxFeePerGas(gasPrice)
                     .setChainId(chainId)
                     .setNonce(nonce)
                     .setValue(value)
                     .setAccessList(accessList)
-                    .build();
+            );
 
             ethereumDynamicFee.sign(klayProviderKeyring);
 
@@ -346,7 +344,6 @@ public class RpcTest extends Accounts {
 
         String to = "0x7b65b75d204abed71587c9e519a89277766ee1d0";
         String gas = "0xf4240";
-        String gasPrice = "0x5d21dba00";
         String value = "0xa";
         AccessList accessList = new AccessList(
                 Arrays.asList(
@@ -362,24 +359,12 @@ public class RpcTest extends Accounts {
         private void checkTransactionFields(Transaction.TransactionData transactionData, boolean isDynamicFee) {
             Assert.assertEquals(to, transactionData.getTo());
             Assert.assertEquals(gas, transactionData.getGas());
-            if (isDynamicFee) {
-                Assert.assertEquals(gasPrice, transactionData.getMaxPriorityFeePerGas());
-                Assert.assertEquals(gasPrice, transactionData.getMaxFeePerGas());
-            } else {
-                Assert.assertEquals(gasPrice, transactionData.getGasPrice());
-            }
             Assert.assertEquals(accessList, transactionData.getAccessList());
         }
 
         private void checkTransactionReceiptFields(TransactionReceipt.TransactionReceiptData transactionReceiptData, boolean isDynamicFee) {
             Assert.assertEquals(to, transactionReceiptData.getTo());
             Assert.assertEquals(gas, transactionReceiptData.getGas());
-            if (isDynamicFee) {
-                Assert.assertEquals(gasPrice, transactionReceiptData.getMaxPriorityFeePerGas());
-                Assert.assertEquals(gasPrice, transactionReceiptData.getMaxFeePerGas());
-            } else {
-                Assert.assertEquals(gasPrice, transactionReceiptData.getGasPrice());
-            }
             Assert.assertEquals(accessList, transactionReceiptData.getAccessList());
         }
 
@@ -388,15 +373,15 @@ public class RpcTest extends Accounts {
             String nonce = klay.getTransactionCount(klayProviderKeyring.getAddress(), DefaultBlockParameterName.PENDING).send().getResult();
             String chainId = klay.getChainID().send().getResult();
 
-            EthereumAccessList ethereumAccessList = new EthereumAccessList.Builder()
+            EthereumAccessList ethereumAccessList = caver.transaction.ethereumAccessList.create(
+                    TxPropertyBuilder.ethereumAccessList()
                     .setTo(to)
                     .setGas(gas)
-                    .setGasPrice(gasPrice)
                     .setChainId(chainId)
                     .setNonce(nonce)
                     .setValue(value)
                     .setAccessList(accessList)
-                    .build();
+            );
 
             ethereumAccessList.sign(klayProviderKeyring);
 
@@ -416,16 +401,15 @@ public class RpcTest extends Accounts {
             String nonce = klay.getTransactionCount(klayProviderKeyring.getAddress(), DefaultBlockParameterName.PENDING).send().getResult();
             String chainId = klay.getChainID().send().getResult();
 
-            EthereumDynamicFee ethereumDynamicFee = new EthereumDynamicFee.Builder()
+            EthereumDynamicFee ethereumDynamicFee = caver.transaction.ethereumDynamicFee.create(
+                    TxPropertyBuilder.ethereumDynamicFee()
                     .setTo(to)
                     .setGas(gas)
-                    .setMaxPriorityFeePerGas(gasPrice)
-                    .setMaxFeePerGas(gasPrice)
                     .setChainId(chainId)
                     .setNonce(nonce)
                     .setValue(value)
                     .setAccessList(accessList)
-                    .build();
+            );
 
             ethereumDynamicFee.sign(klayProviderKeyring);
 
@@ -1062,21 +1046,35 @@ public class RpcTest extends Accounts {
         public void getGasPriceTest() throws Exception {
             Quantity response = caver.rpc.klay.getGasPrice().send();
             BigInteger result = response.getValue();
-            assertEquals(new BigInteger("5d21dba00", 16), result); // 25,000,000,000 peb = 25 Gpeb
+            assertNotNull(result);
         }
 
         @Test
         public void getGasPriceAtTest() throws IOException {
             Quantity response = caver.rpc.klay.getGasPriceAt().send();
             BigInteger result = response.getValue();
-            assertEquals(new BigInteger("5d21dba00", 16), result); // 25,000,000,000 peb = 25 Gpeb
+            assertNotNull(result);
         }
 
         @Test
         public void getMaxPriorityFeePerGasTest() throws Exception {
             Quantity response = caver.rpc.klay.getMaxPriorityFeePerGas().send();
             BigInteger result = response.getValue();
-            assertEquals(new BigInteger("5d21dba00", 16), result); // 25,000,000,000 peb = 25 Gpeb
+            assertNotNull(result);
+        }
+
+        @Test
+        public void getUpperBoundGasPriceTest() throws Exception {
+            Quantity response = caver.rpc.klay.getUpperBoundGasPrice().send();
+            BigInteger result = response.getValue();
+            assertNotNull(result);
+        }
+
+        @Test
+        public void getLowerBoundGasPriceTest() throws Exception {
+            Quantity response = caver.rpc.klay.getLowerBoundGasPrice().send();
+            BigInteger result = response.getValue();
+            assertNotNull(result);
         }
 
         // checkFeeHistoryResult checks response from getFeeHistory is ok or not.
@@ -1202,7 +1200,7 @@ public class RpcTest extends Accounts {
         @Test
         public void getProtocolVersionTest() throws Exception {
             String result = caver.rpc.klay.getProtocolVersion().send().getResult();
-            assertEquals("0x40", result);
+            assertNotNull(result);
         }
 
         @Ignore
@@ -1309,6 +1307,12 @@ public class RpcTest extends Accounts {
             KlayPeerCount.PeerCount peerCount = klayPeerCount.getResult();
             assertTrue(peerCount.getTotal().intValue() >= 0);
         }
+
+        @Test
+        public void getVersion() throws Exception {
+            Quantity version = caver.rpc.net.getVersion().send();
+            assertTrue(version.getValue().intValue() >= 0);
+        }
     }
 
     public static class GovernanceAPITest {
@@ -1340,14 +1344,14 @@ public class RpcTest extends Accounts {
             Bytes response = caver.rpc.governance.vote(modeKey, modeValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String unitPriceKey = "governance.unitprice";
             BigInteger unitPriceValue = new BigInteger("25000000000");
 
             response = caver.rpc.governance.vote(unitPriceKey, unitPriceValue).send();
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String epochKey = "istanbul.epoch";
             BigInteger epochValue = BigInteger.valueOf(86400);
@@ -1355,7 +1359,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(epochKey, epochValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String sizeKey = "istanbul.committeesize";
             BigInteger sizeValue = BigInteger.valueOf(7);
@@ -1363,7 +1367,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(epochKey, epochValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String mintKey = "reward.mintingamount";
             String mintValue = "9600000000000000000";
@@ -1371,7 +1375,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(mintKey, mintValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String ratioKey = "reward.ratio";
             String ratioValue = "34/54/12";
@@ -1379,7 +1383,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(ratioKey, ratioValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String coeffKey = "reward.useginicoeff";
             boolean coeffValue = true;
@@ -1387,7 +1391,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(coeffKey, coeffValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String txFeeKey = "reward.deferredtxfee";
             boolean txFeeValue = true;
@@ -1395,7 +1399,7 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(txFeeKey, txFeeValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
 
             String stakingKey = "reward.minimumstake";
             String stakingValue = "5000000";
@@ -1403,7 +1407,47 @@ public class RpcTest extends Accounts {
             response = caver.rpc.governance.vote(stakingKey, stakingValue).send();
 
             assertFalse(response.hasError());
-            assertEquals("Your vote was successfully placed.", response.getResult());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
+
+            String lowerBoundKey = "kip71.lowerboundbasefee";
+            BigInteger lowerBoundValue = new BigInteger("25000000000");
+
+            response = caver.rpc.governance.vote(lowerBoundKey, lowerBoundValue).send();
+
+            assertFalse(response.hasError());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
+
+            String upperBoundKey = "kip71.upperboundbasefee";
+            BigInteger upperBoundValue = new BigInteger("750000000000");
+
+            response = caver.rpc.governance.vote(upperBoundKey, upperBoundValue).send();
+
+            assertFalse(response.hasError());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
+
+            String gasTargetKey = "kip71.gastarget";
+            BigInteger gasTargetValue = new BigInteger("30000000");
+
+            response = caver.rpc.governance.vote(gasTargetKey, gasTargetValue).send();
+
+            assertFalse(response.hasError());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
+
+            String maxBlockGasUsedForBaseFeeKey = "kip71.maxblockgasusedforbasefee";
+            BigInteger maxBlockGasUsedForBaseFeeValue = new BigInteger("60000000");
+
+            response = caver.rpc.governance.vote(maxBlockGasUsedForBaseFeeKey, maxBlockGasUsedForBaseFeeValue).send();
+
+            assertFalse(response.hasError());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
+
+            String baseFeeDenominatorKey = "kip71.basefeedenominator";
+            BigInteger baseFeeDenominatorValue = new BigInteger("20");
+
+            response = caver.rpc.governance.vote(baseFeeDenominatorKey, baseFeeDenominatorValue).send();
+
+            assertFalse(response.hasError());
+            assertTrue(isSuccessfulVoteResponse(response.getResult()));
         }
 
         @Test
@@ -1706,6 +1750,57 @@ public class RpcTest extends Accounts {
 
             System.out.println(vote);
             System.out.println(myVote1);
+        }
+
+        private boolean isSuccessfulVoteResponse(String message) {
+            return message != null && !message.contains("don't hvae the right") && !message.contains("couldn't be placed");
+        }
+    }
+
+    public static class AdminAPITest {
+        static Caver caver;
+
+        @BeforeClass
+        public static void init() throws InterruptedException, IOException {
+            caver = new Caver(Caver.DEFAULT_URL);
+        }
+
+        @Test
+        public void getNodeInfo() throws IOException {
+            NodeInfo response = caver.rpc.admin.getNodeInfo().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void getDataDir() throws IOException {
+            Bytes response = caver.rpc.admin.getDataDir().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+            assertNotNull(response.getResult());
+        }
+
+        @Test
+        public void getPeers() throws IOException {
+            Peers response = caver.rpc.admin.getPeers().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void addPeer() throws IOException {
+            String kni = "kni://a979fb575495b8d6db44f750317d0f4622bf4c2aa3365d6af7c284339968eef29b69ad0dce72a4d8db5ebb4968de0e3bec910127f134779fbcb0cb6d3331163c@10.0.0.1:32323";
+            Boolean response = caver.rpc.admin.addPeer(kni).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void removePeer() throws IOException {
+            String kni = "kni://a979fb575495b8d6db44f750317d0f4622bf4c2aa3365d6af7c284339968eef29b69ad0dce72a4d8db5ebb4968de0e3bec910127f134779fbcb0cb6d3331163c@10.0.0.1:32323";
+            Boolean response = caver.rpc.admin.removePeer(kni).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
         }
     }
 }

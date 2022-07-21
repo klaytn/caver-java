@@ -19,6 +19,7 @@ package com.klaytn.caver.transaction;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.klaytn.caver.methods.response.BlockHeader;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.account.AccountKeyRoleBased;
 import com.klaytn.caver.transaction.type.TransactionType;
@@ -406,6 +407,23 @@ abstract public class AbstractTransaction {
         if(this.nonce.equals("0x") || this.chainId.equals("0x")) {
             throw new RuntimeException("Cannot fill transaction data.(nonce, chainId). `klaytnCall` must be set in Transaction instance to automatically fill the nonce, chainId or gasPrice. Please call the `setKlaytnCall` to set `klaytnCall` in the Transaction instance.");
         }
+    }
+
+    /**
+     * Suggests a gas price to use in the transaction. <p>
+     * Calls `klay_gasPrice` to return unit price of the gas. <p>
+     * @return BigInteger
+     * @throws IOException
+     */
+    public BigInteger suggestGasPrice() throws IOException {
+        if(this.klaytnCall == null) {
+            throw new RuntimeException("Cannot suggest gas price. To get suggested gas price, `klaytnCall` must be set in Transaction instance. Please call the `setKlaytnCall` to set `klaytnCall` in the Transaction instance.");
+        }
+
+        // Before Magma hard fork set gasPrice (or maxFeePerGas) with gas unit price
+        // After Magma hard fork, set gasPrice (or maxFeePerGas) with baseFee * 2
+        // klay_gasPrice will return a suggestion gas price, so use klay_gasPrice API
+        return this.klaytnCall.getGasPrice().send().getValue();
     }
 
     /**

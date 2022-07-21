@@ -1,5 +1,6 @@
 package com.klaytn.caver.wallet;
 
+import com.klaytn.caver.Caver;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
 import com.klaytn.caver.transaction.AbstractTransaction;
 
@@ -9,6 +10,11 @@ import java.util.function.Function;
 
 /**
  * The Interface of wallet that can manage multiple key data.
+ * It can be used in classes that sign transactions using private key existed in wallet internally.
+ * @see KeyringContainer
+ * @see Caver#getWallet()
+ * @see com.klaytn.caver.contract.Contract#setWallet(IWallet)
+ * @see com.klaytn.caver.contract.ContractMethod#setWallet(IWallet)
  */
 public interface IWallet {
 

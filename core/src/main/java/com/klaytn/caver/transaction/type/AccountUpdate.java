@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.account.Account;
 import com.klaytn.caver.transaction.AbstractTransaction;
+import com.klaytn.caver.transaction.ITransactionWithGasPriceField;
 import com.klaytn.caver.transaction.TransactionDecoder;
 import com.klaytn.caver.utils.BytesUtils;
 import com.klaytn.caver.utils.Utils;
@@ -38,7 +39,7 @@ import java.util.List;
  * Please refer to https://docs.klaytn.com/klaytn/design/transactions/basic#txtypeaccountupdate to see more detail.
  */
 @JsonIgnoreProperties(value = { "chainId" })
-public class AccountUpdate extends AbstractTransaction {
+public class AccountUpdate extends AbstractTransaction implements ITransactionWithGasPriceField {
 
     /**
      * The Account instance contains AccountKey to be updated to the account.
@@ -348,7 +349,7 @@ public class AccountUpdate extends AbstractTransaction {
     public void fillTransaction() throws IOException {
         super.fillTransaction();
         if(this.gasPrice.equals("0x")) {
-            this.setGasPrice(this.getKlaytnCall().getGasPrice().send().getResult());
+            this.setGasPrice(this.suggestGasPrice());
         }
         if(this.getGasPrice().equals("0x")) {
             throw new RuntimeException("Cannot fill transaction data. (gasPrice). `klaytnCall` must be set in Transaction instance to automatically fill the nonce, chainId or gasPrice. Please call the `setKlaytnCall` to set `klaytnCall` in the Transaction instance.");

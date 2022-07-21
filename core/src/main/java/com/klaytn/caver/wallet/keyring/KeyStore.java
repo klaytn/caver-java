@@ -54,9 +54,27 @@ import java.util.List;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
- * Represents a KeyStore DTO(Data transfer Object) class according to KIP-3.
- * For more details, please see below link.
+ * Represents a KeyStore DTO(Data transfer Object) class according to KIP-3.<p>
+ * For more details, please see below link.<p>
  * http://kips.klaytn.com/KIPs/kip-3
+ * @see KeyringFactory#decrypt(String, String)
+ * @see KeyringFactory#decrypt(KeyStore, String)
+ * @see AbstractKeyring#encrypt(String)
+ * @see AbstractKeyring#encrypt(String, KeyStoreOption)
+ * @see AbstractKeyring#encryptV3(String)
+ * @see AbstractKeyring#encryptV3(String, KeyStoreOption)
+ * @see SingleKeyring#encrypt(String)
+ * @see SingleKeyring#encrypt(String, KeyStoreOption)
+ * @see SingleKeyring#encryptV3(String)
+ * @see SingleKeyring#encryptV3(String, KeyStoreOption)
+ * @see MultipleKeyring#encrypt(String)
+ * @see MultipleKeyring#encrypt(String, KeyStoreOption)
+ * @see MultipleKeyring#encryptV3(String)
+ * @see MultipleKeyring#encryptV3(String, KeyStoreOption)
+ * @see RoleBasedKeyring#encrypt(String)
+ * @see RoleBasedKeyring#encrypt(String, KeyStoreOption)
+ * @see RoleBasedKeyring#encryptV3(String)
+ * @see RoleBasedKeyring#encryptV3(String, KeyStoreOption)
  */
 public class KeyStore {
     /**

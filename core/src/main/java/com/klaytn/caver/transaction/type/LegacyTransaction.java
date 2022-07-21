@@ -19,6 +19,7 @@ package com.klaytn.caver.transaction.type;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.AbstractTransaction;
+import com.klaytn.caver.transaction.ITransactionWithGasPriceField;
 import com.klaytn.caver.transaction.TransactionDecoder;
 import com.klaytn.caver.utils.Utils;
 import com.klaytn.caver.wallet.keyring.SignatureData;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties(value = { "chainId" })
-public class LegacyTransaction extends AbstractTransaction {
+public class LegacyTransaction extends AbstractTransaction implements ITransactionWithGasPriceField {
     /**
      * The account address that will receive the transferred value.
      */
@@ -399,7 +400,7 @@ public class LegacyTransaction extends AbstractTransaction {
     public void fillTransaction() throws IOException {
         super.fillTransaction();
         if(this.gasPrice.equals("0x")) {
-            this.setGasPrice(this.getKlaytnCall().getGasPrice().send().getResult());
+            this.setGasPrice(this.suggestGasPrice());
         }
         if(this.getGasPrice().equals("0x")) {
             throw new RuntimeException("Cannot fill transaction data. (gasPrice). `klaytnCall` must be set in Transaction instance to automatically fill the nonce, chainId or gasPrice. Please call the `setKlaytnCall` to set `klaytnCall` in the Transaction instance.");

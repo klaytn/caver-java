@@ -60,6 +60,7 @@ public class FeePayerManagerIT extends Scenario {
                 credentials.getAddress(),
                 BigInteger.ZERO,
                 Numeric.hexStringToByteArray(CONTRACT_INPUT_DATA),
+                gasProvider.getGasPrice(),
                 GAS_LIMIT,
                 CodeFormat.EVM
         ).feeDelegate();

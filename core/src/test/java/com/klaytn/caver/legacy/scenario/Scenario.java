@@ -21,12 +21,13 @@
 package com.klaytn.caver.legacy.scenario;
 
 import com.klaytn.caver.Caver;
+import com.klaytn.caver.base.Accounts;
 import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.fee.FeePayerManager;
 import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
+import com.klaytn.caver.tx.gas.DefaultGasProvider;
 import com.klaytn.caver.tx.type.TxType;
-import com.klaytn.caver.utils.Convert;
 import org.junit.Before;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.Response;
@@ -41,11 +42,10 @@ import static junit.framework.TestCase.fail;
 /**
  * Common methods and settings used across scenarios
  */
-public class Scenario {
+public class Scenario extends Accounts {
 
-    static final BigInteger GAS_PRICE = Convert.toPeb("25", Convert.Unit.STON).toBigInteger();
-    static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
-    static final StaticGasProvider STATIC_GAS_PROVIDER = new StaticGasProvider(GAS_PRICE, GAS_LIMIT);
+    static final BigInteger GAS_LIMIT = BigInteger.valueOf(7_300_000);
+    static DefaultGasProvider gasProvider;
 
     private static final String WALLET_PASSWORD = "";
 
@@ -57,11 +57,13 @@ public class Scenario {
     Caver caver;
 
     public Scenario() {
+        Accounts.fillUpKlay();
     }
 
     @Before
     public void setUp() throws Exception {
         this.caver = Caver.build(Caver.DEFAULT_URL);
+        gasProvider = new DefaultGasProvider(this.caver);
     }
 
     BigInteger getNonce(String address) throws Exception {

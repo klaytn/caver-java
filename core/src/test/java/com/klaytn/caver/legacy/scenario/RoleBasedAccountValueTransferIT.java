@@ -54,7 +54,7 @@ public class RoleBasedAccountValueTransferIT extends RoleBasedAccountScenario {
     };
 
     private final ValueTransferTransaction getValueTransferTransaction(String from) {
-        return ValueTransferTransaction.create(from, BRANDON.getAddress(), BigInteger.ONE, GAS_LIMIT);
+        return ValueTransferTransaction.create(from, BRANDON.getAddress(), BigInteger.ONE, gasProvider.getGasPrice(), GAS_LIMIT);
     }
 
     //////////////////////////////// BasicTest - value Transfer ////////////////////////////////

@@ -16,27 +16,59 @@
 
 package com.klaytn.caver.kct.kip17;
 
+/**
+ * Representing a class that has constructor data to deploy KIP-7.
+ */
 public class KIP17DeployParams {
+
+    /**
+     * The KIP-17 contract name.
+     */
     String name;
+
+    /**
+     * The KIP-17 contract symbol.
+     */
     String symbol;
 
+    /**
+     * Creates a KIP17DeployParams instance.
+     * @param name The KIP-17 contract name.
+     * @param symbol The KIP-17 contract symbol.
+     */
     public KIP17DeployParams(String name, String symbol) {
         this.name = name;
         this.symbol = symbol;
     }
 
+    /**
+     * Getter for name.
+     * @return String
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Getter for symbol.
+     * @return String
+     */
     public String getSymbol() {
         return symbol;
     }
 
+    /**
+     * Setter for name.
+     * @param name The KIP-7 contract name.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Setter for symbol.
+     * @param symbol The KIP-7 contract symbol.
+     */
     public void setSymbol(String symbol) {
         this.symbol = symbol;
     }

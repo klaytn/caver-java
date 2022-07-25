@@ -104,6 +104,60 @@ public class ValidatorTest {
         }
     }
 
+    public static class validatedSignedMessage_AccountKeyNull {
+        static String address = "0xa84a1ce657e9d5b383cece6f4ba365e23fa234dd";
+        static String privateKey = "0x7db91b4606aa4421eeb85d03601562f966693e38957d5e79a29edda0e85b2225";
+        static String message = "Some Message";
+        static String hashedMessage = "0xa4b1069c1000981f4fdca0d62302dfff77c2d0bc17f283d961e2dc5961105b18";
+        static SignatureData signatureData = new SignatureData("0x1b", "0x8213e560e7bbe1f2e28fd69cbbb41c9108b84c98cd7c2c88d3c8e3549fd6ab10", "0x3ca40c9e20c1525348d734a6724db152b9244bff6e0ff0c2b811d61d8f874f00");
+
+        @Test
+        public void withMessage() throws IOException {
+            AccountKey accountKey = new AccountKey();
+            accountKey.setResult(new AccountKey.AccountKeyData(AccountKeyLegacy.getType(), null));
+
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            SingleKeyring keyring = KeyringFactory.create(address, privateKey);
+            Validator validator = new Validator(klay);
+            assertTrue(validator.validateSignedMessage(message, signatureData, keyring.getAddress()));
+        }
+
+        @Test
+        public void withMessageHash() throws IOException {
+            AccountKey accountKey = new AccountKey();
+            accountKey.setResult(new AccountKey.AccountKeyData(AccountKeyLegacy.getType(), null));
+
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            SingleKeyring keyring = KeyringFactory.create(address, privateKey);
+            Validator validator = new Validator(klay);
+            assertTrue(validator.validateSignedMessage(hashedMessage, signatureData, keyring.getAddress(), true));
+        }
+
+        @Test
+        public void withInvalidSignature() throws IOException {
+            AccountKey accountKey = new AccountKey();
+            accountKey.setResult(new AccountKey.AccountKeyData(AccountKeyLegacy.getType(), null));
+
+            Klay klay = mock(Klay.class, RETURNS_DEEP_STUBS);
+            when(klay.getAccountKey(anyString()).send()).thenReturn(accountKey);
+
+            SingleKeyring keyring = KeyringFactory.create(address, privateKey);
+            Validator validator = new Validator(klay);
+
+            SignatureData invalid = new SignatureData(
+                    "0x1c",
+                    "0xa5c9ff1df09258a6f9262f1fae43a306ec77592287787cbd3ee0419dd8d2bfeb",
+                    "0x4c903d3dda703554cf7b65aa2c0dc819c86d36cf2dbf0ff5071667fb5551a706"
+            );
+
+            assertFalse(validator.validateSignedMessage(message, invalid, address));
+        }
+    }
+
     public static class validatedSignedMessage_AccountKeyPublic {
         static String address = "0xa84a1ce657e9d5b383cece6f4ba365e23fa234dd";
         static String privateKey = "0xf95c224b63f5658281ad853b3f582051eb9bca9b3e5475a8d3e4315abf42cb02";

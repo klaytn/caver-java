@@ -151,9 +151,12 @@ public class Validator {
             // the return value of `caver.rpc.klay.getAccountKey` is null.
             // In this case, the account's key has never been updated,
             // so the logic is the same as in AccountKeyLegacy.
-            IAccountKey acctKey = accountKey.getResult().getAccountKey();
-            if (acctKey == null) {
+            AccountKey.AccountKeyData acctKeyData = accountKey.getResult();
+            IAccountKey acctKey;
+            if (acctKeyData == null) {
                 acctKey = new AccountKeyLegacy();
+            } else {
+                acctKey = acctKeyData.getAccountKey();
             }
             //Compare a account key from queried and public keys extracting from signature.
             return validateWithAccountType(address, acctKey, pubKeys, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());

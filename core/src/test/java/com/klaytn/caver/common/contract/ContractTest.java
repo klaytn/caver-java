@@ -21,12 +21,14 @@ import com.klaytn.caver.abi.ABI;
 import com.klaytn.caver.abi.EventValues;
 import com.klaytn.caver.contract.*;
 import com.klaytn.caver.methods.request.CallObject;
+import com.klaytn.caver.methods.request.KlayFilter;
 import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.KlayLogs;
 import com.klaytn.caver.methods.response.LogsNotification;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.wallet.KeyringContainer;
 
+import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -1310,6 +1312,358 @@ public class ContractTest {
         assertEquals("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", log[0].getParams().getResult().getTopics().get(0));
         assertEquals("0x0000000000000000000000002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a", log[0].getParams().getResult().getTopics().get(1));
         assertEquals("0x0000000000000000000000003cd93ba290712e6d28ac98f2b820faf799ae8fdb", log[0].getParams().getResult().getTopics().get(2));
+
+        webSocketService.close();
+    }
+
+    @Test
+    public void subscribeTest() throws Exception {
+        WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
+        Caver caver = new Caver(webSocketService);
+        webSocketService.connect();
+
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey(LUMAN.getEcKeyPairsForTransactionList().get(0).getPrivateKey().toString(16)));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey(BRANDON.getEcKeyPairsForTransactionList().get(0).getPrivateKey().toString(16)));
+
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
+
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("from", Arrays.asList(LUMAN.getAddress()));
+        eventFilterOptions.setFilterOptions(Arrays.asList(indexedParameter));
+
+        ContractEvent event = contract.getEvents().get("Transfer");
+        KlayFilter filter = new KlayFilter();
+        filter.setAddress(contract.getContractAddress());
+        Flowable<LogsNotification> flowable = event.getFlowable(contract.getCaver(), eventFilterOptions, filter);
+
+        final List<LogsNotification> logList = new ArrayList<>();
+        final List<EventValues> valuesList = new ArrayList<>();
+        Disposable disposable = contract.subscribe(event.getName(), eventFilterOptions, log -> {
+            EventValues values = caver.abi.decodeLog(event.getInputs(), log.getParams().getResult().getData(), log.getParams().getResult().getTopics());
+            logList.add(log);
+            valuesList.add(values);
+        });
+
+        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
+        List<Object> sendParams = Arrays.asList(BRANDON.getAddress(), amount);
+
+        int expectedEventCount = 0;
+        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
+        contract.getMethod("transfer").send(sendParams, sendOptions);
+        expectedEventCount++;
+        contract.getMethod("transfer").send(sendParams, sendOptions);
+        expectedEventCount++;
+
+        while(logList.size() < 2);
+        // Unsubscribe the event
+        disposable.dispose();
+
+        assertEquals(logList.size(), expectedEventCount);
+        assertEquals(valuesList.size(), expectedEventCount);
+
+        for (int i = 0; i < expectedEventCount; i ++) {
+            assertEquals(3, logList.get(i).getParams().getResult().getTopics().size());
+            assertEquals(2, valuesList.get(i).getIndexedValues().size()); // from, to
+            assertEquals(1, valuesList.get(i).getNonIndexedValues().size()); // amount
+            assertEquals("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", logList.get(i).getParams().getResult().getTopics().get(0));
+            assertEquals("0x0000000000000000000000002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a", logList.get(i).getParams().getResult().getTopics().get(1));
+            assertEquals("0x000000000000000000000000e97f27e9a5765ce36a7b919b1cb6004c7209217e", logList.get(i).getParams().getResult().getTopics().get(2));
+            assertEquals(sendOptions.getFrom(), valuesList.get(i).getIndexedValues().get(0).toString());
+            assertEquals(sendParams.get(0), valuesList.get(i).getIndexedValues().get(1).toString());
+            assertTrue(sendParams.get(1).equals(valuesList.get(i).getNonIndexedValues().get(0).getValue()));
+        }
+
+        webSocketService.close();
+
+    }
+
+    @Test
+    public void subscribeTest2() throws Exception {
+        WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
+        Caver caver = new Caver(webSocketService);
+        webSocketService.connect();
+
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey(LUMAN.getEcKeyPairsForTransactionList().get(0).getPrivateKey().toString(16)));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey(BRANDON.getEcKeyPairsForTransactionList().get(0).getPrivateKey().toString(16)));
+
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
+
+        EventFilterOptions.IndexedParameter indexedParameter1 = new EventFilterOptions.IndexedParameter("to", Arrays.asList(BRANDON.getAddress()));
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        eventFilterOptions.setFilterOptions(Arrays.asList(indexedParameter1));
+
+        ContractEvent event = contract.getEvents().get("Transfer");
+        final List<LogsNotification> logList = new ArrayList<>();
+        final List<EventValues> valuesList = new ArrayList<>();
+        Disposable disposable = contract.subscribe(event.getName(), eventFilterOptions, log -> {
+            EventValues values = caver.abi.decodeLog(event.getInputs(), log.getParams().getResult().getData(), log.getParams().getResult().getTopics());
+            logList.add(log);
+            valuesList.add(values);
+        });
+
+        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
+        List<Object> sendParams = Arrays.asList(
+                BRANDON.getAddress(),
+                amount
+        );
+
+        int expectedEventCount = 0;
+        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
+        contract.getMethod("transfer").send(sendParams, sendOptions);
+        expectedEventCount++;
+        contract.getMethod("transfer").send(sendParams, sendOptions);
+        expectedEventCount++;
+
+        while(logList.size() < 2);
+        // Unsubscribe the event
+        disposable.dispose();
+
+        assertEquals(logList.size(), expectedEventCount);
+        assertEquals(valuesList.size(), expectedEventCount);
+
+        for (int i = 0; i < expectedEventCount; i ++) {
+            assertEquals(3, logList.get(i).getParams().getResult().getTopics().size());
+            assertEquals(2, valuesList.get(i).getIndexedValues().size()); // from, to
+            assertEquals(1, valuesList.get(i).getNonIndexedValues().size()); // amount
+            assertEquals("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", logList.get(i).getParams().getResult().getTopics().get(0));
+            assertEquals("0x0000000000000000000000002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a", logList.get(i).getParams().getResult().getTopics().get(1));
+            assertEquals("0x000000000000000000000000e97f27e9a5765ce36a7b919b1cb6004c7209217e", logList.get(i).getParams().getResult().getTopics().get(2));
+            assertEquals(sendOptions.getFrom(), valuesList.get(i).getIndexedValues().get(0).toString());
+            assertEquals(sendParams.get(0), valuesList.get(i).getIndexedValues().get(1).toString());
+            assertTrue(sendParams.get(1).equals(valuesList.get(i).getNonIndexedValues().get(0).getValue()));
+        }
+
+        webSocketService.close();
+
+    }
+
+    @Test
+    public void subscribeTest_multiOptions() throws Exception {
+        WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
+        Caver caver = new Caver(webSocketService);
+        webSocketService.connect();
+
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey(LUMAN.getEcKeyPairsForTransactionList().get(0).getPrivateKey().toString(16)));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey(BRANDON.getEcKeyPairsForTransactionList().get(0).getPrivateKey().toString(16)));
+
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
+
+        EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("from", Arrays.asList(LUMAN.getAddress()));
+        EventFilterOptions.IndexedParameter indexedParameter1 = new EventFilterOptions.IndexedParameter("to", Arrays.asList(BRANDON.getAddress()));
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        eventFilterOptions.setFilterOptions(Arrays.asList(indexedParameter, indexedParameter1));
+
+        ContractEvent event = contract.getEvents().get("Transfer");
+        final List<LogsNotification> logList = new ArrayList<>();
+        final List<EventValues> valuesList = new ArrayList<>();
+        Disposable disposable = contract.subscribe(event.getName(), eventFilterOptions, log -> {
+            EventValues values = caver.abi.decodeLog(event.getInputs(), log.getParams().getResult().getData(), log.getParams().getResult().getTopics());
+            logList.add(log);
+            valuesList.add(values);
+        });
+
+        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
+        List<Object> sendParams = Arrays.asList(
+                BRANDON.getAddress(),
+                amount
+        );
+
+        int expectedEventCount = 0;
+        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
+        contract.getMethod("transfer").send(sendParams, sendOptions);
+        expectedEventCount++;
+        contract.getMethod("transfer").send(sendParams, sendOptions);
+        expectedEventCount++;
+
+        while(logList.size() < 2);
+        // Unsubscribe the event
+        disposable.dispose();
+
+        assertEquals(logList.size(), expectedEventCount);
+        assertEquals(valuesList.size(), expectedEventCount);
+
+        for (int i = 0; i < expectedEventCount; i ++) {
+            assertEquals(3, logList.get(i).getParams().getResult().getTopics().size());
+            assertEquals(2, valuesList.get(i).getIndexedValues().size()); // from, to
+            assertEquals(1, valuesList.get(i).getNonIndexedValues().size()); // amount
+            assertEquals("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", logList.get(i).getParams().getResult().getTopics().get(0));
+            assertEquals("0x0000000000000000000000002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a", logList.get(i).getParams().getResult().getTopics().get(1));
+            assertEquals("0x000000000000000000000000e97f27e9a5765ce36a7b919b1cb6004c7209217e", logList.get(i).getParams().getResult().getTopics().get(2));
+            assertEquals(sendOptions.getFrom(), valuesList.get(i).getIndexedValues().get(0).toString());
+            assertEquals(sendParams.get(0), valuesList.get(i).getIndexedValues().get(1).toString());
+            assertTrue(sendParams.get(1).equals(valuesList.get(i).getNonIndexedValues().get(0).getValue()));
+        }
+
+        webSocketService.close();
+
+    }
+
+    @Test
+    public void subscribeTest4_OR_Options() throws Exception {
+        WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
+        Caver caver = new Caver(webSocketService);
+        webSocketService.connect();
+
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey(LUMAN.getEcKeyPairsForTransactionList().get(0).getPrivateKey().toString(16)));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey(BRANDON.getEcKeyPairsForTransactionList().get(0).getPrivateKey().toString(16)));
+
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
+
+        EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("from", Arrays.asList(LUMAN.getAddress(), BRANDON.getAddress()));
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        eventFilterOptions.setFilterOptions(Arrays.asList(indexedParameter));
+
+        ContractEvent event = contract.getEvents().get("Transfer");
+        final List<LogsNotification> logList = new ArrayList<>();
+        final List<EventValues> valuesList = new ArrayList<>();
+        Disposable disposable = contract.subscribe(event.getName(), eventFilterOptions, log -> {
+            EventValues values = caver.abi.decodeLog(event.getInputs(), log.getParams().getResult().getData(), log.getParams().getResult().getTopics());
+            logList.add(log);
+            valuesList.add(values);
+        });
+
+        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
+        List<Object> sendParams = Arrays.asList(
+                BRANDON.getAddress(),
+                amount
+        );
+
+        int expectedEventCount = 0;
+        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
+        contract.getMethod("transfer").send(sendParams, sendOptions);
+        expectedEventCount++;
+        contract.getMethod("transfer").send(sendParams, sendOptions);
+        expectedEventCount++;
+
+        while(logList.size() < 2);
+        // Unsubscribe the event
+        disposable.dispose();
+
+        assertEquals(logList.size(), expectedEventCount);
+        assertEquals(valuesList.size(), expectedEventCount);
+
+        for (int i = 0; i < expectedEventCount; i ++) {
+            assertEquals(3, logList.get(i).getParams().getResult().getTopics().size());
+            assertEquals(2, valuesList.get(i).getIndexedValues().size()); // from, to
+            assertEquals(1, valuesList.get(i).getNonIndexedValues().size()); // amount
+            assertEquals("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", logList.get(i).getParams().getResult().getTopics().get(0));
+            assertEquals("0x0000000000000000000000002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a", logList.get(i).getParams().getResult().getTopics().get(1));
+            assertEquals("0x000000000000000000000000e97f27e9a5765ce36a7b919b1cb6004c7209217e", logList.get(i).getParams().getResult().getTopics().get(2));
+            assertEquals(sendOptions.getFrom(), valuesList.get(i).getIndexedValues().get(0).toString());
+            assertEquals(sendParams.get(0), valuesList.get(i).getIndexedValues().get(1).toString());
+            assertTrue(sendParams.get(1).equals(valuesList.get(i).getNonIndexedValues().get(0).getValue()));
+        }
+
+        webSocketService.close();
+
+    }
+
+    @Test
+    public void subscribeTest5_OR_Options2() throws Exception {
+        WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
+        Caver caver = new Caver(webSocketService);
+        webSocketService.connect();
+
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey(LUMAN.getEcKeyPairsForTransactionList().get(0).getPrivateKey().toString(16)));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey(BRANDON.getEcKeyPairsForTransactionList().get(0).getPrivateKey().toString(16)));
+
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
+
+        EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("to", Arrays.asList(WAYNE.getAddress(), BRANDON.getAddress()));
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        eventFilterOptions.setFilterOptions(Arrays.asList(indexedParameter));
+
+        ContractEvent event = contract.getEvents().get("Transfer");
+        final List<LogsNotification> logList = new ArrayList<>();
+        final List<EventValues> valuesList = new ArrayList<>();
+        Disposable disposable = contract.subscribe(event.getName(), eventFilterOptions, log -> {
+            EventValues values = caver.abi.decodeLog(event.getInputs(), log.getParams().getResult().getData(), log.getParams().getResult().getTopics());
+            logList.add(log);
+            valuesList.add(values);
+        });
+
+        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
+        List<Object> sendParams = Arrays.asList(
+                BRANDON.getAddress(),
+                amount
+        );
+
+        int expectedEventCount = 0;
+        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
+        contract.getMethod("transfer").send(sendParams, sendOptions);
+        expectedEventCount++;
+        contract.getMethod("transfer").send(sendParams, sendOptions);
+        expectedEventCount++;
+
+        while(logList.size() < 2);
+        // Unsubscribe the event
+        disposable.dispose();
+
+        assertEquals(logList.size(), expectedEventCount);
+        assertEquals(valuesList.size(), expectedEventCount);
+
+        for (int i = 0; i < expectedEventCount; i ++) {
+            assertEquals(3, logList.get(i).getParams().getResult().getTopics().size());
+            assertEquals(2, valuesList.get(i).getIndexedValues().size()); // from, to
+            assertEquals(1, valuesList.get(i).getNonIndexedValues().size()); // amount
+            assertEquals("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", logList.get(i).getParams().getResult().getTopics().get(0));
+            assertEquals("0x0000000000000000000000002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a", logList.get(i).getParams().getResult().getTopics().get(1));
+            assertEquals("0x000000000000000000000000e97f27e9a5765ce36a7b919b1cb6004c7209217e", logList.get(i).getParams().getResult().getTopics().get(2));
+            assertEquals(sendOptions.getFrom(), valuesList.get(i).getIndexedValues().get(0).toString());
+            assertEquals(sendParams.get(0), valuesList.get(i).getIndexedValues().get(1).toString());
+            assertTrue(sendParams.get(1).equals(valuesList.get(i).getNonIndexedValues().get(0).getValue()));
+        }
+
+        webSocketService.close();
+
+    }
+
+    @Test
+    public void subscribeTest_allEvents() throws Exception {
+        WebSocketService webSocketService = new WebSocketService("ws://localhost:8552", false);
+        Caver caver = new Caver(webSocketService);
+        webSocketService.connect();
+
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey(LUMAN.getEcKeyPairsForTransactionList().get(0).getPrivateKey().toString(16)));
+        caver.wallet.add(caver.wallet.keyring.createFromPrivateKey(BRANDON.getEcKeyPairsForTransactionList().get(0).getPrivateKey().toString(16)));
+
+        Contract contract = caver.contract.create(jsonObj, contractAddress);
+
+
+        EventFilterOptions.IndexedParameter indexedParameter = new EventFilterOptions.IndexedParameter("to", Arrays.asList(WAYNE.getAddress(), BRANDON.getAddress()));
+        EventFilterOptions eventFilterOptions = new EventFilterOptions();
+        eventFilterOptions.setFilterOptions(Arrays.asList(indexedParameter));
+
+        final List<LogsNotification> logList = new ArrayList<>();
+        Disposable disposable = contract.subscribe("allEvents", eventFilterOptions, log -> {
+            logList.add(log);
+        });
+
+        BigInteger amount = BigInteger.TEN.multiply(BigInteger.TEN.pow(BigInteger.valueOf(18).intValue()));;
+        List<Object> sendParams = Arrays.asList(
+                BRANDON.getAddress(),
+                amount
+        );
+
+        int expectedEventCount = 0;
+        SendOptions sendOptions = new SendOptions(LUMAN.getAddress(), DefaultGasProvider.GAS_LIMIT);
+        contract.getMethod("transfer").send(sendParams, sendOptions);
+        expectedEventCount++;
+        contract.getMethod("transfer").send(sendParams, sendOptions);
+        expectedEventCount++;
+
+        while(logList.size() < 2);
+        // Unsubscribe the event
+        disposable.dispose();
+
+        assertEquals(logList.size(), expectedEventCount);
+
+        for (int i = 0; i < expectedEventCount; i ++) {
+            assertEquals(3, logList.get(i).getParams().getResult().getTopics().size());
+            assertEquals("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", logList.get(i).getParams().getResult().getTopics().get(0));
+            assertEquals("0x0000000000000000000000002c8ad0ea2e0781db8b8c9242e07de3a5beabb71a", logList.get(i).getParams().getResult().getTopics().get(1));
+            assertEquals("0x000000000000000000000000e97f27e9a5765ce36a7b919b1cb6004c7209217e", logList.get(i).getParams().getResult().getTopics().get(2));
+        }
 
         webSocketService.close();
     }

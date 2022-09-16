@@ -17,6 +17,7 @@
 package com.klaytn.caver.ipfs.wrapper;
 
 import com.klaytn.caver.ipfs.IPFS;
+import com.klaytn.caver.ipfs.IPFSOptions;
 
 import java.io.IOException;
 
@@ -94,5 +95,40 @@ public class IPFSWrapper {
      */
     public void setIPFSNode(String host, int port, boolean ssl) {
         this.ipfs.setIPFSNode(host, port, ssl);
+    }
+
+    /**
+     * Set an IPFS node with IPFSOptions instance. <p>
+     *
+     * <pre>Example:
+     * {@code
+     * IPFSOptions options = caver.ipfs.createOptions(this.projectId, this.projectSecret);
+     * caver.ipfs.setIPFSNode("ipfs.infura.io", 5001, true, options);
+     * }
+     * </pre>
+     *
+     * @param host The host url.
+     * @param port The port number to use.
+     * @param ssl either using ssl or not.
+     * @param options An object contains configuration variables.
+     */
+    public void setIPFSNode(String host, int port, boolean ssl, IPFSOptions options) {
+        this.ipfs.setIPFSNode(host, port, ssl, options);
+    }
+
+    /**
+     * Create an IPFSOptions object that includes `"Authorization"` made from `projectId` and `projectSecret`<p>
+     *
+     * <pre>Example :
+     * {@code
+     * IPFSOptions options = caver.ipfs.createOptions(this.projectId, this.projectSecret);
+     * }
+     * </pre>
+     *
+     * @param projectId The project id string.
+     * @param projectSecret The project secret string.
+     */
+    public IPFSOptions createOptions(String projectId, String projectSecret) {
+        return IPFSOptions.createOptions(projectId, projectSecret);
     }
 }

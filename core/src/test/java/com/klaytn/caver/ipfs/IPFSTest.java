@@ -25,6 +25,7 @@ import com.klaytn.caver.transaction.type.ValueTransferMemo;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import org.junit.Test;
 import org.web3j.protocol.exceptions.TransactionException;
+import io.github.cdimascio.dotenv.Dotenv;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -40,6 +41,9 @@ public class IPFSTest {
     static String text = "This is IPFS test.";
     static String fileName = "./ipfs.txt";
 
+    private String projectId = "";
+    private String projectSecret = "";
+
     public void createFile(String fileName, String text) {
         File file = new File(fileName);
         FileWriter fw = null;
@@ -52,6 +56,19 @@ public class IPFSTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void loadENV() {
+        if (this.projectId != "" && this.projectSecret != "") {
+            return;
+        }
+        Dotenv env = Dotenv.configure()
+                .ignoreIfMalformed()
+                .ignoreIfMissing()
+                .load();
+
+        this.projectId = System.getenv("infuraProjectId") == null? env.get("infuraProjectId") : System.getenv("infuraProjectId");
+        this.projectSecret =  System.getenv("infuraProjectSecret") == null? env.get("infuraProjectSecret"): System.getenv("infuraProjectSecret");
     }
 
     public TransactionReceipt.TransactionReceiptData sendFileHash(Caver caver, String fileHash) throws IOException, TransactionException {
@@ -98,8 +115,10 @@ public class IPFSTest {
     @Test
     public void addFile() throws IOException {
         createFile(fileName, text);
+        loadENV();
         Caver caver = new Caver();
-        caver.ipfs.setIPFSNode("ipfs.infura.io", 5001, true);
+        IPFSOptions options = caver.ipfs.createOptions(this.projectId, this.projectSecret);
+        caver.ipfs.setIPFSNode("ipfs.infura.io", 5001, true, options);
 
         String encodedHash = caver.ipfs.add(fileName);
         assertNotNull(encodedHash);
@@ -109,23 +128,27 @@ public class IPFSTest {
     public void addByteArray() throws IOException {
         byte[] data = text.getBytes();
 
+        loadENV();
         Caver caver = new Caver();
-        caver.ipfs.setIPFSNode("ipfs.infura.io", 5001, true);
+        IPFSOptions options = IPFSOptions.createOptions(this.projectId, this.projectSecret);
+        caver.ipfs.setIPFSNode("ipfs.infura.io", 5001, true, options);
 
         String cid = caver.ipfs.add(data);
         assertNotNull(cid);
 
 
-        byte[] content = caver.ipfs.get(cid);
-        assertEquals(text, new String(content));
+       byte[] content = caver.ipfs.get(cid);
+       assertEquals(text, new String(content));
     }
 
     @Test
     public void get() throws IOException {
         String cid = "QmYzW1fXbapdxkZXMQeCYoDCjVc18H8tLfMfrxXRySmQiq";
 
+        loadENV();
         Caver caver = new Caver();
-        caver.ipfs.setIPFSNode("ipfs.infura.io", 5001, true);
+        IPFSOptions options = IPFSOptions.createOptions(this.projectId, this.projectSecret);
+        caver.ipfs.setIPFSNode("ipfs.infura.io", 5001, true, options);
 
         byte[] content = caver.ipfs.get(cid);
         String data = new String(content);
@@ -134,8 +157,11 @@ public class IPFSTest {
 
     @Test
     public void integrationTest() throws IOException, TransactionException {
+        loadENV();
+
         Caver caver = new Caver();
-        caver.ipfs.setIPFSNode("ipfs.infura.io", 5001, true);
+        IPFSOptions options = IPFSOptions.createOptions(this.projectId, this.projectSecret);
+        caver.ipfs.setIPFSNode("ipfs.infura.io", 5001, true, options);
 
         createFile(fileName, text);
         String encodedHash = caver.ipfs.add(fileName);

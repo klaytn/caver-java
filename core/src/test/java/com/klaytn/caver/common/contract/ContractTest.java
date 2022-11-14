@@ -1021,6 +1021,7 @@ public class ContractTest {
         assertTrue(Numeric.toBigInt(gas).compareTo(BigInteger.ZERO) > 0);
     }
 
+    /* TODO-klaytn: Temporarily disable
     @Test
     public void getPastEvent() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, TransactionException, InstantiationException, IllegalAccessException {
         Caver caver = new Caver(Caver.DEFAULT_URL);
@@ -1051,6 +1052,7 @@ public class ContractTest {
         assertEquals(eventValues.getIndexedValues().get(1).getValue(), "0x2c8ad0ea2e0781db8b8c9242e07de3a5beabb71a");
         assertEquals(eventValues.getNonIndexedValues().get(0).getValue(), value);
     }
+    */
 
     @Test
     public void onceTest() throws Exception {

@@ -82,7 +82,7 @@ interface IKIP37Mintable {
 pragma solidity ^0.8.0;
 
 /**
- * @dev Pausing extension of the KIP17 standard as defined in the KIP.
+ * @dev Pausing extension of the KIP37 standard as defined in the KIP.
  * See http://kips.klaytn.com/KIPs/kip-37#pausing-extension
  */
 interface IKIP37Pausable {

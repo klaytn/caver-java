@@ -28,6 +28,7 @@ import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.*;
 import com.klaytn.caver.methods.response.Account;
 import com.klaytn.caver.methods.response.Boolean;
+import com.klaytn.caver.methods.response.KlayRewards.BlockRewards;
 import com.klaytn.caver.rpc.Klay;
 import com.klaytn.caver.transaction.TxPropertyBuilder;
 import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
@@ -57,6 +58,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -661,6 +663,42 @@ public class RpcTest extends Accounts {
                 deployContract();
             }
             sampleReceiptData = sendKlay();
+        }
+
+        @Test
+        public void getRewards() throws IOException {
+            KlayRewards responseWithNumber = klay.getRewards(BigInteger.valueOf(5)).send();
+            assertFalse(responseWithNumber.hasError());
+            assertNotNull(responseWithNumber.getResult().BurntFee());
+            assertNotNull(responseWithNumber.getResult().Kgf());
+            assertNotNull(responseWithNumber.getResult().Kir());
+            assertNotNull(responseWithNumber.getResult().Minted());
+            assertNotNull(responseWithNumber.getResult().Proposer());
+            assertNotNull(responseWithNumber.getResult().Rewards());
+            assertNotNull(responseWithNumber.getResult().Stakers());
+            assertNotNull(responseWithNumber.getResult().TotalFee());
+
+            KlayRewards responseWithTag = klay.getRewards(DefaultBlockParameterName.LATEST).send();
+            assertFalse(responseWithTag.hasError());
+            assertNotNull(responseWithTag.getResult().BurntFee());
+            assertNotNull(responseWithTag.getResult().Kgf());
+            assertNotNull(responseWithTag.getResult().Kir());
+            assertNotNull(responseWithTag.getResult().Minted());
+            assertNotNull(responseWithTag.getResult().Proposer());
+            assertNotNull(responseWithTag.getResult().Rewards());
+            assertNotNull(responseWithTag.getResult().Stakers());
+            assertNotNull(responseWithTag.getResult().TotalFee());
+
+            KlayRewards response = klay.getRewards().send();
+            assertFalse(response.hasError());
+            assertNotNull(response.getResult().BurntFee());
+            assertNotNull(response.getResult().Kgf());
+            assertNotNull(response.getResult().Kir());
+            assertNotNull(response.getResult().Minted());
+            assertNotNull(response.getResult().Proposer());
+            assertNotNull(response.getResult().Rewards());
+            assertNotNull(response.getResult().Stakers());
+            assertNotNull(response.getResult().TotalFee());
         }
 
         @Test
@@ -1476,18 +1514,79 @@ public class RpcTest extends Accounts {
             assertFalse(response.hasError());
         }
 
+        @Test public void getKlayChainConfig() throws IOException {
+            GovernanceChainConfig response = caver.rpc.klay.getChainConfig().send();
+            assertNotNull(response.getResult());
+            assertFalse(response.hasError());
+        }
+
         @Test
-        public void getChainConfig() throws IOException {
+        public void getKlayChainConfigAtWithBlockNumber() throws IOException {
+            GovernanceChainConfig response = caver.rpc.klay.getChainConfigAt(BigInteger.valueOf(0)).send();
+            assertNotNull(response.getResult());
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void getKlayChainConfigAtBlockTag() throws IOException {
+            GovernanceChainConfig response = caver.rpc.klay.getChainConfigAt("latest").send();
+            assertNotNull(response.getResult());
+            assertFalse(response.hasError());
+        }
+
+        @Test public void getGovernanceChainConfig() throws IOException {
             GovernanceChainConfig response = caver.rpc.governance.getChainConfig().send();
+            assertNotNull(response.getResult());
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void getGovernanceChainConfigAtWithBlockNumber() throws IOException {
+            GovernanceChainConfig response = caver.rpc.governance.getChainConfigAt(BigInteger.valueOf(0)).send();
+            assertNotNull(response.getResult());
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void getGovernanceChainConfigAtBlockTag() throws IOException {
+            GovernanceChainConfig response = caver.rpc.governance.getChainConfigAt("latest").send();
+            assertNotNull(response.getResult());
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void getKlayNodeAddress() throws IOException {
+            Bytes20 response = caver.rpc.klay.getNodeAddress().send();
             assertNotNull(response);
             assertFalse(response.hasError());
         }
 
         @Test
-        public void getNodeAddress() throws IOException {
+        public void getGovernanceNodeAddress() throws IOException {
             Bytes20 response = caver.rpc.governance.getNodeAddress().send();
             assertNotNull(response);
             assertFalse(response.hasError());
+        }
+
+        @Test
+        public void getGovParamsAt() throws IOException {
+            GovernanceItems response = caver.rpc.klay.getGovParams().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+
+            Map<String, Object> gov_item = response.getResult();
+
+            response = caver.rpc.klay.getGovParamsAt(DefaultBlockParameterName.LATEST).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+
+            response = caver.rpc.klay.getGovParamsAt(BigInteger.ZERO).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+
+            String mode = IVote.VoteItem.getGovernanceMode(response.getResult());
+            System.out.println(mode);
+
         }
 
         @Test
@@ -1550,7 +1649,25 @@ public class RpcTest extends Accounts {
         }
 
         @Test
-        public void getStakingInfo() throws IOException {
+        public void getKlayStakingInfo() throws IOException {
+            GovernanceStakingInfo response = caver.rpc.klay.getStakingInfo().send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+
+            response = caver.rpc.klay.getStakingInfo("latest").send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+
+            response = caver.rpc.klay.getStakingInfo(DefaultBlockParameterName.LATEST).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+
+            response = caver.rpc.klay.getStakingInfo(BigInteger.ZERO).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+        @Test
+        public void getGovernanceStakingInfo() throws IOException {
             GovernanceStakingInfo response = caver.rpc.governance.getStakingInfo().send();
             assertNotNull(response);
             assertFalse(response.hasError());

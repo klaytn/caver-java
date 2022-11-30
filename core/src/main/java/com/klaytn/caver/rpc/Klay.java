@@ -21,6 +21,7 @@ import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.request.KlayFilter;
 import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.Boolean;
+import com.klaytn.caver.methods.response.KlayRewards.BlockRewards;
 import com.klaytn.caver.methods.response.*;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
 import com.klaytn.caver.transaction.AbstractTransaction;
@@ -1247,6 +1248,282 @@ public class Klay {
                 web3jService,
                 Bytes.class);
     }
+
+    /**
+     * Provides the latest chain configuration
+     * <pre>Example :
+     * {@code
+     * GovernanceChainConfig response = caver.rpc.klay.getChainConfig().send();
+     * }
+     * </pre>
+     * @return Request&lt;?, GovernanceChainConfig&gt;
+     */
+    public Request<?, GovernanceChainConfig> getChainConfig() {
+        return getChainConfigAt(DefaultBlockParameterName.LATEST);
+    }
+
+    /**
+     * Provides the chain configuration at the specified block number
+     * <pre>Example :
+     * {@code
+     * GovernanceChainConfig response = caver.rpc.klay.getChainConfig(BigInteger.ZERO).send();
+     * }
+     * </pre>
+     * @return Request&lt;?, GovernanceChainConfig&gt;
+     */
+    public Request<?, GovernanceChainConfig> getChainConfigAt(BigInteger blockNumber) {
+        return getChainConfigAt(DefaultBlockParameter.valueOf(blockNumber));
+    }
+
+    /**
+     * Provides the chain configuration by block tag (latest, earliest, pending)
+     * <pre>Example :
+     * {@code
+     * GovernanceChainConfig response = caver.rpc.klay.getChainConfig("latest").send();
+     * }
+     * </pre>
+     * @return Request&lt;?, GovernanceChainConfig&gt;
+     */
+    public Request<?, GovernanceChainConfig> getChainConfigAt(String blockTag) {
+        return getChainConfigAt(DefaultBlockParameterName.fromString(blockTag));
+    }
+
+    /**
+     * return chain configuration   
+     */
+    public Request<?, GovernanceChainConfig> getChainConfigAt(DefaultBlockParameter blockNumberOrTag) {
+        return new Request<>(
+                "klay_chainConfigAt",
+                Arrays.asList(blockNumberOrTag),
+                web3jService,
+                GovernanceChainConfig.class
+        );
+    }
+
+    /**
+     * Returns governance items at specific block.<p>
+     * It is the result of previous voting of the block and used as configuration for chain at the given block number.<p>
+     * It pass the latest block tag as a parameter.
+     * <pre>Example :
+     * {@code
+     * GovernanceItems response = caver.rpc.klay.getGovParamsAt().send();
+     * Map<String, Object> governanceItem = response.getResult();
+     *
+     * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
+     * }</pre>
+     * @return Request&lt;?, Bytes20&gt;
+     */
+    public Request<?, GovernanceItems> getGovParams() {
+        return getGovParamsAt(DefaultBlockParameterName.LATEST);
+    }
+
+    /**
+     * Returns governance items at specific block.<p>
+     * It is the result of previous voting of the block and used as configuration for chain at the given block number.
+     * <pre>Example :
+     * {@code
+     * GovernanceItems response = caver.rpc.klay.getGovParamsAt(BigInteger.ZERO).send();
+     * Map<String, Object> governanceItem = response.getResult();
+     *
+     * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
+     * }</pre>
+     * @param blockNumber The block number to query.
+     * @return Request&lt;?, GovernanceItems&gt;
+     */
+    public Request<?, GovernanceItems> getGovParamsAt(BigInteger blockNumber) {
+        return getGovParamsAt(DefaultBlockParameter.valueOf(blockNumber));
+    }
+
+    /**
+     * Returns governance items at specific block.<p>
+     * It is the result of previous voting of the block and used as configuration for chain at the given block number.
+     * <pre>Example :
+     * {@code
+     * GovernanceItems response = caver.rpc.klay.getGovParamsAt("latest").send();
+     * Map<String, Object> governanceItem = response.getResult();
+     *
+     * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
+     * }
+     * </pre>
+     * @param blockTag The block tag to query
+     * @return Request&lt;?, GovernanceItems&gt;
+     */
+    public Request<?, GovernanceItems> getGovParamsAt(String blockTag) {
+        DefaultBlockParameterName blockTagName = DefaultBlockParameterName.fromString(blockTag);
+        return getGovParamsAt(blockTagName);
+    }
+
+    /**
+     * Returns governance items at specific block.<p>
+     * It is the result of previous voting of the block and used as configuration for chain at the given block number.
+     * <pre>Example :
+     * {@code
+     * GovernanceItems response = caver.rpc.klay.getGovParamsAt(DefaultBlockParameterName.LATEST).send();
+     * Map<String, Object> governanceItem = response.getResult();
+     *
+     * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
+     * }
+     * </pre>
+     * @param blockTag The block tag to query
+     * @return Request&lt;?, GovernanceItems&gt;
+     */
+    public Request<?, GovernanceItems> getGovParamsAt(DefaultBlockParameterName blockTag) {
+        return getGovParamsAt((DefaultBlockParameter)blockTag);
+    }
+
+    Request<?, GovernanceItems> getGovParamsAt(DefaultBlockParameter blockParameter) {
+        return new Request<>(
+                "klay_govParamsAt",
+                Arrays.asList(blockParameter.getValue()),
+                web3jService,
+                GovernanceItems.class
+        );
+    }
+    /**
+     * The getStakingInfo returns staking information at a specific block.<p>
+     * It passes the latest block tag as a parameter.
+     * <pre>Example :
+     * {@code
+     * GovernanceStackingInfo response = caver.rpc.klay.getStakingInfo().send();
+     * }
+     * </pre>
+     * @return Request&lt;?, GovernanceStackingInfo&gt;
+     */
+    public Request<?, GovernanceStakingInfo> getStakingInfo() {
+        return getStakingInfo(DefaultBlockParameterName.LATEST);
+    }
+
+    /**
+     * Returns staking information at a specific block.<p>
+     * <pre>Example :
+     * {@code
+     * GovernanceStackingInfo response = caver.rpc.klay.getStakingInfo(BigInteger.ZERO).send();
+     * }
+     * </pre>
+     * @param blockNumber The block number.
+     * @return Request&lt;?, GovernanceStackingInfo&gt;
+     */
+    public Request<?, GovernanceStakingInfo> getStakingInfo(BigInteger blockNumber) {
+        return getStakingInfo(DefaultBlockParameter.valueOf(blockNumber));
+    }
+
+    /**
+     * Returns staking information at a specific block.<p>
+     * <pre>Example :
+     * {@code
+     * GovernanceStackingInfo response = caver.rpc.klay.getStakingInfo("latest").send();
+     * }
+     * </pre>
+     * @param blockTag The block tag.
+     * @return Request&lt;?, GovernanceStackingInfo&gt;
+     */
+    public Request<?, GovernanceStakingInfo> getStakingInfo(String blockTag) {
+        DefaultBlockParameterName blockTagName = DefaultBlockParameterName.fromString(blockTag);
+        return getStakingInfo(blockTagName);
+    }
+
+    /**
+     * Returns staking information at a specific block.<p>
+     * <pre>Example :
+     * {@code
+     * GovernanceStackingInfo response = caver.rpc.klay.getStakingInfo(DefaultBlockParameterName.LATEST).send();
+     * }
+     * </pre>
+     * @param blockTag The block tag.
+     * @return Request&lt;?, GovernanceStackingInfo&gt;
+     */
+    public Request<?, GovernanceStakingInfo> getStakingInfo(DefaultBlockParameterName blockTag) {
+        return getStakingInfo((DefaultBlockParameter)blockTag);
+    }
+
+    Request<?, GovernanceStakingInfo> getStakingInfo(DefaultBlockParameter blockParam) {
+        return new Request<>(
+                "klay_getStakingInfo",
+                Arrays.asList(blockParam),
+                web3jService,
+                GovernanceStakingInfo.class
+        );
+    }
+
+    /**
+     * Provides the address of the node that a user is using.<p>
+     * It is derived from the nodekey and used to sign consensus messages. And the value of "governingnode" has to be one of validator's node address.
+     * <pre>Example :
+     * {@code
+     * Bytes20 response = caver.rpc.klay.getNodeAddress().send();
+     * }
+     * </pre>
+     * @return Request&lt;?, Bytes20&gt;
+     */
+    public Request<?, Bytes20> getNodeAddress() {
+        return new Request<>(
+                "klay_nodeAddress",
+                Collections.emptyList(),
+                web3jService,
+                Bytes20.class
+        );
+    }
+
+    /**
+     * Returns distributed block rewards information at the latest block number
+     * <pre>Example:
+     * {@code
+     *  KlayRewards response = caver.rpc.klay.getRewards();
+     *  KlayRewards.BlockRewards blockRewards = response.getResult();
+     * }
+     * </pre>
+     * @return KlayRewards
+     */
+    public Request<?, KlayRewards> getRewards() {
+        return getRewards(DefaultBlockParameterName.LATEST);
+    }
+
+    /**
+     * Returns distributed block rewards infomation by block number.
+     * <pre>Example:
+     * {@code
+     *  KlayRewards response = caver.rpc.klay.getRewards(BigInteger.valueOf(5));
+     *  KlayRewards.BlockRewards blockRewards = response.getResult();
+     * }
+     * </pre>
+     * @param blockNumber The block number.
+     * @return KlayRewards
+     */
+    public Request<?, KlayRewards> getRewards(BigInteger blockNumber) {
+        return getRewards(new DefaultBlockParameterNumber(blockNumber));
+    }
+
+    /**
+     * Returns distributed block rewards infomation by block tag.
+     * <pre>Example:
+     * {@code
+     *  KlayRewards response = caver.rpc.klay.getRewards(DefaultBlockParameterName.LATEST);
+     *  KlayRewards.BlockRewards blockRewards = response.getResult();
+     * }
+     * </pre>
+     * @param blockTag The string "latest", "earliest" or "pending"
+     * @return KlayRewards
+     */
+    public Request<?, KlayRewards> getRewards(DefaultBlockParameterName blockTag) {
+        return getRewards(DefaultBlockParameter.valueOf(blockTag.getValue()));
+    }
+
+    /**
+     * Returns the current block rewards
+     * @return KlayRewards
+     */
+    public Request<?, KlayRewards> getRewards(DefaultBlockParameter blockNumberOrTag) {
+        return new Request<>(
+            "klay_getRewards",
+            Arrays.asList(blockNumberOrTag),
+            web3jService,
+            KlayRewards.class);
+    }
+
+    /**
+     * 
+     * @return GovernanceChainConfig
+     */
 
     /**
      * Returns the current price per gas in peb.<p>

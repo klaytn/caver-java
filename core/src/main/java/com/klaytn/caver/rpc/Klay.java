@@ -1266,7 +1266,7 @@ public class Klay {
      * Provides the chain configuration at the specified block number
      * <pre>Example :
      * {@code
-     * GovernanceChainConfig response = caver.rpc.klay.getChainConfig(BigInteger.ZERO).send();
+     * GovernanceChainConfig response = caver.rpc.klay.getChainConfigAt(BigInteger.ZERO).send();
      * }
      * </pre>
      * @return Request&lt;?, GovernanceChainConfig&gt;
@@ -1279,7 +1279,7 @@ public class Klay {
      * Provides the chain configuration by block tag (latest, earliest, pending)
      * <pre>Example :
      * {@code
-     * GovernanceChainConfig response = caver.rpc.klay.getChainConfig("latest").send();
+     * GovernanceChainConfig response = caver.rpc.klay.getChainConfigAt("latest").send();
      * }
      * </pre>
      * @return Request&lt;?, GovernanceChainConfig&gt;
@@ -1306,7 +1306,7 @@ public class Klay {
      * It pass the latest block tag as a parameter.
      * <pre>Example :
      * {@code
-     * GovernanceItems response = caver.rpc.klay.getGovParamsAt().send();
+     * GovernanceItems response = caver.rpc.klay.getGovParams().send();
      * Map<String, Object> governanceItem = response.getResult();
      *
      * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);

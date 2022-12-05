@@ -669,36 +669,36 @@ public class RpcTest extends Accounts {
         public void getRewards() throws IOException {
             KlayRewards responseWithNumber = klay.getRewards(BigInteger.valueOf(5)).send();
             assertFalse(responseWithNumber.hasError());
-            assertNotNull(responseWithNumber.getResult().BurntFee());
-            assertNotNull(responseWithNumber.getResult().Kgf());
-            assertNotNull(responseWithNumber.getResult().Kir());
-            assertNotNull(responseWithNumber.getResult().Minted());
-            assertNotNull(responseWithNumber.getResult().Proposer());
-            assertNotNull(responseWithNumber.getResult().Rewards());
-            assertNotNull(responseWithNumber.getResult().Stakers());
-            assertNotNull(responseWithNumber.getResult().TotalFee());
+            assertNotNull(responseWithNumber.getResult().getBurntFee());
+            assertNotNull(responseWithNumber.getResult().getKgf());
+            assertNotNull(responseWithNumber.getResult().getKir());
+            assertNotNull(responseWithNumber.getResult().getMinted());
+            assertNotNull(responseWithNumber.getResult().getProposer());
+            assertNotNull(responseWithNumber.getResult().getRewards());
+            assertNotNull(responseWithNumber.getResult().getStakers());
+            assertNotNull(responseWithNumber.getResult().getTotalFee());
 
             KlayRewards responseWithTag = klay.getRewards(DefaultBlockParameterName.LATEST).send();
             assertFalse(responseWithTag.hasError());
-            assertNotNull(responseWithTag.getResult().BurntFee());
-            assertNotNull(responseWithTag.getResult().Kgf());
-            assertNotNull(responseWithTag.getResult().Kir());
-            assertNotNull(responseWithTag.getResult().Minted());
-            assertNotNull(responseWithTag.getResult().Proposer());
-            assertNotNull(responseWithTag.getResult().Rewards());
-            assertNotNull(responseWithTag.getResult().Stakers());
-            assertNotNull(responseWithTag.getResult().TotalFee());
+            assertNotNull(responseWithTag.getResult().getBurntFee());
+            assertNotNull(responseWithTag.getResult().getKgf());
+            assertNotNull(responseWithTag.getResult().getKir());
+            assertNotNull(responseWithTag.getResult().getMinted());
+            assertNotNull(responseWithTag.getResult().getProposer());
+            assertNotNull(responseWithTag.getResult().getRewards());
+            assertNotNull(responseWithTag.getResult().getStakers());
+            assertNotNull(responseWithTag.getResult().getTotalFee());
 
             KlayRewards response = klay.getRewards().send();
             assertFalse(response.hasError());
-            assertNotNull(response.getResult().BurntFee());
-            assertNotNull(response.getResult().Kgf());
-            assertNotNull(response.getResult().Kir());
-            assertNotNull(response.getResult().Minted());
-            assertNotNull(response.getResult().Proposer());
-            assertNotNull(response.getResult().Rewards());
-            assertNotNull(response.getResult().Stakers());
-            assertNotNull(response.getResult().TotalFee());
+            assertNotNull(response.getResult().getBurntFee());
+            assertNotNull(response.getResult().getKgf());
+            assertNotNull(response.getResult().getKir());
+            assertNotNull(response.getResult().getMinted());
+            assertNotNull(response.getResult().getProposer());
+            assertNotNull(response.getResult().getRewards());
+            assertNotNull(response.getResult().getStakers());
+            assertNotNull(response.getResult().getTotalFee());
         }
 
         @Test

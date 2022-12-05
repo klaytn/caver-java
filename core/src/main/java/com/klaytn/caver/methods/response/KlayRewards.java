@@ -28,79 +28,144 @@ public class KlayRewards extends Response<KlayRewards.BlockRewards> {
          * the amount newly minted
          */
         @JsonProperty("minted")
-        private String Minted; 
+        private String minted; 
         /**
          * total tx fee spent
          */
         @JsonProperty("totalFee")
-        private String TotalFee;
+        private String totalFee;
         /**
          * the amount burnt
          */
         @JsonProperty("burntFee")
-        private String BurntFee;
+        private String burntFee;
         /**
          * the amount allocated to the block proposer
          */
         @JsonProperty("proposer")
-        private String Proposer;
+        private String proposer;
         /**
          * total amount allocated to stakers
          */
         @JsonProperty("stakers")
-        private String Stakers;
+        private String stakers;
         /**
          * the amount allocated to KGF
          */
         @JsonProperty("kgf")
-        private String Kgf;
+        private String kgf;
         /**
          * the amount allocated to KIR
          */
         @JsonProperty("kir")
-        private String Kir;    
+        private String kir;    
         /**
          * mapping from reward recipient to amounts
          */
         @JsonProperty("rewards")
-        private Map<String,String> Rewards;
+        private Map<String,String> rewards;
 
         public BlockRewards() {}
         public BlockRewards(String Minted, String TotalFee, String BurntFee, String Proposer, 
                        String Stakers, String Kgf, String Kir, Map<String,String> Rewards) {
-            this.Minted = Minted;
-            this.TotalFee = TotalFee;
-            this.BurntFee = BurntFee;
-            this.Proposer = Proposer;
-            this.Stakers = Stakers;
-            this.Kgf = Kgf;
-            this.Rewards = Rewards;
+            this.minted = Minted;
+            this.totalFee = TotalFee;
+            this.burntFee = BurntFee;
+            this.proposer = Proposer;
+            this.stakers = Stakers;
+            this.kgf = Kgf;
+            this.rewards = Rewards;
         }
     
-        public String Minted() {
-            return this.Minted;
+        public String getMinted() {
+            return this.minted;
         }
 
-        public String TotalFee() {
-            return this.TotalFee;
+        public String getTotalFee() {
+            return this.totalFee;
         }
-        public String BurntFee() {
-            return this.BurntFee;
+        public String getBurntFee() {
+            return this.burntFee;
         }
-        public String Proposer() {
-            return this.Proposer;
+        public String getProposer() {
+            return this.proposer;
         }
-        public String Stakers() {
-            return this.Stakers;
+        public String getStakers() {
+            return this.stakers;
         }
-        public String Kgf() {
-            return this.Kgf;
+        public String getKgf() {
+            return this.kgf;
         }
-        public String Kir() {
-            return this.Kir;
+        public String getKir() {
+            return this.kir;
         }
-        public Map<String,String> Rewards() {
-            return this.Rewards;
+        public Map<String,String> getRewards() {
+            return this.rewards;
+        }
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((minted == null) ? 0 : minted.hashCode());
+            result = prime * result + ((totalFee == null) ? 0 : totalFee.hashCode());
+            result = prime * result + ((burntFee == null) ? 0 : burntFee.hashCode());
+            result = prime * result + ((proposer == null) ? 0 : proposer.hashCode());
+            result = prime * result + ((stakers == null) ? 0 : stakers.hashCode());
+            result = prime * result + ((kgf == null) ? 0 : kgf.hashCode());
+            result = prime * result + ((kir == null) ? 0 : kir.hashCode());
+            result = prime * result + ((rewards == null) ? 0 : rewards.hashCode());
+            return result;
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            BlockRewards other = (BlockRewards) obj;
+            if (minted == null) {
+                if (other.minted != null)
+                    return false;
+            } else if (!minted.equals(other.minted))
+                return false;
+            if (totalFee == null) {
+                if (other.totalFee != null)
+                    return false;
+            } else if (!totalFee.equals(other.totalFee))
+                return false;
+            if (burntFee == null) {
+                if (other.burntFee != null)
+                    return false;
+            } else if (!burntFee.equals(other.burntFee))
+                return false;
+            if (proposer == null) {
+                if (other.proposer != null)
+                    return false;
+            } else if (!proposer.equals(other.proposer))
+                return false;
+            if (stakers == null) {
+                if (other.stakers != null)
+                    return false;
+            } else if (!stakers.equals(other.stakers))
+                return false;
+            if (kgf == null) {
+                if (other.kgf != null)
+                    return false;
+            } else if (!kgf.equals(other.kgf))
+                return false;
+            if (kir == null) {
+                if (other.kir != null)
+                    return false;
+            } else if (!kir.equals(other.kir))
+                return false;
+            if (rewards == null) {
+                if (other.rewards != null)
+                    return false;
+            } else if (!rewards.equals(other.rewards))
+                return false;
+            return true;
         }
     }
 }

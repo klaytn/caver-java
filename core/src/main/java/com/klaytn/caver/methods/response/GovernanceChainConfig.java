@@ -363,7 +363,7 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
              * Setter function for 
              * @param kip82Ratio the value of kip82Ratio field.
              */
-            public void setKip82ratio(String kip82Ratio) {
+            public void setKip82Ratio(String kip82Ratio) {
                 this.kip82Ratio = kip82Ratio;
             }
 

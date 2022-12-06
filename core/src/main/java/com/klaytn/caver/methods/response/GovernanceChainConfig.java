@@ -274,10 +274,10 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
             private String ratio;
 
             /**
-             * The value of kip82ratio field.
+             * The value of kip82Ratio field.
              */
             @JsonProperty("kip82ratio")
-            private String kip82ratio;
+            private String kip82Ratio;
 
             /**
              * The value of proposerUpdateInterval field.
@@ -352,19 +352,19 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
             }
 
             /**
-             * Getter function for kip82ratio
+             * Getter function for kip82Ratio
              * @return String
              */
             public String getKip82Ratio() {
-                return kip82ratio;
+                return kip82Ratio;
             }
 
             /**
              * Setter function for 
-             * @param kip82ratio the value of kip82ratio field.
+             * @param kip82Ratio the value of kip82Ratio field.
              */
-            public void setKip82ratio(String kip82ratio) {
-                this.kip82ratio = kip82ratio;
+            public void setKip82ratio(String kip82Ratio) {
+                this.kip82Ratio = kip82Ratio;
             }
 
             /**

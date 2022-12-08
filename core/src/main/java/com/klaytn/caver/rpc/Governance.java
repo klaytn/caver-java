@@ -269,9 +269,7 @@ public class Governance {
     }
 
     /**
-     * Provides the initial chain configuration.<p>
-     * Because it just stores the initial configuration, if there were changes in the governance made by voting, the result of chainConfig will differ from the current states.<p>
-     * To see the current information, please use {@link Governance#getItemsAt()}
+     * Provides the latest chain configuration
      * <pre>Example :
      * {@code
      * GovernanceChainConfig response = caver.rpc.governance.getChainConfig().send();
@@ -280,9 +278,42 @@ public class Governance {
      * @return Request&lt;?, GovernanceChainConfig&gt;
      */
     public Request<?, GovernanceChainConfig> getChainConfig() {
+        return getChainConfigAt(DefaultBlockParameterName.LATEST);
+    }
+
+    /**
+     * Provides the chain configuration at the specified block number
+     * <pre>Example :
+     * {@code
+     * GovernanceChainConfig response = caver.rpc.governance.getChainConfigAt(BigInteger.ZERO).send();
+     * }
+     * </pre>
+     * @return Request&lt;?, GovernanceChainConfig&gt;
+     */
+    public Request<?, GovernanceChainConfig> getChainConfigAt(BigInteger blockNumber) {
+        return getChainConfigAt(DefaultBlockParameter.valueOf(blockNumber));
+    }
+
+    /**
+     * Provides the chain configuration by block tag (latest, earliest, pending)
+     * <pre>Example :
+     * {@code
+     * GovernanceChainConfig response = caver.rpc.governance.getChainConfigAt("latest").send();
+     * }
+     * </pre>
+     * @return Request&lt;?, GovernanceChainConfig&gt;
+     */
+    public Request<?, GovernanceChainConfig> getChainConfigAt(String blockTag) {
+        return getChainConfigAt(DefaultBlockParameterName.fromString(blockTag));
+    }
+
+    /**
+     * return chain configuration   
+     */
+    public Request<?, GovernanceChainConfig> getChainConfigAt(DefaultBlockParameter blockNumberOrTag) {
         return new Request<>(
-                "governance_chainConfig",
-                Collections.emptyList(),
+                "governance_chainConfigAt",
+                Arrays.asList(blockNumberOrTag),
                 provider,
                 GovernanceChainConfig.class
         );

@@ -147,8 +147,19 @@ public class Validator {
                 pubKeys.add(Utils.recoverPublicKey(message, signature, isHashed));
             }
 
+            // For accounts that have not yet been applied in Klaytn's state,
+            // the return value of `caver.rpc.klay.getAccountKey` is null.
+            // In this case, the account's key has never been updated,
+            // so the logic is the same as in AccountKeyLegacy.
+            AccountKey.AccountKeyData acctKeyData = accountKey.getResult();
+            IAccountKey acctKey;
+            if (acctKeyData == null) {
+                acctKey = new AccountKeyLegacy();
+            } else {
+                acctKey = acctKeyData.getAccountKey();
+            }
             //Compare a account key from queried and public keys extracting from signature.
-            return validateWithAccountType(address, accountKey.getResult().getAccountKey(), pubKeys, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
+            return validateWithAccountType(address, acctKey, pubKeys, AccountKeyRoleBased.RoleGroup.TRANSACTION.getIndex());
         } catch(IOException e) {
             throw new RuntimeException("Failed to get AccountKey from Klaytn", e);
         } catch(SignatureException e) {

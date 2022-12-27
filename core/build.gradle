@@ -8,6 +8,7 @@ dependencies {
     }
 
     compile "com.github.ipfs:java-ipfs-http-client:$ipfsVersion"
+    compile "io.github.cdimascio:dotenv-java:2.2.0"
     implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonDataBindVersion"
 }
 

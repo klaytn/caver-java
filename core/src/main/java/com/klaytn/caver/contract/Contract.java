@@ -249,32 +249,66 @@ public class Contract {
         KlayFilter filter = new KlayFilter();
         filter.setAddress(getContractAddress());
 
+        Flowable<LogsNotification> events;
         if(eventName.equals("allEvents")) {
             if(paramsOption != null) {
                 LOGGER.warn("If eventName has 'allEvent', passed paramOption will be ignored.");
             }
+            events = this.caver.rpc.klay.subscribeFlowable("logs", filter);
         } else {
             ContractEvent event = this.getEvent(eventName);
-            if(paramsOption != null) {
-                /**
-                 * If `filterOptions` field which has event type name and value is existed in the `EventFilterOptions`,
-                 * `filterOptions` will be encoded to the topics data according to ABI spec and assigned to the `topics` field of the `KlayFilter` directly.
-                 */
-                if(paramsOption.getTopics() == null || paramsOption.getTopics().isEmpty()) {
-                    if(paramsOption.getFilterOptions() != null && !paramsOption.getFilterOptions().isEmpty()) {
-                        paramsOption.setTopicWithFilterOptions(event);
-                        filter.setTopics(paramsOption.toKlayFilterTopic());
-                    }
-                }
-                // If topics field in paramOptions is existed, it is set by topics field of KlayFilter directly.
-                else {
-                    filter.setTopics(paramsOption.toKlayFilterTopic());
-                }
-            }
+            events = event.getFlowable(this.caver, paramsOption, filter);
         }
 
-        final Flowable<LogsNotification> events = this.caver.rpc.klay.subscribeFlowable("logs", filter);
         return events.take(1).subscribe(callback);
+    }
+
+    /**
+     * Subscribes to an event.<p>
+     * You can filter event through setting filterOptions or topics field in EventFilterOptions.
+     *
+     * <pre>Example :
+     * {@code
+     * Contract contract = caver.contract.create(ABI, contractAddress);
+     *
+     * EventFilterOptions options = new EventFilterOptions();
+     * options.setFilterOptions(Arrays.asList(new EventFilterOptions.IndexedParameter("from", "0x{address}")));
+     * //or
+     * options.setTopics(Arrays.asList("topic0", "topic1"));
+     *
+     * Disposable disposable = contract.subscribe("Transfer", options, (data) -> {});
+     *
+     * // You can unsubscribe the event like below
+     * disposable.dispose();
+     * }
+     * </pre>
+     *
+     * @param eventName The name of the event in the contract, or "allEvents" to get all events.
+     * @param paramsOption The filter events by indexed parameters.
+     * @param callback The callback function that handled to returned data.
+     * @return Disposable instance that able to unsubscribe.
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public Disposable subscribe(String eventName, EventFilterOptions paramsOption, Consumer<LogsNotification> callback) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        KlayFilter filter = new KlayFilter();
+        filter.setAddress(getContractAddress());
+
+        Flowable<LogsNotification> events;
+        if(eventName.equals("allEvents")) {
+            if(paramsOption != null) {
+                LOGGER.warn("If eventName has 'allEvent', passed paramOption will be ignored.");
+            }
+            events = this.caver.rpc.klay.subscribeFlowable("logs", filter);
+        } else {
+            ContractEvent event = this.getEvent(eventName);
+            events = event.getFlowable(this.caver, paramsOption, filter);
+        }
+
+        return events.subscribe(callback);
     }
 
     /**

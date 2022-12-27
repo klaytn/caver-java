@@ -27,6 +27,7 @@ import com.klaytn.caver.transaction.type.*;
 import com.klaytn.caver.transaction.utils.AccessList;
 import com.klaytn.caver.transaction.utils.AccessTuple;
 import com.klaytn.caver.wallet.keyring.KeyringFactory;
+import com.klaytn.caver.wallet.keyring.MessageSigned;
 import com.klaytn.caver.wallet.keyring.SignatureData;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import org.junit.BeforeClass;
@@ -101,6 +102,43 @@ public class ValidatorTest {
             );
 
             assertFalse(validator.validateSignedMessage(message, invalid, address));
+        }
+    }
+
+    public static class validatedSignedMessage_AccountKeyNull {
+        static String message = "Some Message";
+
+        @Test
+        public void withMessage() throws IOException {
+            Caver caver = new Caver(Caver.DEFAULT_URL);
+
+            SingleKeyring randomKeyring = caver.wallet.keyring.generate();
+            String randomAddress = randomKeyring.getAddress();
+            MessageSigned signed = randomKeyring.signMessage(message, 0);
+            assertTrue(caver.validator.validateSignedMessage(message, signed.getSignatures(), randomAddress));
+        }
+
+        @Test
+        public void withMessageHash() throws IOException {
+            Caver caver = new Caver(Caver.DEFAULT_URL);
+
+            SingleKeyring randomKeyring = caver.wallet.keyring.generate();
+            String randomAddress = randomKeyring.getAddress();
+            MessageSigned signed = randomKeyring.signMessage(message, 0);
+            assertTrue(caver.validator.validateSignedMessage(signed.getMessageHash(), signed.getSignatures(), randomAddress, true));
+        }
+
+        @Test
+        public void withInvalidSignature() throws IOException {
+            Caver caver = new Caver(Caver.DEFAULT_URL);
+
+            SignatureData invalid = new SignatureData(
+                    "0x1c",
+                    "0xa5c9ff1df09258a6f9262f1fae43a306ec77592287787cbd3ee0419dd8d2bfeb",
+                    "0x4c903d3dda703554cf7b65aa2c0dc819c86d36cf2dbf0ff5071667fb5551a706"
+            );
+
+            assertFalse(caver.validator.validateSignedMessage(message, invalid, caver.wallet.keyring.generate().getAddress()));
         }
     }
 

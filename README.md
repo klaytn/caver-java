@@ -1,5 +1,9 @@
 [![CircleCI](https://circleci.com/gh/klaytn/caver-java/tree/dev.svg?style=svg)](https://circleci.com/gh/klaytn/caver-java/tree/dev)
 [![Gitter](https://badges.gitter.im/klaytn/Caver-java.svg)](https://gitter.im/klaytn/Caver-java?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+# Branch name will be changed
+
+We will change the `master` branch to `main` on Dec 15, 2022.
+After the branch policy change, please check your local or forked repository settings.
 
 # caver-java: Caver Java Klaytn Dapp API
 

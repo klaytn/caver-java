@@ -68,6 +68,12 @@ public class EventFilterOptions {
      * @throws IllegalAccessException
      */
     public static List convertsTopic(ContractEvent event, List<IndexedParameter> filterOptions) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        // If filterOptions is null, assign with empty array
+        // to avoid null exception.
+        if (filterOptions == null) {
+            filterOptions = new ArrayList<>();
+        }
+
         int indexed = 0;
         for(ContractIOType ioType : event.getInputs()){
             if(ioType.indexed) {

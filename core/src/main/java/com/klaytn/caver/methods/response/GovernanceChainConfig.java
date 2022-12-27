@@ -72,6 +72,12 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
         private BigInteger magmaCompatibleBlock;
 
         /**
+         * The value of koreCompatibleBlock field.
+         */
+        @JsonProperty("koreCompatibleBlock")
+        private BigInteger koreCompatibleBlock;
+
+        /**
          * The value of chainId field.
          */
         @JsonProperty("chainId")
@@ -268,6 +274,12 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
             private String ratio;
 
             /**
+             * The value of kip82Ratio field.
+             */
+            @JsonProperty("kip82ratio")
+            private String kip82Ratio;
+
+            /**
              * The value of proposerUpdateInterval field.
              */
             @JsonProperty("proposerUpdateInterval")
@@ -330,13 +342,29 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
             public String getRatio() {
                 return ratio;
             }
-
+            
             /**
              * Setter function for ratio.
              * @param ratio The value of ratio field.
              */
             public void setRatio(String ratio) {
                 this.ratio = ratio;
+            }
+
+            /**
+             * Getter function for kip82Ratio
+             * @return String
+             */
+            public String getKip82Ratio() {
+                return kip82Ratio;
+            }
+
+            /**
+             * Setter function for 
+             * @param kip82Ratio the value of kip82Ratio field.
+             */
+            public void setKip82Ratio(String kip82Ratio) {
+                this.kip82Ratio = kip82Ratio;
             }
 
             /**
@@ -589,6 +617,14 @@ public class GovernanceChainConfig extends Response<GovernanceChainConfig.ChainC
          */
         public BigInteger getMagmaCompatibleBlock() {
             return magmaCompatibleBlock;
+        }
+
+        /**
+         * Getter function for koreCompatibleBlock.
+         * @return BigInteger
+         */
+        public BigInteger getKoreCompatibleBlock() {
+            return koreCompatibleBlock;
         }
 
 

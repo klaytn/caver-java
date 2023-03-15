@@ -1569,18 +1569,18 @@ public class RpcTest extends Accounts {
         }
 
         @Test
-        public void getGovParamsAt() throws IOException {
-            GovernanceItems response = caver.rpc.klay.getGovParams().send();
+        public void getParams() throws IOException {
+            GovernanceItems response = caver.rpc.klay.getParams().send();
             assertNotNull(response);
             assertFalse(response.hasError());
 
             Map<String, Object> gov_item = response.getResult();
 
-            response = caver.rpc.klay.getGovParamsAt(DefaultBlockParameterName.LATEST).send();
+            response = caver.rpc.klay.getParams(DefaultBlockParameterName.LATEST).send();
             assertNotNull(response);
             assertFalse(response.hasError());
 
-            response = caver.rpc.klay.getGovParamsAt(BigInteger.ZERO).send();
+            response = caver.rpc.klay.getParams(BigInteger.ZERO).send();
             assertNotNull(response);
             assertFalse(response.hasError());
 

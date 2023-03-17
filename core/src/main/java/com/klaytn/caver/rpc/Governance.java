@@ -285,6 +285,55 @@ public class Governance {
      * Provides the chain configuration at the specified block number
      * <pre>Example :
      * {@code
+     * GovernanceChainConfig response = caver.rpc.governance.getChainConfig(BigInteger.ZERO).send();
+     * }
+     * </pre>
+     * @return Request&lt;?, GovernanceChainConfig&gt;
+     */
+    public Request<?, GovernanceChainConfig> getChainConfig(BigInteger blockNumber) {
+        return getChainConfig(DefaultBlockParameter.valueOf(blockNumber));
+    }
+
+    /**
+     * Provides the chain configuration by block tag (latest, earliest, pending)
+     * <pre>Example :
+     * {@code
+     * GovernanceChainConfig response = caver.rpc.governance.getChainConfig("latest").send();
+     * }
+     * </pre>
+     * @return Request&lt;?, GovernanceChainConfig&gt;
+     */
+    public Request<?, GovernanceChainConfig> getChainConfig(String blockTag) {
+        return getChainConfig(DefaultBlockParameterName.fromString(blockTag));
+    }
+
+    /**
+     * Provides the chain configuration by block tag (latest, earliest, pending)
+     * <pre>Example :
+     * {@code
+     * GovernanceChainConfig response = caver.rpc.governance.getChainConfig(DefaultBlockParameterName.LATEST).send();
+     *
+     * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
+     * }
+     * </pre>
+     * @return Request&lt;?, GovernanceChainConfig&gt;
+     */
+    public Request<?, GovernanceChainConfig> getChainConfig(DefaultBlockParameterName blockTag) {
+        return getChainConfig((DefaultBlockParameter)blockTag);
+    }
+    public Request<?, GovernanceChainConfig> getChainConfig(DefaultBlockParameter blockNumberOrTag) {
+        return new Request<>(
+                "governance_getChainConfig",
+                Arrays.asList(blockNumberOrTag),
+                provider,
+                GovernanceChainConfig.class
+        );
+    }
+
+    /**
+     * Provides the chain configuration at the specified block number
+     * <pre>Example :
+     * {@code
      * GovernanceChainConfig response = caver.rpc.governance.getChainConfigAt(BigInteger.ZERO).send();
      * }
      * </pre>
@@ -335,6 +384,86 @@ public class Governance {
                 Collections.emptyList(),
                 provider,
                 Bytes20.class
+        );
+    }
+
+    /**
+     * Returns governance items at specific block.<p>
+     * It is the result of previous voting of the block and used as configuration for chain at the given block number.<p>
+     * It pass the latest block tag as a parameter.
+     * <pre>Example :
+     * {@code
+     * GovernanceItems response = caver.rpc.governance.getParams().send();
+     * Map<String, Object> governanceItem = response.getResult();
+     *
+     * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
+     * }</pre>
+     * @return Request&lt;?, Bytes20&gt;
+     */
+    public Request<?, GovernanceItems> getParams() {
+        return getParams(DefaultBlockParameterName.LATEST);
+    }
+
+    /**
+     * Returns governance items at specific block.<p>
+     * It is the result of previous voting of the block and used as configuration for chain at the given block number.
+     * <pre>Example :
+     * {@code
+     * GovernanceItems response = caver.rpc.governance.getParams(BigInteger.ZERO).send();
+     * Map<String, Object> governanceItem = response.getResult();
+     *
+     * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
+     * }</pre>
+     * @param blockNumber The block number to query.
+     * @return Request&lt;?, GovernanceItems&gt;
+     */
+    public Request<?, GovernanceItems> getParams(BigInteger blockNumber) {
+        return getParams(DefaultBlockParameter.valueOf(blockNumber));
+    }
+
+    /**
+     * Returns governance items at specific block.<p>
+     * It is the result of previous voting of the block and used as configuration for chain at the given block number.
+     * <pre>Example :
+     * {@code
+     * GovernanceItems response = caver.rpc.governance.getParams("latest").send();
+     * Map<String, Object> governanceItem = response.getResult();
+     *
+     * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
+     * }
+     * </pre>
+     * @param blockTag The block tag to query
+     * @return Request&lt;?, GovernanceItems&gt;
+     */
+    public Request<?, GovernanceItems> getParams(String blockTag) {
+        DefaultBlockParameterName blockTagName = DefaultBlockParameterName.fromString(blockTag);
+        return getParams(blockTagName);
+    }
+
+    /**
+     * Returns governance items at specific block.<p>
+     * It is the result of previous voting of the block and used as configuration for chain at the given block number.
+     * <pre>Example :
+     * {@code
+     * GovernanceItems response = caver.rpc.governance.getParams(DefaultBlockParameterName.LATEST).send();
+     * Map<String, Object> governanceItem = response.getResult();
+     *
+     * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
+     * }
+     * </pre>
+     * @param blockTag The block tag to query
+     * @return Request&lt;?, GovernanceItems&gt;
+     */
+    public Request<?, GovernanceItems> getParams(DefaultBlockParameterName blockTag) {
+        return getParams((DefaultBlockParameter)blockTag);
+    }
+
+    Request<?, GovernanceItems> getParams(DefaultBlockParameter blockParameter) {
+        return new Request<>(
+                "governance_getParams",
+                Arrays.asList(blockParameter.getValue()),
+                provider,
+                GovernanceItems.class
         );
     }
 

@@ -52,13 +52,13 @@ public class KlayRewards extends Response<KlayRewards.BlockRewards> {
         /**
          * the amount allocated to KGF
          */
-        @JsonProperty("kgf")
-        private String kgf;
+        @JsonProperty("kff")
+        private String kff;
         /**
          * the amount allocated to KIR
          */
-        @JsonProperty("kir")
-        private String kir;    
+        @JsonProperty("kcf")
+        private String kcf;    
         /**
          * mapping from reward recipient to amounts
          */
@@ -67,13 +67,14 @@ public class KlayRewards extends Response<KlayRewards.BlockRewards> {
 
         public BlockRewards() {}
         public BlockRewards(String Minted, String TotalFee, String BurntFee, String Proposer, 
-                       String Stakers, String Kgf, String Kir, Map<String,String> Rewards) {
+                       String Stakers, String Kff, String Kcf, Map<String,String> Rewards) {
             this.minted = Minted;
             this.totalFee = TotalFee;
             this.burntFee = BurntFee;
             this.proposer = Proposer;
             this.stakers = Stakers;
-            this.kgf = Kgf;
+            this.kff = Kff;
+            this.kcf = Kcf;
             this.rewards = Rewards;
         }
     
@@ -93,11 +94,11 @@ public class KlayRewards extends Response<KlayRewards.BlockRewards> {
         public String getStakers() {
             return this.stakers;
         }
-        public String getKgf() {
-            return this.kgf;
+        public String getKff() {
+            return this.kff;
         }
-        public String getKir() {
-            return this.kir;
+        public String getKcf() {
+            return this.kcf;
         }
         public Map<String,String> getRewards() {
             return this.rewards;
@@ -111,8 +112,8 @@ public class KlayRewards extends Response<KlayRewards.BlockRewards> {
             result = prime * result + ((burntFee == null) ? 0 : burntFee.hashCode());
             result = prime * result + ((proposer == null) ? 0 : proposer.hashCode());
             result = prime * result + ((stakers == null) ? 0 : stakers.hashCode());
-            result = prime * result + ((kgf == null) ? 0 : kgf.hashCode());
-            result = prime * result + ((kir == null) ? 0 : kir.hashCode());
+            result = prime * result + ((kff == null) ? 0 : kff.hashCode());
+            result = prime * result + ((kcf == null) ? 0 : kcf.hashCode());
             result = prime * result + ((rewards == null) ? 0 : rewards.hashCode());
             return result;
         }
@@ -150,15 +151,15 @@ public class KlayRewards extends Response<KlayRewards.BlockRewards> {
                     return false;
             } else if (!stakers.equals(other.stakers))
                 return false;
-            if (kgf == null) {
-                if (other.kgf != null)
+            if (kff == null) {
+                if (other.kff != null)
                     return false;
-            } else if (!kgf.equals(other.kgf))
+            } else if (!kff.equals(other.kff))
                 return false;
-            if (kir == null) {
-                if (other.kir != null)
+            if (kcf == null) {
+                if (other.kcf != null)
                     return false;
-            } else if (!kir.equals(other.kir))
+            } else if (!kcf.equals(other.kcf))
                 return false;
             if (rewards == null) {
                 if (other.rewards != null)

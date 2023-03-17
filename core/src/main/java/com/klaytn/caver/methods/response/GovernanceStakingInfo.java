@@ -50,6 +50,19 @@ public class GovernanceStakingInfo extends Response<GovernanceStakingInfo.Stakin
         private String kirAddr;
 
         /**
+         * The contract address of PoC.
+         * PoC is the previous name of KGF.
+         */
+        @JsonProperty("kffAddr")
+        private String kffAddr;
+
+        /**
+         * The contract address of KIR.
+         */
+        @JsonProperty("kcfAddr")
+        private String kcfAddr;
+
+        /**
          * Gini coefficient.
          */
         @JsonProperty("Gini")
@@ -95,6 +108,22 @@ public class GovernanceStakingInfo extends Response<GovernanceStakingInfo.Stakin
             this.councilRewardAddrs = councilRewardAddrs;
             this.councilNodeAddrs = councilModeAddrs;
             this.blockNum = blockNum;
+        } 
+
+        public StakingInfo(boolean useGini, String pocAddr, String kirAddr, String kffAddr, String kcfAddr, int gini,
+                List<BigInteger> councilStakingAmounts, List<String> councilStakingAddrs,
+                List<String> councilRewardAddrs, List<String> councilNodeAddrs, BigInteger blockNum) {
+            this.useGini = useGini;
+            this.pocAddr = pocAddr;
+            this.kirAddr = kirAddr;
+            this.kffAddr = kffAddr;
+            this.kcfAddr = kcfAddr;
+            this.gini = gini;
+            this.councilStakingAmounts = councilStakingAmounts;
+            this.councilStakingAddrs = councilStakingAddrs;
+            this.councilRewardAddrs = councilRewardAddrs;
+            this.councilNodeAddrs = councilNodeAddrs;
+            this.blockNum = blockNum;
         }
 
         /**
@@ -112,6 +141,14 @@ public class GovernanceStakingInfo extends Response<GovernanceStakingInfo.Stakin
         public void setUseGini(boolean useGini) {
             this.useGini = useGini;
         }
+        
+        /**
+         * Getter function for KGFAddr.
+         * @return String
+         */
+        public String getKGFAddr() {
+            return pocAddr;
+        }
 
         /**
          * Getter function for PocAddr.
@@ -119,14 +156,6 @@ public class GovernanceStakingInfo extends Response<GovernanceStakingInfo.Stakin
          * @return String
          */
         public String getPocAddr() {
-            return pocAddr;
-        }
-
-        /**
-         * Getter function for KGFAddr.
-         * @return String
-         */
-        public String getKGFAddr() {
             return pocAddr;
         }
 
@@ -153,6 +182,38 @@ public class GovernanceStakingInfo extends Response<GovernanceStakingInfo.Stakin
          */
         public void setKirAddr(String kirAddr) {
             this.kirAddr = kirAddr;
+        }
+
+        /**
+         * Getter function for kffAddr.
+         * @return String
+         */        
+        public String getKffAddr() {
+            return kffAddr;
+        }
+
+        /**
+         * Setter function for kffAddr
+         * @param kffAddr The contract address of KFF.
+         */
+        public void setKffAddr(String kffAddr) {
+            this.kffAddr = kffAddr;
+        }
+
+        /**
+         * Getter function for kcfAddr.
+         * @return String
+         */
+        public String getKcfAddr() {
+            return kcfAddr;
+        }
+
+        /**
+         * Setter function for kcfAddr
+         * @param kcfAddr The contract address of KCF.
+         */
+        public void setKcfAddr(String kcfAddr) {
+            this.kcfAddr = kcfAddr;
         }
 
         /**

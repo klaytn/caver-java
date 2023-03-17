@@ -670,8 +670,8 @@ public class RpcTest extends Accounts {
             KlayRewards responseWithNumber = klay.getRewards(BigInteger.valueOf(5)).send();
             assertFalse(responseWithNumber.hasError());
             assertNotNull(responseWithNumber.getResult().getBurntFee());
-            assertNotNull(responseWithNumber.getResult().getKgf());
-            assertNotNull(responseWithNumber.getResult().getKir());
+            assertNotNull(responseWithNumber.getResult().getKff());
+            assertNotNull(responseWithNumber.getResult().getKcf());
             assertNotNull(responseWithNumber.getResult().getMinted());
             assertNotNull(responseWithNumber.getResult().getProposer());
             assertNotNull(responseWithNumber.getResult().getRewards());
@@ -681,8 +681,8 @@ public class RpcTest extends Accounts {
             KlayRewards responseWithTag = klay.getRewards(DefaultBlockParameterName.LATEST).send();
             assertFalse(responseWithTag.hasError());
             assertNotNull(responseWithTag.getResult().getBurntFee());
-            assertNotNull(responseWithTag.getResult().getKgf());
-            assertNotNull(responseWithTag.getResult().getKir());
+            assertNotNull(responseWithTag.getResult().getKff());
+            assertNotNull(responseWithTag.getResult().getKcf());
             assertNotNull(responseWithTag.getResult().getMinted());
             assertNotNull(responseWithTag.getResult().getProposer());
             assertNotNull(responseWithTag.getResult().getRewards());
@@ -692,8 +692,8 @@ public class RpcTest extends Accounts {
             KlayRewards response = klay.getRewards().send();
             assertFalse(response.hasError());
             assertNotNull(response.getResult().getBurntFee());
-            assertNotNull(response.getResult().getKgf());
-            assertNotNull(response.getResult().getKir());
+            assertNotNull(response.getResult().getKff());
+            assertNotNull(response.getResult().getKcf());
             assertNotNull(response.getResult().getMinted());
             assertNotNull(response.getResult().getProposer());
             assertNotNull(response.getResult().getRewards());
@@ -1569,18 +1569,18 @@ public class RpcTest extends Accounts {
         }
 
         @Test
-        public void getGovParamsAt() throws IOException {
-            GovernanceItems response = caver.rpc.klay.getGovParams().send();
+        public void getParams() throws IOException {
+            GovernanceItems response = caver.rpc.klay.getParams().send();
             assertNotNull(response);
             assertFalse(response.hasError());
 
             Map<String, Object> gov_item = response.getResult();
 
-            response = caver.rpc.klay.getGovParamsAt(DefaultBlockParameterName.LATEST).send();
+            response = caver.rpc.klay.getParams(DefaultBlockParameterName.LATEST).send();
             assertNotNull(response);
             assertFalse(response.hasError());
 
-            response = caver.rpc.klay.getGovParamsAt(BigInteger.ZERO).send();
+            response = caver.rpc.klay.getParams(BigInteger.ZERO).send();
             assertNotNull(response);
             assertFalse(response.hasError());
 

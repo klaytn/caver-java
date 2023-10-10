@@ -278,7 +278,7 @@ public class Governance {
      * @return Request&lt;?, GovernanceChainConfig&gt;
      */
     public Request<?, GovernanceChainConfig> getChainConfig() {
-        return getChainConfigAt(DefaultBlockParameterName.LATEST);
+        return getChainConfig(DefaultBlockParameterName.LATEST);
     }
 
     /**
@@ -324,44 +324,6 @@ public class Governance {
     public Request<?, GovernanceChainConfig> getChainConfig(DefaultBlockParameter blockNumberOrTag) {
         return new Request<>(
                 "governance_getChainConfig",
-                Arrays.asList(blockNumberOrTag),
-                provider,
-                GovernanceChainConfig.class
-        );
-    }
-
-    /**
-     * Provides the chain configuration at the specified block number
-     * <pre>Example :
-     * {@code
-     * GovernanceChainConfig response = caver.rpc.governance.getChainConfigAt(BigInteger.ZERO).send();
-     * }
-     * </pre>
-     * @return Request&lt;?, GovernanceChainConfig&gt;
-     */
-    public Request<?, GovernanceChainConfig> getChainConfigAt(BigInteger blockNumber) {
-        return getChainConfigAt(DefaultBlockParameter.valueOf(blockNumber));
-    }
-
-    /**
-     * Provides the chain configuration by block tag (latest, earliest, pending)
-     * <pre>Example :
-     * {@code
-     * GovernanceChainConfig response = caver.rpc.governance.getChainConfigAt("latest").send();
-     * }
-     * </pre>
-     * @return Request&lt;?, GovernanceChainConfig&gt;
-     */
-    public Request<?, GovernanceChainConfig> getChainConfigAt(String blockTag) {
-        return getChainConfigAt(DefaultBlockParameterName.fromString(blockTag));
-    }
-
-    /**
-     * return chain configuration   
-     */
-    public Request<?, GovernanceChainConfig> getChainConfigAt(DefaultBlockParameter blockNumberOrTag) {
-        return new Request<>(
-                "governance_chainConfigAt",
                 Arrays.asList(blockNumberOrTag),
                 provider,
                 GovernanceChainConfig.class
@@ -469,59 +431,6 @@ public class Governance {
 
     /**
      * Returns governance items at specific block.<p>
-     * It is the result of previous voting of the block and used as configuration for chain at the given block number.<p>
-     * It pass the latest block tag as a parameter.
-     * <pre>Example :
-     * {@code
-     * GovernanceItems response = caver.rpc.governance.getItemsAt().send();
-     * Map<String, Object> governanceItem = response.getResult();
-     *
-     * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
-     * }</pre>
-     * @return Request&lt;?, Bytes20&gt;
-     */
-    public Request<?, GovernanceItems> getItemsAt() {
-        return getItemsAt(DefaultBlockParameterName.LATEST);
-    }
-
-    /**
-     * Returns governance items at specific block.<p>
-     * It is the result of previous voting of the block and used as configuration for chain at the given block number.
-     * <pre>Example :
-     * {@code
-     * GovernanceItems response = caver.rpc.governance.getItemsAt(BigInteger.ZERO).send();
-     * Map<String, Object> governanceItem = response.getResult();
-     *
-     * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
-     * }</pre>
-     * @param blockNumber The block number to query.
-     * @return Request&lt;?, GovernanceItems&gt;
-     */
-    public Request<?, GovernanceItems> getItemsAt(BigInteger blockNumber) {
-        return getItemsAt(DefaultBlockParameter.valueOf(blockNumber));
-    }
-
-    /**
-     * Returns governance items at specific block.<p>
-     * It is the result of previous voting of the block and used as configuration for chain at the given block number.
-     * <pre>Example :
-     * {@code
-     * GovernanceItems response = caver.rpc.governance.getItemsAt("latest").send();
-     * Map<String, Object> governanceItem = response.getResult();
-     *
-     * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
-     * }
-     * </pre>
-     * @param blockTag The block tag to query
-     * @return Request&lt;?, GovernanceItems&gt;
-     */
-    public Request<?, GovernanceItems> getItemsAt(String blockTag) {
-        DefaultBlockParameterName blockTagName = DefaultBlockParameterName.fromString(blockTag);
-        return getItemsAt(blockTagName);
-    }
-
-    /**
-     * Returns governance items at specific block.<p>
      * It is the result of previous voting of the block and used as configuration for chain at the given block number.
      * <pre>Example :
      * {@code
@@ -534,18 +443,18 @@ public class Governance {
      * @param blockTag The block tag to query
      * @return Request&lt;?, GovernanceItems&gt;
      */
-    public Request<?, GovernanceItems> getItemsAt(DefaultBlockParameterName blockTag) {
-        return getItemsAt((DefaultBlockParameter)blockTag);
-    }
+    // public Request<?, GovernanceItems> getItemsAt(DefaultBlockParameterName blockTag) {
+    //     return getItemsAt((DefaultBlockParameter)blockTag);
+    // }
 
-    Request<?, GovernanceItems> getItemsAt(DefaultBlockParameter blockParameter) {
-        return new Request<>(
-                "governance_itemsAt",
-                Arrays.asList(blockParameter.getValue()),
-                provider,
-                GovernanceItems.class
-        );
-    }
+    // Request<?, GovernanceItems> getItemsAt(DefaultBlockParameter blockParameter) {
+    //     return new Request<>(
+    //             "governance_itemsAt",
+    //             Arrays.asList(blockParameter.getValue()),
+    //             provider,
+    //             GovernanceItems.class
+    //     );
+    // }
 
     /**
      *  Returns the list of items that have received enough number of votes but not yet finalized.<p>
@@ -711,6 +620,30 @@ public class Governance {
                 Arrays.asList(blockParam),
                 provider,
                 GovernanceStakingInfo.class
+        );
+    }
+
+    public Request<?, RewardsAccumulated> getRewardsAccumulated(String fromBlock, String toBlock) {
+        DefaultBlockParameterName fromBlockTagName = DefaultBlockParameterName.fromString(fromBlock);
+        DefaultBlockParameterName toBlockTagName = DefaultBlockParameterName.fromString(toBlock);
+
+        return getRewardsAccumulated(fromBlockTagName, toBlockTagName);
+    }
+
+    public Request<?, RewardsAccumulated> getRewardsAccumulated(BigInteger fromBlock, BigInteger toBlock) {
+        return getRewardsAccumulated(fromBlock, toBlock);
+    }
+
+    public Request<?, RewardsAccumulated> getRewardsAccumulated(DefaultBlockParameterName fromBlock, DefaultBlockParameterName toBlock) {
+        return getRewardsAccumulated((DefaultBlockParameter)fromBlock, (DefaultBlockParameter)toBlock);
+    }
+
+    Request<?, RewardsAccumulated> getRewardsAccumulated(DefaultBlockParameter fromBlock, DefaultBlockParameter toBlock) {
+        return new Request<>(
+                "governance_getRewardsAccumulated",
+                Arrays.asList(fromBlock, toBlock),
+                provider,
+                RewardsAccumulated.class
         );
     }
 }

@@ -35,7 +35,7 @@ import org.web3j.protocol.http.HttpService;
  */
 public class Caver {
 
-    public static String DEFAULT_URL = "http://localhost:8551";
+    public static String DEFAULT_URL = "http://localhost:8545";
 
     /**
      * @deprecated Please use <code>caver.rpc.klay</code> instead.

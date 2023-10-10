@@ -22,6 +22,7 @@ import com.klaytn.caver.methods.request.KlayFilter;
 import com.klaytn.caver.methods.request.KlayLogFilter;
 import com.klaytn.caver.methods.response.Boolean;
 import com.klaytn.caver.methods.response.KlayRewards.BlockRewards;
+import com.klaytn.caver.methods.response.ForkStatusResult.ForkStatusData;
 import com.klaytn.caver.methods.response.*;
 import com.klaytn.caver.transaction.AbstractFeeDelegatedTransaction;
 import com.klaytn.caver.transaction.AbstractTransaction;
@@ -1259,7 +1260,7 @@ public class Klay {
      * @return Request&lt;?, GovernanceChainConfig&gt;
      */
     public Request<?, GovernanceChainConfig> getChainConfig() {
-        return getChainConfigAt(DefaultBlockParameterName.LATEST);
+        return getChainConfig(DefaultBlockParameterName.LATEST);
     }
 
     /**
@@ -1272,7 +1273,7 @@ public class Klay {
      * @return Request&lt;?, GovernanceChainConfig&gt;
      */
     public Request<?, GovernanceChainConfig> getChainConfig(BigInteger blockNumber) {
-        return getChainConfigAt(DefaultBlockParameter.valueOf(blockNumber));
+        return getChainConfig(DefaultBlockParameter.valueOf(blockNumber));
     }
 
     /**
@@ -1285,7 +1286,7 @@ public class Klay {
      * @return Request&lt;?, GovernanceChainConfig&gt;
      */
     public Request<?, GovernanceChainConfig> getChainConfig(String blockTag) {
-        return getChainConfigAt(DefaultBlockParameterName.fromString(blockTag));
+        return getChainConfig(DefaultBlockParameterName.fromString(blockTag));
     }
 
     /**
@@ -1304,7 +1305,7 @@ public class Klay {
     }
     public Request<?, GovernanceChainConfig> getChainConfig(DefaultBlockParameter blockNumberOrTag) {
         return new Request<>(
-                "klay_chainConfig",
+                "klay_getChainConfig",
                 Arrays.asList(blockNumberOrTag),
                 web3jService,
                 GovernanceChainConfig.class
@@ -1341,7 +1342,7 @@ public class Klay {
      * Provides the chain configuration by block tag (latest, earliest, pending)
      * <pre>Example :
      * {@code
-     * GovernanceChainConfig response = caver.rpc.klay.getChainConfigAt(DefaultBlockParameterName.LATEST).send();
+     * GovernanceChainConfig response = caver.rpc.klay.getChainConfig(DefaultBlockParameterName.LATEST).send();
      *
      * String mode = IVote.VoteItem.getGovernanceMode(governanceItem);
      * }
@@ -1353,7 +1354,7 @@ public class Klay {
     }
     public Request<?, GovernanceChainConfig> getChainConfigAt(DefaultBlockParameter blockNumberOrTag) {
         return new Request<>(
-                "klay_chainConfigAt",
+                "klay_getChainConfig",
                 Arrays.asList(blockNumberOrTag),
                 web3jService,
                 GovernanceChainConfig.class
@@ -1427,7 +1428,7 @@ public class Klay {
      * @return Request&lt;?, GovernanceItems&gt;
      */
     public Request<?, GovernanceItems> getParams(DefaultBlockParameterName blockTag) {
-        return getGovParamsAt((DefaultBlockParameter)blockTag);
+        return getParams((DefaultBlockParameter)blockTag);
     }
 
     Request<?, GovernanceItems> getParams(DefaultBlockParameter blockParameter) {
@@ -2239,5 +2240,58 @@ public class Klay {
                 Arrays.asList(type, options),
                 web3jService,
                 Quantity.class);
+    }
+
+    public Request<?, ForkStatusResult> forkStatus(Integer param) {
+        return new Request<>(
+                "klay_forkStatus",
+                Arrays.asList(param),
+                web3jService,
+                ForkStatusResult.class
+        );
+    }
+
+    public Request<?, Bytes> recoverFromMessage(String address, String message, String signature, String blockTag) {
+        DefaultBlockParameterName blockTagName = DefaultBlockParameterName.fromString(blockTag);
+        return recoverFromMessage(address, message, signature, blockTagName);
+    }
+
+    public Request<?, Bytes> recoverFromMessage(String address, String message, String signature, BigInteger blockNumber) {
+        return recoverFromMessage(address, message, signature, blockNumber);
+    }
+
+    public Request<?, Bytes> recoverFromMessage(String address, String message, String signature, DefaultBlockParameterName blockTag) {
+        return recoverFromMessage(address, message, signature, (DefaultBlockParameter)blockTag);
+    }
+
+    Request<?, Bytes> recoverFromMessage(String address, String message, String signature, DefaultBlockParameter blockNumber) {
+        return new Request<>(
+                "klay_recoverFromMessage",
+                Arrays.asList(address, message, signature, blockNumber),
+                web3jService,
+                Bytes.class
+        );
+    }
+
+    public Request<?, Bytes> recoverFromTransaction(String txHash, String blockTag) {
+        DefaultBlockParameterName blockTagName = DefaultBlockParameterName.fromString(blockTag);
+        return recoverFromTransaction(txHash, blockTagName);
+    }
+
+    public Request<?, Bytes> recoverFromTransaction(String txHash, BigInteger blockNumber) {
+        return recoverFromTransaction(txHash, blockNumber);
+    }
+
+    public Request<?, Bytes> recoverFromTransaction(String txHash, DefaultBlockParameterName blockTag) {
+        return recoverFromTransaction(txHash, (DefaultBlockParameter)blockTag);
+    }
+
+    public Request<?, Bytes> recoverFromTransaction(String txHash, DefaultBlockParameter blockTag) {
+        return new Request<>(
+                "klay_recoverFromTransaction",
+                Arrays.asList(txHash, blockTag),
+                web3jService,
+                Bytes.class
+        );
     }
 }

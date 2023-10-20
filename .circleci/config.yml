@@ -145,8 +145,8 @@ jobs:
       - store_test_results:
           path: core/build/test-results/test
       - store_artifacts:
-          path: /home/circleci/circleci-caver-java-major/core/build/reports/tests/test/index.html
-          destination: index.html
+          path: /home/circleci/circleci-caver-java-major/core/build/reports/tests/test
+          destination: test-output
 
 
   build_test:

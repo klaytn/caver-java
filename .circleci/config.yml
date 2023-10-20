@@ -138,7 +138,7 @@ jobs:
       - *check_test_network
       - run:
           name: "Test"
-          command: ./gradlew clean test --debug --stacktrace
+          command: ./gradlew clean test --debug --stacktrace --scan
       - store_test_results:
           path: core/build/test-results/test
 

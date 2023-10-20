@@ -137,6 +137,9 @@ jobs:
       - *start_test_network
       - *check_test_network
       - run:
+          name: "Check environment"
+          command: java --version && gradle --version
+      - run:
           name: "Test"
           command: ./gradlew clean test --debug --stacktrace --scan
       - store_test_results:

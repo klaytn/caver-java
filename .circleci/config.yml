@@ -141,9 +141,13 @@ jobs:
           command: java --version && gradle --version
       - run:
           name: "Test"
-          command: ./gradlew clean test --debug --stacktrace --scan
+          command: ./gradlew clean test --debug --scan
       - store_test_results:
           path: core/build/test-results/test
+      - store_artifacts:
+          path: /home/circleci/circleci-caver-java-major/core/build/reports/tests/test/index.html
+          destination: index.html
+
 
   build_test:
     <<: *machine_ubuntu

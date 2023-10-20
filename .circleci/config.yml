@@ -202,6 +202,9 @@ jobs:
           command: ./gradlew connectedDebugAndroidTest --debug --stacktrace
       - store_test_results:
           path: android_instrumented_test/build/outputs/androidTest-results/connected
+      - store_artifacts:
+          path: android_instrumented_test/build/reports/androidTests/connected/flavors/debugAndroidTest
+          destination: /test-report
 
   build_test_android:
     <<: *android_machine_ubuntu

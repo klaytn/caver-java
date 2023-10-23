@@ -1687,7 +1687,7 @@ public class RpcTest extends Accounts {
 
         @Test
         public void getRewardsAccumulated () throws IOException {
-            RewardsAccumulated response = caver.rpc.governance.getRewardsAccumulated(BigInteger.valueOf(1900), BigInteger.valueOf(1950)).send();
+            RewardsAccumulated response = caver.rpc.governance.getRewardsAccumulated(BigInteger.valueOf(5), BigInteger.valueOf(10)).send();
             assertNotNull(response);
             assertFalse(response.hasError());
         }

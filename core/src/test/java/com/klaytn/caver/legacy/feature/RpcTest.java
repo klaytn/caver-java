@@ -448,12 +448,12 @@ public class RpcTest {
         assertNotNull(result);
     }
 
-    @Test
-    public void testGetGasPriceAt() throws IOException {
-        Quantity response = caver.klay().getGasPriceAt(null).send();
-        BigInteger result = response.getValue();
-        assertNotNull(result);
-    }
+    // @Test
+    // public void testGetGasPriceAt() throws IOException {
+    //     Quantity response = caver.klay().getGasPriceAt(null).send();
+    //     BigInteger result = response.getValue();
+    //     assertNotNull(result);
+    // }
 
     @Test
     public void testIsParallelDbWrite() throws Exception {

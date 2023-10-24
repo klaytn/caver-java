@@ -115,10 +115,10 @@ public class DynamicFeeTest {
 
     private boolean validateGasFeeWithReceipt(TransactionReceipt.TransactionReceiptData receipt) throws IOException {
         BigInteger gasPriceInReceipt = Numeric.toBigInt(receipt.getGasPrice());
-        BigInteger gasPriceAtParentBlock = caver.rpc.klay.getGasPriceAt(
+        BigInteger gasPriceAtParentBlock = caver.rpc.klay.getGasPrice(
                 Numeric.toBigInt(receipt.getBlockNumber()).subtract(BigInteger.valueOf(1)).longValue()
         ).send().getValue(); // Klaytn will return baseFee
-        BigInteger gasPriceAtReceiptBlock = caver.rpc.klay.getGasPriceAt(
+        BigInteger gasPriceAtReceiptBlock = caver.rpc.klay.getGasPrice(
                 Numeric.toBigInt(receipt.getBlockNumber()).longValue()
         ).send().getValue(); // Klaytn will return baseFee
 
@@ -141,7 +141,7 @@ public class DynamicFeeTest {
 
     private boolean validateDynamicFeeTxWithReceipt(TransactionReceipt.TransactionReceiptData receipt) throws IOException {
         BigInteger maxFeePerGas = Numeric.toBigInt(receipt.getMaxFeePerGas());
-        BigInteger gasPriceAtParentBlock = caver.rpc.klay.getGasPriceAt(
+        BigInteger gasPriceAtParentBlock = caver.rpc.klay.getGasPrice(
                 Numeric.toBigInt(receipt.getBlockNumber()).subtract(BigInteger.valueOf(1)).longValue()
         ).send().getValue(); // Klaytn will return baseFee
 

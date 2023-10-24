@@ -1660,6 +1660,17 @@ public class Klay {
     }
 
     /**
+     * Returns the unit price of the given block in peb.<p>
+     * NOTE: This API has different behavior from Ethereum's and returns a gas price of Klaytn instead of suggesting a gas price as in Ethereum.
+     * @param blockNumber The block number.
+     * @return Quantity
+     */
+    public Request<?, Quantity> getGasPrice(long blockNumber) {
+        DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
+        return getGasPrice(blockParameterNumber);
+    }
+
+    /**
      * 
      * @return GovernanceChainConfig
      */
@@ -1679,18 +1690,33 @@ public class Klay {
 
     /**
      * Returns the unit price of the given block in peb.<p>
-     * It returns latest unit price.<p>
      * NOTE: This API has different behavior from Ethereum's and returns a gas price of Klaytn instead of suggesting a gas price as in Ethereum.
+     * @param blockTag The block tag.
      * @return Quantity
      */
-    public Request<?, Quantity> getGasPriceAt() {
+    public Request<?, Quantity> getGasPrice(DefaultBlockParameter blockTag) {
         return new Request<>(
-                "klay_gasPriceAt",
-                Arrays.asList(DefaultBlockParameterName.LATEST),
+                "klay_gasPrice",
+                Arrays.asList(blockTag),
                 web3jService,
                 Quantity.class
         );
     }
+
+    /**
+     * Returns the unit price of the given block in peb.<p>
+     * It returns latest unit price.<p>
+     * NOTE: This API has different behavior from Ethereum's and returns a gas price of Klaytn instead of suggesting a gas price as in Ethereum.
+     * @return Quantity
+     */
+    // public Request<?, Quantity> getGasPriceAt() {
+    //     return new Request<>(
+    //             "klay_gasPriceAt",
+    //             Arrays.asList(DefaultBlockParameterName.LATEST),
+    //             web3jService,
+    //             Quantity.class
+    //     );
+    // }
 
     /**
      * Returns a suggestion for a gas tip cap for dynamic fee transactions in peb.<p>
@@ -1719,10 +1745,10 @@ public class Klay {
      * @param blockNumber The block number.
      * @return Quantity
      */
-    public Request<?, Quantity> getGasPriceAt(long blockNumber) {
-        DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
-        return getGasPriceAt(blockParameterNumber);
-    }
+    // public Request<?, Quantity> getGasPriceAt(long blockNumber) {
+    //     DefaultBlockParameterNumber blockParameterNumber = new DefaultBlockParameterNumber(blockNumber);
+    //     return getGasPriceAt(blockParameterNumber);
+    // }
 
     /**
      * Returns the unit price of the given block in peb.<p>
@@ -1730,14 +1756,14 @@ public class Klay {
      * @param blockTag The block tag.
      * @return Quantity
      */
-    public Request<?, Quantity> getGasPriceAt(DefaultBlockParameter blockTag) {
-        return new Request<>(
-                "klay_gasPriceAt",
-                Arrays.asList(blockTag),
-                web3jService,
-                Quantity.class
-        );
-    }
+    // public Request<?, Quantity> getGasPriceAt(DefaultBlockParameter blockTag) {
+    //     return new Request<>(
+    //             "klay_gasPriceAt",
+    //             Arrays.asList(blockTag),
+    //             web3jService,
+    //             Quantity.class
+    //     );
+    // }
 
     /**
      * Returns the upper bound gas price in peb.<p>

@@ -462,14 +462,23 @@ public class JsonRpc2_0Klay implements Klay {
     }
 
     @Override
-    public Request<?, Quantity> getGasPriceAt(DefaultBlockParameter defaultBlockParameter) {
+    public Request<?, Quantity> getGasPrice(DefaultBlockParameter defaultBlockParameter) {
         return new Request<>(
-                "klay_gasPriceAt",
+                "klay_gasPrice",
                 Arrays.asList(defaultBlockParameter),
                 web3jService,
-                Quantity.class
-        );
+                Quantity.class);
     }
+
+//     @Override
+//     public Request<?, Quantity> getGasPriceAt(DefaultBlockParameter defaultBlockParameter) {
+//         return new Request<>(
+//                 "klay_gasPriceAt",
+//                 Arrays.asList(defaultBlockParameter),
+//                 web3jService,
+//                 Quantity.class
+//         );
+//     }
 
     @Override
     public Request<?, Boolean> isParallelDBWrite() {

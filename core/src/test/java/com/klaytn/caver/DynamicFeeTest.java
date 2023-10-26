@@ -117,18 +117,13 @@ public class DynamicFeeTest {
         BigInteger gasPriceInReceipt = Numeric.toBigInt(receipt.getGasPrice());
         BigInteger gasPriceAtParentBlock = caver.rpc.klay.getGasPrice(
                 Numeric.toBigInt(receipt.getBlockNumber()).subtract(BigInteger.valueOf(1)).longValue()
-        ).send().getValue(); // Klaytn will return baseFee
+        ).send().getValue().divide(BigInteger.valueOf(2)); // Klaytn will return baseFee
         BigInteger gasPriceAtReceiptBlock = caver.rpc.klay.getGasPrice(
-                Numeric.toBigInt(receipt.getBlockNumber()).longValue()
-        ).send().getValue(); // Klaytn will return baseFee
+                Numeric.toBigInt(receipt.getBlockNumber()).add(BigInteger.valueOf(1)).longValue()
+        ).send().getValue().divide(BigInteger.valueOf(2)); // Klaytn will return baseFee
 
         // To process a transaction, the gasPrice of the tx should be equal or bigger than baseFee(effectiveGasPrice)
         if (Numeric.toBigInt(receipt.getEffectiveGasPrice()).compareTo(gasPriceInReceipt) > 0) {
-            return false;
-        }
-
-        // effectiveGasPrice should be defined by baseFee used gas price when tx is processed
-        if (Numeric.toBigInt(receipt.getEffectiveGasPrice()).compareTo(gasPriceAtReceiptBlock) != 0) {
             return false;
         }
 

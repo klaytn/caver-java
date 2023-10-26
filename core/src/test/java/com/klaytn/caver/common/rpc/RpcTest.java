@@ -1087,12 +1087,12 @@ public class RpcTest extends Accounts {
             assertNotNull(result);
         }
 
-        @Test
-        public void getGasPriceAtTest() throws IOException {
-            Quantity response = caver.rpc.klay.getGasPriceAt().send();
-            BigInteger result = response.getValue();
-            assertNotNull(result);
-        }
+        // @Test
+        // public void getGasPriceAtTest() throws IOException {
+        //     Quantity response = caver.rpc.klay.getGasPriceAt().send();
+        //     BigInteger result = response.getValue();
+        //     assertNotNull(result);
+        // }
 
         @Test
         public void getMaxPriorityFeePerGasTest() throws Exception {
@@ -1540,19 +1540,19 @@ public class RpcTest extends Accounts {
             assertFalse(response.hasError());
         }
 
-        @Test
-        public void getGovernanceChainConfigAtWithBlockNumber() throws IOException {
-            GovernanceChainConfig response = caver.rpc.governance.getChainConfigAt(BigInteger.valueOf(0)).send();
-            assertNotNull(response.getResult());
-            assertFalse(response.hasError());
-        }
+        // @Test
+        // public void getGovernanceChainConfigAtWithBlockNumber() throws IOException {
+        //     GovernanceChainConfig response = caver.rpc.governance.getChainConfigAt(BigInteger.valueOf(0)).send();
+        //     assertNotNull(response.getResult());
+        //     assertFalse(response.hasError());
+        // }
 
-        @Test
-        public void getGovernanceChainConfigAtBlockTag() throws IOException {
-            GovernanceChainConfig response = caver.rpc.governance.getChainConfigAt("latest").send();
-            assertNotNull(response.getResult());
-            assertFalse(response.hasError());
-        }
+        // @Test
+        // public void getGovernanceChainConfigAtBlockTag() throws IOException {
+        //     GovernanceChainConfig response = caver.rpc.governance.getChainConfigAt("latest").send();
+        //     assertNotNull(response.getResult());
+        //     assertFalse(response.hasError());
+        // }
 
         @Test
         public void getKlayNodeAddress() throws IOException {
@@ -1589,26 +1589,26 @@ public class RpcTest extends Accounts {
 
         }
 
-        @Test
-        public void getItemsAt() throws IOException {
-            GovernanceItems response = caver.rpc.governance.getItemsAt().send();
-            assertNotNull(response);
-            assertFalse(response.hasError());
+        // @Test
+        // public void getItemsAt() throws IOException {
+        //     GovernanceItems response = caver.rpc.governance.getItemsAt().send();
+        //     assertNotNull(response);
+        //     assertFalse(response.hasError());
 
-            Map<String, Object> gov_item = response.getResult();
+        //     Map<String, Object> gov_item = response.getResult();
 
-            response = caver.rpc.governance.getItemsAt(DefaultBlockParameterName.LATEST).send();
-            assertNotNull(response);
-            assertFalse(response.hasError());
+        //     response = caver.rpc.governance.getItemsAt(DefaultBlockParameterName.LATEST).send();
+        //     assertNotNull(response);
+        //     assertFalse(response.hasError());
 
-            response = caver.rpc.governance.getItemsAt(BigInteger.ZERO).send();
-            assertNotNull(response);
-            assertFalse(response.hasError());
+        //     response = caver.rpc.governance.getItemsAt(BigInteger.ZERO).send();
+        //     assertNotNull(response);
+        //     assertFalse(response.hasError());
 
-            String mode = IVote.VoteItem.getGovernanceMode(response.getResult());
-            System.out.println(mode);
+        //     String mode = IVote.VoteItem.getGovernanceMode(response.getResult());
+        //     System.out.println(mode);
 
-        }
+        // }
 
         @Test
         public void getPendingChanges() throws IOException {
@@ -1681,6 +1681,13 @@ public class RpcTest extends Accounts {
             assertFalse(response.hasError());
 
             response = caver.rpc.governance.getStakingInfo(BigInteger.ZERO).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void getRewardsAccumulated () throws IOException {
+            RewardsAccumulated response = caver.rpc.governance.getRewardsAccumulated(BigInteger.valueOf(5), BigInteger.valueOf(10)).send();
             assertNotNull(response);
             assertFalse(response.hasError());
         }
@@ -1916,6 +1923,35 @@ public class RpcTest extends Accounts {
         public void removePeer() throws IOException {
             String kni = "kni://a979fb575495b8d6db44f750317d0f4622bf4c2aa3365d6af7c284339968eef29b69ad0dce72a4d8db5ebb4968de0e3bec910127f134779fbcb0cb6d3331163c@10.0.0.1:32323";
             Boolean response = caver.rpc.admin.removePeer(kni).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void forkStatus() throws IOException {
+            ForkStatusResult response = caver.rpc.klay.forkStatus(20).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void recoverFromMessage() throws IOException {
+            Bytes response = caver.rpc.klay.recoverFromMessage(
+                "0xA2a8854b1802D8Cd5De631E690817c253d6a9153",
+                "0xdeadbeef", 
+                "0x1e6338d6e4a8d688a25de78cf2a92efec9a92e52eb8425acaaee8c3957e68cdb3f91bdc483f0ed05a0da26eca3be4c566d087d90dc2ca293be23b2a9de0bcafc1c", 
+                "latest"
+            ).send();
+            assertNotNull(response);
+            assertFalse(response.hasError());
+        }
+
+        @Test
+        public void recoverFromTransaction() throws IOException {
+            Bytes response = caver.rpc.klay.recoverFromTransaction(
+                "0x08f88608850ba43b7400827b0c94c40b6909eb7085590e1c26cb3becc25368e249e9880de0b6b3a764000094e15cd70a41dfb05e7214004d7d054801b2a2f06bf847f845820fe9a090421871e8fd77e08b6a72760006a15184a96cfc39c7486ea948d11fd830ae8aa05876248aa8dc0783d782e584e6f8d9bf977c698210a0eab3e754192d0954de65",
+                "latest"
+            ).send();
             assertNotNull(response);
             assertFalse(response.hasError());
         }

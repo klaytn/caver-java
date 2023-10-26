@@ -137,10 +137,16 @@ jobs:
       - *start_test_network
       - *check_test_network
       - run:
+          name: "Check environment"
+          command: java --version && gradle --version
+      - run:
           name: "Test"
-          command: ./gradlew clean test --debug
+          command: ./gradlew clean test --debug --scan
       - store_test_results:
           path: core/build/test-results/test
+      - store_artifacts:
+          path: /home/circleci/circleci-caver-java-major/core/build/reports/tests/test
+          destination: test-output
 
   build_test:
     <<: *machine_ubuntu
@@ -195,6 +201,9 @@ jobs:
           command: ./gradlew connectedDebugAndroidTest --debug --stacktrace
       - store_test_results:
           path: android_instrumented_test/build/outputs/androidTest-results/connected
+      - store_artifacts:
+          path: android_instrumented_test/build/reports/androidTests/connected/flavors/debugAndroidTest
+          destination: /test-report
 
   build_test_android:
     <<: *android_machine_ubuntu

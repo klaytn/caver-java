@@ -64,7 +64,7 @@ check_test_network: &check_test_network
                 echo "Klaytn RPC server is up"
                 break
             else
-                echo "wait for Klyatn RPC server..."
+                echo "wait for Klaytn RPC server..."
                 sleep 5
             fi
             RETRY=$(($RETRY+5))

@@ -408,7 +408,18 @@ public interface Klay {
      * @param defaultBlockParameter Integer block number, or the string "latest", "earliest" or "pending"
      * @return Quantity - Integer of the current gas price in peb.
      */
-    Request<?, Quantity> getGasPriceAt(DefaultBlockParameter defaultBlockParameter);
+    Request<?, Quantity> getGasPrice(DefaultBlockParameter defaultBlockParameter);
+
+
+    /**
+     * Returns the unit price of the given block in peb.<br>
+     * NOTE: This API has different behavior from Ethereum's and returns a gas price of Klaytn instead
+     * of suggesting a gas price as in Ethereum.
+     *
+     * @param defaultBlockParameter Integer block number, or the string "latest", "earliest" or "pending"
+     * @return Quantity - Integer of the current gas price in peb.
+     */
+//     Request<?, Quantity> getGasPriceAt(DefaultBlockParameter defaultBlockParameter);
 
 
     /**

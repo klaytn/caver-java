@@ -333,7 +333,7 @@ public class RpcTest {
     @Test
     public void testEstimateGas() throws Exception {
         CallObject callObject = CallObject.createCallObject(
-                "0x3f71029af4e252b25b9ab999f77182f0cd3bc085",
+                "0x73718c4980728857f3aa5148e9d1b471efa3a7dd",
                 "0x87ac99835e67168d4f9a40580f8f5c33550ba88b",
                 new BigInteger("100000", 16),
                 new BigInteger("5d21dba00", 16),
@@ -448,12 +448,12 @@ public class RpcTest {
         assertNotNull(result);
     }
 
-    @Test
-    public void testGetGasPriceAt() throws IOException {
-        Quantity response = caver.klay().getGasPriceAt(null).send();
-        BigInteger result = response.getValue();
-        assertNotNull(result);
-    }
+    // @Test
+    // public void testGetGasPriceAt() throws IOException {
+    //     Quantity response = caver.klay().getGasPriceAt(null).send();
+    //     BigInteger result = response.getValue();
+    //     assertNotNull(result);
+    // }
 
     @Test
     public void testIsParallelDbWrite() throws Exception {
